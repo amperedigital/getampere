@@ -25,4 +25,4 @@
   - `data-auto-duration` (default 1800ms) sets glide duration/easing.
   - `data-resume-delay` / `data-retry-delay` manage hover resume timing.
   - `data-momentum-friction` / `data-momentum-step` adjust drag-release inertia.
-  Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
+  Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.1/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
