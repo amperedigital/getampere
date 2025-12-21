@@ -86,17 +86,6 @@
       }
     };
 
-    const resumeAutoDelayed = (delay = resumeDelay) => {
-      if (state.resumeTimer) {
-        window.clearTimeout(state.resumeTimer);
-      }
-      state.resumeTimer = window.setTimeout(() => {
-        if (!state.pointerActive && !state.isHover) {
-          scheduleAuto();
-        }
-      }, delay);
-    };
-
     const animateScrollTo = (target) => {
       stopAuto();
       const start = slider.scrollLeft;
@@ -119,6 +108,38 @@
       };
 
       state.animFrame = window.requestAnimationFrame(step);
+    };
+
+    const alignToNearestStep = () => {
+      const stepDistance = getStepDistance();
+      if (!stepDistance) return false;
+      const maxScroll = slider.scrollWidth - slider.clientWidth;
+      const current = slider.scrollLeft;
+      const target = clamp(
+        Math.round(current / stepDistance) * stepDistance,
+        0,
+        maxScroll
+      );
+      if (Math.abs(target - current) < 1) {
+        return false;
+      }
+      log("Align to nearest slide →", target);
+      animateScrollTo(target);
+      return true;
+    };
+
+    const resumeAutoDelayed = (delay = resumeDelay) => {
+      if (state.resumeTimer) {
+        window.clearTimeout(state.resumeTimer);
+      }
+      state.resumeTimer = window.setTimeout(() => {
+        if (!state.pointerActive && !state.isHover) {
+          const aligned = alignToNearestStep();
+          if (!aligned) {
+            scheduleAuto();
+          }
+        }
+      }, delay);
     };
 
     const runAuto = () => {
