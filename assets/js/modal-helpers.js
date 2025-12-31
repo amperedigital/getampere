@@ -61,6 +61,11 @@
       try { console.log('[modal-helpers] amp-modal-open', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
       try { document.documentElement.setAttribute('data-modal-debug', `open:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
       resizeChartsInModal(modal);
+      // enable backdrop pointer events so it captures clicks while modal is open
+      try {
+        const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
+        if (backdrop) backdrop.style.pointerEvents = 'auto';
+      } catch (err) { /* ignore */ }
       // Ensure visible if component CSS not present: apply inline styles for visibility
       try {
         modal.style.transition = modal.style.transition || 'opacity 500ms ease-out, transform 500ms ease-out';
@@ -128,6 +133,11 @@
         modal.style.transform = 'translateY(1rem) scale(0.98)';
         modal.style.pointerEvents = 'none';
         modal.setAttribute('aria-hidden', 'true');
+        // disable backdrop pointer events when modal closed
+        try {
+          const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
+          if (backdrop) backdrop.style.pointerEvents = 'none';
+        } catch (err) { /* ignore */ }
       } catch (err) {
         console.warn('[modal-helpers] failed to apply inline hide styles', err);
       }
