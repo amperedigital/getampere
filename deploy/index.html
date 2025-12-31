@@ -999,11 +999,12 @@ font-family: 'Oswald', sans-serif !important;
       </div>
 
       <style>
-        /* Ensure modal/backdrop only receive events when visible */
-        [data-amp-modal]:not(.amp-modal--visible) { pointer-events: none !important; }
-        [data-amp-modal].amp-modal--visible { pointer-events: auto !important; }
-        .amp-modal-backdrop { pointer-events: none !important; }
-        [data-amp-modal].amp-modal--visible .amp-modal-backdrop { pointer-events: auto !important; }
+        /* Ensure modal/backdrop only receive events when visible.
+           Also fully hide (display:none) when not visible so it cannot block the page. */
+        [data-amp-modal]:not(.amp-modal--visible) { display: none !important; pointer-events: none !important; }
+        [data-amp-modal].amp-modal--visible { display: block !important; pointer-events: auto !important; }
+        .amp-modal-backdrop { display: none !important; pointer-events: none !important; }
+        [data-amp-modal].amp-modal--visible .amp-modal-backdrop { display: block !important; pointer-events: auto !important; }
       </style>
       <div class="fixed inset-0 z-50 flex w-screen h-screen items-center justify-center px-4 py-8 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none sm:px-6 md:px-0 md:py-8" data-ai-panel data-amp-modal aria-hidden="true" id="ai-hero-panel">
         <div class="fixed inset-0 bg-black/70 shadow-[0_0_80px_rgba(0,0,0,0.65)] pointer-events-none amp-modal-backdrop z-40"></div>
