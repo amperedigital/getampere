@@ -1006,6 +1006,12 @@ font-family: 'Oswald', sans-serif !important;
         .amp-modal-backdrop { display: none !important; pointer-events: none !important; }
         [data-amp-modal].amp-modal--visible .amp-modal-backdrop { display: block !important; pointer-events: auto !important; }
       </style>
+      <style id="amp-modal-debug-styles">
+        /* DEBUG: visible debug outline when modal is visible */
+        [data-amp-modal].amp-modal--visible { outline: 3px dashed lime !important; }
+        [data-amp-modal].amp-modal--visible .amp-modal__panel { box-shadow: 0 0 0 4px rgba(0,255,0,0.08) inset, 0 40px 90px rgba(2,6,23,0.65); }
+        .amp-modal__backdrop { outline: 2px dashed rgba(255,0,0,0.6); }
+      </style>
       <div class="fixed inset-0 z-[99999] flex w-screen h-screen items-start md:items-center justify-center px-4 sm:px-6 md:px-0 py-6 md:py-8 pt-24 md:pt-0 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none" data-ai-panel data-amp-modal aria-hidden="true" id="ai-hero-panel">
         <div class="fixed inset-0 bg-black/70 shadow-[0_0_80px_rgba(0,0,0,0.65)] pointer-events-none amp-modal-backdrop z-40"></div>
         <div class="md:rounded-3xl overflow-y-auto w-full sm:w-11/12 md:w-[90vw] lg:w-[75vw] xl:w-[68vw] max-w-full sm:max-w-3xl md:max-w-none max-h-[90vh] md:h-[85vh] lg:h-[80vh] z-[99998] pointer-events-auto rounded-none mx-auto pb-8 relative">

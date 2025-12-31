@@ -59,6 +59,18 @@
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
       try { console.log('[modal-helpers] amp-modal-open', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
+      try {
+        const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
+        const csModal = window.getComputedStyle(modal);
+        const csBackdrop = backdrop ? window.getComputedStyle(backdrop) : null;
+        console.log('[modal-helpers][debug] modal computed', {
+          display: csModal.display,
+          opacity: csModal.opacity,
+          pointerEvents: csModal.pointerEvents,
+          transform: csModal.transform
+        });
+        if (csBackdrop) console.log('[modal-helpers][debug] backdrop computed', { display: csBackdrop.display, opacity: csBackdrop.opacity, pointerEvents: csBackdrop.pointerEvents });
+      } catch (err) { console.warn('[modal-helpers] debug compute failed', err); }
       try { document.documentElement.setAttribute('data-modal-debug', `open:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
       resizeChartsInModal(modal);
       // enable backdrop pointer events so it captures clicks while modal is open
@@ -143,6 +155,13 @@
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
       try { console.log('[modal-helpers] amp-modal-close', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
+      try {
+        const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
+        const csModal = window.getComputedStyle(modal);
+        const csBackdrop = backdrop ? window.getComputedStyle(backdrop) : null;
+        console.log('[modal-helpers][debug] modal computed after close', { display: csModal.display, opacity: csModal.opacity, pointerEvents: csModal.pointerEvents });
+        if (csBackdrop) console.log('[modal-helpers][debug] backdrop computed after close', { display: csBackdrop.display, opacity: csBackdrop.opacity, pointerEvents: csBackdrop.pointerEvents });
+      } catch (err) { console.warn('[modal-helpers] debug compute failed', err); }
       try { document.documentElement.setAttribute('data-modal-debug', `close:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
       try {
         modal.style.opacity = '0';
