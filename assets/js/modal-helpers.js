@@ -6,6 +6,30 @@
     try {
       const canvases = modal.querySelectorAll('canvas');
       canvases.forEach((canvas) => {
+        // Ensure parent has an explicit height; if not, set a sensible fallback so Chart.js can size
+        try {
+          const parent = canvas.parentElement;
+          const rect = parent ? parent.getBoundingClientRect() : null;
+          if (parent && rect && rect.height < 40) {
+            // fallback height: try common chart height
+            parent.style.minHeight = parent.style.minHeight || '420px';
+            console.log('[modal-helpers] applied fallback minHeight to chart parent');
+          }
+          // Explicitly size the canvas to match parent (for HiDPI support)
+          if (parent && rect) {
+            const dpr = window.devicePixelRatio || 1;
+            const w = Math.floor(rect.width);
+            const h = Math.floor(Math.max(rect.height, 200));
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            const ctx = canvas.getContext('2d');
+            if (ctx && typeof ctx.setTransform === 'function') ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          }
+        } catch (err) {
+          console.warn('[modal-helpers] error sizing canvas', err);
+        }
         const ch = canvas.chart || canvas._chart || (window.Chart && Chart.getChart && Chart.getChart(canvas));
         if (ch && typeof ch.resize === 'function') {
           try { ch.resize(); } catch (err) { try { ch.update && ch.update(); } catch(e){} }
