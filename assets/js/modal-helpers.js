@@ -31,6 +31,16 @@
       try { console.log('[modal-helpers] amp-modal-open', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
       try { document.documentElement.setAttribute('data-modal-debug', `open:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
       resizeChartsInModal(modal);
+      // Ensure visible if component CSS not present: apply inline styles for visibility
+      try {
+        modal.style.transition = modal.style.transition || 'opacity 500ms ease-out, transform 500ms ease-out';
+        modal.style.opacity = '1';
+        modal.style.transform = 'translateY(0) scale(1)';
+        modal.style.pointerEvents = 'auto';
+        modal.removeAttribute('aria-hidden');
+      } catch (err) {
+        console.warn('[modal-helpers] failed to apply inline visible styles', err);
+      }
     });
 
     // Diagnostic: delegated click handler for data-modal-trigger to help debug trigger failures
@@ -48,6 +58,22 @@
         try { console.log('[modal-helpers] modalSystem.open()', { modalId, opened }); } catch (err) {}
       } else {
         try { console.warn('[modal-helpers] modal system unavailable', { modalSystem: !!modalSystem }); } catch (err) {}
+      }
+    });
+
+    // Listen for modal close to hide inline styles
+    window.addEventListener('amp-modal-close', (e) => {
+      const modal = e && e.detail && e.detail.modal;
+      if (!modal) return;
+      try { console.log('[modal-helpers] amp-modal-close', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
+      try { document.documentElement.setAttribute('data-modal-debug', `close:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
+      try {
+        modal.style.opacity = '0';
+        modal.style.transform = 'translateY(1rem) scale(0.98)';
+        modal.style.pointerEvents = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+      } catch (err) {
+        console.warn('[modal-helpers] failed to apply inline hide styles', err);
       }
     });
   }
