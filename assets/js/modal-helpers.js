@@ -108,6 +108,22 @@
           ev.preventDefault();
           const closed = modalSystem.close(modalId);
           try { console.log('[modal-helpers] modalSystem.close()', { modalId, closed }); } catch (err) {}
+          // force-hide modal immediately if the modal system reported closed
+          try {
+            const instance = modalSystem.instances && modalSystem.instances[modalId];
+            const el = instance && instance.element ? instance.element : modalEl;
+            if (closed && el) {
+              el.classList.remove('amp-modal--visible');
+              el.style.display = 'none';
+              el.style.pointerEvents = 'none';
+              el.setAttribute('aria-hidden', 'true');
+              const backdrop = el.querySelector && el.querySelector('.amp-modal-backdrop');
+              if (backdrop) {
+                backdrop.style.pointerEvents = 'none';
+                backdrop.style.display = 'none';
+              }
+            }
+          } catch (err) { /* ignore */ }
           return;
         }
         // Fallback: if no modalSystem, try to directly hide the modal element
