@@ -88,6 +88,53 @@
       } catch (err) {
         console.warn('[modal-helpers] failed to apply inline visible styles', err);
       }
+      // Force panel sizing/positioning based on breakpoints to avoid CSS conflicts
+      try {
+        // find the panel element (the first child that's not the backdrop)
+        let panel = null;
+        for (let i = 0; i < modal.children.length; i++) {
+          const ch = modal.children[i];
+          if (ch.classList && ch.classList.contains('amp-modal-backdrop')) continue;
+          // choose the first non-backdrop div
+          if (ch.tagName && ch.tagName.toLowerCase() === 'div') { panel = ch; break; }
+        }
+        if (panel) {
+          const vw = window.innerWidth || document.documentElement.clientWidth;
+          panel.style.maxWidth = panel.style.maxWidth || '1200px';
+          if (vw < 768) {
+            panel.style.width = '95%';
+            panel.style.height = 'auto';
+            panel.style.alignSelf = 'flex-start';
+            panel.style.marginTop = panel.style.marginTop || '4rem';
+          } else if (vw < 1024) {
+            panel.style.width = '90vw';
+            panel.style.height = '85vh';
+            panel.style.alignSelf = 'center';
+            panel.style.marginTop = '';
+          } else if (vw < 1280) {
+            panel.style.width = '75vw';
+            panel.style.height = '85vh';
+            panel.style.alignSelf = 'center';
+          } else {
+            panel.style.width = '68vw';
+            panel.style.height = '80vh';
+            panel.style.alignSelf = 'center';
+          }
+          panel.style.display = 'block';
+          panel.style.overflow = panel.style.overflow || 'hidden';
+
+          // ensure chart containers inside panel have explicit max-height and canvas fills
+          try {
+            const canvases = panel.querySelectorAll('canvas');
+            canvases.forEach((canvas) => {
+              const parent = canvas.parentElement || panel;
+              parent.style.maxHeight = parent.style.maxHeight || (panel.style.height || '80vh');
+              canvas.style.width = '100%';
+              canvas.style.height = '100%';
+            });
+          } catch (err) { /* ignore */ }
+        }
+      } catch (err) { console.warn('[modal-helpers] panel sizing failed', err); }
     });
 
     // Diagnostic: delegated click handler for data-modal-trigger to help debug trigger failures
@@ -172,6 +219,23 @@
         try {
           const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
           if (backdrop) backdrop.style.pointerEvents = 'none';
+        } catch (err) { /* ignore */ }
+        // Remove any inline sizing applied to panel and canvases
+        try {
+          for (let i = 0; i < modal.children.length; i++) {
+            const ch = modal.children[i];
+            if (!ch || !ch.style) continue;
+            ch.style.maxWidth = '';
+            ch.style.width = '';
+            ch.style.height = '';
+            ch.style.alignSelf = '';
+            ch.style.marginTop = '';
+            ch.style.overflow = '';
+            const canvases = ch.querySelectorAll && ch.querySelectorAll('canvas');
+            if (canvases && canvases.length) {
+              canvases.forEach(c => { c.style.width = ''; c.style.height = ''; });
+            }
+          }
         } catch (err) { /* ignore */ }
       } catch (err) {
         console.warn('[modal-helpers] failed to apply inline hide styles', err);
