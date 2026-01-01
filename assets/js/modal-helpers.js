@@ -99,36 +99,22 @@
           if (ch.tagName && ch.tagName.toLowerCase() === 'div') { panel = ch; break; }
         }
         if (panel) {
-          const vw = window.innerWidth || document.documentElement.clientWidth;
-          panel.style.maxWidth = panel.style.maxWidth || '1200px';
-          if (vw < 768) {
-            panel.style.width = '95%';
-            panel.style.height = 'auto';
-            panel.style.alignSelf = 'flex-start';
-            panel.style.marginTop = panel.style.marginTop || '4rem';
-          } else if (vw < 1024) {
-            panel.style.width = '90vw';
-            panel.style.height = '85vh';
-            panel.style.alignSelf = 'center';
-            panel.style.marginTop = '';
-          } else if (vw < 1280) {
-            panel.style.width = '75vw';
-            panel.style.height = '85vh';
-            panel.style.alignSelf = 'center';
-          } else {
-            panel.style.width = '68vw';
-            panel.style.height = '80vh';
-            panel.style.alignSelf = 'center';
-          }
+          // Apply exact inline styles requested to ensure consistent modal sizing
+          panel.style.maxWidth = '1200px';
+          panel.style.width = '100vw';
+          panel.style.height = '80vh';
+          panel.style.alignSelf = 'center';
           panel.style.display = 'block';
-          panel.style.overflow = panel.style.overflow || 'hidden';
+          panel.style.overflow = 'hidden';
+          // position slightly down from top so it sits below nav on narrow viewports
+          panel.style.top = '20%';
 
           // ensure chart containers inside panel have explicit max-height and canvas fills
           try {
             const canvases = panel.querySelectorAll('canvas');
             canvases.forEach((canvas) => {
               const parent = canvas.parentElement || panel;
-              parent.style.maxHeight = parent.style.maxHeight || (panel.style.height || '80vh');
+              parent.style.maxHeight = '80vh';
               canvas.style.width = '100%';
               canvas.style.height = '100%';
             });
