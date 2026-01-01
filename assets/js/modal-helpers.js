@@ -220,10 +220,6 @@
         console.warn('[modal-helpers] failed to apply inline hide styles', err);
       }
     });
-  }
-})();
-
-  }
 
   // ResizeObserver: automatically resize charts when modal size changes
   try {
