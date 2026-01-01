@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PulseBeams Standalone Embed</title>
+    <link rel="stylesheet" href="./pulse-beams.css" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #01030a);
+        font-family: 'Geist', 'Space Grotesk', system-ui, sans-serif;
+        color: #e4e4e7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+      }
+
+      .demo-shell {
+        width: min(960px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .demo-shell h1 {
+        font-size: clamp(1.5rem, 4vw, 2.75rem);
+        margin: 0;
+      }
+
+      .demo-shell p {
+        margin: 0;
+        color: rgba(226, 232, 240, 0.75);
+      }
+
+      code {
+        font-family: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
+        background: rgba(15, 23, 42, 0.65);
+        border-radius: 6px;
+        padding: 3px 6px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="demo-shell">
+      <header>
+        <h1>PulseBeams Standalone CTA</h1>
+        <p>Drop this bundle into any site &amp; call <code>PulseBeamsEmbed.mount()</code> or use <code>data-pulse-beams</code>.</p>
+      </header>
+      <div data-pulse-beams data-badge-text="Live Demo" data-button-label="Demo AI" data-button-href="#" data-button-new-tab="true"></div>
+    </main>
+    <script src="./pulse-beams.js"></script>
+  </body>
+</html>

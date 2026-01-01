@@ -25,4 +25,21 @@
   - `data-auto-duration` (default 1800ms) sets glide duration/easing.
   - `data-resume-delay` / `data-retry-delay` manage hover resume timing.
   - `data-momentum-friction` / `data-momentum-step` adjust drag-release inertia.
-  Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.1/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
+  Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.2/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
+
+## Pulse Animation Embeds (scheduling & ERP)
+- Each animation lives as a standalone HTML snippet and gets embedded via Aura blocks, so no external JS or inline styles are allowed—only Tailwind utility classes and SMIL.
+- The center hub styling is shared between scheduling and ERP: 64px dark orb, matching halo animation, and an arced “AI PHONE ANSWER” text path hugging the circle. Keep the color accents per-card (blue for scheduling, amber/orange for ERP) but reuse the structure.
+- Beam dots must not be visible before their animations start; the first particle on each path stays `hidden`, and every subsequent `<circle>` has `visibility="hidden"` plus a SMIL `<set>` that toggles to `visible` at the same time as its `animateMotion begin`. This prevents the stray top-left cluster during hover/zoom without breaking the animation.
+- The scheduling Acuity connector (`line3`) extends 15% farther (`L200,315`) with its node positioned via `top-[79%]` so the dot sits directly on the path across breakpoints. Any future path length tweaks should keep the node coordinates in sync.
+- Responsive layout matters: every SVG endpoint, node, and label stack must stay aligned inside their card wrappers across breakpoints, including during Aura’s hover zoom. When adjusting positions, verify the small/medium/large breakpoints and ensure hover transforms don’t expose hidden dots or gradients.
+
+## CRM Integrations Card (Salesforce / HubSpot / Pipedrive)
+- The CRM canvas lives in both `index.html` and `crm-integrations.html`; always update both files in lockstep.
+- Each roundel (Salesforce at `left-[25%]`, HubSpot at `left-[75%]`, Pipedrive at `top-[79%] left-1/2`) follows the SAME structure:
+  - Outer absolute container has `pointer-events-none` so the SVG interactions beneath stay untouched.
+  - Immediate child is `absolute bottom-full ... flex flex-col ... pointer-events-auto` (no extra wrappers) so only the logo stack is interactive.
+  - The button uses `class="peer w-12 h-12 ... focus-visible:ring-*"`; **never** swap this to a `group` pattern or the tooltip will re-open while the cursor is on the card background.
+  - Tooltip is the next sibling (`absolute top-1/2 left-full ml-3 ... origin-left z-[120]` for Salesforce, `z-60` on HubSpot, `origin-top` on Pipedrive). It stays `pointer-events-none` until the `peer` is hovered/focused, then Tailwind’s `peer-hover:*` utilities toggle opacity, translation, and pointer events. That keeps the tooltip readable without triggering the other cards.
+- Keep Salesforce’s tooltip at `z-[120]` (embed uses `z-[90]`) so it floats above the center hub but doesn’t collide with the other labels. If the layout feels cramped, reposition the absolute container instead of stacking multiple `z` hacks.
+- All adjustments must stay Tailwind-only—no inline styles, no custom CSS. When you need different offsets or delays, add Tailwind classes or use arbitrary values (`ml-[14px]`, `z-[120]`, etc.) like the current implementation.

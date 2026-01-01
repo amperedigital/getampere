@@ -99,24 +99,21 @@
           if (ch.tagName && ch.tagName.toLowerCase() === 'div') { panel = ch; break; }
         }
         if (panel) {
-          // Apply exact inline styles requested to ensure consistent modal sizing
-          panel.style.maxWidth = '1200px';
-          panel.style.width = '100vw';
-          panel.style.height = '80vh';
-          panel.style.alignSelf = 'center';
-          panel.style.display = 'block';
-          panel.style.overflow = 'hidden';
-          // position slightly down from top so it sits below nav on narrow viewports
-          panel.style.top = '20%';
+          // Prefer Tailwind classes for responsive sizing instead of inline styles:
+          // - full-viewport width on small screens, max-width 1200px at lg+ (applies to xl as well)
+          // - position slightly down from top on tablet and above (md+)
+          try {
+            panel.classList.add('w-screen', 'lg:max-w-[1200px]', 'lg:mx-auto', 'md:top-[15%]');
+            panel.classList.remove('max-w-none');
+          } catch (err) { /* ignore if classList not available */ }
 
-          // ensure chart containers inside panel have explicit max-height and canvas fills
+          // ensure chart containers inside panel have Tailwind-based sizing and canvas fills
           try {
             const canvases = panel.querySelectorAll('canvas');
             canvases.forEach((canvas) => {
               const parent = canvas.parentElement || panel;
-              parent.style.maxHeight = '80vh';
-              canvas.style.width = '100%';
-              canvas.style.height = '100%';
+              try { parent.classList.add('max-h-[80vh]'); } catch (e) {}
+              try { canvas.classList.add('w-full', 'h-full'); } catch (e) {}
             });
           } catch (err) { /* ignore */ }
         }
@@ -206,20 +203,16 @@
           const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
           if (backdrop) backdrop.style.pointerEvents = 'none';
         } catch (err) { /* ignore */ }
-        // Remove any inline sizing applied to panel and canvases
+        // Remove Tailwind classes added on open and reset canvas parent sizing
         try {
           for (let i = 0; i < modal.children.length; i++) {
             const ch = modal.children[i];
-            if (!ch || !ch.style) continue;
-            ch.style.maxWidth = '';
-            ch.style.width = '';
-            ch.style.height = '';
-            ch.style.alignSelf = '';
-            ch.style.marginTop = '';
-            ch.style.overflow = '';
+            if (!ch) continue;
+            try { ch.classList.remove('w-screen', 'lg:max-w-[1200px]', 'lg:mx-auto', 'md:top-[15%]'); } catch (e) {}
+            try { ch.classList.remove('max-h-[80vh]'); } catch (e) {}
             const canvases = ch.querySelectorAll && ch.querySelectorAll('canvas');
             if (canvases && canvases.length) {
-              canvases.forEach(c => { c.style.width = ''; c.style.height = ''; });
+              canvases.forEach(c => { try { c.classList.remove('w-full', 'h-full'); } catch (e) {} });
             }
           }
         } catch (err) { /* ignore */ }

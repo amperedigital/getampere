@@ -1,0 +1,1778 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>getAmpere.ai - AI Voice Agents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <style>
+    body {
+      font-family: "Geist", "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .font-serif-italic {
+      font-family: "Newsreader", serif;
+      font-style: italic;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Smooth Carousel Transitions */
+    .carousel-card {
+      transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Grid/List View Transitions */
+    #projects-container {
+      transition: opacity 0.3s ease;
+    }
+
+    /* Custom Selection Color */
+    ::selection {
+      background: rgba(59, 130, 246, 0.2);
+      color: white;
+    }
+
+    .amp-hamburger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .amp-hamburger:focus-visible {
+      outline: 2px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    .amp-hamburger-line {
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background-color: #0F172A;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .amp-hamburger-line:first-child {
+      transform: translateY(-5px);
+    }
+
+    .amp-hamburger-line:last-child {
+      transform: translateY(5px);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line:first-child {
+      transform: rotate(45deg);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line {
+      background-color: #0F172A;
+    }
+  </style>
+  <style class="">
+    @keyframes animationIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+        filter: blur(8px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0px);
+      }
+    }
+  </style>
+  <script>
+    (function () {
+const style = document.createElement("style");
+style.textContent = `
+.animate-on-scroll { animation-play-state: paused !important; }
+.animate-on-scroll.animate { animation-play-state: running !important; }
+`;
+document.head.appendChild(style);
+const once = true;
+if (!window.__inViewIO) {
+window.__inViewIO = new IntersectionObserver(
+(entries) => {
+entries.forEach((entry) => {
+if (entry.isIntersecting) {
+entry.target.classList.add("animate");
+if (once) window.__inViewIO.unobserve(entry.target);
+}
+});
+},
+{ threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
+);
+}
+window.initInViewAnimations = function (selector = ".animate-on-scroll") {
+document.querySelectorAll(selector).forEach((el) => {
+window.__inViewIO.observe(el);
+});
+};
+document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
+})();
+  </script>
+  <style>
+    .animate-on-scroll {
+      animation-play-state: paused !important;
+    }
+
+    .animate-on-scroll.animate {
+      animation-play-state: running !important;
+    }
+  </style>
+  <style id="aura-editor-visibility-style">
+    .invisible {
+      visibility: hidden !important;
+    }
+  </style>
+
+
+
+
+  
+  
+  
+  
+  
+  
+<link id="all-fonts-link-font-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-geist">
+.font-geist {
+font-family: 'Geist', sans-serif !important;
+}
+</style><link id="all-fonts-link-font-newsreader" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..800&amp;display=swap"><style id="all-fonts-style-font-newsreader">
+.font-newsreader {
+font-family: 'Newsreader', serif !important;
+}
+</style><link id="all-fonts-link-font-dm-sans" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-dm-sans">
+.font-dm-sans {
+font-family: 'DM Sans', sans-serif !important;
+}
+</style><link id="all-fonts-link-font-roboto" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-roboto">.font-roboto { font-family: 'Roboto', sans-serif !important; }</style><link id="all-fonts-link-font-montserrat" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-montserrat">.font-montserrat { font-family: 'Montserrat', sans-serif !important; }</style><link id="all-fonts-link-font-poppins" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-poppins">.font-poppins { font-family: 'Poppins', sans-serif !important; }</style><link id="all-fonts-link-font-playfair" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&amp;display=swap"><style id="all-fonts-style-font-playfair">.font-playfair { font-family: 'Playfair Display', serif !important; }</style><link id="all-fonts-link-font-instrument-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-instrument-serif">.font-instrument-serif { font-family: 'Instrument Serif', serif !important; }</style><link id="all-fonts-link-font-merriweather" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&amp;display=swap"><style id="all-fonts-style-font-merriweather">.font-merriweather { font-family: 'Merriweather', serif !important; }</style><link id="all-fonts-link-font-bricolage" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-bricolage">.font-bricolage { font-family: 'Bricolage Grotesque', sans-serif !important; }</style><link id="all-fonts-link-font-jakarta" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap"><style id="all-fonts-style-font-jakarta">.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif !important; }</style><link id="all-fonts-link-font-manrope" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"><style id="all-fonts-style-font-manrope">.font-manrope { font-family: 'Manrope', sans-serif !important; }</style><link id="all-fonts-link-font-space-grotesk" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-space-grotesk">.font-space-grotesk { font-family: 'Space Grotesk', sans-serif !important; }</style><link id="all-fonts-link-font-work-sans" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;display=swap"><style id="all-fonts-style-font-work-sans">.font-work-sans { font-family: 'Work Sans', sans-serif !important; }</style><link id="all-fonts-link-font-pt-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&amp;display=swap"><style id="all-fonts-style-font-pt-serif">.font-pt-serif { font-family: 'PT Serif', serif !important; }</style><link id="all-fonts-link-font-geist-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-geist-mono">.font-geist-mono { font-family: 'Geist Mono', monospace !important; }</style><link id="all-fonts-link-font-space-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap"><style id="all-fonts-style-font-space-mono">.font-space-mono { font-family: 'Space Mono', monospace !important; }</style><link id="all-fonts-link-font-quicksand" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-quicksand">.font-quicksand { font-family: 'Quicksand', sans-serif !important; }</style><link id="all-fonts-link-font-nunito" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&amp;display=swap"><style id="all-fonts-style-font-nunito">.font-nunito { font-family: 'Nunito', sans-serif !important; }</style><link id="all-fonts-link-font-google-sans-flex" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-google-sans-flex">.font-google-sans-flex { font-family: 'Google Sans Flex', sans-serif !important; }</style><link id="all-fonts-link-font-oswald" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&amp;display=swap"><style id="all-fonts-style-font-oswald">.font-oswald { font-family: 'Oswald', sans-serif !important; }</style></head>
+
+<body class="bg-gradient-to-b from-black to-[#09112a] text-slate-900 min-h-screen flex flex-col">
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Background (component) added by Aura -->
+<div class="aura-background-component top-0 w-full h-screen -z-10 absolute invert-0 brightness-150 opacity-70 hue-rotate-15" data-alpha-mask="1" style="; mask-image: linear-gradient(to bottom, transparent, black 0%, black 1%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 0%, black 1%, transparent)"><div class="aura-background-component top-0 w-full -z-10 absolute h-full">
+  <div data-us-project="qpSlPSWA2bdkUAYztz8z" class="absolute w-full h-full left-0 top-0 -z-10"></div>
+  <script type="text/javascript">
+    !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
+  </script>
+</div></div>
+  <div id="wrapper" class="">
+    <div class="gradient-blur">
+      <div class="z-10"></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <style>
+      .gradient-blur {
+        position: fixed;
+        z-index: 30;
+        inset: 0 0 auto 0;
+        height: 12%;
+        pointer-events: none;
+      }
+
+      .gradient-blur>div,
+      .gradient-blur::before,
+      .gradient-blur::after {
+        position: absolute;
+        inset: 0;
+      }
+
+      .gradient-blur::before {
+        content: "";
+        z-index: 1;
+        backdrop-filter: blur(0.5px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(5, 5, 5, 1) 12.5%,
+            rgba(5, 5, 5, 1) 25%,
+            rgba(0, 0, 0, 0) 37.5%);
+      }
+
+      .gradient-blur>div:nth-of-type(1) {
+        z-index: 2;
+        backdrop-filter: blur(1px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 12.5%,
+            rgba(5, 5, 5, 1) 25%,
+            rgba(5, 5, 5, 1) 37.5%,
+            rgba(0, 0, 0, 0) 50%);
+      }
+
+      .gradient-blur>div:nth-of-type(2) {
+        z-index: 3;
+        backdrop-filter: blur(2px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 25%,
+            rgba(5, 5, 5, 1) 37.5%,
+            rgba(5, 5, 5, 1) 50%,
+            rgba(0, 0, 0, 0) 62.5%);
+      }
+
+      .gradient-blur>div:nth-of-type(3) {
+        z-index: 4;
+        backdrop-filter: blur(4px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 37.5%,
+            rgba(5, 5, 5, 1) 50%,
+            rgba(5, 5, 5, 1) 62.5%,
+            rgba(0, 0, 0, 0) 75%);
+      }
+
+      .gradient-blur>div:nth-of-type(4) {
+        z-index: 5;
+        backdrop-filter: blur(8px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(5, 5, 5, 1) 62.5%,
+            rgba(5, 5, 5, 1) 75%,
+            rgba(0, 0, 0, 0) 87.5%);
+      }
+
+      .gradient-blur>div:nth-of-type(5) {
+        z-index: 6;
+        backdrop-filter: blur(16px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 62.5%,
+            rgba(5, 5, 5, 1) 75%,
+            rgba(5, 5, 5, 1) 87.5%,
+            rgba(0, 0, 0, 0) 100%);
+      }
+
+      .gradient-blur>div:nth-of-type(6) {
+        z-index: 7;
+        backdrop-filter: blur(32px);
+        mask: linear-gradient(to top,
+            rgba(0, 0, 0, 0) 75%,
+            rgba(5, 5, 5, 1) 87.5%,
+            rgba(5, 5, 5, 1) 100%);
+      }
+
+      .gradient-blur::after {
+        content: "";
+        z-index: 8;
+        backdrop-filter: blur(64px);
+        mask: linear-gradient(to top, rgba(0, 0, 0, 0) 87.5%, rgba(5, 5, 5, 1) 100%);
+      }
+    </style>
+  </div>
+
+  <div id="mobile-menu" class="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl z-[40] transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center gap-8">
+    <a href="#" class="text-3xl text-[#E4E4E7] hover:text-white font-medium tracking-tight" style="">Solutions</a>
+    <a href="#" class="text-3xl text-[#E4E4E7] hover:text-white font-medium tracking-tight" style="">Research</a>
+    <a href="#" class="text-3xl text-[#E4E4E7] hover:text-white font-medium tracking-tight" style="">Company</a>
+  </div>
+
+  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent">
+    <div class="flex w-full justify-end">
+      <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
+        <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
+          <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
+            <defs>
+              <style>
+                .amp-logo-fill {
+                  fill: #fff;
+                }
+              </style>
+            </defs>
+            <path fill="none" d="M0,0h423.3c.1,0,.3.1.3.3v423.3H0V0h0Z"></path>
+            <path class="amp-logo-fill" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
+            <path class="amp-logo-fill" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z">
+            </path>
+          </svg>
+          <svg class="hidden md:block md:w-[220px] md:min-w-[220px] lg:w-[300px] lg:min-w-[280px] h-full object-contain" viewBox="0 0 681.89 196.35" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet" stroke-width="2" data-icon-replaced="true" style="width: 280px; height: 80px; color: rgb(228, 228, 231);">
+            <title>Ampere AI - Autonomous Voice Agents</title>
+            <defs>
+              <style>
+                .cls-1 {
+                  stroke: #fff;
+                  stroke-miterlimit: 10;
+                }
+
+                .cls-1,
+                .cls-2 {
+                  fill: #fff;
+                }
+
+                .cls-3 {
+                  fill: #00bee6;
+                }
+
+                .cls-4 {
+                  fill: #231f20;
+                }
+
+                @media (max-width: 767px) {
+                  .logo-wordmark {
+                    display: none;
+                  }
+                }
+              </style>
+            </defs>
+            <path class="cls-2" d="M89.98,13.08l73.55,177.45c1.46,3.52,4.89,5.81,8.7,5.81l509.66-.05V0L98.68.05c-6.71,0-11.27,6.82-8.7,13.03Z">
+            </path>
+            <path class="cls-1" d="M89.9,146.93L47.3,45.27C30.02,76.88-9.1,126.82,2.67,154.9c11.77,28.07,54.58,6.85,87.24-7.97Z"></path>
+            <g class="logo-wordmark">
+              <path class="cls-4" d="M300.55,119.17l17.13-44.88c.44-1.18,1.4-1.85,3.99-1.85s3.54.66,3.99,1.85l17.2,44.88c.15.44-1.18,1.55-2.88,1.62-1.4.15-2.73-.52-3.47-2.58l-5.02-12.99h-19.78l-5.09,13.07c-.66,2.14-2.07,2.66-3.32,2.51-1.62-.07-2.88-1.26-2.73-1.62ZM330.01,100.64l-8.42-22.44-8.49,22.44h16.91Z">
+              </path>
+              <path class="cls-4" d="M401.91,99.39v18.9c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.46c0-6.79-3.03-10.56-8.86-10.56-4.13,0-8.12,2.66-9.82,7.01v22c0,1.92-1.03,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.9c0-6.42-2.95-10.11-8.86-10.11-4.06,0-8.05,2.66-9.89,7.01v22c0,1.92-.96,2.51-2.29,2.51h-.66c-1.33,0-2.36-.59-2.36-2.51v-32.63c0-.15.89-.59,1.92-.59,1.62,0,3.1.81,3.25,4.36l.07,1.77c2.29-3.91,6.28-6.64,11.15-6.64,5.98,0,9.97,3.03,11.66,7.83,2.14-4.58,6.42-7.83,12.25-7.83,8.64,0,13.07,5.54,13.07,14.84Z">
+              </path>
+              <path class="cls-4" d="M445.45,102.86c0,11-6.87,18.53-16.39,18.53-6.42,0-10.85-3.54-12.7-7.38v18.31c0,1.85-.96,2.51-2.29,2.51h-.59c-1.4,0-2.36-.66-2.36-2.51v-46.66c0-.15.81-.59,1.84-.59,1.55,0,3.03.89,3.25,3.99,0,.89.07,2.07.07,3.03,2.58-4.58,6.79-7.53,12.92-7.53,9.23,0,16.24,7.31,16.24,18.31ZM440.21,102.93c0-8.19-5.09-13.88-11.96-13.88-5.91,0-9.97,3.4-11.96,8.49v7.82c0,6.5,5.32,11.52,11.81,11.52,7.23,0,12.11-5.61,12.11-13.95Z">
+              </path>
+              <path class="cls-4" d="M467.89,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.84,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM467.89,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
+              </path>
+              <path class="cls-4" d="M510.78,88.39c0,2.14-1.48,3.03-1.62,2.88-.89-.89-2.29-1.48-4.21-1.48-5.76,0-8.42,5.68-8.42,14.54v13.95c0,1.85-.96,2.51-2.29,2.51h-.59c-1.48,0-2.44-.59-2.44-2.51v-32.63c0-.15.81-.59,1.92-.59,1.48,0,2.81.74,3.1,3.54.07,1.25.15,2.51.15,3.84,1.4-5.32,4.65-7.9,9.15-7.9,3.17,0,5.24,1.55,5.24,3.84Z">
+              </path>
+              <path class="cls-4" d="M530.04,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.85,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM530.04,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
+              </path>
+              <path class="cls-4" d="M552.55,117.03c0-2.14,1.11-3.32,3.25-3.32h.66c2.21,0,3.25,1.18,3.25,3.32v.66c0,2.14-1.11,3.32-3.25,3.32h-.66c-2.14,0-3.25-1.18-3.25-3.32v-.66Z">
+              </path>
+              <path class="cls-4" d="M590.28,99.91h.81v-1.48c0-5.98-3.47-9.3-9.52-9.3-5.61,0-9.01,2.73-10.78,6.27-.15.07-3.25-.07-3.25-2.73,0-1.03.74-2.58,2.14-3.91,2.29-2.21,6.35-4.21,12.18-4.21,9.38,0,14.47,5.24,14.47,13.95v21.78c0,.22-.96.59-1.92.59-1.55,0-2.81-.74-3.1-3.4-.07-1.03-.15-2.14-.15-3.25-2.36,4.28-7.16,7.09-13.07,7.09-7.38,0-11.96-3.84-11.96-9.82,0-7.97,7.53-11.37,24.14-11.59ZM591.09,103.38l-1.25.07c-12.85.3-18.38,2.51-18.38,7.9,0,3.69,2.95,5.98,7.68,5.98,6.79,0,11.96-4.58,11.96-10.56v-3.4Z">
+              </path>
+              <path class="cls-4" d="M608.58,70.89c2.14,0,3.4,1.18,3.4,3.4s-1.33,3.32-3.47,3.32-3.32-1.18-3.32-3.32,1.25-3.4,3.4-3.4ZM605.85,87.65c0-1.92.96-2.58,2.36-2.58h.59c1.4,0,2.36.59,2.36,2.58v30.64c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-30.64Z">
+              </path>
+              <path class="cls-3" d="M192.77,125.01c0-5.17,4.87-8.64,11.29-9.74-.89-.74-1.4-1.85-1.4-3.32s.81-2.81,1.99-3.84c-5.68-1.77-9.3-6.27-9.3-11.81,0-7.46,6.42-13.44,15.21-13.44,3.1,0,6.05.81,8.49,2.14l1.92-3.4c1.18-1.92,2.36-2.81,4.21-2.81,2.73,0,3.99,2.95,3.77,3.1l-6.05,6.27c1.92,2.21,3.1,4.95,3.1,7.9,0,7.46-6.35,12.92-15.36,12.92h-1.33c-.3.44-.37.81-.37,1.25,0,2.29,3.4,2.51,9.6,4.06,5.02,1.33,10.33,3.84,10.33,9.67,0,6.72-6.87,10.85-18.6,10.85s-17.5-3.17-17.5-9.82ZM221.79,124.2c0-2.81-3.32-3.84-7.23-4.8l-3.69-.89c-6.05.37-11.07,2.51-11.07,6.27,0,3.17,3.62,4.95,10.63,4.95s11.37-1.99,11.37-5.54ZM218.91,96.15c0-4.72-3.4-8.05-8.42-8.05s-8.19,3.25-8.19,8.05,3.47,8.05,8.34,8.05,8.27-3.25,8.27-8.05Z">
+              </path>
+              <path class="cls-3" d="M246.81,82.86c10.26,0,17.05,7.23,17.05,17.86v.59c0,1.55-.52,2.14-2.21,2.14h-26.21c0,.44.07.89.15,1.33,1.03,5.83,5.68,9.67,11.96,9.67s9.3-2.73,11.15-5.91c.15-.15,3.84.52,3.84,3.62,0,1.55-1.33,3.54-3.91,5.17s-6.35,2.88-11.22,2.88c-11.22,0-18.75-7.46-18.75-18.53s7.68-18.82,18.16-18.82ZM246.73,88.4c-5.83,0-10.33,4.21-11.22,10.11h21.26c-.37-6.13-4.13-10.11-10.04-10.11Z">
+              </path>
+              <path class="cls-3" d="M270.58,108.48v-18.75h-2.58c-2.29,0-3.17-.96-3.17-2.73v-.52c0-1.77.89-2.73,3.17-2.73h2.58v-5.46c0-2.51,1.25-3.47,3.25-3.47h.74c1.92,0,3.17.74,3.17,3.47v5.46h8.05c2.29,0,3.1.89,3.1,2.66v.52c0,1.85-.89,2.81-3.17,2.81h-8.05v17.94c0,4.43,1.25,6.57,4.72,6.57,2.29,0,3.91-1.03,5.02-2.51.22-.22,2.07.81,2.07,3.1,0,1.18-.52,2.29-1.55,3.25-1.4,1.25-3.69,2.14-6.72,2.14-7.31,0-10.63-4.06-10.63-11.74Z">
+              </path>
+            </g>
+          </svg>
+        </a>
+        <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
+          <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
+            <div class="hidden lg:flex bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl p-1 shadow-inner gap-1 items-center">
+              <a href="#" class="transition-all text-xs font-medium text-[#0F172A] bg-white border border-[#E4E4E7] rounded-lg py-2 px-5 shadow-sm">Solutions</a>
+              <a href="#" class="hover:text-[#0F172A] hover:bg-white transition-all text-xs font-medium text-[#3F3F46] rounded-lg py-2 px-5">Research</a>
+              <a href="#" class="hover:text-[#0F172A] hover:bg-white transition-all text-xs font-medium text-[#3F3F46] rounded-lg py-2 px-5">Insights</a>
+            </div>
+
+            <div class="flex items-center gap-3 ml-auto">
+              <button class="group inline-flex overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.35)] rounded-full p-[2px] relative items-center justify-center">
+              <span class="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_70%,#2563eb_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+              <span class="absolute inset-0 rounded-full bg-gradient-to-b from-slate-900 via-slate-950 to-black"></span>
+              <span class="flex items-center justify-center gap-2 uppercase text-xs font-semibold tracking-[0.25em] text-slate-200 w-full h-full rounded-full pt-2.5 pr-6 pb-2.5 pl-6 relative bg-gradient-to-b from-slate-900 via-slate-950 to-black border border-blue-500/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+                <span class="z-10 font-geist relative">Request Demo</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transition-transform duration-300 group-hover:translate-x-0.5">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </span>
+            </button>
+              <button onclick="toggleMenu(this)" class="amp-hamburger h-10 w-10 sm:h-11 sm:w-11 border border-[#E4E4E7]/70 bg-white/80 lg:hidden" data-role="toggle">
+              <span class="amp-hamburger-line"></span>
+              <span class="amp-hamburger-line"></span>
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </nav>
+
+  <section class="flex flex-col lg:flex-row lg:px-12 lg:gap-20 z-10 border-white/5 border-b pt-32 pr-6 pb-20 pl-6 relative">
+    <div class="flex-1 flex flex-col z-10 justify-center">
+      <div class="flex lg:mt-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate mt-4 mb-10 gap-x-4 gap-y-4 items-center">
+        <span class="uppercase text-xs text-[#A1A1AA] tracking-widest font-mono">V-AMP 2.0</span>
+        <div class="h-px w-12 bg-gradient-to-r from-white/20 to-transparent"></div>
+        <h1 class="uppercase text-xs text-[#A1A1AA] tracking-widest font-mono">Autonomous Voice Agents</h1>
+      </div>
+      <div class="inline-block bg-transparent">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+          @property --gradient-angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+          }
+
+          @property --gradient-angle-offset {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+          }
+
+          @property --gradient-percent {
+            syntax: "<percentage>";
+            initial-value: 20%;
+            inherits: false;
+          }
+
+          @property --gradient-shine {
+            syntax: "<color>";
+            initial-value: #8484ff;
+            inherits: false;
+          }
+
+          .shiny-cta {
+            --gradient-angle: 0deg;
+            --gradient-angle-offset: 0deg;
+            --gradient-percent: 20%;
+            --gradient-shine: #8484ff;
+            --shadow-size: 2px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.125rem;
+            line-height: 1.2;
+            font-weight: 500;
+            color: #ffffff;
+            background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
+            border: 2px solid transparent;
+            box-shadow: inset 0 0 0 1px #1a1818;
+            outline: none;
+            transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+            cursor: pointer;
+            isolation: isolate;
+            outline-offset: 4px;
+            font-family: 'Inter', 'Helvetica Neue', sans-serif;
+            z-index: 0;
+            animation: border-spin 2.5s linear infinite;
+          }
+
+          @keyframes border-spin {
+            to {
+              --gradient-angle: 360deg;
+            }
+          }
+
+          .shiny-cta:active {
+            transform: translateY(1px);
+          }
+
+          .shiny-cta::before {
+            content: '';
+            pointer-events: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            --size: calc(100% - 6px);
+            --position: 2px;
+            --space: 4px;
+            width: var(--size);
+            height: var(--size);
+            background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
+            background-size: var(--space) var(--space);
+            background-repeat: space;
+            mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
+            border-radius: inherit;
+            opacity: 0.4;
+            pointer-events: none;
+          }
+
+          .shiny-cta::after {
+            content: '';
+            pointer-events: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
+            mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+            opacity: 0.6;
+            animation: shimmer 4s linear infinite;
+            animation-play-state: running;
+          }
+
+          .shiny-cta span {
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+          }
+
+          .shiny-cta span::before {
+            content: '';
+            pointer-events: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            --size: calc(100% + 1rem);
+            width: var(--size);
+            height: var(--size);
+            box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
+            opacity: 0;
+            border-radius: inherit;
+            transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
+            animation: breathe 4.5s linear infinite;
+          }
+
+          @keyframes shimmer {
+            to {
+              transform: translate(-50%, -50%) rotate(360deg);
+            }
+          }
+
+          @keyframes breathe {
+
+            0%,
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+              transform: translate(-50%, -50%) scale(1.20);
+            }
+          }
+        </style>
+
+      </div>
+
+      <span class="leading-[1.05] animate-on-scroll [animation:animationIn_0.8s_ease-out_0.1s_both] animate text-5xl font-medium text-[#E4E4E7] tracking-tight font-geist mr-9 ml-5 lg:text-7xl lg:ml-9">AI Voice</span>
+      <h1 class="leading-none tracking-tight text-white select-none">
+
+      </h1>
+
+      <span class="block text-[16vw] sm:text-[12vw] md:text-[10vw] lg:text-[9vw] xl:text-[8vw] 2xl:text-[6.5vw] leading-[0.9] font-extrabold tracking-[-0.04em] mt-0 mb-4" style="overflow: hidden">
+  <span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">A</span><span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0.1s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">G</span><span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0.2s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">E</span><span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0.3s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">N</span><span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0.2s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">T</span><span style="display: inline-block; animation: letterSlideIn 0.8s ease-out forwards; animation-delay: 0.1s; transform: translateY(-100%); opacity: 0; clip-path: inset(0 0 100% 0)" class="text-slate-800/80 font-geist">S</span>
+      <style>
+        @keyframes letterSlideIn {
+          0% {
+            transform: translateY(-100%);
+            opacity: 0;
+            clip-path: inset(0 0 100% 0);
+          }
+
+          50% {
+            opacity: 0.5;
+            clip-path: inset(0 0 50% 0);
+          }
+
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+            clip-path: inset(0 0 0% 0);
+          }
+        }
+      </style>
+      </span>
+      <p class="leading-relaxed animate-on-scroll [animation:animationIn_0.8s_ease-out_0.15s_both] animate text-lg font-light text-[#A1A1AA] font-geist text-left max-w-md mb-12 pl-1">
+        A new era of customer service—driven by unparalleled intelligence, genuine empathy, and real-time contextual
+        awareness. Deployed for you in 48 hours.</p>
+
+      <div class="grid grid-cols-3 mt-auto gap-x-4 gap-y-4">
+        <div class="group cursor-pointer animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both] animate">
+          <div class="aspect-square rounded-xl overflow-hidden mb-3 relative border border-white/10 bg-[#111]">
+            <div class="absolute inset-0 bg-blue-500/10 mix-blend-overlay"></div>
+            <div class="group relative flex flex-col aspect-[1/1] w-full justify-between overflow-hidden rounded-1xl bg-center bg-cover text-white ring-1 ring-cyan-400/10 transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 bg-[url(https://dev.getampere.ai/assets/video/video-thumbnail.jpg?w=800&amp;q=80)]" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=&gt;{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
+              <!-- Background video + overlay (edge-to-edge, ignores padding) -->
+              <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+                <video src="https://dev.getampere.ai/assets/video/animated-voice-agent-speech-v2.mp4" preload="metadata" muted="" playsinline="" webkit-playsinline="" loop="" class="h-full w-full object-cover opacity-0 scale-105 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"></video>
+                <div class="absolute inset-0 bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                </div>
+              </div>
+
+              <!-- Content wrapper (this is where padding belongs) -->
+              <div class="group flex flex-col aspect-[1/1] overflow-hidden bg-center transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 text-white w-full bg-[url(https://dev.getampere.ai/assets/voice-model-line-drawing.jpg?w=800&amp;q=80)] bg-cover ring-cyan-400/10 ring-1 rounded-1xl relative justify-between" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=&gt;{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
+                <!-- Background video + overlay (edge-to-edge, ignores padding) -->
+                <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+                  <video src="https://dev.getampere.ai/assets/video/animated-voice-agent-speech.mp4" preload="metadata" muted="" playsinline="" webkit-playsinline="" loop="" class="h-full w-full object-cover opacity-0 scale-105 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"></video>
+                  <div class="absolute inset-0 bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  </div>
+                </div>
+
+                <!-- Content wrapper (this is where padding belongs) -->
+                <div class="flex flex-col sm:p-10 z-10 h-full pt-8 pr-8 pb-8 pl-8 relative justify-end">
+                  <div class="animate-in slide-in-from-top duration-700 delay-400 space-y-0">
+                    <div class="flex items-center justify-between">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="width: 32px; height: 32px;" class="lucide lucide-wind transition-transform group-hover:scale-110 w-[32px] h-[32px] text-slate-950" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" data-mingcute="voice-line" data-icon-set="mingcute" data-icon-replaced="true" stroke-width="1.5">
+                        <g fill="none" class="">
+                          <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z">
+                          </path>
+                          <path fill="#a5f3fc" d="M12 3a1 1 0 0 1 .993.883L13 4v16a1 1 0 0 1-1.993.117L11 20V4a1 1 0 0 1 1-1M8 6a1 1 0 0 1 1 1v10a1 1 0 1 1-2 0V7a1 1 0 0 1 1-1m8 0a1 1 0 0 1 1 1v10a1 1 0 1 1-2 0V7a1 1 0 0 1 1-1M4 9a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0v-4a1 1 0 0 1 1-1m16 0a1 1 0 0 1 .993.883L21 10v4a1 1 0 0 1-1.993.117L19 14v-4a1 1 0 0 1 1-1" class=""></path>
+                        </g>
+                      </svg>
+
+                      <span class="text-xs font-medium text-slate-950 font-mono bg-slate-50/20 rounded-full pt-1.5 pr-3 pb-1.5 pl-3">V-Amp 2.0</span>
+                    </div>
+
+                    <div class="animate-in slide-in-from-left duration-700 delay-500">
+
+
+                    </div>
+
+                    <div class="relative animate-in slide-in-from-right duration-700 delay-600">
+                      <div class="absolute right-0 top-0 text-right">
+
+
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <h2 class="text-slate-50 font-geist">Meet Emily</h2>
+          <p class="hidden md:block text-xs font-medium text-slate-50">Introducing Emily Powered by V-AMP 2.0 — a
+  production-grade model with deep <i class="">contextual awareness</i> and <i class="">persistent memory</i>
+  across conversations.</p>
+          <p class="text-[10px] uppercase text-[#A1A1AA] tracking-wider font-mono mt-3">V-Amp 2.0 - AI Voice Model</p>
+          <div class="inline-block hidden md:block bg-transparent">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+              @property --gradient-angle {
+                syntax: "<angle>";
+                initial-value: 0deg;
+                inherits: false;
+              }
+
+              @property --gradient-angle-offset {
+                syntax: "<angle>";
+                initial-value: 0deg;
+                inherits: false;
+              }
+
+              @property --gradient-percent {
+                syntax: "<percentage>";
+                initial-value: 20%;
+                inherits: false;
+              }
+
+              @property --gradient-shine {
+                syntax: "<color>";
+                initial-value: #8484ff;
+                inherits: false;
+              }
+
+              .shiny-cta {
+                --gradient-angle: 0deg;
+                --gradient-angle-offset: 0deg;
+                --gradient-percent: 20%;
+                --gradient-shine: #8484ff;
+                --shadow-size: 2px;
+                position: relative;
+                overflow: hidden;
+                border-radius: 9999px;
+                padding: 1.25rem 2.5rem;
+                font-size: 1.125rem;
+                line-height: 1.2;
+                font-weight: 500;
+                color: #ffffff;
+                background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
+                border: 2px solid transparent;
+                box-shadow: inset 0 0 0 1px #1a1818;
+                outline: none;
+                transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+                cursor: pointer;
+                isolation: isolate;
+                outline-offset: 4px;
+                font-family: 'Inter', 'Helvetica Neue', sans-serif;
+                z-index: 0;
+                animation: border-spin 2.5s linear infinite;
+              }
+
+              @keyframes border-spin {
+                to {
+                  --gradient-angle: 360deg;
+                }
+              }
+
+              .shiny-cta:active {
+                transform: translateY(1px);
+              }
+
+              .shiny-cta::before {
+                content: '';
+                pointer-events: none;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 0;
+                --size: calc(100% - 6px);
+                --position: 2px;
+                --space: 4px;
+                width: var(--size);
+                height: var(--size);
+                background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
+                background-size: var(--space) var(--space);
+                background-repeat: space;
+                mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
+                border-radius: inherit;
+                opacity: 0.4;
+                pointer-events: none;
+              }
+
+              .shiny-cta::after {
+                content: '';
+                pointer-events: none;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1;
+                width: 100%;
+                aspect-ratio: 1;
+                background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
+                mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+                opacity: 0.6;
+                animation: shimmer 4s linear infinite;
+                animation-play-state: running;
+              }
+
+              .shiny-cta span {
+                position: relative;
+                z-index: 2;
+                display: inline-block;
+              }
+
+              .shiny-cta span::before {
+                content: '';
+                pointer-events: none;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: -1;
+                --size: calc(100% + 1rem);
+                width: var(--size);
+                height: var(--size);
+                box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
+                opacity: 0;
+                border-radius: inherit;
+                transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
+                animation: breathe 4.5s linear infinite;
+              }
+
+              @keyframes shimmer {
+                to {
+                  transform: translate(-50%, -50%) rotate(360deg);
+                }
+              }
+
+              @keyframes breathe {
+
+                0%,
+                100% {
+                  transform: translate(-50%, -50%) scale(1);
+                }
+
+                50% {
+                  transform: translate(-50%, -50%) scale(1.20);
+                }
+              }
+            </style>
+            <button class="shiny-cta focus:outline-none mt-4">
+    <span class="text-sm">Demo Voice AI</span>
+  </button>
+          </div>
+        </div>
+
+        <div class="group cursor-pointer animate-on-scroll [animation:animationIn_0.8s_ease-out_0.25s_both] animate">
+          <div class="aspect-square rounded-xl overflow-hidden mb-3 relative border border-white/10 bg-[#111]">
+            <div class="absolute inset-0 bg-purple-500/10 mix-blend-overlay"></div>
+            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/91eb3e35-da41-4e14-936d-223af7b74ef5_800w.webp" alt="Network" class="transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100 opacity-60 w-full h-full object-cover">
+          </div>
+          <h2 class="text-slate-50 font-geist">Amp Labs</h2>
+          <p class="text-xs text-slate-50 tracking-wider font-geist">Learn more about our agentic model, AI Cloud infrastructure, and the breakthrough technology that powers them.</p>
+        </div>
+
+        <!-- New 3rd Card: Swarm Intelligence -->
+
+
+      </div>
+    </div>
+
+    <div class="lg:w-[50%] flex flex-col lg:mt-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.15s_both] animate font-geist mt-12 relative">
+      <div class="overflow-hidden group font-geist w-full h-[600px] border-white/10 border rounded-3xl relative top-12 shadow-2xl">
+
+        <!-- Digital Graph Container -->
+        <div class="absolute inset-0 bg-[#050505] w-full h-full z-0">
+    <!-- Grid Pattern Background -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 40px 40px;">
+    </div>
+
+    <!-- Key Metric Overlay -->
+    <div class="absolute top-8 left-8 flex flex-col gap-3 z-30 pointer-events-none">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-4">
+            <div class="flex flex-col gap-1">
+                <span class="text-5xl font-semibold text-white tracking-tighter font-geist leading-none">2,000</span>
+                <div class="text-xs font-medium text-white/40 font-geist uppercase tracking-widest">Monthly Call Volume
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+                <span class="text-sm font-medium text-green-500 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full font-geist text-center">100% AI Answered</span>
+                <span class="text-sm font-medium text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full font-geist text-center">20% AI Close Rate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Canvas -->
+    <div class="pt-32 pr-10 pb-40 pl-10 absolute top-0 right-0 bottom-0 left-0 z-10">
+        <div class="w-full h-full relative perspective-midrange group">
+            <div class="absolute inset-0 bg-gradient-to-t from-blue-500/10 to-transparent opacity-20 transform rotate-x-15 translate-y-12 scale-95 blur-xl pointer-events-none z-0"></div>
+            <div class="transition-all duration-700 ease-out group-hover:rotate-x-0 group-hover:scale-100 origin-center w-full h-full relative drop-shadow-2xl scale-95 rotate-x-15 z-10">
+                <canvas class="w-full h-full" style="display: block; box-sizing: border-box; height: 314.7px; width: 918.5px" width="918" height="314" id="canvas-3d-ai-graph-fixed"></canvas>
+                <script>
+                    (function() {
+            const initChart = () => {
+                const canvas = document.getElementById('canvas-3d-ai-graph-fixed');
+                if (!canvas) return;
+                
+                // Ensure Chart.js is loaded
+                if (typeof Chart === 'undefined') {
+                    setTimeout(initChart, 100);
+                    return;
+                }
+
+                const ctx = canvas.getContext('2d');
+                // Destroy existing chart if initialized
+                if (canvas.chart) canvas.chart.destroy();
+
+                const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient1.addColorStop(0, 'rgba(34, 197, 94, 0.6)');
+                gradient1.addColorStop(1, 'rgba(34, 197, 94, 0.05)');
+
+                const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient2.addColorStop(0, 'rgba(56, 189, 248, 0.6)');
+                gradient2.addColorStop(1, 'rgba(56, 189, 248, 0.05)');
+
+                canvas.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [
+                            {
+                                label: 'Incoming',
+                                data: [150, 190, 150, 110, 160, 150, 100],
+                                borderColor: '#22c55e',
+                                backgroundColor: gradient1,
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#22c55e',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                yAxisID: 'volume'
+                            },
+                            {
+                                label: 'Close Rate',
+                                data: [22, 24, 21, 18, 25, 23, 20],
+                                borderColor: '#38bdf8',
+                                backgroundColor: gradient2,
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#38bdf8',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                yAxisID: 'closeRate'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(9, 9, 11, 0.95)',
+                                titleColor: '#fff',
+                                bodyColor: '#A1A1AA',
+                                titleFont: { family: 'Geist', size: 13, weight: '600' },
+                                bodyFont: { family: 'Geist', size: 12 },
+                                padding: 12,
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                boxPadding: 4,
+                                usePointStyle: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.parsed.y;
+                                        const label = context.dataset.label || '';
+                                        if (context.dataset.yAxisID === 'closeRate') {
+                                            return ` ${label}: ${value}%`;
+                                        }
+                                        return ` ${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+                                ticks: {
+                                    color: 'rgba(161, 161, 170, 0.7)',
+                                    font: { family: 'Geist', size: 11 },
+                                    padding: 12
+                                },
+                                border: { display: false },
+                                offset: true
+                            },
+                            volume: {
+                                type: 'linear',
+                                grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+                                ticks: {
+                                    color: 'rgba(161, 161, 170, 0.7)',
+                                    font: { family: 'Geist', size: 10 },
+                                    padding: 12
+                                },
+                                border: { display: false },
+                                min: 0,
+                                suggestedMax: 220,
+                                title: {
+                                    display: true,
+                                    text: 'Calls per day',
+                                    color: 'rgba(255,255,255,0.7)',
+                                    font: { family: 'Geist', size: 12, weight: '500' },
+                                    padding: { bottom: 8 }
+                                }
+                            },
+                            closeRate: {
+                                type: 'linear',
+                                position: 'right',
+                                grid: { drawOnChartArea: false, drawBorder: false },
+                                ticks: {
+                                    color: 'rgba(161, 161, 170, 0.7)',
+                                    font: { family: 'Geist', size: 10 },
+                                    callback: (value) => `${value}%`,
+                                    padding: 12
+                                },
+                                min: 0,
+                                max: 30,
+                                title: {
+                                    display: true,
+                                    text: 'AI Close Rate',
+                                    color: '#38bdf8',
+                                    font: { family: 'Geist', size: 12, weight: '500' },
+                                    padding: { bottom: 8 }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            };
+
+            if (document.readyState === 'complete') {
+                initChart();
+            } else {
+                window.addEventListener('load', initChart);
+            }
+        })();
+                </script>
+            </div>
+            <script>
+                (function() {
+        const init3DChart = () => {
+            const canvas = document.getElementById('canvas-3d-ai-graph');
+            if (!canvas) return;
+            
+            if (typeof Chart === 'undefined') {
+                setTimeout(init3DChart, 100);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            
+            // Rich gradients for 3D depth effect
+            const gradient1 = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient1.addColorStop(0, 'rgba(59, 130, 246, 0.7)');
+            gradient1.addColorStop(0.5, 'rgba(59, 130, 246, 0.2)');
+            gradient1.addColorStop(1, 'rgba(59, 130, 246, 0)');
+            
+            const gradient2 = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient2.addColorStop(0, 'rgba(139, 92, 246, 0.7)');
+            gradient2.addColorStop(0.5, 'rgba(139, 92, 246, 0.2)');
+            gradient2.addColorStop(1, 'rgba(139, 92, 246, 0)');
+
+            // Grid gradient
+            const gridColor = 'rgba(255, 255, 255, 0.05)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        {
+                            label: 'AI Processing',
+                            data: [35, 55, 45, 75, 60, 85, 70],
+                            borderColor: '#8b5cf6',
+                            backgroundColor: gradient2,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#8b5cf6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            order: 1
+                        },
+                        {
+                            label: 'System Load',
+                            data: [20, 40, 35, 50, 45, 60, 50],
+                            borderColor: '#3b82f6',
+                            backgroundColor: gradient1,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            order: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(9, 9, 11, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#A1A1AA',
+                            titleFont: { family: 'Geist', size: 13, weight: '600' },
+                            bodyFont: { family: 'Geist', size: 12 },
+                            padding: 12,
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            boxPadding: 4,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: { 
+                                color: gridColor,
+                                drawBorder: false,
+                                tickLength: 0
+                            },
+                            ticks: {
+                                color: 'rgba(161, 161, 170, 0.6)',
+                                font: { family: 'Geist', size: 11 },
+                                padding: 10
+                            },
+                            border: { display: false }
+                        },
+                        y: {
+                            display: true,
+                            grid: { 
+                                color: gridColor,
+                                drawBorder: false 
+                            },
+                            ticks: { display: false },
+                            border: { display: false },
+                            beginAtZero: true,
+                            suggestedMax: 100
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        };
+        
+        if (document.readyState === 'complete') init3DChart();
+        else window.addEventListener('load', init3DChart);
+        setTimeout(init3DChart, 100);
+    })();
+            </script>
+        </div>
+    </div>
+</div>
+
+        <!-- Gradient Overlay for Bottom Text Readability -->
+        <div class="bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent absolute inset-x-0 bottom-0 h-2/3 pointer-events-none z-5">
+        </div>
+
+        <!-- Top Right Status Badge -->
+        <div class="hidden md:flex absolute top-8 right-8 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-xl gap-3 items-center z-30">
+          <div class="flex -space-x-2">
+            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          </div>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-white/80">System Operational</span>
+        </div>
+
+        <!-- Bottom Content -->
+        <div class="pt-10 pr-10 pb-10 pl-10 absolute right-0 bottom-0 left-0 z-30">
+          <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div class="">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-[10px] uppercase font-semibold text-blue-200 tracking-widest font-geist bg-slate-950/20 border-blue-500/30 border rounded pt-1 pr-2 pb-1 pl-2 backdrop-blur-md">Case Study</span>
+              </div>
+              <h2 class="text-3xl font-medium text-[#E4E4E7] tracking-tight font-geist mb-2">Service Industry Client
+              </h2>
+              <p class="text-sm font-light text-[#A1A1AA] font-geist max-w-[280px]">Pesticon transformed its customer service with an AI voice agent. Today, 100% of all calls are answered using AI powered with V-AMP — no humans needed.</p>
+            </div>
+
+            <button class="shiny-cta focus:outline-none w-full sm:w-auto lg:mt-4">
+        <span class="text-sm">Go to Case Study</span>
+      </button>
+          </div>
+        </div>
+
+        <!-- Chart.js Implementation -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+          (function() {
+        const initChart = () => {
+            const ctx = document.getElementById('canvas-aura-emjbw7gzb246u5fyi');
+            if (!ctx || typeof Chart === 'undefined') return setTimeout(initChart, 100);
+            
+            // Gradient Setup for Dataset 1
+            const gradient1 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            gradient1.addColorStop(0, 'rgba(34, 197, 94, 0.8)'); // Green-500
+            gradient1.addColorStop(1, 'rgba(34, 197, 94, 0.1)');
+
+            // Gradient Setup for Dataset 2
+            const gradient2 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            gradient2.addColorStop(0, 'rgba(59, 130, 246, 0.8)'); // Blue-500
+            gradient2.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Total Calls',
+                            data: [3100, 3400, 2900, 3100],
+                            backgroundColor: gradient1,
+                            hoverBackgroundColor: '#22c55e',
+                            borderColor: '#22c55e',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8,
+                            order: 2
+                        },
+                        {
+                            label: 'Closed Deals',
+                            data: [620, 680, 580, 620], // 20%
+                            backgroundColor: gradient2,
+                            hoverBackgroundColor: '#3b82f6',
+                            borderColor: '#3b82f6',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                color: 'rgba(255,255,255,0.6)',
+                                font: { family: 'Geist', size: 10 },
+                                boxWidth: 8,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(24, 24, 27, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#A1A1AA',
+                            titleFont: { family: 'Geist', size: 12, weight: '600' },
+                            bodyFont: { family: 'Geist', size: 12 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            displayColors: true,
+                            boxPadding: 4
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.03)' },
+                            ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'Geist', size: 10 } },
+                            border: { display: false }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'Geist', size: 10 } },
+                            border: { display: false }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        };
+        
+        // Initialize when ready
+        if (document.readyState === 'complete') {
+            initChart();
+        } else {
+            window.addEventListener('load', initChart);
+            setTimeout(initChart, 500); // Fallback
+        }
+    })();
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <section class="sm:p-8 bg-slate-200 border-zinc-800 border rounded-1xl mt-8 pt-6 pr-6 pb-6 pl-6" style="position: relative; overflow: hidden;">
+    <!-- Background dividers -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-zinc-600 to-transparent">
+      </div>
+      <div class="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-zinc-600 to-transparent">
+      </div>
+      <div class="absolute top-0 bottom-0 left-1/3 w-px bg-gradient-to-b from-transparent via-zinc-600 to-transparent">
+      </div>
+      <div class="absolute top-0 bottom-0 right-1/3 w-px bg-gradient-to-b from-transparent via-zinc-600 to-transparent">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 items-start relative z-10">
+      <!-- Left: Heading + copy -->
+      <div class="flex flex-col min-h-full justify-between">
+        <div class="">
+          <span class="text-sm font-normal text-slate-600 font-geist" style="">Next Generation Technology</span>
+          <h2 class="text-[44px] sm:text-6xl lg:text-7xl leading-[0.9] font-medium text-slate-900 tracking-tighter font-geist mt-2">
+            Introducing our AI-powered <span class="font-bold">Workforce</span></h2>
+
+          <!-- subtle plus markers with divider -->
+          <div class="mt-8 relative">
+            <div class="absolute inset-0 flex items-center">
+            </div>
+            <div class="hidden sm:grid grid-cols-3 gap-6 text-zinc-600 px-4 relative">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-4 w-4">
+                  <path d="M5 12h14" class=""></path>
+                  <path d="M12 5v14" class=""></path>
+                </svg>
+                <span class="text-base font-normal font-geist">Advanced Intelligence</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-4 w-4">
+                  <path d="M5 12h14" class=""></path>
+                  <path d="M12 5v14" class=""></path>
+                </svg>
+                <span class="text-base font-normal font-geist">Seamless Workflow</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-4 w-4">
+                  <path d="M5 12h14" class=""></path>
+                  <path d="M12 5v14" class=""></path>
+                </svg>
+                <span class="text-base font-normal font-geist">Infinite Scale</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div class="">
+            <p class="text-sm font-medium text-slate-950 tracking-tight font-geist">Experience the future today
+            </p>
+            <p class="text-4xl text-slate-600 font-geist mt-1">Discover how our intelligent AI agents revolutionize
+              productivity and transform business operations at every scale.</p>
+            <div class="inline-block bg-transparent">
+              <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+                @property --gradient-angle {
+                  syntax: "<angle>";
+                  initial-value: 0deg;
+                  inherits: false;
+                }
+
+                @property --gradient-angle-offset {
+                  syntax: "<angle>";
+                  initial-value: 0deg;
+                  inherits: false;
+                }
+
+                @property --gradient-percent {
+                  syntax: "<percentage>";
+                  initial-value: 20%;
+                  inherits: false;
+                }
+
+                @property --gradient-shine {
+                  syntax: "<color>";
+                  initial-value: #8484ff;
+                  inherits: false;
+                }
+
+                .shiny-cta {
+                  --gradient-angle: 0deg;
+                  --gradient-angle-offset: 0deg;
+                  --gradient-percent: 20%;
+                  --gradient-shine: #8484ff;
+                  --shadow-size: 2px;
+                  position: relative;
+                  overflow: hidden;
+                  border-radius: 9999px;
+                  padding: 1.25rem 2.5rem;
+                  font-size: 1.125rem;
+                  line-height: 1.2;
+                  font-weight: 500;
+                  color: #ffffff;
+                  background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
+                  border: 2px solid transparent;
+                  box-shadow: inset 0 0 0 1px #1a1818;
+                  outline: none;
+                  transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+                  cursor: pointer;
+                  isolation: isolate;
+                  outline-offset: 4px;
+                  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+                  z-index: 0;
+                  animation: border-spin 2.5s linear infinite;
+                }
+
+                @keyframes border-spin {
+                  to {
+                    --gradient-angle: 360deg;
+                  }
+                }
+
+                .shiny-cta:active {
+                  transform: translateY(1px);
+                }
+
+                .shiny-cta::before {
+                  content: '';
+                  pointer-events: none;
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+                  z-index: 0;
+                  --size: calc(100% - 6px);
+                  --position: 2px;
+                  --space: 4px;
+                  width: var(--size);
+                  height: var(--size);
+                  background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
+                  background-size: var(--space) var(--space);
+                  background-repeat: space;
+                  mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
+                  border-radius: inherit;
+                  opacity: 0.4;
+                  pointer-events: none;
+                }
+
+                .shiny-cta::after {
+                  content: '';
+                  pointer-events: none;
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+                  z-index: 1;
+                  width: 100%;
+                  aspect-ratio: 1;
+                  background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
+                  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+                  opacity: 0.6;
+                  animation: shimmer 4s linear infinite;
+                  animation-play-state: running;
+                }
+
+                .shiny-cta span {
+                  position: relative;
+                  z-index: 2;
+                  display: inline-block;
+                }
+
+                .shiny-cta span::before {
+                  content: '';
+                  pointer-events: none;
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+                  z-index: -1;
+                  --size: calc(100% + 1rem);
+                  width: var(--size);
+                  height: var(--size);
+                  box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
+                  opacity: 0;
+                  border-radius: inherit;
+                  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
+                  animation: breathe 4.5s linear infinite;
+                }
+
+                @keyframes shimmer {
+                  to {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                  }
+                }
+
+                @keyframes breathe {
+
+                  0%,
+                  100% {
+                    transform: translate(-50%, -50%) scale(1);
+                  }
+
+                  50% {
+                    transform: translate(-50%, -50%) scale(1.20);
+                  }
+                }
+              </style>
+              <button class="shiny-cta focus:outline-none font-geist my-4">
+    <span class="text-sm font-geist">Learn about Workforce</span>
+  </button>
+            </div>
+          </div>
+
+          <!-- Vertical divider -->
+          <div class="relative">
+            <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-zinc-700 to-transparent sm:block hidden">
+            </div>
+            <p class="leading-relaxed sm:text-right sm:pl-8 text-xl text-slate-900 font-geist pl-8">Our breakthrough
+              technology merges
+              <span class="font-bold text-slate-700 font-geist" style="">artificial intelligence excellence</span> with
+              enterprise-grade solutions that evolve with your small business needs.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Team grid -->
+      <div class="grid grid-cols-2 gap-4 relative">
+        <!-- AI Agent 1 -->
+        <article class="relative overflow-hidden lg:h-[400px] h-[200px] bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-800 rounded-2xl">
+          <div class="absolute inset-0 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/6d09277c-88d3-4681-8a06-18307469ce9f_800w.jpg)] bg-cover hover:scale-105 transition-transform duration-500" style="">
+          </div>
+          <div class="absolute top-3 left-3">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100/90 text-zinc-900 border border-zinc-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="brain" class="lucide lucide-brain h-3.5 w-3.5"><path d="M12 18V5" class=""></path><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4" class=""></path><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5" class=""></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77" class=""></path><path d="M18 18a4 4 0 0 0 2-7.464" class=""></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517" class=""></path><path d="M6 18a4 4 0 0 1-2-7.464" class=""></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77" class=""></path></svg>
+            </span>
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="px-2 py-1 rounded-md bg-zinc-900/60 backdrop-blur text-[11px] text-zinc-300 font-normal border border-zinc-800 font-geist" style="">Deep Learning</span>
+          </div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <p class="text-white text-lg font-medium tracking-tight leading-tight font-geist" style="">CogniCore.AI</p>
+          </div>
+        </article>
+
+        <!-- AI Agent 2 -->
+        <article class="relative overflow-hidden lg:h-[400px] h-[200px] bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-800 rounded-2xl">
+          <div class="absolute inset-0 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e60f1bd-bde0-4ec4-8c23-24383a8b650a_800w.jpg)] bg-cover hover:scale-105 transition-transform duration-500" style="">
+          </div>
+          <div class="absolute top-3 left-3">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100/90 text-zinc-900 border border-zinc-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap h-3.5 w-3.5"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" class=""></path></svg>
+            </span>
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="px-2 py-1 rounded-md bg-zinc-900/60 backdrop-blur text-[11px] text-zinc-300 font-normal border border-zinc-800 font-geist" style="">Process Engine</span>
+          </div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <p class="text-white text-lg font-medium tracking-tight leading-tight font-geist" style="">FlowMaster</p>
+          </div>
+        </article>
+
+        <!-- AI Agent 3 -->
+        <article class="relative overflow-hidden lg:h-[400px] h-[200px] bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-800 rounded-2xl">
+          <div class="absolute inset-0 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/ac4a631c-975f-4482-9cef-2a1f99a48178_800w.jpg)] bg-cover hover:scale-105 transition-transform duration-500" style="">
+          </div>
+          <div class="absolute top-3 left-3">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100/90 text-zinc-900 border border-zinc-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-up" class="lucide lucide-trending-up h-3.5 w-3.5"><path d="M16 7h6v6" class=""></path><path d="m22 7-8.5 8.5-5-5L2 17" class=""></path></svg>
+            </span>
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="px-2 py-1 rounded-md bg-zinc-900/60 backdrop-blur text-[11px] text-zinc-300 font-normal border border-zinc-800 font-geist" style="">Data Intelligence</span>
+          </div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <p class="text-white text-lg font-medium tracking-tight leading-tight font-geist" style="">DataMind Pro</p>
+          </div>
+        </article>
+
+        <!-- AI Agent 4 -->
+        <article class="relative overflow-hidden lg:h-[400px] h-[200px] bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-800 rounded-2xl">
+          <div class="absolute inset-0 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0129262d-84f8-4262-b816-efd622faf4e8_800w.jpg)] bg-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="absolute top-3 left-3">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100/90 text-zinc-900 border border-zinc-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-check" class="lucide lucide-shield-check h-3.5 w-3.5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" class=""></path><path d="m9 12 2 2 4-4" class=""></path></svg>
+            </span>
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="px-2 py-1 rounded-md bg-zinc-900/60 backdrop-blur text-[11px] text-zinc-300 font-normal border border-zinc-800 font-geist" style="">Cyber Defense</span>
+          </div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <p class="text-white text-lg font-medium tracking-tight leading-tight font-geist" style="">SecureGuard AI
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+  <section class="lg:px-12 text-[#18181B] bg-[#F4F4F5] pt-24 pr-6 pb-24 pl-6"></section><b class="">
+
+    <section class="overflow-hidden flex flex-col text-[#E4E4E7] bg-[#0A0A0A] pt-32 pr-0 pb-32 pl-0 relative justify-center border-t border-white/5">
+      <div class="lg:px-12 flex mb-12 pr-6 pl-6 items-end justify-between">
+        <div class="animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both]">
+          <span class="uppercase block flex items-center gap-2 text-xs font-bold text-cyan-500 tracking-widest mb-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> The V-Amp Engine</span>
+          <h2 class="lg:text-4xl text-3xl font-medium text-slate-50 tracking-tight font-geist">Active Deployments</h2>
+        </div>
+
+        <div class="flex gap-2 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.1s_both]">
+          <button onclick="rotateCarousel('prev')" class="w-10 h-10 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center text-[#E4E4E7]">
+            <iconify-icon icon="solar:alt-arrow-left-bold-duotone" class="text-lg"></iconify-icon>
+          </button>
+          <button onclick="rotateCarousel('next')" class="w-10 h-10 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center text-[#E4E4E7]">
+            <iconify-icon icon="solar:alt-arrow-right-bold-duotone" class="text-lg"></iconify-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex overflow-visible animate-on-scroll [animation:animationIn_0.8s_ease-out_0.15s_both] w-full h-[500px] relative items-center justify-center" id="carousel-container">
+        <div class="carousel-card absolute w-[300px] lg:w-[400px] h-[450px] bg-[#121212] rounded-2xl shadow-2xl opacity-40 scale-90 -translate-x-[60%] z-10 overflow-hidden cursor-pointer border border-white/5" id="card-left" onclick="rotateCarousel('prev')">
+          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/e479cd92-3772-4be2-b51d-187b9c01f221_800w.webp" class="w-full h-full object-cover opacity-60 mix-blend-luminosity" alt="Plan">
+          <div class="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black to-transparent">
+            <p class="text-2xl text-white font-serif-italic">Data Ingestion</p>
+          </div>
+        </div>
+
+        <div class="carousel-card absolute w-[300px] lg:w-[400px] h-[450px] bg-[#121212] rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] scale-100 z-20 overflow-hidden border border-white/10" id="card-center">
+          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/7f78131e-65e9-49b2-aa1f-ccc33e28df9f_800w.webp" class="w-full h-full object-cover opacity-90" alt="Plan">
+
+          <div class="absolute bottom-0 left-0 p-8 w-full bg-black/80 backdrop-blur-md border-t border-white/10">
+            <div class="flex justify-between items-center">
+              <div class="">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1 block">Phase II</span>
+                <h3 class="text-2xl font-medium text-white tracking-tight font-geist">Model Training</h3>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/10">
+                <iconify-icon icon="solar:cpu-bold-duotone" class="text-white"></iconify-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-card absolute w-[300px] lg:w-[400px] h-[450px] bg-[#121212] rounded-2xl shadow-2xl opacity-40 scale-90 translate-x-[60%] z-10 overflow-hidden cursor-pointer border border-white/5" id="card-right" onclick="rotateCarousel('next')">
+          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0bd4da16-0bd4-4a47-a860-e20148b111c5_800w.webp" class="opacity-60 mix-blend-luminosity w-full h-full object-cover" alt="Plan">
+          <div class="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black to-transparent">
+            <p class="text-2xl text-white font-serif-italic">Deployment</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-center gap-2 mt-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
+        <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+      </div>
+    </section>
+
+    <section class="lg:px-12 text-[#18181B] bg-white border-b border-gray-100 pt-24 pr-6 pb-24 pl-6">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+        <div class="animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both]">
+          <span class="text-xs font-bold uppercase tracking-widest text-[#71717A] mb-4 flex items-center gap-2">
+            <iconify-icon icon="solar:chart-square-bold-duotone" class="text-lg text-[#18181B]"></iconify-icon>
+            Performance Metrics
+          </span>
+          <h2 class="text-4xl lg:text-5xl mb-6 text-[#18181B] leading-[1.05] font-medium tracking-tight">
+            Quantifiable <span class="font-serif-italic font-normal text-gray-400">superiority</span>
+          </h2>
+          <p class="text-[#52525B] text-lg leading-relaxed font-light mb-12 max-w-md">
+            We don't just build models; we impact the bottom line. Our algorithms are rigorously tested against legacy systems.
+          </p>
+
+          <div class="w-full">
+            <div class="flex justify-between text-[10px] font-bold text-[#A1A1AA] uppercase tracking-widest mb-6 border-b border-gray-100 pb-2">
+              <span>Sector</span>
+              <span>Optimization</span>
+            </div>
+
+            <div class="group flex items-center justify-between py-5 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-default -mx-2 px-2 rounded-lg">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-3 text-[#18181B] font-semibold text-lg">
+                  <iconify-icon icon="solar:wallet-money-bold-duotone" class="text-xl text-gray-400"></iconify-icon>
+                  <span>FinTech</span>
+                </div>
+                <span class="text-xs text-[#71717A]">Fraud detection latency</span>
+              </div>
+              <span class="font-mono text-sm text-green-600 bg-green-50 px-2 py-1 rounded">-400ms</span>
+            </div>
+
+            <div class="group flex items-center justify-between py-5 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-default -mx-2 px-2 rounded-lg">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-3 text-[#18181B] font-semibold text-lg">
+                  <iconify-icon icon="solar:bolt-bold-duotone" class="text-xl text-gray-400"></iconify-icon>
+                  <span>Energy</span>
+                </div>
+                <span class="text-xs text-[#71717A]">Grid load balancing efficiency</span>
+              </div>
+              <span class="font-mono text-sm text-green-600 bg-green-50 px-2 py-1 rounded">+18%</span>
+            </div>
+
+            <div class="group flex items-center justify-between py-5 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-default -mx-2 px-2 rounded-lg">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-3 text-[#18181B] font-semibold text-lg">
+                  <iconify-icon icon="solar:delivery-bold-duotone" class="text-xl text-gray-400"></iconify-icon>
+                  <span>Logistics</span>
+                </div>
+                <span class="text-xs text-[#71717A]">Route planning cost reduction</span>
+              </div>
+              <span class="font-mono text-sm text-green-600 bg-green-50 px-2 py-1 rounded">-22%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#FAFAFA] rounded-[2rem] overflow-hidden border border-gray-200 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] animate-on-scroll [animation:animationIn_0.8s_ease-out_0.1s_both]">
+          <div class="h-72 w-full overflow-hidden relative group">
+            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/dac9be07-4103-4e79-a807-a3e40f1945bf_1600w.webp" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Chip">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#18181B]/80 to-transparent"></div>
+            <div class="absolute bottom-6 left-8 text-white">
+              <span class="text-[10px] font-bold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full mb-3 inline-block border border-white/20">Breakthrough</span>
+              <h3 class="text-3xl font-medium tracking-tight">Project Titan</h3>
+            </div>
+          </div>
+
+          <div class="p-8 lg:p-10">
+            <div class="mb-10">
+              <h4 class="text-xl text-[#18181B] mb-3 font-semibold">Generative Design Core</h4>
+              <p class="text-[#52525B] text-sm leading-relaxed">
+                Our flagship architectural AI reduced blueprint generation time from weeks to minutes, maintaining structural compliance across 40 jurisdictions.
+              </p>
+            </div>
+
+            <div class="space-y-8">
+              <div class="flex group items-center justify-between">
+                <div class="flex gap-4 gap-x-4 gap-y-4 items-center">
+                  <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#18181B] group-hover:bg-[#18181B] group-hover:text-white transition-colors">
+                    <iconify-icon icon="solar:clock-circle-bold-duotone" class="text-lg"></iconify-icon>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-[#18181B]">Time Saved</span>
+                    <span class="text-xs text-[#71717A]">Per project cycle</span>
+                  </div>
+                </div>
+                <span class="text-3xl text-[#18181B] font-medium tracking-tight">320h</span>
+              </div><div class="flex group items-center justify-between">
+                <div class="flex gap-4 gap-x-4 gap-y-4 items-center">
+                  <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#18181B] group-hover:bg-[#18181B] group-hover:text-white transition-colors">
+                    <iconify-icon icon="solar:clock-circle-bold-duotone" class="text-lg"></iconify-icon>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-[#18181B]">Time Saved</span>
+                    <span class="text-xs text-[#71717A]">Per project cycle</span>
+                  </div>
+                </div>
+                <span class="text-3xl text-[#18181B] font-medium tracking-tight">320h</span>
+              </div>
+
+              </div></div></div></div></section>
+    <script>
+      function toggleMenu(trigger) {
+        const menu = document.getElementById("mobile-menu");
+        if (!menu) return;
+        menu.classList.toggle("translate-x-full");
+        const nowOpen = !menu.classList.contains("translate-x-full");
+        const button =
+          trigger?.classList?.contains("amp-hamburger") ?
+            trigger :
+            document.querySelector(".amp-hamburger[data-role='toggle']");
+        if (button) {
+          button.classList.toggle("is-open", nowOpen);
+        }
+      }
+    </script>
+
+</b>
+
+
+
+
+</body></html>

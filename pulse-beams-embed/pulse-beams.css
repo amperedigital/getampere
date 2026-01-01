@@ -1,0 +1,134 @@
+/* PulseBeams embed styles */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Geist:wght@400;500;600&display=swap');
+
+.pulse-beams,
+[data-pulse-beams] {
+  font-family: 'Geist', 'Space Grotesk', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.pulse-beams {
+  --pulse-bg: #020617;
+  --pulse-border: rgba(255, 255, 255, 0.1);
+  --pulse-shadow: 0px 25px 60px rgba(15, 23, 42, 0.55);
+  position: relative;
+  width: 100%;
+  min-height: 340px;
+  border-radius: 32px;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.08), transparent 60%),
+    var(--pulse-bg);
+  overflow: hidden;
+  box-shadow: var(--pulse-shadow);
+  border: 1px solid var(--pulse-border);
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.pulse-beams__canvas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pulse-beams__slot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-beams__button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(240px, 30vw, 320px);
+  height: clamp(80px, 12vw, 120px);
+  border-radius: 999px;
+  padding: 2px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow: hidden;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.45);
+}
+
+.pulse-beams__button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(75% 100% at 50% 0%, rgba(56, 189, 248, 0.5), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.pulse-beams__button:hover::before,
+.pulse-beams__button:focus-visible::before {
+  opacity: 1;
+}
+
+.pulse-beams__button-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #040814;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1;
+}
+
+.pulse-beams__button-label {
+  font-size: clamp(1rem, 2vw, 1.75rem);
+  font-weight: 600;
+  background: linear-gradient(90deg, #e4e4e7 0%, #6b7280 60%, #e4e4e7 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.pulse-beams__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.7);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.pulse-beams__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .pulse-beams {
+    border-radius: 24px;
+    padding: 32px 12px;
+  }
+}
