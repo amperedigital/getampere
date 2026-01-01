@@ -2696,4 +2696,33 @@ font-family: 'Oswald', sans-serif !important;
 
 
 
-</body></html>
+</body>
+    <script>
+      (function () {
+        function ensureVisible(modal) {
+          if (!modal) return;
+          modal.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4', 'scale-[0.98]');
+          modal.style.opacity = '1';
+          modal.style.pointerEvents = 'auto';
+          modal.style.transform = 'translateY(0) scale(1)';
+          modal.setAttribute('aria-hidden', 'false');
+          const panel = modal.querySelector('.amp-modal__panel');
+          if (panel) {
+            panel.classList.remove('opacity-0', 'translate-y-4');
+            panel.style.opacity = '1';
+            panel.style.transform = 'translateY(0)';
+          }
+        }
+
+        window.addEventListener('amp-modal-open', function (ev) {
+          const modal = ev?.detail?.modal || document.querySelector('[data-amp-modal]');
+          ensureVisible(modal);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          const m = document.querySelector('[data-amp-modal].amp-modal--visible');
+          if (m) ensureVisible(m);
+        });
+      })();
+    </script>
+</html>
