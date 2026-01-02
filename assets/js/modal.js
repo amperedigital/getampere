@@ -30,9 +30,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const lenisHelpers = {
     lock(active) {
       if (!lenisInstance) return;
-      const method = active ? lenisInstance.stop : lenisInstance.start;
-      if (typeof method === "function") {
-        method.call(lenisInstance);
+      if (active) {
+        if (typeof lenisInstance.stop === "function") {
+          lenisInstance.stop();
+        }
+      } else {
+        if (typeof lenisInstance.start === "function") {
+          lenisInstance.start();
+        }
+        // Ensure scroll is responsive after unlock
+        if (typeof lenisInstance.resize === "function") {
+          lenisInstance.resize();
+        }
       }
     },
     refresh() {
