@@ -30,14 +30,13 @@ const initModal = () => {
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Just use CSS to lock the page, don't use Lenis or event prevention
-        // This allows modal content to scroll normally
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
+        // Force CSS to lock the page - use !important to override Tailwind
+        document.documentElement.style.setProperty("overflow", "hidden", "important");
+        document.body.style.setProperty("overflow", "hidden", "important");
       } else {
         // Unlock
-        document.documentElement.style.overflow = "";
-        document.body.style.overflow = "";
+        document.documentElement.style.removeProperty("overflow");
+        document.body.style.removeProperty("overflow");
         
         // Resume Lenis
         if (lenisInstance && typeof lenisInstance.start === "function") {
