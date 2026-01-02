@@ -93,7 +93,8 @@ const initModal = () => {
       closeTimer = null;
 
       if (lockScroll) {
-        lenisHelpers.lock(false);
+        // Use CSS-only scroll unlocking
+        // Skip lenis.start() so we don't interfere with modal scroll elements
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
       } else {
@@ -126,7 +127,8 @@ const initModal = () => {
       modal.querySelectorAll("[data-modal-scroll]").forEach((element) => (element.scrollTop = 0));
 
       if (lockScroll) {
-        lenisHelpers.lock(true);
+        // Use CSS-only scroll locking to preserve inner scrollable elements
+        // Skip lenis.stop() so modal content with data-modal-scroll can still scroll
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
       } else {
