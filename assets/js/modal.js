@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         modal.setAttribute("open", "true");
       }
+      modal.setAttribute("aria-hidden", "false");
     }
 
     function hideDialog() {
@@ -77,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         modal.removeAttribute("open");
       }
+      modal.setAttribute("aria-hidden", "true");
     }
 
     function finalizeClose() {
