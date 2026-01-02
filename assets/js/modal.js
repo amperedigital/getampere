@@ -27,21 +27,83 @@ const initModal = () => {
   const lenisInstance =
     typeof window !== "undefined" && window.lenis ? window.lenis : null;
 
+  const lenisInstance =
+    typeof window !== "undefined" && window.lenis ? window.lenis : null;
+
+  let wheelHandler = null;
+  let touchHandler = null;
+
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Stop Lenis to prevent page scroll
-        if (lenisInstance && typeof lenisInstance.stop === "function") {
-          lenisInstance.stop();
-        }
+        // Don't use lenis.stop() - it blocks all scrolling including modal content
+        // Instead, prevent scroll on document but allow on scrollable children
         
-        // Force CSS to lock the page with !important
+        wheelHandler = (e) => {
+          // Allow scroll if the target has actual scrollable content
+          let el = e.target;
+          let hasScroll = false;
+          
+          while (el && el !== document.documentElement) {
+            const style = window.getComputedStyle(el);
+            const canScroll = (style.overflowY === "auto" || style.overflowY === "scroll") && 
+                             el.scrollHeight > el.clientHeight;
+            if (canScroll) {
+              hasScroll = true;
+              break;
+            }
+            el = el.parentElement;
+          }
+          
+          // Only prevent if no scrollable parent found
+          if (!hasScroll) {
+            e.preventDefault();
+          }
+        };
+        
+        touchHandler = (e) => {
+          // Allow scroll if the target has actual scrollable content
+          let el = e.target;
+          let hasScroll = false;
+          
+          while (el && el !== document.documentElement) {
+            const style = window.getComputedStyle(el);
+            const canScroll = (style.overflowY === "auto" || style.overflowY === "scroll") && 
+                             el.scrollHeight > el.clientHeight;
+            if (canScroll) {
+              hasScroll = true;
+              break;
+            }
+            el = el.parentElement;
+          }
+          
+          // Only prevent if no scrollable parent found
+          if (!hasScroll) {
+            e.preventDefault();
+          }
+        };
+        
+        // Use non-passive listeners to allow preventDefault
+        document.addEventListener("wheel", wheelHandler, { passive: false });
+        document.addEventListener("touchmove", touchHandler, { passive: false });
+        
+        // Also use CSS as fallback
         document.documentElement.style.setProperty("overflow", "hidden", "important");
         document.body.style.setProperty("overflow", "hidden", "important");
       } else {
         // Unlock CSS
         document.documentElement.style.removeProperty("overflow");
         document.body.style.removeProperty("overflow");
+        
+        // Remove event handlers
+        if (wheelHandler) {
+          document.removeEventListener("wheel", wheelHandler);
+          wheelHandler = null;
+        }
+        if (touchHandler) {
+          document.removeEventListener("touchmove", touchHandler);
+          touchHandler = null;
+        }
         
         // Resume Lenis
         if (lenisInstance && typeof lenisInstance.start === "function") {
