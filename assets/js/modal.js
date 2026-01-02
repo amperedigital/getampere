@@ -174,11 +174,15 @@ const initModal = () => {
       if (event.target.closest("[data-modal-close]")) {
         event.preventDefault();
         closeModal();
+        return;
       }
-      // Close modal when clicking on backdrop (the dark overlay area)
-      // The backdrop is a child with class amp-modal-backdrop
-      const backdrop = modal.querySelector(".amp-modal-backdrop");
-      if (event.target === backdrop) {
+      
+      // Close modal when clicking outside the modal content (on the backdrop/overlay)
+      // Find the main panel content container (the one with pointer-events-auto and rounded)
+      const panel = modal.querySelector(".pointer-events-auto");
+      
+      // If click target is not within the panel, it's on the backdrop/overlay - close modal
+      if (panel && !panel.contains(event.target)) {
         event.preventDefault();
         closeModal();
       }
