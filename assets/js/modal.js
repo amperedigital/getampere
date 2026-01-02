@@ -34,51 +34,41 @@ const initModal = () => {
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Don't use lenis.stop() - it blocks all scrolling including modal content
-        // Instead, prevent scroll on document but allow on scrollable children
+        // Prevent page scroll by blocking wheel/touch on document
+        // but allow scroll on elements inside the modal
         
         wheelHandler = (e) => {
-          // Allow scroll if the target has actual scrollable content
+          // Walk up from target to find if any parent is scrollable
           let el = e.target;
-          let hasScroll = false;
-          
-          while (el && el !== document.documentElement) {
+          while (el && el !== document.body && el !== document.documentElement) {
             const style = window.getComputedStyle(el);
-            const canScroll = (style.overflowY === "auto" || style.overflowY === "scroll") && 
-                             el.scrollHeight > el.clientHeight;
-            if (canScroll) {
-              hasScroll = true;
-              break;
+            // If element can overflow and has scroll, allow it
+            if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
+              // Element is configured for scroll, allow the event
+              return;
             }
             el = el.parentElement;
           }
           
-          // Only prevent if no scrollable parent found
-          if (!hasScroll) {
-            e.preventDefault();
-          }
+          // No scrollable parent found - prevent page scroll
+          e.preventDefault();
         };
         
         touchHandler = (e) => {
-          // Allow scroll if the target has actual scrollable content
+          // Walk up from target to find if any parent is scrollable
           let el = e.target;
-          let hasScroll = false;
-          
-          while (el && el !== document.documentElement) {
+          while (el && el !== document.body && el !== document.documentElement) {
             const style = window.getComputedStyle(el);
-            const canScroll = (style.overflowY === "auto" || style.overflowY === "scroll") && 
-                             el.scrollHeight > el.clientHeight;
-            if (canScroll) {
-              hasScroll = true;
-              break;
+            // If element can overflow and has scroll, allow it
+            if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
+              // Element is configured for scroll, allow the event
+              return;
             }
             el = el.parentElement;
           }
           
-          // Only prevent if no scrollable parent found
-          if (!hasScroll) {
-            e.preventDefault();
-          }
+          // No scrollable parent found - prevent page scroll
+          e.preventDefault();
         };
         
         // Use non-passive listeners to allow preventDefault
