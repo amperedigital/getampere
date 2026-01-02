@@ -43,14 +43,14 @@ const initModal = () => {
           // Check if the target element or a parent can scroll
           let el = e.target;
           while (el && el !== document.body) {
+            // Check for data-modal-scroll attribute first (highest priority)
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return; // Allow scroll on modal content
+            }
             // Check if element has overflow-y and can actually scroll
             const style = window.getComputedStyle(el);
             if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
               return; // Allow scroll on this element
-            }
-            // Check for data-modal-scroll attribute
-            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
-              return; // Allow scroll on modal content
             }
             el = el.parentElement;
           }
@@ -62,14 +62,14 @@ const initModal = () => {
           // Check if the target element or a parent can scroll
           let el = e.target;
           while (el && el !== document.body) {
+            // Check for data-modal-scroll attribute first (highest priority)
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return; // Allow scroll on modal content
+            }
             // Check if element has overflow-y and can actually scroll
             const style = window.getComputedStyle(el);
             if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
               return; // Allow scroll on this element
-            }
-            // Check for data-modal-scroll attribute
-            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
-              return; // Allow scroll on modal content
             }
             el = el.parentElement;
           }
