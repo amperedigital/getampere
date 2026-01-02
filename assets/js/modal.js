@@ -46,6 +46,11 @@ const initModal = () => {
           // Walk up from target to find if any parent is scrollable
           let el = e.target;
           while (el && el !== document.body && el !== document.documentElement) {
+            // Explicitly allow elements with data-modal-scroll attribute
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return;
+            }
+
             const style = window.getComputedStyle(el);
             // If element can overflow and has scroll, allow it
             if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
@@ -63,6 +68,11 @@ const initModal = () => {
           // Walk up from target to find if any parent is scrollable
           let el = e.target;
           while (el && el !== document.body && el !== document.documentElement) {
+            // Explicitly allow elements with data-modal-scroll attribute
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return;
+            }
+
             const style = window.getComputedStyle(el);
             // If element can overflow and has scroll, allow it
             if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
