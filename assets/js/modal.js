@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+const initModal = () => {
   const namespace = (window.ampere ??= {});
   const modalSystem = (namespace.modal ??= {
     instances: {},
@@ -192,4 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
       history.replaceState({}, "", next);
     }
   }
-});
+};
+
+// Initialize immediately if DOM is ready, or wait for DOMContentLoaded
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initModal);
+} else {
+  initModal();
+}
