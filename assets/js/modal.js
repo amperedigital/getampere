@@ -142,10 +142,11 @@ const initModal = () => {
       showDialog();
 
       // Add visible class synchronously - don't delay with RAF
+      console.log("[Modal] BEFORE adding class - classList:", Array.from(modal.classList));
       modal.classList.add("amp-modal--visible");
-      console.log("[Modal] Added amp-modal--visible class, classList now:", modal.className);
+      console.log("[Modal] AFTER adding class - classList:", Array.from(modal.classList), "contains visible:", modal.classList.contains("amp-modal--visible"));
       const computed = window.getComputedStyle(modal);
-      console.log("[Modal] After adding class - computed display:", computed.display, "pointerEvents:", computed.pointerEvents);
+      console.log("[Modal] Computed after class - display:", computed.display, "pointerEvents:", computed.pointerEvents);
 
       modal
         .querySelectorAll("[data-modal-scroll]")
