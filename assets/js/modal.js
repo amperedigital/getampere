@@ -175,8 +175,10 @@ const initModal = () => {
         event.preventDefault();
         closeModal();
       }
-      // Close modal when clicking on backdrop
-      if (event.target.classList.contains("amp-modal-backdrop")) {
+      // Close modal when clicking on backdrop (the dark overlay area)
+      // The backdrop is a child with class amp-modal-backdrop
+      const backdrop = modal.querySelector(".amp-modal-backdrop");
+      if (event.target === backdrop) {
         event.preventDefault();
         closeModal();
       }
