@@ -128,7 +128,12 @@ const initModal = () => {
 
     function openModal() {
       console.log("[Modal] openModal called for:", modalId, "lockScroll:", lockScroll);
-      if (modal.open) return;
+      // For divs, modal.open is undefined, so check for the visible class instead
+      const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
+      if (isOpen) {
+        console.log("[Modal] Modal already open, skipping");
+        return;
+      }
       isClosing = false;
 
       lastFocusedElement =
@@ -138,6 +143,9 @@ const initModal = () => {
 
       window.requestAnimationFrame(() => {
         modal.classList.add("amp-modal--visible");
+        console.log("[Modal] Added amp-modal--visible class, classList now:", modal.className);
+        const computed = window.getComputedStyle(modal);
+        console.log("[Modal] After adding class - computed display:", computed.display, "pointerEvents:", computed.pointerEvents);
       });
 
       modal
@@ -160,8 +168,13 @@ const initModal = () => {
     }
 
     function closeModal() {
-      console.log("[Modal] closeModal called for:", modalId);
-      if (!modal.open || isClosing) return;
+      console.log("[Modal] closeModal called for:", modalId, "isClosing:", isClosing, "has visible class:", modal.classList.contains("amp-modal--visible"));
+      // For divs, modal.open is undefined, so check for the visible class instead
+      const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
+      if (!isOpen || isClosing) {
+        console.log("[Modal] Close blocked - isOpen:", isOpen, "isClosing:", isClosing);
+        return;
+      }
       isClosing = true;
 
       modal.classList.remove("amp-modal--visible");
