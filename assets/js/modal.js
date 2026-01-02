@@ -38,7 +38,6 @@ const initModal = () => {
         if (typeof lenisInstance.start === "function") {
           lenisInstance.start();
         }
-        // Ensure scroll is responsive after unlock
         if (typeof lenisInstance.resize === "function") {
           lenisInstance.resize();
         }
@@ -55,20 +54,17 @@ const initModal = () => {
     if (!modal || modal.dataset.scriptInitialized === "true") return;
 
     const modalId = modal.getAttribute("data-modal-target") || modal.id;
-    if (!modalId) {
-      console.warn("[Modal] Missing modal identifier", modal);
-      return;
-    }
+    if (!modalId) return;
 
     modal.dataset.scriptInitialized = "true";
 
     const lockScroll = modal.hasAttribute("data-modal-lock-scroll");
-    const transitionDuration =
-      Number(modal.dataset.modalDuration || 320) || 320;
+    const transitionDuration = Number(modal.dataset.modalDuration || 320) || 320;
 
     let lastFocusedElement = null;
     let isClosing = false;
     let closeTimer = null;
+    let escapeHandler = null;
 
     function showDialog() {
       if (modal.open) return;
@@ -98,7 +94,6 @@ const initModal = () => {
 
       if (lockScroll) {
         lenisHelpers.lock(false);
-        // Backup: remove CSS scroll lock
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
       } else {
@@ -109,49 +104,54 @@ const initModal = () => {
         lastFocusedElement.focus({ preventScroll: true });
       }
 
+      if (escapeHandler) {
+        document.removeEventListener("keydown", escapeHandler);
+      }
+
       window.dispatchEvent(new CustomEvent("amp-modal-close", { detail: { id: modalId, modal } }));
     }
 
     function openModal() {
-      // For divs, modal.open is undefined, so check for the visible class instead
       const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
-      if (isOpen) {
-        return;
-      }
+      if (isOpen) return;
+      
       isClosing = false;
 
       lastFocusedElement =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
       showDialog();
-
-      // Add visible class synchronously - don't delay with RAF
       modal.classList.add("amp-modal--visible");
 
-      modal
-        .querySelectorAll("[data-modal-scroll]")
-        .forEach((element) => (element.scrollTop = 0));
+      modal.querySelectorAll("[data-modal-scroll]").forEach((element) => (element.scrollTop = 0));
 
       if (lockScroll) {
         lenisHelpers.lock(true);
-        // Backup: apply CSS scroll lock
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
       } else {
         lenisHelpers.refresh();
       }
 
+      // Setup escape key handler for this modal
+      if (!escapeHandler) {
+        escapeHandler = (event) => {
+          if (event.key === "Escape" && modal.classList.contains("amp-modal--visible")) {
+            event.preventDefault();
+            closeModal();
+          }
+        };
+      }
+      document.addEventListener("keydown", escapeHandler);
+
       window.dispatchEvent(new CustomEvent("amp-modal-open", { detail: { id: modalId, modal } }));
     }
 
     function closeModal() {
-      // For divs, modal.open is undefined, so check for the visible class instead
       const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
-      if (!isOpen || isClosing) {
-        return;
-      }
+      if (!isOpen || isClosing) return;
+      
       isClosing = true;
-
       modal.classList.remove("amp-modal--visible");
 
       if (closeTimer) {
@@ -170,42 +170,21 @@ const initModal = () => {
       closeModal();
     });
 
-    // Close modal on Escape key press
-    const escapeHandler = (event) => {
-      if (event.key === "Escape" && modal.classList.contains("amp-modal--visible")) {
-        event.preventDefault();
-        closeModal();
-      }
-    };
-
     modal.addEventListener("click", (event) => {
+      // Close on close button click
       if (event.target.closest("[data-modal-close]")) {
         event.preventDefault();
         closeModal();
         return;
       }
-      
-      // Close modal when clicking directly on the modal container (not on any child)
-      // This catches clicks on the backdrop/overlay area
+
+      // Close on backdrop click (clicking on the modal container itself, not content)
       if (event.target === modal) {
         event.preventDefault();
         closeModal();
         return;
       }
     });
-
-    // Attach escape handler when modal opens, remove when closes
-    const openModalWrapper = openModal;
-    openModal = function() {
-      openModalWrapper();
-      document.addEventListener("keydown", escapeHandler);
-    };
-
-    const closeModalWrapper = closeModal;
-    closeModal = function() {
-      closeModalWrapper();
-      document.removeEventListener("keydown", escapeHandler);
-    };
 
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
   }
@@ -237,7 +216,6 @@ const initModal = () => {
   }
 };
 
-// Initialize immediately if DOM is ready, or wait for DOMContentLoaded
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initModal);
 } else {
