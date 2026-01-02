@@ -30,11 +30,16 @@ const initModal = () => {
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Force CSS to lock the page - use !important to override Tailwind
+        // Stop Lenis to prevent page scroll
+        if (lenisInstance && typeof lenisInstance.stop === "function") {
+          lenisInstance.stop();
+        }
+        
+        // Force CSS to lock the page with !important
         document.documentElement.style.setProperty("overflow", "hidden", "important");
         document.body.style.setProperty("overflow", "hidden", "important");
       } else {
-        // Unlock
+        // Unlock CSS
         document.documentElement.style.removeProperty("overflow");
         document.body.style.removeProperty("overflow");
         
