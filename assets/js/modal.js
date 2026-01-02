@@ -43,18 +43,16 @@ const initModal = () => {
         // but allow scroll on elements inside the modal
         
         wheelHandler = (e) => {
-          // Walk up from target to find if any parent is scrollable
+          // Check if target is within a scrollable modal element
+          if (e.target.closest && e.target.closest('[data-modal-scroll]')) {
+            return;
+          }
+
+          // Fallback: Walk up from target to find if any parent is scrollable
           let el = e.target;
           while (el && el !== document.body && el !== document.documentElement) {
-            // Explicitly allow elements with data-modal-scroll attribute
-            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
-              return;
-            }
-
             const style = window.getComputedStyle(el);
-            // If element can overflow and has scroll, allow it
             if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
-              // Element is configured for scroll, allow the event
               return;
             }
             el = el.parentElement;
@@ -65,18 +63,16 @@ const initModal = () => {
         };
         
         touchHandler = (e) => {
-          // Walk up from target to find if any parent is scrollable
+          // Check if target is within a scrollable modal element
+          if (e.target.closest && e.target.closest('[data-modal-scroll]')) {
+            return;
+          }
+
+          // Fallback: Walk up from target to find if any parent is scrollable
           let el = e.target;
           while (el && el !== document.body && el !== document.documentElement) {
-            // Explicitly allow elements with data-modal-scroll attribute
-            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
-              return;
-            }
-
             const style = window.getComputedStyle(el);
-            // If element can overflow and has scroll, allow it
             if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
-              // Element is configured for scroll, allow the event
               return;
             }
             el = el.parentElement;
