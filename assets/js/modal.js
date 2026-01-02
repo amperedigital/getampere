@@ -27,9 +27,6 @@ const initModal = () => {
   const lenisInstance =
     typeof window !== "undefined" && window.lenis ? window.lenis : null;
 
-  const lenisInstance =
-    typeof window !== "undefined" && window.lenis ? window.lenis : null;
-
   let wheelHandler = null;
   let touchHandler = null;
 
