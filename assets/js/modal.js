@@ -1,5 +1,4 @@
 const initModal = () => {
-  console.log("[Modal] initModal() called, document.readyState:", document.readyState);
   const namespace = (window.ampere ??= {});
   const modalSystem = (namespace.modal ??= {
     instances: {},
@@ -30,18 +29,12 @@ const initModal = () => {
 
   const lenisHelpers = {
     lock(active) {
-      console.log("[Modal] lenisHelpers.lock(" + active + ") called, lenisInstance:", !!lenisInstance);
-      if (!lenisInstance) {
-        console.warn("[Modal] lenisInstance not available!");
-        return;
-      }
+      if (!lenisInstance) return;
       if (active) {
-        console.log("[Modal] Calling lenis.stop()");
         if (typeof lenisInstance.stop === "function") {
           lenisInstance.stop();
         }
       } else {
-        console.log("[Modal] Calling lenis.start()");
         if (typeof lenisInstance.start === "function") {
           lenisInstance.start();
         }
@@ -59,10 +52,7 @@ const initModal = () => {
   };
 
   function setupModal(modal) {
-    if (!modal || modal.dataset.scriptInitialized === "true") {
-      console.log("[Modal] Skipping setupModal - already initialized or no modal");
-      return;
-    }
+    if (!modal || modal.dataset.scriptInitialized === "true") return;
 
     const modalId = modal.getAttribute("data-modal-target") || modal.id;
     if (!modalId) {
@@ -70,11 +60,9 @@ const initModal = () => {
       return;
     }
 
-    console.log("[Modal] Setting up modal with id:", modalId);
     modal.dataset.scriptInitialized = "true";
 
     const lockScroll = modal.hasAttribute("data-modal-lock-scroll");
-    console.log("[Modal] lockScroll attribute check:", lockScroll, "modal attributes:", Array.from(modal.attributes).map(a => a.name));
     const transitionDuration =
       Number(modal.dataset.modalDuration || 320) || 320;
 
@@ -109,12 +97,10 @@ const initModal = () => {
       closeTimer = null;
 
       if (lockScroll) {
-        console.log("[Modal] Unlocking scroll - removing overflow:hidden");
         lenisHelpers.lock(false);
         // Backup: remove CSS scroll lock
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
-        console.log("[Modal] After unlock - html overflow:", document.documentElement.style.overflow, "body overflow:", document.body.style.overflow);
       } else {
         lenisHelpers.refresh();
       }
@@ -127,11 +113,9 @@ const initModal = () => {
     }
 
     function openModal() {
-      console.log("[Modal] openModal called for:", modalId, "lockScroll:", lockScroll);
       // For divs, modal.open is undefined, so check for the visible class instead
       const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
       if (isOpen) {
-        console.log("[Modal] Modal already open, skipping");
         return;
       }
       isClosing = false;
@@ -142,25 +126,18 @@ const initModal = () => {
       showDialog();
 
       // Add visible class synchronously - don't delay with RAF
-      console.log("[Modal] BEFORE adding class - classList:", Array.from(modal.classList));
       modal.classList.add("amp-modal--visible");
-      console.log("[Modal] AFTER adding class - classList:", Array.from(modal.classList), "contains visible:", modal.classList.contains("amp-modal--visible"));
-      const computed = window.getComputedStyle(modal);
-      console.log("[Modal] Computed after class - display:", computed.display, "pointerEvents:", computed.pointerEvents);
 
       modal
         .querySelectorAll("[data-modal-scroll]")
         .forEach((element) => (element.scrollTop = 0));
 
       if (lockScroll) {
-        console.log("[Modal] Locking scroll - setting overflow:hidden on html and body");
         lenisHelpers.lock(true);
         // Backup: apply CSS scroll lock
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
-        console.log("[Modal] After lock - html overflow:", document.documentElement.style.overflow, "body overflow:", document.body.style.overflow);
       } else {
-        console.log("[Modal] NOT locking scroll (lockScroll is false)");
         lenisHelpers.refresh();
       }
 
@@ -168,11 +145,9 @@ const initModal = () => {
     }
 
     function closeModal() {
-      console.log("[Modal] closeModal called for:", modalId, "isClosing:", isClosing, "has visible class:", modal.classList.contains("amp-modal--visible"));
       // For divs, modal.open is undefined, so check for the visible class instead
       const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
       if (!isOpen || isClosing) {
-        console.log("[Modal] Close blocked - isOpen:", isOpen, "isClosing:", isClosing);
         return;
       }
       isClosing = true;
@@ -202,12 +177,10 @@ const initModal = () => {
       }
     });
 
-    console.log("[Modal] Registered modal instance:", modalId);
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
   }
 
   document.querySelectorAll("[data-amp-modal]").forEach(setupModal);
-  console.log("[Modal] Finished setup. Available instances:", Object.keys(modalSystem.instances));
 
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-modal-trigger]");
@@ -216,10 +189,8 @@ const initModal = () => {
     const modalId = trigger.getAttribute("data-modal-trigger");
     if (!modalId) return;
 
-    console.log("[Modal] Trigger clicked, attempting to open:", modalId, "Instances:", Object.keys(modalSystem.instances));
     event.preventDefault();
-    const result = modalSystem.open(modalId);
-    console.log("[Modal] Open result:", result);
+    modalSystem.open(modalId);
   });
 
   const params = new URLSearchParams(window.location.search);

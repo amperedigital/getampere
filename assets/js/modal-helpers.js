@@ -36,20 +36,12 @@
     window.addEventListener('amp-modal-open', (e) => {
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
-      try { console.log('[modal-helpers] amp-modal-open', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
       try {
         const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
         const csModal = window.getComputedStyle(modal);
         const csBackdrop = backdrop ? window.getComputedStyle(backdrop) : null;
-        console.log('[modal-helpers][debug] modal computed', {
-          display: csModal.display,
-          opacity: csModal.opacity,
-          pointerEvents: csModal.pointerEvents,
-          transform: csModal.transform
-        });
-        if (csBackdrop) console.log('[modal-helpers][debug] backdrop computed', { display: csBackdrop.display, opacity: csBackdrop.opacity, pointerEvents: csBackdrop.pointerEvents });
-      } catch (err) { console.warn('[modal-helpers] debug compute failed', err); }
-      try { document.documentElement.setAttribute('data-modal-debug', `open:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
+        // Chart resizing handled below
+      } catch (err) { /* ignore */ }
       resizeChartsInModal(modal);
       // enable backdrop pointer events so it captures clicks while modal is open
       try {
@@ -106,14 +98,11 @@
       const trigger = ev.target.closest && ev.target.closest('[data-modal-trigger]');
       if (trigger) {
         const modalId = trigger.getAttribute('data-modal-trigger');
-        try { console.log('[modal-helpers] trigger click', { modalId }); } catch (err) {}
-        try { document.documentElement.setAttribute('data-modal-debug', `trigger:${modalId}`); } catch (err) {}
         // If modal system exists, attempt to open the modal (prevents default navigation)
         const modalSystem = window.ampere && window.ampere.modal;
         if (modalSystem && typeof modalSystem.open === 'function') {
           ev.preventDefault();
           const opened = modalSystem.open(modalId);
-          try { console.log('[modal-helpers] modalSystem.open()', { modalId, opened }); } catch (err) {}
         } else {
           try { console.warn('[modal-helpers] modal system unavailable', { modalSystem: !!modalSystem }); } catch (err) {}
         }
@@ -125,12 +114,6 @@
       if (closer) {
         try { console.log('[modal-helpers] delegated close click'); } catch (err) {}
         const modalEl = closer.closest('[data-amp-modal]') || document.querySelector('[data-amp-modal]');
-        let modalId = modalEl && (modalEl.id || modalEl.getAttribute('data-modal-target'));
-        const modalSystem = window.ampere && window.ampere.modal;
-        if (modalId && modalSystem && typeof modalSystem.close === 'function') {
-          ev.preventDefault();
-          const closed = modalSystem.close(modalId);
-          try { console.log('[modal-helpers] modalSystem.close()', { modalId, closed }); } catch (err) {}
           // NOTE: Modal visibility is handled by CSS classes (amp-modal--visible).
           // Don't apply inline styles here - let modal.js manage the amp-modal--visible class.
           return;
@@ -151,9 +134,8 @@
     window.addEventListener('amp-modal-close', (e) => {
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
-      try { console.log('[modal-helpers] amp-modal-close', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
-      // NOTE: Modal visibility is handled by CSS classes (amp-modal--visible).
-      // Don't apply inline styles here - let modal.js manage the styling via CSS classes.
+      // Modal visibility is handled by CSS classes (amp-modal--visible).
+      // No inline styles applied here - let modal.js manage the styling via CSS classes.
     });
   }
 })();
