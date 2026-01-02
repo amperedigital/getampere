@@ -34,67 +34,15 @@ const initModal = () => {
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Stop Lenis to prevent page smooth scroll
+        // Stop Lenis
         if (lenisInstance && typeof lenisInstance.stop === "function") {
           lenisInstance.stop();
         }
-        
-        // Prevent page scroll by blocking wheel/touch on document
-        // but allow scroll on elements inside the modal
-        
-        wheelHandler = (e) => {
-          // Check if target is within a scrollable modal element
-          if (e.target.closest && e.target.closest('[data-modal-scroll]')) {
-            return;
-          }
-
-          // Fallback: Walk up from target to find if any parent is scrollable
-          let el = e.target;
-          while (el && el !== document.body && el !== document.documentElement) {
-            const style = window.getComputedStyle(el);
-            if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
-              return;
-            }
-            el = el.parentElement;
-          }
-          
-          // No scrollable parent found - prevent page scroll
-          e.preventDefault();
-        };
-        
-        touchHandler = (e) => {
-          // Check if target is within a scrollable modal element
-          if (e.target.closest && e.target.closest('[data-modal-scroll]')) {
-            return;
-          }
-
-          // Fallback: Walk up from target to find if any parent is scrollable
-          let el = e.target;
-          while (el && el !== document.body && el !== document.documentElement) {
-            const style = window.getComputedStyle(el);
-            if ((style.overflowY === "auto" || style.overflowY === "scroll")) {
-              return;
-            }
-            el = el.parentElement;
-          }
-          
-          // No scrollable parent found - prevent page scroll
-          e.preventDefault();
-        };
-        
-        // Use non-passive listeners to allow preventDefault
-        document.addEventListener("wheel", wheelHandler, { passive: false });
-        document.addEventListener("touchmove", touchHandler, { passive: false });
+        // Lock body scroll natively
+        document.body.style.overflow = 'hidden';
       } else {
-        // Remove event handlers
-        if (wheelHandler) {
-          document.removeEventListener("wheel", wheelHandler);
-          wheelHandler = null;
-        }
-        if (touchHandler) {
-          document.removeEventListener("touchmove", touchHandler);
-          touchHandler = null;
-        }
+        // Unlock body scroll
+        document.body.style.overflow = '';
         
         // Resume Lenis
         if (lenisInstance && typeof lenisInstance.start === "function") {
