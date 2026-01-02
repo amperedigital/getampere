@@ -170,6 +170,14 @@ const initModal = () => {
       closeModal();
     });
 
+    // Close modal on Escape key press
+    const escapeHandler = (event) => {
+      if (event.key === "Escape" && modal.classList.contains("amp-modal--visible")) {
+        closeModal();
+      }
+    };
+    document.addEventListener("keydown", escapeHandler);
+
     modal.addEventListener("click", (event) => {
       if (event.target.closest("[data-modal-close]")) {
         event.preventDefault();
