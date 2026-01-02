@@ -30,12 +30,18 @@ const initModal = () => {
 
   const lenisHelpers = {
     lock(active) {
-      if (!lenisInstance) return;
+      console.log("[Modal] lenisHelpers.lock(" + active + ") called, lenisInstance:", !!lenisInstance);
+      if (!lenisInstance) {
+        console.warn("[Modal] lenisInstance not available!");
+        return;
+      }
       if (active) {
+        console.log("[Modal] Calling lenis.stop()");
         if (typeof lenisInstance.stop === "function") {
           lenisInstance.stop();
         }
       } else {
+        console.log("[Modal] Calling lenis.start()");
         if (typeof lenisInstance.start === "function") {
           lenisInstance.start();
         }
@@ -115,6 +121,7 @@ const initModal = () => {
     }
 
     function openModal() {
+      console.log("[Modal] openModal called for:", modalId, "lockScroll:", lockScroll);
       if (modal.open) return;
       isClosing = false;
 
@@ -132,6 +139,7 @@ const initModal = () => {
         .forEach((element) => (element.scrollTop = 0));
 
       if (lockScroll) {
+        console.log("[Modal] Locking scroll");
         lenisHelpers.lock(true);
       } else {
         lenisHelpers.refresh();
@@ -141,6 +149,7 @@ const initModal = () => {
     }
 
     function closeModal() {
+      console.log("[Modal] closeModal called for:", modalId);
       if (!modal.open || isClosing) return;
       isClosing = true;
 
