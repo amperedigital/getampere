@@ -173,10 +173,10 @@ const initModal = () => {
     // Close modal on Escape key press
     const escapeHandler = (event) => {
       if (event.key === "Escape" && modal.classList.contains("amp-modal--visible")) {
+        event.preventDefault();
         closeModal();
       }
     };
-    document.addEventListener("keydown", escapeHandler);
 
     modal.addEventListener("click", (event) => {
       if (event.target.closest("[data-modal-close]")) {
@@ -185,16 +185,27 @@ const initModal = () => {
         return;
       }
       
-      // Close modal when clicking outside the modal content (on the backdrop/overlay)
-      // Find the main panel content container (the one with pointer-events-auto and rounded)
-      const panel = modal.querySelector(".pointer-events-auto");
-      
-      // If click target is not within the panel, it's on the backdrop/overlay - close modal
-      if (panel && !panel.contains(event.target)) {
+      // Close modal when clicking directly on the modal container (not on any child)
+      // This catches clicks on the backdrop/overlay area
+      if (event.target === modal) {
         event.preventDefault();
         closeModal();
+        return;
       }
     });
+
+    // Attach escape handler when modal opens, remove when closes
+    const openModalWrapper = openModal;
+    openModal = function() {
+      openModalWrapper();
+      document.addEventListener("keydown", escapeHandler);
+    };
+
+    const closeModalWrapper = closeModal;
+    closeModal = function() {
+      closeModalWrapper();
+      document.removeEventListener("keydown", escapeHandler);
+    };
 
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
   }
