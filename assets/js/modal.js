@@ -38,21 +38,43 @@ const initModal = () => {
           lenisInstance.stop();
         }
         
-        // Prevent document scroll via wheel and touch
+        // Prevent document scroll via wheel and touch, but allow scrollable modal content
         wheelHandler = (e) => {
-          // Allow scroll on elements with overflow
-          const target = e.target.closest("[data-modal-scroll]");
-          if (!target) {
-            e.preventDefault();
+          // Check if the target element or a parent can scroll
+          let el = e.target;
+          while (el && el !== document.body) {
+            // Check if element has overflow-y and can actually scroll
+            const style = window.getComputedStyle(el);
+            if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+              return; // Allow scroll on this element
+            }
+            // Check for data-modal-scroll attribute
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return; // Allow scroll on modal content
+            }
+            el = el.parentElement;
           }
+          // No scrollable element found, prevent default page scroll
+          e.preventDefault();
         };
         
         touchHandler = (e) => {
-          // Allow scroll on elements with overflow
-          const target = e.target.closest("[data-modal-scroll]");
-          if (!target) {
-            e.preventDefault();
+          // Check if the target element or a parent can scroll
+          let el = e.target;
+          while (el && el !== document.body) {
+            // Check if element has overflow-y and can actually scroll
+            const style = window.getComputedStyle(el);
+            if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+              return; // Allow scroll on this element
+            }
+            // Check for data-modal-scroll attribute
+            if (el.hasAttribute && el.hasAttribute("data-modal-scroll")) {
+              return; // Allow scroll on modal content
+            }
+            el = el.parentElement;
           }
+          // No scrollable element found, prevent default page scroll
+          e.preventDefault();
         };
         
         document.addEventListener("wheel", wheelHandler, { passive: false });
