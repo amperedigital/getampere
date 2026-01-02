@@ -141,12 +141,11 @@ const initModal = () => {
 
       showDialog();
 
-      window.requestAnimationFrame(() => {
-        modal.classList.add("amp-modal--visible");
-        console.log("[Modal] Added amp-modal--visible class, classList now:", modal.className);
-        const computed = window.getComputedStyle(modal);
-        console.log("[Modal] After adding class - computed display:", computed.display, "pointerEvents:", computed.pointerEvents);
-      });
+      // Add visible class synchronously - don't delay with RAF
+      modal.classList.add("amp-modal--visible");
+      console.log("[Modal] Added amp-modal--visible class, classList now:", modal.className);
+      const computed = window.getComputedStyle(modal);
+      console.log("[Modal] After adding class - computed display:", computed.display, "pointerEvents:", computed.pointerEvents);
 
       modal
         .querySelectorAll("[data-modal-scroll]")
