@@ -160,8 +160,6 @@ const initModal = () => {
 
       if (lockScroll) {
         lenisHelpers.lock(false);
-        document.documentElement.style.overflow = "";
-        document.body.style.overflow = "";
       } else {
         lenisHelpers.refresh();
       }
@@ -193,8 +191,6 @@ const initModal = () => {
 
       if (lockScroll) {
         lenisHelpers.lock(true);
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
       } else {
         lenisHelpers.refresh();
       }
