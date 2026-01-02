@@ -74,6 +74,7 @@ const initModal = () => {
     modal.dataset.scriptInitialized = "true";
 
     const lockScroll = modal.hasAttribute("data-modal-lock-scroll");
+    console.log("[Modal] lockScroll attribute check:", lockScroll, "modal attributes:", Array.from(modal.attributes).map(a => a.name));
     const transitionDuration =
       Number(modal.dataset.modalDuration || 320) || 320;
 
@@ -108,10 +109,12 @@ const initModal = () => {
       closeTimer = null;
 
       if (lockScroll) {
+        console.log("[Modal] Unlocking scroll - removing overflow:hidden");
         lenisHelpers.lock(false);
         // Backup: remove CSS scroll lock
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
+        console.log("[Modal] After unlock - html overflow:", document.documentElement.style.overflow, "body overflow:", document.body.style.overflow);
       } else {
         lenisHelpers.refresh();
       }
@@ -142,12 +145,14 @@ const initModal = () => {
         .forEach((element) => (element.scrollTop = 0));
 
       if (lockScroll) {
-        console.log("[Modal] Locking scroll");
+        console.log("[Modal] Locking scroll - setting overflow:hidden on html and body");
         lenisHelpers.lock(true);
         // Backup: apply CSS scroll lock
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
+        console.log("[Modal] After lock - html overflow:", document.documentElement.style.overflow, "body overflow:", document.body.style.overflow);
       } else {
+        console.log("[Modal] NOT locking scroll (lockScroll is false)");
         lenisHelpers.refresh();
       }
 
