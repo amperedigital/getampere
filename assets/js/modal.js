@@ -1,4 +1,5 @@
 const initModal = () => {
+  // Modal system - handles modal open/close with scroll locking
   const namespace = (window.ampere ??= {});
   const modalSystem = (namespace.modal ??= {
     instances: {},
