@@ -27,19 +27,53 @@ const initModal = () => {
   const lenisInstance =
     typeof window !== "undefined" && window.lenis ? window.lenis : null;
 
+  let wheelHandler = null;
+  let touchHandler = null;
+
   const lenisHelpers = {
     lock(active) {
-      if (!lenisInstance) return;
       if (active) {
-        if (typeof lenisInstance.stop === "function") {
+        // Stop Lenis smooth scroll
+        if (lenisInstance && typeof lenisInstance.stop === "function") {
           lenisInstance.stop();
         }
+        
+        // Prevent document scroll via wheel and touch
+        wheelHandler = (e) => {
+          // Allow scroll on elements with overflow
+          const target = e.target.closest("[data-modal-scroll]");
+          if (!target) {
+            e.preventDefault();
+          }
+        };
+        
+        touchHandler = (e) => {
+          // Allow scroll on elements with overflow
+          const target = e.target.closest("[data-modal-scroll]");
+          if (!target) {
+            e.preventDefault();
+          }
+        };
+        
+        document.addEventListener("wheel", wheelHandler, { passive: false });
+        document.addEventListener("touchmove", touchHandler, { passive: false });
       } else {
-        if (typeof lenisInstance.start === "function") {
+        // Resume Lenis
+        if (lenisInstance && typeof lenisInstance.start === "function") {
           lenisInstance.start();
         }
-        if (typeof lenisInstance.resize === "function") {
+        if (lenisInstance && typeof lenisInstance.resize === "function") {
           lenisInstance.resize();
+        }
+        
+        // Remove scroll prevention
+        if (wheelHandler) {
+          document.removeEventListener("wheel", wheelHandler);
+          wheelHandler = null;
+        }
+        if (touchHandler) {
+          document.removeEventListener("touchmove", touchHandler);
+          touchHandler = null;
         }
       }
     },
