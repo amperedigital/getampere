@@ -33,10 +33,8 @@ const initModal = () => {
   const lenisHelpers = {
     lock(active) {
       if (active) {
-        // Stop Lenis smooth scroll
-        if (lenisInstance && typeof lenisInstance.stop === "function") {
-          lenisInstance.stop();
-        }
+        // Don't call lenis.stop() - we want modal content to scroll
+        // Instead, just prevent scroll on the document itself
         
         // Prevent document scroll via wheel and touch, but allow scrollable modal content
         wheelHandler = (e) => {
