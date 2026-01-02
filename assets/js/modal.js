@@ -74,15 +74,7 @@ const initModal = () => {
         // Use non-passive listeners to allow preventDefault
         document.addEventListener("wheel", wheelHandler, { passive: false });
         document.addEventListener("touchmove", touchHandler, { passive: false });
-        
-        // Also use CSS as fallback
-        document.documentElement.style.setProperty("overflow", "hidden", "important");
-        document.body.style.setProperty("overflow", "hidden", "important");
       } else {
-        // Unlock CSS
-        document.documentElement.style.removeProperty("overflow");
-        document.body.style.removeProperty("overflow");
-        
         // Remove event handlers
         if (wheelHandler) {
           document.removeEventListener("wheel", wheelHandler);
