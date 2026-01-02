@@ -19,18 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
-  // Initialize Lenis if available and not already initialized
-  if (typeof Lenis !== "undefined" && !window.lenis) {
-    const lenis = new Lenis({ lerp: 0.1, smooth: true });
-    window.lenis = lenis;
-    
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-  }
-
   const reduceMotion =
     typeof window.matchMedia === "function"
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
