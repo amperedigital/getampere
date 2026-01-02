@@ -175,6 +175,11 @@ const initModal = () => {
         event.preventDefault();
         closeModal();
       }
+      // Close modal when clicking on backdrop
+      if (event.target.classList.contains("amp-modal-backdrop")) {
+        event.preventDefault();
+        closeModal();
+      }
     });
 
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
