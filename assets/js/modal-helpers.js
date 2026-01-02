@@ -78,16 +78,10 @@
         const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
         if (backdrop) backdrop.style.pointerEvents = 'auto';
       } catch (err) { /* ignore */ }
-      // Ensure visible if component CSS not present: apply inline styles for visibility
-      try {
-        modal.style.transition = modal.style.transition || 'opacity 500ms ease-out, transform 500ms ease-out';
-        modal.style.opacity = '1';
-        modal.style.transform = 'translateY(0) scale(1)';
-        modal.style.pointerEvents = 'auto';
-        modal.removeAttribute('aria-hidden');
-      } catch (err) {
-        console.warn('[modal-helpers] failed to apply inline visible styles', err);
-      }
+      // NOTE: removed automatic inline visibility styles here. Visibility
+      // should be handled via CSS. JS will only perform canvas sizing and
+      // backdrop pointer-events. If needed, add `data-modal-inline-styles`
+      // attribute to opt-in for legacy behavior.
       // Force panel sizing/positioning based on breakpoints to avoid CSS conflicts
       try {
         // find the panel element (the first child that's not the backdrop)
@@ -99,24 +93,30 @@
           if (ch.tagName && ch.tagName.toLowerCase() === 'div') { panel = ch; break; }
         }
         if (panel) {
-          // Apply exact inline styles requested to ensure consistent modal sizing
-          panel.style.maxWidth = '1200px';
-          panel.style.width = '100vw';
-          panel.style.height = '80vh';
-          panel.style.alignSelf = 'center';
-          panel.style.display = 'block';
-          panel.style.overflow = 'hidden';
-          // position slightly down from top so it sits below nav on narrow viewports
-          panel.style.top = '20%';
-
-          // ensure chart containers inside panel have explicit max-height and canvas fills
+          // Intentionally DO NOT apply layout inline styles here. The modal
+          // layout and responsiveness must be driven by CSS (component
+          // styles) to avoid conflicting with Tailwind or page-level
+          // utilities. We'll keep a defensive canvas sizing pass below,
+          // but leave overall panel sizing to CSS.
           try {
             const canvases = panel.querySelectorAll('canvas');
             canvases.forEach((canvas) => {
-              const parent = canvas.parentElement || panel;
-              parent.style.maxHeight = '80vh';
-              canvas.style.width = '100%';
-              canvas.style.height = '100%';
+              // Only perform HiDPI canvas sizing (no layout styles)
+              try {
+                const parent = canvas.parentElement || panel;
+                const rect = parent ? parent.getBoundingClientRect() : null;
+                if (parent && rect) {
+                  const dpr = window.devicePixelRatio || 1;
+                  const w = Math.floor(rect.width);
+                  const h = Math.floor(Math.max(rect.height, 200));
+                  canvas.style.width = w + 'px';
+                  canvas.style.height = h + 'px';
+                  canvas.width = Math.floor(w * dpr);
+                  canvas.height = Math.floor(h * dpr);
+                  const ctx = canvas.getContext('2d');
+                  if (ctx && typeof ctx.setTransform === 'function') ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
+              } catch (err) { /* ignore */ }
             });
           } catch (err) { /* ignore */ }
         }
