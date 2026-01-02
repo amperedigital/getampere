@@ -114,9 +114,11 @@
       if (closer) {
         try { console.log('[modal-helpers] delegated close click'); } catch (err) {}
         const modalEl = closer.closest('[data-amp-modal]') || document.querySelector('[data-amp-modal]');
-          // NOTE: Modal visibility is handled by CSS classes (amp-modal--visible).
-          // Don't apply inline styles here - let modal.js manage the amp-modal--visible class.
-          return;
+        let modalId = modalEl && (modalEl.id || modalEl.getAttribute('data-modal-target'));
+        const modalSystem = window.ampere && window.ampere.modal;
+        if (modalId && modalSystem && typeof modalSystem.close === 'function') {
+          ev.preventDefault();
+          const closed = modalSystem.close(modalId);
         }
         // Fallback: if no modalSystem, try to directly hide the modal element
         if (modalEl) {
