@@ -132,10 +132,41 @@
       }
     });
 
-    // Listen for modal close events
+    // Listen for modal open to setup backdrop click handler
+    window.addEventListener('amp-modal-open', (e) => {
+      const modal = e && e.detail && e.detail.modal;
+      if (!modal) return;
+      
+      // Setup backdrop click handler (clicks outside the content area)
+      const backdropClickHandler = (event) => {
+        const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
+        // Close if clicking directly on the backdrop or on the modal container (outside content)
+        if (event.target === backdrop || event.target === modal) {
+          event.preventDefault();
+          const modalSystem = window.ampere && window.ampere.modal;
+          const modalId = modal.id || modal.getAttribute('data-modal-target');
+          if (modalId && modalSystem && typeof modalSystem.close === 'function') {
+            modalSystem.close(modalId);
+          }
+        }
+      };
+      
+      // Store handler on modal for cleanup
+      modal._backdropClickHandler = backdropClickHandler;
+      modal.addEventListener('click', backdropClickHandler);
+    });
+    
+    // Listen for modal close events to cleanup backdrop handler
     window.addEventListener('amp-modal-close', (e) => {
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
+      
+      // Remove backdrop click handler
+      if (modal._backdropClickHandler) {
+        modal.removeEventListener('click', modal._backdropClickHandler);
+        modal._backdropClickHandler = null;
+      }
+      
       // Modal visibility is handled by CSS classes (amp-modal--visible).
       // No inline styles applied here - let modal.js manage the styling via CSS classes.
     });

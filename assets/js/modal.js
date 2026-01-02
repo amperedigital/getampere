@@ -177,13 +177,6 @@ const initModal = () => {
         closeModal();
         return;
       }
-
-      // Close on backdrop click (clicking on the modal container itself, not content)
-      if (event.target === modal) {
-        event.preventDefault();
-        closeModal();
-        return;
-      }
     });
 
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
