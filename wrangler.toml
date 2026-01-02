@@ -1,0 +1,7 @@
+name = "getampere-web"
+account_id = "fdc6cebcbbf7c7b33cc6a0e59ac8cd5f"
+compatibility_date = "2026-01-02"
+main = "workers-site/index.js"
+
+[site]
+bucket = "./deploy"

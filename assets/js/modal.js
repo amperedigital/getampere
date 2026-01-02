@@ -1,4 +1,5 @@
 const initModal = () => {
+  console.log("[Modal] initModal() called, document.readyState:", document.readyState);
   const namespace = (window.ampere ??= {});
   const modalSystem = (namespace.modal ??= {
     instances: {},
@@ -52,14 +53,18 @@ const initModal = () => {
   };
 
   function setupModal(modal) {
-    if (!modal || modal.dataset.scriptInitialized === "true") return;
-
-    const modalId = modal.getAttribute("data-modal-target") || modal.id;
-    if (!modalId) {
-      console.warn("[AmpModal] Missing modal identifier", modal);
+    if (!modal || modal.dataset.scriptInitialized === "true") {
+      console.log("[Modal] Skipping setupModal - already initialized or no modal");
       return;
     }
 
+    const modalId = modal.getAttribute("data-modal-target") || modal.id;
+    if (!modalId) {
+      console.warn("[Modal] Missing modal identifier", modal);
+      return;
+    }
+
+    console.log("[Modal] Setting up modal with id:", modalId);
     modal.dataset.scriptInitialized = "true";
 
     const lockScroll = modal.hasAttribute("data-modal-lock-scroll");
@@ -164,10 +169,12 @@ const initModal = () => {
       }
     });
 
+    console.log("[Modal] Registered modal instance:", modalId);
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
   }
 
   document.querySelectorAll("[data-amp-modal]").forEach(setupModal);
+  console.log("[Modal] Finished setup. Available instances:", Object.keys(modalSystem.instances));
 
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-modal-trigger]");
@@ -176,8 +183,10 @@ const initModal = () => {
     const modalId = trigger.getAttribute("data-modal-trigger");
     if (!modalId) return;
 
+    console.log("[Modal] Trigger clicked, attempting to open:", modalId, "Instances:", Object.keys(modalSystem.instances));
     event.preventDefault();
-    modalSystem.open(modalId);
+    const result = modalSystem.open(modalId);
+    console.log("[Modal] Open result:", result);
   });
 
   const params = new URLSearchParams(window.location.search);
