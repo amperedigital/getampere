@@ -131,22 +131,8 @@
           ev.preventDefault();
           const closed = modalSystem.close(modalId);
           try { console.log('[modal-helpers] modalSystem.close()', { modalId, closed }); } catch (err) {}
-          // force-hide modal immediately if the modal system reported closed
-          try {
-            const instance = modalSystem.instances && modalSystem.instances[modalId];
-            const el = instance && instance.element ? instance.element : modalEl;
-            if (closed && el) {
-              el.classList.remove('amp-modal--visible');
-              el.style.display = 'none';
-              el.style.pointerEvents = 'none';
-              el.setAttribute('aria-hidden', 'true');
-              const backdrop = el.querySelector && el.querySelector('.amp-modal-backdrop');
-              if (backdrop) {
-                backdrop.style.pointerEvents = 'none';
-                backdrop.style.display = 'none';
-              }
-            }
-          } catch (err) { /* ignore */ }
+          // NOTE: Modal visibility is handled by CSS classes (amp-modal--visible).
+          // Don't apply inline styles here - let modal.js manage the amp-modal--visible class.
           return;
         }
         // Fallback: if no modalSystem, try to directly hide the modal element
@@ -161,49 +147,13 @@
       }
     });
 
-    // Listen for modal close to hide inline styles
+    // Listen for modal close events
     window.addEventListener('amp-modal-close', (e) => {
       const modal = e && e.detail && e.detail.modal;
       if (!modal) return;
       try { console.log('[modal-helpers] amp-modal-close', modal.id || modal.getAttribute('data-modal-target') || '(no-id)'); } catch (err) {}
-      try {
-        const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
-        const csModal = window.getComputedStyle(modal);
-        const csBackdrop = backdrop ? window.getComputedStyle(backdrop) : null;
-        console.log('[modal-helpers][debug] modal computed after close', { display: csModal.display, opacity: csModal.opacity, pointerEvents: csModal.pointerEvents });
-        if (csBackdrop) console.log('[modal-helpers][debug] backdrop computed after close', { display: csBackdrop.display, opacity: csBackdrop.opacity, pointerEvents: csBackdrop.pointerEvents });
-      } catch (err) { console.warn('[modal-helpers] debug compute failed', err); }
-      try { document.documentElement.setAttribute('data-modal-debug', `close:${modal.id||modal.getAttribute('data-modal-target')||'no-id'}`); } catch (err) {}
-      try {
-        modal.style.opacity = '0';
-        modal.style.transform = 'translateY(1rem) scale(0.98)';
-        modal.style.pointerEvents = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-        // disable backdrop pointer events when modal closed
-        try {
-          const backdrop = modal.querySelector && modal.querySelector('.amp-modal-backdrop');
-          if (backdrop) backdrop.style.pointerEvents = 'none';
-        } catch (err) { /* ignore */ }
-        // Remove any inline sizing applied to panel and canvases
-        try {
-          for (let i = 0; i < modal.children.length; i++) {
-            const ch = modal.children[i];
-            if (!ch || !ch.style) continue;
-            ch.style.maxWidth = '';
-            ch.style.width = '';
-            ch.style.height = '';
-            ch.style.alignSelf = '';
-            ch.style.marginTop = '';
-            ch.style.overflow = '';
-            const canvases = ch.querySelectorAll && ch.querySelectorAll('canvas');
-            if (canvases && canvases.length) {
-              canvases.forEach(c => { c.style.width = ''; c.style.height = ''; });
-            }
-          }
-        } catch (err) { /* ignore */ }
-      } catch (err) {
-        console.warn('[modal-helpers] failed to apply inline hide styles', err);
-      }
+      // NOTE: Modal visibility is handled by CSS classes (amp-modal--visible).
+      // Don't apply inline styles here - let modal.js manage the styling via CSS classes.
     });
   }
 })();
