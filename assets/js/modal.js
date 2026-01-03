@@ -259,6 +259,10 @@ const initModal = () => {
       return;
     }
 
+    // Capture original position to preserve DOM structure (e.g. inside a section)
+    const originalParent = contentEl.parentNode;
+    const nextSibling = contentEl.nextSibling;
+
     // Create the outer modal shell
     const modalShell = document.createElement("div");
     modalShell.id = modalId; // Transfer ID to the shell
@@ -299,8 +303,12 @@ const initModal = () => {
     wrapper.appendChild(contentEl);
     modalShell.appendChild(wrapper);
     
-    // Append to body
-    document.body.appendChild(modalShell);
+    // Insert shell back into DOM at original position if possible, otherwise append to body
+    if (originalParent) {
+      originalParent.insertBefore(modalShell, nextSibling);
+    } else {
+      document.body.appendChild(modalShell);
+    }
   }
 
   // Always scan for elements (idempotent)
