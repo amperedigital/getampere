@@ -5,6 +5,20 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Text Flip Effect
+  const flipTexts = document.querySelectorAll('.hover-flip-text');
+  flipTexts.forEach(el => {
+    const text = el.textContent;
+    el.innerHTML = '';
+    [...text].forEach((char, i) => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      span.classList.add('char');
+      span.style.transitionDelay = `${i * 30}ms`;
+      el.appendChild(span);
+    });
+  });
+
   const flippers = document.querySelectorAll('[data-tab-flipper]');
 
   flippers.forEach(flipper => {
