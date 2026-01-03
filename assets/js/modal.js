@@ -188,6 +188,59 @@ const initModal = () => {
     modalSystem.instances[modalId] = { open: openModal, close: closeModal, element: modal };
   }
 
+  // Auto-wrap content marked with data-amp-modal-content
+  function wrapModalContent(contentEl) {
+    if (contentEl.dataset.modalWrapped === "true") return;
+    
+    const modalId = contentEl.id;
+    if (!modalId) {
+      console.warn("Modal content missing ID", contentEl);
+      return;
+    }
+
+    // Create the outer modal shell
+    const modalShell = document.createElement("div");
+    modalShell.id = modalId; // Transfer ID to the shell
+    modalShell.className = "fixed inset-0 z-[99999] flex w-screen h-screen items-start md:items-center justify-center px-4 sm:px-6 md:px-0 py-6 md:py-8 pt-24 md:pt-0 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none";
+    modalShell.setAttribute("data-amp-modal", "");
+    modalShell.setAttribute("data-modal-lock-scroll", "");
+    modalShell.setAttribute("inert", "");
+    
+    // Create backdrop
+    const backdrop = document.createElement("div");
+    backdrop.className = "fixed inset-0 bg-black/70 shadow-[0_0_80px_rgba(0,0,0,0.65)] pointer-events-none amp-modal-backdrop z-40";
+    modalShell.appendChild(backdrop);
+
+    // Create wrapper
+    const wrapper = document.createElement("div");
+    wrapper.className = "md:rounded-3xl overflow-visible w-full sm:w-11/12 md:w-[90vw] lg:w-[75vw] xl:w-[100vw] sm:max-w-3xl md:max-w-[1200px] h-full mt-[7rem] pointer-events-auto rounded-none mx-auto pb-8 relative z-[9998]";
+    
+    // Create close button
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("data-modal-close", "");
+    closeBtn.className = "fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[9999] w-10 h-10 rounded-full bg-white/15 border border-white/30 text-white backdrop-blur flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400";
+    closeBtn.innerHTML = `<span class="sr-only">Close overlay</span><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"></path></svg>`;
+    wrapper.appendChild(closeBtn);
+
+    // Move content into wrapper
+    // Rename content ID to avoid duplicate IDs since shell now has the main ID
+    contentEl.id = `${modalId}-content`;
+    contentEl.removeAttribute("data-amp-modal-content"); // Prevent re-wrapping
+    contentEl.dataset.modalWrapped = "true";
+    
+    // Ensure content is visible (in case it was hidden)
+    contentEl.style.display = "block";
+    
+    wrapper.appendChild(contentEl);
+    modalShell.appendChild(wrapper);
+    
+    // Append to body
+    document.body.appendChild(modalShell);
+  }
+
+  document.querySelectorAll("[data-amp-modal-content]").forEach(wrapModalContent);
+
   document.querySelectorAll("[data-amp-modal]").forEach(setupModal);
 
   document.addEventListener("click", (event) => {
