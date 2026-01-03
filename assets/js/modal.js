@@ -25,37 +25,38 @@ const initModal = () => {
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
       : false;
 
-  const lenisInstance =
-    typeof window !== "undefined" && window.lenis ? window.lenis : null;
-
-  let wheelHandler = null;
-  let touchHandler = null;
-
   const lenisHelpers = {
+    get instance() {
+      return window.lenis;
+    },
     lock(active) {
+      const lenis = this.instance;
       if (active) {
         // Stop Lenis
-        if (lenisInstance && typeof lenisInstance.stop === "function") {
-          lenisInstance.stop();
+        if (lenis && typeof lenis.stop === "function") {
+          lenis.stop();
         }
         // Lock body scroll natively
         document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
       } else {
         // Unlock body scroll
         document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
         
         // Resume Lenis
-        if (lenisInstance && typeof lenisInstance.start === "function") {
-          lenisInstance.start();
+        if (lenis && typeof lenis.start === "function") {
+          lenis.start();
         }
-        if (lenisInstance && typeof lenisInstance.resize === "function") {
-          lenisInstance.resize();
+        if (lenis && typeof lenis.resize === "function") {
+          lenis.resize();
         }
       }
     },
     refresh() {
-      if (lenisInstance && typeof lenisInstance.resize === "function") {
-        lenisInstance.resize();
+      const lenis = this.instance;
+      if (lenis && typeof lenis.resize === "function") {
+        lenis.resize();
       }
     },
   };
