@@ -77,18 +77,22 @@ const initModal = () => {
     let escapeHandler = null;
 
     function showDialog() {
-      if (modal.open) return;
-      if (typeof modal.show === "function") {
+      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
+      if (isDialogOpen) return;
+
+      if (modal.tagName === 'DIALOG' && typeof modal.show === "function") {
         modal.show();
       } else {
-        modal.setAttribute("open", "true");
+        modal.setAttribute("open", "");
       }
       modal.removeAttribute("inert");
     }
 
     function hideDialog() {
-      if (!modal.open) return;
-      if (typeof modal.close === "function") {
+      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
+      if (!isDialogOpen) return;
+
+      if (modal.tagName === 'DIALOG' && typeof modal.close === "function") {
         modal.close();
       } else {
         modal.removeAttribute("open");
@@ -120,8 +124,10 @@ const initModal = () => {
     }
 
     function openModal() {
-      const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
-      if (isOpen) return;
+      const isVisible = modal.classList.contains("amp-modal--visible");
+      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
+      
+      if (isVisible || isDialogOpen) return;
       
       isClosing = false;
 
@@ -161,8 +167,10 @@ const initModal = () => {
     }
 
     function closeModal() {
-      const isOpen = modal.classList.contains("amp-modal--visible") || modal.open;
-      if (!isOpen || isClosing) return;
+      const isVisible = modal.classList.contains("amp-modal--visible");
+      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
+      
+      if ((!isVisible && !isDialogOpen) || isClosing) return;
       
       isClosing = true;
       
@@ -214,6 +222,7 @@ const initModal = () => {
     modalShell.className = "fixed inset-0 z-[99999] flex w-screen h-screen items-start md:items-center justify-center px-4 sm:px-6 md:px-0 py-6 md:py-8 pt-24 md:pt-0 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none";
     modalShell.setAttribute("data-amp-modal", "");
     modalShell.setAttribute("data-modal-lock-scroll", "");
+    modalShell.setAttribute("data-modal-duration", "500"); // Match CSS duration
     modalShell.setAttribute("inert", "");
     
     // Create backdrop
