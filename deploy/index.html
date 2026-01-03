@@ -1995,9 +1995,9 @@ font-family: 'Oswald', sans-serif !important;
             </div>
 
             <!-- Right: Media Container (Laptop Edge Look) -->
-            <div class="relative w-full md:w-1/2 h-full flex items-center justify-center p-8 md:p-0 md:pr-16 overflow-visible">
-               <!-- The "Screen" Container -->
-               <div class="relative w-full aspect-square max-w-[500px] bg-zinc-900/50 rounded-xl border border-white/10 shadow-2xl overflow-hidden backdrop-blur-sm group-hover:border-white/20 transition-colors duration-500">
+            <div class="relative w-full md:w-1/2 h-full flex items-center justify-center p-8 md:p-0 md:pr-16 overflow-visible perspective-1000">
+               <!-- The "Screen" Container with 3D Transform -->
+               <div class="relative w-full aspect-square max-w-[500px] bg-zinc-900/50 rounded-xl border border-white/10 shadow-2xl overflow-hidden backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
                   <!-- Screen Reflection/Gloss -->
                   <div class="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-20"></div>
                   
@@ -2023,6 +2023,7 @@ font-family: 'Oswald', sans-serif !important;
                           <clipPath id="crm-window-card">
                             <circle cx="200" cy="200" r="190"></circle>
                           </clipPath>
+                          <path id="crm-halo-label-card" d="M60,200 A120,120 0 0 0 340,200"></path>
                         </defs>
 
                         <circle cx="200" cy="200" r="145" fill="none" stroke="#1e1b4b" stroke-width="1" stroke-dasharray="6 18" opacity="0.35">
@@ -2110,6 +2111,91 @@ font-family: 'Oswald', sans-serif !important;
                           </circle>
                         </g>
                       </svg>
+
+                      <!-- Center Phone Icon -->
+                      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20">
+                        <div class="relative flex items-center justify-center">
+                          <svg class="absolute pointer-events-none w-[150px] h-[150px]" viewBox="0 0 180 180" aria-hidden="true">
+                            <text fill="#c7d2fe" font-size="10" letter-spacing=".32em">
+                              <textPath href="#crm-halo-label-card" startOffset="50%" text-anchor="middle">
+                                AI PHONE ANSWER
+                              </textPath>
+                            </text>
+                          </svg>
+                          <div class="w-16 h-16 rounded-full bg-zinc-900 border border-indigo-400/60 shadow-[0_0_30px_rgba(79,70,229,0.45)] flex items-center justify-center relative">
+                            <div class="absolute inset-1 rounded-full bg-indigo-400/15 blur-xl opacity-0 group-hover:opacity-100 animate-none group-hover:animate-ping">
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                              </path>
+                            </svg>
+                          </div>
+                        </div>
+                        <p class="mt-3 text-[11px] uppercase tracking-[0.35em] text-indigo-200/80">Bidirectional Sync</p>
+                      </div>
+
+                      <!-- Salesforce (Top Left) -->
+                      <div class="absolute top-[30%] left-[25%] z-20 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative overflow-visible">
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 pointer-events-auto">
+                          <div class="flex flex-col items-center w-fit hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-20 hover:z-40 focus-within:z-40">
+                            <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+                                <svg viewBox="0 0 60 40" class="w-8 h-8" aria-hidden="true">
+                                  <path d="M22 32c-4.2 0-7.6-3.3-7.6-7.5c0-3.7 2.6-6.7 6.1-7.4c1-4.8 5.1-8.3 10.2-8.3c4.2 0 7.8 2.4 9.5 5.9c3.8 0.2 6.9 3.3 6.9 7.2c0 4-3.2 7.2-7.2 7.2H22z" fill="#60a5fa"></path>
+                                <circle cx="41" cy="25" r="6" fill="#93c5fd"></circle>
+                                <circle cx="27" cy="19" r="7" fill="#3b82f6"></circle>
+                              </svg>
+                            </button>
+                            <div class="absolute top-1/2 right-full mr-3 -translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-blue-400/40 text-white shadow-lg shadow-blue-500/25 backdrop-blur origin-right z-50 opacity-0 translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-x-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:pointer-events-auto">
+                              <div class="space-y-1">
+                                <p class="text-[11px] uppercase tracking-[0.35em] text-blue-200/80">Salesforce</p>
+                                <p class="text-sm font-semibold text-white leading-tight">Lead Timeline</p>
+                                <p class="text-xs text-blue-100/70">Tasks / transcripts / cases</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- HubSpot (Top Right) -->
+                      <div class="absolute top-[30%] left-[75%] z-10 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative">
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-20 hover:z-50 focus-within:z-50">
+                          <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+                            <svg viewBox="0 0 42 42" class="w-7 h-7" aria-hidden="true">
+                              <circle cx="21" cy="21" r="6" fill="#fb923c"></circle>
+                              <circle cx="21" cy="7" r="4" fill="#fdba74"></circle>
+                              <circle cx="7" cy="21" r="4" fill="#fed7aa"></circle>
+                              <circle cx="35" cy="27" r="4" fill="#fb923c"></circle>
+                              <path d="M21 9v6M21 27v6M9 21h6M27 24l6 2" stroke="#fed7aa" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                          </button>
+                          <div class="absolute top-1/2 left-full ml-3 -translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-amber-400/40 text-white shadow-lg shadow-amber-500/25 backdrop-blur origin-left z-50 opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-x-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:pointer-events-auto">
+                            <div class="space-y-1 text-left">
+                              <p class="text-[11px] uppercase tracking-[0.35em] text-amber-100/80">HubSpot</p>
+                              <p class="text-sm font-semibold text-white leading-tight">Deal Enrichment</p>
+                              <p class="text-xs text-amber-100/70">Owner routing + notes</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Pipedrive (Bottom) -->
+                      <div class="absolute top-[79%] left-1/2 z-10 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative overflow-visible">
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-20 hover:z-40 focus-within:z-40">
+                          <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400">
+                            <svg viewBox="0 0 48 48" class="w-8 h-8" aria-hidden="true">
+                              <path d="M20 12h8c6.6 0 12 4.6 12 11s-5.4 11-12 11h-5v9h-8V12h5z" fill="#a3e635"></path>
+                              <path d="M23 20h5a3 3 0 0 1 0 6h-5" stroke="#4ade80" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                          </button>
+                          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 px-4 py-2 rounded-2xl bg-slate-950/95 border border-lime-400/40 text-white shadow-lg shadow-lime-400/20 backdrop-blur origin-top z-50 opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-y-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:pointer-events-auto">
+                            <div class="space-y-1">
+                              <p class="text-[11px] uppercase tracking-[0.35em] text-lime-100/80">Pipedrive</p>
+                              <p class="text-sm font-semibold text-white leading-tight">Pipeline Nudges</p>
+                              <p class="text-xs text-lime-100/70">Stage updates / SMS</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                   </div>
                </div>
             </div>
