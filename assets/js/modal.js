@@ -227,6 +227,18 @@ const initModal = () => {
     if (contentEl.dataset.modalWrapped === "true") return;
     if (!document.body) return; // Safety check
     
+    // Detect Aura editor or other visual editors
+    const isEditor = window.location.hostname.includes('aura') || 
+                     window.location.search.includes('aura') ||
+                     document.querySelector('[class*="aura-"]');
+                     
+    if (isEditor) {
+      // In editor, ensure content is visible but DO NOT wrap it
+      contentEl.style.display = "block";
+      contentEl.classList.remove("hidden");
+      return;
+    }
+    
     const modalId = contentEl.id;
     if (!modalId) {
       console.warn("Modal content missing ID", contentEl);

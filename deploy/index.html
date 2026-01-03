@@ -12,6 +12,9 @@
     // This allows visual editors (which often don't run inline JS) to see the content
     (function() {
       try {
+        // Don't hide if in Aura editor (detected by hostname or query param)
+        if (window.location.hostname.includes('aura') || window.location.search.includes('aura')) return;
+        
         var style = document.createElement('style');
         style.textContent = '[data-amp-modal-content] { display: none; }';
         document.head.appendChild(style);
@@ -2089,7 +2092,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.92/assets/js/modal-helpers.js" defer></script>
     
 <!-- Modal -->
-<section id="ai-hero-panel" data-amp-modal-content class="h-full w-full relative">
+<section id="ai-hero-panel" data-amp-modal-content class="min-h-screen w-full relative bg-black/90">
           <div class="absolute top-5 max-sm:top-[-1.7rem] md:-top-6 right-6 flex bg-black/40 border-white/10 border rounded-xl pt-4 pr-4 pb-4 pl-4 backdrop-blur-md gap-x-3 gap-y-3 items-center z-[100001]">
             <div class="flex -space-x-2">
               <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
