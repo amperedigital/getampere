@@ -7,12 +7,18 @@
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <script>
+    // Dynamically inject styles to hide modal content on live site
+    // This allows visual editors (which often don't run inline JS) to see the content
+    (function() {
+      try {
+        var style = document.createElement('style');
+        style.textContent = '[data-amp-modal-content] { display: none; }';
+        document.head.appendChild(style);
+      } catch (e) {}
+    })();
+  </script>
   <style>
-    /* Hide modal content by default (overridden by modal.js or editor) */
-    [data-amp-modal-content] {
-      display: none;
-    }
-
     body {
       font-family: "Geist", "DM Sans", sans-serif;
       -webkit-font-smoothing: antialiased;
