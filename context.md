@@ -28,7 +28,17 @@
   Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.1/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
 
 ## Modal System
-- **Implementation**: `assets/js/modal.js` handles open/close logic, accessibility (inert, aria), and scroll locking.
+- **Implementation**: `assets/js/modal.js` handles open/close logic, accessibility (inert, aria), scroll locking, and **auto-wrapping** of content.
+- **Structure**:
+  - **Content**: Define your modal content in a `<section>` or `<div>` anywhere in the body (usually at the bottom).
+    - Must have an `id` (e.g., `id="my-modal"`).
+    - Must have the attribute `data-amp-modal-content`.
+    - **Do NOT** add the modal shell (backdrop, fixed position, etc.) manually. The JS does this.
+  - **Visibility**:
+    - Add this CSS to your global styles or `<head>`: `[data-amp-modal-content] { display: none; }`.
+    - This hides the content on the live site until the JS wraps and displays it.
+    - This allows visual editors (like Aura) to see the content if they ignore that specific CSS rule, improving DX.
+  - **Trigger**: `<button data-modal-trigger="my-modal">Open Modal</button>`.
 - **Scroll Locking Strategy**:
   - **Native Lock**: Uses `document.body.style.overflow = 'hidden'` when modal is open.
   - **Lenis Integration**: Pauses Lenis (`lenis.stop()`) on open, resumes on close.
@@ -38,7 +48,3 @@
     - `overscroll-contain` CSS class to prevent scroll chaining.
     - Explicit height constraints (e.g., `h-full` inside a fixed parent) and content that overflows (e.g., `min-h-[101%]`).
   - **Mobile Support**: This combination ensures native touch scrolling works on iOS/Android while keeping the background page locked.
-- **Usage**:
-  - Trigger: `<button data-modal-trigger="modal-id">`
-  - Modal: `<div id="modal-id" data-amp-modal data-modal-lock-scroll>`
-  - Close: `<button data-modal-close>` or click backdrop.
