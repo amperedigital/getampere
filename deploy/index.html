@@ -1909,6 +1909,129 @@ font-family: 'Oswald', sans-serif !important;
     </div>
   </section>
 
+  <!-- Tab Flipper Section -->
+  <section class="bg-[#050505] py-24 lg:py-32 relative overflow-hidden border-t border-white/5" data-tab-flipper>
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+        
+        <!-- Navigation (Left) -->
+        <div class="lg:col-span-4 space-y-2">
+          <div class="mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-blue-500 mb-2 block">Use Cases</span>
+            <h2 class="text-3xl lg:text-4xl font-medium text-white tracking-tight font-geist">How we help</h2>
+          </div>
+
+          <div class="space-y-1">
+            <!-- Tab 1 -->
+            <button class="group w-full text-left p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="true">
+              <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_001</span>
+              <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Inbound Sales</span>
+            </button>
+            <!-- Tab 2 -->
+            <button class="group w-full text-left p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="false">
+              <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_002</span>
+              <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Customer Support</span>
+            </button>
+            <!-- Tab 3 -->
+            <button class="group w-full text-left p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="false">
+              <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_003</span>
+              <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Appointment Setting</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards (Right) -->
+        <div class="lg:col-span-8 relative h-[500px] lg:h-[600px] perspective-1000">
+          
+          <!-- Card 1 -->
+          <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom" data-tab-card>
+            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+              <!-- Background/Media -->
+              <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Sales">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
+              </div>
+              
+              <!-- Content -->
+              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
+                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_001</span>
+                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Inbound Sales</h3>
+                <p class="text-white/60 text-lg max-w-xl mb-8">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
+                <button class="shiny-cta">
+                  <span>View Case Study</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 translate-y-12 rotate-x-12 pointer-events-none" data-tab-card>
+            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+              <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Support">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
+              </div>
+              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
+                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_002</span>
+                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Customer Support</h3>
+                <p class="text-white/60 text-lg max-w-xl mb-8">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
+                <button class="shiny-cta">
+                  <span>View Case Study</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 translate-y-12 rotate-x-12 pointer-events-none" data-tab-card>
+            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+              <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Appointments">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
+              </div>
+              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
+                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_003</span>
+                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Appointment Setting</h3>
+                <p class="text-white/60 text-lg max-w-xl mb-8">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
+                <button class="shiny-cta">
+                  <span>View Case Study</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- Styles for 3D transitions -->
+    <style>
+      .perspective-1000 { perspective: 1000px; }
+      .rotate-x-12 { transform: rotateX(12deg); }
+      
+      [data-tab-card].active {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+        pointer-events: auto;
+        z-index: 10;
+      }
+      
+      [data-tab-card].inactive-prev {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        pointer-events: none;
+        z-index: 0;
+      }
+      
+      [data-tab-card].inactive-next {
+        opacity: 0;
+        transform: translateY(40px) rotateX(-10deg) scale(0.95);
+        pointer-events: none;
+        z-index: 0;
+      }
+    </style>
+  </section>
+
     <section class="overflow-hidden flex flex-col text-[#E4E4E7] bg-[#0A0A0A] pt-32 pr-0 pb-32 pl-0 relative justify-center border-t border-white/5">
       <div class="lg:px-12 flex mb-12 pr-6 pl-6 items-end justify-between">
         <div class="animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
@@ -2084,6 +2207,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.106/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.101/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.101/assets/js/modal-helpers.js" defer></script>
+        <script src="assets/js/tab-flipper.js" defer></script>
     
 <!-- Modal -->
 <section>
