@@ -228,8 +228,10 @@ const initModal = () => {
     if (!document.body) return; // Safety check
     
     // Detect Aura editor or other visual editors
-    // Strict check to avoid false positives on live site
-    const isEditor = window.location.hostname.endsWith('aura.build');
+    // We check hostname, query params, and specific Aura DOM elements
+    const isEditor = window.location.hostname.endsWith('aura.build') || 
+                     window.location.search.includes('aura') ||
+                     !!document.getElementById('aura-editor-visibility-style');
                      
     if (isEditor) {
       // In editor, ensure content is visible but DO NOT wrap it
