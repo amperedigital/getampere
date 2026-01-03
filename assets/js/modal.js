@@ -229,15 +229,17 @@ const initModal = () => {
     
     // Detect Aura editor to prevent wrapping in Design Mode (if scripts run there)
     // This ensures the content remains a simple editable DIV in the editor
-    console.log('[Ampere Modal] Checking editor environment:', {
-      hostname: window.location.hostname,
-      href: window.location.href,
-      search: window.location.search
-    });
+    // We log individual values to ensure they are readable in the console
+    console.log('[Ampere Modal] Checking editor environment');
+    console.log('- hostname:', window.location.hostname);
+    console.log('- href:', window.location.href);
+    console.log('- search:', window.location.search);
+    console.log('- referrer:', document.referrer);
 
     const isEditor = window.location.hostname.includes('aura.build') || 
                      window.location.href.includes('aura.build') ||
-                     window.location.search.includes('aura');
+                     window.location.search.includes('aura') ||
+                     (document.referrer && document.referrer.includes('aura.build'));
                      
     if (isEditor) {
       console.log('[Ampere Modal] Editor detected, skipping wrap');
