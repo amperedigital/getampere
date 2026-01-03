@@ -227,18 +227,16 @@ const initModal = () => {
     if (contentEl.dataset.modalWrapped === "true") return;
     if (!document.body) return; // Safety check
     
-    // Detect Aura editor or other visual editors
-    // We check hostname, query params, and specific Aura DOM elements
-    const isEditor = window.location.hostname.endsWith('aura.build') || 
-                     window.location.search.includes('aura') ||
-                     !!document.getElementById('aura-editor-visibility-style');
-                     
-    if (isEditor) {
-      // In editor, ensure content is visible but DO NOT wrap it
-      contentEl.style.display = "block";
-      contentEl.classList.remove("hidden");
-      return;
-    }
+    // Note: We removed the Aura editor check here because:
+    // 1. In Design Mode, scripts likely don't run, so this code doesn't execute (safe).
+    // 2. In Preview Mode, scripts DO run, and we WANT the modal to wrap/function.
+    // 3. The visibility in Design Mode is handled by the 'isLive' check in index.html.
+    
+    /* 
+    const isEditor = window.location.hostname.endsWith('aura.build') || ...
+    if (isEditor) return; 
+    */
+
     
     const modalId = contentEl.id;
     if (!modalId) {
