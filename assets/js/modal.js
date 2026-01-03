@@ -225,6 +225,7 @@ const initModal = () => {
   // Auto-wrap content marked with data-amp-modal-content
   function wrapModalContent(contentEl) {
     if (contentEl.dataset.modalWrapped === "true") return;
+    if (!document.body) return; // Safety check
     
     const modalId = contentEl.id;
     if (!modalId) {
@@ -264,8 +265,10 @@ const initModal = () => {
     contentEl.removeAttribute("data-amp-modal-content"); // Prevent re-wrapping
     contentEl.dataset.modalWrapped = "true";
     
-    // Ensure content is visible (in case it was hidden)
+    // Ensure content is visible (in case it was hidden by CSS)
     contentEl.style.display = "block";
+    // Also remove hidden class if it was there (legacy support)
+    contentEl.classList.remove("hidden");
     
     wrapper.appendChild(contentEl);
     modalShell.appendChild(wrapper);
@@ -274,9 +277,13 @@ const initModal = () => {
     document.body.appendChild(modalShell);
   }
 
+  // Always scan for elements (idempotent)
   document.querySelectorAll("[data-amp-modal-content]").forEach(wrapModalContent);
-
   document.querySelectorAll("[data-amp-modal]").forEach(setupModal);
+
+  // Only setup global listeners once
+  if (window.__ampModalInitialized) return;
+  window.__ampModalInitialized = true;
 
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-modal-trigger]");
@@ -303,8 +310,8 @@ const initModal = () => {
   }
 };
 
+// Run immediately if possible, and also on DOMContentLoaded to be safe
+initModal();
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initModal);
-} else {
-  initModal();
 }
