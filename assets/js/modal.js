@@ -145,9 +145,13 @@ const initModal = () => {
       // Using double RAF for maximum safety across browsers
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          // 3. Animate in: swap classes to trigger transition
+          // 3. Animate in: use inline styles to force visibility (robust against missing classes)
+          modal.style.opacity = '1';
+          modal.style.transform = 'translateY(0) scale(1)';
+          modal.style.pointerEvents = 'auto';
+          
+          // Also remove the hiding classes
           modal.classList.remove("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
-          modal.classList.add("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
         });
       });
 
@@ -182,7 +186,11 @@ const initModal = () => {
       isClosing = true;
       modal.setAttribute("aria-hidden", "true");
       
-      // Transition out: remove visible state classes, add hidden state classes
+      // Transition out: clear inline styles and add hiding classes
+      modal.style.opacity = '';
+      modal.style.transform = '';
+      modal.style.pointerEvents = '';
+      
       modal.classList.remove("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
       modal.classList.add("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
 
