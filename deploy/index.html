@@ -12,18 +12,18 @@
     // This allows visual editors (which often don't run inline JS) to see the content
     (function() {
       try {
-        // Don't hide if in Aura editor. We check:
-        // 1. Hostname ends with aura.build
-        // 2. URL search params has 'aura'
-        // 3. Presence of Aura-specific elements (like the visibility style block)
-        if (window.location.hostname.endsWith('aura.build') || 
-            window.location.search.includes('aura') ||
-            document.getElementById('aura-editor-visibility-style')) {
-          return;
-        }
+        // Only hide modal content on known live environments
+        // This ensures it remains visible in all editors, previews, and local dev
+        const hostname = window.location.hostname;
+        const isLive = hostname.includes('workers.dev') || 
+                       hostname.includes('getampere.ai') || 
+                       hostname.includes('amperedigital.github.io');
+        
+        if (!isLive) return;
         
         var style = document.createElement('style');
-        style.textContent = '[data-amp-modal-content] { display: none; }';
+        // Split selector to prevent static analysis tools from stripping it
+        style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
         document.head.appendChild(style);
       } catch (e) {}
     })();
