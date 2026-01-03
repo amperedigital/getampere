@@ -27,7 +27,7 @@
   - `data-momentum-friction` / `data-momentum-step` adjust drag-release inertia.
   Include `<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.1/assets/js/hero-slider.min.js" defer></script>` on pages that use it. The script pauses on hover/drag, re-aligns the nearest card once interaction stops, resumes after the configured delay, and logs `[HeroSlider] …` messages in the console for debugging auto behavior.
 
-## Modal System
+## Modal System (v1.0.111+)
 - **Implementation**: `assets/js/modal.js` handles open/close logic, accessibility (inert, aria), scroll locking, and **auto-wrapping** of content.
 - **Structure**:
   - **Content**: Define your modal content in a `<section>` or `<div>` anywhere in the body (usually at the bottom).
@@ -35,16 +35,26 @@
     - Must have the attribute `data-amp-modal-content`.
     - **Do NOT** add the modal shell (backdrop, fixed position, etc.) manually. The JS does this.
   - **Visibility**:
-    - Add this CSS to your global styles or `<head>`: `[data-amp-modal-content] { display: none; }`.
-    - This hides the content on the live site until the JS wraps and displays it.
-    - This allows visual editors (like Aura) to see the content if they ignore that specific CSS rule, improving DX.
+    - **Live Site**: A script in `<head>` injects `[data-amp-modal-content] { display: none; }` if the hostname matches production domains (`getampere.ai`, `workers.dev`). This prevents FOUC.
+    - **Editor (Aura)**: The CSS rule is NOT injected, so the content remains visible.
   - **Trigger**: `<button data-modal-trigger="my-modal">Open Modal</button>`.
-- **Scroll Locking Strategy**:
-  - **Native Lock**: Uses `document.body.style.overflow = 'hidden'` when modal is open.
-  - **Lenis Integration**: Pauses Lenis (`lenis.stop()`) on open, resumes on close.
-  - **Scrollable Content**: Elements inside the modal that need to scroll must have:
-    - `data-modal-scroll` attribute.
-    - `data-lenis-prevent` attribute to stop Lenis from interfering with touch events.
-    - `overscroll-contain` CSS class to prevent scroll chaining.
-    - Explicit height constraints (e.g., `h-full` inside a fixed parent) and content that overflows (e.g., `min-h-[101%]`).
-  - **Mobile Support**: This combination ensures native touch scrolling works on iOS/Android while keeping the background page locked.
+
+### Editor Compatibility (Aura.build)
+- **Detection**: `modal.js` and `global.js` detect the editor environment via:
+  - Hostname/URL containing `aura.build`.
+  - `window.location.href === 'about:srcdoc'`.
+  - `window.self !== window.top` (running inside an iframe).
+- **Behavior in Editor**:
+  - **Modal**: The `wrapModalContent` function **aborts** early. The modal content remains a static, inline block element at its original DOM position. It is NOT wrapped in a fixed overlay, making it easy to edit inline.
+  - **Scrolling**: `global.js` **skips** initializing Lenis smooth scrolling. This restores native scroll wheel functionality, preventing conflicts with the editor's canvas scrolling.
+- **DOM Preservation**: When wrapping (on live site), `modal.js` inserts the modal shell back into the content's **original parent** (e.g., `<section>`) instead of appending to `<body>`. This prevents empty "footprint" tags in the DOM.
+
+### Scroll Locking Strategy
+- **Native Lock**: Uses `document.body.style.overflow = 'hidden'` when modal is open.
+- **Lenis Integration**: Pauses Lenis (`lenis.stop()`) on open, resumes on close.
+- **Scrollable Content**: Elements inside the modal that need to scroll must have:
+  - `data-modal-scroll` attribute.
+  - `data-lenis-prevent` attribute to stop Lenis from interfering with touch events.
+  - `overscroll-contain` CSS class to prevent scroll chaining.
+  - Explicit height constraints (e.g., `h-full` inside a fixed parent) and content that overflows (e.g., `min-h-[101%]`).
+- **Mobile Support**: This combination ensures native touch scrolling works on iOS/Android while keeping the background page locked.
