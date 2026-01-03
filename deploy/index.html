@@ -12,8 +12,9 @@
     // This allows visual editors (which often don't run inline JS) to see the content
     (function() {
       try {
-        // Don't hide if in Aura editor (detected by hostname or query param)
-        if (window.location.hostname.includes('aura') || window.location.search.includes('aura')) return;
+        // Don't hide if in Aura editor (strict check)
+        // We check if the hostname ENDS with aura.build to avoid false positives
+        if (window.location.hostname.endsWith('aura.build')) return;
         
         var style = document.createElement('style');
         style.textContent = '[data-amp-modal-content] { display: none; }';

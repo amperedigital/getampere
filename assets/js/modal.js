@@ -228,9 +228,8 @@ const initModal = () => {
     if (!document.body) return; // Safety check
     
     // Detect Aura editor or other visual editors
-    // Note: We strictly check hostname/search to avoid false positives from Aura artifacts in the exported code
-    const isEditor = window.location.hostname.includes('aura') || 
-                     window.location.search.includes('aura');
+    // Strict check to avoid false positives on live site
+    const isEditor = window.location.hostname.endsWith('aura.build');
                      
     if (isEditor) {
       // In editor, ensure content is visible but DO NOT wrap it
