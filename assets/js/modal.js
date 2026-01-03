@@ -239,7 +239,8 @@ const initModal = () => {
     const isEditor = window.location.hostname.includes('aura.build') || 
                      window.location.href.includes('aura.build') ||
                      window.location.search.includes('aura') ||
-                     (document.referrer && document.referrer.includes('aura.build'));
+                     (document.referrer && document.referrer.includes('aura.build')) ||
+                     window.location.href === 'about:srcdoc';
                      
     if (isEditor) {
       console.log('[Ampere Modal] Editor detected, skipping wrap');
