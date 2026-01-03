@@ -130,6 +130,13 @@ const initModal = () => {
 
       showDialog();
       modal.classList.add("amp-modal--visible");
+      
+      // Force reflow to ensure transition plays
+      void modal.offsetWidth;
+
+      // Transition in: remove hidden state classes, add visible state classes
+      modal.classList.remove("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
+      modal.classList.add("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
 
       modal.querySelectorAll("[data-modal-scroll]").forEach((element) => (element.scrollTop = 0));
 
@@ -158,7 +165,10 @@ const initModal = () => {
       if (!isOpen || isClosing) return;
       
       isClosing = true;
-      modal.classList.remove("amp-modal--visible");
+      
+      // Transition out: remove visible state classes, add hidden state classes
+      modal.classList.remove("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
 
       if (closeTimer) {
         window.clearTimeout(closeTimer);

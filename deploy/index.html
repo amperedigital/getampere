@@ -2073,40 +2073,11 @@ font-family: 'Oswald', sans-serif !important;
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.80/assets/js/global.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.80/assets/js/modal.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.80/assets/js/hero-slider.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.80/assets/js/modal-helpers.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.81/assets/js/global.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.81/assets/js/modal.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.81/assets/js/hero-slider.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.81/assets/js/modal-helpers.js" defer></script>
     
-    <script>
-      (function () {
-        function ensureVisible(modal) {
-          if (!modal) return;
-          modal.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4', 'scale-[0.98]');
-          modal.style.opacity = '1';
-          modal.style.pointerEvents = 'auto';
-          modal.style.transform = 'translateY(0) scale(1)';
-          modal.setAttribute('aria-hidden', 'false');
-          const panel = modal.querySelector('.amp-modal__panel');
-          if (panel) {
-            panel.classList.remove('opacity-0', 'translate-y-4');
-            panel.style.opacity = '1';
-            panel.style.transform = 'translateY(0)';
-          }
-        }
-
-        window.addEventListener('amp-modal-open', function (ev) {
-          const modal = ev?.detail?.modal || document.querySelector('[data-amp-modal]');
-          ensureVisible(modal);
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-          const m = document.querySelector('[data-amp-modal].amp-modal--visible');
-          if (m) ensureVisible(m);
-        });
-      })();
-    </script>
-
 <div id="ai-hero-panel" data-amp-modal-content style="display:none;" class="h-full w-full relative">
           <div class="absolute top-5 max-sm:top-[-1.7rem] md:-top-6 right-6 flex bg-black/40 border-white/10 border rounded-xl pt-4 pr-4 pb-4 pl-4 backdrop-blur-md gap-x-3 gap-y-3 items-center z-[100001]">
             <div class="flex -space-x-2">
