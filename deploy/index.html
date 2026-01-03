@@ -1919,9 +1919,9 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Tabs (Box Layout) -->
     <div class="border-y border-white/10 bg-[#050505] relative z-20">
       <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/10 border-x border-white/10">
+        <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
-          <button class="group relative p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="true">
+          <button class="group relative min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="true">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1934,7 +1934,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 2 -->
-          <button class="group relative p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1946,7 +1946,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 3 -->
-          <button class="group relative p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1958,7 +1958,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 4 -->
-          <button class="group relative p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1990,11 +1990,11 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper (Visible for popups) -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16 w-full md:w-1/2 h-full pointer-events-auto">
+              <div class="flex flex-col justify-start md:justify-center p-8 md:p-12 lg:p-16 w-full md:w-1/2 h-full pointer-events-auto">
                 <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_001</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
-                <div>
+                <div class="hidden md:block">
                   <button class="bg-white text-black px-6 py-3 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors">
                     Discover how we help you
                   </button>
@@ -2004,7 +2004,7 @@ font-family: 'Oswald', sans-serif !important;
               <!-- Right: Media Container (Laptop Edge Look) -->
               <div class="w-full md:w-1/2 h-full flex items-center justify-center p-8 md:p-0 md:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div class="relative w-full aspect-square max-w-[500px] bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
+                 <div class="relative w-full aspect-square max-w-[500px] bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -2211,6 +2211,13 @@ font-family: 'Oswald', sans-serif !important;
                       </div>
                     </div>
                  </div>
+              </div>
+              
+              <!-- Mobile Button (Bottom) -->
+              <div class="w-full p-8 pt-0 md:hidden pointer-events-auto">
+                  <button class="w-full bg-white text-black px-6 py-4 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors shadow-lg">
+                    Discover how we help you
+                  </button>
               </div>
             </div>
           </div>
