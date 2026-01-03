@@ -136,15 +136,20 @@ const initModal = () => {
       lastFocusedElement =
         document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
+      // 1. Prepare to show: ensure layout, remove inert, set open attribute
       showDialog();
       modal.classList.add("amp-modal--visible");
+      modal.setAttribute("aria-hidden", "false");
       
-      // Force reflow to ensure transition plays
-      void modal.offsetWidth;
-
-      // Transition in: remove hidden state classes, add visible state classes
-      modal.classList.remove("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
-      modal.classList.add("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
+      // 2. Force reflow to ensure browser acknowledges the open state before animating
+      // Using double RAF for maximum safety across browsers
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // 3. Animate in: swap classes to trigger transition
+          modal.classList.remove("opacity-0", "translate-y-4", "scale-[0.98]", "pointer-events-none");
+          modal.classList.add("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
+        });
+      });
 
       modal.querySelectorAll("[data-modal-scroll]").forEach((element) => (element.scrollTop = 0));
 
@@ -175,6 +180,7 @@ const initModal = () => {
       if ((!isVisible && !isDialogOpen) || isClosing) return;
       
       isClosing = true;
+      modal.setAttribute("aria-hidden", "true");
       
       // Transition out: remove visible state classes, add hidden state classes
       modal.classList.remove("opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
