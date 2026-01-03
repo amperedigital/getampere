@@ -937,20 +937,6 @@ font-family: 'Oswald', sans-serif !important;
         </div>
       </div>
 
-      <style>
-        /* Ensure modal/backdrop only receive events when visible.
-           Also fully hide (display:none) when not visible so it cannot block the page. */
-        [data-amp-modal]:not(.amp-modal--visible) { display: none !important; pointer-events: none !important; }
-        [data-amp-modal].amp-modal--visible { display: block !important; pointer-events: auto !important; }
-        .amp-modal-backdrop { display: none !important; pointer-events: none !important; }
-        [data-amp-modal].amp-modal--visible .amp-modal-backdrop { display: block !important; pointer-events: auto !important; }
-      </style>
-      <style id="amp-modal-debug-styles">
-        /* DEBUG: visible debug outline when modal is visible */
-        [data-amp-modal].amp-modal--visible { outline: 3px dashed lime !important; }
-        [data-amp-modal].amp-modal--visible .amp-modal__panel { box-shadow: 0 0 0 4px rgba(0,255,0,0.08) inset, 0 40px 90px rgba(2,6,23,0.65); }
-        .amp-modal__backdrop { outline: 2px dashed rgba(255,0,0,0.6); }
-      </style>
       </div></section>
   <section class="sm:p-8 bg-blue-50 border-zinc-800 border-0 rounded-1xl mt-8 pt-6 pr-6 pb-6 pl-6" style="position: relative; overflow: hidden; background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px); background-size: 24px 24px;">
     <!-- Background dividers -->
