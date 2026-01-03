@@ -37,9 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
       triggers.forEach((t, i) => {
         if (i === index) {
           t.setAttribute('aria-selected', 'true');
+          t.setAttribute('data-selected', 'true');
           t.classList.add('active');
         } else {
           t.setAttribute('aria-selected', 'false');
+          t.setAttribute('data-selected', 'false');
           t.classList.remove('active');
         }
       });

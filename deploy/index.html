@@ -1910,105 +1910,131 @@ font-family: 'Oswald', sans-serif !important;
   </section>
 
   <!-- Tab Flipper Section -->
-  <section class="bg-[#050505] py-24 lg:py-32 relative overflow-hidden border-t border-white/5" data-tab-flipper>
-    <div class="max-w-7xl mx-auto px-6 lg:px-12">
-      
-      <!-- Header & Tabs Container -->
-      <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-8">
-        <div class="max-w-xl">
-          <span class="text-xs font-bold uppercase tracking-widest text-blue-500 mb-2 block">Use Cases</span>
-          <h2 class="text-3xl lg:text-4xl font-medium text-white tracking-tight font-geist">How we help</h2>
-        </div>
+  <section class="bg-[#050505] py-24 relative overflow-hidden border-t border-white/5" data-tab-flipper>
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-12">
+      <span class="text-xs font-bold uppercase tracking-widest text-blue-500 mb-2 block">Use Cases</span>
+      <h2 class="text-3xl lg:text-4xl font-medium text-white tracking-tight font-geist">How we help</h2>
+    </div>
 
-        <!-- Navigation Tabs -->
-        <div class="flex overflow-x-auto pb-4 gap-2 no-scrollbar mask-linear-fade w-full lg:w-auto -mx-6 px-6 lg:mx-0 lg:px-0">
+    <!-- Tabs (Box Layout) -->
+    <div class="border-y border-white/10 bg-[#050505] relative z-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
           <!-- Tab 1 -->
-          <button class="group flex-shrink-0 p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="true">
-            <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_001</span>
-            <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Inbound Sales</span>
+          <button class="group relative p-6 md:p-8 text-left hover:bg-white/5 transition-colors data-[selected=true]:bg-white/10 focus:outline-none" data-tab-trigger aria-selected="true">
+            <div class="flex flex-col h-full justify-between gap-4">
+              <span class="font-mono text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity">/ UC_001</span>
+              <span class="text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">Inbound Sales</span>
+            </div>
+            <!-- Active Indicator Line -->
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
           </button>
+
           <!-- Tab 2 -->
-          <button class="group flex-shrink-0 p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="false">
-            <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_002</span>
-            <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Customer Support</span>
+          <button class="group relative p-6 md:p-8 text-left hover:bg-white/5 transition-colors data-[selected=true]:bg-white/10 focus:outline-none" data-tab-trigger aria-selected="false">
+            <div class="flex flex-col h-full justify-between gap-4">
+              <span class="font-mono text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity">/ UC_002</span>
+              <span class="text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">Customer Support</span>
+            </div>
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
           </button>
+
           <!-- Tab 3 -->
-          <button class="group flex-shrink-0 p-4 rounded-xl transition-all duration-300 hover:bg-white/5 data-[selected=true]:bg-white/10 flex items-center gap-4 border border-transparent data-[selected=true]:border-white/10" data-tab-trigger aria-selected="false">
-            <span class="font-mono text-xs text-white/40 group-hover:text-white/60 transition-colors">/ UC_003</span>
-            <span class="text-lg font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white">Appointment Setting</span>
+          <button class="group relative p-6 md:p-8 text-left hover:bg-white/5 transition-colors data-[selected=true]:bg-white/10 focus:outline-none" data-tab-trigger aria-selected="false">
+            <div class="flex flex-col h-full justify-between gap-4">
+              <span class="font-mono text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity">/ UC_003</span>
+              <span class="text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">Appointment Setting</span>
+            </div>
+            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Cards (Full Width) -->
-      <div class="relative h-[500px] lg:h-[600px] perspective-1000 w-full max-w-5xl mx-auto">
+    <!-- Cards Container -->
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 mt-12 lg:mt-16">
+      <div class="relative w-full aspect-[16/10] md:aspect-[21/9] lg:h-[600px] perspective-2000">
         
         <!-- Card 1 -->
         <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom" data-tab-card>
-            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
-              <!-- Background/Media -->
-              <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Sales">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
-              </div>
-              
-              <!-- Content -->
-              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
-                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_001</span>
-                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Inbound Sales</h3>
-                <p class="text-white/60 text-lg max-w-xl mb-8">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
+          <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 24px 24px;"></div>
+            
+            <!-- Media/Image -->
+            <div class="absolute inset-0">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="Sales">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent"></div>
+            </div>
+            
+            <!-- Content -->
+            <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
+              <span class="font-mono text-sm text-blue-400 mb-6 block">/ UC_001</span>
+              <h3 class="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-6 font-geist tracking-tight">Inbound Sales</h3>
+              <p class="text-white/70 text-lg md:text-xl leading-relaxed mb-10">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
+              <div>
                 <button class="shiny-cta">
                   <span>View Case Study</span>
                 </button>
               </div>
             </div>
           </div>
-
-          <!-- Card 2 -->
-          <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 translate-y-12 rotate-x-12 pointer-events-none" data-tab-card>
-            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
-              <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Support">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
-              </div>
-              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
-                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_002</span>
-                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Customer Support</h3>
-                <p class="text-white/60 text-lg max-w-xl mb-8">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
-                <button class="shiny-cta">
-                  <span>View Case Study</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 translate-y-12 rotate-x-12 pointer-events-none" data-tab-card>
-            <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
-              <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity transition-opacity duration-500 group-hover:opacity-50" alt="Appointments">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent"></div>
-              </div>
-              <div class="absolute bottom-0 left-0 p-8 lg:p-12 w-full">
-                <span class="font-mono text-xs text-blue-400 mb-4 block">/ UC_003</span>
-                <h3 class="text-3xl lg:text-4xl font-medium text-white mb-4 font-geist">Appointment Setting</h3>
-                <p class="text-white/60 text-lg max-w-xl mb-8">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
-                <button class="shiny-cta">
-                  <span>View Case Study</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        <!-- Card 2 -->
+        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 pointer-events-none" data-tab-card>
+          <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+            <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 24px 24px;"></div>
+            <div class="absolute inset-0">
+              <img src="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="Support">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent"></div>
+            </div>
+            <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
+              <span class="font-mono text-sm text-blue-400 mb-6 block">/ UC_002</span>
+              <h3 class="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-6 font-geist tracking-tight">Customer Support</h3>
+              <p class="text-white/70 text-lg md:text-xl leading-relaxed mb-10">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
+              <div>
+                <button class="shiny-cta">
+                  <span>View Case Study</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-bottom opacity-0 pointer-events-none" data-tab-card>
+          <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
+            <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 24px 24px;"></div>
+            <div class="absolute inset-0">
+              <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="Appointments">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent"></div>
+            </div>
+            <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
+              <span class="font-mono text-sm text-blue-400 mb-6 block">/ UC_003</span>
+              <h3 class="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-6 font-geist tracking-tight">Appointment Setting</h3>
+              <p class="text-white/70 text-lg md:text-xl leading-relaxed mb-10">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
+              <div>
+                <button class="shiny-cta">
+                  <span>View Case Study</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     
     <!-- Styles for 3D transitions -->
     <style>
-      .perspective-1000 { perspective: 1000px; }
-      .rotate-x-12 { transform: rotateX(12deg); }
+      .perspective-2000 { perspective: 2000px; }
       
+      [data-tab-card] {
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+      }
+
       [data-tab-card].active {
         opacity: 1;
         transform: translateY(0) rotateX(0);
@@ -2018,31 +2044,16 @@ font-family: 'Oswald', sans-serif !important;
       
       [data-tab-card].inactive-prev {
         opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateY(-100px) rotateX(20deg) scale(0.9);
         pointer-events: none;
         z-index: 0;
       }
       
       [data-tab-card].inactive-next {
         opacity: 0;
-        transform: translateY(40px) rotateX(-10deg) scale(0.95);
+        transform: translateY(100px) rotateX(-20deg) scale(0.9);
         pointer-events: none;
         z-index: 0;
-      }
-
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-      
-      .mask-linear-fade {
-        mask-image: linear-gradient(to right, black 85%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
       }
     </style>
   </section>
