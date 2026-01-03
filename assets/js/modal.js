@@ -77,11 +77,8 @@ const initModal = () => {
     let escapeHandler = null;
 
     function showDialog() {
-      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
-      if (isDialogOpen) return;
-
       if (modal.tagName === 'DIALOG' && typeof modal.show === "function") {
-        modal.show();
+        if (!modal.open) modal.show();
       } else {
         modal.setAttribute("open", "");
       }
@@ -89,11 +86,8 @@ const initModal = () => {
     }
 
     function hideDialog() {
-      const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
-      if (!isDialogOpen) return;
-
       if (modal.tagName === 'DIALOG' && typeof modal.close === "function") {
-        modal.close();
+        if (modal.open) modal.close();
       } else {
         modal.removeAttribute("open");
       }
@@ -124,10 +118,17 @@ const initModal = () => {
     }
 
     function openModal() {
+      // Clear any pending close timer to prevent race conditions
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+
       const isVisible = modal.classList.contains("amp-modal--visible");
       const isDialogOpen = modal.tagName === 'DIALOG' ? modal.open : modal.hasAttribute("open");
       
-      if (isVisible || isDialogOpen) return;
+      // If fully open and not currently closing, ignore
+      if (isVisible && isDialogOpen && !isClosing) return;
       
       isClosing = false;
 
