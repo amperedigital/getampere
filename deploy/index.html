@@ -55,28 +55,19 @@
     /* Manual Active State for CRM Card */
     /* Manual Active State for CRM Card */
     /* Manual Active State for CRM Card */
-    #crm-card-container.manual-active #crm-3d-card {
-        transform: rotateY(-12deg) rotateX(6deg) !important;
-    }
-
-    /* Hover State when Active: Resume 3D and Reset Border */
-    #crm-card-container.manual-active:hover #crm-3d-card {
-        transform: rotateY(0deg) rotateX(0deg) !important;
-    }
-
     /* Animation Control: Default Hidden/Stopped */
     .crm-animated-element, .crm-ping-element {
         display: none !important;
     }
 
-    /* Active State: Show/Run Animations ONLY ON HOVER */
-    #crm-card-container.manual-active:hover .crm-animated-element,
-    #crm-card-container.manual-active:hover .crm-ping-element {
+    /* Active State: Show/Run Animations ONLY ON HOVER of the CARD */
+    [data-tab-card].active:hover .crm-animated-element,
+    [data-tab-card].active:hover .crm-ping-element {
         display: block !important;
         opacity: 1 !important;
     }
     
-    #crm-card-container.manual-active:hover .crm-ping-element {
+    [data-tab-card].active:hover .crm-ping-element {
         animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
@@ -2343,14 +2334,14 @@ font-family: 'Oswald', sans-serif !important;
 
       [data-tab-card].active {
         opacity: 1;
-        transform: rotateY(0deg);
+        transform: rotateY(-12deg) rotateX(6deg);
         pointer-events: auto;
         z-index: 10;
         transition: transform 0.5s ease-out, opacity 0.5s ease-out;
       }
 
       [data-tab-card].active:hover {
-        transform: rotateY(0deg);
+        transform: rotateY(0deg) rotateX(0deg);
       }
       
       [data-tab-card].inactive-prev {
