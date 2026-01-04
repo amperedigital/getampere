@@ -2280,25 +2280,231 @@ font-family: 'Oswald', sans-serif !important;
 
         <!-- Card 3 -->
         <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
-          <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
-            <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 24px 24px;"></div>
-            <div class="absolute inset-0">
-              <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" alt="Appointments">
-              <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent"></div>
+          <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
+            <!-- Background Layer -->
+            <div class="absolute inset-0 bg-[#111111] rounded-3xl border border-white/10 overflow-hidden">
+               <!-- Background Image (Dots) -->
+               <img src="./assets/dots-card.png" class="absolute inset-0 w-full h-full object-cover opacity-100" alt="">
+               <!-- Gradient Overlay for Fade Effect -->
+               <div class="absolute inset-0 bg-gradient-to-br from-transparent via-[#111111]/20 to-[#111111] pointer-events-none"></div>
             </div>
-            <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
-              <span class="font-mono text-sm text-blue-400 mb-6 block">/ UC_003</span>
-              <h3 class="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-6 font-geist tracking-tight">Scheduling Platforms</h3>
-              <p class="text-white/70 text-lg md:text-xl leading-relaxed mb-10">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
-              <div>
-                <button class="shiny-cta">
-                  <span class="text-sm font-medium">View Case Study</span>
-                </button>
+            
+            <!-- Content Wrapper -->
+            <div class="relative w-full h-full flex flex-col md:flex-row z-10">
+              <!-- Left: Content -->
+              <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_003</span>
+                <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
+                <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
+                <div class="hidden md:block">
+                  <button class="shiny-cta">
+                    <span class="text-sm font-medium">View Case Study</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right: Media Container (Laptop Edge Look) -->
+              <div class="w-full md:w-1/2 h-auto md:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
+                 <!-- The "Screen" Container with 3D Transform -->
+                 <div id="uc003-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)]" style="transform-style: preserve-3d;">
+                    <!-- Darkening Overlay -->
+                    <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
+                    <!-- Screen Reflection/Gloss -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-0 rounded-xl overflow-hidden"></div>
+                    
+                    <!-- Content Wrapper -->
+                    <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none" id="uc003-anim-container">
+                        <!-- Coordinate Root (Scaled) -->
+                        <div class="relative w-full h-full scale-90">
+                            <!-- SVG Background -->
+                            <svg id="uc003-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                  <linearGradient id="uc003-beam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#fff" stop-opacity="0"></stop>
+                                    <stop offset="50%" stop-color="#60a5fa" stop-opacity="1"></stop>
+                                    <stop offset="100%" stop-color="#fff" stop-opacity="0"></stop>
+                                  </linearGradient>
+                                  <clipPath id="uc003-sched-beam-window">
+                                      <rect x="0" y="0" width="400" height="400" rx="20" ry="20" />
+                                  </clipPath>
+                                </defs>
+            
+                                <!-- Connection Paths -->
+                                <!-- Center to Top Left (Calendly) -->
+                                <path id="uc003-line1" d="M200,200 L100,120" stroke="#27272a" stroke-width="1.5" stroke-dasharray="4 4"></path>
+                                <path id="uc003-line1-rev" d="M100,120 L200,200" stroke="transparent" fill="none"></path>
+            
+                                <!-- Center to Top Right (G-Cal) -->
+                                <path id="uc003-line2" d="M200,200 L300,120" stroke="#27272a" stroke-width="1.5" stroke-dasharray="4 4"></path>
+                                <path id="uc003-line2-rev" d="M300,120 L200,200" stroke="transparent" fill="none"></path>
+            
+                                <!-- Center to Bottom (Acuity) -->
+                                <path id="uc003-line3" d="M200,200 L200,315" stroke="#27272a" stroke-width="1.5" stroke-dasharray="4 4"></path>
+                                <path id="uc003-line3-rev" d="M200,315 L200,200" stroke="transparent" fill="none"></path>
+            
+                                <!-- Circulating Light Beams -->
+                                <g clip-path="url(#uc003-sched-beam-window)">
+                                  <!-- Outgoing -->
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="hidden">
+                                    <animateMotion dur="2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1"></mpath>
+                                    </animateMotion>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 0.7s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 0.7s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.4s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.4s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 0.3s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 0.3s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.2s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.7s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.7s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.1s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 0.6s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 0.6s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.1s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.3s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.3s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.1s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 2s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 2s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+            
+                                  <!-- Incoming -->
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.7s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.7s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 2.4s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line1-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 2.4s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.7s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 0.8s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 0.8s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.7s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.5s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.5s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.7s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 2.2s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line2-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 2.2s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.6s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.2s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.2s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.6s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 1.9s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 1.9s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                  <circle r="2" fill="#a78bfa" filter="drop-shadow(0 0 4px #a78bfa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
+                                    <animateMotion dur="2.6s" repeatCount="indefinite" begin="uc003-card-container.mouseenter + 2.6s" end="uc003-card-container.mouseleave">
+                                      <mpath href="#uc003-line3-rev"></mpath>
+                                    </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-card-container.mouseenter + 2.6s" end="uc003-card-container.mouseleave"></set>
+                                  </circle>
+                                </g>
+                            </svg>
+            
+                            <!-- HTML Nodes -->
+                            <!-- Center Hub -->
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20">
+                                <div class="relative flex items-center justify-center">
+                                  <svg class="absolute pointer-events-none w-[130px] h-[130px]" viewBox="0 0 140 140" aria-hidden="true">
+                                    <defs>
+                                      <path id="uc003-label-path" d="M20,70 A50,50 0 0 0 120,70"></path>
+                                    </defs>
+                                    <text fill="white" font-size="10" font-weight="500" letter-spacing="1.5" opacity="0.7">
+                                      <textPath href="#uc003-label-path" startOffset="50%" text-anchor="middle">SCHEDULING</textPath>
+                                    </text>
+                                  </svg>
+                                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 z-10">
+                                    <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                  </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Calendly (Top Left) -->
+                            <div class="absolute top-[30%] left-[25%] -translate-x-1/2 -translate-y-1/2 z-20">
+                                <div class="w-12 h-12 rounded-xl bg-[#1a1a1a] border border-white/10 flex items-center justify-center shadow-lg">
+                                    <span class="text-xs font-bold text-white">Cal</span>
+                                </div>
+                            </div>
+                            
+                            <!-- G-Cal (Top Right) -->
+                            <div class="absolute top-[30%] right-[25%] translate-x-1/2 -translate-y-1/2 z-20">
+                                <div class="w-12 h-12 rounded-xl bg-[#1a1a1a] border border-white/10 flex items-center justify-center shadow-lg">
+                                    <span class="text-xs font-bold text-white">G</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Acuity (Bottom) -->
+                            <div class="absolute bottom-[20%] left-1/2 -translate-x-1/2 translate-y-1/2 z-20">
+                                <div class="w-12 h-12 rounded-xl bg-[#1a1a1a] border border-white/10 flex items-center justify-center shadow-lg">
+                                    <span class="text-xs font-bold text-white">Ac</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <!-- Card 4 -->
         <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
           <div class="w-full h-full bg-[#121212] rounded-3xl border border-white/10 overflow-hidden relative group">
