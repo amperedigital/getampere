@@ -8,6 +8,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Tab Flipper v2.1 Loaded');
 
+  // Inject styles for forced visibility of animated elements
+  const style = document.createElement('style');
+  style.textContent = `
+    .manual-active .force-visible {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  `;
+  document.head.appendChild(style);
+
   // Initialize Text Flip Effect
   const flipTexts = document.querySelectorAll('.hover-flip-text');
   flipTexts.forEach(el => {
@@ -57,21 +68,59 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
         
-        const shouldRun = isActive || isHovered; // Run if tab is active OR hovered
+        const shouldRun = isActive || isHovered;
+        
+        // Select all animation elements
+        const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
+        // Select elements that should be visible during animation (parents of animateMotion)
+        const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
             container.classList.add("manual-active");
-            const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
-            anims.forEach(anim => {
-                try {
-                    anim.beginElement(); 
-                } catch(e) {
-                    console.warn(`SMIL error in ${name}:`, e);
+            
+            // Force visibility on elements with motion animations
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    motion.parentElement.classList.add('force-visible');
                 }
             });
+
+            // Trigger Animations
+            anims.forEach(anim => {
+                try {
+                    // Check if this animation depends on a trigger
+                    const beginAttr = anim.getAttribute('begin');
+                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
+
+                    // If it's the master trigger, always begin
+                    if (isTrigger) {
+                        anim.beginElement();
+                    }
+                    // If it's dependent, DO NOT manually begin (let the trigger handle it)
+                    else if (isDependent) {
+                        // Do nothing, the trigger will start it
+                    }
+                    // If it's independent (e.g. center pulse with no begin or begin="0s"), begin it
+                    else {
+                        anim.beginElement();
+                    }
+                } catch(e) {
+                    console.warn(`SMIL begin error in ${name}:`, e);
+                }
+            });
+
         } else {
             container.classList.remove("manual-active");
-            const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
+            
+            // Remove forced visibility
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    motion.parentElement.classList.remove('force-visible');
+                }
+            });
+
+            // Stop Animations
             anims.forEach(anim => {
                 try {
                     anim.endElement();
