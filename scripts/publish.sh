@@ -32,3 +32,6 @@ git push origin HEAD:master
 git push origin "$TAG"
 
 echo "Published ${TAG} and updated deploy/index.html"
+
+# Deploy to Cloudflare Workers
+npx wrangler deploy
