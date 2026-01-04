@@ -30,24 +30,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let activeIndex = 0;
     let isAnimating = false;
-
-    // Animation Trigger Logic
+    
+    // CRM Card State Logic
     const animTrigger = document.getElementById('crm-anim-trigger');
     const crmContainer = document.getElementById('crm-card-container');
     const crmCard3d = document.getElementById('crm-3d-card');
-    
-    // Check if this flipper instance actually controls the CRM card
     const controlsCrm = crmContainer && flipper.contains(crmContainer);
     
-    if (animTrigger && crmContainer && controlsCrm) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && activeIndex === 0) {
-             try { animTrigger.beginElement(); } catch(e){}
-          }
+    let isTabActive = false;
+    let isHovered = false;
+
+    // Unified function to handle CRM card state
+    function updateCrmState() {
+        if (!controlsCrm || !crmContainer) return;
+        
+        const shouldBeActive = isTabActive || isHovered;
+        
+        if (shouldBeActive) {
+            crmContainer.classList.add('manual-active');
+            // Trigger animation if it's not already running (optional check, but beginElement is safe)
+            if (animTrigger) {
+                try { 
+                    animTrigger.beginElement(); 
+                } catch(e){ console.error('SMIL trigger failed', e); }
+            }
+        } else {
+            crmContainer.classList.remove('manual-active');
+        }
+    }
+
+    // Bind Hover Events for CRM Card
+    if (controlsCrm && crmContainer) {
+        crmContainer.addEventListener('mouseenter', () => {
+            isHovered = true;
+            updateCrmState();
         });
-      }, { threshold: 0.3 });
-      observer.observe(crmContainer);
+        crmContainer.addEventListener('mouseleave', () => {
+            isHovered = false;
+            updateCrmState();
+        });
+        
+        // Initial Intersection Observer to trigger animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && activeIndex === 0) {
+                    // Just trigger animation, state is handled by tab logic
+                    if (animTrigger) {
+                        try { animTrigger.beginElement(); } catch(e){}
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(crmContainer);
     }
 
     // Initialize
@@ -90,23 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const video = c.querySelector('video');
           if (video) video.play().catch(() => {});
 
-          // Trigger SVG animation if it's the first tab (index 0)
+          // Update CRM State based on Tab 0
           if (index === 0 && controlsCrm) {
-             console.log('Tab 0 active - applying CRM styles (Class-based)');
-             if (crmContainer) crmContainer.classList.add('manual-active');
-             
-             if (animTrigger) {
-                 try { 
-                   animTrigger.beginElement(); 
-                   if (crmContainer) crmContainer.dispatchEvent(new Event('mouseenter'));
-                 } catch(e){ console.error('SMIL trigger failed', e); }
-             }
+             isTabActive = true;
+             updateCrmState();
           } else if (controlsCrm) {
-             if (crmContainer) crmContainer.classList.remove('manual-active');
-             // Remove inline style if any remains
-             if (crmCard3d) {
-                crmCard3d.style.cssText = '';
-             }
+             isTabActive = false;
+             updateCrmState();
           }
         } else {
           // Pause video if present
