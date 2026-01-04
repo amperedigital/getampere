@@ -52,11 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (shouldBeActive) {
             crmContainer.classList.add('manual-active');
-            if (crmCard3d) {
-                crmCard3d.style.setProperty('transform', 'matrix3d(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1)', 'important');
-                crmCard3d.style.setProperty('border-color', 'rgba(59, 130, 246, 0.5)', 'important');
-                console.log('CRM Card Transform Applied:', window.getComputedStyle(crmCard3d).transform);
-            }
             // Trigger animation if it's not already running (optional check, but beginElement is safe)
             if (animTrigger) {
                 try { 
@@ -65,10 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             crmContainer.classList.remove('manual-active');
-            if (crmCard3d) {
-                crmCard3d.style.removeProperty('transform');
-                crmCard3d.style.removeProperty('border-color');
-            }
         }
     }
 
