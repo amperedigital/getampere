@@ -22,7 +22,8 @@ perl -0777 -pe "s#(cdn.jsdelivr.net/gh/amperedigital/getampere)@v[0-9]+(?:\.[0-9
 # Commit and tag
 cd "$ROOT"
 
-git add "$DEPLOY"
+# Add deploy and assets directories to ensure all new files are included
+git add deploy/ assets/
 git commit -m "chore(release): pin deploy scripts to ${TAG}"
 
 git tag "$TAG"
