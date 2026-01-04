@@ -42,9 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Unified function to handle CRM card state
     function updateCrmState() {
-        if (!controlsCrm || !crmContainer) return;
+        if (!controlsCrm || !crmContainer) {
+            console.log('CRM State Update Skipped: Missing controls or container');
+            return;
+        }
         
         const shouldBeActive = isTabActive || isHovered;
+        console.log(`CRM State Update: Active=${shouldBeActive} (Tab=${isTabActive}, Hover=${isHovered})`);
         
         if (shouldBeActive) {
             crmContainer.classList.add('manual-active');
@@ -62,10 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bind Hover Events for CRM Card
     if (controlsCrm && crmContainer) {
         crmContainer.addEventListener('mouseenter', () => {
+            console.log('CRM Hover Enter');
             isHovered = true;
             updateCrmState();
         });
         crmContainer.addEventListener('mouseleave', () => {
+            console.log('CRM Hover Leave');
             isHovered = false;
             updateCrmState();
         });
