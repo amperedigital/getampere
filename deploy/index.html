@@ -2212,14 +2212,17 @@ font-family: 'Oswald', sans-serif !important;
               </div>
               
               <!-- Mobile Button (Bottom) -->
-              <div class="w-full md:hidden border-t border-white/10 py-6 flex justify-center relative z-50">
-                  <button class="text-sm font-medium text-white hover:text-white/80 transition-colors flex items-center gap-2 group">
-                    <span class="group-hover:underline underline-offset-4">Discover how we help you</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1">
+              <div class="w-full md:hidden border-t border-white/10 py-3 flex justify-center relative z-50">
+                  <a href="#" class="group inline-flex items-center gap-2 hover:text-white transition-colors text-sm font-medium text-[#E4E4E7] relative z-10">
+                    Discover how we help you
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right transition-transform duration-300 group-hover:translate-x-0.5">
                       <path d="M5 12h14"></path>
                       <path d="m12 5 7 7-7 7"></path>
                     </svg>
-                  </button>
+                    <span class="absolute -bottom-1 left-0 h-px w-full bg-white/10 overflow-hidden">
+                        <span class="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-in-out"></span>
+                    </span>
+                  </a>
               </div>
             </div>
           </div>
