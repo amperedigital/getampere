@@ -2629,9 +2629,10 @@ font-family: 'Oswald', sans-serif !important;
                   // Trigger SVG animation if it's the first tab (index 0)
                   if (index === 0 && controlsCrm) {
                      if (crmContainer) crmContainer.classList.add('manual-active');
-                     // Force inline style to override any Tailwind specificity issues
+                     // Force inline style to match the exact group-hover transform: rotateY(-5deg) rotateX(2deg)
                      if (crmCard3d) {
-                        crmCard3d.style.setProperty('transform', 'rotateY(0deg) rotateX(0deg)', 'important');
+                        crmCard3d.style.setProperty('transform', 'rotateY(-5deg) rotateX(2deg)', 'important');
+                        crmCard3d.style.setProperty('border-color', 'rgba(255,255,255,0.2)', 'important');
                      }
                      
                      if (animTrigger) {
@@ -2645,6 +2646,7 @@ font-family: 'Oswald', sans-serif !important;
                      // Remove inline style to let CSS take over (tilted state)
                      if (crmCard3d) {
                         crmCard3d.style.removeProperty('transform');
+                        crmCard3d.style.removeProperty('border-color');
                      }
                   }
                 } else {
