@@ -2180,7 +2180,7 @@ font-family: 'Oswald', sans-serif !important;
                                 <path d="M21 9v6M21 27v6M9 21h6M27 24l6 2" stroke="#fed7aa" stroke-width="2" stroke-linecap="round"></path>
                               </svg>
                             </button>
-                            <div class="absolute top-1/2 left-full ml-3 -translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-amber-400/40 text-white shadow-lg shadow-amber-500/25 backdrop-blur origin-left z-50 opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-x-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:pointer-events-auto">
+                            <div class="absolute top-1/2 right-full md:left-full mr-3 md:mr-0 md:ml-3 -translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-amber-400/40 text-white shadow-lg shadow-amber-500/25 backdrop-blur origin-right md:origin-left z-50 opacity-0 translate-x-2 md:-translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-x-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:pointer-events-auto">
                               <div class="space-y-1 text-left">
                                 <p class="text-[11px] uppercase tracking-[0.35em] text-amber-100/80">HubSpot</p>
                                 <p class="text-sm font-semibold text-white leading-tight">Deal Enrichment</p>
@@ -2214,17 +2214,13 @@ font-family: 'Oswald', sans-serif !important;
               </div>
               
               <!-- Mobile Button (Bottom) -->
-              <div class="w-full p-8 pt-0 md:hidden pointer-events-auto">
-                  <button class="w-full group inline-flex overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.35)] rounded-xl p-[1px] relative items-center justify-center">
-                    <span class="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_70%,#2563eb_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-                    <span class="absolute inset-0 rounded-xl bg-gradient-to-b from-slate-900 via-slate-950 to-black"></span>
-                    <span class="flex items-center justify-center gap-3 text-sm font-medium text-slate-200 w-full h-full rounded-xl py-4 px-6 relative bg-gradient-to-b from-slate-900 via-slate-950 to-black border border-blue-500/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
-                      <span class="z-10 font-geist relative">Discover how we help you</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
-                        <path d="M5 12h14"></path>
-                        <path d="m12 5 7 7-7 7"></path>
-                      </svg>
-                    </span>
+              <div class="w-full md:hidden pointer-events-auto border-t border-white/10">
+                  <button class="w-full py-6 flex items-center justify-center gap-2 text-white/90 hover:text-white transition-colors group">
+                    <span class="font-medium text-base">Discover how we help you</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1">
+                      <path d="M5 12h14"></path>
+                      <path d="m12 5 7 7-7 7"></path>
+                    </svg>
                   </button>
               </div>
             </div>
