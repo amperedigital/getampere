@@ -1974,11 +1974,11 @@ font-family: 'Oswald', sans-serif !important;
 
     <!-- Cards Container -->
     <div class="max-w-7xl mx-auto px-6 lg:px-12 mt-12 lg:mt-16">
-      <div class="relative w-full aspect-[16/10] md:aspect-[21/9] lg:h-[600px] perspective-2000">
+      <div class="relative w-full h-auto md:aspect-[21/9] md:h-[600px] perspective-2000">
         
         <!-- Card 1 -->
-        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center" data-tab-card>
-          <div class="w-full h-full relative group" id="crm-card-container">
+        <div class="relative md:absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center" data-tab-card>
+          <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#111111] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1990,7 +1990,7 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper (Visible for popups) -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-8 md:p-12 lg:p-16 w-full md:w-1/2 h-full pointer-events-auto">
+              <div class="flex flex-col justify-start md:justify-center p-8 md:p-12 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
                 <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_001</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
@@ -2002,9 +2002,9 @@ font-family: 'Oswald', sans-serif !important;
               </div>
 
               <!-- Right: Media Container (Laptop Edge Look) -->
-              <div class="w-full md:w-1/2 h-full flex items-center justify-center p-8 md:p-0 md:pr-16 overflow-visible perspective-1000 pointer-events-auto">
+              <div class="w-full md:w-1/2 h-auto md:h-full flex items-center justify-center p-8 pt-0 md:p-0 md:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div class="relative w-full aspect-square max-w-[500px] bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
+                 <div class="relative w-full aspect-[4/3] md:aspect-square max-w-[500px] bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -2215,8 +2215,16 @@ font-family: 'Oswald', sans-serif !important;
               
               <!-- Mobile Button (Bottom) -->
               <div class="w-full p-8 pt-0 md:hidden pointer-events-auto">
-                  <button class="w-full bg-white text-black px-6 py-4 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors shadow-lg">
-                    Discover how we help you
+                  <button class="w-full group inline-flex overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.35)] rounded-xl p-[1px] relative items-center justify-center">
+                    <span class="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_70%,#2563eb_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+                    <span class="absolute inset-0 rounded-xl bg-gradient-to-b from-slate-900 via-slate-950 to-black"></span>
+                    <span class="flex items-center justify-center gap-3 text-sm font-medium text-slate-200 w-full h-full rounded-xl py-4 px-6 relative bg-gradient-to-b from-slate-900 via-slate-950 to-black border border-blue-500/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+                      <span class="z-10 font-geist relative">Discover how we help you</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                      </svg>
+                    </span>
                   </button>
               </div>
             </div>
