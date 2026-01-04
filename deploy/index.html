@@ -53,32 +53,25 @@
 
     /* Manual Active State for CRM Card */
     /* Manual Active State for CRM Card */
+    /* Manual Active State for CRM Card */
     #crm-card-container.manual-active #crm-3d-card {
         transform: rotateY(0deg) rotateX(0deg) !important;
-        border-color: rgba(59, 130, 246, 0.5) !important;
-    }
-    
-    /* Hover State when Active: Resume 3D and Reset Border */
-    #crm-card-container.manual-active:hover #crm-3d-card {
-        transform: rotateY(-12deg) rotateX(6deg) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
     }
 
-    /* Active State: Show Animations */
-    #crm-card-container.manual-active .crm-animated-element {
+    /* Animation Control: Default Hidden/Stopped */
+    .crm-animated-element, .crm-ping-element {
+        display: none !important;
+    }
+
+    /* Active State: Show/Run Animations */
+    #crm-card-container.manual-active .crm-animated-element,
+    #crm-card-container.manual-active .crm-ping-element {
+        display: block !important;
         opacity: 1 !important;
     }
+    
     #crm-card-container.manual-active .crm-ping-element {
         animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
-    }
-
-    /* Hover State when Active: Hide/Stop Animations */
-    #crm-card-container.manual-active:hover .crm-animated-element {
-        opacity: 0 !important;
-    }
-    #crm-card-container.manual-active:hover .crm-ping-element {
-        animation: none !important;
-        opacity: 0 !important;
     }
 
     @keyframes ping {
