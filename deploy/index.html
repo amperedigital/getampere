@@ -2628,11 +2628,12 @@ font-family: 'Oswald', sans-serif !important;
 
                   // Trigger SVG animation if it's the first tab (index 0)
                   if (index === 0 && controlsCrm) {
+                     console.log('Tab 0 active - applying CRM styles');
                      if (crmContainer) crmContainer.classList.add('manual-active');
                      // Force inline style to match the exact group-hover transform: rotateY(-5deg) rotateX(2deg)
                      if (crmCard3d) {
-                        crmCard3d.style.setProperty('transform', 'rotateY(-5deg) rotateX(2deg)', 'important');
-                        crmCard3d.style.setProperty('border-color', 'rgba(255,255,255,0.2)', 'important');
+                        // Use cssText to ensure it overrides everything
+                        crmCard3d.style.cssText = 'transform: rotateY(-5deg) rotateX(2deg) !important; border-color: rgba(255,255,255,0.2) !important; transform-style: preserve-3d;';
                      }
                      
                      if (animTrigger) {
@@ -2645,8 +2646,7 @@ font-family: 'Oswald', sans-serif !important;
                      if (crmContainer) crmContainer.classList.remove('manual-active');
                      // Remove inline style to let CSS take over (tilted state)
                      if (crmCard3d) {
-                        crmCard3d.style.removeProperty('transform');
-                        crmCard3d.style.removeProperty('border-color');
+                        crmCard3d.style.cssText = 'transform-style: preserve-3d;';
                      }
                   }
                 } else {
@@ -3219,3 +3219,4 @@ font-family: 'Oswald', sans-serif !important;
   </div></div></div></section>
   <!-- End Modal -->
 </body></html>
+<!-- force deploy 20260103-1 -->
