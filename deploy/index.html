@@ -2022,7 +2022,7 @@ font-family: 'Oswald', sans-serif !important;
               <!-- Right: Media Container (Laptop Edge Look) -->
               <div class="w-full md:w-1/2 h-auto md:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="crm-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]">
+                 <div id="crm-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm group-hover:border-white/20 transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] group-hover:[transform:rotateY(-5deg)_rotateX(2deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]" style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -2532,10 +2532,10 @@ font-family: 'Oswald', sans-serif !important;
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.180/assets/js/global.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.180/assets/js/modal.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.180/assets/js/hero-slider.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.180/assets/js/modal-helpers.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.181/assets/js/global.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.181/assets/js/modal.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.181/assets/js/hero-slider.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.0.181/assets/js/modal-helpers.js" defer></script>
         <script>
         /**
          * Tab Controlled Card Flipper (Inlined for immediate update)
@@ -2630,7 +2630,9 @@ font-family: 'Oswald', sans-serif !important;
                   if (index === 0 && controlsCrm) {
                      if (crmContainer) crmContainer.classList.add('manual-active');
                      // Force inline style to override any Tailwind specificity issues
-                     if (crmCard3d) crmCard3d.style.transform = 'rotateY(0deg) rotateX(0deg)';
+                     if (crmCard3d) {
+                        crmCard3d.style.setProperty('transform', 'rotateY(0deg) rotateX(0deg)', 'important');
+                     }
                      
                      if (animTrigger) {
                          try { 
@@ -2641,7 +2643,9 @@ font-family: 'Oswald', sans-serif !important;
                   } else if (controlsCrm) {
                      if (crmContainer) crmContainer.classList.remove('manual-active');
                      // Remove inline style to let CSS take over (tilted state)
-                     if (crmCard3d) crmCard3d.style.transform = '';
+                     if (crmCard3d) {
+                        crmCard3d.style.removeProperty('transform');
+                     }
                   }
                 } else {
                   // Pause video if present
