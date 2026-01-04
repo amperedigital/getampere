@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const animTrigger = document.getElementById('crm-anim-trigger');
     const crmContainer = document.getElementById('crm-card-container');
     
-    if (animTrigger && crmContainer) {
+    // Check if this flipper instance actually controls the CRM card
+    const controlsCrm = crmContainer && flipper.contains(crmContainer);
+    
+    if (animTrigger && crmContainer && controlsCrm) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && activeIndex === 0) {
@@ -87,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (video) video.play().catch(() => {});
 
           // Trigger SVG animation if it's the first tab (index 0)
-          if (index === 0) {
+          if (index === 0 && controlsCrm) {
              if (crmContainer) crmContainer.classList.add('manual-active');
              if (animTrigger) {
                  try { 
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                    if (crmContainer) crmContainer.dispatchEvent(new Event('mouseenter'));
                  } catch(e){ console.error('SMIL trigger failed', e); }
              }
-          } else {
+          } else if (controlsCrm) {
              if (crmContainer) crmContainer.classList.remove('manual-active');
           }
         } else {
