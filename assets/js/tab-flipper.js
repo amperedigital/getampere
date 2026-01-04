@@ -92,6 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
              try { 
                // Force restart by calling endElement then beginElement if needed, but beginElement usually restarts
                animTrigger.beginElement(); 
+               
+               // Also dispatch a mouseenter event to the container to emulate hover behavior exactly
+               if (crmContainer) {
+                  crmContainer.dispatchEvent(new Event('mouseenter'));
+               }
              } catch(e){ console.error('SMIL trigger failed', e); }
           }
         } else {
