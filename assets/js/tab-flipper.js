@@ -31,6 +31,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeIndex = 0;
     let isAnimating = false;
 
+    // Animation Trigger Logic
+    const animTrigger = document.getElementById('crm-anim-trigger');
+    const crmContainer = document.getElementById('crm-card-container');
+    
+    if (animTrigger && crmContainer) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && activeIndex === 0) {
+             try { animTrigger.beginElement(); } catch(e){}
+          }
+        });
+      }, { threshold: 0.3 });
+      observer.observe(crmContainer);
+    }
+
     // Initialize
     setActive(0);
 
@@ -70,6 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Play video if present
           const video = c.querySelector('video');
           if (video) video.play().catch(() => {});
+
+          // Trigger SVG animation if it's the first tab (index 0)
+          if (index === 0 && animTrigger && crmContainer) {
+             const rect = crmContainer.getBoundingClientRect();
+             if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                try { animTrigger.beginElement(); } catch(e){}
+             }
+          }
         } else {
           // Pause video if present
           const video = c.querySelector('video');
