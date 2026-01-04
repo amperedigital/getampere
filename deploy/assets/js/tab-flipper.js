@@ -52,8 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (shouldBeActive) {
             crmContainer.classList.add("manual-active");
+            const anims = crmContainer.querySelectorAll("animate, animateTransform");
+            anims.forEach(anim => {
+                try {
+                    anim.beginElement();
+                } catch(e) {
+                    console.log("SMIL not supported or error", e);
+                }
+            });
         } else {
             crmContainer.classList.remove('manual-active');
+            const anims = crmContainer.querySelectorAll("animate, animateTransform");
+            anims.forEach(anim => {
+                try {
+                    anim.endElement();
+                } catch(e) {
+                    console.log("SMIL not supported or error", e);
+                }
+            });
         }
     }
 
