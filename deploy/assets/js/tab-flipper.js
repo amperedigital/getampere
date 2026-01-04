@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        const shouldBeActive = isTabActive && isHovered;
+        const shouldBeActive = isTabActive;
         console.log(`CRM State Update: Active=${shouldBeActive} (Tab=${isTabActive}, Hover=${isHovered})`);
         
         if (shouldBeActive) {
