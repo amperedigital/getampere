@@ -87,11 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (video) video.play().catch(() => {});
 
           // Trigger SVG animation if it's the first tab (index 0)
-          if (index === 0 && animTrigger && crmContainer) {
-             const rect = crmContainer.getBoundingClientRect();
-             if (rect.top < window.innerHeight && rect.bottom >= 0) {
-                try { animTrigger.beginElement(); } catch(e){}
-             }
+          if (index === 0 && animTrigger) {
+             // Always trigger when setting active, regardless of scroll position (user just clicked it)
+             try { animTrigger.beginElement(); } catch(e){ console.error('SMIL trigger failed', e); }
           }
         } else {
           // Pause video if present
