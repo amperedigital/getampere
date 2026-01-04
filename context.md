@@ -65,11 +65,9 @@
 - **Local Paths Forbidden**: NEVER change script sources to local relative paths (e.g., `./assets/js/...`) in `deploy/index.html` without explicit user permission.
 - **Update Process**:
   1. Edit local files in `deploy/`.
-  2. Commit changes: `git commit ...`
-  3. Tag version: `git tag vX.Y.Z`
-  4. Update HTML: Change CDN links in `deploy/index.html` to the new tag `@vX.Y.Z` **ONLY** for the specific files that were modified. **DO NOT** update tags for unchanged files.
-  5. Push: `git push origin main --tags`
-  6. Deploy: `npx wrangler deploy`
+  2. Run the publish script: `./scripts/publish.sh vX.Y.Z`
+     - This script handles identifying changed assets, updating CDN links ONLY for those assets, committing, tagging, pushing, and deploying.
+  3. **DO NOT** manually update CDN links or tags unless absolutely necessary.
 - **Testing vs Backups**:
   - **Git** is primarily for version control and backups.
   - **Wrangler** (`npx wrangler deploy`) is the ONLY way to test changes on the live site.
