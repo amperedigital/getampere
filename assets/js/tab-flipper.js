@@ -34,22 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Animation Trigger Logic
     const animTrigger = document.getElementById('crm-anim-trigger');
     const crmContainer = document.getElementById('crm-card-container');
+    const crmCard3d = document.getElementById('crm-3d-card');
     
     // Check if this flipper instance actually controls the CRM card
     const controlsCrm = crmContainer && flipper.contains(crmContainer);
     
-    console.log('TabFlipper Init:', { 
-      flipper, 
-      animTrigger: !!animTrigger, 
-      crmContainer: !!crmContainer, 
-      controlsCrm 
-    });
-
     if (animTrigger && crmContainer && controlsCrm) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && activeIndex === 0) {
-             console.log('CRM Container Intersecting & Active');
              try { animTrigger.beginElement(); } catch(e){}
           }
         });
@@ -99,21 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Trigger SVG animation if it's the first tab (index 0)
           if (index === 0 && controlsCrm) {
-             console.log('Activating CRM Tab (Index 0)');
-             if (crmContainer) {
-                 crmContainer.classList.add('manual-active');
-                 console.log('Added manual-active class to', crmContainer);
-             }
+             if (crmContainer) crmContainer.classList.add('manual-active');
+             // Force inline style to override any Tailwind specificity issues
+             if (crmCard3d) crmCard3d.style.transform = 'rotateY(0deg) rotateX(0deg)';
+             
              if (animTrigger) {
                  try { 
-                   console.log('Triggering SMIL beginElement');
                    animTrigger.beginElement(); 
                    if (crmContainer) crmContainer.dispatchEvent(new Event('mouseenter'));
                  } catch(e){ console.error('SMIL trigger failed', e); }
              }
           } else if (controlsCrm) {
-             console.log('Deactivating CRM Tab');
              if (crmContainer) crmContainer.classList.remove('manual-active');
+             // Remove inline style to let CSS take over (tilted state)
+             if (crmCard3d) crmCard3d.style.transform = '';
           }
         } else {
           // Pause video if present
