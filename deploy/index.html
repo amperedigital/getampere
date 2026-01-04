@@ -1997,10 +1997,6 @@ font-family: 'Oswald', sans-serif !important;
                 <div class="hidden md:block">
                   <button class="shiny-cta">
                     <span>Discover how we help you</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1">
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
                   </button>
                 </div>
               </div>
@@ -2151,31 +2147,29 @@ font-family: 'Oswald', sans-serif !important;
                         </div>
 
                         <!-- Salesforce (Top Left) -->
-                        <div class="absolute top-[30%] left-[30%] md:top-[30%] md:left-[25%] z-20 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative overflow-visible">
-                          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 pointer-events-auto">
-                            <div class="flex flex-col items-center w-fit hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-20 hover:z-40 focus-within:z-40">
-                              <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-                                  <svg viewBox="0 0 60 40" class="w-8 h-8" aria-hidden="true">
-                                    <path d="M22 32c-4.2 0-7.6-3.3-7.6-7.5c0-3.7 2.6-6.7 6.1-7.4c1-4.8 5.1-8.3 10.2-8.3c4.2 0 7.8 2.4 9.5 5.9c3.8 0.2 6.9 3.3 6.9 7.2c0 4-3.2 7.2-7.2 7.2H22z" fill="#60a5fa"></path>
-                                  <circle cx="41" cy="25" r="6" fill="#93c5fd"></circle>
-                                  <circle cx="27" cy="19" r="7" fill="#3b82f6"></circle>
-                                </svg>
-                              </button>
-                              <div class="absolute top-1/2 left-full md:right-full ml-3 md:ml-0 md:mr-3 -translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-blue-400/40 text-white shadow-lg shadow-blue-500/25 backdrop-blur origin-left md:origin-right z-50 opacity-0 -translate-x-2 md:translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-x-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:pointer-events-auto">
-                                <div class="space-y-1">
-                                  <p class="text-[11px] uppercase tracking-[0.35em] text-blue-200/80">Salesforce</p>
-                                  <p class="text-sm font-semibold text-white leading-tight">Lead Timeline</p>
-                                  <p class="text-xs text-blue-100/70">Tasks / transcripts / cases</p>
-                                </div>
+                        <div class="absolute top-[30%] left-[30%] w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                          <div class="relative w-full h-full pointer-events-auto">
+                            <button class="peer w-full h-full rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-transform duration-200 hover:scale-105">
+                                <svg viewBox="0 0 60 40" class="w-8 h-8" aria-hidden="true">
+                                  <path d="M22 32c-4.2 0-7.6-3.3-7.6-7.5c0-3.7 2.6-6.7 6.1-7.4c1-4.8 5.1-8.3 10.2-8.3c4.2 0 7.8 2.4 9.5 5.9c3.8 0.2 6.9 3.3 6.9 7.2c0 4-3.2 7.2-7.2 7.2H22z" fill="#60a5fa"></path>
+                                <circle cx="41" cy="25" r="6" fill="#93c5fd"></circle>
+                                <circle cx="27" cy="19" r="7" fill="#3b82f6"></circle>
+                              </svg>
+                            </button>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-blue-400/40 text-white shadow-lg shadow-blue-500/25 backdrop-blur origin-bottom z-50 opacity-0 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:pointer-events-auto">
+                              <div class="space-y-1">
+                                <p class="text-[11px] uppercase tracking-[0.35em] text-blue-200/80">Salesforce</p>
+                                <p class="text-sm font-semibold text-white leading-tight">Lead Timeline</p>
+                                <p class="text-xs text-blue-100/70">Tasks / transcripts / cases</p>
                               </div>
                             </div>
                           </div>
                         </div>
 
                         <!-- HubSpot (Top Right) -->
-                        <div class="absolute top-[30%] left-[70%] md:top-[30%] md:left-[75%] z-10 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative">
-                          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-20 hover:z-50 focus-within:z-50">
-                            <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+                        <div class="absolute top-[30%] left-[70%] w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                          <div class="relative w-full h-full pointer-events-auto">
+                            <button class="peer w-full h-full rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-transform duration-200 hover:scale-105">
                               <svg viewBox="0 0 42 42" class="w-7 h-7" aria-hidden="true">
                                 <circle cx="21" cy="21" r="6" fill="#fb923c"></circle>
                                 <circle cx="21" cy="7" r="4" fill="#fdba74"></circle>
@@ -2184,7 +2178,7 @@ font-family: 'Oswald', sans-serif !important;
                                 <path d="M21 9v6M21 27v6M9 21h6M27 24l6 2" stroke="#fed7aa" stroke-width="2" stroke-linecap="round"></path>
                               </svg>
                             </button>
-                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 md:top-1/2 md:left-full md:ml-3 md:mb-0 md:translate-x-0 md:-translate-y-1/2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-amber-400/40 text-white shadow-lg shadow-amber-500/25 backdrop-blur origin-bottom md:origin-left z-50 opacity-0 translate-y-2 md:-translate-x-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-y-0 md:peer-hover:translate-x-0 md:peer-hover:-translate-y-1/2 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-y-0 md:peer-focus-visible:translate-x-0 md:peer-focus-visible:-translate-y-1/2 peer-focus-visible:pointer-events-auto">
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 px-4 py-2 rounded-2xl bg-slate-950/95 border border-amber-400/40 text-white shadow-lg shadow-amber-500/25 backdrop-blur origin-bottom z-50 opacity-0 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:pointer-events-auto">
                               <div class="space-y-1 text-left">
                                 <p class="text-[11px] uppercase tracking-[0.35em] text-amber-100/80">HubSpot</p>
                                 <p class="text-sm font-semibold text-white leading-tight">Deal Enrichment</p>
@@ -2195,15 +2189,15 @@ font-family: 'Oswald', sans-serif !important;
                         </div>
 
                         <!-- Pipedrive (Bottom) -->
-                        <div class="absolute top-[78.75%] md:top-[79%] left-1/2 z-50 pointer-events-none -translate-x-1/2 -translate-y-1/2 relative overflow-visible">
-                          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 flex flex-col items-center hover:scale-105 transition-transform duration-200 cursor-default pointer-events-auto z-50 hover:z-[60] focus-within:z-[60]">
-                            <button class="peer w-12 h-12 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400">
+                        <div class="absolute top-[78.75%] left-1/2 w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+                          <div class="relative w-full h-full pointer-events-auto">
+                            <button class="peer w-full h-full rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 transition-transform duration-200 hover:scale-105">
                               <svg viewBox="0 0 48 48" class="w-8 h-8" aria-hidden="true">
                                 <path d="M20 12h8c6.6 0 12 4.6 12 11s-5.4 11-12 11h-5v9h-8V12h5z" fill="#a3e635"></path>
                                 <path d="M23 20h5a3 3 0 0 1 0 6h-5" stroke="#4ade80" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
                               </svg>
                             </button>
-                            <div class="absolute top-full md:top-full left-1/2 -translate-x-1/2 mt-3 w-56 px-4 py-2 rounded-2xl bg-slate-950/95 border border-lime-400/40 text-white shadow-lg shadow-lime-400/20 backdrop-blur origin-top z-50 opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:translate-y-0 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:translate-y-0 peer-focus-visible:pointer-events-auto">
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 px-4 py-2 rounded-2xl bg-slate-950/95 border border-lime-400/40 text-white shadow-lg shadow-lime-400/20 backdrop-blur origin-top z-50 opacity-0 pointer-events-none transition-all duration-300 peer-hover:opacity-100 peer-hover:pointer-events-auto peer-focus-visible:opacity-100 peer-focus-visible:pointer-events-auto">
                               <div class="space-y-1">
                                 <p class="text-[11px] uppercase tracking-[0.35em] text-lime-100/80">Pipedrive</p>
                                 <p class="text-sm font-semibold text-white leading-tight">Pipeline Nudges</p>
@@ -2218,7 +2212,7 @@ font-family: 'Oswald', sans-serif !important;
               </div>
               
               <!-- Mobile Button (Bottom) -->
-              <div class="absolute bottom-0 left-0 w-full md:hidden pointer-events-auto border-t border-white/10 z-50 bg-[#111111]">
+              <div class="w-full md:hidden relative z-50 bg-[#111111] border-t border-white/10">
                   <button class="w-full py-6 flex items-center justify-center gap-2 text-white/90 hover:text-white transition-colors group">
                     <span class="font-medium text-base">Discover how we help you</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1">
