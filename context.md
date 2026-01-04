@@ -58,3 +58,16 @@
   - `overscroll-contain` CSS class to prevent scroll chaining.
   - Explicit height constraints (e.g., `h-full` inside a fixed parent) and content that overflows (e.g., `min-h-[101%]`).
 - **Mobile Support**: This combination ensures native touch scrolling works on iOS/Android while keeping the background page locked.
+
+## Deployment Workflow (Strict)
+- **Source of Truth**: The `deploy/` folder is the only source for deployment.
+- **CDN Usage**: Production HTML (`deploy/index.html`) MUST use jsDelivr CDN links for all scripts (e.g., `https://cdn.jsdelivr.net/gh/amperedigital/getampere@vX.Y.Z/assets/js/...`).
+- **Local Paths Forbidden**: NEVER change script sources to local relative paths (e.g., `./assets/js/...`) in `deploy/index.html` without explicit user permission.
+- **Update Process**:
+  1. Edit local files in `deploy/`.
+  2. Commit changes: `git commit ...`
+  3. Tag version: `git tag vX.Y.Z`
+  4. Update HTML: Change CDN links in `deploy/index.html` to the new tag `@vX.Y.Z` **ONLY** for the specific files that were modified. **DO NOT** update tags for unchanged files.
+  5. Push: `git push origin main --tags`
+  6. Deploy: `npx wrangler deploy`
+- **Session Start**: Read this file at the start of every session to ensure compliance.
