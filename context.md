@@ -70,4 +70,8 @@
   4. Update HTML: Change CDN links in `deploy/index.html` to the new tag `@vX.Y.Z` **ONLY** for the specific files that were modified. **DO NOT** update tags for unchanged files.
   5. Push: `git push origin main --tags`
   6. Deploy: `npx wrangler deploy`
+- **Testing vs Backups**:
+  - **Git** is primarily for version control and backups.
+  - **Wrangler** (`npx wrangler deploy`) is the ONLY way to test changes on the live site.
+  - ALWAYS run `npx wrangler deploy` after pushing changes, even if you think the git push was sufficient.
 - **Session Start**: Read this file at the start of every session to ensure compliance.
