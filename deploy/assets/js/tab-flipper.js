@@ -51,13 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`CRM State Update: Active=${shouldBeActive} (Tab=${isTabActive}, Hover=${isHovered})`);
         
         if (shouldBeActive) {
-            crmContainer.classList.add('manual-active');
-            // Trigger animation if it's not already running (optional check, but beginElement is safe)
-            if (animTrigger) {
-                try { 
-                    animTrigger.beginElement(); 
-                } catch(e){ console.error('SMIL trigger failed', e); }
-            }
+            crmContainer.classList.add("manual-active");
         } else {
             crmContainer.classList.remove('manual-active');
         }
@@ -81,8 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && activeIndex === 0) {
                     // Just trigger animation, state is handled by tab logic
-                    if (animTrigger) {
-                        try { animTrigger.beginElement(); } catch(e){}
                     }
                 }
             });
