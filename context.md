@@ -4,7 +4,8 @@
 - Single-page marketing site for Ampere AI featuring TailwindCSS, Iconify icons, and custom animation utilities defined inline in `home.html`.
 - Layout mixes dark hero/header with light sections (enterprise solutions, metrics, subscription CTA, carousel, footer) for contrast.
 - Page loads multiple Google Fonts plus inline animation helpers (e.g., `animate-on-scroll`).
-- Hero navigation uses a floating ampersand tab (logo plus white nav bar) with responsive behavior: full logo on desktop/tablet, single “A” logomark on mobile. CTA/hamburger button share a transition animation, and the nav bar must sit atop the Unicorn background with no gaps between logo and white strip.
+- Hero navigation uses a floating ampersand tab (logo plus white nav bar) with responsive behavior: full logo on desktop/tablet, single “A” logomark on mobile. 
+CTA/hamburger button share a transition animation, and the nav bar must sit atop the Unicorn background with no gaps between logo and white strip.
 
 ## Key Sections in `home.html`
 1. **Navigation/Hero** – Fixed nav with brand label, CTA buttons, and hero describing "Emily 2.0" autonomous voice agent plus highlight cards and feature media.
@@ -18,7 +19,8 @@
 - Local SVG logo lives at `assets/logo-mark-white-square.svg` and should accompany the Ampere AI wordmark in the nav.
 - `toggleMenu`, `setView`, and carousel helpers manage interactivity; rely solely on client-side JS.
 - Background uses Unicorn Studio script for animated canvas along with custom gradient blur overlay.
-- Chart.js hero graph uses a custom `datasetPadding` plugin (activated only when y-axis stacks are visible) with responsive clip/padding rules. Endpoints need ~20px spacing from y-axis labels, and a slight x-axis offset is enabled on larger breakpoints so Monday/Sunday points stay visible.
+- Chart.js hero graph uses a custom `datasetPadding` plugin (activated only when y-axis stacks are visible) with responsive clip/padding rules. Endpoints need ~
+20px spacing from y-axis labels, and a slight x-axis offset is enabled on larger breakpoints so Monday/Sunday points stay visible.
 - Case-study content at the bottom of the hero card gains breakpoint-specific downward translations (starting at `md`, increasing at `lg`) and the parent container uses `lg:min-h-[720px]` to prevent overlap. For ultra-wide layouts (`min-[1440px]` and `min-[2015px]`) the translation resets to zero.
 - Hero highlight slider logic now lives in `assets/js/hero-slider.js` (ship `hero-slider.min.js` via jsDelivr). Any slider container just needs the `data-hero-slider` attribute plus optional tuners:
   - `data-auto-delay` (default 5000ms) controls idle time before auto-advance.
@@ -47,7 +49,7 @@
 - **Behavior in Editor**:
   - **Modal**: The `wrapModalContent` function **aborts** early. The modal content remains a static, inline block element at its original DOM position. It is NOT wrapped in a fixed overlay, making it easy to edit inline.
   - **Scrolling**: `global.js` **skips** initializing Lenis smooth scrolling. This restores native scroll wheel functionality, preventing conflicts with the editor's canvas scrolling.
-- **DOM Preservation**: When wrapping (on live site), `modal.js` inserts the modal shell back into the content's **original parent** (e.g., `<section>`) instead of appending to `<body>`. This prevents empty "footprint" tags in the DOM.
+  - **DOM Preservation**: When wrapping (on live site), `modal.js` inserts the modal shell back into the content's **original parent** (e.g., `<section>`) instead of appending to `<body>`. This prevents empty "footprint" tags in the DOM.
 
 ### Scroll Locking Strategy
 - **Native Lock**: Uses `document.body.style.overflow = 'hidden'` when modal is open.
@@ -65,9 +67,10 @@
 - **Local Paths Forbidden**: NEVER change script sources to local relative paths (e.g., `./assets/js/...`) in `deploy/index.html` without explicit user permission.
 - **Update Process**:
   1. Edit local files in `deploy/`.
-  2. Run the publish script: `./scripts/publish.sh vX.Y.Z`
-     - This script handles identifying changed assets, updating CDN links ONLY for those assets, committing, tagging, pushing, and deploying.
-  3. **DO NOT** manually update CDN links or tags unless absolutely necessary.
+  2. **STOP**: Do NOT manually commit, tag, or edit `index.html` versions.
+  3. **EXECUTE**: Run the publish script: `./scripts/publish.sh vX.Y.Z`
+     - This script handles git operations, selective CDN updates, and deployment.
+  4. **VERIFY**: Check the output to ensure only changed assets were updated.
 - **Testing vs Backups**:
   - **Git** is primarily for version control and backups.
   - **Wrangler** (`npx wrangler deploy`) is the ONLY way to test changes on the live site.
