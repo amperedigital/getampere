@@ -89,7 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
           // Trigger SVG animation if it's the first tab (index 0)
           if (index === 0 && animTrigger) {
              // Always trigger when setting active, regardless of scroll position (user just clicked it)
-             try { animTrigger.beginElement(); } catch(e){ console.error('SMIL trigger failed', e); }
+             try { 
+               // Force restart by calling endElement then beginElement if needed, but beginElement usually restarts
+               animTrigger.beginElement(); 
+             } catch(e){ console.error('SMIL trigger failed', e); }
           }
         } else {
           // Pause video if present
