@@ -53,8 +53,8 @@
 
     /* Manual Active State for CRM Card */
     #crm-card-container.manual-active #crm-3d-card {
-        transform: none !important;
-        border-color: rgba(255,255,255,0.5) !important;
+        transform: matrix3d(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1) !important;
+        border-color: rgba(59, 130, 246, 0.5) !important;
     }
     #crm-card-container.manual-active .crm-animated-element {
         opacity: 1 !important;
@@ -2023,7 +2023,7 @@ font-family: 'Oswald', sans-serif !important;
               <!-- Right: Media Container (Laptop Edge Look) -->
               <div class="w-full md:w-1/2 h-auto md:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="crm-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]" style="transform-style: preserve-3d;">
+                 <div id="crm-3d-card" class="!group-[.manual-active]:[transform:rotateY(0deg)_rotateX(0deg)] relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 [transform:rotateY(0deg)_rotateX(0deg)] md:[transform:rotateY(-12deg)_rotateX(6deg)] shadow-[20px_20px_60px_rgba(0,0,0,0.5)]" style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
