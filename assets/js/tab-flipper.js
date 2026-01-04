@@ -92,9 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Trigger SVG animation if it's the first tab (index 0)
           if (index === 0 && controlsCrm) {
+             console.log('Tab 0 active - applying CRM styles (CDN)');
              if (crmContainer) crmContainer.classList.add('manual-active');
-             // Force inline style to override any Tailwind specificity issues
-             if (crmCard3d) crmCard3d.style.transform = 'rotateY(0deg) rotateX(0deg)';
+             // Force inline style to match the exact group-hover transform: rotateY(-5deg) rotateX(2deg)
+             if (crmCard3d) {
+                // Use cssText to ensure it overrides everything
+                crmCard3d.style.cssText = 'transform: rotateY(-5deg) rotateX(2deg) !important; border-color: rgba(255,255,255,0.2) !important; transform-style: preserve-3d;';
+             }
              
              if (animTrigger) {
                  try { 
@@ -105,7 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (controlsCrm) {
              if (crmContainer) crmContainer.classList.remove('manual-active');
              // Remove inline style to let CSS take over (tilted state)
-             if (crmCard3d) crmCard3d.style.transform = '';
+             if (crmCard3d) {
+                crmCard3d.style.cssText = 'transform-style: preserve-3d;';
+             }
           }
         } else {
           // Pause video if present
