@@ -1,3 +1,24 @@
+    /* Arrow Switch (neverhack style) */
+    .arrow-switch .arrow-top,
+    .arrow-switch .arrow-down {
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .arrow-switch .arrow-top {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .arrow-switch:hover .arrow-top {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .arrow-switch .arrow-down {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    .arrow-switch:hover .arrow-down {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
 <html lang="en"><head>
   <!--Version 1.0.21 - source -->
@@ -420,81 +441,17 @@ font-family: 'Oswald', sans-serif !important;
 
   <nav class="fixed top-0 left-0 w-full z-50 bg-transparent">
     <div class="flex w-full justify-end">
-      <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
-        <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
-          <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
-            <defs>
-              <style>
-                .amp-logo-fill {
-                  fill: #fff;
-                }
-              </style>
-            </defs>
-            <path fill="none" d="M0,0h423.3c.1,0,.3.1.3.3v423.3H0V0h0Z"></path>
-            <path class="amp-logo-fill" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
-            <path class="amp-logo-fill" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z">
-            </path>
-          </svg>
-          <svg class="hidden md:block md:w-[220px] md:min-w-[220px] lg:w-[300px] lg:min-w-[280px] h-full object-contain" viewBox="0 0 681.89 196.35" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet" stroke-width="2" data-icon-replaced="true" style="width: 280px; height: 80px; color: rgb(228, 228, 231);">
-            <title>Ampere AI - Autonomous Voice Agents</title>
-            <defs>
-              <style>
-                .cls-1 {
-                  stroke: #fff;
-                  stroke-miterlimit: 10;
-                }
-
-                .cls-1,
-                .cls-2 {
-                  fill: #fff;
-                }
-
-                .cls-3 {
-                  fill: #00bee6;
-                }
-
-                .cls-4 {
-                  fill: #231f20;
-                }
-
-                @media (max-width: 767px) {
-                  .logo-wordmark {
-                    display: none;
-                  }
-                }
-              </style>
-            </defs>
-            <path class="cls-2" d="M89.98,13.08l73.55,177.45c1.46,3.52,4.89,5.81,8.7,5.81l509.66-.05V0L98.68.05c-6.71,0-11.27,6.82-8.7,13.03Z">
-            </path>
-            <path class="cls-1" d="M89.9,146.93L47.3,45.27C30.02,76.88-9.1,126.82,2.67,154.9c11.77,28.07,54.58,6.85,87.24-7.97Z"></path>
-            <g class="logo-wordmark">
-              <path class="cls-4" d="M300.55,119.17l17.13-44.88c.44-1.18,1.4-1.85,3.99-1.85s3.54.66,3.99,1.85l17.2,44.88c.15.44-1.18,1.55-2.88,1.62-1.4.15-2.73-.52-3.47-2.58l-5.02-12.99h-19.78l-5.09,13.07c-.66,2.14-2.07,2.66-3.32,2.51-1.62-.07-2.88-1.26-2.73-1.62ZM330.01,100.64l-8.42-22.44-8.49,22.44h16.91Z">
-              </path>
-              <path class="cls-4" d="M401.91,99.39v18.9c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.46c0-6.79-3.03-10.56-8.86-10.56-4.13,0-8.12,2.66-9.82,7.01v22c0,1.92-1.03,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.9c0-6.42-2.95-10.11-8.86-10.11-4.06,0-8.05,2.66-9.89,7.01v22c0,1.92-.96,2.51-2.29,2.51h-.66c-1.33,0-2.36-.59-2.36-2.51v-32.63c0-.15.89-.59,1.92-.59,1.62,0,3.1.81,3.25,4.36l.07,1.77c2.29-3.91,6.28-6.64,11.15-6.64,5.98,0,9.97,3.03,11.66,7.83,2.14-4.58,6.42-7.83,12.25-7.83,8.64,0,13.07,5.54,13.07,14.84Z">
-              </path>
-              <path class="cls-4" d="M445.45,102.86c0,11-6.87,18.53-16.39,18.53-6.42,0-10.85-3.54-12.7-7.38v18.31c0,1.85-.96,2.51-2.29,2.51h-.59c-1.4,0-2.36-.66-2.36-2.51v-46.66c0-.15.81-.59,1.84-.59,1.55,0,3.03.89,3.25,3.99,0,.89.07,2.07.07,3.03,2.58-4.58,6.79-7.53,12.92-7.53,9.23,0,16.24,7.31,16.24,18.31ZM440.21,102.93c0-8.19-5.09-13.88-11.96-13.88-5.91,0-9.97,3.4-11.96,8.49v7.82c0,6.5,5.32,11.52,11.81,11.52,7.23,0,12.11-5.61,12.11-13.95Z">
-              </path>
-              <path class="cls-4" d="M467.89,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.84,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM467.89,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
-              </path>
-              <path class="cls-4" d="M510.78,88.39c0,2.14-1.48,3.03-1.62,2.88-.89-.89-2.29-1.48-4.21-1.48-5.76,0-8.42,5.68-8.42,14.54v13.95c0,1.85-.96,2.51-2.29,2.51h-.59c-1.48,0-2.44-.59-2.44-2.51v-32.63c0-.15.81-.59,1.92-.59,1.48,0,2.81.74,3.1,3.54.07,1.25.15,2.51.15,3.84,1.4-5.32,4.65-7.9,9.15-7.9,3.17,0,5.24,1.55,5.24,3.84Z">
-              </path>
-              <path class="cls-4" d="M530.04,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.85,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM530.04,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
-              </path>
-              <path class="cls-4" d="M552.55,117.03c0-2.14,1.11-3.32,3.25-3.32h.66c2.21,0,3.25,1.18,3.25,3.32v.66c0,2.14-1.11,3.32-3.25,3.32h-.66c-2.14,0-3.25-1.18-3.25-3.32v-.66Z">
-              </path>
-              <path class="cls-4" d="M590.28,99.91h.81v-1.48c0-5.98-3.47-9.3-9.52-9.3-5.61,0-9.01,2.73-10.78,6.27-.15.07-3.25-.07-3.25-2.73,0-1.03.74-2.58,2.14-3.91,2.29-2.21,6.35-4.21,12.18-4.21,9.38,0,14.47,5.24,14.47,13.95v21.78c0,.22-.96.59-1.92.59-1.55,0-2.81-.74-3.1-3.4-.07-1.03-.15-2.14-.15-3.25-2.36,4.28-7.16,7.09-13.07,7.09-7.38,0-11.96-3.84-11.96-9.82,0-7.97,7.53-11.37,24.14-11.59ZM591.09,103.38l-1.25.07c-12.85.3-18.38,2.51-18.38,7.9,0,3.69,2.95,5.98,7.68,5.98,6.79,0,11.96-4.58,11.96-10.56v-3.4Z">
-              </path>
-              <path class="cls-4" d="M608.58,70.89c2.14,0,3.4,1.18,3.4,3.4s-1.33,3.32-3.47,3.32-3.32-1.18-3.32-3.32,1.25-3.4,3.4-3.4ZM605.85,87.65c0-1.92.96-2.58,2.36-2.58h.59c1.4,0,2.36.59,2.36,2.58v30.64c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-30.64Z">
-              </path>
-              <path class="cls-3" d="M192.77,125.01c0-5.17,4.87-8.64,11.29-9.74-.89-.74-1.4-1.85-1.4-3.32s.81-2.81,1.99-3.84c-5.68-1.77-9.3-6.27-9.3-11.81,0-7.46,6.42-13.44,15.21-13.44,3.1,0,6.05.81,8.49,2.14l1.92-3.4c1.18-1.92,2.36-2.81,4.21-2.81,2.73,0,3.99,2.95,3.77,3.1l-6.05,6.27c1.92,2.21,3.1,4.95,3.1,7.9,0,7.46-6.35,12.92-15.36,12.92h-1.33c-.3.44-.37.81-.37,1.25,0,2.29,3.4,2.51,9.6,4.06,5.02,1.33,10.33,3.84,10.33,9.67,0,6.72-6.87,10.85-18.6,10.85s-17.5-3.17-17.5-9.82ZM221.79,124.2c0-2.81-3.32-3.84-7.23-4.8l-3.69-.89c-6.05.37-11.07,2.51-11.07,6.27,0,3.17,3.62,4.95,10.63,4.95s11.37-1.99,11.37-5.54ZM218.91,96.15c0-4.72-3.4-8.05-8.42-8.05s-8.19,3.25-8.19,8.05,3.47,8.05,8.34,8.05,8.27-3.25,8.27-8.05Z">
-              </path>
-              <path class="cls-3" d="M246.81,82.86c10.26,0,17.05,7.23,17.05,17.86v.59c0,1.55-.52,2.14-2.21,2.14h-26.21c0,.44.07.89.15,1.33,1.03,5.83,5.68,9.67,11.96,9.67s9.3-2.73,11.15-5.91c.15-.15,3.84.52,3.84,3.62,0,1.55-1.33,3.54-3.91,5.17s-6.35,2.88-11.22,2.88c-11.22,0-18.75-7.46-18.75-18.53s7.68-18.82,18.16-18.82ZM246.73,88.4c-5.83,0-10.33,4.21-11.22,10.11h21.26c-.37-6.13-4.13-10.11-10.04-10.11Z">
-              </path>
-              <path class="cls-3" d="M270.58,108.48v-18.75h-2.58c-2.29,0-3.17-.96-3.17-2.73v-.52c0-1.77.89-2.73,3.17-2.73h2.58v-5.46c0-2.51,1.25-3.47,3.25-3.47h.74c1.92,0,3.17.74,3.17,3.47v5.46h8.05c2.29,0,3.1.89,3.1,2.66v.52c0,1.85-.89,2.81-3.17,2.81h-8.05v17.94c0,4.43,1.25,6.57,4.72,6.57,2.29,0,3.91-1.03,5.02-2.51.22-.22,2.07.81,2.07,3.1,0,1.18-.52,2.29-1.55,3.25-1.4,1.25-3.69,2.14-6.72,2.14-7.31,0-10.63-4.06-10.63-11.74Z">
-              </path>
-            </g>
-          </svg>
-        </a>
+        <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
+          <div class="arrow-switch group flex flex-col justify-center items-center h-full px-6 cursor-pointer select-none">
+            <div class="relative flex flex-col items-center transition-all duration-300">
+              <svg class="arrow-top transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="square" d="M15 10.714V5m0 0H9.286M15 5 5 15"></path>
+              </svg>
+              <svg class="arrow-down absolute top-0 left-0 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-y-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="square" d="M15 14.286V19m0 0H9.286M15 19 5 9"></path>
+              </svg>
+            </div>
+          </div>
         <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
           <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
             <div class="hidden lg:flex bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl p-1 shadow-inner gap-1 items-center">
@@ -1993,7 +1950,7 @@ font-family: 'Oswald', sans-serif !important;
         </span>
       </div>
       <div class="w-full flex flex-col lg:flex-row items-end justify-between px-6 lg:px-12">
-        <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-medium leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 fade-up-element reveal-heading" style="word-break:break-word;">
+        <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-light leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 fade-up-element reveal-heading" style="word-break:break-word;">
           Works Seamlessly With the Tools You Already Use
         </h2>
         <p class="text-lg text-zinc-400 leading-relaxed max-w-lg fade-up-element reveal-content lg:ml-12">
