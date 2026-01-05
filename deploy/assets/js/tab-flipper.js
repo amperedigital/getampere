@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* For UC004 & UC003: Override display and opacity, but let SMIL handle visibility */
     .manual-active .force-smil-display {
       display: block !important;
-      opacity: 1 !important;
+      /* opacity: 1 !important; REMOVED to let SMIL/Tailwind control opacity */
     }
 
     .manual-active .crm-ping-element {
