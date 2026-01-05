@@ -11,19 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
   style.textContent = `
-    .manual-active .force-visible {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
     .manual-active .crm-ping-element {
       opacity: 1 !important;
       display: block !important;
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    /* Fix for UC004 stray pixels: Ensure circles are hidden when not active */
-    #uc004-anim-container:not(.manual-active) circle {
+    /* Fix for UC004 stray pixels: Ensure circles are hidden when parent container is not active */
+    #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
         opacity: 0 !important;
         visibility: hidden !important;
     }
@@ -90,19 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Select all animation elements
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
-        // Select elements that should be visible during animation (parents of animateMotion)
-        const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
             container.classList.add("manual-active");
             
-            // Force visibility on elements with motion animations
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    motion.parentElement.classList.add('force-visible');
-                }
-            });
-
             // Trigger Animations
             anims.forEach(anim => {
                 try {
@@ -131,13 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             container.classList.remove("manual-active");
             
-            // Remove forced visibility
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    motion.parentElement.classList.remove('force-visible');
-                }
-            });
-
             // Stop Animations
             anims.forEach(anim => {
                 try {
