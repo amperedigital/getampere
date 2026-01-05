@@ -34,6 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: 0 !important;
         visibility: hidden !important;
     }
+
+    /* Strict hide for marked elements */
+    .always-hide-anim {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
     
     @keyframes crm-ping {
       75%, 100% {
