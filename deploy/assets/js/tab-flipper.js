@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         visibility: hidden !important;
     }
 
-    /* Strict hide for marked elements */
+    /* Strict hide for marked elements - High Specificity to override force classes */
+    .manual-active .always-hide-anim,
     .always-hide-anim {
         display: none !important;
         opacity: 0 !important;
