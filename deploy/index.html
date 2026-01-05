@@ -1939,12 +1939,32 @@ font-family: 'Oswald', sans-serif !important;
 
   <!-- Tabs Section-->
   <section id="integrations" class="bg-[#0a0b14] py-32 lg:py-40 relative overflow-hidden border-t border-white/5" data-tab-flipper>
+    <style>
+      @keyframes point-down-once {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(6px); }
+      }
+      .hover-point-down:hover {
+        animation: point-down-once 0.6s ease-in-out forwards;
+      }
+      .fade-up-element {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        will-change: opacity, transform;
+      }
+      .fade-up-element.in-view {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+
     <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-32">
         <!-- Top Bar -->
         <div class="flex justify-between items-start w-full mb-32">
             <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Scroll to discover</span>
             <a href="#integrations-tabs" class="group" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white transition-transform duration-300 group-hover:translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-point-down">
                     <path d="M12 5v14"></path>
                     <path d="m19 12-7 7-7-7"></path>
                 </svg>
@@ -1954,12 +1974,12 @@ font-family: 'Oswald', sans-serif !important;
         <!-- Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
             <div class="lg:col-span-7">
-                <h2 class="text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white tracking-tight font-geist leading-[1.1]">
+                <h2 class="text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white tracking-tight font-geist leading-[1.1] fade-up-element">
                     Works Seamlessly With the Tools You Already Use
                 </h2>
             </div>
             <div class="lg:col-span-5">
-                <p class="text-lg text-zinc-400 leading-relaxed">
+                <p class="text-lg text-zinc-400 leading-relaxed fade-up-element" style="transition-delay: 150ms;">
                     Ampere integrates directly into your existing systems so customer data, bookings, and workflows stay synchronized — without changing how your business already runs.
                 </p>
             </div>
@@ -1967,6 +1987,28 @@ font-family: 'Oswald', sans-serif !important;
     </div>
     
     <div id="integrations-tabs"></div>
+
+    <script>
+      // Simple Intersection Observer for fade-in animations on this section
+      document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              obs.unobserve(entry.target); // Trigger once
+            }
+          });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up-element').forEach(el => observer.observe(el));
+      });
+    </script>
 
     <!-- Tabs (Box Layout) -->
     <div class="border-y border-white/10 bg-[#0a0b14] relative z-20">
