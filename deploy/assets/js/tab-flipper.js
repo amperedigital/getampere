@@ -1,12 +1,12 @@
 /**
- * Tab Controlled Card Flipper v2.5
+ * Tab Controlled Card Flipper v2.6
  * Manages SMIL animations for 3D cards based on active tab state.
  * Supports 3D transitions via CSS classes managed by this script.
  * Handles the switching of active states between navigation tabs and corresponding content cards.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.5 Loaded');
+  console.log('Tab Flipper v2.6 Loaded');
 
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
@@ -149,21 +149,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Stop Animations
             anims.forEach(anim => {
                 try {
-                    anim.endElement();
+                    // Check if this animation depends on a trigger
+                    const beginAttr = anim.getAttribute('begin');
+                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
+
+                    // Only end triggers and independent animations
+                    // Do NOT end dependent animations, as this might break the trigger relationship
+                    if (isTrigger || !isDependent) {
+                        anim.endElement();
+                    }
                 } catch(e) {
                     // ignore
                 }
             });
 
-            // Reset SVG timeline if possible
-            const svgs = container.querySelectorAll('svg');
-            svgs.forEach(svg => {
-                if (svg.setCurrentTime) {
-                    try {
-                        svg.setCurrentTime(0);
-                    } catch(e) {}
-                }
-            });
+            // Removed setCurrentTime(0) as it might interfere with re-triggering
         }
     }
 
