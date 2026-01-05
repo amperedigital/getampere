@@ -1954,30 +1954,11 @@ font-family: 'Oswald', sans-serif !important;
       }
 
       /* Arrow Fade Push Down Animation */
-      @keyframes fade-push-down-slow {
-        0% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        40% {
-          opacity: 0.2;
-          transform: translateY(18px);
-        }
-        60% {
-          opacity: 0.1;
-          transform: translateY(24px);
-        }
-        80% {
-          opacity: 0.3;
-          transform: translateY(12px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .hover-push-down {
+        transition: transform 0.35s cubic-bezier(0.22, 0.68, 0.32, 1);
       }
-      .hover-push-down:hover {
-        animation: fade-push-down-slow 2.4s cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
+      .group:hover .hover-push-down {
+        transform: translateY(18px);
       }
 
       /* Reveal Animations */
