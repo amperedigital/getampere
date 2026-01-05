@@ -106,6 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Force visibility on elements with motion animations
             motionElements.forEach(motion => {
                 if (motion.parentElement) {
+                    // Skip elements marked to be always hidden
+                    if (motion.parentElement.classList.contains('always-hide-anim')) {
+                        return;
+                    }
+
                     if (container.id === 'uc004-card-container') {
                         // For UC004, force display and opacity but respect SMIL visibility
                         motion.parentElement.classList.add('force-smil-display');
