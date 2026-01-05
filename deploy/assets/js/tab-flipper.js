@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
       visibility: visible !important;
       opacity: 1 !important;
     }
+    
+    /* For UC004: Only override display:none, let SMIL handle visibility/opacity */
+    .manual-active .force-display {
+      display: block !important;
+    }
+
     .manual-active .crm-ping-element {
       opacity: 1 !important;
       display: block !important;
@@ -96,14 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shouldRun) {
             container.classList.add("manual-active");
             
-            // Force visibility on elements with motion animations (EXCEPT UC004 which relies on SMIL timing)
-            if (container.id !== 'uc004-card-container') {
-                motionElements.forEach(motion => {
-                    if (motion.parentElement) {
+            // Force visibility on elements with motion animations
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    if (container.id === 'uc004-card-container') {
+                        // For UC004, only force display (let SMIL handle visibility/opacity)
+                        motion.parentElement.classList.add('force-display');
+                    } else {
+                        // For others, force everything (legacy behavior)
                         motion.parentElement.classList.add('force-visible');
                     }
-                });
-            }
+                }
+            });
 
             // Trigger Animations
             anims.forEach(anim => {
@@ -137,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             motionElements.forEach(motion => {
                 if (motion.parentElement) {
                     motion.parentElement.classList.remove('force-visible');
+                    motion.parentElement.classList.remove('force-display');
                 }
             });
 
