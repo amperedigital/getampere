@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         
         const shouldRun = isActive || isHovered;
-        console.log(`[${name}] updateSmilState: isActive=${isActive}, isHovered=${isHovered}, shouldRun=${shouldRun}`);
         
         // Select all animation elements
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
@@ -120,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (shouldRun) {
             container.classList.add("manual-active");
-            console.log(`[${name}] Added .manual-active to container`);
             
             // Force visibility on elements with motion animations
             motionElements.forEach((motion, idx) => {
@@ -137,14 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         // For UC004 AND UC003, force display and opacity but respect SMIL visibility
                         motion.parentElement.classList.add('force-smil-display');
-                        if (idx === 0) {
-                             console.log(`[${name}] Added .force-smil-display to element 0`);
-                             // Check computed visibility
-                             setTimeout(() => {
-                                 const computed = window.getComputedStyle(motion.parentElement);
-                                 console.log(`[${name}] Element 0 visibility: ${computed.visibility}, display: ${computed.display}, opacity: ${computed.opacity}`);
-                             }, 10);
-                        }
                     } else {
                         // For others (CRM), force everything (legacy behavior)
                         motion.parentElement.classList.add('force-visible');
@@ -162,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // If it's the master trigger, always begin
                     if (isTrigger) {
-                        console.log(`[${name}] Beginning trigger element: ${anim.id}`);
                         anim.beginElement();
                     }
                     // If it's dependent, DO NOT manually begin (let the trigger handle it)
@@ -180,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else {
             container.classList.remove("manual-active");
-            console.log(`[${name}] Removed .manual-active from container`);
             
             // Remove forced visibility
             motionElements.forEach(motion => {
