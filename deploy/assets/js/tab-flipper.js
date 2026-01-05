@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 1 !important;
     }
     
-    /* For UC004: Override display and opacity, but let SMIL handle visibility */
+    /* For UC004 & UC003: Override display and opacity, but let SMIL handle visibility */
     .manual-active .force-smil-display {
       display: block !important;
       opacity: 1 !important;
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    if (container.id === 'uc004-card-container') {
-                        // For UC004, force display and opacity but respect SMIL visibility
+                    if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
+                        // For UC004 AND UC003, force display and opacity but respect SMIL visibility
                         motion.parentElement.classList.add('force-smil-display');
                     } else {
-                        // For others, force everything (legacy behavior)
+                        // For others (CRM), force everything (legacy behavior)
                         motion.parentElement.classList.add('force-visible');
                     }
                 }

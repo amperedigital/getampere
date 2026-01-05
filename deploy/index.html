@@ -2346,10 +2346,11 @@ font-family: 'Oswald', sans-serif !important;
                                 <!-- Circulating Light Beams -->
                                 <g clip-path="url(#uc003-sched-beam-window)">
                                   <!-- Outgoing -->
-                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="hidden">
+                                  <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" visibility="hidden">
                                     <animateMotion dur="2s" repeatCount="indefinite" begin="uc003-anim-trigger.begin" end="uc003-anim-trigger.end">
                                       <mpath href="#uc003-line1"></mpath>
                                     </animateMotion>
+                                    <set attributeName="visibility" to="visible" begin="uc003-anim-trigger.begin" end="uc003-anim-trigger.end"></set>
                                   </circle>
                                   <circle r="2" fill="#60a5fa" filter="drop-shadow(0 0 4px #60a5fa)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
                                     <animateMotion dur="2s" repeatCount="indefinite" begin="uc003-anim-trigger.begin + 0.7s" end="uc003-anim-trigger.end">
@@ -2587,10 +2588,11 @@ font-family: 'Oswald', sans-serif !important;
                     </path>
 
                     <!-- Outgoing -->
-                    <circle r="2" fill="#fb923c" filter="drop-shadow(0 0 6px #fb923c)" class="hidden always-hide-anim">
+                    <circle r="2" fill="#fb923c" filter="drop-shadow(0 0 6px #fb923c)" visibility="hidden">
                       <animateMotion dur="3.6s" repeatCount="indefinite" begin="uc004-anim-trigger.begin" end="uc004-anim-trigger.end">
                         <mpath href="#uc004-ring"></mpath>
                       </animateMotion>
+                      <set attributeName="visibility" to="visible" begin="uc004-anim-trigger.begin" end="uc004-anim-trigger.end"></set>
                     </circle>
                     <circle r="2" fill="#fb923c" filter="drop-shadow(0 0 6px #fb923c)" class="opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:scale-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" visibility="hidden">
                       <animateMotion dur="3.6s" repeatCount="indefinite" begin="uc004-anim-trigger.begin + 0.8s" end="uc004-anim-trigger.end">
@@ -3013,7 +3015,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.031/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.032/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
