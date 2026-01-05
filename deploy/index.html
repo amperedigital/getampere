@@ -1,33 +1,23 @@
-    /* Arrow Switch (neverhack style, exact overlay, no movement) */
+    /* Arrow Switch (neverhack style) */
     .arrow-switch .arrow-top,
     .arrow-switch .arrow-down {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 32px;
-      height: 32px;
-      transition: opacity 0.25s cubic-bezier(.4,0,.2,1);
-      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
     }
     .arrow-switch .arrow-top {
       opacity: 1;
-      z-index: 2;
+      transform: translateY(0);
     }
     .arrow-switch:hover .arrow-top {
       opacity: 0;
+      transform: translateY(12px);
     }
     .arrow-switch .arrow-down {
       opacity: 0;
-      z-index: 1;
+      transform: translateY(-12px);
     }
     .arrow-switch:hover .arrow-down {
       opacity: 1;
-    }
-    .arrow-switch .arrow-stack {
-      position: relative;
-      width: 32px;
-      height: 32px;
-      display: inline-block;
+      transform: translateY(0);
     }
 
 <html lang="en"><head>
@@ -453,11 +443,11 @@ font-family: 'Oswald', sans-serif !important;
     <div class="flex w-full justify-end">
         <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
           <div class="arrow-switch group flex flex-col justify-center items-center h-full px-6 cursor-pointer select-none">
-            <div class="arrow-stack">
-              <svg class="arrow-top" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+            <div class="relative flex flex-col items-center transition-all duration-300">
+              <svg class="arrow-top transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="square" d="M15 10.714V5m0 0H9.286M15 5 5 15"></path>
               </svg>
-              <svg class="arrow-down" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+              <svg class="arrow-down absolute top-0 left-0 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-y-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
                 <path stroke="currentColor" stroke-linecap="square" d="M15 14.286V19m0 0H9.286M15 19 5 9"></path>
               </svg>
             </div>
