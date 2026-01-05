@@ -119,6 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
+                        // If element is explicitly hidden, don't force it visible
+                        if (motion.parentElement.classList.contains('hidden')) {
+                            return;
+                        }
                         // For UC004 AND UC003, force display and opacity but respect SMIL visibility
                         motion.parentElement.classList.add('force-smil-display');
                     } else {
