@@ -1938,12 +1938,12 @@ font-family: 'Oswald', sans-serif !important;
   </section>
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-[#0a0b14] py-24 relative overflow-hidden border-t border-white/5" data-tab-flipper>
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-20">
+  <section id="integrations" class="bg-[#0a0b14] py-32 lg:py-40 relative overflow-hidden border-t border-white/5" data-tab-flipper>
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-32">
         <!-- Top Bar -->
-        <div class="flex justify-between items-start w-full mb-24">
+        <div class="flex justify-between items-start w-full mb-32">
             <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Scroll to discover</span>
-            <a href="#integrations-tabs" class="group">
+            <a href="#integrations-tabs" class="group" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white transition-transform duration-300 group-hover:translate-y-1">
                     <path d="M12 5v14"></path>
                     <path d="m19 12-7 7-7-7"></path>
