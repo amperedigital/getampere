@@ -1938,7 +1938,7 @@ font-family: 'Oswald', sans-serif !important;
   </section>
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-[#0a0b14] py-32 lg:py-40 relative overflow-hidden border-t border-white/5" data-tab-flipper>
+  <section id="integrations" class="bg-[#0a0b14] py-2 lg:py-10 relative overflow-hidden border-t border-white/5" data-tab-flipper>
     <style>
       /* Reusable Text Flip Animation */
       .hover-flip-text .char {
@@ -1985,18 +1985,18 @@ font-family: 'Oswald', sans-serif !important;
       }
     </style>
 
-    <div class="w-full bg-[#0a0b14] py-24 lg:py-32 mb-12">
-      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-12">
-        <span class="font-mono text-sm text-white hover-flip-text tracking-widest cursor-pointer select-none" style="letter-spacing:0.08em" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">SCROLL TO DISCOVER</span>
-        <a href="#integrations-tabs" class="group" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
+    <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
+      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group" data-scrollto="#integrations-tabs">
+        <span class="font-mono text-sm text-[#A1A1AA] hover-flip-text tracking-widest select-none" style="letter-spacing:0.08em; white-space:pre;">SCROLL TO DISCOVER</span>
+        <span class="group-hover:opacity-80 transition-opacity">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
             <path d="M12 5v14"></path>
             <path d="m19 12-7 7-7-7"></path>
           </svg>
-        </a>
+        </span>
       </div>
       <div class="w-full flex flex-col lg:flex-row items-end justify-between px-6 lg:px-12">
-        <h2 class="text-white text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] font-geist font-medium leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-0 fade-up-element reveal-heading" style="word-break:break-word;">
+        <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-medium leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 fade-up-element reveal-heading" style="word-break:break-word;">
           Works Seamlessly With the Tools You Already Use
         </h2>
         <p class="text-lg text-zinc-400 leading-relaxed max-w-lg fade-up-element reveal-content lg:ml-12">
@@ -2010,12 +2010,12 @@ font-family: 'Oswald', sans-serif !important;
     <script>
       // Simple Intersection Observer for fade-in animations on this section
       document.addEventListener('DOMContentLoaded', () => {
+        // Fade up animation
         const observerOptions = {
           root: null,
           rootMargin: '0px',
           threshold: 0.15
         };
-
         const observer = new IntersectionObserver((entries, obs) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -2024,8 +2024,26 @@ font-family: 'Oswald', sans-serif !important;
             }
           });
         }, observerOptions);
-
         document.querySelectorAll('.fade-up-element').forEach(el => observer.observe(el));
+
+        // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
+        document.body.addEventListener('click', function(e) {
+          const el = e.target.closest('[data-scrollto]');
+          if (el) {
+            const targetSel = el.getAttribute('data-scrollto');
+            if (targetSel) {
+              const target = document.querySelector(targetSel);
+              if (target) {
+                e.preventDefault();
+                if (window.lenis) {
+                  window.lenis.scrollTo(target, {duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))});
+                } else {
+                  target.scrollIntoView({behavior: 'smooth'});
+                }
+              }
+            }
+          }
+        });
       });
     </script>
 
