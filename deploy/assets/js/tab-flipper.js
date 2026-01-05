@@ -1,44 +1,24 @@
 /**
- * Tab Controlled Card Flipper v2.7
+ * Tab Controlled Card Flipper v2.2
  * Manages SMIL animations for 3D cards based on active tab state.
  * Supports 3D transitions via CSS classes managed by this script.
  * Handles the switching of active states between navigation tabs and corresponding content cards.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.7 Loaded');
+  console.log('Tab Flipper v2.2 Loaded');
 
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
   style.textContent = `
-    /* Force opacity for animated elements, but respect SMIL visibility to prevent stray pixels */
     .manual-active .force-visible {
+      display: block !important;
+      visibility: visible !important;
       opacity: 1 !important;
     }
-    
-    /* Force the ping animation when manual-active is present */
     .manual-active .crm-ping-element {
       opacity: 1 !important;
-      display: block !important;
-      animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
-    }
-    /* Force the animated elements (dots) to show */
-    .manual-active .crm-animated-element {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-
-    /* Fix for UC004 stray pixels: Ensure circles are hidden when not active */
-    #uc004-anim-container:not(.manual-active) circle {
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-    
-    @keyframes crm-ping {
-      75%, 100% {
-        transform: scale(2);
-        opacity: 0;
-      }
+      animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
   `;
   document.head.appendChild(style);
@@ -100,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
-            console.log(`Activating animations for ${name}`);
             container.classList.add("manual-active");
             
             // Force visibility on elements with motion animations
@@ -109,10 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     motion.parentElement.classList.add('force-visible');
                 }
             });
-
-            // CRITICAL: Force a reflow to ensure the browser acknowledges the visibility change
-            // before we try to start SMIL animations. SMIL often fails if started on hidden elements.
-            void container.offsetHeight;
 
             // Trigger Animations
             anims.forEach(anim => {
@@ -124,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // If it's the master trigger, always begin
                     if (isTrigger) {
-                        // Restart the trigger
                         anim.beginElement();
                     }
                     // If it's dependent, DO NOT manually begin (let the trigger handle it)
@@ -141,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } else {
-            console.log(`Deactivating animations for ${name}`);
             container.classList.remove("manual-active");
             
             // Remove forced visibility
@@ -154,16 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Stop Animations
             anims.forEach(anim => {
                 try {
-                    // Check if this animation depends on a trigger
-                    const beginAttr = anim.getAttribute('begin');
-                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
-                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
-
-                    // Only end triggers and independent animations
-                    // Do NOT end dependent animations, as this might break the trigger relationship
-                    if (isTrigger || !isDependent) {
-                        anim.endElement();
-                    }
+                    anim.endElement();
                 } catch(e) {
                     // ignore
                 }
