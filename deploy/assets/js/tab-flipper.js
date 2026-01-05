@@ -1,12 +1,12 @@
 /**
- * Tab Controlled Card Flipper v2.4
+ * Tab Controlled Card Flipper v2.5
  * Manages SMIL animations for 3D cards based on active tab state.
  * Supports 3D transitions via CSS classes managed by this script.
  * Handles the switching of active states between navigation tabs and corresponding content cards.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.4 Loaded');
+  console.log('Tab Flipper v2.5 Loaded');
 
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
@@ -20,15 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
     .manual-active .crm-ping-element {
       opacity: 1 !important;
       display: block !important;
-      animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+      animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
     /* Force the animated elements (dots) to show */
     .manual-active .crm-animated-element {
       opacity: 1 !important;
       visibility: visible !important;
     }
+
+    /* Fix for UC004 stray pixels: Ensure circles are hidden when not active */
+    #uc004-anim-container:not(.manual-active) circle {
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
     
-    @keyframes ping {
+    @keyframes crm-ping {
       75%, 100% {
         transform: scale(2);
         opacity: 0;
@@ -94,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
+            console.log(`Activating animations for ${name}`);
             container.classList.add("manual-active");
             
             // Force visibility on elements with motion animations
@@ -129,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } else {
+            console.log(`Deactivating animations for ${name}`);
             container.classList.remove("manual-active");
             
             // Remove forced visibility
@@ -144,6 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     anim.endElement();
                 } catch(e) {
                     // ignore
+                }
+            });
+
+            // Reset SVG timeline if possible
+            const svgs = container.querySelectorAll('svg');
+            svgs.forEach(svg => {
+                if (svg.setCurrentTime) {
+                    try {
+                        svg.setCurrentTime(0);
+                    } catch(e) {}
                 }
             });
         }
