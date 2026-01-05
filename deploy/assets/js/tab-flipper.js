@@ -1,12 +1,12 @@
 /**
- * Tab Controlled Card Flipper v2.2
+ * Tab Controlled Card Flipper v2.3
  * Manages SMIL animations for 3D cards based on active tab state.
  * Supports 3D transitions via CSS classes managed by this script.
  * Handles the switching of active states between navigation tabs and corresponding content cards.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.2 Loaded');
+  console.log('Tab Flipper v2.3 Loaded');
 
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
@@ -18,7 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     .manual-active .crm-ping-element {
       opacity: 1 !important;
-      animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+      display: block !important;
+      animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+    }
+    
+    @keyframes crm-ping {
+      75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+      }
     }
   `;
   document.head.appendChild(style);
