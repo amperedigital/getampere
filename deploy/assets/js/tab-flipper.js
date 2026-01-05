@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: 0 !important;
         visibility: hidden !important;
     }
+
+    /* Explicit opacity class for SMIL elements to ensure they start hidden */
+    .smil-hide {
+        opacity: 0;
+    }
     
     @keyframes crm-ping {
       75%, 100% {
