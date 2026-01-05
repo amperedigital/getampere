@@ -1985,34 +1985,30 @@ font-family: 'Oswald', sans-serif !important;
       }
     </style>
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-32">
-        <!-- Top Bar -->
-        <div class="flex justify-between items-start w-full mb-32">
-            <a href="#integrations-tabs" class="group block" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
-                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white group-hover:text-blue-400 transition-colors duration-300 hover-flip-text">Scroll to discover</span>
-            </a>
-
-            <a href="#integrations-tabs" class="group" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
-                    <path d="M12 5v14"></path>
-                    <path d="m19 12-7 7-7-7"></path>
-                </svg>
-            </a>
-        </div>
-
-        <!-- Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-[#0a0b14] relative">
+      <div class="w-full flex flex-col items-center justify-center gap-10">
+        <a href="#integrations-tabs" class="group flex items-center gap-2 cursor-pointer" onclick="event.preventDefault(); const target = document.querySelector('#integrations-tabs'); if(window.lenis) { window.lenis.scrollTo(target, {duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))}); } else { target.scrollIntoView({behavior: 'smooth'}); }">
+          <span class="font-mono text-sm text-blue-400 hover-flip-text tracking-widest transition-colors">Scroll to discover</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
+            <path d="M12 5v14"></path>
+            <path d="m19 12-7 7-7-7"></path>
+          </svg>
+        </a>
+        <div class="w-full max-w-7xl mx-auto px-6 lg:px-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
             <div class="lg:col-span-7">
-                <h2 class="text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white tracking-tight font-geist leading-[1.1] fade-up-element reveal-heading">
-                    Works Seamlessly With the Tools You Already Use
-                </h2>
+              <h2 class="text-4xl md:text-5xl lg:text-[3.5rem] font-medium text-white tracking-tight font-geist leading-[1.1] fade-up-element reveal-heading">
+                Works Seamlessly With the Tools You Already Use
+              </h2>
             </div>
             <div class="lg:col-span-5">
-                <p class="text-lg text-zinc-400 leading-relaxed fade-up-element reveal-content">
-                    Ampere integrates directly into your existing systems so customer data, bookings, and workflows stay synchronized — without changing how your business already runs.
-                </p>
+              <p class="text-lg text-zinc-400 leading-relaxed fade-up-element reveal-content">
+                Ampere integrates directly into your existing systems so customer data, bookings, and workflows stay synchronized — without changing how your business already runs.
+              </p>
             </div>
+          </div>
         </div>
+      </div>
     </div>
     
     <div id="integrations-tabs"></div>
