@@ -11,11 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inject styles for forced visibility of animated elements
   const style = document.createElement('style');
   style.textContent = `
-    .manual-active .force-visible {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
     /* Force the ping animation when manual-active is present */
     .manual-active .crm-ping-element {
       opacity: 1 !important;
@@ -90,19 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Select all animation elements
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
-        // Select elements that should be visible during animation (parents of animateMotion)
-        const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
             container.classList.add("manual-active");
             
-            // Force visibility on elements with motion animations
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    motion.parentElement.classList.add('force-visible');
-                }
-            });
-
             // Trigger Animations
             anims.forEach(anim => {
                 try {
@@ -131,13 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             container.classList.remove("manual-active");
             
-            // Remove forced visibility
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    motion.parentElement.classList.remove('force-visible');
-                }
-            });
-
             // Stop Animations
             anims.forEach(anim => {
                 try {
