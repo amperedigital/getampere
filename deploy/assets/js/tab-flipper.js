@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /* For UC004 & UC003: Override display and opacity, but let SMIL handle visibility */
     .manual-active .force-smil-display {
       display: block !important;
-      opacity: 0; /* Default to hidden, SMIL inline style will override */
-      transition: none !important; /* Prevent any fading artifacts */
+      visibility: hidden; /* Start hidden, SMIL will set to visible */
+      opacity: 1; /* Opacity is 1, but visibility controls display */
+      transition: none !important;
     }
 
     .manual-active .crm-ping-element {
@@ -46,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Explicit opacity class for SMIL elements to ensure they start hidden */
     .smil-hide {
-        opacity: 0;
+        visibility: hidden;
+        opacity: 1;
         transition: none !important;
     }
     
@@ -137,10 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         motion.parentElement.classList.add('force-smil-display');
                         if (idx === 0) {
                              console.log(`[${name}] Added .force-smil-display to element 0`);
-                             // Check computed opacity
+                             // Check computed visibility
                              setTimeout(() => {
                                  const computed = window.getComputedStyle(motion.parentElement);
-                                 console.log(`[${name}] Element 0 opacity: ${computed.opacity}, display: ${computed.display}`);
+                                 console.log(`[${name}] Element 0 visibility: ${computed.visibility}, display: ${computed.display}, opacity: ${computed.opacity}`);
                              }, 10);
                         }
                     } else {
