@@ -1,14 +1,12 @@
 /**
- * Tab Controlled Card Flipper v2.4
- * Manages SMIL animations for 3D cards based on active tab state.
- * Supports 3D transitions via CSS classes managed by this script.
- * Handles the switching of active states between navigation tabs and corresponding content cards.
+ * Tab Controlled Card Flipper v2.5
+ * Refactor for re-usable interactions and enhanced text effects.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.4 Loaded');
+  console.log('Tab Flipper v2.5 Loaded');
 
-  // Inject styles for forced visibility of animated elements
+  // Inject styles for interaction utilities
   const style = document.createElement('style');
   style.textContent = `
     .manual-active .force-visible {
@@ -17,11 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
       opacity: 1 !important;
     }
     
-    /* For UC004 & UC003: Override display and opacity, but let SMIL handle visibility */
     .manual-active .force-smil-display {
       display: block !important;
-      visibility: hidden; /* Start hidden, SMIL will set to visible */
-      opacity: 1; /* Opacity is 1, but visibility controls display */
+      visibility: hidden; 
+      opacity: 1; 
       transition: none !important;
     }
 
@@ -31,21 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    /* Fix for UC004 stray pixels: Ensure circles are hidden when parent container is not active */
     #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
         opacity: 0 !important;
         visibility: hidden !important;
     }
 
-    /* Strict hide for marked elements - High Specificity to override force classes */
-    .manual-active .always-hide-anim,
-    .always-hide-anim {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-
-    /* Explicit opacity class for SMIL elements to ensure they start hidden */
     .smil-hide {
         visibility: hidden;
         opacity: 1;
@@ -58,160 +45,116 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: 0;
       }
     }
+
+    /* Interaction Utility Classes */
+    .interaction-tag-label {
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .group:hover .interaction-tag-label,
+    .active .interaction-tag-label {
+      opacity: 1;
+    }
   `;
   document.head.appendChild(style);
 
-  // Initialize Text Flip Effect
-  const flipTexts = document.querySelectorAll('.hover-flip-text');
-  flipTexts.forEach(el => {
+  // --- Text Interaction Engine ---
+  const initializeFlipText = (el) => {
+    if (el.dataset.initialized) return;
     const text = el.textContent;
+    const delay = parseInt(el.dataset.flipDelay || 30);
+    
     el.innerHTML = '';
-    [...text].forEach((char, i) => {
+    // Use Array.from to handle emojis or special chars correctly
+    Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
-      span.textContent = char;
+      // Use non-breaking space for layout consistency
+      span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * 30}ms`;
+      span.style.transitionDelay = `${i * delay}ms`;
       el.appendChild(span);
     });
-  });
+    el.dataset.initialized = 'true';
+  };
 
-  const flippers = document.querySelectorAll('[data-tab-flipper]');
+  // Initialize all flip texts on load
+  document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
-  flippers.forEach(flipper => {
+  // Re-usable Tab Flipper Logic
+  const initFlipper = (flipper) => {
     const triggers = flipper.querySelectorAll('[data-tab-trigger]');
     const cards = flipper.querySelectorAll('[data-tab-card]');
-    
     if (!triggers.length || !cards.length) return;
 
-    // State
     let activeIndex = 0;
     let isAnimating = false;
     
-    // Card Containers
     const crmContainer = document.getElementById('crm-card-container');
     const uc003Container = document.getElementById('uc003-card-container');
     const uc004Container = document.getElementById('uc004-card-container');
 
-    // Check which cards are controlled by this flipper
     const controlsCrm = crmContainer && flipper.contains(crmContainer);
     const controlsUc003 = uc003Container && flipper.contains(uc003Container);
     const controlsUc004 = uc004Container && flipper.contains(uc004Container);
 
-    // State flags for each card
-    let isCrmActive = false;
-    let isUc003Active = false;
-    let isUc004Active = false;
-    
-    let isCrmHovered = false;
-    let isUc003Hovered = false;
-    let isUc004Hovered = false;
+    let isCrmActive = false, isUc003Active = false, isUc004Active = false;
+    let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
 
-    // Helper to update SMIL animation state
     function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
-        
         const shouldRun = isActive || isHovered;
-        
-        // Select all animation elements
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
-        // Select elements that should be visible during animation (parents of animateMotion)
         const motionElements = container.querySelectorAll("animateMotion");
         
         if (shouldRun) {
             container.classList.add("manual-active");
-            
-            // Force visibility on elements with motion animations
-            motionElements.forEach((motion, idx) => {
+            motionElements.forEach(motion => {
                 if (motion.parentElement) {
-                    // Skip elements marked to be always hidden
-                    if (motion.parentElement.classList.contains('always-hide-anim')) {
-                        return;
-                    }
-
+                    if (motion.parentElement.classList.contains('always-hide-anim')) return;
                     if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
-                        // If element is explicitly hidden, don't force it visible
-                        if (motion.parentElement.classList.contains('hidden')) {
-                            return;
-                        }
-                        // For UC004 AND UC003, force display and opacity but respect SMIL visibility
+                        if (motion.parentElement.classList.contains('hidden')) return;
                         motion.parentElement.classList.add('force-smil-display');
                     } else {
-                        // For others (CRM), force everything (legacy behavior)
                         motion.parentElement.classList.add('force-visible');
                     }
                 }
             });
 
-            // Trigger Animations
             anims.forEach(anim => {
                 try {
-                    // Check if this animation depends on a trigger
                     const beginAttr = anim.getAttribute('begin');
                     const isDependent = beginAttr && beginAttr.includes('anim-trigger');
                     const isTrigger = anim.id && anim.id.includes('anim-trigger');
 
-                    // If it's the master trigger, always begin
                     if (isTrigger) {
                         anim.beginElement();
-                    }
-                    // If it's dependent, DO NOT manually begin (let the trigger handle it)
-                    else if (isDependent) {
-                        // Do nothing, the trigger will start it
-                    }
-                    // If it's independent (e.g. center pulse with no begin or begin="0s"), begin it
-                    else {
+                    } else if (!isDependent) {
                         anim.beginElement();
                     }
                 } catch(e) {
                     console.warn(`SMIL begin error in ${name}:`, e);
                 }
             });
-
         } else {
             container.classList.remove("manual-active");
-            
-            // Remove forced visibility
             motionElements.forEach(motion => {
                 if (motion.parentElement) {
-                    motion.parentElement.classList.remove('force-visible');
-                    motion.parentElement.classList.remove('force-smil-display');
+                    motion.parentElement.classList.remove('force-visible', 'force-smil-display');
                 }
             });
-
-            // Stop Animations
-            anims.forEach(anim => {
-                try {
-                    anim.endElement();
-                } catch(e) {
-                    // ignore
-                }
-            });
+            anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
         }
     }
 
-    // Update functions for each card
-    function updateCrmState() {
-        if (controlsCrm) updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
-    }
-    function updateUc003State() {
-        if (controlsUc003) updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
-    }
-    function updateUc004State() {
-        if (controlsUc004) updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
-    }
+    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
+    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
+    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
 
-    // Bind Hover Events
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
-        
-        // Intersection Observer for CRM (first tab)
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && activeIndex === 0) {
-                    updateCrmState();
-                }
-            });
+            entries.forEach(entry => { if (entry.isIntersecting && activeIndex === 0) updateCrmState(); });
         }, { threshold: 0.3 });
         observer.observe(crmContainer);
     }
@@ -226,10 +169,41 @@ document.addEventListener('DOMContentLoaded', () => {
         uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
     }
 
-    // Initialize
-    setActive(0);
+    const setActive = (index) => {
+      isAnimating = true;
+      activeIndex = index;
+      
+      triggers.forEach((t, i) => {
+        const isActive = (i === index);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        t.setAttribute('data-selected', isActive ? 'true' : 'false');
+        t.classList.toggle('active', isActive);
+      });
 
-    // Event Listeners
+      cards.forEach((c, i) => {
+        c.classList.remove('active', 'inactive-prev', 'inactive-next');
+        if (i === index) {
+          c.classList.add('active');
+          const video = c.querySelector('video');
+          if (video) video.play().catch(() => {});
+        } else {
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
+          c.classList.add(i < index ? 'inactive-prev' : 'inactive-next');
+        }
+      });
+
+      isCrmActive = (index === 0);
+      isUc003Active = (index === 2);
+      isUc004Active = (index === 3);
+      
+      updateCrmState();
+      updateUc003State();
+      updateUc004State();
+
+      setTimeout(() => { isAnimating = false; }, 500);
+    };
+
     triggers.forEach((trigger, index) => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
@@ -238,68 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    function setActive(index) {
-      isAnimating = true;
-      activeIndex = index;
-      console.log(`Setting active tab: ${index}`);
+    setActive(0);
+  };
 
-      // Update Triggers
-      triggers.forEach((t, i) => {
-        if (i === index) {
-          t.setAttribute('aria-selected', 'true');
-          t.setAttribute('data-selected', 'true');
-          t.classList.add('active');
-        } else {
-          t.setAttribute('aria-selected', 'false');
-          t.setAttribute('data-selected', 'false');
-          t.classList.remove('active');
-        }
-      });
-
-      // Update Cards
-      cards.forEach((c, i) => {
-        // Reset classes
-        c.classList.remove('active', 'inactive-prev', 'inactive-next');
-        
-        if (i === index) {
-          c.classList.add('active');
-          // Play video if present
-          const video = c.querySelector('video');
-          if (video) video.play().catch(() => {});
-        } else {
-          // Pause video if present
-          const video = c.querySelector('video');
-          if (video) {
-            video.pause();
-            video.currentTime = 0;
-          }
-
-          // Determine direction for exit animation
-          if (i < index) {
-            c.classList.add('inactive-prev');
-          } else {
-            c.classList.add('inactive-next');
-          }
-        }
-      });
-
-      // Update SMIL States based on active tab index
-      // Tab 0: CRM
-      isCrmActive = (index === 0);
-      updateCrmState();
-
-      // Tab 2: Scheduling (UC_003)
-      isUc003Active = (index === 2);
-      updateUc003State();
-
-      // Tab 3: ERP (UC_004)
-      isUc004Active = (index === 3);
-      updateUc004State();
-
-      // Reset animation lock after transition (approx 500ms)
-      setTimeout(() => {
-        isAnimating = false;
-      }, 500);
-    }
-  });
+  document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
 });

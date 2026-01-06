@@ -1939,7 +1939,7 @@ font-family: 'Oswald', sans-serif !important;
   <!-- Tabs Section-->
   <section id="integrations" class="bg-[#0a0b14] py-2 lg:py-10 relative overflow-hidden border-t border-white/5" data-tab-flipper>
     <style>
-      /* Reusable Text Flip Animation */
+      /* --- Global Interaction Utilities --- */
       .hover-flip-text .char {
         display: inline-block;
         transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1950,6 +1950,29 @@ font-family: 'Oswald', sans-serif !important;
       .group:hover .hover-flip-text .char,
       .hover-flip-text:hover .char {
         transform: rotateX(360deg);
+      }
+
+      /* Re-usable Tag Style */
+      .tag-mono-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .uc-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        color: #60a5fa; /* text-blue-400 */
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+      }
+      .group:hover .uc-label,
+      .active .uc-label {
+        opacity: 1;
+      }
+      @media (min-width: 1024px) {
+        .uc-label { font-size: 12px; }
       }
 
       /* Arrow Fade Push Down Animation */
@@ -1983,7 +2006,7 @@ font-family: 'Oswald', sans-serif !important;
 
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
       <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group" data-scrollto="#integrations-tabs">
-        <span class="font-mono text-sm text-[#A1A1AA] hover-flip-text tracking-widest select-none" style="letter-spacing:0.08em; white-space:pre;">SCROLL TO DISCOVER</span>
+        <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
         <span class="group-hover:opacity-80 transition-opacity">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
             <path d="M12 5v14"></path>
@@ -2053,7 +2076,7 @@ font-family: 'Oswald', sans-serif !important;
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
             <div class="flex flex-col h-full justify-center items-center gap-2 relative z-10">
-              <span class="font-mono text-[10px] lg:text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity hover-flip-text">/ UC_001</span>
+              <span class="uc-label hover-flip-text">/ UC_001</span>
               <span class="text-base lg:text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">CRM Integrations</span>
             </div>
             <!-- Active Indicator Line -->
@@ -2066,7 +2089,7 @@ font-family: 'Oswald', sans-serif !important;
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
             <div class="flex flex-col h-full justify-center items-center gap-2 relative z-10">
-              <span class="font-mono text-[10px] lg:text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity hover-flip-text">/ UC_002</span>
+              <span class="uc-label hover-flip-text">/ UC_002</span>
               <span class="text-base lg:text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">Field Service Software</span>
             </div>
             <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -2078,7 +2101,7 @@ font-family: 'Oswald', sans-serif !important;
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
             <div class="flex flex-col h-full justify-center items-center gap-2 relative z-10">
-              <span class="font-mono text-[10px] lg:text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity hover-flip-text">/ UC_003</span>
+              <span class="uc-label hover-flip-text">/ UC_003</span>
               <span class="text-base lg:text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">Scheduling Platforms</span>
             </div>
             <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -2090,7 +2113,7 @@ font-family: 'Oswald', sans-serif !important;
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
             <div class="flex flex-col h-full justify-center items-center gap-2 relative z-10">
-              <span class="font-mono text-[10px] lg:text-xs text-blue-400 opacity-60 group-hover:opacity-100 transition-opacity hover-flip-text">/ UC_004</span>
+              <span class="uc-label hover-flip-text">/ UC_004</span>
               <span class="text-base lg:text-xl font-medium text-white/60 group-hover:text-white transition-colors group-data-[selected=true]:text-white font-geist">ERP's</span>
             </div>
             <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 scale-x-0 group-data-[selected=true]:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -2118,7 +2141,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_001</span>
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_001</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
                 <div class="hidden md:block">
@@ -2371,7 +2394,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_002</span>
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_002</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">Field Service Software</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
                 
@@ -2468,7 +2491,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_003</span>
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_003</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
                 <div class="hidden md:block">
@@ -2735,7 +2758,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="font-mono text-xs text-blue-400 mb-6 block tracking-wider">/ UC_004</span>
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_004</span>
                 <h3 class="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-6 font-geist tracking-tight leading-tight">ERP's</h3>
                 <p class="text-white/60 text-lg leading-relaxed mb-10 max-w-md">Oracle Fusion, Odoo, Workday & Others...</p>
                 <div class="hidden md:block">
@@ -3024,17 +3047,6 @@ font-family: 'Oswald', sans-serif !important;
         pointer-events: none;
         z-index: 0;
       }
-
-      /* Text Flip Animation */
-      .hover-flip-text .char {
-        display: inline-block;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform-origin: center center;
-      }
-      
-      .group:hover .hover-flip-text .char {
-        transform: rotateX(360deg);
-      }
     </style>
   </section>
   <!--end-->
@@ -3214,7 +3226,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.047/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.084/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
