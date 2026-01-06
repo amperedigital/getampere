@@ -1975,22 +1975,16 @@ font-family: 'Oswald', sans-serif !important;
         .uc-label { font-size: 12px; }
       }
 
-      /* Arrow Push-Down Vertical Roll */
+      /* Arrow Interaction: Push-Down & Fall-In */
       .hover-push-down {
         display: inline-block;
-        transition: transform 0.4s ease, opacity 0.4s ease;
-        transform-origin: 50% 79.16%; /* Anchor exactly at the tip (12px, 19px in 24px viewBox) */
-        will-change: transform, opacity;
+        transform-origin: 50% 79.16%; /* Anchor exactly at terminal tip */
+        transition: transform 0.8s cubic-bezier(0.5, 0, 0.2, 1);
+        will-change: transform;
         backface-visibility: hidden;
       }
       .group:hover .hover-push-down {
-        animation: arrow-vertical-roll 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      @keyframes arrow-vertical-roll {
-        0% { transform: rotateX(0deg); opacity: 1; }
-        35% { transform: rotateX(-90deg); opacity: 0; } /* Disappear down */
-        50% { transform: rotateX(90deg); opacity: 0; }  /* Reset to top */
-        100% { transform: rotateX(0deg); opacity: 1; }  /* Fall into place */
+        transform: rotateX(-360deg); /* Pushes down, loops back, falls from top */
       }
 
       /* Reveal Animations */
