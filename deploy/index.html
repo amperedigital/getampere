@@ -1981,15 +1981,16 @@ font-family: 'Oswald', sans-serif !important;
         transition: transform 0.4s ease, opacity 0.4s ease;
         transform-origin: 50% 79.16%; /* Anchor exactly at the tip (12px, 19px in 24px viewBox) */
         will-change: transform, opacity;
+        backface-visibility: hidden;
       }
       .group:hover .hover-push-down {
-        animation: arrow-vertical-roll 0.65s cubic-bezier(0.5, 0, 0.1, 1);
+        animation: arrow-vertical-roll 0.8s cubic-bezier(0.4, 0, 0.2, 1);
       }
       @keyframes arrow-vertical-roll {
         0% { transform: rotateX(0deg); opacity: 1; }
-        40% { transform: rotateX(-95deg); opacity: 0; } /* Push down */
-        41% { transform: rotateX(95deg); opacity: 0; }  /* Prep fall */
-        100% { transform: rotateX(0deg); opacity: 1; }  /* Land */
+        35% { transform: rotateX(-90deg); opacity: 0; } /* Disappear down */
+        50% { transform: rotateX(90deg); opacity: 0; }  /* Reset to top */
+        100% { transform: rotateX(0deg); opacity: 1; }  /* Fall into place */
       }
 
       /* Reveal Animations */
