@@ -1976,22 +1976,26 @@ font-family: 'Oswald', sans-serif !important;
       }
 
       /* Arrow Interaction: Push-Down & Fall-In */
+      .hover-push-down-parent {
+        transform-style: preserve-3d;
+        perspective: 800px; /* Stronger 3D depth local to the arrow */
+      }
       .hover-push-down {
         display: inline-block;
         transform-origin: 50% 79.16%; /* Anchor exactly at terminal tip */
-        transition: transform 0.5s ease-in-out; 
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         will-change: transform;
-        transform: perspective(600px) rotateX(0deg);
+        transform-style: preserve-3d;
+        transform: rotateX(0deg);
       }
       .group:hover .hover-push-down {
-        animation: arrow-push-and-drop 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: arrow-push-and-drop 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
       @keyframes arrow-push-and-drop {
-        0% { transform: perspective(600px) rotateX(0deg); }
-        30% { transform: perspective(600px) rotateX(90deg); } /* Push away */
-        40% { transform: perspective(600px) rotateX(180deg); } /* Flip through back */
-        65% { transform: perspective(600px) rotateX(270deg); } /* Appear at top */
-        100% { transform: perspective(600px) rotateX(360deg); } /* Drop to front */
+        0% { transform: rotateX(0deg); }
+        30% { transform: rotateX(-90deg); } /* Push INTO screen (away) */
+        70% { transform: rotateX(-270deg); } /* Swing around to TOP */
+        100% { transform: rotateX(-360deg); } /* Drop in from TOP */
       }
 
       /* Reveal Animations */
@@ -2018,7 +2022,7 @@ font-family: 'Oswald', sans-serif !important;
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
       <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group perspective-2000" data-scrollto="#integrations-tabs">
         <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
-        <span class="group-hover:opacity-80 transition-opacity">
+        <span class="group-hover:opacity-80 transition-opacity hover-push-down-parent">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
             <path d="M12 5v14"></path>
             <path d="m19 12-7 7-7-7"></path>
