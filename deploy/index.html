@@ -1975,15 +1975,21 @@ font-family: 'Oswald', sans-serif !important;
         .uc-label { font-size: 12px; }
       }
 
-      /* Arrow Flip Animation */
+      /* Arrow Push-Down Vertical Roll */
       .hover-push-down {
         display: inline-block;
-        transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform-origin: center 75%; /* Rotate around the lower part of the arrow */
-        will-change: transform;
+        transition: transform 0.4s ease, opacity 0.4s ease;
+        transform-origin: 50% 79.16%; /* Anchor exactly at the tip (12px, 19px in 24px viewBox) */
+        will-change: transform, opacity;
       }
       .group:hover .hover-push-down {
-        transform: rotateX(360deg);
+        animation: arrow-vertical-roll 0.65s cubic-bezier(0.5, 0, 0.1, 1);
+      }
+      @keyframes arrow-vertical-roll {
+        0% { transform: rotateX(0deg); opacity: 1; }
+        40% { transform: rotateX(-95deg); opacity: 0; } /* Push down */
+        41% { transform: rotateX(95deg); opacity: 0; }  /* Prep fall */
+        100% { transform: rotateX(0deg); opacity: 1; }  /* Land */
       }
 
       /* Reveal Animations */
@@ -2008,7 +2014,7 @@ font-family: 'Oswald', sans-serif !important;
     </style>
 
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
-      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group" data-scrollto="#integrations-tabs" style="perspective: 1000px;">
+      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group perspective-2000" data-scrollto="#integrations-tabs">
         <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
         <span class="group-hover:opacity-80 transition-opacity">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
