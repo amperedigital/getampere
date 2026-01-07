@@ -1174,7 +1174,7 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 flex-1 min-h-[400px] md:min-h-0">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0">
       <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-full perspective-2000">
         
         <!-- Card 1 -->
@@ -2127,23 +2127,37 @@ font-family: 'Oswald', sans-serif !important;
             padding: 1.25rem !important;
             padding-bottom: 0px !important;
           }
+
           /* Media container takes all remaining vertical space */
           [data-tab-card] .w-full.md\:w-1/2.h-auto.md\:h-full.flex.items-center {
             flex: 1 1 auto !important;
-            padding: 1rem !important;
+            padding: 0.5rem !important;
             height: auto !important;
-            min-height: 280px !important;
+            min-height: 250px !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
           }
 
+          /* Bottom Button Wrapper */
+          [data-tab-card] .w-full.md\:hidden.border-t.border-white\/10.py-6 {
+            flex: 0 0 auto !important;
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+          }
+
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1.2 / 1 !important;
+            aspect-ratio: auto !important;
             width: 100% !important;
-            height: auto !important;
-            max-width: 320px !important;
+            height: 100% !important;
+            max-height: 380px !important;
+            max-width: 100% !important;
             margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            /* Stable borders to avoid jitter */
+            border-bottom-width: 6px !important;
           }
 
           [data-tab-card] .scale-90 {
