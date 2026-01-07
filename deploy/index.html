@@ -1006,33 +1006,30 @@ font-family: 'Oswald', sans-serif !important;
         .uc-label { font-size: 12px; }
       }
 
-      /* Arrow Interaction: Push-Down & Fall-In */
+      /* Arrow Interaction: Pick up & Drop */
       .hover-push-down-parent {
-        transform-style: preserve-3d;
-        perspective: 1000px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
       }
       .hover-push-down {
         display: inline-block;
-        transform-origin: 50% 79.16%; /* Anchor at tip */
-        transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s ease; 
+        transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease;
         will-change: transform, opacity;
-        transform-style: preserve-3d;
-        transform: rotateX(0deg) translateY(0);
+        transform: translateY(0);
         opacity: 1;
         pointer-events: none;
       }
       .group:hover .hover-push-down {
-        animation: arrow-push-and-drop 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: arrow-pickup-drop 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
-      @keyframes arrow-push-and-drop {
-        0% { transform: rotateX(0deg) translateY(0); opacity: 1; }
-        25% { transform: rotateX(-90deg) translateY(12px); opacity: 0; } /* Push down & vanish */
-        30% { transform: rotateX(0deg) translateY(-35px); opacity: 0; } /* Teleport to top */
-        70% { transform: rotateX(0deg) translateY(12px); opacity: 1; } /* Fast fall past mark */
-        100% { transform: rotateX(0deg) translateY(8px); opacity: 1; } /* Settle at final spot */
+      @keyframes arrow-pickup-drop {
+        0% { transform: translateY(0); opacity: 1; }
+        20% { transform: translateY(-10px); opacity: 1; } /* Pick up */
+        40% { transform: translateY(20px); opacity: 0; } /* Push down / Vanish */
+        45% { transform: translateY(-40px); opacity: 0; } /* Teleport to top */
+        75% { transform: translateY(12px); opacity: 1; } /* Drop past settled mark */
+        100% { transform: translateY(8px); opacity: 1; } /* Settle lower than start */
       }
 
       /* Reveal Animations */
@@ -1057,9 +1054,9 @@ font-family: 'Oswald', sans-serif !important;
     </style>
 
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
-      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group perspective-2000" data-scrollto="#integrations-tabs">
+      <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group" data-scrollto="#integrations-tabs">
         <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
-        <span class="group-hover:opacity-80 transition-opacity hover-push-down-parent">
+        <span class="hover-push-down-parent">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
             <path d="M12 5v14"></path>
             <path d="m19 12-7 7-7-7"></path>
