@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.0.21 - source -->
+  <!--Version 1.128 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -2109,11 +2109,22 @@ font-family: 'Oswald', sans-serif !important;
         /* Small mobile behavior (iPhone SE, smaller Androids) */
         /* Completely static inline stack to prevent clipping and sensitive scroll jumps */
         @media (max-width: 389px) {
+          /* Anchor alignment: Ensure jumps land with breathing room below fixed nav */
+          #integrations, #integrations-tabs {
+            scroll-margin-top: 100px !important;
+          }
+
+          /* Expand cards to utilize more viewport width */
+          .w-full.max-w-7xl.mx-auto.px-6.lg\:px-12 {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+          }
+
           /* Remove massive header padding that pushes content under/behind nav */
           #integrations > div.w-full.bg-\[\#0a0b14\].py-24 {
             padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
-            margin-bottom: 1rem !important;
+            padding-bottom: 1rem !important;
+            margin-bottom: 0 !important;
           }
 
           [data-scroll-track] {
@@ -2148,22 +2159,26 @@ font-family: 'Oswald', sans-serif !important;
           .z-30.flex-none {
             display: none !important;
           }
-          /* Remove cards container top margin */
+          /* Remove cards container top margin on small screens since tabs are hidden */
           .w-full.max-w-7xl.mx-auto.px-6.lg\:px-12.mt-8.lg\:mt-16.flex-none {
             margin-top: 0 !important;
           }
+          /* Expand 3D card for better vertical space utilization */
+          #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
+            aspect-ratio: 1.1 !important;
+          }
           /* Fix SMIL scale for tiny viewports */
           [data-tab-card] .scale-90 {
-            transform: scale(0.8) !important;
+            transform: scale(0.85) !important;
             transform-origin: center center !important;
           }
           /* Typography adjustments */
           [data-tab-card] h3 {
-            font-size: 1.25rem !important; 
+            font-size: 1.4rem !important; 
             margin-bottom: 0.25rem !important;
           }
           [data-tab-card] p.text-white\/60 {
-            font-size: 0.85rem !important;
+            font-size: 0.9rem !important;
             line-height: 1.4 !important;
             margin-bottom: 0.75rem !important;
           }
