@@ -2133,7 +2133,9 @@ font-family: 'Oswald', sans-serif !important;
           [data-tab-card] .w-full.md\:w-1/2.h-auto.md\:h-full.flex.items-center {
             flex: 1 1 auto !important;
             padding: 0.5rem !important;
-            height: auto !important;
+            /* Support for user-suggested expansion method */
+            height: 100vh !important;
+            max-height: 100% !important; 
             min-height: 280px !important;
             display: flex !important;
             flex-direction: column !important;
