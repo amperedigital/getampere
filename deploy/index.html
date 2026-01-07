@@ -1014,22 +1014,21 @@ font-family: 'Oswald', sans-serif !important;
       }
       .hover-push-down {
         display: inline-block;
-        transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease;
+        transition: transform 0.4s linear, opacity 0.3s linear;
         will-change: transform, opacity;
         transform: translateY(0);
         opacity: 1;
         pointer-events: none;
       }
       .group:hover .hover-push-down {
-        animation: arrow-pickup-drop 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: arrow-pickup-drop 0.8s linear forwards;
       }
       @keyframes arrow-pickup-drop {
         0% { transform: translateY(0); opacity: 1; }
-        20% { transform: translateY(-10px); opacity: 1; } /* Pick up */
-        40% { transform: translateY(20px); opacity: 0; } /* Push down / Vanish */
-        45% { transform: translateY(-40px); opacity: 0; } /* Teleport to top */
-        75% { transform: translateY(12px); opacity: 1; } /* Drop past settled mark */
-        100% { transform: translateY(8px); opacity: 1; } /* Settle lower than start */
+        25% { transform: translateY(-12px); opacity: 1; } /* Linear pick up */
+        45% { transform: translateY(20px); opacity: 0; } /* Linear cast down */
+        50% { transform: translateY(-40px); opacity: 0; } /* Teleport */
+        100% { transform: translateY(8px); opacity: 1; } /* Linear drop to final */
       }
 
       /* Reveal Animations */
