@@ -1116,7 +1116,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100vh-6rem)] md:h-[calc(100vh-96px)] flex flex-col">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-md:overflow-visible">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -1174,8 +1174,8 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 flex-1 min-h-0">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-full max-md:perspective-none perspective-2000">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 flex-1 min-h-[400px] md:min-h-0">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-full perspective-2000">
         
         <!-- Card 1 -->
         <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active" data-tab-card>
@@ -2094,58 +2094,60 @@ font-family: 'Oswald', sans-serif !important;
             transform: none !important;
             height: 100% !important;
             max-height: none !important;
-            overflow: hidden !important; /* Prevent double scroll jitter */
+            overflow: visible !important;
             display: flex !important;
             flex-direction: column !important;
-            /* Fix blurriness on mobile */
-            will-change: auto !important;
-            -webkit-font-smoothing: subpixel-antialiased !important;
+            /* Stabilization */
+            will-change: transform !important;
           }
 
-          /* Remove perspective causing blur on mobile */
-          .perspective-2000, .perspective-1000, .perspective-midrange {
-            perspective: none !important;
-            transform-style: flat !important;
+          /* Restore 3D on mobile but keep it sharp */
+          .perspective-2000, .perspective-1000 {
+            perspective: 1200px !important;
           }
 
           [data-tab-card] #crm-card-container,
           [data-tab-card] #uc002-card-container, 
           [data-tab-card] #uc003-card-container,
           [data-tab-card] #uc004-card-container {
+            flex: 1 1 auto !important;
             height: 100% !important;
             display: flex !important;
             flex-direction: column !important;
           }
 
           /* Content takes fixed space, Media takes the rest */
+          [data-tab-card] .relative.w-full.h-auto.md\:h-full.flex.flex-col.md\:flex-row.z-10 {
+            flex: 1 1 auto !important;
+            height: 100% !important;
+          }
+
           [data-tab-card] .p-6.md\:p-8.lg\:p-16 {
             flex: 0 0 auto !important;
-            padding: 1.5rem !important;
-            padding-bottom: 0.5rem !important;
+            padding: 1.25rem !important;
           }
+          /* Media container takes all remaining vertical space */
           [data-tab-card] .w-full.md\:w-1/2.h-auto.md\:h-full.flex.items-center {
             flex: 1 1 auto !important;
-            padding: 1.5rem !important;
-            padding-top: 0 !important;
+            padding: 0.5rem !important;
             height: auto !important;
             min-height: 0 !important;
             display: flex !important;
+            flex-direction: column !important;
             justify-content: center !important;
-            align-items: center !important;
           }
 
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1.25 / 1 !important;
-            width: 100% !important;
-            height: auto !important;
-            max-width: 380px !important;
+            aspect-ratio: 1 / 1 !important; /* Square for most stability */
+            width: auto !important;
+            height: 100% !important;
+            max-height: 280px !important;
+            max-width: 90% !important;
             margin: 0 auto !important;
-            /* Stable borders to avoid jitter */
-            border-bottom-width: 4px !important;
           }
 
           [data-tab-card] .scale-90 {
-            transform: scale(0.9) !important;
+            transform: scale(0.95) !important;
             transform-origin: center center !important;
           }
         }
