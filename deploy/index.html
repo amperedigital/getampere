@@ -1009,29 +1009,28 @@ font-family: 'Oswald', sans-serif !important;
       /* Arrow Interaction: Push-Down & Fall-In */
       .hover-push-down-parent {
         transform-style: preserve-3d;
-        perspective: 1000px; /* Enhanced 3D depth local to the arrow */
+        perspective: 1000px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
       }
       .hover-push-down {
         display: inline-block;
-        transform-origin: 50% 79.16%; /* Anchor exactly at terminal tip */
-        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform-origin: 50% 79.16%; /* Anchor at tip */
+        transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); 
         will-change: transform;
         transform-style: preserve-3d;
         transform: rotateX(0deg);
-        pointer-events: none; /* Let parent handle the hover */
+        pointer-events: none;
       }
       .group:hover .hover-push-down {
-        animation: arrow-push-and-drop 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation: arrow-push-and-drop 1.2s cubic-bezier(0.2, 0, 0.2, 1) forwards;
       }
       @keyframes arrow-push-and-drop {
-        0% { transform: rotateX(0deg); }
-        30% { transform: rotateX(-90deg); } /* Push INTO screen (away) */
-        40% { transform: rotateX(-90.1deg); } /* Tiny hold at flat */
-        80% { transform: rotateX(-270deg); } /* Swing around to TOP */
-        100% { transform: rotateX(-360deg); } /* Drop in from TOP */
+        0% { transform: rotateX(0deg) translateY(0); }
+        20% { transform: rotateX(-120deg) translateY(4px); } /* Push back & down */
+        50% { transform: rotateX(-270deg) translateY(2px); } /* Swing to top */
+        100% { transform: rotateX(-360deg) translateY(8px); } /* Drop to final lowered spot */
       }
 
       /* Reveal Animations */
