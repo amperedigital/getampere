@@ -2088,19 +2088,63 @@ font-family: 'Oswald', sans-serif !important;
       }
 
       @media (max-width: 768px) {
-        [data-tab-card].active {
-          transform: none !important;
-          max-height: calc(100svh - 170px);
-          overflow-y: auto !important;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
+        /* Standard mobile behavior (iPhone 12/13/14/15/16 and larger) */
+        @media (min-width: 390px) {
+          [data-tab-card].active {
+            transform: none !important;
+            max-height: calc(100svh - 170px);
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          
+          @media (max-height: 700px) {
+             #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
+               max-height: 200px !important;
+               width: auto !important;
+             }
+          }
         }
-        
-        @media (max-height: 700px) {
-           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-             max-height: 200px !important;
-             width: auto !important;
-           }
+
+        /* Small mobile behavior (iPhone SE, smaller Androids) */
+        /* Disables sticking/height trapping so content can grow naturally */
+        @media (max-width: 389px) {
+          [data-scroll-track] {
+            height: auto !important;
+            margin-bottom: 4rem;
+          }
+          [data-scroll-track] .sticky {
+            position: relative !important;
+            top: 0 !important;
+            min-height: 0 !important;
+          }
+          /* Change grid stack to vertical list */
+          .grid.grid-cols-1.grid-rows-1.perspective-2000 {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3rem !important;
+            height: auto !important;
+            perspective: none !important;
+          }
+          [data-tab-card] {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: none !important;
+            position: relative !important;
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+          /* Hide the tab navigation bar as it's confusing in list mode */
+          .z-30.flex-none {
+            display: none !important;
+          }
+          #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
+             max-height: none !important;
+             aspect-ratio: 1.2 !important;
+             width: 100% !important;
+             max-width: 100% !important;
+          }
         }
 
         [data-tab-card].active::-webkit-scrollbar {
