@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.132 - source -->
+  <!--Version 1.133 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -1175,7 +1175,7 @@ font-family: 'Oswald', sans-serif !important;
 
     <!-- Cards Container -->
     <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-16 flex-none">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto max-md:h-[82vh] md:h-[650px] perspective-2000">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto max-md:h-[72vh] md:h-[650px] perspective-2000">
         
         <!-- Card 1 -->
         <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
@@ -2092,34 +2092,46 @@ font-family: 'Oswald', sans-serif !important;
         @media (min-width: 390px) {
           [data-tab-card].active {
             transform: none !important;
-            max-height: calc(100svh - 130px);
-            overflow-y: auto !important;
+            height: 100% !important;
+            max-height: none !important;
+            overflow: visible !important;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
           }
+
+          /* Force inner containers to fill height */
+          [data-tab-card] #crm-card-container,
+          [data-tab-card] #uc002-card-container, 
+          [data-tab-card] #uc003-card-container,
+          [data-tab-card] #uc004-card-container {
+            height: 100% !important;
+          }
           
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1 / 1.05 !important;
+            aspect-ratio: auto !important;
+            height: 100% !important;
+            max-height: 280px !important;
           }
 
           [data-tab-card] .scale-90 {
-            transform: scale(0.88) !important;
+            transform: scale(0.85) !important;
             transform-origin: center center !important;
           }
 
           /* Tighten internal card layout on mobile */
           [data-tab-card] .p-6.md\:p-8.lg\:p-16 {
             padding: 1.25rem !important;
+            flex: 1 1 auto !important;
           }
           [data-tab-card] .p-6.pt-0.md\:p-0 {
-            padding: 0.75rem !important;
+            padding: 0.5rem !important;
             padding-top: 0 !important;
+            flex: 0 0 auto !important;
           }
 
           @media (max-height: 720px) {
              #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-               max-height: 260px !important;
-               width: auto !important;
+               max-height: 220px !important;
              }
              [data-tab-card] .scale-90 {
                transform: scale(0.8) !important;
