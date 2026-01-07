@@ -2107,45 +2107,57 @@ font-family: 'Oswald', sans-serif !important;
         }
 
         /* Small mobile behavior (iPhone SE, smaller Androids) */
-        /* Simply disables the "scroll lock" pin behavior */
+        /* Completely static inline stack to prevent clipping and sensitive scroll jumps */
         @media (max-width: 389px) {
           [data-scroll-track] {
             height: auto !important;
+            padding-top: 2rem !important; 
           }
           [data-scroll-track] .sticky {
             position: relative !important;
             top: 0 !important;
             min-height: 0 !important;
+            display: block !important;
           }
-          /* Hide tabs as requested */
+          /* Change grid stack to vertical list */
+          .grid.grid-cols-1.grid-rows-1 {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2rem !important;
+            height: auto !important;
+          }
+          /* Force all cards to show naturally */
+          [data-tab-card] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            position: relative !important;
+            transform: none !important;
+            pointer-events: auto !important;
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+          /* Hide tabs */
           .z-30.flex-none {
             display: none !important;
           }
-          /* Add back some margin - v1.124 removed too much */
-          .w-full.max-w-7xl.mx-auto.px-6.lg\:px-12.mt-8.lg\:mt-16.flex-none {
-            margin-top: 1.5rem !important;
-          }
-          /* Scale SMIL content down slightly more to prevent vertical clipping */
+          /* Fix SMIL scale for tiny viewports */
           [data-tab-card] .scale-90 {
-            transform: scale(0.82) !important;
+            transform: scale(0.8) !important;
+            transform-origin: center center !important;
           }
-          /* Shrink blurb and heading for small mobile */
-          [data-tab-card] p.text-white\/60 {
-            font-size: 0.875rem !important; 
-            line-height: 1.4 !important;
-            margin-bottom: 1rem !important;
-          }
+          /* Typography adjustments */
           [data-tab-card] h3 {
-            font-size: 1.35rem !important; 
-            margin-bottom: 0.5rem !important;
+            font-size: 1.25rem !important; 
+            margin-bottom: 0.25rem !important;
           }
-          [data-tab-card] .uc-label {
-            margin-bottom: 0.5rem !important;
+          [data-tab-card] p.text-white\/60 {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+            margin-bottom: 0.75rem !important;
           }
-          /* Keep stacked layout but make all visible for manual/tab switching */
-          /* Note: The JS handles opacity/active state, so we just allow them to sit in the track */
-          [data-tab-card].active {
-             max-height: none !important;
+          [data-tab-card] .p-6 {
+            padding: 1rem !important;
           }
         }
 
