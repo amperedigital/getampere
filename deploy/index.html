@@ -1017,20 +1017,22 @@ font-family: 'Oswald', sans-serif !important;
       .hover-push-down {
         display: inline-block;
         transform-origin: 50% 79.16%; /* Anchor at tip */
-        transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); 
-        will-change: transform;
+        transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s ease; 
+        will-change: transform, opacity;
         transform-style: preserve-3d;
-        transform: rotateX(0deg);
+        transform: rotateX(0deg) translateY(0);
+        opacity: 1;
         pointer-events: none;
       }
       .group:hover .hover-push-down {
-        animation: arrow-push-and-drop 1.2s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+        animation: arrow-push-and-drop 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
       @keyframes arrow-push-and-drop {
-        0% { transform: rotateX(0deg) translateY(0); }
-        20% { transform: rotateX(-120deg) translateY(4px); } /* Push back & down */
-        50% { transform: rotateX(-270deg) translateY(2px); } /* Swing to top */
-        100% { transform: rotateX(-360deg) translateY(8px); } /* Drop to final lowered spot */
+        0% { transform: rotateX(0deg) translateY(0); opacity: 1; }
+        25% { transform: rotateX(-90deg) translateY(12px); opacity: 0; } /* Push down & vanish */
+        30% { transform: rotateX(0deg) translateY(-35px); opacity: 0; } /* Teleport to top */
+        70% { transform: rotateX(0deg) translateY(12px); opacity: 1; } /* Fast fall past mark */
+        100% { transform: rotateX(0deg) translateY(8px); opacity: 1; } /* Settle at final spot */
       }
 
       /* Reveal Animations */
