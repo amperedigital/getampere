@@ -2117,6 +2117,14 @@ font-family: 'Oswald', sans-serif !important;
             top: 0 !important;
             min-height: 0 !important;
           }
+          /* Hide tabs as requested */
+          .z-30.flex-none {
+            display: none !important;
+          }
+          /* Remove top margin on cards container to tighten gap to section header */
+          .w-full.max-w-7xl.mx-auto.px-6.lg\:px-12.mt-8.lg\:mt-16.flex-none {
+            margin-top: 0 !important;
+          }
           /* Keep stacked layout but make all visible for manual/tab switching */
           /* Note: The JS handles opacity/active state, so we just allow them to sit in the track */
           [data-tab-card].active {
