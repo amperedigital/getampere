@@ -1214,7 +1214,7 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-[85%] aspect-square">
+                        <div class="relative h-full aspect-square scale-90">
                             <!-- SVG Background -->
                             <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
                           <defs>
@@ -1564,7 +1564,7 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none" id="uc003-anim-container">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-[85%] aspect-square">
+                        <div class="relative h-full aspect-square scale-90">
                             <!-- SVG Background -->
                             <svg id="uc003-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
                                 <defs>
@@ -1831,7 +1831,7 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none" id="uc004-anim-container">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-[85%] aspect-square">
+                        <div class="relative h-full aspect-square scale-90">
                             <!-- SVG Background -->
                                               <svg id="uc004-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
                     <defs>
@@ -2100,50 +2100,27 @@ font-family: 'Oswald', sans-serif !important;
           
           @media (max-height: 700px) {
              #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-               max-height: 200px !important;
+               max-height: 220px !important;
                width: auto !important;
              }
           }
         }
 
         /* Small mobile behavior (iPhone SE, smaller Androids) */
-        /* Disables sticking/height trapping so content can grow naturally */
+        /* Simply disables the "scroll lock" pin behavior */
         @media (max-width: 389px) {
           [data-scroll-track] {
             height: auto !important;
-            margin-bottom: 4rem;
           }
           [data-scroll-track] .sticky {
             position: relative !important;
             top: 0 !important;
             min-height: 0 !important;
           }
-          /* Change grid stack to vertical list */
-          .grid.grid-cols-1.grid-rows-1.perspective-2000 {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 3rem !important;
-            height: auto !important;
-            perspective: none !important;
-          }
-          [data-tab-card] {
-            opacity: 1 !important;
-            pointer-events: auto !important;
-            transform: none !important;
-            position: relative !important;
-            display: block !important;
-            max-height: none !important;
-            overflow: visible !important;
-          }
-          /* Hide the tab navigation bar as it's confusing in list mode */
-          .z-30.flex-none {
-            display: none !important;
-          }
-          #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
+          /* Keep stacked layout but make all visible for manual/tab switching */
+          /* Note: The JS handles opacity/active state, so we just allow them to sit in the track */
+          [data-tab-card].active {
              max-height: none !important;
-             aspect-ratio: 1.2 !important;
-             width: 100% !important;
-             max-width: 100% !important;
           }
         }
 
