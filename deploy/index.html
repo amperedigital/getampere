@@ -2121,9 +2121,26 @@ font-family: 'Oswald', sans-serif !important;
           .z-30.flex-none {
             display: none !important;
           }
-          /* Remove top margin on cards container to tighten gap to section header */
+          /* Add back some margin - v1.124 removed too much */
           .w-full.max-w-7xl.mx-auto.px-6.lg\:px-12.mt-8.lg\:mt-16.flex-none {
-            margin-top: 0 !important;
+            margin-top: 1.5rem !important;
+          }
+          /* Scale SMIL content down slightly more to prevent vertical clipping */
+          [data-tab-card] .scale-90 {
+            transform: scale(0.82) !important;
+          }
+          /* Shrink blurb and heading for small mobile */
+          [data-tab-card] p.text-white\/60 {
+            font-size: 0.875rem !important; 
+            line-height: 1.4 !important;
+            margin-bottom: 1rem !important;
+          }
+          [data-tab-card] h3 {
+            font-size: 1.35rem !important; 
+            margin-bottom: 0.5rem !important;
+          }
+          [data-tab-card] .uc-label {
+            margin-bottom: 0.5rem !important;
           }
           /* Keep stacked layout but make all visible for manual/tab switching */
           /* Note: The JS handles opacity/active state, so we just allow them to sit in the track */
