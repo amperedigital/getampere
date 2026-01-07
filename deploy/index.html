@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.134 - source -->
+  <!--Version 1.135 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -1116,7 +1116,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-96px)] flex flex-col">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100svh-6rem)] md:h-[calc(100vh-96px)] flex flex-col">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -1174,8 +1174,8 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-16 flex-none">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto md:h-[650px] perspective-2000">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 flex-1 min-h-0">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-full perspective-2000">
         
         <!-- Card 1 -->
         <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
@@ -2092,17 +2092,40 @@ font-family: 'Oswald', sans-serif !important;
         @media (min-width: 390px) {
           [data-tab-card].active {
             transform: none !important;
-            max-height: calc(100svh - 180px);
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            height: 100% !important;
+            max-height: none !important;
+            overflow: hidden !important; /* Prevent double scroll jitter */
+            display: flex !important;
+            flex-direction: column !important;
+          }
+
+          [data-tab-card] #crm-card-container,
+          [data-tab-card] #uc002-card-container, 
+          [data-tab-card] #uc003-card-container,
+          [data-tab-card] #uc004-card-container {
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+
+          /* Content takes fixed space, Media takes the rest */
+          [data-tab-card] .p-6.md\:p-8.lg\:p-16 {
+            flex: 0 0 auto !important;
+            padding: 1.5rem !important;
+            padding-bottom: 0.5rem !important;
+          }
+          [data-tab-card] .w-full.md\:w-1/2.h-auto.md\:h-full.flex.items-center {
+            flex: 1 1 auto !important;
+            padding: 0.5rem !important;
+            height: auto !important;
+            min-height: 0 !important;
           }
 
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1.25 / 1 !important;
+            aspect-ratio: auto !important;
             width: 100% !important;
-            max-width: 400px !important;
-            height: auto !important;
+            height: 100% !important;
+            max-height: 320px !important;
           }
 
           [data-tab-card] .scale-90 {
@@ -2112,10 +2135,7 @@ font-family: 'Oswald', sans-serif !important;
 
           @media (max-height: 720px) {
              #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-               max-height: 250px !important;
-             }
-             [data-tab-card] .scale-90 {
-               transform: scale(0.8) !important;
+               max-height: 260px !important;
              }
           }
         }
