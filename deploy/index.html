@@ -1115,7 +1115,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[200vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-24 w-full min-h-[calc(100vh-96px)] overflow-hidden flex flex-col">
+      <div class="sticky top-24 w-full min-h-[calc(100vh-96px)] flex flex-col">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -1173,12 +1173,12 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-12 lg:mt-16 flex-none">
-      <div class="relative w-full h-[650px] md:aspect-[21/9] md:h-[600px] perspective-2000">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-16 flex-none">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto md:aspect-[21/9] md:h-[600px] perspective-2000">
         
         <!-- Card 1 -->
-        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
+        <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
+          <div class="w-full h-auto min-h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1188,7 +1188,7 @@ font-family: 'Oswald', sans-serif !important;
             </div>
             
             <!-- Content Wrapper (Visible for popups) -->
-            <div class="relative w-full h-full flex flex-col md:flex-row z-10">
+            <div class="relative w-full h-auto flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
                 <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_001</span>
@@ -1430,8 +1430,8 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
+        <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
+          <div class="w-full h-auto min-h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1441,7 +1441,7 @@ font-family: 'Oswald', sans-serif !important;
             </div>
             
             <!-- Content Wrapper -->
-            <div class="relative w-full h-full flex flex-col md:flex-row z-10">
+            <div class="relative w-full h-auto flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
                 <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_002</span>
@@ -1527,8 +1527,8 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
+        <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
+          <div class="w-full h-auto min-h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1538,7 +1538,7 @@ font-family: 'Oswald', sans-serif !important;
             </div>
             
             <!-- Content Wrapper -->
-            <div class="relative w-full h-full flex flex-col md:flex-row z-10">
+            <div class="relative w-full h-auto flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
                 <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_003</span>
@@ -1794,8 +1794,8 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
+        <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none" data-tab-card>
+          <div class="w-full h-auto min-h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1805,7 +1805,7 @@ font-family: 'Oswald', sans-serif !important;
             </div>
             
             <!-- Content Wrapper -->
-            <div class="relative w-full h-full flex flex-col md:flex-row z-10">
+            <div class="relative w-full h-auto flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
               <div class="flex flex-col justify-start md:justify-center p-8 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
                 <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_004</span>
@@ -2072,6 +2072,8 @@ font-family: 'Oswald', sans-serif !important;
       [data-tab-card] {
         backface-visibility: hidden;
         transform-style: preserve-3d;
+        grid-column: 1;
+        grid-row: 1;
       }
 
       [data-tab-card].active {
@@ -2284,7 +2286,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.114/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.115/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
