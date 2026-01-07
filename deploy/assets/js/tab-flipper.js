@@ -1,14 +1,15 @@
 /**
- * Tab Controlled Card Flipper v2.5
+ * Tab Controlled Card Flipper v2.6
  * Refactor for re-usable interactions and enhanced text effects.
+ * Added: Pinned Scroll Sync logic.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.5 Loaded');
+  console.log('Tab Flipper v2.6 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -69,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
       // Use non-breaking space for layout consistency
-      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.textContent = char === ' ' ? '\\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -84,10 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const initFlipper = (flipper) => {
     const triggers = flipper.querySelectorAll('[data-tab-trigger]');
     const cards = flipper.querySelectorAll('[data-tab-card]');
+    const scrollTrack = flipper.querySelector('[data-scroll-track]');
     if (!triggers.length || !cards.length) return;
 
     let activeIndex = 0;
     let isAnimating = false;
+    let isAutoScrolling = false; // Flag to prevent scroll-bounce when clicking a tab
     
     const crmContainer = document.getElementById('crm-card-container');
     const uc003Container = document.getElementById('uc003-card-container');
@@ -132,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         anim.beginElement();
                     }
                 } catch(e) {
-                    console.warn(`SMIL begin error in ${name}:`, e);
+                    // SILENT
                 }
             });
         } else {
@@ -169,9 +172,11 @@ document.addEventListener('DOMContentLoaded', () => {
         uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
     }
 
-    const setActive = (index) => {
-      isAnimating = true;
+    const setActive = (index, skipAnimation = false) => {
+      if (index === activeIndex && !skipAnimation) return;
+      
       activeIndex = index;
+      if (!skipAnimation) isAnimating = true;
       
       triggers.forEach((t, i) => {
         const isActive = (i === index);
@@ -201,18 +206,77 @@ document.addEventListener('DOMContentLoaded', () => {
       updateUc003State();
       updateUc004State();
 
-      setTimeout(() => { isAnimating = false; }, 500);
+      if (!skipAnimation) {
+          setTimeout(() => { isAnimating = false; }, 500);
+      }
     };
+
+    // Scroll Sync logic
+    if (scrollTrack) {
+        const handleScroll = () => {
+            if (isAutoScrolling) return;
+
+            const rect = scrollTrack.getBoundingClientRect();
+            const totalWidth = rect.height;
+            const viewportHeight = window.innerHeight;
+            
+            // Calculate progress through the track
+            // We start when the top reaches the sticky point (top-20 = 80px)
+            const stickyOffset = 80; 
+            const relativeScroll = -rect.top;
+            const scrollableRange = totalWidth - viewportHeight;
+            
+            let progress = relativeScroll / scrollableRange;
+            progress = Math.max(0, Math.min(1, progress));
+            
+            const numTabs = triggers.length;
+            const index = Math.min(numTabs - 1, Math.floor(progress * numTabs));
+            
+            if (index !== activeIndex) {
+                setActive(index, true);
+            }
+        };
+
+        if (window.lenis) {
+            window.lenis.on('scroll', handleScroll);
+        } else {
+            window.addEventListener('scroll', handleScroll);
+        }
+    }
 
     triggers.forEach((trigger, index) => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
-        if (index === activeIndex || isAnimating) return;
+        if (index === activeIndex) return;
+
+        if (scrollTrack) {
+            isAutoScrolling = true;
+            const rect = scrollTrack.getBoundingClientRect();
+            const sectionTop = window.scrollY + rect.top;
+            const stickyOffset = 80;
+            const viewportHeight = window.innerHeight;
+            const totalWidth = rect.height;
+            const scrollableRange = totalWidth - viewportHeight;
+            
+            // Target progress is centered in the tab's range
+            const targetProgress = (index + 0.5) / triggers.length;
+            const targetScroll = sectionTop + (targetProgress * scrollableRange);
+
+            if (window.lenis) {
+                window.lenis.scrollTo(targetScroll, {
+                    onComplete: () => { isAutoScrolling = false; }
+                });
+            } else {
+                window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                setTimeout(() => { isAutoScrolling = false; }, 800);
+            }
+        }
+        
         setActive(index);
       });
     });
 
-    setActive(0);
+    setActive(0, true);
   };
 
   document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);

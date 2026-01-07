@@ -1112,8 +1112,12 @@ font-family: 'Oswald', sans-serif !important;
       });
     </script>
 
-    <!-- Tabs (Box Layout) -->
-    <div class="border-y border-white/10 bg-[#0a0b14] sticky top-20 z-30">
+    <!-- Sticky Scroll Track -->
+    <div class="relative h-[400vh]" data-scroll-track>
+      <!-- Sticky Container -->
+      <div class="sticky top-20 w-full min-h-[calc(100vh-80px)] overflow-hidden flex flex-col">
+        <!-- Tabs (Box Layout) -->
+        <div class="border-y border-white/10 bg-[#0a0b14] z-30">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
@@ -2059,6 +2063,8 @@ font-family: 'Oswald', sans-serif !important;
             </div>
           </div>
         </div>
+      </div> <!-- Close Sticky Container -->
+    </div> <!-- Close Scroll Track -->
     <!-- Styles for 3D transitions -->
     <style>
       .perspective-2000 { perspective: 2000px; }
@@ -2272,7 +2278,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.085/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.109/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
