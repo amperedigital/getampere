@@ -136,6 +136,84 @@
     .amp-hamburger.is-open .amp-hamburger-line {
       background-color: #0F172A;
     }
+
+    /* --- Global Interaction Library --- */
+    
+    /* Text Physics: Flip-In-Place */
+    .hover-flip-text .char {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .group:hover .hover-flip-text .char,
+    .hover-flip-text:hover .char {
+      transform: rotateX(360deg);
+    }
+
+    /* Re-usable Mono Labels */
+    .tag-mono-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .uc-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #60a5fa; /* text-blue-400 */
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .group:hover .uc-label,
+    .active .uc-label {
+      opacity: 1;
+    }
+    @media (min-width: 1024px) {
+      .uc-label { font-size: 12px; }
+    }
+
+    /* Icon Physics: Pick up & Drop (Arrow-style) */
+    .hover-push-down-parent {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hover-push-down {
+      display: inline-block;
+      transition: transform 0.4s linear, opacity 0.3s linear;
+      will-change: transform, opacity;
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: none;
+    }
+    .group:hover .hover-push-down {
+      animation: arrow-pickup-drop 0.8s linear forwards;
+    }
+    @keyframes arrow-pickup-drop {
+      0% { transform: translateY(0); opacity: 1; }
+      20% { transform: translateY(-15px); opacity: 1; }
+      40% { transform: translateY(25px); opacity: 0; }
+      50% { transform: translateY(-40px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Standard Reveal Animations */
+    .fade-up-element {
+      opacity: 0;
+      transform: translateY(30px);
+      will-change: opacity, transform;
+    }
+    .fade-up-element.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-heading {
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal-content {
+      transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
   </style>
   <style>
     @media (min-width: 1440px) {
@@ -292,7 +370,7 @@ font-family: 'Oswald', sans-serif !important;
 }
 </style></head>
 
-<body class="bg-gradient-to-b from-black to-[#09112a] text-slate-900 min-h-screen flex flex-col">
+<body class="bg-[#0a0b14] text-slate-900 min-h-screen flex flex-col">
 
 
 
@@ -526,7 +604,7 @@ font-family: 'Oswald', sans-serif !important;
 
   </nav>
 
-  <section class="flex flex-col gap-12 lg:px-12 z-10 border-white/5 border-b pt-32 pr-6 pb-20 pl-6 relative">
+  <section class="flex flex-col gap-12 lg:px-12 z-10 pt-32 pr-6 pb-20 pl-6 relative">
     <div class="relative w-full max-w-6xl mx-auto min-h-[880px]" id="hero-showcase">
       <div class="flex flex-col z-10 justify-end">
         <div class="flex lg:mt-1 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate mt-1 mb-10 gap-x-4 gap-y-4 items-center">
@@ -968,90 +1046,7 @@ font-family: 'Oswald', sans-serif !important;
   
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-[#0a0b14] py-2 lg:py-10 relative overflow-hidden border-t border-white/5" data-tab-flipper>
-    <style>
-      /* --- Global Interaction Utilities --- */
-      .hover-flip-text .char {
-        display: inline-block;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform-origin: center center;
-        will-change: transform;
-      }
-      /* Trigger on parent group hover OR direct hover */
-      .group:hover .hover-flip-text .char,
-      .hover-flip-text:hover .char {
-        transform: rotateX(360deg);
-      }
-
-      /* Re-usable Tag Style */
-      .tag-mono-label {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-      }
-
-      .uc-label {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        color: #60a5fa; /* text-blue-400 */
-        font-size: 10px;
-        letter-spacing: 0.1em;
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
-      }
-      .group:hover .uc-label,
-      .active .uc-label {
-        opacity: 1;
-      }
-      @media (min-width: 1024px) {
-        .uc-label { font-size: 12px; }
-      }
-
-      /* Arrow Interaction: Pick up & Drop */
-      .hover-push-down-parent {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .hover-push-down {
-        display: inline-block;
-        transition: transform 0.4s linear, opacity 0.3s linear;
-        will-change: transform, opacity;
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: none;
-      }
-      .group:hover .hover-push-down {
-        animation: arrow-pickup-drop 0.8s linear forwards;
-      }
-      @keyframes arrow-pickup-drop {
-        0% { transform: translateY(0); opacity: 1; }
-        20% { transform: translateY(-15px); opacity: 1; } /* Linear pick up */
-        40% { transform: translateY(25px); opacity: 0; }  /* Linear push down */
-        50% { transform: translateY(-40px); opacity: 0; } /* Teleport to top */
-        100% { transform: translateY(0); opacity: 1; }    /* Linear drop to original spot */
-      }
-
-      /* Reveal Animations */
-      .fade-up-element {
-        opacity: 0;
-        transform: translateY(30px);
-        will-change: opacity, transform;
-      }
-      .fade-up-element.in-view {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      
-      /* Specific timing classes */
-      .reveal-heading {
-        transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-      .reveal-content {
-        transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        transition-delay: 300ms; /* Starts later */
-      }
-    </style>
-
+  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative overflow-hidden" data-tab-flipper>
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
       <div class="w-full flex items-start justify-between px-6 lg:px-12 mb-[10vh] cursor-pointer group" data-scrollto="#integrations-tabs">
         <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
