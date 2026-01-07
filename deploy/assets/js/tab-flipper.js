@@ -1,11 +1,11 @@
 /**
- * Tab Controlled Card Flipper v1.109
+ * Tab Controlled Card Flipper v1.111
  * Refactor for re-usable interactions and enhanced text effects.
- * Added: Pinned Scroll Sync logic.
+ * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.109 Loaded');
+  console.log('Tab Flipper v1.111 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -185,6 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
         t.classList.toggle('active', isActive);
       });
 
+      // Auto-scroll tab container to keep active tab in view (Mobile)
+      const activeTrigger = triggers[index];
+      const triggerContainer = activeTrigger.parentElement;
+      if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
+          const containerRect = triggerContainer.getBoundingClientRect();
+          const triggerRect = activeTrigger.getBoundingClientRect();
+          const scrollLeft = triggerContainer.scrollLeft + (triggerRect.left - containerRect.left) - (containerRect.width / 2) + (triggerRect.width / 2);
+          triggerContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      }
+
       cards.forEach((c, i) => {
         c.classList.remove('active', 'inactive-prev', 'inactive-next');
         if (i === index) {
@@ -221,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewportHeight = window.innerHeight;
             
             // Calculate progress through the track
-            // We start when the top reaches the sticky point (top-20 = 80px)
             const stickyOffset = 80; 
             const relativeScroll = -rect.top;
             const scrollableRange = totalWidth - viewportHeight;
