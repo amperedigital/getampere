@@ -1116,7 +1116,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-16 md:top-24 w-full min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-96px)] flex flex-col">
+      <div class="sticky top-20 md:top-24 w-full min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-96px)] flex flex-col">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -1214,7 +1214,7 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-full aspect-square scale-90">
+                        <div class="relative h-[85%] aspect-square">
                             <!-- SVG Background -->
                             <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
                           <defs>
@@ -1564,9 +1564,9 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none" id="uc003-anim-container">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-full aspect-square scale-90">
+                        <div class="relative h-[85%] aspect-square">
                             <!-- SVG Background -->
-                            <svg id="uc003-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="none">
+                            <svg id="uc003-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
                                 <defs>
                                   <animate id="uc003-anim-trigger" begin="indefinite" attributeName="opacity" from="0" to="1" dur="100s" repeatCount="indefinite"></animate>
                                   <linearGradient id="uc003-beam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -1831,9 +1831,9 @@ font-family: 'Oswald', sans-serif !important;
                     <!-- Content Wrapper -->
                     <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none" id="uc004-anim-container">
                         <!-- Coordinate Root (Scaled) -->
-                        <div class="relative h-full aspect-square scale-90">
+                        <div class="relative h-[85%] aspect-square">
                             <!-- SVG Background -->
-                                              <svg id="uc004-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="none">
+                                              <svg id="uc004-pulse-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
                     <defs>
                       <animate id="uc004-anim-trigger" begin="indefinite" attributeName="opacity" from="0" to="1" dur="100s" repeatCount="indefinite"></animate>
                       <linearGradient id="uc004-beam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2090,7 +2090,7 @@ font-family: 'Oswald', sans-serif !important;
       @media (max-width: 768px) {
         [data-tab-card].active {
           transform: none !important;
-          max-height: calc(100svh - 110px);
+          max-height: calc(100svh - 170px);
           overflow-y: auto !important;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
@@ -2098,7 +2098,7 @@ font-family: 'Oswald', sans-serif !important;
         
         @media (max-height: 700px) {
            #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-             max-height: 220px !important;
+             max-height: 200px !important;
              width: auto !important;
            }
         }
