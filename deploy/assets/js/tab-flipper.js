@@ -1,15 +1,15 @@
 /**
- * Tab Controlled Card Flipper v2.6
+ * Tab Controlled Card Flipper v1.109
  * Refactor for re-usable interactions and enhanced text effects.
  * Added: Pinned Scroll Sync logic.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v2.6 Loaded');
+  console.log('Tab Flipper v1.109 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = \`
+  style.textContent = `
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  \`;
+  `;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
       // Use non-breaking space for layout consistency
-      span.textContent = char === ' ' ? '\\u00A0' : char;
+      span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = \`\${i * delay}ms\`;
+      span.style.transitionDelay = `${i * delay}ms`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
