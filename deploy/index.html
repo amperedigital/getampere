@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.129 - source -->
+  <!--Version 1.130 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -1047,7 +1047,7 @@ font-family: 'Oswald', sans-serif !important;
   
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative" data-tab-flipper>
+  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20 max-md:scroll-mt-[180px]" data-tab-flipper>
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12">
       <div class="w-full px-6 lg:px-12">
         <div class="border-t border-white/10 w-full mb-12"></div>
@@ -1071,7 +1071,7 @@ font-family: 'Oswald', sans-serif !important;
       </div>
     </div>
     
-    <div id="integrations-tabs"></div>
+    <div id="integrations-tabs" class="scroll-mt-20 max-md:scroll-mt-[180px]"></div>
 
     <script>
       // Simple Intersection Observer for fade-in animations on this section
@@ -1116,7 +1116,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[108px] md:top-24 w-full min-h-[calc(100vh-108px)] md:min-h-[calc(100vh-96px)] flex flex-col">
+      <div class="sticky top-[150px] md:top-24 w-full min-h-[calc(100vh-150px)] md:min-h-[calc(100vh-96px)] flex flex-col">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -1175,7 +1175,7 @@ font-family: 'Oswald', sans-serif !important;
 
     <!-- Cards Container -->
     <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-16 flex-none">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto md:h-[650px] perspective-2000">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-auto max-md:h-[68vh] md:h-[650px] perspective-2000">
         
         <!-- Card 1 -->
         <div class="col-start-1 row-start-1 w-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
@@ -2092,16 +2092,28 @@ font-family: 'Oswald', sans-serif !important;
         @media (min-width: 390px) {
           [data-tab-card].active {
             transform: none !important;
-            max-height: calc(100svh - 170px);
+            max-height: calc(100svh - 220px);
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
           }
           
-          @media (max-height: 700px) {
+          #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
+            aspect-ratio: 1 / 1.1 !important;
+          }
+
+          [data-tab-card] .scale-90 {
+            transform: scale(0.82) !important;
+            transform-origin: center center !important;
+          }
+
+          @media (max-height: 720px) {
              #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-               max-height: 220px !important;
+               max-height: 240px !important;
                width: auto !important;
+             }
+             [data-tab-card] .scale-90 {
+               transform: scale(0.75) !important;
              }
           }
         }
@@ -2111,7 +2123,7 @@ font-family: 'Oswald', sans-serif !important;
         @media (max-width: 389px) {
           /* Anchor alignment: Ensure jumps land with breathing room below fixed nav */
           #integrations, #integrations-tabs {
-            scroll-margin-top: 160px !important;
+            scroll-margin-top: 200px !important;
           }
 
           /* Expand cards to utilize more viewport width */
@@ -2165,11 +2177,11 @@ font-family: 'Oswald', sans-serif !important;
           }
           /* Expand 3D card for better vertical space utilization */
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1.1 !important;
+            aspect-ratio: 1 / 1.1 !important;
           }
           /* Fix SMIL scale for tiny viewports */
           [data-tab-card] .scale-90 {
-            transform: scale(0.85) !important;
+            transform: scale(0.82) !important;
             transform-origin: center center !important;
           }
           /* Typography adjustments */
