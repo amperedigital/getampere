@@ -1116,7 +1116,7 @@ font-family: 'Oswald', sans-serif !important;
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-md:overflow-visible">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
@@ -2119,30 +2119,30 @@ font-family: 'Oswald', sans-serif !important;
           /* Content takes fixed space, Media takes the rest */
           [data-tab-card] .relative.w-full.h-auto.md\:h-full.flex.flex-col.md\:flex-row.z-10 {
             flex: 1 1 auto !important;
-            height: 100% !important;
+            min-height: 0 !important;
           }
 
           [data-tab-card] .p-6.md\:p-8.lg\:p-16 {
             flex: 0 0 auto !important;
             padding: 1.25rem !important;
+            padding-bottom: 0px !important;
           }
           /* Media container takes all remaining vertical space */
           [data-tab-card] .w-full.md\:w-1/2.h-auto.md\:h-full.flex.items-center {
             flex: 1 1 auto !important;
-            padding: 0.5rem !important;
+            padding: 1rem !important;
             height: auto !important;
-            min-height: 0 !important;
+            min-height: 280px !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
           }
 
           #crm-3d-card, #uc002-3d-card, #uc003-3d-card, #uc004-3d-card {
-            aspect-ratio: 1 / 1 !important; /* Square for most stability */
-            width: auto !important;
-            height: 100% !important;
-            max-height: 280px !important;
-            max-width: 90% !important;
+            aspect-ratio: 1.2 / 1 !important;
+            width: 100% !important;
+            height: auto !important;
+            max-width: 320px !important;
             margin: 0 auto !important;
           }
 
