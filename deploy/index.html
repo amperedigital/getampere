@@ -1025,10 +1025,10 @@ font-family: 'Oswald', sans-serif !important;
       }
       @keyframes arrow-pickup-drop {
         0% { transform: translateY(0); opacity: 1; }
-        25% { transform: translateY(-12px); opacity: 1; } /* Linear pick up */
-        45% { transform: translateY(20px); opacity: 0; } /* Linear cast down */
-        50% { transform: translateY(-40px); opacity: 0; } /* Teleport */
-        100% { transform: translateY(8px); opacity: 1; } /* Linear drop to final */
+        20% { transform: translateY(-15px); opacity: 1; } /* Linear pick up */
+        40% { transform: translateY(25px); opacity: 0; }  /* Linear push down */
+        50% { transform: translateY(-40px); opacity: 0; } /* Teleport to top */
+        100% { transform: translateY(0); opacity: 1; }    /* Linear drop to original spot */
       }
 
       /* Reveal Animations */
