@@ -1117,7 +1117,7 @@ font-family: 'Oswald', sans-serif !important;
       <!-- Sticky Container -->
       <div class="sticky top-24 w-full min-h-[calc(100vh-96px)] overflow-hidden flex flex-col">
         <!-- Tabs (Box Layout) -->
-        <div class="border-y border-white/10 bg-[#0a0b14] z-30">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
@@ -1173,8 +1173,8 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 mt-12 lg:mt-16">
-      <div class="relative w-full h-[600px] md:aspect-[21/9] md:h-[600px] perspective-2000">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-12 lg:mt-16 flex-none">
+      <div class="relative w-full h-[650px] md:aspect-[21/9] md:h-[600px] perspective-2000">
         
         <!-- Card 1 -->
         <div class="absolute inset-0 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center group/tab active" data-tab-card>
@@ -2082,6 +2082,12 @@ font-family: 'Oswald', sans-serif !important;
         transition: transform 0.5s ease-out, opacity 0.5s ease-out;
       }
 
+      @media (max-width: 768px) {
+        [data-tab-card].active {
+          transform: none !important;
+        }
+      }
+
       [data-tab-card].active:hover {
         transform: rotateY(0deg) rotateX(0deg);
       }
@@ -2278,7 +2284,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.112/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.113/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
