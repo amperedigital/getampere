@@ -1,11 +1,12 @@
 /**
- * Tab Controlled Card Flipper v1.111
+ * Tab Controlled Card Flipper v1.112
  * Refactor for re-usable interactions and enhanced text effects.
  * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
+ * Updated stickyOffset for top margin alignment.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.111 Loaded');
+  console.log('Tab Flipper v1.112 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -231,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewportHeight = window.innerHeight;
             
             // Calculate progress through the track
-            const stickyOffset = 80; 
+            const stickyOffset = 96; 
             const relativeScroll = -rect.top;
             const scrollableRange = totalWidth - viewportHeight;
             
@@ -262,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionTop = window.scrollY + rect.top;
-            const stickyOffset = 80;
+            const stickyOffset = 96;
             const viewportHeight = window.innerHeight;
             const totalWidth = rect.height;
             const scrollableRange = totalWidth - viewportHeight;
