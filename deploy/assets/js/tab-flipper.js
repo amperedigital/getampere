@@ -3,6 +3,7 @@
  * Refactor for re-usable interactions and enhanced text effects.
  * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
  * Updated stickyOffset for top margin alignment.
+ * Added: Mobile Reveal Animation Sync.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -71,9 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
       // Use non-breaking space for layout consistency
-      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.textContent = char === ' ' ? '\\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -106,7 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
-        const shouldRun = isActive || isHovered;
+        
+        // Only run if active/hovered AND revealed on mobile
+        const isRevealed = container.parentElement.classList.contains('in-view') || window.innerWidth > 768;
+        const shouldRun = (isActive || isHovered) && isRevealed;
+
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
         
@@ -287,6 +292,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     setActive(0, true);
+
+    // Watch for mobile reveal to trigger SMIL
+    const revealObserver = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
+                updateCrmState();
+                updateUc003State();
+                updateUc004State();
+            }
+        });
+    });
+    
+    cards.forEach(card => {
+        revealObserver.observe(card, { attributes: true });
+    });
   };
 
   document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
