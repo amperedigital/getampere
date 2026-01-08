@@ -1,6 +1,6 @@
 /**
- * Tab Controlled Card Flipper v1.167
- * Synchronized SMIL animations with viewport visibility.
+ * Tab Controlled Card Flipper v1.168
+ * Reverted desktop logic; Mobile-only viewport animation firing.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -93,13 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isCrmActive = false, isUc003Active = false, isUc004Active = false;
     let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
-    
-    // Track visibility of each container
-    const visibilityMap = {
-        'crm-card-container': false,
-        'uc003-card-container': false,
-        'uc004-card-container': false
-    };
 
     function updateSmilState(container, isActive, isHovered) {
         if (!container) return;
@@ -144,44 +137,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered);
     const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered);
 
-    const syncSmil = () => {
-        const isSmall = window.innerWidth <= 389;
-        
-        if (controlsCrm) {
-            isCrmActive = isSmall ? visibilityMap['crm-card-container'] : (activeIndex === 0 && visibilityMap['crm-card-container']);
-            updateCrmState();
-        }
-        if (controlsUc003) {
-            isUc003Active = isSmall ? visibilityMap['uc003-card-container'] : (activeIndex === 2 && visibilityMap['uc003-card-container']);
-            updateUc003State();
-        }
-        if (controlsUc004) {
-            isUc004Active = isSmall ? visibilityMap['uc004-card-container'] : (activeIndex === 3 && visibilityMap['uc004-card-container']);
-            updateUc004State();
-        }
-    };
-
-    const smilObserver = new IntersectionObserver((entries) => {
+    // Observer for mobile stack only
+    const mobileObserver = new IntersectionObserver((entries) => {
+        if (window.innerWidth > 389) return;
         entries.forEach(entry => {
-            visibilityMap[entry.target.id] = entry.isIntersecting;
+            const isVisible = entry.isIntersecting;
+            if (entry.target === crmContainer) { isCrmActive = isVisible; updateCrmState(); }
+            if (entry.target === uc003Container) { isUc003Active = isVisible; updateUc003State(); }
+            if (entry.target === uc004Container) { isUc004Active = isVisible; updateUc004State(); }
         });
-        syncSmil();
     }, { threshold: 0.1 });
 
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
-        smilObserver.observe(crmContainer);
+        mobileObserver.observe(crmContainer);
     }
     if (controlsUc003) {
         uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
         uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
-        smilObserver.observe(uc003Container);
+        mobileObserver.observe(uc003Container);
     }
     if (controlsUc004) {
         uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
         uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
-        smilObserver.observe(uc004Container);
+        mobileObserver.observe(uc004Container);
     }
 
     const setActive = (index, skipAnimation = false) => {
@@ -217,7 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      syncSmil();
+      if (window.innerWidth > 389) {
+          isCrmActive = (index === 0);
+          isUc003Active = (index === 2);
+          isUc004Active = (index === 3);
+          updateCrmState();
+          updateUc003State();
+          updateUc004State();
+      }
     };
 
     if (scrollTrack) {
