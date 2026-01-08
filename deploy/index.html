@@ -228,38 +228,43 @@
  transform: translateY(0) scale(1);
  filter: blur(0);
  }
- /* Special reveal for cards to avoid transform conflicts */
- .mobile-reveal[data-tab-card] {
- opacity: 1 !important;
- filter: blur(0px) !important;
- }
+   /* Special reveal for cards to avoid transform conflicts */
+   .mobile-reveal[data-tab-card] {
+   opacity: 0;
+   filter: blur(8px);
+   transition: opacity 0.8s ease, filter 0.8s ease;
+   }
+   .mobile-reveal[data-tab-card].in-view {
+   opacity: 1;
+   filter: blur(0);
+   }
 
- /* Precision 3D Card Stack & Interaction */
- [data-tab-card] {
- --stack-y: 0px;
- --rot-y: 12deg;
- --rot-x: 6deg;
- transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
- transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
- touch-action: manipulation;
- }
- 
- /* Modular Depth Engine (Slot-based) */
-    [data-stack-depth="0"] { 
-      --stack-y: 0px; 
-      z-index: 40 !important; 
-      opacity: 1 !important; 
-      pointer-events: auto !important;
-      cursor: pointer;
-    }
- [data-stack-depth="2"] { --stack-y: -30px; z-index: 20 !important; opacity: 1 !important; }
- [data-stack-depth="3"] { --stack-y: -45px; z-index: 10 !important; opacity: 1 !important; }
- 
- /* Hide extra cards in modular stack beyond depth 3 */
- [data-stack-depth]:not([data-stack-depth="0"]):not([data-stack-depth="1"]):not([data-stack-depth="2"]):not([data-stack-depth="3"]) {
- opacity: 0 !important;
- pointer-events: none !important;
- }
+   /* Precision 3D Card Stack & Interaction */
+   [data-tab-card] {
+   --stack-y: 0px;
+   --rot-y: 12deg;
+   --rot-x: 6deg;
+   transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
+   touch-action: manipulation;
+   }
+   
+   /* Modular Build-up Engine (Depth relative to Active) */
+   [data-stack-depth="0"] {
+     --stack-y: 0px;
+     z-index: 50 !important;
+     opacity: 1 !important;
+     pointer-events: auto !important;
+     cursor: pointer;
+   }
+   [data-stack-depth="1"] { --stack-y: -12px; z-index: 40 !important; opacity: 1 !important; }
+   [data-stack-depth="2"] { --stack-y: -24px; z-index: 30 !important; opacity: 1 !important; }
+   [data-stack-depth="3"] { --stack-y: -36px; z-index: 20 !important; opacity: 1 !important; }
+   [data-stack-depth="hidden"] {
+     opacity: 0 !important;
+     pointer-events: none !important;
+     transform: translateY(20px) !important;
+   }
 
  /* Flatten entire stack on Hover or Touch (perspective only) */
  .group\/cards:hover [data-tab-card],
@@ -2323,7 +2328,7 @@ font-family: 'Oswald', sans-serif !important;
  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.205/deploy/assets/js/modal.js" defer></script>
  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
- <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.210/deploy/assets/js/tab-flipper.js" defer></script>
+ <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.211/deploy/assets/js/tab-flipper.js" defer></script>
  
 <!--Modal-->
 <section>

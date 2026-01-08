@@ -1,23 +1,22 @@
 /**
- * Tab Controlled Card Flipper v1.118
- * Modular Refactor: Support dynamic cards and auto-detected SMIL animations.
- * Added: data-smil-anim detection for per-card animation lifecycles.
- * Updated: Unified card state management with data-stack-depth modular engine.
+ * Tab Controlled Card Flipper v1.122
+ * Balanced modular version: Restores stable "Perfected" build-up behavior.
+ * Fixes: SMIL detailed views (text boxes) now correctly ONLY show on Hover or Mobile scroll.
+ * Fixes: Dynamic stack depth calculation for seamless modular support (Infinite cards possible).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.118 Loaded');
+  console.log('Tab Flipper v1.122 Loaded');
 
-  // Inject styles for interaction utilities
   const style = document.createElement('style');
   style.textContent = `
-    .manual-active .force-visible {
+    .force-visible {
       display: block !important;
       visibility: visible !important;
       opacity: 1 !important;
     }
     
-    .manual-active .force-smil-display {
+    .force-smil-display {
       display: block !important;
       visibility: hidden; 
       opacity: 1; 
@@ -30,26 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    [data-smil-anim]:not(.manual-active) .uc004-anim-container circle,
-    #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-
-    .smil-hide {
-        visibility: hidden;
-        opacity: 1;
-        transition: none !important;
-    }
-    
     @keyframes crm-ping {
-      75%, 100% {
-        transform: scale(2);
-        opacity: 0;
-      }
+      75%, 100% { transform: scale(2); opacity: 0; }
     }
 
-    /* Interaction Utility Classes */
     .interaction-tag-label {
       opacity: 0.6;
       transition: opacity 0.3s ease;
@@ -61,12 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(style);
 
-  // --- Text Interaction Engine ---
   const initializeFlipText = (el) => {
     if (el.dataset.initialized) return;
     const text = el.textContent;
     const delay = parseInt(el.dataset.flipDelay || 30);
-    
     el.innerHTML = '';
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
@@ -77,57 +58,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     el.dataset.initialized = 'true';
   };
-
   document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
   // Generic SMIL Lifecycle Controller
   const updateSmilState = (container, isActive, isHovered) => {
     if (!container) return;
     
-    const cardInView = container.closest('[data-tab-card]')?.classList.contains('in-view');
+    const card = container.closest('[data-tab-card]');
+    const cardInView = card?.classList.contains('in-view');
     const isRevealed = cardInView || window.innerWidth > 768;
     
-    // Auto-run if active OR hovered OR (mobile stack mode and in view)
-    const shouldRun = (isActive || isHovered || (window.innerWidth <= 389 && cardInView)) && isRevealed;
+    // Animation runs if ACTIVE or HOVERED
+    const shouldRunAnim = (isActive || isHovered) && isRevealed;
+    // Detail boxes (force-visible) ONLY show on HOVER or MOBILE-IN-VIEW
+    const shouldShowDetails = (isHovered || (window.innerWidth <= 389 && cardInView)) && isRevealed;
 
     const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
     const motionElements = container.querySelectorAll("animateMotion");
     
-    if (shouldRun) {
+    if (shouldRunAnim) {
         container.classList.add("manual-active");
         motionElements.forEach(motion => {
-            if (motion.parentElement) {
-                if (motion.parentElement.classList.contains('always-hide-anim')) return;
-                // Specific overrides for complex transparency-based SVGs
+            const el = motion.parentElement;
+            if (!el || el.classList.contains('always-hide-anim')) return;
+            
+            if (shouldShowDetails) {
                 if (container.hasAttribute('data-smil-complex') || container.id?.includes('uc004') || container.id?.includes('uc003')) {
-                    if (motion.parentElement.classList.contains('hidden')) return;
-                    motion.parentElement.classList.add('force-smil-display');
+                    if (!el.classList.contains('hidden')) el.classList.add('force-smil-display');
                 } else {
-                    motion.parentElement.classList.add('force-visible');
+                    el.classList.add('force-visible');
                 }
+            } else {
+                el.classList.remove('force-visible', 'force-smil-display');
             }
         });
 
         anims.forEach(anim => {
             try {
                 const beginAttr = anim.getAttribute('begin');
-                const isDependent = beginAttr && beginAttr.includes('anim-trigger');
-                const isTrigger = anim.id && anim.id.includes('anim-trigger');
-                if (isTrigger || !isDependent) anim.beginElement();
+                if (!beginAttr || !beginAttr.includes('anim-trigger')) anim.beginElement();
             } catch(e) {}
         });
     } else {
         container.classList.remove("manual-active");
         motionElements.forEach(motion => {
-            if (motion.parentElement) {
-                motion.parentElement.classList.remove('force-visible', 'force-smil-display');
-            }
+            if (motion.parentElement) motion.parentElement.classList.remove('force-visible', 'force-smil-display');
         });
         anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
     }
   };
 
-  // Re-usable Tab Flipper Logic
   const initFlipper = (flipper) => {
     const triggers = flipper.querySelectorAll('[data-tab-trigger]');
     const cards = flipper.querySelectorAll('[data-tab-card]');
@@ -138,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAnimating = false;
     let isAutoScrolling = false;
 
-    // Map each card to its specific interaction state
     const cardStates = Array.from(cards).map((card, idx) => {
         const smilContainer = card.querySelector('[data-smil-anim]') || 
                               card.querySelector('#crm-card-container') || 
@@ -155,15 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (smilContainer) {
             smilContainer.addEventListener('mouseenter', () => { state.isHovered = true; sync(); });
             smilContainer.addEventListener('mouseleave', () => { state.isHovered = false; sync(); });
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { 
-                  if (entry.isIntersecting) sync(); 
-                });
-            }, { threshold: 0.1 });
-            observer.observe(card);
         }
-
         return state;
     });
 
@@ -178,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
-      
       activeIndex = index;
       if (!skipAnimation) isAnimating = true;
       
@@ -189,40 +159,29 @@ document.addEventListener('DOMContentLoaded', () => {
         t.classList.toggle('active', isActive);
       });
 
-      // Auto-scroll tab container (Mobile)
-      const activeTrigger = triggers[index];
-      const triggerContainer = activeTrigger.parentElement;
-      if (triggerContainer?.classList.contains('overflow-x-auto')) {
-          const containerRect = triggerContainer.getBoundingClientRect();
-          const triggerRect = activeTrigger.getBoundingClientRect();
-          const scrollLeft = triggerContainer.scrollLeft + (triggerRect.left - containerRect.left) - (containerRect.width / 2) + (triggerRect.width / 2);
-          triggerContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-      }
-
       cards.forEach((c, i) => {
-        // Modular Depth Engine: Calculate visual stack position relative to active card
-        const depth = (i - index + cards.length) % cards.length;
-        c.setAttribute('data-stack-depth', depth);
-
         c.classList.remove('active', 'inactive-prev', 'inactive-next');
         const video = c.querySelector('video');
+        
         if (i === index) {
           c.classList.add('active');
+          c.setAttribute('data-stack-depth', '0');
           if (video) video.play().catch(() => {});
-        } else {
+        } else if (i < index) {
+          c.classList.add('inactive-prev');
+          c.setAttribute('data-stack-depth', index - i);
           if (video) { video.pause(); video.currentTime = 0; }
-          c.classList.add(i < index ? 'inactive-prev' : 'inactive-next');
+        } else {
+          c.classList.add('inactive-next');
+          c.setAttribute('data-stack-depth', 'hidden');
+          if (video) { video.pause(); video.currentTime = 0; }
         }
       });
 
       sync();
-
-      if (!skipAnimation) {
-          setTimeout(() => { isAnimating = false; }, 500);
-      }
+      if (!skipAnimation) setTimeout(() => { isAnimating = false; }, 500);
     };
 
-    // Scroll Sync logic
     if (scrollTrack) {
         const handleScroll = () => {
             if (isAutoScrolling || window.innerWidth <= 389) return;
@@ -241,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
         if (index === activeIndex) return;
-
         if (scrollTrack && window.innerWidth > 389) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
@@ -249,13 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const scrollableRange = rect.height - window.innerHeight;
             const targetProgress = (index + 0.5) / triggers.length;
             const targetScroll = sectionTop + (targetProgress * scrollableRange);
-
-            if (window.lenis) {
-                window.lenis.scrollTo(targetScroll, { onComplete: () => { isAutoScrolling = false; } });
-            } else {
-                window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-                setTimeout(() => { isAutoScrolling = false; }, 800);
-            }
+            if (window.lenis) window.lenis.scrollTo(targetScroll, { onComplete: () => { isAutoScrolling = false; } });
+            else { window.scrollTo({ top: targetScroll, behavior: 'smooth' }); setTimeout(() => { isAutoScrolling = false; }, 800); }
         }
         setActive(index);
       });
