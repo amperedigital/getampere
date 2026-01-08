@@ -249,22 +249,21 @@
       touch-action: manipulation;
     }
     /* Dynamic Stack Offsets via Data Attributes */
-    [data-stack-index="0"] { --card-offset: -30px; }
-    [data-stack-index="1"] { --card-offset: -20px; }
-    [data-stack-index="2"] { --card-offset: -10px; }
-    [data-stack-index="3"] { --card-offset: 0px; }
+    [data-stack-index="0"] { --card-offset: 0px; }
+    [data-stack-index="1"] { --card-offset: -10px; }
+    [data-stack-index="2"] { --card-offset: -20px; }
+    [data-stack-index="3"] { --card-offset: -30px; }
 
-    [data-tab-card].inactive-prev { --stack-y: var(--card-offset, 0px); }
+    [data-tab-card]:not(.active) { --stack-y: var(--card-offset, 0px); }
     [data-tab-card].active { --stack-y: 0px; }
 
-    /* Flatten entire stack on Hover or Touch */
-    .group/cards:hover [data-tab-card],
-    .group/cards:active [data-tab-card],
+    /* Flatten entire stack on Hover or Touch (perspective only) */
+    .group\/cards:hover [data-tab-card],
+    .group\/cards:active [data-tab-card],
     [data-tab-card]:hover,
     [data-tab-card]:active {
       --rot-y: 0deg !important;
       --rot-x: 0deg !important;
-      --stack-y: 0px !important;
     }
   </style>
   <style>
@@ -1254,7 +1253,7 @@ font-family: 'Oswald', sans-serif !important;
       <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-15rem)] [perspective:2000px] group/cards max-[389px]:[perspective:none] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12" ontouchstart="">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="0">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-100 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-19 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="0">
           <div class="w-full h-full relative group flex flex-col md:block" data-smil-anim>
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1507,7 +1506,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="1">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-100 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-15 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="1">
           <div class="w-full h-full relative group flex flex-col md:block" data-smil-anim>
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1604,7 +1603,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-18 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="2">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-100 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-10 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="2">
           <div class="w-full h-full relative group flex flex-col md:block" data-smil-anim data-smil-complex>
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1871,7 +1870,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="3">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-5 [&.inactive-next]:opacity-100 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-5 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card data-stack-index="3">
           <div class="w-full h-full relative group flex flex-col md:block" data-smil-anim data-smil-complex>
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
