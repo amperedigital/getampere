@@ -1121,7 +1121,28 @@ font-family: 'Oswald', sans-serif !important;
                     easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
                   });
                 } else {
-                  target.scrollIntoView({behavior: 'smooth'});
+                  // Fallback: Custom smooth scroll with easing for mobile
+                  const targetY = target.getBoundingClientRect().top + window.pageYOffset - 96;
+                  const startY = window.pageYOffset;
+                  const distance = targetY - startY;
+                  const duration = 1000;
+                  let startTime = null;
+
+                  function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const progress = Math.min(timeElapsed / duration, 1);
+                    
+                    // Easing: easeOutQuart
+                    const ease = 1 - Math.pow(1 - progress, 4);
+                    
+                    window.scrollTo(0, startY + (distance * ease));
+                    
+                    if (timeElapsed < duration) {
+                      requestAnimationFrame(animation);
+                    }
+                  }
+                  requestAnimationFrame(animation);
                 }
               }
             }
@@ -2257,7 +2278,7 @@ font-family: 'Oswald', sans-serif !important;
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.186/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.187/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
