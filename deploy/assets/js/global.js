@@ -13,8 +13,9 @@
     return;
   }
 
-  // Initialize Lenis for smooth scrolling (if available)
-  if (typeof Lenis !== "undefined" && !window.lenis) {
+  // Initialize Lenis for smooth scrolling (Desktop only)
+  // Mobile browsers have better native inertia scrolling; smooth scroll libs often cause "jitter" on touch.
+  if (typeof Lenis !== "undefined" && !window.lenis && window.innerWidth > 768) {
     const lenis = new Lenis({ lerp: 0.1, smooth: true });
     window.lenis = lenis;
     
