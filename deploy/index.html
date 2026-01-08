@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.165 - source -->
+  <!--Version 1.166 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -228,13 +228,12 @@
 
     /* Mobile-only scroll reveal */
     @media (max-width: 389px) {
-      .mobile-fade-up {
+      .mobile-reveal {
         opacity: 0 !important;
-        transform: translateY(40px) !important;
-        transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-        will-change: opacity, transform;
+        transform: translateY(50px) !important;
+        transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
       }
-      .mobile-fade-up.in-view {
+      .mobile-reveal.in-view {
         opacity: 1 !important;
         transform: translateY(0) !important;
       }
@@ -242,7 +241,7 @@
 
     /* Disable mobile reveal on desktop */
     @media (min-width: 390px) {
-      .mobile-fade-up {
+      .mobile-reveal {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
@@ -1112,22 +1111,22 @@ font-family: 'Oswald', sans-serif !important;
         // Fade up animation
         const observerOptions = {
           root: null,
-          rootMargin: '0px',
-          threshold: 0.05
+          rootMargin: '0px 0px -10% 0px',
+          threshold: 0
         };
         const observer = new IntersectionObserver((entries, obs) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               entry.target.classList.add('in-view');
-              if (!entry.target.classList.contains("mobile-fade-up")) {
+              if (!entry.target.classList.contains("mobile-reveal")) {
                 obs.unobserve(entry.target);
               }
-            } else if (entry.target.classList.contains("mobile-fade-up")) {
+            } else if (entry.target.classList.contains("mobile-reveal")) {
               entry.target.classList.remove('in-view');
             }
           });
         }, observerOptions);
-        document.querySelectorAll('.fade-up-element').forEach(el => observer.observe(el));
+        document.querySelectorAll('.fade-up-element, .mobile-reveal').forEach(el => observer.observe(el));
 
         // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
         document.body.addEventListener('click', function(e) {
@@ -1222,7 +1221,7 @@ font-family: 'Oswald', sans-serif !important;
       <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-13rem)] [perspective:2000px] max-[389px]:![perspective:none] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [will-change:transform,opacity] max-[389px]:![transform-style:flat] max-[389px]:![will-change:auto] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 fade-up-element mobile-fade-up" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [will-change:transform,opacity] max-[389px]:![transform-style:flat] max-[389px]:![will-change:auto] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1475,7 +1474,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 fade-up-element mobile-fade-up" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1572,7 +1571,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 fade-up-element mobile-fade-up" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1839,7 +1838,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 fade-up-element mobile-fade-up" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
