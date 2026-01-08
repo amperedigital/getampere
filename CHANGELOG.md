@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.202 - 2026-01-08
+- **Stable Release: Advanced 3D Card Stack Interactivity**
+- Fixed mobile straightening interaction using `ontouchstart` listener hack for improved iOS/Safari responsiveness.
+- Implemented CSS-variable driven transform system for precision 3D alignment and multi-layer synchronization.
+- Enhanced layout spacing for both desktop and mobile, ensuring no overlap with navigation bars.
+- Unified hover and touch triggers across the entire stack to provide a consistent, tactile user experience.
+- Resolved CSS conflicts with global reveal animations.
+
 ## v1.194 - 2026-01-08
 - **Stable Release: Real Card Stack UI**
 - Finalized precision alignment for the 3D card stack, ensuring all right-side edges align perfectly.
