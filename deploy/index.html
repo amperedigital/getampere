@@ -240,31 +240,30 @@
     }
 
     /* Precision 3D Card Stack & Interaction */
-    @media (min-width: 390px) {
-      [data-tab-card] {
-        --stack-y: 0px;
-        --rot-y: 12deg;
-        --rot-x: 6deg;
-        transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
-        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
-      }
-      /* Individual Stack Offsets */
-      [data-tab-card]:nth-child(1) { --card-offset: -30px; }
-      [data-tab-card]:nth-child(2) { --card-offset: -20px; }
-      [data-tab-card]:nth-child(3) { --card-offset: -10px; }
-      [data-tab-card]:nth-child(4) { --card-offset: 0px; }
+    [data-tab-card] {
+      --stack-y: 0px;
+      --rot-y: 12deg;
+      --rot-x: 6deg;
+      transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
+      touch-action: manipulation;
+    }
+    /* Individual Stack Offsets */
+    [data-tab-card]:nth-child(1) { --card-offset: -30px; }
+    [data-tab-card]:nth-child(2) { --card-offset: -20px; }
+    [data-tab-card]:nth-child(3) { --card-offset: -10px; }
+    [data-tab-card]:nth-child(4) { --card-offset: 0px; }
 
-      [data-tab-card].inactive-prev { --stack-y: var(--card-offset); }
-      [data-tab-card].active { --stack-y: 0px; }
+    [data-tab-card].inactive-prev { --stack-y: var(--card-offset); }
+    [data-tab-card].active { --stack-y: 0px; }
 
-      /* Flatten entire stack on Hover or Touch */
-      .group\/cards:hover [data-tab-card].active,
-      .group\/cards:hover [data-tab-card].inactive-prev,
-      .group\/cards:active [data-tab-card].active,
-      .group\/cards:active [data-tab-card].inactive-prev {
-        --rot-y: 0deg !important;
-        --rot-x: 0deg !important;
-      }
+    /* Flatten entire stack on Hover or Touch */
+    .group\/cards:hover [data-tab-card],
+    .group\/cards:active [data-tab-card],
+    [data-tab-card]:hover,
+    [data-tab-card]:active {
+      --rot-y: 0deg !important;
+      --rot-x: 0deg !important;
     }
   </style>
   <style>
@@ -1251,7 +1250,7 @@ font-family: 'Oswald', sans-serif !important;
 
     <!-- Cards Container -->
     <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-12 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[389px]:px-4 max-[389px]:mt-10">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-15rem)] [perspective:2000px] group/cards max-[389px]:[perspective:none] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-15rem)] [perspective:2000px] group/cards max-[389px]:[perspective:none] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12" ontouchstart="">
         
         <!-- Card 1 -->
         <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:[backface-visibility:visible] max-[389px]:[transform-style:flat] max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
