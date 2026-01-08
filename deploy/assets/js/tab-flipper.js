@@ -1,9 +1,13 @@
 /**
- * Tab Controlled Card Flipper v1.115
- * Optimized for 390px viewports and accurate scrolling.
+ * Tab Controlled Card Flipper v1.114
+ * Refactor for re-usable interactions and enhanced text effects.
+ * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
+ * Updated stickyOffset for top margin alignment.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Tab Flipper v1.114 Loaded');
+
   // Inject styles for interaction utilities
   const style = document.createElement('style');
   style.textContent = `
@@ -44,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    /* Interaction Utility Classes */
     .interaction-tag-label {
       opacity: 0.6;
       transition: opacity 0.3s ease;
@@ -62,8 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const delay = parseInt(el.dataset.flipDelay || 30);
     
     el.innerHTML = '';
+    // Use Array.from to handle emojis or special chars correctly
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
+      // Use non-breaking space for layout consistency
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
       span.style.transitionDelay = `${i * delay}ms`;
@@ -72,8 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     el.dataset.initialized = 'true';
   };
 
+  // Initialize all flip texts on load
   document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
+  // Re-usable Tab Flipper Logic
   const initFlipper = (flipper) => {
     const triggers = flipper.querySelectorAll('[data-tab-trigger]');
     const cards = flipper.querySelectorAll('[data-tab-card]');
@@ -81,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!triggers.length || !cards.length) return;
 
     let activeIndex = 0;
-    let isAutoScrolling = false;
+    let isAnimating = false;
+    let isAutoScrolling = false; // Flag to prevent scroll-bounce when clicking a tab
     
     const crmContainer = document.getElementById('crm-card-container');
     const uc003Container = document.getElementById('uc003-card-container');
@@ -94,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isCrmActive = false, isUc003Active = false, isUc004Active = false;
     let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
 
-    function updateSmilState(container, isActive, isHovered) {
+    function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
         const shouldRun = isActive || isHovered;
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
@@ -120,22 +130,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isDependent = beginAttr && beginAttr.includes('anim-trigger');
                     const isTrigger = anim.id && anim.id.includes('anim-trigger');
 
-                    if (isTrigger) anim.beginElement();
-                    else if (!isDependent) anim.beginElement();
-                } catch(e) {}
+                    if (isTrigger) {
+                        anim.beginElement();
+                    } else if (!isDependent) {
+                        anim.beginElement();
+                    }
+                } catch(e) {
+                    // SILENT
+                }
             });
         } else {
             container.classList.remove("manual-active");
             motionElements.forEach(motion => {
-                if (motion.parentElement) motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+                if (motion.parentElement) {
+                    motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+                }
             });
             anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
         }
     }
 
-    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered);
-    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered);
-    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered);
+    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
+    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
+    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
 
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
@@ -158,7 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
+      
       activeIndex = index;
+      if (!skipAnimation) isAnimating = true;
       
       triggers.forEach((t, i) => {
         const isActive = (i === index);
@@ -167,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         t.classList.toggle('active', isActive);
       });
 
+      // Auto-scroll tab container to keep active tab in view (Mobile)
       const activeTrigger = triggers[index];
       const triggerContainer = activeTrigger.parentElement;
       if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
@@ -196,30 +216,42 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCrmState();
       updateUc003State();
       updateUc004State();
+
+      if (!skipAnimation) {
+          setTimeout(() => { isAnimating = false; }, 500);
+      }
     };
 
+    // Scroll Sync logic
     if (scrollTrack) {
         const handleScroll = () => {
-            if (isAutoScrolling || window.innerWidth <= 389) return;
+            if (isAutoScrolling) return;
 
             const rect = scrollTrack.getBoundingClientRect();
-            const stickyOffset = window.innerWidth < 768 ? 80 : 96;
+            const totalWidth = rect.height;
+            const viewportHeight = window.innerHeight;
             
-            // Progress starts relative to sticky offset
-            const scrollDistance = -rect.top + stickyOffset;
-            const scrollableRange = rect.height - window.innerHeight;
+            // Calculate progress through the track
+            const stickyOffset = 96; 
+            const relativeScroll = -rect.top;
+            const scrollableRange = totalWidth - viewportHeight;
             
-            let progress = scrollDistance / scrollableRange;
+            let progress = relativeScroll / scrollableRange;
             progress = Math.max(0, Math.min(1, progress));
             
             const numTabs = triggers.length;
             const index = Math.min(numTabs - 1, Math.floor(progress * numTabs));
             
-            if (index !== activeIndex) setActive(index, true);
+            if (index !== activeIndex) {
+                setActive(index, true);
+            }
         };
 
-        if (window.lenis) window.lenis.on('scroll', handleScroll);
-        else window.addEventListener('scroll', handleScroll);
+        if (window.lenis) {
+            window.lenis.on('scroll', handleScroll);
+        } else {
+            window.addEventListener('scroll', handleScroll);
+        }
     }
 
     triggers.forEach((trigger, index) => {
@@ -227,15 +259,18 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (index === activeIndex) return;
 
-        if (scrollTrack && window.innerWidth > 389) {
+        if (scrollTrack) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
-            const sectionOffset = window.scrollY + rect.top;
-            const stickyOffset = window.innerWidth < 768 ? 80 : 96;
-            const scrollableRange = rect.height - window.innerHeight;
+            const sectionTop = window.scrollY + rect.top;
+            const stickyOffset = 96;
+            const viewportHeight = window.innerHeight;
+            const totalWidth = rect.height;
+            const scrollableRange = totalWidth - viewportHeight;
             
+            // Target progress is centered in the tab's range
             const targetProgress = (index + 0.5) / triggers.length;
-            const targetScroll = sectionOffset + (targetProgress * scrollableRange) - stickyOffset;
+            const targetScroll = sectionTop + (targetProgress * scrollableRange);
 
             if (window.lenis) {
                 window.lenis.scrollTo(targetScroll, {

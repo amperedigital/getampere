@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.166 - source -->
+  <!--Version 1.158 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -35,16 +35,6 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       scrollbar-gutter: stable;
-    }
-
-    /* Site Nav Offset for Anchor Links */
-    [id] {
-      scroll-margin-top: 5rem;
-    }
-    @media (min-width: 768px) {
-      [id] {
-        scroll-margin-top: 6rem;
-      }
     }
 
     .font-serif-italic {
@@ -224,28 +214,6 @@
     }
     .reveal-content {
       transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    /* Mobile-only scroll reveal */
-    @media (max-width: 389px) {
-      .mobile-reveal {
-        opacity: 0 !important;
-        transform: translateY(50px) !important;
-        transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-      }
-      .mobile-reveal.in-view {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
-    }
-
-    /* Disable mobile reveal on desktop */
-    @media (min-width: 390px) {
-      .mobile-reveal {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
     }
   </style>
   <style>
@@ -1079,7 +1047,7 @@ font-family: 'Oswald', sans-serif !important;
   
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20" data-tab-flipper>
+  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20 max-md:scroll-mt-[6rem]" data-tab-flipper>
     <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12 max-[389px]:py-6 max-[389px]:mb-0">
       <div class="w-full px-6 lg:px-12">
         <div class="border-t border-white/10 w-full mb-12 max-[389px]:mb-4"></div>
@@ -1103,7 +1071,7 @@ font-family: 'Oswald', sans-serif !important;
       </div>
     </div>
     
-    <div id="integrations-tabs" class="scroll-mt-20 max-md:scroll-mt-20"></div>
+    <div id="integrations-tabs" class="scroll-mt-20 max-md:scroll-mt-[6rem]"></div>
 
     <script>
       // Simple Intersection Observer for fade-in animations on this section
@@ -1111,22 +1079,18 @@ font-family: 'Oswald', sans-serif !important;
         // Fade up animation
         const observerOptions = {
           root: null,
-          rootMargin: '0px 0px -10% 0px',
-          threshold: 0
+          rootMargin: '0px',
+          threshold: 0.15
         };
         const observer = new IntersectionObserver((entries, obs) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               entry.target.classList.add('in-view');
-              if (!entry.target.classList.contains("mobile-reveal")) {
-                obs.unobserve(entry.target);
-              }
-            } else if (entry.target.classList.contains("mobile-reveal")) {
-              entry.target.classList.remove('in-view');
+              obs.unobserve(entry.target); // Trigger once
             }
           });
         }, observerOptions);
-        document.querySelectorAll('.fade-up-element, .mobile-reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.fade-up-element').forEach(el => observer.observe(el));
 
         // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
         document.body.addEventListener('click', function(e) {
@@ -1137,17 +1101,10 @@ font-family: 'Oswald', sans-serif !important;
               const target = document.querySelector(targetSel);
               if (target) {
                 e.preventDefault();
-                // Match sticky offset (5rem/80px on mobile, 6rem/96px on desktop)
-                const offset = window.innerWidth < 768 ? -80 : -96;
                 if (window.lenis) {
-                  window.lenis.scrollTo(target, {
-                    offset: offset,
-                    duration: 1.2, 
-                    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                  });
+                  window.lenis.scrollTo(target, {duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))});
                 } else {
-                  const targetPosition = target.getBoundingClientRect().top + window.pageYOffset + offset;
-                  window.scrollTo({top: targetPosition, behavior: 'smooth'});
+                  target.scrollIntoView({behavior: 'smooth'});
                 }
               }
             }
@@ -1157,15 +1114,15 @@ font-family: 'Oswald', sans-serif !important;
     </script>
 
     <!-- Sticky Scroll Track -->
-    <div class="relative h-[220vh] lg:h-[400vh] max-[389px]:h-auto" data-scroll-track>
+    <div class="relative h-[250vh] lg:h-[400vh] max-[389px]:h-auto" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-20 md:top-24 w-full h-[calc(100vh-5rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-[389px]:relative max-[389px]:top-0 max-[389px]:h-auto max-[389px]:overflow-visible">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-[389px]:relative max-[389px]:top-0 max-[389px]:h-auto max-[389px]:overflow-visible">
         <!-- Tabs (Box Layout) -->
         <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[389px]:hidden">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
-          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-3 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="true">
+          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-4 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="true">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1178,7 +1135,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 2 -->
-          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-3 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-4 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1190,7 +1147,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 3 -->
-          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-3 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-4 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1202,7 +1159,7 @@ font-family: 'Oswald', sans-serif !important;
           </button>
 
           <!-- Tab 4 -->
-          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-3 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
+          <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-4 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="false">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
                 <img src="./assets/dots-use-cases.png" class="w-full h-full object-cover opacity-80" alt="">
             </div>
@@ -1218,10 +1175,10 @@ font-family: 'Oswald', sans-serif !important;
 
     <!-- Cards Container -->
     <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[389px]:px-4 max-[389px]:mt-2">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-13rem)] [perspective:2000px] max-[389px]:![perspective:none] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-14rem)] [perspective:2000px] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [will-change:transform,opacity] max-[389px]:![transform-style:flat] max-[389px]:![will-change:auto] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1234,10 +1191,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper (Visible for popups) -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_001</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
+              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_001</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">Discover how we help you</span>
@@ -1246,9 +1203,9 @@ font-family: 'Oswald', sans-serif !important;
               </div>
 
               <!-- Right: Media Container (Laptop Edge Look) -->
-              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 max-[389px]:!perspective-none pointer-events-auto">
+              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="crm-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] [transform-style:preserve-3d] max-[389px]:![transform-style:flat]">
+                 <div id="crm-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500  shadow-[20px_20px_60px_rgba(0,0,0,0.5)] " style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -1474,7 +1431,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1487,10 +1444,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_002</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">Field Service Software</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
+              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_002</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">Field Service Software</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
                 
                 <!-- Partner Logos -->
                 <div class="flex flex-nowrap items-center justify-between md:justify-start gap-4 md:gap-8 mb-6 md:mb-10 overflow-x-auto no-scrollbar">
@@ -1538,9 +1495,9 @@ font-family: 'Oswald', sans-serif !important;
               </div>
 
               <!-- Right: Media Container (Laptop Edge Look) -->
-              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 max-[389px]:!perspective-none pointer-events-auto">
+              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="uc002-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] [transform-style:preserve-3d] max-[389px]:![transform-style:flat]">
+                 <div id="uc002-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] " style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -1571,7 +1528,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1584,10 +1541,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_003</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
+              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_003</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">View Case Study</span>
@@ -1596,9 +1553,9 @@ font-family: 'Oswald', sans-serif !important;
               </div>
 
               <!-- Right: Media Container (Laptop Edge Look) -->
-              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 max-[389px]:!perspective-none pointer-events-auto">
+              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="uc003-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] [transform-style:preserve-3d] max-[389px]:![transform-style:flat]">
+                 <div id="uc003-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] " style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -1838,7 +1795,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-500 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] max-[389px]:![backface-visibility:visible] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!pointer-events-auto max-[389px]:!z-10 mobile-reveal" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1851,10 +1808,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_004</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">ERP's</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Oracle Fusion, Odoo, Workday & Others...</p>
+              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_004</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">ERP's</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Oracle Fusion, Odoo, Workday & Others...</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">View Case Study</span>
@@ -1863,9 +1820,9 @@ font-family: 'Oswald', sans-serif !important;
               </div>
 
               <!-- Right: Media Container (Laptop Edge Look) -->
-              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 max-[389px]:!perspective-none pointer-events-auto">
+              <div class="w-full md:w-1/2 h-auto max-sm:h-full flex items-center justify-center p-6 pt-0 md:p-0 md:pr-6 lg:pr-16 overflow-visible perspective-1000 pointer-events-auto">
                  <!-- The "Screen" Container with 3D Transform -->
-                 <div id="uc004-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] [transform-style:preserve-3d] max-[389px]:![transform-style:flat]">
+                 <div id="uc004-3d-card" class="relative w-full max-w-[340px] md:max-w-[500px] mx-auto aspect-square md:aspect-[0.87] lg:aspect-square bg-black rounded-xl border border-white/10 border-b-[6px] border-b-zinc-800 shadow-2xl overflow-visible backdrop-blur-sm transition-all duration-500 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] " style="transform-style: preserve-3d;">
                     <!-- Darkening Overlay -->
                     <div class="absolute inset-0 bg-black/20 pointer-events-none z-0 rounded-xl"></div>
                     <!-- Screen Reflection/Gloss -->
@@ -2093,7 +2050,7 @@ font-family: 'Oswald', sans-serif !important;
 
               <!-- Mobile Button (Bottom) -->
               <div class="w-full md:hidden border-t border-white/10 py-6 flex justify-center relative z-50">
-                  <a href="#" class="group inline-flex items-center gap-2 hover:text-white transition-all text-sm font-medium text-[#E4E4E7] relative z-10">
+                  <a href="#" class="group inline-flex items-center gap-2 hover:text-white transition-colors text-sm font-medium text-[#E4E4E7] relative z-10">
                     View Case Study
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right transition-transform duration-300 group-hover:translate-x-0.5">
                       <path d="M5 12h14"></path>
@@ -2107,11 +2064,8 @@ font-family: 'Oswald', sans-serif !important;
             </div>
           </div>
         </div>
-      </div> <!-- Close Grid -->
-    </div> <!-- Close Cards Outer -->
-    </div> <!-- Close Sticky Container -->
+      </div> <!-- Close Sticky Container -->
     </div> <!-- Close Scroll Track -->
-    <style>
       [data-tab-card].inactive-next {
         opacity: 0;
         transform: translateY(100px) rotateY(-20deg) scale(0.9);
@@ -2297,7 +2251,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.172/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.173/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
@@ -2348,7 +2302,7 @@ font-family: 'Oswald', sans-serif !important;
               <div class="group w-full h-full relative perspective-midrange max-h-[80vh] md:max-h-[85vh] lg:max-h-[80vh]">
               <div class="absolute inset-x-6 bottom-0 top-16 bg-gradient-to-t from-blue-500/10 to-transparent opacity-20 blur-2xl pointer-events-none z-0 rounded-[2rem]">
               </div>
-              <div class="transition-all duration-500 ease-out group-hover:scale-[1.02] origin-center w-full h-full relative drop-shadow-2xl">
+              <div class="transition-all duration-700 ease-out group-hover:scale-[1.02] origin-center w-full h-full relative drop-shadow-2xl">
                 <canvas class="w-full h-full mt-[8%] mb-4" id="canvas-3d-ai-graph-fixed"></canvas>
                 <script class="">
                   (function() {
