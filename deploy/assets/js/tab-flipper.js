@@ -1,17 +1,18 @@
 /**
- * Tab Controlled Card Flipper v1.114
+ * Tab Controlled Card Flipper v1.115
  * Refactor for re-usable interactions and enhanced text effects.
  * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
+ * Fix: Disabled scroll track logic for <389px (h-auto mode).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.114 Loaded');
+  console.log('Tab Flipper v1.115 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Use non-breaking space for layout consistency
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -231,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scrollTrack) {
         const handleScroll = () => {
             if (isAutoScrolling) return;
+            if (window.innerWidth <= 389) return; // Disable for mobile h-auto state
 
             const rect = scrollTrack.getBoundingClientRect();
             const totalWidth = rect.height;
@@ -264,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (index === activeIndex) return;
 
-        if (scrollTrack) {
+        if (scrollTrack && window.innerWidth > 389) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionTop = window.scrollY + rect.top;
