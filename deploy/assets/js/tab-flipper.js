@@ -1,16 +1,16 @@
 /**
- * Tab Controlled Card Flipper v1.117
+ * Tab Controlled Card Flipper v1.118
  * Modular Refactor: Support dynamic cards and auto-detected SMIL animations.
  * Added: data-smil-anim detection for per-card animation lifecycles.
- * Updated: Unified card state management.
+ * Updated: Unified card state management with data-stack-depth modular engine.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.117 Loaded');
+  console.log('Tab Flipper v1.118 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     el.innerHTML = '';
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.textContent = char === ' ' ? '\\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -200,6 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       cards.forEach((c, i) => {
+        // Modular Depth Engine: Calculate visual stack position relative to active card
+        // (i - index + total) % total ensures that cards cycle through the stack slots.
+        const depth = (i - index + cards.length) % cards.length;
+        c.setAttribute('data-stack-depth', depth);
+
         c.classList.remove('active', 'inactive-prev', 'inactive-next');
         const video = c.querySelector('video');
         if (i === index) {
