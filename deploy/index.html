@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.160 - source -->
+  <!--Version 1.161 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -35,6 +35,17 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       scrollbar-gutter: stable;
+      scroll-behavior: smooth;
+    }
+
+    /* Site Nav Offset for Anchor Links */
+    [id] {
+      scroll-margin-top: 5rem;
+    }
+    @media (min-width: 768px) {
+      [id] {
+        scroll-margin-top: 6rem;
+      }
     }
 
     .font-serif-italic {
@@ -1047,11 +1058,11 @@ font-family: 'Oswald', sans-serif !important;
   
 
   <!-- Tabs Section-->
-  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20 max-md:scroll-mt-[6rem]" data-tab-flipper>
-    <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12 max-[380px]:py-6 max-[380px]:mb-0">
+  <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20" data-tab-flipper>
+    <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12 max-[389px]:py-6 max-[389px]:mb-0">
       <div class="w-full px-6 lg:px-12">
-        <div class="border-t border-white/10 w-full mb-12 max-[380px]:mb-4"></div>
-        <div class="flex items-start justify-between mb-[10vh] cursor-pointer group max-[380px]:mb-4" data-scrollto="#integrations-tabs">
+        <div class="border-t border-white/10 w-full mb-12 max-[389px]:mb-4"></div>
+        <div class="flex items-start justify-between mb-[10vh] cursor-pointer group max-[389px]:mb-4" data-scrollto="#integrations-tabs">
           <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
           <span class="hover-push-down-parent">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
@@ -1061,7 +1072,7 @@ font-family: 'Oswald', sans-serif !important;
           </span>
         </div>
         <div class="flex flex-col lg:flex-row items-end justify-between">
-          <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-light leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 max-[380px]:mb-4 fade-up-element reveal-heading" style="word-break:break-word;">
+          <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-light leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 max-[389px]:mb-4 fade-up-element reveal-heading" style="word-break:break-word;">
             Works Seamlessly With the Tools You Already Use
           </h2>
           <p class="text-lg text-zinc-400 leading-relaxed max-w-lg fade-up-element reveal-content lg:ml-12">
@@ -1071,7 +1082,7 @@ font-family: 'Oswald', sans-serif !important;
       </div>
     </div>
     
-    <div id="integrations-tabs" class="scroll-mt-20 max-md:scroll-mt-[6rem]"></div>
+    <div id="integrations-tabs" class="scroll-mt-20 max-md:scroll-mt-20"></div>
 
     <script>
       // Simple Intersection Observer for fade-in animations on this section
@@ -1114,11 +1125,11 @@ font-family: 'Oswald', sans-serif !important;
     </script>
 
     <!-- Sticky Scroll Track -->
-    <div class="relative h-[250vh] lg:h-[400vh] max-[380px]:h-auto" data-scroll-track>
+    <div class="relative h-[250vh] lg:h-[400vh] max-[389px]:h-auto" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-[380px]:relative max-[380px]:top-0 max-[380px]:h-auto max-[380px]:overflow-visible">
+      <div class="sticky top-20 md:top-24 w-full h-[calc(100dvh-5rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-[389px]:relative max-[389px]:top-0 max-[389px]:h-auto max-[389px]:overflow-visible">
         <!-- Tabs (Box Layout) -->
-        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[380px]:hidden">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[389px]:hidden">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
@@ -1174,11 +1185,11 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[380px]:px-4 max-[380px]:mt-2">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-16rem)] [perspective:2000px] max-[380px]:flex max-[380px]:flex-col max-[380px]:h-auto max-[380px]:gap-y-12">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[389px]:px-4 max-[389px]:mt-2">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-13rem)] [perspective:2000px] max-[389px]:flex max-[389px]:flex-col max-[389px]:h-auto max-[389px]:gap-y-12">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[380px]:!relative max-[380px]:!opacity-100 max-[380px]:!transform-none max-[380px]:!pointer-events-auto max-[380px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1191,10 +1202,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper (Visible for popups) -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_001</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
+              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_001</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">CRM Integrations</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Handle thousands of concurrent leads instantly. Qualify, nurture, and close deals 24/7 without human intervention.</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">Discover how we help you</span>
@@ -1431,7 +1442,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[380px]:!relative max-[380px]:!opacity-100 max-[380px]:!transform-none max-[380px]:!pointer-events-auto max-[380px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1444,10 +1455,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_002</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">Field Service Software</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
+              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_002</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">Field Service Software</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
                 
                 <!-- Partner Logos -->
                 <div class="flex flex-nowrap items-center justify-between md:justify-start gap-4 md:gap-8 mb-6 md:mb-10 overflow-x-auto no-scrollbar">
@@ -1528,7 +1539,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[380px]:!relative max-[380px]:!opacity-100 max-[380px]:!transform-none max-[380px]:!pointer-events-auto max-[380px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1541,10 +1552,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_003</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
+              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_003</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">Scheduling Platforms</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Fill your calendar automatically. Integrate with Calendly, Google Calendar, and CRMs to book meetings in real-time.</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">View Case Study</span>
@@ -1795,7 +1806,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[380px]:!relative max-[380px]:!opacity-100 max-[380px]:!transform-none max-[380px]:!pointer-events-auto max-[380px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[389px]:!relative max-[389px]:!opacity-100 max-[389px]:!transform-none max-[389px]:!pointer-events-auto max-[389px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1808,10 +1819,10 @@ font-family: 'Oswald', sans-serif !important;
             <!-- Content Wrapper -->
             <div class="relative w-full h-full flex flex-col md:flex-row z-10">
               <!-- Left: Content -->
-              <div class="flex flex-col justify-start md:justify-center p-6 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
-                <span class="uc-label hover-flip-text mb-6 block tracking-wider">/ UC_004</span>
-                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-3 md:mb-6 font-geist tracking-tight leading-tight">ERP's</h3>
-                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-4 md:mb-10 max-w-md">Oracle Fusion, Odoo, Workday & Others...</p>
+              <div class="flex flex-col justify-start md:justify-center p-5 md:p-8 lg:p-16 w-full md:w-1/2 h-auto md:h-full pointer-events-auto">
+                <span class="uc-label hover-flip-text mb-2 md:mb-6 block tracking-wider">/ UC_004</span>
+                <h3 class="text-2xl md:text-4xl lg:text-5xl font-medium text-white mb-1 md:mb-6 font-geist tracking-tight leading-tight">ERP's</h3>
+                <p class="text-white/60 text-base md:text-lg leading-relaxed mb-2 md:mb-10 max-w-md">Oracle Fusion, Odoo, Workday & Others...</p>
                 <div class="hidden md:block">
                   <button class="shiny-cta relative z-50 pointer-events-auto">
                     <span class="text-sm font-medium">View Case Study</span>
