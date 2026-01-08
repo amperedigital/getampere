@@ -1,5 +1,5 @@
 <html lang="en"><head>
-  <!--Version 1.154 - source -->
+  <!--Version 1.155 - source -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getAmpere.ai - AI Voice Agents</title>
@@ -496,7 +496,7 @@ font-family: 'Oswald', sans-serif !important;
     <a href="#" class="text-3xl text-[#E4E4E7] hover:text-white font-medium tracking-tight" style="">Company</a>
   </div>
 
-  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent max-[390px]:hidden">
     <div class="flex w-full justify-end">
         <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
           <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
@@ -1114,11 +1114,11 @@ font-family: 'Oswald', sans-serif !important;
     </script>
 
     <!-- Sticky Scroll Track -->
-    <div class="relative h-[250vh] lg:h-[400vh]" data-scroll-track>
+    <div class="relative h-[250vh] lg:h-[400vh] max-[390px]:h-auto" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-hidden max-[390px]:relative max-[390px]:top-0 max-[390px]:h-auto max-[390px]:overflow-visible">
         <!-- Tabs (Box Layout) -->
-        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[390px]:hidden">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
@@ -1174,11 +1174,11 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-14rem)] [perspective:2000px]">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-8 lg:mt-12 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[390px]:px-4">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-14rem)] [perspective:2000px] max-[390px]:flex max-[390px]:flex-col max-[390px]:h-auto max-[390px]:gap-y-12">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu max-md:transform-none origin-center group/tab active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[390px]:!relative max-[390px]:!opacity-100 max-[390px]:!transform-none max-[390px]:!pointer-events-auto max-[390px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1431,7 +1431,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[390px]:!relative max-[390px]:!opacity-100 max-[390px]:!transform-none max-[390px]:!pointer-events-auto max-[390px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1528,7 +1528,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[390px]:!relative max-[390px]:!opacity-100 max-[390px]:!transform-none max-[390px]:!pointer-events-auto max-[390px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1795,7 +1795,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full transition-all duration-700 ease-out transform-gpu origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:[transform:rotateY(12deg)_rotateX(6deg)] [&.active]:pointer-events-auto [&.active]:z-20 [&.active:hover]:[transform:rotateY(0deg)_rotateX(0deg)] [&.inactive-prev]:opacity-0 [&.inactive-prev]:[transform:translateY(-100px)_rotateY(20deg)_scale(0.9)] [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-0 [&.inactive-next]:opacity-0 [&.inactive-next]:[transform:translateY(100px)_rotateY(-20deg)_scale(0.9)] [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[390px]:!relative max-[390px]:!opacity-100 max-[390px]:!transform-none max-[390px]:!pointer-events-auto max-[390px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1989,7 +1989,7 @@ font-family: 'Oswald', sans-serif !important;
                       </div>
                       <div class="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[170%]">
                         <div class="flex items-center justify-center h-12 w-32">
-                          <svg viewBox="0 0 231 30" xmlns="http://www.w3.org/2000/svg" aria-label="Oracle" class="w-[84px] sm:w-[94px] h-auto text-white/90 fill-current drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] overflow-visible">
+                          <svg viewBox="0 0 231 30" xmlns="http://www.w3.org/2000/svg" aria-label="Oracle" class="w-[74px] sm:w-[84px] h-auto text-white/90 fill-current drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] overflow-visible">
                             <path d="M99.61,19.52h15.24l-8.05-13L92,30H85.27l18-28.17a4.29,4.29,0,0,1,7-.05L128.32,30h-6.73l-3.17-5.25H103l-3.36-5.23m69.93,5.23V0.28h-5.72V27.16a2.76,2.76,0,0,0,.85,2,2.89,2.89,0,0,0,2.08.87h26l3.39-5.25H169.54M75,20.38A10,10,0,0,0,75,.28H50V30h5.71V5.54H74.65a4.81,4.81,0,0,1,0,9.62H58.54L75.6,30h8.29L72.43,20.38H75M14.88,30H32.15a14.86,14.86,0,0,0,0-29.71H14.88a14.86,14.86,0,1,0,0,29.71m16.88-5.23H15.26a9.62,9.62,0,0,1,0-19.23h16.5a9.62,9.62,0,1,1,0,19.23M140.25,30h17.63l3.34-5.23H140.64a9.62,9.62,0,1,1,0-19.23h16.75l3.38-5.25H140.25a14.86,14.86,0,1,0,0,29.71m69.87-5.23a9.62,9.62,0,0,1-9.26-7h24.42l3.36-5.24H200.86a9.61,9.61,0,0,1,9.26-7h16.76l3.35-5.25h-20.5a14.86,14.86,0,0,0,0,29.71h17.63l3.35-5.23h-20.6">
                             </path>
                           </svg>
@@ -3689,7 +3689,7 @@ font-family: 'Oswald', sans-serif !important;
                       </div>
                       <div class="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[170%]">
                         <div class="flex items-center justify-center h-12 w-32">
-                          <svg viewBox="0 0 231 30" xmlns="http://www.w3.org/2000/svg" aria-label="Oracle" class="w-[84px] sm:w-[94px] h-auto text-white/90 fill-current drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] overflow-visible">
+                          <svg viewBox="0 0 231 30" xmlns="http://www.w3.org/2000/svg" aria-label="Oracle" class="w-[74px] sm:w-[84px] h-auto text-white/90 fill-current drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] overflow-visible">
                             <path d="M99.61,19.52h15.24l-8.05-13L92,30H85.27l18-28.17a4.29,4.29,0,0,1,7-.05L128.32,30h-6.73l-3.17-5.25H103l-3.36-5.23m69.93,5.23V0.28h-5.72V27.16a2.76,2.76,0,0,0,.85,2,2.89,2.89,0,0,0,2.08.87h26l3.39-5.25H169.54M75,20.38A10,10,0,0,0,75,.28H50V30h5.71V5.54H74.65a4.81,4.81,0,0,1,0,9.62H58.54L75.6,30h8.29L72.43,20.38H75M14.88,30H32.15a14.86,14.86,0,0,0,0-29.71H14.88a14.86,14.86,0,1,0,0,29.71m16.88-5.23H15.26a9.62,9.62,0,0,1,0-19.23h16.5a9.62,9.62,0,1,1,0,19.23M140.25,30h17.63l3.34-5.23H140.64a9.62,9.62,0,1,1,0-19.23h16.75l3.38-5.25H140.25a14.86,14.86,0,1,0,0,29.71m69.87-5.23a9.62,9.62,0,0,1-9.26-7h24.42l3.36-5.24H200.86a9.61,9.61,0,0,1,9.26-7h16.76l3.35-5.25h-20.5a14.86,14.86,0,0,0,0,29.71h17.63l3.35-5.23h-20.6">
                             </path>
                           </svg>
