@@ -1,6 +1,6 @@
 /**
- * Tab Controlled Card Flipper v1.168
- * Reverted desktop logic; Mobile-only viewport animation firing.
+ * Tab Controlled Card Flipper v1.170
+ * Restored reliable 3D context for desktop.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Observer for mobile stack only
     const mobileObserver = new IntersectionObserver((entries) => {
-        if (window.innerWidth > 389) return;
+        if (window.innerWidth > 380) return; // Matches the fallback threshold
         entries.forEach(entry => {
             const isVisible = entry.isIntersecting;
             if (entry.target === crmContainer) { isCrmActive = isVisible; updateCrmState(); }
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      if (window.innerWidth > 389) {
+      if (window.innerWidth > 380) {
           isCrmActive = (index === 0);
           isUc003Active = (index === 2);
           isUc004Active = (index === 3);
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (scrollTrack) {
         const handleScroll = () => {
-            if (isAutoScrolling || window.innerWidth <= 389) return;
+            if (isAutoScrolling || window.innerWidth <= 380) return;
 
             const rect = scrollTrack.getBoundingClientRect();
             const stickyOffset = window.innerWidth < 768 ? 80 : 96;
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (index === activeIndex) return;
 
-        if (scrollTrack && window.innerWidth > 389) {
+        if (scrollTrack && window.innerWidth > 380) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionOffset = window.scrollY + rect.top;
