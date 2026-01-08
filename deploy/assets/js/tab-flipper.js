@@ -1,6 +1,6 @@
 /**
- * Tab Controlled Card Flipper v1.115
- * Optimized for 390px viewports and accurate scrolling.
+ * Tab Controlled Card Flipper v1.167
+ * Synchronized SMIL animations with viewport visibility.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -93,6 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isCrmActive = false, isUc003Active = false, isUc004Active = false;
     let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
+    
+    // Track visibility of each container
+    const visibilityMap = {
+        'crm-card-container': false,
+        'uc003-card-container': false,
+        'uc004-card-container': false
+    };
 
     function updateSmilState(container, isActive, isHovered) {
         if (!container) return;
@@ -137,23 +144,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered);
     const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered);
 
+    const syncSmil = () => {
+        const isSmall = window.innerWidth <= 389;
+        
+        if (controlsCrm) {
+            isCrmActive = isSmall ? visibilityMap['crm-card-container'] : (activeIndex === 0 && visibilityMap['crm-card-container']);
+            updateCrmState();
+        }
+        if (controlsUc003) {
+            isUc003Active = isSmall ? visibilityMap['uc003-card-container'] : (activeIndex === 2 && visibilityMap['uc003-card-container']);
+            updateUc003State();
+        }
+        if (controlsUc004) {
+            isUc004Active = isSmall ? visibilityMap['uc004-card-container'] : (activeIndex === 3 && visibilityMap['uc004-card-container']);
+            updateUc004State();
+        }
+    };
+
+    const smilObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            visibilityMap[entry.target.id] = entry.isIntersecting;
+        });
+        syncSmil();
+    }, { threshold: 0.1 });
+
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && activeIndex === 0) updateCrmState(); });
-        }, { threshold: 0.3 });
-        observer.observe(crmContainer);
+        smilObserver.observe(crmContainer);
     }
-
     if (controlsUc003) {
         uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
         uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
+        smilObserver.observe(uc003Container);
     }
-
     if (controlsUc004) {
         uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
         uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
+        smilObserver.observe(uc004Container);
     }
 
     const setActive = (index, skipAnimation = false) => {
@@ -189,13 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      isCrmActive = (index === 0);
-      isUc003Active = (index === 2);
-      isUc004Active = (index === 3);
-      
-      updateCrmState();
-      updateUc003State();
-      updateUc004State();
+      syncSmil();
     };
 
     if (scrollTrack) {
@@ -205,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = scrollTrack.getBoundingClientRect();
             const stickyOffset = window.innerWidth < 768 ? 80 : 96;
             
-            // Progress starts relative to sticky offset
             const scrollDistance = -rect.top + stickyOffset;
             const scrollableRange = rect.height - window.innerHeight;
             
