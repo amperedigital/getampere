@@ -1,15 +1,16 @@
 /**
- * Tab Controlled Card Flipper v1.115
+ * Tab Controlled Card Flipper v1.116
  * Refactor for re-usable interactions and enhanced text effects.
  * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
  * Fix: Disabled scroll track logic for <389px (h-auto mode).
  * Clean: Removed escaped backslashes from template literals.
+ * Update: SMIL animations start automatically when in view for <389px stack.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.115 Loaded');
+  console.log('Tab Flipper v1.116 Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -110,9 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
         
+        const cardInView = container.parentElement.classList.contains('in-view');
         // Only run if active/hovered AND revealed on mobile
-        const isRevealed = container.parentElement.classList.contains('in-view') || window.innerWidth > 768;
-        const shouldRun = (isActive || isHovered) && isRevealed;
+        const isRevealed = cardInView || window.innerWidth > 768;
+        
+        // For the 389px stacked layout, we want animations to run if the card is in view,
+        // regardless of which tab is "active" in the JS state.
+        const shouldRun = (isActive || isHovered || (window.innerWidth <= 389 && cardInView)) && isRevealed;
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
@@ -165,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && activeIndex === 0) updateCrmState(); });
+            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth <= 389)) updateCrmState(); });
         }, { threshold: 0.3 });
         observer.observe(crmContainer);
     }
