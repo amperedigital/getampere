@@ -5,6 +5,7 @@
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
  * Fix: Disabled scroll track logic for <389px (h-auto mode).
+ * Clean: Removed escaped backslashes from template literals.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = \`
+  style.textContent = `
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
-  \`;
+  `;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Use non-breaking space for layout consistency
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = \`\${i * delay}ms\`;
+      span.style.transitionDelay = `${i * delay}ms`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
