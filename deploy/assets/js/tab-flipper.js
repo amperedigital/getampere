@@ -1,6 +1,6 @@
 /**
- * Tab Controlled Card Flipper v1.170
- * Restored reliable 3D context for desktop.
+ * Tab Controlled Card Flipper v1.115
+ * Optimized for 390px viewports and accurate scrolling.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -137,31 +137,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered);
     const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered);
 
-    // Observer for mobile stack only
-    const mobileObserver = new IntersectionObserver((entries) => {
-        if (window.innerWidth > 380) return; // Matches the fallback threshold
-        entries.forEach(entry => {
-            const isVisible = entry.isIntersecting;
-            if (entry.target === crmContainer) { isCrmActive = isVisible; updateCrmState(); }
-            if (entry.target === uc003Container) { isUc003Active = isVisible; updateUc003State(); }
-            if (entry.target === uc004Container) { isUc004Active = isVisible; updateUc004State(); }
-        });
-    }, { threshold: 0.1 });
-
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
-        mobileObserver.observe(crmContainer);
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting && activeIndex === 0) updateCrmState(); });
+        }, { threshold: 0.3 });
+        observer.observe(crmContainer);
     }
+
     if (controlsUc003) {
         uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
         uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
-        mobileObserver.observe(uc003Container);
     }
+
     if (controlsUc004) {
         uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
         uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
-        mobileObserver.observe(uc004Container);
     }
 
     const setActive = (index, skipAnimation = false) => {
@@ -197,23 +189,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      if (window.innerWidth > 380) {
-          isCrmActive = (index === 0);
-          isUc003Active = (index === 2);
-          isUc004Active = (index === 3);
-          updateCrmState();
-          updateUc003State();
-          updateUc004State();
-      }
+      isCrmActive = (index === 0);
+      isUc003Active = (index === 2);
+      isUc004Active = (index === 3);
+      
+      updateCrmState();
+      updateUc003State();
+      updateUc004State();
     };
 
     if (scrollTrack) {
         const handleScroll = () => {
-            if (isAutoScrolling || window.innerWidth <= 380) return;
+            if (isAutoScrolling || window.innerWidth <= 389) return;
 
             const rect = scrollTrack.getBoundingClientRect();
             const stickyOffset = window.innerWidth < 768 ? 80 : 96;
             
+            // Progress starts relative to sticky offset
             const scrollDistance = -rect.top + stickyOffset;
             const scrollableRange = rect.height - window.innerHeight;
             
@@ -235,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (index === activeIndex) return;
 
-        if (scrollTrack && window.innerWidth > 380) {
+        if (scrollTrack && window.innerWidth > 389) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionOffset = window.scrollY + rect.top;
