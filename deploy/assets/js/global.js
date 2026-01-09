@@ -15,8 +15,16 @@
 
   // Initialize Lenis for smooth scrolling (Desktop only)
   // Mobile browsers have better native inertia scrolling; smooth scroll libs often cause "jitter" on touch.
-  if (typeof Lenis !== "undefined" && !window.lenis && window.innerWidth > 768) {
-    const lenis = new Lenis({ lerp: 0.1, smooth: true });
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  
+  if (typeof Lenis !== "undefined" && !window.lenis && !isTouchDevice && window.innerWidth > 1024) {
+    const lenis = new Lenis({ 
+      lerp: 0.1, 
+      smooth: true,
+      smoothWheel: true,
+      orientation: 'vertical',
+      gestureOrientation: 'vertical'
+    });
     window.lenis = lenis;
     
     function raf(time) {

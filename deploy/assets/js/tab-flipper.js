@@ -5,10 +5,11 @@
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
  * Fix: visibility: visible for active SMIL elements (Auto-start fix).
+ * Fix: Improved stacking logic to ensure consistent 3-card depth.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.116-REPAIR Loaded');
+  console.log('Tab Flipper v1.116-REPAIR-STACKED Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -59,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
+
+    /* Improved Stack CSS Overrides */
+    [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; opacity: 1 !important; }
+    [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
+    [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
+    [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
   `;
   document.head.appendChild(style);
 
@@ -106,7 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSmilState(container, isActive, isHovered, name) {
         if (!container) return;
         
-        const cardInView = container.parentElement.classList.contains('in-view');
+        const cardParent = container.closest('[data-tab-card]');
+        if (!cardParent) return;
+        
+        const cardInView = cardParent.classList.contains('in-view');
         const isRevealed = cardInView || window.innerWidth > 768;
         const shouldRun = (isActive || isHovered || (window.innerWidth <= 389 && cardInView)) && isRevealed;
 
@@ -196,15 +206,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       cards.forEach((c, i) => {
-        c.classList.remove('active', 'inactive-prev', 'inactive-next');
+        c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
         if (i === index) {
-          c.classList.add('active');
+          c.classList.add('active', 'stack-0');
           const video = c.querySelector('video');
           if (video) video.play().catch(() => {});
-        } else {
+        } else if (i < index) {
+          c.classList.add('inactive-prev');
+          const depth = index - i;
+          if (depth <= 3) c.classList.add(`stack-${depth}`);
           const video = c.querySelector('video');
           if (video) { video.pause(); video.currentTime = 0; }
-          c.classList.add(i < index ? 'inactive-prev' : 'inactive-next');
+        } else {
+          c.classList.add('inactive-next');
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
         }
       });
 
