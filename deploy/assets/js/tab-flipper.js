@@ -1,12 +1,13 @@
 /**
- * Tab Controlled Card Flipper v1.122
+ * Tab Controlled Card Flipper v1.123
  * Balanced modular version: Restores stable "Perfected" build-up behavior.
  * Fixes: SMIL detailed views (text boxes) now correctly ONLY show on Hover or Mobile scroll.
- * Fixes: Dynamic stack depth calculation for seamless modular support (Infinite cards possible).
+ * Fixes: Explicit elements (.crm-animated-element) now properly join the SMIL reveal lifecycle.
+ * Fixes: Dynamic stack depth calculation for seamless modular support.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.122 Loaded');
+  console.log('Tab Flipper v1.123 Loaded');
 
   const style = document.createElement('style');
   style.textContent = `
@@ -18,9 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     .force-smil-display {
       display: block !important;
-      visibility: hidden; 
-      opacity: 1; 
-      transition: none !important;
+      visibility: visible !important; 
+      opacity: 1 !important; 
     }
 
     .manual-active .crm-ping-element {
@@ -75,23 +75,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
     const motionElements = container.querySelectorAll("animateMotion");
+    const explicitElements = container.querySelectorAll(".crm-animated-element, .crm-ping-element, [data-smil-anim-target], .smil-hide");
     
+    const toggleTarget = (el) => {
+        if (!el || el.classList.contains('always-hide-anim')) return;
+        if (shouldShowDetails) {
+            if (container.hasAttribute('data-smil-complex') || container.id?.includes('uc004') || container.id?.includes('uc003')) {
+                if (!el.classList.contains('hidden')) el.classList.add('force-smil-display');
+            } else {
+                el.classList.add('force-visible');
+            }
+        } else {
+            el.classList.remove('force-visible', 'force-smil-display');
+        }
+    };
+
     if (shouldRunAnim) {
         container.classList.add("manual-active");
-        motionElements.forEach(motion => {
-            const el = motion.parentElement;
-            if (!el || el.classList.contains('always-hide-anim')) return;
-            
-            if (shouldShowDetails) {
-                if (container.hasAttribute('data-smil-complex') || container.id?.includes('uc004') || container.id?.includes('uc003')) {
-                    if (!el.classList.contains('hidden')) el.classList.add('force-smil-display');
-                } else {
-                    el.classList.add('force-visible');
-                }
-            } else {
-                el.classList.remove('force-visible', 'force-smil-display');
-            }
-        });
+        motionElements.forEach(motion => toggleTarget(motion.parentElement));
+        explicitElements.forEach(el => toggleTarget(el));
 
         anims.forEach(anim => {
             try {
@@ -104,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         motionElements.forEach(motion => {
             if (motion.parentElement) motion.parentElement.classList.remove('force-visible', 'force-smil-display');
         });
+        explicitElements.forEach(el => el.classList.remove('force-visible', 'force-smil-display'));
         anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
     }
   };
