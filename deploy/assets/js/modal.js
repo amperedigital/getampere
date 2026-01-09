@@ -266,7 +266,7 @@ const initModal = () => {
     // Create the outer modal shell
     const modalShell = document.createElement("div");
     modalShell.id = modalId; // Transfer ID to the shell
-    modalShell.className = "fixed inset-0 z-[99999] flex w-full h-[100svh] items-start md:items-center justify-center px-4 sm:px-6 md:px-0 py-6 md:py-8 pt-4 md:pt-0 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none";
+    modalShell.className = "fixed inset-0 z-[99999] flex w-full h-[100svh] items-start justify-center overflow-y-auto overflow-x-hidden pt-12 md:pt-24 pb-8 transition-all duration-500 ease-out opacity-0 translate-y-4 scale-[0.98] pointer-events-none no-scrollbar";
     modalShell.setAttribute("data-amp-modal", "");
     modalShell.setAttribute("data-modal-lock-scroll", "");
     modalShell.setAttribute("data-modal-duration", "500"); // Match CSS duration
@@ -279,14 +279,14 @@ const initModal = () => {
 
     // Create wrapper
     const wrapper = document.createElement("div");
-    wrapper.className = "md:rounded-3xl overflow-y-auto w-full sm:w-11/12 md:w-[90vw] lg:w-[75vw] xl:w-[100vw] sm:max-w-3xl md:max-w-[1200px] h-auto max-h-[calc(100svh-8rem)] mt-4 md:mt-[7rem] pointer-events-auto rounded-none mx-auto pb-24 md:pb-8 relative z-[9998]";
+    wrapper.className = "md:rounded-3xl overflow-visible w-full sm:w-11/12 md:max-w-[1200px] h-auto my-auto px-4 md:px-0 pointer-events-auto rounded-none mx-auto pb-24 md:pb-8 relative z-[9998]";
     
     // Create close button
     const closeBtn = document.createElement("button");
     closeBtn.type = "button";
     closeBtn.setAttribute("data-modal-close", "");
-    closeBtn.className = "fixed bottom-10 md:bottom-6 left-1/2 transform -translate-x-1/2 z-[9999] w-10 h-10 rounded-full bg-white/15 border border-white/30 text-white backdrop-blur flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400";
-    closeBtn.innerHTML = `<span class="sr-only">Close overlay</span><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"></path></svg>`;
+    closeBtn.className = "fixed bottom-8 md:bottom-10 left-1/2 transform -translate-x-1/2 z-[9999] w-12 h-12 rounded-full bg-white/10 border border-white/20 text-white backdrop-blur-md flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 active:scale-95 transition-transform shadow-2xl";
+    closeBtn.innerHTML = `<span class="sr-only">Close overlay</span><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"></path></svg>`;
     wrapper.appendChild(closeBtn);
 
     // Move content into wrapper
