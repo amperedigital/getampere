@@ -242,19 +242,11 @@
     /* Precision 3D Card Stack & Interaction */
     [data-tab-card] {
       --stack-y: 0px;
-      --rot-y: 25deg;
-      --rot-x: -15deg;
+      --rot-y: 12deg;
+      --rot-x: 6deg;
       transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
       transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
       touch-action: manipulation;
-    }
-
-    @media (min-width: 361px) {
-      [data-tab-card] {
-        position: absolute !important;
-        top: 0;
-        left: 0;
-      }
     }
 
     /* Flatten entire stack on Hover or Touch */
@@ -1098,10 +1090,10 @@ font-family: 'Oswald', sans-serif !important;
 
   <!-- Tabs Section-->
   <section id="integrations" class="bg-transparent py-2 lg:py-10 relative scroll-mt-20 max-md:scroll-mt-[6rem]" data-tab-flipper>
-    <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12 max-[360px]:py-6 max-[360px]:mb-0">
+    <div class="w-full bg-[#0a0b14] py-24 lg:py-2 mb-12 max-[375px]:py-6 max-[375px]:mb-0">
       <div class="w-full px-6 lg:px-12">
-        <div class="border-t border-white/10 w-full mb-12 max-[360px]:mb-4"></div>
-        <div class="flex items-start justify-between mb-[10vh] cursor-pointer group max-[360px]:mb-10" data-scrollto="#integrations-tabs">
+        <div class="border-t border-white/10 w-full mb-12 max-[375px]:mb-4"></div>
+        <div class="flex items-start justify-between mb-[10vh] cursor-pointer group max-[375px]:mb-10" data-scrollto="#integrations-tabs">
           <span class="tag-mono-label text-sm text-[#A1A1AA] hover-flip-text select-none">SCROLL TO DISCOVER</span>
           <span class="hover-push-down-parent">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white hover-push-down">
@@ -1111,7 +1103,7 @@ font-family: 'Oswald', sans-serif !important;
           </span>
         </div>
         <div class="flex flex-col lg:flex-row items-end justify-between">
-          <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-light leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 max-[360px]:mb-4 fade-up-element reveal-heading" style="word-break:break-word;">
+          <h2 class="text-white text-3xl md:text-[3.5rem] lg:text-6xl font-geist font-light leading-[1.08] tracking-tight max-w-4xl mb-8 lg:mb-40 max-[375px]:mb-4 fade-up-element reveal-heading" style="word-break:break-word;">
             Works Seamlessly With the Tools You Already Use
           </h2>
           <p class="text-lg text-zinc-400 leading-relaxed max-w-lg fade-up-element reveal-content lg:ml-12">
@@ -1189,13 +1181,13 @@ font-family: 'Oswald', sans-serif !important;
     </script>
 
     <!-- Sticky Scroll Track -->
-    <div class="relative h-[250vh] lg:h-[400vh] max-[360px]:h-auto" data-scroll-track>
+    <div class="relative h-[250vh] lg:h-[400vh] max-[375px]:h-auto" data-scroll-track>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-visible max-[360px]:relative max-[360px]:top-0 max-[360px]:h-auto max-[360px]:overflow-visible">
+      <div class="sticky top-[6rem] md:top-24 w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-96px)] flex flex-col overflow-visible max-[375px]:relative max-[375px]:top-0 max-[375px]:h-auto max-[375px]:overflow-visible">
         <!-- Tabs (Box Layout) -->
-        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[360px]:hidden">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-[375px]:hidden">
       <div class="max-w-7xl mx-auto">
-        <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar min-[400px]:grid min-[400px]:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
+        <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
           <button class="group relative min-w-[200px] md:min-w-0 flex-shrink-0 snap-center p-4 md:p-8 text-center focus:outline-none" data-tab-trigger aria-selected="true">
             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-1000 ease-in-out pointer-events-none">
@@ -1249,11 +1241,11 @@ font-family: 'Oswald', sans-serif !important;
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-12 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[360px]:px-4 max-[360px]:mt-10">
-      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-15rem)] [perspective:2000px] group/cards max-[360px]:[perspective:none] max-[360px]:flex max-[360px]:flex-col max-[360px]:h-auto max-[360px]:gap-y-12" ontouchstart="">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-12 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-[375px]:px-4 max-[375px]:mt-10">
+      <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-[calc(100dvh-15rem)] [perspective:2000px] group/cards max-[375px]:[perspective:none] max-[375px]:flex max-[375px]:flex-col max-[375px]:h-auto max-[375px]:gap-y-12" ontouchstart="">
         
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[360px]:!relative max-[360px]:!opacity-100 max-[360px]:!transform-none max-[360px]:[backface-visibility:visible] max-[360px]:[transform-style:flat] max-[360px]:!pointer-events-auto max-[360px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[375px]:!relative max-[375px]:!opacity-100 max-[375px]:!transform-none max-[375px]:[backface-visibility:visible] max-[375px]:[transform-style:flat] max-[375px]:!pointer-events-auto max-[375px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1506,7 +1498,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[360px]:!relative max-[360px]:!opacity-100 max-[360px]:!transform-none max-[360px]:[backface-visibility:visible] max-[360px]:[transform-style:flat] max-[360px]:!pointer-events-auto max-[360px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[375px]:!relative max-[375px]:!opacity-100 max-[375px]:!transform-none max-[375px]:[backface-visibility:visible] max-[375px]:[transform-style:flat] max-[375px]:!pointer-events-auto max-[375px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1603,7 +1595,7 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-18 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[360px]:!relative max-[360px]:!opacity-100 max-[360px]:!transform-none max-[360px]:[backface-visibility:visible] max-[360px]:[transform-style:flat] max-[360px]:!pointer-events-auto max-[360px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-18 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[375px]:!relative max-[375px]:!opacity-100 max-[375px]:!transform-none max-[375px]:[backface-visibility:visible] max-[375px]:[transform-style:flat] max-[375px]:!pointer-events-auto max-[375px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -1870,7 +1862,7 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[360px]:!relative max-[360px]:!opacity-100 max-[360px]:!transform-none max-[360px]:[backface-visibility:visible] max-[360px]:[transform-style:flat] max-[360px]:!pointer-events-auto max-[360px]:!z-10" data-tab-card>
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-[375px]:!relative max-[375px]:!opacity-100 max-[375px]:!transform-none max-[375px]:[backface-visibility:visible] max-[375px]:[transform-style:flat] max-[375px]:!pointer-events-auto max-[375px]:!z-10" data-tab-card>
           <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
@@ -2319,7 +2311,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-REVERT-MODAL-MARGIN/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-FIX-STACKING-V2/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-FIX-STACKING-V2/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.216-MOBILE-FIX/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.217-EMERGENCY-REVERT/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>

@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const cardInView = cardParent.classList.contains('in-view');
         const isRevealed = cardInView || window.innerWidth > 768;
-        const shouldRun = (isActive || isHovered || (window.innerWidth <= 360 && cardInView)) && isRevealed;
+        const shouldRun = (isActive || isHovered || (window.innerWidth <= 375 && cardInView)) && isRevealed;
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth <= 360)) updateCrmState(); });
+            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth <= 375)) updateCrmState(); });
         }, { threshold: 0.3 });
         observer.observe(crmContainer);
     }
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (scrollTrack) {
         const handleScroll = () => {
-            if (isAutoScrolling || window.innerWidth <= 360) return;
+            if (isAutoScrolling || window.innerWidth <= 375) return;
             const rect = scrollTrack.getBoundingClientRect();
             const relativeScroll = -rect.top;
             const scrollableRange = rect.height - window.innerHeight;
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
         if (index === activeIndex) return;
-        if (scrollTrack && window.innerWidth > 360) {
+        if (scrollTrack && window.innerWidth > 375) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionTop = window.scrollY + rect.top;
