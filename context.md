@@ -38,6 +38,31 @@ When adding a vertical arrow (e.g., "Scroll to Discover") that requires an inter
 - **Trigger**: The animation scales with the `.group` hover state.
 - **Physics**: Linear easing, settles exactly at original vertical position (0px) to prevent hover-out jumps.
 
+# Stable Baseline (v1.232)
+
+This section documents the stable state reached on **January 9, 2026**. This is the reference point for any regressions during the transition to a modular capable design.
+
+## Technical Audit (v1.232)
+- **Viewport Resilience**: Modals use `svh` and `dvh` units for full-height coverage across mobile browsers. Scroll handlers are fixed on the `modalShell` to prevent nested scroll locks on iPad/Tablet.
+- **Card Stack Breakpoints**:
+  - **Desktop (>=1024px)**: Full 3D stacking enabled (4 cards deep).
+  - **Tablet (768px - 1024px)**: 3D stacking enabled, using `top-[7.5rem]` for sticky tab nav to maintain visibility of the site nav border.
+  - **Mobile (<768px)**: 3D stacking is **DISABLED**. Cards render as a standard vertical list. Container margins are set to `mt-0` to avoid whitespace inflation.
+- **Typography & Alignment**:
+  - "Works Seamlessly..." heading is left-aligned on mobile/tablet and uses `md:text-5xl`.
+  - Content lands exactly `1rem` below the fixed nav bar via `scroll-mt-24` and `-96px` JS offsets.
+- **Critical Scripts**:
+  - `tab-flipper.js`: Manages SMIL orchestration and 3D translates.
+  - `modal.js`: Handles dynamic modal wrapping and scroll locking.
+  - `global.js`: Initializes Lenis (Desktop only).
+
+## Modular Redesign Procedure
+To avoid "The Trap" (widespread breakage across breakpoints), follow these steps:
+1. **Component Extraction**: Extract components (e.g., Cards, Nav, Modals) into separate `html` files in `assets/components/`.
+2. **Data Preservation**: Ensure all `data-*` attributes (`data-tab-flipper`, `data-modal-content`, etc.) are preserved exactly in the extracted files.
+3. **JS ID Mapping**: Document all IDs used for SMIL triggers (e.g., `crm-card-container`) to avoid breaking orchestration in `tab-flipper.js`.
+4. **Validation Routine**: After every major modular move, check the site on both "Desktop (1440px)" and "iPad/iPhone" emulators.
+
 # Context
 
 ## Critical Technical Constraints
