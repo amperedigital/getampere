@@ -279,7 +279,7 @@ const initModal = () => {
 
     // Create wrapper
     const wrapper = document.createElement("div");
-    wrapper.className = "md:rounded-3xl overflow-visible w-full sm:w-11/12 md:w-[90vw] lg:w-[75vw] xl:w-[100vw] sm:max-w-3xl md:max-w-[1200px] h-auto max-h-[calc(100dvh-5rem)] md:h-full mt-4 md:mt-[7rem] pointer-events-auto rounded-none mx-auto pb-8 relative z-[9998]";
+    wrapper.className = "md:rounded-3xl overflow-visible w-full sm:w-11/12 md:w-[90vw] lg:w-[75vw] xl:w-[100vw] sm:max-w-3xl md:max-w-[1200px] h-auto max-h-[calc(100svh-6rem)] md:h-full mt-4 md:mt-[7rem] pointer-events-auto rounded-none mx-auto pb-8 relative z-[9998]";
     
     // Create close button
     const closeBtn = document.createElement("button");
