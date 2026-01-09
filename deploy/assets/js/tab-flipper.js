@@ -1,13 +1,13 @@
 /**
- * Tab Controlled Card Flipper v1.123
+ * Tab Controlled Card Flipper v1.124
  * Balanced modular version: Restores stable "Perfected" build-up behavior.
  * Fixes: SMIL detailed views (text boxes) now correctly ONLY show on Hover or Mobile scroll.
- * Fixes: Explicit elements (.crm-animated-element) now properly join the SMIL reveal lifecycle.
+ * Fixes: Explicit elements (.crm-animated-element) join reveal lifecycle, but tooltips are EXCLUDED for individual hover.
  * Fixes: Dynamic stack depth calculation for seamless modular support.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.123 Loaded');
+  console.log('Tab Flipper v1.124 Loaded');
 
   const style = document.createElement('style');
   style.textContent = `
