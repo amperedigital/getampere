@@ -1,16 +1,14 @@
 /**
- * Tab Controlled Card Flipper v1.116-FIXED
- * Refactor for re-usable interactions and enhanced text effects.
+ * Tab Controlled Card Flipper v1.116-REPAIR
+ * Fixed in current session for v1.215 Release
  * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
- * Fix: Disabled scroll track logic for <389px (h-auto mode).
- * Clean: Removed escaped backslashes from template literals.
- * Update: SMIL animations start automatically when in view for <389px stack.
+ * Fix: visibility: visible for active SMIL elements (Auto-start fix).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.116-FIXED Loaded');
+  console.log('Tab Flipper v1.116-REPAIR Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -71,10 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const delay = parseInt(el.dataset.flipDelay || 30);
     
     el.innerHTML = '';
-    // Use Array.from to handle emojis or special chars correctly
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
-      // Use non-breaking space for layout consistency
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
       span.style.transitionDelay = `${i * delay}ms`;
@@ -83,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
     el.dataset.initialized = 'true';
   };
 
-  // Initialize all flip texts on load
   document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
   // Re-usable Tab Flipper Logic
@@ -95,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let activeIndex = 0;
     let isAnimating = false;
-    let isAutoScrolling = false; // Flag to prevent scroll-bounce when clicking a tab
+    let isAutoScrolling = false; 
     
     const crmContainer = document.getElementById('crm-card-container');
     const uc003Container = document.getElementById('uc003-card-container');
@@ -112,11 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         
         const cardInView = container.parentElement.classList.contains('in-view');
-        // Only run if active/hovered AND revealed on mobile
         const isRevealed = cardInView || window.innerWidth > 768;
-        
-        // For the 389px stacked layout, we want animations to run if the card is in view,
-        // regardless of which tab is "active" in the JS state.
         const shouldRun = (isActive || isHovered || (window.innerWidth <= 389 && cardInView)) && isRevealed;
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
@@ -147,9 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (!isDependent) {
                         anim.beginElement();
                     }
-                } catch(e) {
-                    // SILENT
-                }
+                } catch(e) {}
             });
         } else {
             container.classList.remove("manual-active");
@@ -187,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
-      
       activeIndex = index;
       if (!skipAnimation) isAnimating = true;
       
@@ -198,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         t.classList.toggle('active', isActive);
       });
 
-      // Auto-scroll tab container to keep active tab in view (Mobile)
       const activeTrigger = triggers[index];
       const triggerContainer = activeTrigger.parentElement;
       if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
@@ -234,74 +221,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // Scroll Sync logic
     if (scrollTrack) {
         const handleScroll = () => {
-            if (isAutoScrolling) return;
-            if (window.innerWidth <= 389) return; // Disable for mobile h-auto state
-
+            if (isAutoScrolling || window.innerWidth <= 389) return;
             const rect = scrollTrack.getBoundingClientRect();
-            const totalWidth = rect.height;
-            const viewportHeight = window.innerHeight;
-            
-            // Calculate progress through the track
-            const stickyOffset = 96; 
             const relativeScroll = -rect.top;
-            const scrollableRange = totalWidth - viewportHeight;
-            
-            let progress = relativeScroll / scrollableRange;
-            progress = Math.max(0, Math.min(1, progress));
-            
-            const numTabs = triggers.length;
-            const index = Math.min(numTabs - 1, Math.floor(progress * numTabs));
-            
-            if (index !== activeIndex) {
-                setActive(index, true);
-            }
+            const scrollableRange = rect.height - window.innerHeight;
+            let progress = Math.max(0, Math.min(1, relativeScroll / scrollableRange));
+            const index = Math.min(triggers.length - 1, Math.floor(progress * triggers.length));
+            if (index !== activeIndex) setActive(index, true);
         };
-
-        if (window.lenis) {
-            window.lenis.on('scroll', handleScroll);
-        } else {
-            window.addEventListener('scroll', handleScroll);
-        }
+        if (window.lenis) window.lenis.on('scroll', handleScroll);
+        else window.addEventListener('scroll', handleScroll);
     }
 
     triggers.forEach((trigger, index) => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
         if (index === activeIndex) return;
-
         if (scrollTrack && window.innerWidth > 389) {
             isAutoScrolling = true;
             const rect = scrollTrack.getBoundingClientRect();
             const sectionTop = window.scrollY + rect.top;
-            const stickyOffset = 96;
-            const viewportHeight = window.innerHeight;
-            const totalWidth = rect.height;
-            const scrollableRange = totalWidth - viewportHeight;
-            
-            // Target progress is centered in the tab's range
+            const scrollableRange = rect.height - window.innerHeight;
             const targetProgress = (index + 0.5) / triggers.length;
             const targetScroll = sectionTop + (targetProgress * scrollableRange);
-
-            if (window.lenis) {
-                window.lenis.scrollTo(targetScroll, {
-                    onComplete: () => { isAutoScrolling = false; }
-                });
-            } else {
-                window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-                setTimeout(() => { isAutoScrolling = false; }, 800);
-            }
+            if (window.lenis) window.lenis.scrollTo(targetScroll, { onComplete: () => { isAutoScrolling = false; } });
+            else { window.scrollTo({ top: targetScroll, behavior: 'smooth' }); setTimeout(() => { isAutoScrolling = false; }, 800); }
         }
-        
         setActive(index);
       });
     });
 
     setActive(0, true);
 
-    // Watch for mobile reveal to trigger SMIL
     const revealObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
@@ -311,10 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
-    cards.forEach(card => {
-        revealObserver.observe(card, { attributes: true });
-    });
+    cards.forEach(card => revealObserver.observe(card, { attributes: true }));
   };
 
   document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);

@@ -61,13 +61,13 @@
     }
 
     /* Active State: Show/Run Animations ONLY ON HOVER of the CARD */
-    [data-tab-card].active .crm-animated-element,
-    [data-tab-card].active .crm-ping-element {
+    [data-tab-card].active:hover .crm-animated-element,
+    [data-tab-card].active:hover .crm-ping-element {
         display: block !important;
         opacity: 1 !important;
     }
     
-    [data-tab-card].active .crm-ping-element {
+    [data-tab-card].active:hover .crm-ping-element {
         animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
@@ -2319,7 +2319,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.1.001/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@rollback-stable-v1.202-fixed/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-FINAL-REPAIR/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
