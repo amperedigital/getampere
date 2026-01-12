@@ -5,7 +5,7 @@
  * Updated stickyOffset for top margin alignment.
  * Added: Mobile Reveal Animation Sync.
  * Fix: visibility: visible for active SMIL elements (Auto-start fix).
- * Fix: Improved stacking logic to ensure consistent 3-card depth.
+ * Fix: Improved stacking logic to ensure consistent 4-card depth.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
     [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
     [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const span = document.createElement('span');
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
     const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
     const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
-
+                                                                                                                          
     if (controlsCrm) {
         crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
         crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
@@ -214,11 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
-          if (depth <= 3) c.classList.add(`stack-${depth}`);
+          if (depth <= 3) c.classList.add(\`stack-\${depth}\`);
           const video = c.querySelector('video');
           if (video) { video.pause(); video.currentTime = 0; }
         } else {
           c.classList.add('inactive-next');
+          const depth = i - index;
+          if (depth <= 3) c.classList.add(\`stack-\${depth}\`);
           const video = c.querySelector('video');
           if (video) { video.pause(); video.currentTime = 0; }
         }
