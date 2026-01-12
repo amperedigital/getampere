@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Improved Stack CSS Overrides */
     [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; opacity: 1 !important; }
-    [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
-    [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
-    [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
-  `;
+    [data-tab-card].stack-1 { --stack-y: -32px !important; z-index: 20 !important; opacity: 1 !important; }
+    [data-tab-card].stack-2 { --stack-y: -64px !important; z-index: 10 !important; opacity: 1 !important; }
+    [data-tab-card].stack-3 { --stack-y: -96px !important; z-index: 5 !important; opacity: 1 !important; }
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const span = document.createElement('span');
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
-          if (depth <= 3) c.classList.add(`stack-${depth}`);
+          if (depth <= 3) c.classList.add(\`stack-\${depth}\`);
           state.isActive = false;
         } else {
           c.classList.add('inactive-next');
