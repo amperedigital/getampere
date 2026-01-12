@@ -3841,11 +3841,14 @@ nav.nav-inverted {
 }
 
 /* Ensure branding works on dark */
-nav.nav-inverted .cls-4 {
-    fill: white !important; /* Make Logo White */
+nav.nav-inverted .cls-4,
+nav.nav-inverted g.logo-wordmark path.cls-4,
+nav.nav-inverted svg .cls-4 {
+    fill: #ffffff !important; /* Make Logo White */
+    opacity: 1 !important;
 }
 nav.nav-inverted .amp-logo-fill {
-    fill: white !important; /* Mobile Logo White */
+    fill: #ffffff !important; /* Mobile Logo White */
 }
 nav.nav-inverted .amp-hamburger-line {
     background-color: white !important;
@@ -3855,3 +3858,15 @@ nav.nav-inverted .amp-hamburger {
     background-color: rgba(255,255,255,0.1) !important;
 }
 </style>
+
+/* Explicitly darken the pill background on inverted mode as requested */
+nav.nav-inverted .bg-white\/5 {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Ensure the Nav Pill container stays light/visible */
+nav.nav-inverted .bg-\[\#F4F4F5\] {
+    background-color: #F4F4F5 !important;
+    border-color: #E4E4E7 !important;
+    opacity: 1 !important;
+}
