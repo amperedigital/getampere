@@ -1,15 +1,10 @@
 /**
- * Tab Controlled Card Flipper v1.116-REPAIR
- * Fixed in current session for v1.215 Release
- * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
- * Updated stickyOffset for top margin alignment.
- * Added: Mobile Reveal Animation Sync.
- * Fix: visibility: visible for active SMIL elements (Auto-start fix).
- * Fix: Improved stacking logic to ensure consistent 3-card depth.
+ * Tab Controlled Card Flipper v1.232-MODULAR
+ * Decoupled media engine for generic card content.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.116-REPAIR-STACKED Loaded');
+  console.log('Tab Flipper v1.232-MODULAR Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -33,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
+    /* Target any container that is NOT active and hide its inner circles/media */
+    [data-card-media]:not(.manual-active) circle {
         opacity: 0 !important;
         visibility: hidden !important;
     }
@@ -98,91 +94,104 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeIndex = 0;
     let isAnimating = false;
     let isAutoScrolling = false; 
-    
-    const crmContainer = document.getElementById('crm-card-container');
-    const uc003Container = document.getElementById('uc003-card-container');
-    const uc004Container = document.getElementById('uc004-card-container');
 
-    const controlsCrm = crmContainer && flipper.contains(crmContainer);
-    const controlsUc003 = uc003Container && flipper.contains(uc003Container);
-    const controlsUc004 = uc004Container && flipper.contains(uc004Container);
+    // Generic state tracking for each card
+    const cardStates = Array.from(cards).map((card, index) => {
+        const mediaContainer = card.querySelector('[data-card-media]');
+        return {
+            el: card,
+            mediaContainer: mediaContainer,
+            mediaType: mediaContainer ? mediaContainer.dataset.mediaType : 'none',
+            isActive: index === 0,
+            isHovered: false,
+            isRevealed: false
+        };
+    });
 
-    let isCrmActive = false, isUc003Active = false, isUc004Active = false;
-    let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
-
-    function updateSmilState(container, isActive, isHovered, name) {
-        if (!container) return;
+    function applyMediaAction(state) {
+        const { mediaContainer, mediaType, isActive, isHovered, isRevealed } = state;
+        if (!mediaContainer) return;
         
-        const cardParent = container.closest('[data-tab-card]');
-        if (!cardParent) return;
-        
-        const cardInView = cardParent.classList.contains('in-view');
-        const isRevealed = cardInView || window.innerWidth > 768;
-        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
+        // Logical condition for running animations/media
+        // (Active OR Hovered OR Mobile-Visual-Reveal) AND overall "Reveal" state
+        const cardInView = state.el.classList.contains('in-view');
+        const effectiveRevealed = cardInView || window.innerWidth > 768;
+        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && effectiveRevealed;
 
-        const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
-        const motionElements = container.querySelectorAll("animateMotion");
-        
         if (shouldRun) {
-            container.classList.add("manual-active");
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    if (motion.parentElement.classList.contains('always-hide-anim')) return;
-                    if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
-                        if (motion.parentElement.classList.contains('hidden')) return;
-                        motion.parentElement.classList.add('force-smil-display');
-                    } else {
-                        motion.parentElement.classList.add('force-visible');
+            mediaContainer.classList.add("manual-active");
+            
+            if (mediaType === 'smil') {
+                const anims = mediaContainer.querySelectorAll("animate, animateTransform, animateMotion");
+                const motionElements = mediaContainer.querySelectorAll("animateMotion");
+                
+                motionElements.forEach(motion => {
+                    if (motion.parentElement) {
+                        if (motion.parentElement.classList.contains('always-hide-anim')) return;
+                        // Determine if it needs generic visibility or specific SMIL display fix
+                        const useSmilDisplay = mediaContainer.id === 'uc004-card-container' || mediaContainer.id === 'uc003-card-container';
+                        motion.parentElement.classList.add(useSmilDisplay ? 'force-smil-display' : 'force-visible');
                     }
-                }
-            });
+                });
 
-            anims.forEach(anim => {
-                try {
-                    const beginAttr = anim.getAttribute('begin');
-                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
-                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
-
-                    if (isTrigger) {
-                        anim.beginElement();
-                    } else if (!isDependent) {
-                        anim.beginElement();
-                    }
-                } catch(e) {}
-            });
+                anims.forEach(anim => {
+                    try {
+                        const beginAttr = anim.getAttribute('begin');
+                        const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                        const isTrigger = anim.id && anim.id.includes('anim-trigger');
+                        if (isTrigger || !isDependent) anim.beginElement();
+                    } catch(e) {}
+                });
+            } else if (mediaType === 'video') {
+                const video = mediaContainer.querySelector('video');
+                if (video) video.play().catch(() => {});
+            }
         } else {
-            container.classList.remove("manual-active");
-            motionElements.forEach(motion => {
-                if (motion.parentElement) {
-                    motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+            mediaContainer.classList.remove("manual-active");
+            
+            if (mediaType === 'smil') {
+                const anims = mediaContainer.querySelectorAll("animate, animateTransform, animateMotion");
+                mediaContainer.querySelectorAll("animateMotion").forEach(motion => {
+                    if (motion.parentElement) {
+                        motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+                    }
+                });
+                anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
+            } else if (mediaType === 'video') {
+                const video = mediaContainer.querySelector('video');
+                if (video) {
+                    video.pause();
+                    video.currentTime = 0;
                 }
-            });
-            anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
+            }
         }
     }
 
-    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
-    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
-    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
+    // Initialize Card Listeners
+    cardStates.forEach((state, index) => {
+        if (!state.mediaContainer) return;
 
-    if (controlsCrm) {
-        crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
-        crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
+        // Hover listeners
+        state.el.addEventListener('mouseenter', () => { 
+            state.isHovered = true; 
+            applyMediaAction(state); 
+        });
+        state.el.addEventListener('mouseleave', () => { 
+            state.isHovered = false; 
+            applyMediaAction(state); 
+        });
+
+        // Reveal observer for triggering on mobile/scroll entry
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth < 768)) updateCrmState(); });
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    state.isRevealed = true;
+                    applyMediaAction(state);
+                }
+            });
         }, { threshold: 0.3 });
-        observer.observe(crmContainer);
-    }
-
-    if (controlsUc003) {
-        uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
-        uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
-    }
-
-    if (controlsUc004) {
-        uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
-        uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
-    }
+        observer.observe(state.el);
+    });
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
@@ -206,31 +215,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       cards.forEach((c, i) => {
+        const state = cardStates[i];
         c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
+        
         if (i === index) {
           c.classList.add('active', 'stack-0');
-          const video = c.querySelector('video');
-          if (video) video.play().catch(() => {});
+          state.isActive = true;
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
           if (depth <= 3) c.classList.add(`stack-${depth}`);
-          const video = c.querySelector('video');
-          if (video) { video.pause(); video.currentTime = 0; }
+          state.isActive = false;
         } else {
           c.classList.add('inactive-next');
-          const video = c.querySelector('video');
-          if (video) { video.pause(); video.currentTime = 0; }
+          state.isActive = false;
         }
+        
+        // Update media state for this card
+        applyMediaAction(state);
       });
-
-      isCrmActive = (index === 0);
-      isUc003Active = (index === 2);
-      isUc004Active = (index === 3);
-      
-      updateCrmState();
-      updateUc003State();
-      updateUc004State();
 
       if (!skipAnimation) {
           setTimeout(() => { isAnimating = false; }, 500);
@@ -274,9 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
-                updateCrmState();
-                updateUc003State();
-                updateUc004State();
+                const index = Array.from(cards).indexOf(mutation.target);
+                if (index !== -1) applyMediaAction(cardStates[index]);
             }
         });
     });
