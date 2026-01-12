@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Tab Flipper v1.232-MODULAR Loaded');
 
-  // Inject styles for interaction utilities (Media strategy classes)
+  // Inject styles for interaction utilities
   const style = document.createElement('style');
   style.textContent = `
     .manual-active .force-visible {
@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
     .active .interaction-tag-label {
       opacity: 1;
     }
+
+    /* Improved Stack CSS Overrides */
+    [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; opacity: 1 !important; }
+    [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
+    [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
+    [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
   `;
   document.head.appendChild(style);
 
