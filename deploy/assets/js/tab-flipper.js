@@ -1,10 +1,15 @@
 /**
- * Tab Controlled Card Flipper v1.232-MODULAR
- * Decoupled media engine for generic card content.
+ * Tab Controlled Card Flipper v1.116-REPAIR
+ * Fixed in current session for v1.215 Release
+ * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
+ * Updated stickyOffset for top margin alignment.
+ * Added: Mobile Reveal Animation Sync.
+ * Fix: visibility: visible for active SMIL elements (Auto-start fix).
+ * Fix: Improved stacking logic to ensure consistent 3-card depth.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.232-MODULAR Loaded');
+  console.log('Tab Flipper v1.116-REPAIR-STACKED Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -28,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    /* Target any container that is NOT active and hide its inner circles/media */
-    [data-card-media]:not(.manual-active) circle {
+    #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
         opacity: 0 !important;
         visibility: hidden !important;
     }
@@ -59,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Improved Stack CSS Overrides */
     [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; opacity: 1 !important; }
-    [data-tab-card].stack-1 { --stack-y: -32px !important; z-index: 20 !important; opacity: 1 !important; }
-    [data-tab-card].stack-2 { --stack-y: -64px !important; z-index: 10 !important; opacity: 1 !important; }
-    [data-tab-card].stack-3 { --stack-y: -96px !important; z-index: 5 !important; opacity: 1 !important; }
+    [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
+    [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
+    [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
   `;
   document.head.appendChild(style);
 
@@ -94,104 +98,91 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeIndex = 0;
     let isAnimating = false;
     let isAutoScrolling = false; 
+    
+    const crmContainer = document.getElementById('crm-card-container');
+    const uc003Container = document.getElementById('uc003-card-container');
+    const uc004Container = document.getElementById('uc004-card-container');
 
-    // Generic state tracking for each card
-    const cardStates = Array.from(cards).map((card, index) => {
-        const mediaContainer = card.querySelector('[data-card-media]');
-        return {
-            el: card,
-            mediaContainer: mediaContainer,
-            mediaType: mediaContainer ? mediaContainer.dataset.mediaType : 'none',
-            mediaStrategy: mediaContainer ? mediaContainer.dataset.mediaStrategy : 'visibility',
-            isActive: index === 0,
-            isHovered: false,
-            isRevealed: false
-        };
-    });
+    const controlsCrm = crmContainer && flipper.contains(crmContainer);
+    const controlsUc003 = uc003Container && flipper.contains(uc003Container);
+    const controlsUc004 = uc004Container && flipper.contains(uc004Container);
 
-    function applyMediaAction(state) {
-        const { mediaContainer, mediaType, mediaStrategy, isActive, isHovered, isRevealed } = state;
-        if (!mediaContainer) return;
+    let isCrmActive = false, isUc003Active = false, isUc004Active = false;
+    let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
+
+    function updateSmilState(container, isActive, isHovered, name) {
+        if (!container) return;
         
-        // Logical condition for running animations/media
-        const cardInView = state.el.classList.contains('in-view');
-        const effectiveRevealed = cardInView || window.innerWidth > 768;
-        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && effectiveRevealed;
+        const cardParent = container.closest('[data-tab-card]');
+        if (!cardParent) return;
+        
+        const cardInView = cardParent.classList.contains('in-view');
+        const isRevealed = cardInView || window.innerWidth > 768;
+        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
 
+        const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
+        const motionElements = container.querySelectorAll("animateMotion");
+        
         if (shouldRun) {
-            mediaContainer.classList.add("manual-active");
-            
-            if (mediaType === 'smil') {
-                const anims = mediaContainer.querySelectorAll("animate, animateTransform, animateMotion");
-                const motionElements = mediaContainer.querySelectorAll("animateMotion");
-                
-                motionElements.forEach(motion => {
-                    if (motion.parentElement) {
-                        if (motion.parentElement.classList.contains('always-hide-anim')) return;
-                        // Use the data-driven strategy instead of hardcoded IDs
-                        const strategyClass = mediaStrategy === 'display' ? 'force-smil-display' : 'force-visible';
-                        motion.parentElement.classList.add(strategyClass);
+            container.classList.add("manual-active");
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    if (motion.parentElement.classList.contains('always-hide-anim')) return;
+                    if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
+                        if (motion.parentElement.classList.contains('hidden')) return;
+                        motion.parentElement.classList.add('force-smil-display');
+                    } else {
+                        motion.parentElement.classList.add('force-visible');
                     }
-                });
-
-                anims.forEach(anim => {
-                    try {
-                        const beginAttr = anim.getAttribute('begin');
-                        const isDependent = beginAttr && beginAttr.includes('anim-trigger');
-                        const isTrigger = anim.id && anim.id.includes('anim-trigger');
-                        if (isTrigger || !isDependent) anim.beginElement();
-                    } catch(e) {}
-                });
-            } else if (mediaType === 'video') {
-                const video = mediaContainer.querySelector('video');
-                if (video) video.play().catch(() => {});
-            }
-        } else {
-            mediaContainer.classList.remove("manual-active");
-            
-            if (mediaType === 'smil') {
-                const anims = mediaContainer.querySelectorAll("animate, animateTransform, animateMotion");
-                mediaContainer.querySelectorAll("animateMotion").forEach(motion => {
-                    if (motion.parentElement) {
-                        motion.parentElement.classList.remove('force-visible', 'force-smil-display');
-                    }
-                });
-                anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
-            } else if (mediaType === 'video') {
-                const video = mediaContainer.querySelector('video');
-                if (video) {
-                    video.pause();
-                    video.currentTime = 0;
                 }
-            }
+            });
+
+            anims.forEach(anim => {
+                try {
+                    const beginAttr = anim.getAttribute('begin');
+                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
+
+                    if (isTrigger) {
+                        anim.beginElement();
+                    } else if (!isDependent) {
+                        anim.beginElement();
+                    }
+                } catch(e) {}
+            });
+        } else {
+            container.classList.remove("manual-active");
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+                }
+            });
+            anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
         }
     }
 
-    // Initialize Card Listeners
-    cardStates.forEach((state, index) => {
-        if (!state.mediaContainer) return;
+    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
+    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
+    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
 
-        // Hover listeners
-        state.el.addEventListener('mouseenter', () => { 
-            state.isHovered = true; 
-            applyMediaAction(state); 
-        });
-        state.el.addEventListener('mouseleave', () => { 
-            state.isHovered = false; 
-            applyMediaAction(state); 
-        });
-
-        // Reveal observer for triggering on mobile/scroll entry
+    if (controlsCrm) {
+        crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
+        crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    state.isRevealed = true;
-                    applyMediaAction(state);
-                }
-            });
+            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth < 768)) updateCrmState(); });
         }, { threshold: 0.3 });
-        observer.observe(state.el);
-    });
+        observer.observe(crmContainer);
+    }
+
+    if (controlsUc003) {
+        uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
+        uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
+    }
+
+    if (controlsUc004) {
+        uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
+        uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
+    }
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
@@ -215,25 +206,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       cards.forEach((c, i) => {
-        const state = cardStates[i];
         c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
-        
         if (i === index) {
           c.classList.add('active', 'stack-0');
-          state.isActive = true;
+          const video = c.querySelector('video');
+          if (video) video.play().catch(() => {});
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
           if (depth <= 3) c.classList.add(`stack-${depth}`);
-          state.isActive = false;
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
         } else {
           c.classList.add('inactive-next');
-          state.isActive = false;
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
         }
-        
-        // Update media state for this card
-        applyMediaAction(state);
       });
+
+      isCrmActive = (index === 0);
+      isUc003Active = (index === 2);
+      isUc004Active = (index === 3);
+      
+      updateCrmState();
+      updateUc003State();
+      updateUc004State();
 
       if (!skipAnimation) {
           setTimeout(() => { isAnimating = false; }, 500);
@@ -277,8 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
-                const index = Array.from(cards).indexOf(mutation.target);
-                if (index !== -1) applyMediaAction(cardStates[index]);
+                updateCrmState();
+                updateUc003State();
+                updateUc004State();
             }
         });
     });
