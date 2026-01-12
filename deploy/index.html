@@ -114,7 +114,7 @@
       width: 18px;
       height: 2px;
       border-radius: 999px;
-      background-color: #0F172A;
+      background-color: #fff;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
@@ -135,7 +135,7 @@
     }
 
     .amp-hamburger.is-open .amp-hamburger-line {
-      background-color: #0F172A;
+      background-color: #fff;
     }
 
     /* --- Global Interaction Library --- */
@@ -435,7 +435,7 @@ font-family: 'Oswald', sans-serif !important;
   </div>
 
 
-  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent transform-gpu" style="backface-visibility: hidden; -webkit-backface-visibility: hidden;">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-[#0a0b14] transform-gpu" style="backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     <div class="flex w-full justify-end">
         <div class="flex items-stretch h-20 gap-0">
           <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
@@ -471,7 +471,7 @@ font-family: 'Oswald', sans-serif !important;
                 }
 
                 .cls-4 {
-                  fill: #231f20;
+                  fill: #fff;
                 }
 
                 @media (max-width: 767px) {
@@ -512,12 +512,12 @@ font-family: 'Oswald', sans-serif !important;
             </g>
           </svg>
         </a>
-        <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
+        <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-transparent w-full h-full max-w-[83vw] items-center">
           <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
-            <div class="hidden lg:flex bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl p-1 shadow-inner gap-1 items-center">
-              <a href="#" class="transition-all text-xs font-medium text-[#0F172A] bg-white border border-[#E4E4E7] rounded-lg py-2 px-5 shadow-sm">Solutions</a>
-              <a href="#" class="hover:text-[#0F172A] hover:bg-white transition-all text-xs font-medium text-[#3F3F46] rounded-lg py-2 px-5">Research</a>
-              <a href="#" class="hover:text-[#0F172A] hover:bg-white transition-all text-xs font-medium text-[#3F3F46] rounded-lg py-2 px-5">Insights</a>
+            <div class="hidden lg:flex bg-white/5 border border-white/10 rounded-xl p-1 shadow-inner gap-1 items-center">
+              <a href="#" class="transition-all text-xs font-medium text-[#0F172A] bg-white border border-white/10 rounded-lg py-2 px-5 shadow-sm">Solutions</a>
+              <a href="#" class="hover:text-black hover:bg-white transition-all text-xs font-medium text-white/70 rounded-lg py-2 px-5">Research</a>
+              <a href="#" class="hover:text-black hover:bg-white transition-all text-xs font-medium text-white/70 rounded-lg py-2 px-5">Insights</a>
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
@@ -532,7 +532,7 @@ font-family: 'Oswald', sans-serif !important;
                 </svg>
               </span>
             </button>
-              <button onclick="toggleMenu(this)" class="amp-hamburger h-10 w-10 sm:h-11 sm:w-11 border border-[#E4E4E7]/70 bg-white/80 lg:hidden" data-role="toggle">
+              <button onclick="toggleMenu(this)" class="amp-hamburger h-10 w-10 sm:h-11 sm:w-11 border border-white/20 bg-white/10 lg:hidden" data-role="toggle">
               <span class="amp-hamburger-line"></span>
               <span class="amp-hamburger-line"></span>
             </button>
