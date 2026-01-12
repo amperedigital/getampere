@@ -1,13 +1,5 @@
 # Changelog
 
-## v1.232 - 2026-01-09
-- **Stable Baseline for Modular Redesign**
-- **Heading Refinement**: Optimized "Works Seamlessly..." heading size to `text-5xl` and left-aligned it for medium/tablet breakpoints.
-- **Mobile Density**: Disabled 3D stacking for all viewports under 768px (`max-md`) and removed excessive container margins (`mt-0`).
-- **Scroll Alignment**: Unified anchor scroll offsets to `scroll-mt-24` ($96px$) to provide a perfect $1rem$ gap below the $80px$ navigation bar.
-- **Sticky UX**: Adjusted desktop tab nav sticky position to `top-[7.5rem]` ($120px$) to maintain header border visibility.
-- **Baseline Marked**: Established `stable` git tag and `audit_v1.232.md` as the reference for modular transition.
-
 ## v1.219 - 2026-01-09
 - **Mobile UX & Dynamic Viewport Height Fixes**
 - Reverted excessive margins (mt-24 -> mt-4) for better layout density.
