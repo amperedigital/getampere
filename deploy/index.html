@@ -249,11 +249,6 @@
       touch-action: manipulation;
     }
 
-    [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; }
-    [data-tab-card].stack-1 { --stack-y: -32px !important; z-index: 20 !important; }
-    [data-tab-card].stack-2 { --stack-y: -64px !important; z-index: 15 !important; }
-    [data-tab-card].stack-3 { --stack-y: -96px !important; z-index: 10 !important; }
-
     /* Flatten entire stack on Hover or Touch */
     .group\/cards:hover [data-tab-card],
     .group\/cards:active [data-tab-card],
@@ -543,9 +538,9 @@ font-family: 'Oswald', sans-serif !important;
     <a href="#" class="text-3xl text-[#E4E4E7] hover:text-white font-medium tracking-tight" style="">Company</a>
   </div>
 
-    <nav class="fixed top-0 left-0 w-full z-50 bg-transparent pointer-events-none">
-    <div class="flex w-full justify-end px-6 md:px-12 pr-4 md:pr-8">
-        <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate pointer-events-auto">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent">
+    <div class="flex w-full justify-end">
+        <div class="flex items-stretch h-20 gap-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.05s_both] animate">
           <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
             <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
               <defs>
@@ -620,8 +615,8 @@ font-family: 'Oswald', sans-serif !important;
             </g>
           </svg>
         </a>
-        <div class="md:max-w-[75vw] lg:max-w-[85vw] flex bg-white w-full h-full max-w-[83vw] items-center">
-          <div class="flex w-full items-center justify-between px-6 lg:px-10 gap-3">
+        <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
+          <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
             <div class="hidden lg:flex bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl p-1 shadow-inner gap-1 items-center">
               <a href="#" class="transition-all text-xs font-medium text-[#0F172A] bg-white border border-[#E4E4E7] rounded-lg py-2 px-5 shadow-sm">Solutions</a>
               <a href="#" class="hover:text-[#0F172A] hover:bg-white transition-all text-xs font-medium text-[#3F3F46] rounded-lg py-2 px-5">Research</a>
@@ -861,7 +856,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="group cursor-pointer animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both] animate shrink-0 basis-[50%] md:basis-[32%] lg:basis-[32%] xl:basis-[30%] min-[1440px]:basis-1/3 xl:max-w-none snap-start amp-hero-card min-w-[240px] max-w-none" id="hero-slide-one">
               <div class="aspect-square overflow-hidden border-white/10 border rounded-xl mb-3 relative">
                 <div class="absolute inset-0 bg-blue-500/10 mix-blend-overlay"></div>
-                <div class="group flex flex-col aspect-square overflow-hidden bg-center transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 text-white w-full bg-[url(https://dev.getampere.ai/assets/video/video-thumbnail.jpg?w=800&q=80)] bg-cover ring-cyan-400/10 ring-1 rounded-1xl relative justify-between" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
+                <div class="group flex flex-col aspect-square overflow-hidden bg-center transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 text-white w-full bg-[url(https://dev.getampere.ai/assets/video/video-thumbnail.jpg?w=800&amp;q=80)] bg-cover ring-cyan-400/10 ring-1 rounded-1xl relative justify-between" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=&gt;{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
                   <!-- Background video + overlay (edge-to-edge, ignores padding) -->
                   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
                     <video src="https://dev.getampere.ai/assets/video/animated-voice-agent-speech-v2.mp4" preload="metadata" muted="" playsinline="" webkit-playsinline="" loop="" class="h-full w-full object-cover opacity-0 scale-105 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"></video>
@@ -956,7 +951,7 @@ font-family: 'Oswald', sans-serif !important;
             <div class="group cursor-pointer animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both] animate shrink-0 basis-[50%] md:basis-[32%] lg:basis-[32%] xl:basis-[30%] min-[1440px]:basis-1/3 min-w-[240px] max-w-none xl:max-w-none snap-start amp-hero-card" id="hero-slide-four">
               <div class="aspect-square rounded-xl overflow-hidden mb-3 relative border border-white/10 bg-[#111]">
                 <div class="absolute inset-0 bg-blue-500/10 mix-blend-overlay"></div>
-                <div class="group relative flex flex-col aspect-square w-full justify-between overflow-hidden rounded-1xl bg-center bg-cover text-white ring-1 ring-cyan-400/10 transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 bg-[url(https://dev.getampere.ai/assets/video/video-thumbnail.jpg?w=800&q=80)]" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
+                <div class="group relative flex flex-col aspect-square w-full justify-between overflow-hidden rounded-1xl bg-center bg-cover text-white ring-1 ring-cyan-400/10 transition-all duration-300 hover:scale-[1.03] hover:shadow-3xl animate-in slide-in-from-bottom duration-700 delay-200 bg-[url(https://dev.getampere.ai/assets/video/video-thumbnail.jpg?w=800&amp;q=80)]" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px" onmouseenter="(function(el){const v=el.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=&gt;{});}})(this)" onmouseleave="(function(el){const v=el.querySelector('video'); if(v){v.pause(); v.currentTime=0;}})(this)">
                   <!-- Background video + overlay (edge-to-edge, ignores padding) -->
                   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
                     <video src="https://dev.getampere.ai/assets/video/animated-voice-agent-speech-v2.mp4" preload="metadata" muted="" playsinline="" webkit-playsinline="" loop="" class="h-full w-full object-cover opacity-0 scale-105 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"></video>
@@ -1249,8 +1244,8 @@ font-family: 'Oswald', sans-serif !important;
     <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-0 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-md:px-4">
         <div class="grid grid-cols-1 grid-rows-1 w-full h-[650px] max-md:h-auto [perspective:2000px] group/cards max-md:[perspective:none] max-md:flex max-md:flex-col max-md:gap-y-12" ontouchstart="">
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100  max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container" data-card-media data-media-type="smil">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] pointer-events-none [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-10 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100 max-md:!transform-none max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
+          <div class="w-full h-full relative group flex flex-col md:block" id="crm-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1502,8 +1497,8 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
         <!-- Card 2 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100  max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container" data-card-media data-media-type="static">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-15 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100 max-md:!transform-none max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
+          <div class="w-full h-full relative group flex flex-col md:block" id="uc002-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1521,7 +1516,7 @@ font-family: 'Oswald', sans-serif !important;
                 <p class="text-white/60 text-base md:text-lg leading-relaxed mb-1 md:mb-8 max-w-md">Resolve 80% of queries instantly. Seamlessly escalate complex issues to human agents with full context.</p>
                 
                 <!-- Partner Logos -->
-                <div class="flex flex-nowrap items-center justify-start gap-x-4 md:gap-x-8 mb-2 md:mb-10 no-scrollbar overflow-x-auto pb-4 pt-2">
+                <div class="flex flex-nowrap items-center justify-start gap-x-4 md:gap-x-8 mb-2 md:mb-10 no-scrollbar overflow-x-auto">
                   <!-- Housecall Pro -->
                   <div class="h-3.5 md:h-6 opacity-80 hover:opacity-100 transition-opacity text-white shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 26" class="h-full w-auto fill-current">
@@ -1599,8 +1594,8 @@ font-family: 'Oswald', sans-serif !important;
         </div>
 
                 <!-- Card 3 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-18 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100  max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container" data-card-media data-media-type="smil" data-media-strategy="display">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-18 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100 max-md:!transform-none max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
+          <div class="w-full h-full relative group flex flex-col md:block" id="uc003-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -1866,8 +1861,8 @@ font-family: 'Oswald', sans-serif !important;
           </div>
         </div>
         <!-- Card 4 -->
-        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100  max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
-          <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container" data-card-media data-media-type="smil" data-media-strategy="display">
+        <div class="col-start-1 row-start-1 w-full h-full mobile-reveal origin-center opacity-0 pointer-events-none [backface-visibility:hidden] [transform-style:preserve-3d] [&.active]:opacity-100 [&.active]:pointer-events-auto [&.active]:z-20 [&.active]:cursor-pointer [&.inactive-prev]:opacity-100 [&.inactive-prev]:pointer-events-none [&.inactive-prev]:z-19 [&.inactive-next]:opacity-0 [&.inactive-next]:pointer-events-none [&.inactive-next]:z-0 max-md:!relative max-md:!opacity-100 max-md:!transform-none max-md:[backface-visibility:visible] max-md:[transform-style:flat] max-md:!pointer-events-auto max-md:!z-10" data-tab-card>
+          <div class="w-full h-full relative group flex flex-col md:block" id="uc004-card-container">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
                <!-- Background Image (Dots) -->
@@ -2315,7 +2310,7 @@ font-family: 'Oswald', sans-serif !important;
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.229-FIX-MODAL-SCROLLING-AND-CLIPPING/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-FIX-STACKING-V2/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.215-FIX-STACKING-V2/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.242/deploy/assets/js/tab-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.243/deploy/assets/js/tab-flipper.js" defer></script>
     
 <!--Modal-->
 <section>
