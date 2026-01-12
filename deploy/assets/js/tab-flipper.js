@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
     [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
     [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
     el.innerHTML = '';
     Array.from(text).forEach((char, i) => {
       const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.textContent = char === ' ' ? '\\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             el: card,
             mediaContainer: mediaContainer,
             mediaType: mediaContainer ? mediaContainer.dataset.mediaType : 'none',
+            mediaStrategy: mediaContainer ? mediaContainer.dataset.mediaStrategy : 'visibility',
             isActive: index === 0,
             isHovered: false,
             isRevealed: false
@@ -109,11 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function applyMediaAction(state) {
-        const { mediaContainer, mediaType, isActive, isHovered, isRevealed } = state;
+        const { mediaContainer, mediaType, mediaStrategy, isActive, isHovered, isRevealed } = state;
         if (!mediaContainer) return;
         
         // Logical condition for running animations/media
-        // (Active OR Hovered OR Mobile-Visual-Reveal) AND overall "Reveal" state
         const cardInView = state.el.classList.contains('in-view');
         const effectiveRevealed = cardInView || window.innerWidth > 768;
         const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && effectiveRevealed;
@@ -128,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 motionElements.forEach(motion => {
                     if (motion.parentElement) {
                         if (motion.parentElement.classList.contains('always-hide-anim')) return;
-                        // Determine if it needs generic visibility or specific SMIL display fix
-                        const useSmilDisplay = mediaContainer.id === 'uc004-card-container' || mediaContainer.id === 'uc003-card-container';
-                        motion.parentElement.classList.add(useSmilDisplay ? 'force-smil-display' : 'force-visible');
+                        // Use the data-driven strategy instead of hardcoded IDs
+                        const strategyClass = mediaStrategy === 'display' ? 'force-smil-display' : 'force-visible';
+                        motion.parentElement.classList.add(strategyClass);
                     }
                 });
 
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
-          if (depth <= 3) c.classList.add(`stack-${depth}`);
+          if (depth <= 3) c.classList.add(\`stack-\${depth}\`);
           state.isActive = false;
         } else {
           c.classList.add('inactive-next');
