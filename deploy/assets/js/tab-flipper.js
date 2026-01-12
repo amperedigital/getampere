@@ -1,19 +1,15 @@
 /**
- * Tab Controlled Card Flipper v1.116-REPAIR
- * Fixed in current session for v1.215 Release
- * Added: Pinned Scroll Sync logic + Mobile Tab Scroll Sync.
- * Updated stickyOffset for top margin alignment.
- * Added: Mobile Reveal Animation Sync.
- * Fix: visibility: visible for active SMIL elements (Auto-start fix).
- * Fix: Improved stacking logic to ensure consistent 3-card depth.
+ * Tab Controlled Card Flipper v1.300
+ * Modular Refactor: Uses data attributes for SMIL/Video control.
+ * Removed hardcoded IDs.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.116-REPAIR-STACKED Loaded');
+  console.log('Tab Flipper v1.300 (Modular) Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = \`
     .manual-active .force-visible {
       display: block !important;
       visibility: visible !important;
@@ -33,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    #uc004-card-container:not(.manual-active) #uc004-anim-container circle {
-        opacity: 0 !important;
-        visibility: hidden !important;
+    /* Generic Selector for hiding anims when not active if needed */
+    [data-smil-behavior="force-display"]:not(.manual-active) animateMotion,
+    [data-smil-behavior="force-display"]:not(.manual-active) circle {
+         /* Rely on JS removing classes, but this is a backup */
     }
 
     .smil-hide {
@@ -66,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
     [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
     [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
-  `;
+  \`;
   document.head.appendChild(style);
 
   // --- Text Interaction Engine ---
@@ -80,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const span = document.createElement('span');
       span.textContent = char === ' ' ? '\u00A0' : char;
       span.classList.add('char');
-      span.style.transitionDelay = `${i * delay}ms`;
+      span.style.transitionDelay = \`\${i * delay}ms\`;
       el.appendChild(span);
     });
     el.dataset.initialized = 'true';
@@ -98,37 +95,38 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeIndex = 0;
     let isAnimating = false;
     let isAutoScrolling = false; 
-    
-    const crmContainer = document.getElementById('crm-card-container');
-    const uc003Container = document.getElementById('uc003-card-container');
-    const uc004Container = document.getElementById('uc004-card-container');
 
-    const controlsCrm = crmContainer && flipper.contains(crmContainer);
-    const controlsUc003 = uc003Container && flipper.contains(uc003Container);
-    const controlsUc004 = uc004Container && flipper.contains(uc004Container);
+    // Dynamic SMIL Container Discovery & State
+    const smilContainers = flipper.querySelectorAll('[data-smil-container]');
+    const smilStates = new Map(); // containerElement -> { hovered: boolean }
 
-    let isCrmActive = false, isUc003Active = false, isUc004Active = false;
-    let isCrmHovered = false, isUc003Hovered = false, isUc004Hovered = false;
-
-    function updateSmilState(container, isActive, isHovered, name) {
+    function updateSmilState(container) {
         if (!container) return;
         
         const cardParent = container.closest('[data-tab-card]');
         if (!cardParent) return;
         
+        const state = smilStates.get(container) || { hovered: false };
+        const isHovered = state.hovered;
+        const isActive = cardParent.classList.contains('active');
+        
+        // 'in-view' class is managed by the Generic Reveal Observer below
         const cardInView = cardParent.classList.contains('in-view');
+        
         const isRevealed = cardInView || window.innerWidth > 768;
         const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
-        
+        const behavior = container.dataset.smilBehavior;
+
         if (shouldRun) {
             container.classList.add("manual-active");
             motionElements.forEach(motion => {
                 if (motion.parentElement) {
                     if (motion.parentElement.classList.contains('always-hide-anim')) return;
-                    if (container.id === 'uc004-card-container' || container.id === 'uc003-card-container') {
+                    
+                    if (behavior === 'force-display') {
                         if (motion.parentElement.classList.contains('hidden')) return;
                         motion.parentElement.classList.add('force-smil-display');
                     } else {
@@ -161,28 +159,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const updateCrmState = () => controlsCrm && updateSmilState(crmContainer, isCrmActive, isCrmHovered, 'CRM');
-    const updateUc003State = () => controlsUc003 && updateSmilState(uc003Container, isUc003Active, isUc003Hovered, 'UC003');
-    const updateUc004State = () => controlsUc004 && updateSmilState(uc004Container, isUc004Active, isUc004Hovered, 'UC004');
+    // Initialize SMIL Containers
+    smilContainers.forEach(container => {
+        smilStates.set(container, { hovered: false });
 
-    if (controlsCrm) {
-        crmContainer.addEventListener('mouseenter', () => { isCrmHovered = true; updateCrmState(); });
-        crmContainer.addEventListener('mouseleave', () => { isCrmHovered = false; updateCrmState(); });
+        container.addEventListener('mouseenter', () => { 
+            const s = smilStates.get(container);
+            s.hovered = true;
+            updateSmilState(container); 
+        });
+        container.addEventListener('mouseleave', () => { 
+            const s = smilStates.get(container);
+            s.hovered = false;
+            updateSmilState(container); 
+        });
+        
+        // Intersection Observer for auto-playing visible cards on mobile/first-load
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting && (activeIndex === 0 || window.innerWidth < 768)) updateCrmState(); });
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                     updateSmilState(container);
+                }
+            });
         }, { threshold: 0.3 });
-        observer.observe(crmContainer);
-    }
-
-    if (controlsUc003) {
-        uc003Container.addEventListener('mouseenter', () => { isUc003Hovered = true; updateUc003State(); });
-        uc003Container.addEventListener('mouseleave', () => { isUc003Hovered = false; updateUc003State(); });
-    }
-
-    if (controlsUc004) {
-        uc004Container.addEventListener('mouseenter', () => { isUc004Hovered = true; updateUc004State(); });
-        uc004Container.addEventListener('mouseleave', () => { isUc004Hovered = false; updateUc004State(); });
-    }
+        observer.observe(container);
+    });
 
     const setActive = (index, skipAnimation = false) => {
       if (index === activeIndex && !skipAnimation) return;
@@ -210,11 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (i === index) {
           c.classList.add('active', 'stack-0');
           const video = c.querySelector('video');
-          if (video) video.play().catch(() => {});
+          if (video && (c.dataset.autoPlay !== 'false')) video.play().catch(() => {});
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
-          if (depth <= 3) c.classList.add(`stack-${depth}`);
+          if (depth <= 3) c.classList.add(\`stack-\${depth}\`);
           const video = c.querySelector('video');
           if (video) { video.pause(); video.currentTime = 0; }
         } else {
@@ -224,13 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      isCrmActive = (index === 0);
-      isUc003Active = (index === 2);
-      isUc004Active = (index === 3);
-      
-      updateCrmState();
-      updateUc003State();
-      updateUc004State();
+      // Update all SMIL containers since active state changed
+      smilContainers.forEach(container => updateSmilState(container));
 
       if (!skipAnimation) {
           setTimeout(() => { isAnimating = false; }, 500);
@@ -274,9 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
-                updateCrmState();
-                updateUc003State();
-                updateUc004State();
+                // Find potential SMIL containers inside the revealed card
+                const card = mutation.target;
+                const container = card.querySelector('[data-smil-container]');
+                if (container) updateSmilState(container);
             }
         });
     });
