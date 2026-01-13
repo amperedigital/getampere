@@ -3328,9 +3328,9 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </div>
   </section>
 
-<!-- Expertise Section with Scroll-Progress & Spotlight -->
-<!-- Expertise Section: Full Screen Sticky Slider -->
-<section id="expertise-section" class="relative bg-zinc-950 text-white selection:bg-purple-500/30">
+
+<!-- Solid Expertise Section -->
+<section id="solid-expertise-intro" class="relative w-full h-[100vh] bg-zinc-950 flex items-center justify-center z-10">
     <style>
         @keyframes fadeUpIn {
             from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
@@ -3345,6 +3345,17 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         .delay-100 { animation-delay: 0.1s; }
         .delay-300 { animation-delay: 0.3s; }
     </style>
+    <div class="text-center px-4">
+        <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] text-white">
+            <span class="block animate-text-reveal delay-100">A solid expertise.</span>
+            <span class="text-zinc-500 text-2xl sm:text-4xl block mt-4 font-normal animate-text-reveal delay-300">For more than 40 years.</span>
+        </h2>
+    </div>
+</section>
+
+<!-- Expertise Section with Scroll-Progress & Spotlight -->
+<!-- Expertise Section: Full Screen Sticky Slider -->
+<section id="expertise-section" class="relative bg-zinc-950 text-white selection:bg-purple-500/30">
     
     <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
     <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
@@ -3368,14 +3379,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 <!-- Horizontal Center Line -->
                 <div class="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
             </div>
-
-            <!-- 1. Top Header (Centered) -->
-            <header class="relative z-20 flex-none pt-24 lg:pt-32 text-center pointer-events-none w-full">
-                <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] text-white">
-                    <span class="block animate-text-reveal delay-100">A solid expertise.</span>
-                    <span class="text-zinc-500 text-2xl sm:text-4xl block mt-4 font-normal animate-text-reveal delay-300">For more than 40 years.</span>
-                </h2>
-            </header>
 
             <!-- 2. Main Content Area (Slides) -->
             <main id="expertise-slides" class="flex-1 relative w-full h-full flex items-center justify-center perspective-1000">
@@ -3438,7 +3441,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             </main>
 
             <!-- 3. Bottom Navigation (Centered) -->
-            <footer class="relative z-20 flex-none pb-12 sm:pb-16 flex justify-center w-full pointer-events-none">
+            <footer id="expertise-nav" class="relative z-20 flex-none pb-12 sm:pb-16 flex justify-center w-full pointer-events-none">
                 <div class="flex items-center gap-4 sm:gap-8 font-mono text-sm tracking-widest text-zinc-600">
                     <span id="nav-num-0" class="nav-num text-white transition-colors duration-300">01</span>
                     
