@@ -234,3 +234,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     updateSlider(); // Initial run
 });
+
+/* 
+ * Grid Line Animation Observer
+ * Triggers the expansion of vertical/horizontal lines when the Expertise section enters view.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const gridV = document.getElementById('grid-line-v');
+    const gridH = document.getElementById('grid-line-h');
+    const section = document.getElementById('expertise-section'); // Defined earlier, but ensuring scope here
+    
+    if (gridV && gridH && section) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Reveal: expand from center
+                    gridV.classList.remove('scale-y-0');
+                    gridV.classList.add('scale-y-100');
+                    gridH.classList.remove('scale-x-0');
+                    gridH.classList.add('scale-x-100');
+                } else {
+                    // Optional: Reset on exit to replay animation?
+                    // User said "as user scrolls to this section", implies trigger.
+                    // Leaving it persisting is usually safer UX.
+                }
+            });
+        }, { threshold: 0.15 });
+        
+        observer.observe(section);
+    }
+});
