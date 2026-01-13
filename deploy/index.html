@@ -3330,25 +3330,11 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 
 <!-- Solid Expertise Section -->
-<section id="solid-expertise-intro" class="relative w-full h-screen bg-black flex items-center justify-center z-10">
-    <style>
-        @keyframes fadeUpIn {
-            from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .animate-text-reveal {
-            opacity: 0;
-        }
-        .animate-text-reveal.in-view {
-            animation: fadeUpIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-300 { animation-delay: 0.3s; }
-    </style>
-    <div class="text-center px-4 font-geist">
+<section id="solid-expertise-intro" class="relative w-full h-[120vh] bg-black flex items-center justify-center z-10">
+    <div class="text-center px-4 font-geist sticky top-0 h-screen flex flex-col justify-center items-center">
         <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-white font-medium">
-            <span class="block animate-text-reveal delay-100">A solid expertise.</span>
-            <span class="block animate-text-reveal delay-300">For more than 40 years.</span>
+            <span class="block solid-reveal-text translate-y-12 opacity-0 transition-opacity duration-75">A solid expertise.</span>
+            <span class="block solid-reveal-text translate-y-12 opacity-0 transition-opacity duration-75">For more than 40 years.</span>
         </h2>
     </div>
 </section>
@@ -3534,26 +3520,64 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         }
 
         // 3. Text Reveal Observer
-        const textReveals = document.querySelectorAll('.animate-text-reveal');
-        if (textReveals.length > 0) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('in-view');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            textReveals.forEach(el => observer.observe(el));
+        // Replaced by scroll-scrubbed logic below
+        
+        // 4. Solid Expertise Intro Scroll Scrubbing
+        const expertiseIntro = document.getElementById('solid-expertise-intro');
+        const revealTexts = document.querySelectorAll('.solid-reveal-text');
+        
+        function updateExpertiseIntro() {
+            if(!expertiseIntro || revealTexts.length === 0) return;
+            
+            const rect = expertiseIntro.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            
+            // We want animation to happen as the section enters the viewport
+            // Start: when top of section hits bottom of viewport (rect.top <= viewHeight)
+            // End: when section is fully in view or centered
+            
+            // Calculate progress: 0 when just entering, 1 when fully centered
+            // Adjust offsets to fine tune the "scroll scrub" feel
+            const startOffset = viewHeight; 
+            const endOffset = viewHeight * 0.4; // animate until it's 40% from top
+            
+            let scrub = (startOffset - rect.top) / (startOffset - endOffset);
+            scrub = Math.max(0, Math.min(1, scrub)); // Clamp 0 to 1
+            
+            revealTexts.forEach((text, i) => {
+                // Stagger the scrub slightly for each line
+                // Line 1: 0.0 -> 0.6
+                // Line 2: 0.2 -> 0.8
+                
+                let lineStart = i * 0.2;
+                let lineEnd = lineStart + 0.6;
+                
+                let lineProgress = (scrub - lineStart) / (lineEnd - lineStart);
+                lineProgress = Math.max(0, Math.min(1, lineProgress));
+                
+                // Map progress to opacity (0->1) and translateY (50px -> 0px)
+                text.style.opacity = lineProgress.toFixed(3);
+                
+                // Use a non-linear ease out for the transform
+                // easeOutQuad: p * (2 - p)
+                const ease = lineProgress * (2 - lineProgress);
+                const translateY = 50 * (1 - ease);
+                
+                text.style.transform = `translateY(${translateY.toFixed(1)}px)`;
+            });
         }
 
         window.addEventListener('scroll', () => {
             if (!ticking) {
-                window.requestAnimationFrame(updateSlider);
+                window.requestAnimationFrame(() => {
+                    updateSlider();
+                    updateExpertiseIntro();
+                });
                 ticking = true;
             }
         });
         updateSlider();
+        updateExpertiseIntro(); // Init on load
     })();
     </script>
 </section>
