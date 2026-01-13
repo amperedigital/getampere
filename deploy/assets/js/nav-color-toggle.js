@@ -1,41 +1,46 @@
 /**
- * Navigation Color Toggle v3
- * Uses elementsFromPoint to "pierce" through the fixed nav and detect the underlying section.
+ * Navigation Color Toggle v4
+ * Uses BoundingClientRect intersection to detect the current section under the nav.
+ * This is more robust than elementFromPoint as it doesn't rely on z-indexes or pointer-events.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('nav');
     if (!nav) return;
+    
+    // Only query for sections that actually clearly define a theme
+    // We update this list on check in case of dynamic content, or just once if static.
+    // For performance, caching is better, but let's query once per load.
+    const themeSections = document.querySelectorAll('[data-nav-theme]');
 
     function checkNavTheme() {
-        // Sample a point in the vertical center of the nav header
-        const x = window.innerWidth / 2;
-        // 40px is rough center of h-20 (80px) nav header
-        const y = 40; 
+        const navHeight = nav.offsetHeight || 80; // Fallback to 80px if 0
+        const triggerPoint = navHeight / 2; // Vertical center of the header
 
-        // Get all elements at that point (z-order: top to bottom)
-        // This allows us to see "through" the nav bar if it is the top element.
-        const elements = document.elementsFromPoint(x, y);
-        
-        let foundSection = null;
+        let inverted = false;
 
-        for (const el of elements) {
-            // Find the closest ancestor of this element that has a nav theme
-            const section = el.closest('[data-nav-theme]');
-            if (section) {
-                foundSection = section;
-                break; // Found the top-most thematic section
+        // Iterate through all tracked sections to see which one is currently under the header
+        for (const section of themeSections) {
+            const rect = section.getBoundingClientRect();
+            
+            // Check if the section covers the trigger point
+            // rect.top is distance from viewport top. If negative, it's scrolled up.
+            // rect.bottom is distance from viewport top to bottom of element.
+            if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+                if (section.dataset.navTheme === 'invert') {
+                    inverted = true;
+                }
+                break; // Found the top-most section occupying this space match
             }
         }
 
-        if (foundSection && foundSection.dataset.navTheme === 'invert') {
+        if (inverted) {
             nav.classList.add('nav-inverted');
         } else {
             nav.classList.remove('nav-inverted');
         }
     }
 
-    // Check on scroll and resize
     window.addEventListener('scroll', checkNavTheme, { passive: true });
     window.addEventListener('resize', checkNavTheme, { passive: true });
     
