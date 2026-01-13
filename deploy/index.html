@@ -2315,7 +2315,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 <!-- Expertise Section with Scroll-Progress & Spotlight -->
 <!-- Expertise Section: Full Screen Sticky Slider -->
-<section data-sticky-slideshow="expertise" data-spotlight-container class="relative bg-[#0a0b14] text-white selection:bg-purple-500/30">
+<section data-sticky-slideshow="expertise" class="relative bg-[#0a0b14] text-white selection:bg-purple-500/30">
     
     <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
     <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
@@ -2326,11 +2326,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             
             <!-- Ambient Background (Noise) -->
             
-            <!-- Ambient Spotlight Background (Moves with Mouse) -->
-            <!-- Placed BEHIND the Unicorn Studio layer -->
-            <!-- Use a subtle, deep dark gradient to maintain high contrast (avoiding washed-out look) -->
-            <div data-spotlight class="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0 bg-[radial-gradient(circle_1200px_at_var(--mouse-x,50%)_var(--mouse-y,50%),#060610_0%,#000000_100%)]">
-            </div>
+            <!-- Ambient Spotlight Background REMOVED for performance (v1.405) -->
 
             <!-- Unicorn Studio Background Container -->
             <!-- Using w-full h-full left-0 top-0 to match working hero implementation -->
@@ -2646,7 +2642,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.404/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.405/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
