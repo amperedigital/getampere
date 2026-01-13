@@ -40,23 +40,36 @@
  * Merged from nav-color-toggle.js
  */
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("[Global] DOMContentLoaded - Initializing Nav Toggle...");
+
     const nav = document.querySelector('nav');
-    if (!nav) return;
+    if (!nav) {
+        console.error("[Global] Nav element NOT found!");
+        return;
+    } else {
+        console.log("[Global] Nav element found:", nav);
+    }
     
     // Select all potential theme sections
     const themeSections = document.querySelectorAll('[data-nav-theme]');
+    console.log(`[Global] Found ${themeSections.length} theme sections.`);
+    themeSections.forEach((sec, i) => {
+        console.log(`[Global] Section ${i}:`, sec.className.substring(0, 50) + "...", "Theme:", sec.dataset.navTheme);
+    });
 
     function checkNavTheme() {
         // We trigger around the vertical middle of the nav bar (approx 40px down)
         const triggerPoint = 40; 
         
         let inverted = false;
+        let activeSectionDebug = "None";
 
         for (const section of themeSections) {
             const rect = section.getBoundingClientRect();
             
             // Logic: Is the "Trigger Point" (y=40px) inside this section's vertical bounds?
             if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+                activeSectionDebug = section.className.substring(0, 30) + "...";
                 if (section.dataset.navTheme === 'invert') {
                     inverted = true;
                 }
@@ -64,12 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // console.log(`[Global] Check: Active=${activeSectionDebug} Inverted=${inverted}`);
+
         if (inverted) {
             if (!nav.classList.contains('nav-inverted')) {
+               console.log("[Global] SWITCHING TO INVERTED (Dark BG / White Text)");
                nav.classList.add('nav-inverted');
             }
         } else {
             if (nav.classList.contains('nav-inverted')) {
+               console.log("[Global] SWITCHING TO DEFAULT (Transparent / White Text)");
                nav.classList.remove('nav-inverted');
             }
         }
@@ -82,9 +99,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Using Lenis? Hook into that too if it exists
     if (window.lenis) {
+        console.log("[Global] Hooking into Lenis scroll event");
         window.lenis.on('scroll', checkNavTheme);
+    } else {
+        console.log("[Global] Lenis not detected on window");
     }
     
     // Initial check
-    setTimeout(checkNavTheme, 100); 
+    setTimeout(() => {
+        console.log("[Global] Initial Check Timeout Firing");
+        checkNavTheme();
+    }, 100); 
 });
