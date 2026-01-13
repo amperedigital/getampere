@@ -3836,26 +3836,32 @@ font-family: 'Oswald', sans-serif !important;
 <style>
 /* Nav Inverted Mode (Triggered by JS on white sections) */
 nav.nav-inverted {
-    background-color: #0a0b14 !important; /* Dark Background */
+    background-color: transparent !important; /* Transparent Background */
     transition: background-color 0.3s ease;
 }
 
-/* Ensure branding works on dark */
+/* Inverted Mode: Turn White Elements -> DARK using specific Slate/Black */
+nav.nav-inverted .cls-1, 
+nav.nav-inverted .cls-2, 
 nav.nav-inverted .cls-4,
 nav.nav-inverted g.logo-wordmark path.cls-4,
 nav.nav-inverted svg .cls-4 {
-    fill: #ffffff !important; /* Make Logo White */
+    stroke: #0F172A !important; 
+    fill: #0F172A !important; 
     opacity: 1 !important;
 }
+
 nav.nav-inverted .amp-logo-fill {
-    fill: #ffffff !important; /* Mobile Logo White */
+    fill: #0F172A !important; /* Mobile Logo Dark */
 }
+
 nav.nav-inverted .amp-hamburger-line {
-    background-color: white !important;
+    background-color: #0F172A !important;
 }
+
 nav.nav-inverted .amp-hamburger {
-    border-color: rgba(255,255,255,0.2) !important;
-    background-color: rgba(255,255,255,0.1) !important;
+    border-color: rgba(15, 23, 42, 0.2) !important;
+    background-color: rgba(15, 23, 42, 0.05) !important;
 }
 </style>
 
