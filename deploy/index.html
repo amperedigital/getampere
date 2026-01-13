@@ -3330,11 +3330,11 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 
 <!-- Solid Expertise Section -->
-<section id="solid-expertise-intro" class="relative w-full h-[120vh] bg-black flex items-center justify-center z-10">
-    <div class="text-center px-4 font-geist sticky top-0 h-screen flex flex-col justify-center items-center">
+<section id="solid-expertise-intro" class="relative w-full h-screen bg-black flex items-center justify-center z-10">
+    <div class="text-center px-4 font-geist">
         <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-white font-medium">
-            <span class="block solid-reveal-text translate-y-12 opacity-0 transition-opacity duration-75">A solid expertise.</span>
-            <span class="block solid-reveal-text translate-y-12 opacity-0 transition-opacity duration-75">For more than 40 years.</span>
+            <span class="block scroll-reveal-text" style="opacity: 0; transform: translateY(20px);">A solid expertise.</span>
+            <span class="block scroll-reveal-text mt-2" style="opacity: 0; transform: translateY(20px);">For more than 40 years.</span>
         </h2>
     </div>
 </section>
@@ -3452,6 +3452,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         const section = document.getElementById('expertise-section');
         const spotlight = document.getElementById('expertise-spotlight');
 
+        // Intro Elements
+        const introSection = document.getElementById('solid-expertise-intro');
+        const introTexts = document.querySelectorAll('.scroll-reveal-text');
+
         // 1. Mouse Spotlight
         if (section && spotlight) {
             section.addEventListener('mousemove', (e) => {
@@ -3470,114 +3474,96 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         // 2. Scroll Animation
         let ticking = false;
         function updateSlider() {
-            if (!track) return;
-            const rect = track.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            
-            // Current progress through the stickiness
-            const totalScrollable = rect.height - viewportHeight;
-            let progress = -rect.top / totalScrollable;
-            progress = Math.max(0, Math.min(1, progress));
+            // A. Handle Intro Scroll Scrub
+            if (introSection && introTexts.length) {
+                 const rect = introSection.getBoundingClientRect();
+                 const winH = window.innerHeight;
+                 
+                 // Distance of element center from viewport center
+                 const centerDist = (rect.top + rect.height/2) - (winH / 2);
+                 const bloomRange = winH * 0.6; // Distance over which it fades in/out
+                 
+                 // 1.0 = Center, 0.0 = Edges
+                 let bloom = 1 - (Math.abs(centerDist) / bloomRange);
+                 bloom = Math.max(0, Math.min(1, bloom));
+                 
+                 // Apply scrub to texts
+                 introTexts.forEach((el, i) => {
+                    // Add slight lag for 2nd line
+                    let p = bloom - (i * 0.15); 
+                    p = Math.max(0, Math.min(1, p));
+                    
+                    // Easing for smoother feel
+                    const eased = p * p * (3 - 2 * p); 
+                    
+                    el.style.opacity = eased.toFixed(3);
+                    el.style.transform = `translateY(${(1 - eased) * 40}px)`;
+                    el.style.filter = `blur(${(1 - eased) * 10}px)`;
+                 });
+            }
 
-            // Determine active slide
-            const slideCount = 3;
-            let activeIndex = Math.floor(progress * slideCount);
-            if (activeIndex >= slideCount) activeIndex = slideCount - 1;
+            // B. Handle Sticky Slider (only if track exists)
+            if (track) {
+                const rect = track.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                
+                // Current progress through the stickiness
+                const totalScrollable = rect.height - viewportHeight;
+                let progress = -rect.top / totalScrollable;
+                progress = Math.max(0, Math.min(1, progress));
 
-            // Update Slides
-            slides.forEach((slide, index) => {
-                if (index === activeIndex) {
-                    slide.style.opacity = '1';
-                    slide.style.transform = 'translateY(0) scale(1)';
-                } else if (index < activeIndex) {
-                     slide.style.opacity = '0';
-                     slide.style.transform = 'translateY(-30px) scale(0.95)';
-                } else {
-                     slide.style.opacity = '0';
-                     slide.style.transform = 'translateY(30px) scale(0.95)';
-                }
-            });
+                // Determine active slide
+                const slideCount = 3;
+                let activeIndex = Math.floor(progress * slideCount);
+                if (activeIndex >= slideCount) activeIndex = slideCount - 1;
 
-            // Update Progress Bar
-            // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
-            const translateVal = progress * 200; 
-            if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
+                // Update Slides
+                slides.forEach((slide, index) => {
+                    if (index === activeIndex) {
+                        slide.style.opacity = '1';
+                        slide.style.transform = 'translateY(0) scale(1)';
+                    } else if (index < activeIndex) {
+                         // Previous slides go up
+                         slide.style.opacity = '0';
+                         slide.style.transform = 'translateY(-30px) scale(0.95)';
+                    } else {
+                         // Next slides stay down
+                         slide.style.opacity = '0';
+                         slide.style.transform = 'translateY(30px) scale(0.95)';
+                    }
+                });
 
-            // Update Numbers
-            const num0 = document.getElementById('nav-num-0');
-            const num1 = document.getElementById('nav-num-1');
-            const num2 = document.getElementById('nav-num-2');
-            
-            if(num0) num0.classList.remove('text-white');
-            if(num1) num1.classList.remove('text-white');
-            if(num2) num2.classList.remove('text-white');
+                // Update Progress Bar
+                // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
+                const translateVal = progress * 200; 
+                if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
 
-            if (activeIndex === 0 && num0) num0.classList.add('text-white');
-            if (activeIndex === 1 && num1) num1.classList.add('text-white');
-            if (activeIndex === 2 && num2) num2.classList.add('text-white');
-            
+                // Update Numbers
+                const num0 = document.getElementById('nav-num-0');
+                const num1 = document.getElementById('nav-num-1');
+                const num2 = document.getElementById('nav-num-2');
+                
+                if(num0) num0.classList.remove('text-white');
+                if(num1) num1.classList.remove('text-white');
+                if(num2) num2.classList.remove('text-white');
+
+                if (activeIndex === 0 && num0) num0.classList.add('text-white');
+                if (activeIndex === 1 && num1) num1.classList.add('text-white');
+                if (activeIndex === 2 && num2) num2.classList.add('text-white');
+            }
+
             ticking = false;
         }
 
-        // 3. Text Reveal Observer
-        // Replaced by scroll-scrubbed logic below
-        
-        // 4. Solid Expertise Intro Scroll Scrubbing
-        const expertiseIntro = document.getElementById('solid-expertise-intro');
-        const revealTexts = document.querySelectorAll('.solid-reveal-text');
-        
-        function updateExpertiseIntro() {
-            if(!expertiseIntro || revealTexts.length === 0) return;
-            
-            const rect = expertiseIntro.getBoundingClientRect();
-            const viewHeight = window.innerHeight;
-            
-            // We want animation to happen as the section enters the viewport
-            // Start: when top of section hits bottom of viewport (rect.top <= viewHeight)
-            // End: when section is fully in view or centered
-            
-            // Calculate progress: 0 when just entering, 1 when fully centered
-            // Adjust offsets to fine tune the "scroll scrub" feel
-            const startOffset = viewHeight; 
-            const endOffset = viewHeight * 0.4; // animate until it's 40% from top
-            
-            let scrub = (startOffset - rect.top) / (startOffset - endOffset);
-            scrub = Math.max(0, Math.min(1, scrub)); // Clamp 0 to 1
-            
-            revealTexts.forEach((text, i) => {
-                // Stagger the scrub slightly for each line
-                // Line 1: 0.0 -> 0.6
-                // Line 2: 0.2 -> 0.8
-                
-                let lineStart = i * 0.2;
-                let lineEnd = lineStart + 0.6;
-                
-                let lineProgress = (scrub - lineStart) / (lineEnd - lineStart);
-                lineProgress = Math.max(0, Math.min(1, lineProgress));
-                
-                // Map progress to opacity (0->1) and translateY (50px -> 0px)
-                text.style.opacity = lineProgress.toFixed(3);
-                
-                // Use a non-linear ease out for the transform
-                // easeOutQuad: p * (2 - p)
-                const ease = lineProgress * (2 - lineProgress);
-                const translateY = 50 * (1 - ease);
-                
-                text.style.transform = `translateY(${translateY.toFixed(1)}px)`;
-            });
-        }
+        // 3. (Previous Text Reveal Observer Removed in favor of Scroll Scrub)
 
         window.addEventListener('scroll', () => {
             if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    updateSlider();
-                    updateExpertiseIntro();
-                });
+                window.requestAnimationFrame(updateSlider);
                 ticking = true;
             }
         });
         updateSlider();
-        updateExpertiseIntro(); // Init on load
     })();
     </script>
 </section>
