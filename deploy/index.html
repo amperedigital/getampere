@@ -411,7 +411,69 @@ font-family: 'Google Sans Flex', sans-serif !important;
 .font-oswald {
 font-family: 'Oswald', sans-serif !important;
 }
-</style></head>
+</style>
+<style>
+/* Nav Inverted Mode (Triggered by JS on white sections) */
+/* STRATEGY: Turn Backgrounds DARK, keep Text/Logos WHITE */
+
+/* 1. Reset Nav Wrapper */
+nav.nav-inverted {
+    background-color: transparent !important; 
+    transition: background-color 0.3s ease;
+}
+
+/* 2. Turn the specific Segments DARK */
+nav.nav-inverted #amp-logo-segment,
+nav.nav-inverted #amp-menu-segment {
+    background-color: #0F172A !important; /* Slate-900 */
+    transition: background-color 0.3s ease;
+}
+
+/* 3. Ensure Text/Links are WHITE */
+nav.nav-inverted #amp-menu-segment a {
+    color: #ffffff !important;
+}
+
+nav.nav-inverted #amp-menu-segment a:hover {
+    color: #ffffff !important;
+    opacity: 0.8;
+}
+
+/* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
+nav.nav-inverted .cls-1, 
+nav.nav-inverted .cls-2, 
+nav.nav-inverted .cls-4,
+nav.nav-inverted g.logo-wordmark path.cls-4,
+nav.nav-inverted svg .cls-4,
+nav.nav-inverted .amp-logo-fill {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* 5. Hamburger Menu */
+nav.nav-inverted .amp-hamburger-line {
+    background-color: #ffffff !important;
+}
+nav.nav-inverted .amp-hamburger {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 6. Adjust the Pill/Link Container in the Menu */
+/* The gray pill container (bg-[#F4F4F5]) becomes a transparent white box on dark bg */
+nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
+    background-color: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: white !important;
+}
+
+/* 7. Active Link State (The white pill) */
+nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
+    background-color: #ffffff !important;
+    color: #0F172A !important; /* Text inside active pill becomes dark */
+}
+</style>
+</head>
 
 <body class="bg-[#0a0b14] text-slate-900 min-h-screen flex flex-col">
 
@@ -2307,7 +2369,7 @@ font-family: 'Oswald', sans-serif !important;
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.316/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.317/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3831,63 +3893,3 @@ font-family: 'Oswald', sans-serif !important;
 <!-- End Team Grid -->
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
-/* Nav Inverted Mode (Triggered by JS on white sections) */
-/* STRATEGY: Turn Backgrounds DARK, keep Text/Logos WHITE */
-
-/* 1. Reset Nav Wrapper */
-nav.nav-inverted {
-    background-color: transparent !important; 
-    transition: background-color 0.3s ease;
-}
-
-/* 2. Turn the specific Segments DARK */
-nav.nav-inverted #amp-logo-segment,
-nav.nav-inverted #amp-menu-segment {
-    background-color: #0F172A !important; /* Slate-900 */
-    transition: background-color 0.3s ease;
-}
-
-/* 3. Ensure Text/Links are WHITE */
-nav.nav-inverted #amp-menu-segment a {
-    color: #ffffff !important;
-}
-
-nav.nav-inverted #amp-menu-segment a:hover {
-    color: #ffffff !important;
-    opacity: 0.8;
-}
-
-/* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
-nav.nav-inverted .cls-1, 
-nav.nav-inverted .cls-2, 
-nav.nav-inverted .cls-4,
-nav.nav-inverted g.logo-wordmark path.cls-4,
-nav.nav-inverted svg .cls-4,
-nav.nav-inverted .amp-logo-fill {
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-/* 5. Hamburger Menu */
-nav.nav-inverted .amp-hamburger-line {
-    background-color: #ffffff !important;
-}
-nav.nav-inverted .amp-hamburger {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* 6. Adjust the Pill/Link Container in the Menu */
-/* The gray pill container (bg-[#F4F4F5]) becomes a transparent white box on dark bg */
-nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
-    background-color: rgba(255,255,255,0.1) !important;
-    border-color: rgba(255,255,255,0.2) !important;
-    color: white !important;
-}
-
-/* 7. Active Link State (The white pill) */
-nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
-    background-color: #ffffff !important;
-    color: #0F172A !important; /* Text inside active pill becomes dark */
-}
-</style>
