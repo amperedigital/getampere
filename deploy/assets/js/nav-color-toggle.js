@@ -1,43 +1,55 @@
 /**
- * Navigation Color Toggle v4
- * Uses BoundingClientRect intersection to detect the current section under the nav.
- * This is more robust than elementFromPoint as it doesn't rely on z-indexes or pointer-events.
+ * Navigation Color Toggle v5 (Debug)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // console.log("Nav Toggle Script Loaded v5");
     const nav = document.querySelector('nav');
-    if (!nav) return;
+    if (!nav) {
+        // console.error("Nav element not found");
+        return;
+    }
     
-    // Only query for sections that actually clearly define a theme
-    // We update this list on check in case of dynamic content, or just once if static.
-    // For performance, caching is better, but let's query once per load.
+    // Select all potential theme sections
     const themeSections = document.querySelectorAll('[data-nav-theme]');
+    // console.log(`Found ${themeSections.length} sections with data-nav-theme`);
 
     function checkNavTheme() {
-        const navHeight = nav.offsetHeight || 80; // Fallback to 80px if 0
-        const triggerPoint = navHeight / 2; // Vertical center of the header
-
+        // We trigger around the vertical middle of the nav bar (approx 40px down)
+        // Adjust this if you want it to trigger when the section hits the TOP of the viewport (0)
+        // or when the section is fully under the nav.
+        const triggerPoint = 40; 
+        
         let inverted = false;
+        let activeSection = null;
 
-        // Iterate through all tracked sections to see which one is currently under the header
         for (const section of themeSections) {
             const rect = section.getBoundingClientRect();
             
-            // Check if the section covers the trigger point
-            // rect.top is distance from viewport top. If negative, it's scrolled up.
-            // rect.bottom is distance from viewport top to bottom of element.
+            // Logic: Is the "Trigger Point" (y=40px) inside this section's vertical bounds?
+            // rect.top <= 40  Mean the section top has scrolled up past the trigger point
+            // rect.bottom >= 40 Means the section bottom is still below the trigger point
             if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+                activeSection = section;
                 if (section.dataset.navTheme === 'invert') {
                     inverted = true;
                 }
-                break; // Found the top-most section occupying this space match
+                break; // First match (top-most visual layer assuming standard flow)
             }
         }
 
+        // console.log(`Active Section: ${activeSection ? activeSection.className : 'None'}, Inverted: ${inverted}`);
+
         if (inverted) {
-            nav.classList.add('nav-inverted');
+            if (!nav.classList.contains('nav-inverted')) {
+               // console.log("Adding nav-inverted class");
+               nav.classList.add('nav-inverted');
+            }
         } else {
-            nav.classList.remove('nav-inverted');
+            if (nav.classList.contains('nav-inverted')) {
+               // console.log("Removing nav-inverted class");
+               nav.classList.remove('nav-inverted');
+            }
         }
     }
 
@@ -45,5 +57,5 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', checkNavTheme, { passive: true });
     
     // Initial check
-    checkNavTheme();
+    setTimeout(checkNavTheme, 100); // Small delay to ensure layout
 });
