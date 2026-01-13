@@ -526,7 +526,13 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
 /* 11. Request Demo Shiny Button - Navigation Override */
 /* Default State: Clean Black Button (Static) */
 .shiny-cta.nav-cta {
-    padding: 0.5rem 1.25rem !important;
+    /* Height Balancing: 
+       Nav Container = 42px (32px content + 8px pad + 2px border)
+       Button Content = 16px (1rem line-height)
+       Button Border = 4px (2px top/bottom)
+       Remaining for Padding = 22px -> 11px per side (0.6875rem)
+    */
+    padding: 0.6875rem 1.5rem !important;
     font-size: 0.75rem !important;
     line-height: 1rem !important;
     text-transform: uppercase;
