@@ -111,3 +111,126 @@ document.addEventListener('DOMContentLoaded', () => {
         checkNavTheme();
     }, 100); 
 });
+
+/*
+ * Expertise Section Logic (Sticky Slider & Intro Scrub)
+ * Moved from index.html
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('expertise-scroll-track');
+    const slides = document.querySelectorAll('.expertise-slide');
+    const progressFill = document.getElementById('nav-progress-fill');
+    const section = document.getElementById('expertise-section');
+    const spotlight = document.getElementById('expertise-spotlight');
+
+    // Intro Elements
+    const introSection = document.getElementById('solid-expertise-intro');
+    const introTexts = document.querySelectorAll('.scroll-reveal-text');
+
+    // 1. Mouse Spotlight
+    if (section && spotlight) {
+        section.addEventListener('mousemove', (e) => {
+            const rect = section.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            section.style.setProperty('--mouse-x', `${x}px`);
+            section.style.setProperty('--mouse-y', `${y}px`);
+            spotlight.style.opacity = '1';
+        });
+        section.addEventListener('mouseleave', () => {
+            spotlight.style.opacity = '0';
+        });
+    }
+
+    // 2. Scroll Animation
+    let ticking = false;
+    function updateSlider() {
+        // A. Handle Intro Scroll Scrub
+        if (introSection && introTexts.length) {
+             const rect = introSection.getBoundingClientRect();
+             const winH = window.innerHeight;
+             
+             // Distance of element center from viewport center
+             const centerDist = (rect.top + rect.height/2) - (winH / 2);
+             const bloomRange = winH * 0.6; // Distance over which it fades in/out
+             
+             // 1.0 = Center, 0.0 = Edges
+             let bloom = 1 - (Math.abs(centerDist) / bloomRange);
+             bloom = Math.max(0, Math.min(1, bloom));
+             
+             // Apply scrub to texts
+             introTexts.forEach((el, i) => {
+                // Add slight lag for 2nd line
+                let p = bloom - (i * 0.15); 
+                p = Math.max(0, Math.min(1, p));
+                
+                // Easing for smoother feel
+                const eased = p * p * (3 - 2 * p); 
+                
+                el.style.opacity = eased.toFixed(3);
+                el.style.transform = `translateY(${(1 - eased) * 40}px)`;
+                el.style.filter = `blur(${(1 - eased) * 10}px)`;
+             });
+        }
+
+        // B. Handle Sticky Slider (only if track exists)
+        if (track) {
+            const rect = track.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            
+            // Current progress through the stickiness
+            const totalScrollable = rect.height - viewportHeight;
+            let progress = -rect.top / totalScrollable;
+            progress = Math.max(0, Math.min(1, progress));
+
+            // Determine active slide
+            const slideCount = 3;
+            let activeIndex = Math.floor(progress * slideCount);
+            if (activeIndex >= slideCount) activeIndex = slideCount - 1;
+
+            // Update Slides
+            slides.forEach((slide, index) => {
+                if (index === activeIndex) {
+                    slide.style.opacity = '1';
+                    slide.style.transform = 'translateY(0) scale(1)';
+                } else if (index < activeIndex) {
+                     // Previous slides go up
+                     slide.style.opacity = '0';
+                     slide.style.transform = 'translateY(-30px) scale(0.95)';
+                } else {
+                     // Next slides stay down
+                     slide.style.opacity = '0';
+                     slide.style.transform = 'translateY(30px) scale(0.95)';
+                }
+            });
+
+            // Update Progress Bar
+            // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
+            const translateVal = progress * 200; 
+            if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
+
+            // Update Numbers
+            const num0 = document.getElementById('nav-num-0');
+            const num1 = document.getElementById('nav-num-1');
+            const num2 = document.getElementById('nav-num-2');
+            
+            if(num0) num0.classList.remove('text-white');
+            if(num1) num1.classList.remove('text-white');
+            if(num2) num2.classList.remove('text-white');
+
+            if (activeIndex === 0 && num0) num0.classList.add('text-white');
+            if (activeIndex === 1 && num1) num1.classList.add('text-white');
+            if (activeIndex === 2 && num2) num2.classList.add('text-white');
+        }
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(updateSlider);
+            ticking = true;
+        }
+    });
+    updateSlider(); // Initial run
+});
