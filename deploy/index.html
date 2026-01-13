@@ -2472,7 +2472,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.379/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.380/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3379,8 +3379,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- "Four Corner" Grid Lines Background -->
             <div class="absolute inset-0 z-0 pointer-events-none">
-                <!-- Top Horizontal Line (Static Frame) -->
-                <div id="grid-line-h-top" class="absolute top-0 left-0 right-0 h-px bg-white/20"></div>
+                <!-- Top Horizontal Line (Static Frame -> Animated) -->
+                <div id="grid-line-h-top" class="absolute top-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
                 
                 <!-- Vertical Center Line (Animates) - Stops before nav -->
                 <div id="grid-line-v" class="absolute left-1/2 top-0 bottom-[12vh] w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
@@ -3388,8 +3388,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 <!-- Horizontal Center Line (Animates) -->
                 <div id="grid-line-h" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
                 
-                <!-- Bottom Horizontal Line (Static Frame) -->
-                <div id="grid-line-h-bottom" class="absolute bottom-0 left-0 right-0 h-px bg-white/20"></div>
+                <!-- Bottom Horizontal Line (Static Frame -> Animated) -->
+                <div id="grid-line-h-bottom" class="absolute bottom-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
             </div>
 
             <!-- 2. Main Content Area (Slides) -->

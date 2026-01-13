@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Grid Animation: Trigger when section enters view (and reset when leaving)
             // Uses state tracking to prevent constant DOM updates/style invalidation
-            // Trigger exactly when the section locks into place (top hits 0)
-            const currentlyInView = rect.top <= 0 && rect.bottom >= 0;
+            // Trigger slightly before locking (15% down from top) to ensure visibility
+            const currentlyInView = rect.top <= (window.innerHeight * 0.15) && rect.bottom >= 0;
             
             if (currentlyInView !== gridInView) {
                 gridInView = currentlyInView;
@@ -198,6 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
                      // REVEAL: Expand from center / Fade In Content
                      if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
                      if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
+                     if (gridHTop) { gridHTop.classList.remove('scale-x-0'); gridHTop.classList.add('scale-x-100'); }
+                     if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
+                     
                      if (expertiseGradients) { expertiseGradients.classList.remove('opacity-0'); expertiseGradients.classList.add('opacity-100'); }
                      
                      introReveals.forEach(el => {
@@ -208,6 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
                      // HIDE: Shrink to center / Fade Out Content
                      if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
                      if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
+                     if (gridHTop) { gridHTop.classList.remove('scale-x-100'); gridHTop.classList.add('scale-x-0'); }
+                     if (gridHBottom) { gridHBottom.classList.remove('scale-x-100'); gridHBottom.classList.add('scale-x-0'); }
+
                      if (expertiseGradients) { expertiseGradients.classList.remove('opacity-100'); expertiseGradients.classList.add('opacity-0'); }
 
                      introReveals.forEach(el => {
