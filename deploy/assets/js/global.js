@@ -75,8 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Add multiple listeners to ensure we catch the scroll event
     window.addEventListener('scroll', checkNavTheme, { passive: true });
     window.addEventListener('resize', checkNavTheme, { passive: true });
+    document.addEventListener('scroll', checkNavTheme, { passive: true }); // Fallback
+    
+    // Using Lenis? Hook into that too if it exists
+    if (window.lenis) {
+        window.lenis.on('scroll', checkNavTheme);
+    }
     
     // Initial check
     setTimeout(checkNavTheme, 100); 
