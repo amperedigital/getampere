@@ -524,9 +524,9 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
 }
 
 /* 11. Request Demo Shiny Button - Navigation Override */
-/* Adjusts the shiny button to fit the nav but keeps animations consistent with other buttons */
+/* Adjusts the shiny button to fit the nav, preserving the exact same visual effects */
 .shiny-cta.nav-cta {
-    padding: 0.6rem 1.5rem !important;
+    padding: 0.5rem 1.25rem !important; /* Smaller size for nav */
     font-size: 0.75rem !important;
     line-height: 1rem !important;
     text-transform: uppercase;
@@ -535,7 +535,7 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
     gap: 0.5rem !important;
     display: flex !important;
     align-items: center !important;
-    box-shadow: none !important;
+    /* Do NOT override box-shadow or background - keep standard shiny-cta effects */
 }
 </style>
 </head>
