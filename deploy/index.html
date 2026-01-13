@@ -547,8 +547,9 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
     box-shadow: none !important;
 }
 
-/* Force SVG Icon White */
-.shiny-cta.nav-cta svg {
+/* Force SVG Icon White - with high specificity to override old inverted rules */
+.shiny-cta.nav-cta svg,
+nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     stroke: #ffffff !important;
     transition: transform 0.3s ease;
 }
