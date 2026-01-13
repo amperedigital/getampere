@@ -181,11 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (track) {
             const rect = track.getBoundingClientRect();
             
-            // Grid Animation: Trigger when section enters view
-            if (track.getBoundingClientRect().top <= window.innerHeight) {
+            // Grid Animation: Trigger when section enters view (and reset when leaving)
+            // Ensures "scroll interactive" feel by replaying animation on re-entry
+            const inView = rect.top <= window.innerHeight && rect.bottom >= 0;
+            
+            if (inView) {
                  if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
                  if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
+            } else {
+                 if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
+                 if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
             }
+
             const viewportHeight = window.innerHeight;
             
             // Current progress through the stickiness
