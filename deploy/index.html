@@ -413,28 +413,36 @@ font-family: 'Oswald', sans-serif !important;
 }
 </style>
 <style>
-/* Nav Inverted Mode (Triggered by JS on white sections) */
-/* STRATEGY: Turn Backgrounds DARK, keep Text/Logos WHITE */
+/* Nav Smart Transitions & Dark Mode Logic */
 
-/* 1. Reset Nav Wrapper */
+/* 1. Shared Transitions (Enable smooth animations for ALL state changes) */
+nav,
+nav #amp-logo-segment,
+nav #amp-menu-segment,
+nav a,
+nav svg,
+nav path,
+nav .cls-1, nav .cls-2, nav .cls-3, nav .cls-4,
+nav .amp-hamburger, nav .amp-hamburger-line {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 2. Nav Wrapper - Always Transparent */
 nav.nav-inverted {
     background-color: transparent !important; 
-    transition: background-color 0.3s ease;
 }
 
-/* 2. Turn the specific Segments DARK */
-/* Update: Only the MENU segment gets the dark background */
+/* 3. Logo Segment - Always Transparent (per user request) */
 nav.nav-inverted #amp-logo-segment {
     background-color: transparent !important; 
-    transition: background-color 0.3s ease;
 }
 
+/* 4. Menu Segment - Turns Dark in Inverted Mode */
 nav.nav-inverted #amp-menu-segment {
     background-color: #0F172A !important; /* Slate-900 */
-    transition: background-color 0.3s ease;
 }
 
-/* 3. Ensure Text/Links are WHITE */
+/* 5. Menu Links - Turn White */
 nav.nav-inverted #amp-menu-segment a {
     color: #ffffff !important;
 }
@@ -444,40 +452,30 @@ nav.nav-inverted #amp-menu-segment a:hover {
     opacity: 0.8;
 }
 
-/* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
-/* Update: Reverting to #0F172A per "my dark mode colors" request */
-
-/* cls-1 (Mark) and cls-2 (Background Shape) */
-/* Hiding them by matching the dark slate background color */
+/* 6. Logo Colors - Custom Dark Mode Palette */
 nav.nav-inverted .cls-1, 
 nav.nav-inverted .cls-2 {
-    fill: #0F172A !important;
+    fill: #0F172A !important; /* Matches Menu BG */
     stroke: #0F172A !important;
 }
 
-/* "get" text: Blue (#00bee6) - Original Brand Color */
-nav.nav-inverted .cls-3,
-nav.nav-inverted g.logo-wordmark path.cls-3,
-nav.nav-inverted svg .cls-3 {
-    fill: #00bee6 !important;
+nav.nav-inverted .cls-3 {
+    fill: #00bee6 !important; /* Blue "get" */
     stroke: none !important;
 }
 
-/* "ampere.ai" text: White (#ffffff) - Visible on dark background */
-nav.nav-inverted .cls-4,
-nav.nav-inverted g.logo-wordmark path.cls-4,
-nav.nav-inverted svg .cls-4 {
-    fill: #ffffff !important;
+nav.nav-inverted .cls-4 {
+    fill: #ffffff !important; /* White "Ampere.ai" */
     stroke: none !important;
 }
 
-/* Mobile Logo: Keep all white for visibility */
+/* Mobile Logo: Keep all white */
 nav.nav-inverted .amp-logo-fill {
     fill: #ffffff !important;
     stroke: #ffffff !important;
 }
 
-/* 5. Hamburger Menu */
+/* 7. Hamburger Menu */
 nav.nav-inverted .amp-hamburger-line {
     background-color: #ffffff !important;
 }
@@ -486,18 +484,17 @@ nav.nav-inverted .amp-hamburger {
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* 6. Adjust the Pill/Link Container in the Menu */
-/* The gray pill container (bg-[#F4F4F5]) becomes a transparent white box on dark bg */
+/* 8. Link Container (Pill) */
 nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
     background-color: rgba(255,255,255,0.1) !important;
     border-color: rgba(255,255,255,0.2) !important;
     color: white !important;
 }
 
-/* 7. Active Link State (The white pill) */
+/* 9. Active Link State */
 nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
     background-color: #ffffff !important;
-    color: #0F172A !important; /* Text inside active pill becomes dark */
+    color: #0F172A !important;
 }
 </style>
 </head>
