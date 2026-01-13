@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Grid Animation: Trigger when section enters view (and reset when leaving)
             // Uses state tracking to prevent constant DOM updates/style invalidation
-            // Trigger earlier (20% down from top) to minimize "dark gap"
-            const currentlyInView = rect.top <= (window.innerHeight * 0.20) && rect.bottom >= 0;
+            // Trigger earlier (30% down from top) and use partial opacity base
+            const currentlyInView = rect.top <= (window.innerHeight * 0.3) && rect.bottom >= 0;
             
             if (currentlyInView !== gridInView) {
                 gridInView = currentlyInView;
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      if (gridHTop) { gridHTop.classList.remove('scale-x-0'); gridHTop.classList.add('scale-x-100'); }
                      if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
                      
-                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-0'); expertiseGradients.classList.add('opacity-100'); }
+                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-20'); expertiseGradients.classList.add('opacity-100'); }
                      
                      introReveals.forEach(el => {
                         el.classList.remove('opacity-0', 'translate-y-8');
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      if (gridHTop) { gridHTop.classList.remove('scale-x-100'); gridHTop.classList.add('scale-x-0'); }
                      if (gridHBottom) { gridHBottom.classList.remove('scale-x-100'); gridHBottom.classList.add('scale-x-0'); }
 
-                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-100'); expertiseGradients.classList.add('opacity-0'); }
+                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-100'); expertiseGradients.classList.add('opacity-20'); }
 
                      introReveals.forEach(el => {
                         el.classList.remove('opacity-100', 'translate-y-0');
