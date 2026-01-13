@@ -423,7 +423,12 @@ nav.nav-inverted {
 }
 
 /* 2. Turn the specific Segments DARK */
-nav.nav-inverted #amp-logo-segment,
+/* Update: Only the MENU segment gets the dark background */
+nav.nav-inverted #amp-logo-segment {
+    background-color: transparent !important; 
+    transition: background-color 0.3s ease;
+}
+
 nav.nav-inverted #amp-menu-segment {
     background-color: #0F172A !important; /* Slate-900 */
     transition: background-color 0.3s ease;
