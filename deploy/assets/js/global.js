@@ -34,3 +34,50 @@
     requestAnimationFrame(raf);
   }
 })();
+
+/* 
+ * Navigation Color Toggle Logic
+ * Merged from nav-color-toggle.js
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+    
+    // Select all potential theme sections
+    const themeSections = document.querySelectorAll('[data-nav-theme]');
+
+    function checkNavTheme() {
+        // We trigger around the vertical middle of the nav bar (approx 40px down)
+        const triggerPoint = 40; 
+        
+        let inverted = false;
+
+        for (const section of themeSections) {
+            const rect = section.getBoundingClientRect();
+            
+            // Logic: Is the "Trigger Point" (y=40px) inside this section's vertical bounds?
+            if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+                if (section.dataset.navTheme === 'invert') {
+                    inverted = true;
+                }
+                break; // First match
+            }
+        }
+
+        if (inverted) {
+            if (!nav.classList.contains('nav-inverted')) {
+               nav.classList.add('nav-inverted');
+            }
+        } else {
+            if (nav.classList.contains('nav-inverted')) {
+               nav.classList.remove('nav-inverted');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', checkNavTheme, { passive: true });
+    window.addEventListener('resize', checkNavTheme, { passive: true });
+    
+    // Initial check
+    setTimeout(checkNavTheme, 100); 
+});
