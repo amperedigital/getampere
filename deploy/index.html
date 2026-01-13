@@ -447,9 +447,11 @@ nav.nav-inverted #amp-menu-segment a {
     color: #ffffff !important;
 }
 
-nav.nav-inverted #amp-menu-segment a:hover {
+/* Hover on Inactive Links: Dark/Glassy Background (To Fix White-on-White issue) */
+nav.nav-inverted #amp-menu-segment a:not(.shadow-sm):hover {
+    background-color: rgba(255, 255, 255, 0.15) !important; 
     color: #ffffff !important;
-    opacity: 0.8;
+    opacity: 1 !important;
 }
 
 /* 6. Logo Colors - Custom Dark Mode Palette */
