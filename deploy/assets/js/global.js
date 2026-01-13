@@ -127,7 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridHBottom = document.getElementById('grid-line-h-bottom');
     const gridHTop = document.getElementById('grid-line-h-top');
 
-    // Intro Elements
+    // Intro Elements (Slide 1 Content)
+    const introReveals = document.querySelectorAll('.intro-content-reveal');
+    // Pre-intro Elements
     const introSection = document.getElementById('solid-expertise-intro');
     const introTexts = document.querySelectorAll('.scroll-reveal-text');
 
@@ -191,13 +193,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridInView = currentlyInView;
                 
                 if (gridInView) {
-                     // REVEAL: Expand from center
+                     // REVEAL: Expand from center / Fade In Content
                      if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
                      if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
+                     
+                     introReveals.forEach(el => {
+                        el.classList.remove('opacity-0', 'translate-y-8');
+                        el.classList.add('opacity-100', 'translate-y-0');
+                     });
                 } else {
-                     // HIDE: Shrink to center
+                     // HIDE: Shrink to center / Fade Out Content
                      if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
                      if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
+
+                     introReveals.forEach(el => {
+                        el.classList.remove('opacity-100', 'translate-y-0');
+                        el.classList.add('opacity-0', 'translate-y-8');
+                     });
                 }
             }
 
