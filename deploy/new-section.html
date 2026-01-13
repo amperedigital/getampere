@@ -1,5 +1,19 @@
 <!-- Expertise Section: Full Screen Sticky Slider -->
 <section id="expertise-section" class="relative bg-zinc-950 text-white selection:bg-purple-500/30">
+    <style>
+        @keyframes fadeUpIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .animate-text-reveal {
+            opacity: 0;
+        }
+        .animate-text-reveal.in-view {
+            animation: fadeUpIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-300 { animation-delay: 0.3s; }
+    </style>
     
     <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
     <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
@@ -25,10 +39,10 @@
             </div>
 
             <!-- 1. Top Header (Centered) -->
-            <header class="relative z-20 flex-none pt-24 lg:pt-32 text-center pointer-events-none">
+            <header class="relative z-20 flex-none pt-24 lg:pt-32 text-center pointer-events-none w-full">
                 <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] text-white">
-                    A solid expertise. <br>
-                    <span class="text-zinc-500 text-2xl sm:text-4xl block mt-4 font-normal">For more than 40 years.</span>
+                    <span class="block animate-text-reveal delay-100">A solid expertise.</span>
+                    <span class="text-zinc-500 text-2xl sm:text-4xl block mt-4 font-normal animate-text-reveal delay-300">For more than 40 years.</span>
                 </h2>
             </header>
 
@@ -183,6 +197,20 @@
             if (activeIndex === 2 && num2) num2.classList.add('text-white');
             
             ticking = false;
+        }
+
+        // 3. Text Reveal Observer
+        const textReveals = document.querySelectorAll('.animate-text-reveal');
+        if (textReveals.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            textReveals.forEach(el => observer.observe(el));
         }
 
         window.addEventListener('scroll', () => {
