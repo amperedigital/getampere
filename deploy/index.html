@@ -3356,9 +3356,20 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             <!-- Ambient Background (Noise) -->
             
             <!-- Unicorn Studio Background Container -->
-            <div id="expertise-gradients" data-us-project="qpSlPSWA2bdkUAYztz8z" class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                 <!-- Canvas injected by Unicorn Studio -->
+            <!-- Using w-full h-full left-0 top-0 to match working hero implementation -->
+            <div id="expertise-gradients" data-us-project="qpSlPSWA2bdkUAYztz8z" class="absolute w-full h-full left-0 top-0 z-0 pointer-events-none overflow-hidden mix-blend-screen">
             </div>
+            
+            <script>
+                // Force check for Unicorn Studio in case it initialized before this element was ready
+                if (window.UnicornStudio) {
+                    window.UnicornStudio.init();
+                } else {
+                    window.addEventListener('load', () => {
+                         if (window.UnicornStudio) window.UnicornStudio.init();
+                    });
+                }
+            </script>
             <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-2I don't see a clearly defined start and end to this expertise section that is the full width section.          <!-- Mouse Spotlight Gradient -->
             <!-- Note: Background radial-gradient controlled via CSS variable in global.js -->
             <div id="expertise-spotlight" class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500 opacity-0 bg-[radial-gradient(800px_circle_at_var(--mouse-x,50%)_var(--mouse-y,50%),rgba(120,50,255,0.1),transparent_50%)]">
