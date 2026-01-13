@@ -498,6 +498,31 @@ nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
     background-color: #ffffff !important;
     color: #0F172A !important;
 }
+
+/* 10. Request Demo Button - Inverted Mode */
+/* Strategy: White Background, Dark Text */
+
+/* Override the dark gradient backgrounds on the spans */
+nav.nav-inverted #amp-menu-segment button.group span.bg-gradient-to-b {
+    background: #ffffff !important;
+    border-radius: 9999px !important;
+}
+
+/* Text Color & Border */
+nav.nav-inverted #amp-menu-segment button.group span.flex {
+    color: #0F172A !important;        /* Dark Slate Text */
+    border-color: #ffffff !important; /* blend border */
+}
+
+/* Icon Stroke */
+nav.nav-inverted #amp-menu-segment button.group svg {
+    stroke: #0F172A !important;
+}
+
+/* Hover State for Demo Button in Dark Mode */
+nav.nav-inverted #amp-menu-segment button.group:hover span.bg-gradient-to-b {
+    background: #f4f4f5 !important; /* Slight gray on hover */
+}
 </style>
 </head>
 
