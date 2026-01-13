@@ -2472,7 +2472,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.372/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.373/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3378,14 +3378,17 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- "Four Corner" Grid Lines Background -->
             <div class="absolute inset-0 z-0 pointer-events-none">
-                <!-- Top Horizontal Line -->
-                <div id="grid-line-h-top" class="absolute top-[15vh] left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                <!-- Vertical Center Line (Connected between top and bottom lines) -->
-                <div id="grid-line-v" class="absolute left-1/2 top-[15vh] bottom-[15vh] w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                <!-- Horizontal Center Line (Restored) -->
+                <!-- Top Horizontal Line (Static Frame) -->
+                <div id="grid-line-h-top" class="absolute top-0 left-0 right-0 h-px bg-white/20"></div>
+                
+                <!-- Vertical Center Line (Animates) -->
+                <div id="grid-line-v" class="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                
+                <!-- Horizontal Center Line (Animates) -->
                 <div id="grid-line-h" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                <!-- Horizontal Lower Line (Intersecting at bottom) -->
-                <div id="grid-line-h-bottom" class="absolute bottom-[15vh] left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                
+                <!-- Bottom Horizontal Line (Static Frame) -->
+                <div id="grid-line-h-bottom" class="absolute bottom-0 left-0 right-0 h-px bg-white/20"></div>
             </div>
 
             <!-- 2. Main Content Area (Slides) -->

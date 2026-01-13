@@ -185,8 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (track.getBoundingClientRect().top <= window.innerHeight) {
                  if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
                  if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
-                 if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
-                 if (gridHTop) { gridHTop.classList.remove('scale-x-0'); gridHTop.classList.add('scale-x-100'); }
             }
             const viewportHeight = window.innerHeight;
             
