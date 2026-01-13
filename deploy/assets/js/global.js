@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Scroll Animation
     let ticking = false;
+    let gridInView = false; // State tracking for grid animation
+
     function updateSlider() {
         // A. Handle Intro Scroll Scrub
         if (introSection && introTexts.length) {
@@ -182,15 +184,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = track.getBoundingClientRect();
             
             // Grid Animation: Trigger when section enters view (and reset when leaving)
-            // Ensures "scroll interactive" feel by replaying animation on re-entry
-            const inView = rect.top <= window.innerHeight && rect.bottom >= 0;
+            // Uses state tracking to prevent constant DOM updates/style invalidation
+            const currentlyInView = rect.top <= window.innerHeight && rect.bottom >= 0;
             
-            if (inView) {
-                 if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
-                 if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
-            } else {
-                 if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
-                 if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
+            if (currentlyInView !== gridInView) {
+                gridInView = currentlyInView;
+                
+                if (gridInView) {
+                     // REVEAL: Expand from center
+                     if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
+                     if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
+                } else {
+                     // HIDE: Shrink to center
+                     if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
+                     if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
+                }
             }
 
             const viewportHeight = window.innerHeight;
