@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.slides = el.querySelectorAll('[data-slide]');
             this.spotlight = el.querySelector('[data-spotlight]');
             this.revealGroup = el.querySelectorAll('[data-reveal-group]');
+            this.revealBgs = el.querySelectorAll('[data-reveal-bg]');
             this.dots = Array.from(el.querySelectorAll('[data-nav-dot]'));
             this.nums = Array.from(el.querySelectorAll('[data-nav-num]'));
             
@@ -260,6 +261,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     el.classList.remove('opacity-100', 'translate-y-0');
                     el.classList.add('opacity-0', 'translate-y-8');
+                }
+            });
+
+            // Toggle background reveal elements (Fades 20% <-> 100%, No Translate)
+            this.revealBgs.forEach(el => {
+                if (show) {
+                    el.classList.remove('opacity-20');
+                    el.classList.add('opacity-100');
+                } else {
+                    el.classList.remove('opacity-100');
+                    el.classList.add('opacity-20');
                 }
             });
         }
