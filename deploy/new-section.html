@@ -1,172 +1,197 @@
-<!-- Expertise Section with Scroll-Progress & Spotlight -->
-<section id="expertise-section" class="relative bg-zinc-950 py-24 sm:py-32 overflow-hidden group">
-  <!-- 1. Ambient Background (Noise) -->
-  <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none z-0"></div>
-  
-  <!-- 2. The Spotlight Gradient -->
-  <div class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-       style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);">
-  </div>
-
-  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-    <div class="grid lg:grid-cols-12 gap-12 lg:gap-24">
-      
-      <!-- Left Column: Sticky Title + Dynamic Progress -->
-      <div class="lg:col-span-5">
-        <div class="sticky top-24">
-          <h2 class="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-16">
-            A solid expertise. <br>
-            <span class="text-zinc-500 block mt-2">For more than 40 years.</span>
-          </h2>
-          
-          <!-- Interactivity: Dynamic Scroll Progress -->
-          <div class="hidden lg:flex items-center gap-6 font-mono text-xs tracking-widest text-zinc-500">
-            <!-- 01 -->
-            <span id="prog-num-1" class="transition-colors duration-300 text-white">01</span>
-            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
-                <div id="prog-bar-1" class="absolute inset-0 bg-white w-full transition-transform duration-500 translate-x-0"></div>
-            </div>
-            
-            <!-- 02 -->
-            <span id="prog-num-2" class="transition-colors duration-300">02</span>
-            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
-                <div id="prog-bar-2" class="absolute inset-0 bg-white w-full transition-transform duration-500 -translate-x-full"></div>
-            </div>
-            
-            <!-- 03 -->
-            <span id="prog-num-3" class="transition-colors duration-300">03</span>
-            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
-                 <div id="prog-bar-3" class="absolute inset-0 bg-white w-full transition-transform duration-500 -translate-x-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Column: Scroll Trigger Items -->
-      <div class="lg:col-span-7 flex flex-col space-y-24">
+<!-- Expertise Section: Full Screen Sticky Slider -->
+<section id="expertise-section" class="relative bg-zinc-950 text-white selection:bg-purple-500/30">
+    
+    <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
+    <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
+    <div id="expertise-scroll-track" class="relative h-[300vh]">
         
-        <!-- Item 01 -->
-        <div id="expertise-item-1" class="group/item py-12 border-t border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
-          <div class="lg:pl-8 relative z-20">
-            <div class="flex items-baseline justify-between mb-6">
-                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Solutions</h3>
-                <span class="font-mono text-zinc-600 text-sm opacity-50">01</span>
+        <!-- Sticky Viewport: This pins to the screen while we scroll through the track -->
+        <div class="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+            
+            <!-- Ambient Background (Noise) -->
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none z-0"></div>
+            
+            <!-- Mouse Spotlight Gradient -->
+            <div id="expertise-spotlight" class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500 opacity-0"
+                 style="background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(120, 50, 255, 0.1), transparent 50%);">
             </div>
-            <div class="overflow-hidden">
-              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
-                Tailored solutions designed and thought out to meet your security needs and perfectly adapt to your organization.
-              </p>
-            </div>
-          </div>
-          <!-- Line Animation -->
-          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
-        </div>
 
-        <!-- Item 02 -->
-        <div id="expertise-item-2" class="group/item py-12 border-t border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
-          <div class="lg:pl-8 relative z-20">
-            <div class="flex items-baseline justify-between mb-6">
-                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Centralized platform</h3>
-                <span class="font-mono text-zinc-600 text-sm opacity-50">02</span>
+            <!-- "Four Corner" Grid Lines Background -->
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <!-- Vertical Center Line -->
+                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/5"></div>
+                <!-- Horizontal Center Line -->
+                <div class="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
             </div>
-            <div class="overflow-hidden space-y-6">
-              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
-                We created the Hub by NEVERHACK, a unique platform to facilitate your purchases and centralize your cyber tools.
-              </p>
-              <div class="pt-2">
-                 <button class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-medium text-sm transition-transform hover:scale-105 active:scale-95">
-                    Discover the Hub
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                 </button>
-              </div>
-            </div>
-          </div>
-          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
-        </div>
 
-        <!-- Item 03 -->
-        <div id="expertise-item-3" class="group/item py-12 border-t border-b border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
-          <div class="lg:pl-8 relative z-20">
-            <div class="flex items-baseline justify-between mb-6">
-                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Expertises</h3>
-                <span class="font-mono text-zinc-600 text-sm opacity-50">03</span>
-            </div>
-            <div class="overflow-hidden">
-              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
-                Our highly qualified and certified experts ensure the highest security standards to meet all your specific needs.
-              </p>
-            </div>
-          </div>
-          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
-        </div>
+            <!-- 1. Top Header (Centered) -->
+            <header class="relative z-20 flex-none pt-24 lg:pt-32 text-center pointer-events-none">
+                <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] text-white">
+                    A solid expertise. <br>
+                    <span class="text-zinc-500 text-2xl sm:text-4xl block mt-4 font-normal">For more than 40 years.</span>
+                </h2>
+            </header>
 
-      </div>
+            <!-- 2. Main Content Area (Slides) -->
+            <main id="expertise-slides" class="flex-1 relative w-full h-full flex items-center justify-center perspective-1000">
+                
+                <!-- Slide 1: Solutions -->
+                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-100 translate-y-0 scale-100 px-6" 
+                     data-index="0">
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
+                        <div class="text-center lg:text-right">
+                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
+                                Solutions
+                            </h3>
+                        </div>
+                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
+                                Tailored solutions designed and thought out to meet your security needs and perfectly adapt to your organization.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Centralization -->
+                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-0 translate-y-8 scale-95 px-6" 
+                     data-index="1">
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
+                        <div class="text-center lg:text-right">
+                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
+                                The Hub
+                            </h3>
+                        </div>
+                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0 space-y-8">
+                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
+                                A unique platform to facilitate your purchases and centralize your cyber tools in one dashboard.
+                            </p>
+                            <button class="pointer-events-auto inline-flex items-center gap-3 px-8 py-3 rounded-full bg-white text-black font-semibold tracking-wide hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
+                                Discover The Hub
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Expertise -->
+                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-0 translate-y-8 scale-95 px-6" 
+                     data-index="2">
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
+                        <div class="text-center lg:text-right">
+                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
+                                Expertise
+                            </h3>
+                        </div>
+                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
+                                Our highly qualified and certified experts ensure the highest security standards to meet all your specific needs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- 3. Bottom Navigation (Centered) -->
+            <footer class="relative z-20 flex-none pb-12 sm:pb-16 flex justify-center w-full pointer-events-none">
+                <div class="flex items-center gap-4 sm:gap-8 font-mono text-sm tracking-widest text-zinc-600">
+                    <span id="nav-num-0" class="nav-num text-white transition-colors duration-300">01</span>
+                    
+                    <!-- Progress Bar Container -->
+                    <div class="w-32 sm:w-64 h-px bg-zinc-800 relative overflow-hidden rounded-full">
+                        <div id="nav-progress-fill" class="absolute inset-y-0 left-0 bg-white w-1/3 transition-all duration-300 ease-out rounded-full" style="transform: translateX(0%);"></div>
+                    </div>
+
+                    <span id="nav-num-1" class="nav-num transition-colors duration-300">02</span>
+                    <span id="nav-num-2" class="nav-num transition-colors duration-300 ml-auto hidden sm:inline">03</span>
+                </div>
+            </footer>
+
+        </div>
     </div>
-  </div>
 
-  <script>
+    <script>
     (function() {
-      // 1. Spotlight Effect
-      const section = document.getElementById('expertise-section');
-      if (section) {
-        section.addEventListener('mousemove', (e) => {
-          const rect = section.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          section.style.setProperty('--mouse-x', `${x}px`);
-          section.style.setProperty('--mouse-y', `${y}px`);
-        });
-      }
+        const track = document.getElementById('expertise-scroll-track');
+        const slides = document.querySelectorAll('.expertise-slide');
+        const progressFill = document.getElementById('nav-progress-fill');
+        const section = document.getElementById('expertise-section');
+        const spotlight = document.getElementById('expertise-spotlight');
 
-      // 2. Scroll Progress Observer
-      const items = [1, 2, 3];
-      
-      const observerCallback = (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id; // expertise-item-1
-            const index = id.split('-')[2]; // 1
-            
-            // Activate Content Opacity
-            entry.target.setAttribute('data-active', 'true');
-            
-            // Update Indicators
-            items.forEach(i => {
-               const numEl = document.getElementById(`prog-num-${i}`);
-               const barEl = document.getElementById(`prog-bar-${i}`);
-               
-               if (i == index) {
-                 // Active
-                 numEl.classList.add('text-white');
-                 barEl.classList.remove('-translate-x-full');
-                 barEl.classList.add('translate-x-0');
-               } else {
-                 // Inactive
-                 numEl.classList.remove('text-white');
-                 barEl.classList.remove('translate-x-0');
-                 barEl.classList.add('-translate-x-full');
-               }
+        // 1. Mouse Spotlight
+        if (section && spotlight) {
+            section.addEventListener('mousemove', (e) => {
+                const rect = section.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                section.style.setProperty('--mouse-x', `${x}px`);
+                section.style.setProperty('--mouse-y', `${y}px`);
+                spotlight.style.opacity = '1';
             });
-          } else {
-             // Optional: Fade out when leaving? 
-             // Ideally we keep the last active one active, or just fade out when scrolling way past.
-             // For this style, typically non-centered items fade out.
-             if (entry.intersectionRatio < 0.2) {
-                entry.target.setAttribute('data-active', 'false');
-             }
-          }
+            section.addEventListener('mouseleave', () => {
+                spotlight.style.opacity = '0';
+            });
+        }
+
+        // 2. Scroll Animation
+        let ticking = false;
+        function updateSlider() {
+            if (!track) return;
+            const rect = track.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            
+            // Current progress through the stickiness
+            const totalScrollable = rect.height - viewportHeight;
+            let progress = -rect.top / totalScrollable;
+            progress = Math.max(0, Math.min(1, progress));
+
+            // Determine active slide
+            const slideCount = 3;
+            let activeIndex = Math.floor(progress * slideCount);
+            if (activeIndex >= slideCount) activeIndex = slideCount - 1;
+
+            // Update Slides
+            slides.forEach((slide, index) => {
+                if (index === activeIndex) {
+                    slide.style.opacity = '1';
+                    slide.style.transform = 'translateY(0) scale(1)';
+                } else if (index < activeIndex) {
+                     slide.style.opacity = '0';
+                     slide.style.transform = 'translateY(-30px) scale(0.95)';
+                } else {
+                     slide.style.opacity = '0';
+                     slide.style.transform = 'translateY(30px) scale(0.95)';
+                }
+            });
+
+            // Update Progress Bar
+            // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
+            const translateVal = progress * 200; 
+            if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
+
+            // Update Numbers
+            const num0 = document.getElementById('nav-num-0');
+            const num1 = document.getElementById('nav-num-1');
+            const num2 = document.getElementById('nav-num-2');
+            
+            if(num0) num0.classList.remove('text-white');
+            if(num1) num1.classList.remove('text-white');
+            if(num2) num2.classList.remove('text-white');
+
+            if (activeIndex === 0 && num0) num0.classList.add('text-white');
+            if (activeIndex === 1 && num1) num1.classList.add('text-white');
+            if (activeIndex === 2 && num2) num2.classList.add('text-white');
+            
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateSlider);
+                ticking = true;
+            }
         });
-      };
-
-      const observer = new IntersectionObserver(observerCallback, {
-        threshold: 0.5, // Trigger when 50% visible
-        rootMargin: "-10% 0px -10% 0px"
-      });
-
-      items.forEach(i => {
-        const el = document.getElementById(`expertise-item-${i}`);
-        if(el) observer.observe(el);
-      });
+        updateSlider();
     })();
-  </script>
+    </script>
 </section>
