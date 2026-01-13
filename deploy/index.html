@@ -438,7 +438,7 @@ font-family: 'Oswald', sans-serif !important;
 
   <nav class="fixed top-0 left-0 w-full z-50 bg-transparent transform-gpu" style="backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     <div class="flex w-full justify-end">
-        <div class="flex items-stretch h-20 gap-0">
+        <div class="flex items-stretch h-20 gap-0" id="amp-logo-segment">
           <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
             <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
               <defs>
@@ -513,7 +513,7 @@ font-family: 'Oswald', sans-serif !important;
             </g>
           </svg>
         </a>
-        <div class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
+        <div id="amp-menu-segment" class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
           <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
             <div class="hidden lg:flex bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl p-1 shadow-inner gap-1 items-center">
               <a href="#" class="transition-all text-xs font-medium text-[#0F172A] bg-white border border-[#E4E4E7] rounded-lg py-2 px-5 shadow-sm">Solutions</a>
@@ -3832,7 +3832,7 @@ font-family: 'Oswald', sans-serif !important;
 <!-- End Team Grid -->
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
-<!-- force deploy 20260103-2 -->
+<!-- force deploy 20260103-3 -->
 <style>
 /* Nav Inverted Mode (Triggered by JS on white sections) */
 nav.nav-inverted {
@@ -3876,3 +3876,29 @@ nav.nav-inverted .bg-\[\#F4F4F5\] {
     border-color: #E4E4E7 !important;
     opacity: 1 !important;
 }
+
+<style>
+/* Additional Overrides for Inverted Nav Segments */
+nav.nav-inverted #amp-menu-segment {
+    background-color: transparent !important;
+}
+
+nav.nav-inverted #amp-logo-segment {
+    background-color: transparent !important;
+}
+
+/* Ensure links in the menu segment turn dark */
+nav.nav-inverted #amp-menu-segment a {
+   /* Most links have specific classes, but this catches strays if any */
+}
+
+/* Force dark text on the Solutions/Research links if they rely on inheritance or specific colors */
+nav.nav-inverted #amp-menu-segment a.text-\[\#3F3F46\] {
+    color: #3F3F46 !important; /* Keep slate-700 equivalent */
+}
+nav.nav-inverted #amp-menu-segment a:hover {
+    color: #0F172A !important;
+}
+
+/* The primary active link (Solutions) is already #0F172A (slate-900), so it stays dark. Good. */
+</style>
