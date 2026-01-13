@@ -3832,73 +3832,64 @@ font-family: 'Oswald', sans-serif !important;
 <!-- End Team Grid -->
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
-<!-- force deploy 20260103-3 -->
-<style>
+<!-- force deploy 20260103-5 -->
 /* Nav Inverted Mode (Triggered by JS on white sections) */
+/* STRATEGY: Turn Backgrounds DARK, keep Text/Logos WHITE */
+
+/* 1. Reset Nav Wrapper */
 nav.nav-inverted {
-    background-color: transparent !important; /* Transparent Background */
+    background-color: transparent !important; 
     transition: background-color 0.3s ease;
 }
 
-/* Inverted Mode: Turn White Elements -> DARK using specific Slate/Black */
+/* 2. Turn the specific Segments DARK */
+nav.nav-inverted #amp-logo-segment,
+nav.nav-inverted #amp-menu-segment {
+    background-color: #0F172A !important; /* Slate-900 */
+    transition: background-color 0.3s ease;
+}
+
+/* 3. Ensure Text/Links are WHITE */
+nav.nav-inverted #amp-menu-segment a {
+    color: #ffffff !important;
+}
+
+nav.nav-inverted #amp-menu-segment a:hover {
+    color: #ffffff !important;
+    opacity: 0.8;
+}
+
+/* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
 nav.nav-inverted .cls-1, 
 nav.nav-inverted .cls-2, 
 nav.nav-inverted .cls-4,
 nav.nav-inverted g.logo-wordmark path.cls-4,
-nav.nav-inverted svg .cls-4 {
-    stroke: #0F172A !important; 
-    fill: #0F172A !important; 
-    opacity: 1 !important;
-}
-
+nav.nav-inverted svg .cls-4,
 nav.nav-inverted .amp-logo-fill {
-    fill: #0F172A !important; /* Mobile Logo Dark */
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
 }
 
+/* 5. Hamburger Menu */
 nav.nav-inverted .amp-hamburger-line {
-    background-color: #0F172A !important;
+    background-color: #ffffff !important;
 }
-
 nav.nav-inverted .amp-hamburger {
-    border-color: rgba(15, 23, 42, 0.2) !important;
-    background-color: rgba(15, 23, 42, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
 }
-</style>
 
-/* Explicitly darken the pill background on inverted mode as requested */
-nav.nav-inverted .bg-white\/5 {
+/* 6. Adjust the Pill/Link Container in the Menu */
+/* The gray pill container (bg-[#F4F4F5]) becomes a transparent white box on dark bg */
+nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
     background-color: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: white !important;
 }
 
-/* Ensure the Nav Pill container stays light/visible */
-nav.nav-inverted .bg-\[\#F4F4F5\] {
-    background-color: #F4F4F5 !important;
-    border-color: #E4E4E7 !important;
-    opacity: 1 !important;
+/* 7. Active Link State (The white pill) */
+nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
+    background-color: #ffffff !important;
+    color: #0F172A !important; /* Text inside active pill becomes dark */
 }
-
-<style>
-/* Additional Overrides for Inverted Nav Segments */
-nav.nav-inverted #amp-menu-segment {
-    background-color: transparent !important;
-}
-
-nav.nav-inverted #amp-logo-segment {
-    background-color: transparent !important;
-}
-
-/* Ensure links in the menu segment turn dark */
-nav.nav-inverted #amp-menu-segment a {
-   /* Most links have specific classes, but this catches strays if any */
-}
-
-/* Force dark text on the Solutions/Research links if they rely on inheritance or specific colors */
-nav.nav-inverted #amp-menu-segment a.text-\[\#3F3F46\] {
-    color: #3F3F46 !important; /* Keep slate-700 equivalent */
-}
-nav.nav-inverted #amp-menu-segment a:hover {
-    color: #0F172A !important;
-}
-
-/* The primary active link (Solutions) is already #0F172A (slate-900), so it stays dark. Good. */
 </style>
