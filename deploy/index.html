@@ -524,7 +524,7 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
 }
 
 /* 11. Request Demo Shiny Button - Navigation Override */
-/* Adjusts the shiny button to fit the nav and animate only on hover */
+/* Adjusts the shiny button to fit the nav but keeps animations consistent with other buttons */
 .shiny-cta.nav-cta {
     padding: 0.6rem 1.5rem !important;
     font-size: 0.75rem !important;
@@ -535,25 +535,7 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
     gap: 0.5rem !important;
     display: flex !important;
     align-items: center !important;
-    box-shadow: none !important; /* Remove static shadow if any */
-    animation-play-state: paused !important;
-}
-
-/* Pause the shimmer effect by default */
-.shiny-cta.nav-cta::after {
-    animation-play-state: paused !important;
-    opacity: 0; /* Hide the shimmer trail when static for cleaner look */
-    transition: opacity 0.3s ease;
-}
-
-/* On Hover: Run animations */
-.shiny-cta.nav-cta:hover {
-    animation-play-state: running !important;
-}
-
-.shiny-cta.nav-cta:hover::after {
-    animation-play-state: running !important;
-    opacity: 0.6; /* Restore low opacity shimmer */
+    box-shadow: none !important;
 }
 </style>
 </head>
