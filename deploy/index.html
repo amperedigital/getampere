@@ -3362,83 +3362,89 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             <!-- "Four Corner" Grid Lines Background -->
             <div class="absolute inset-0 z-0 pointer-events-none">
                 <!-- Vertical Center Line -->
-                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/5"></div>
+                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/10"></div>
                 <!-- Horizontal Center Line -->
-                <div class="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
+                <div class="absolute top-1/2 left-0 right-0 h-px bg-white/10"></div>
+                
+                <!-- Ambient Purple Glows -->
+                <div class="absolute bottom-0 left-0 w-[80vw] h-[80vh] bg-blue-700/20 blur-[120px] rounded-full mix-blend-screen opacity-60 translate-y-1/3 -translate-x-1/4"></div>
+                <div class="absolute top-1/2 right-0 w-[60vw] h-[60vh] bg-purple-600/10 blur-[100px] rounded-full mix-blend-screen opacity-40 translate-x-1/3 -translate-y-1/2"></div>
             </div>
 
             <!-- 2. Main Content Area (Slides) -->
-            <main id="expertise-slides" class="flex-1 relative w-full h-full flex items-center justify-center perspective-1000">
+            <main id="expertise-slides" class="flex-1 relative w-full h-full">
                 
                 <!-- Slide 1: Solutions -->
-                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-100 translate-y-0 scale-100 px-6" 
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
                      data-index="0">
-                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
-                        <div class="text-center lg:text-right">
-                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
-                                Solutions
-                            </h3>
-                        </div>
-                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
-                                Tailored solutions designed and thought out to meet your security needs and perfectly adapt to your organization.
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12 border-white/0">
+                        <h3 class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                           Solutions
+                        </h3>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12 pt-8 sm:pt-20">
+                        <div class="max-w-md">
+                            <p class="text-base sm:text-lg text-zinc-200 font-light leading-relaxed">
+                                Tailored solutions designed and thought out to meet your security needs and perfectly adapt to your organization, regardless of its size.
                             </p>
                         </div>
-                    </div>
+                     </div>
                 </div>
 
-                <!-- Slide 2: Centralization -->
-                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-0 translate-y-8 scale-95 px-6" 
+                <!-- Slide 2: The Hub -->
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
                      data-index="1">
-                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
-                        <div class="text-center lg:text-right">
-                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
-                                The Hub
-                            </h3>
-                        </div>
-                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0 space-y-8">
-                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
+                        <h3 class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                           The Hub
+                        </h3>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12 pt-8 sm:pt-20">
+                        <div class="max-w-md space-y-6">
+                            <p class="text-base sm:text-lg text-zinc-200 font-light leading-relaxed">
                                 A unique platform to facilitate your purchases and centralize your cyber tools in one dashboard.
                             </p>
-                            <button class="pointer-events-auto inline-flex items-center gap-3 px-8 py-3 rounded-full bg-white text-black font-semibold tracking-wide hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
+                            <button class="pointer-events-auto inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white text-black font-medium text-sm hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95">
                                 Discover The Hub
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </button>
                         </div>
-                    </div>
+                     </div>
                 </div>
 
                 <!-- Slide 3: Expertise -->
-                <div class="expertise-slide absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-700 ease-out opacity-0 translate-y-8 scale-95 px-6" 
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
                      data-index="2">
-                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl gap-12 lg:gap-24 items-center">
-                        <div class="text-center lg:text-right">
-                            <h3 class="text-5xl sm:text-7xl lg:text-[7rem] xl:text-[9rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-600 leading-none">
-                                Expertise
-                            </h3>
-                        </div>
-                        <div class="text-center lg:text-left max-w-xl mx-auto lg:mx-0">
-                            <p class="text-xl sm:text-2xl text-zinc-400 leading-relaxed font-light">
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
+                        <h3 class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                           Expertise
+                        </h3>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12 pt-8 sm:pt-20">
+                        <div class="max-w-md">
+                            <p class="text-base sm:text-lg text-zinc-200 font-light leading-relaxed">
                                 Our highly qualified and certified experts ensure the highest security standards to meet all your specific needs.
                             </p>
                         </div>
-                    </div>
+                     </div>
                 </div>
 
             </main>
 
             <!-- 3. Bottom Navigation (Centered) -->
-            <footer id="expertise-nav" class="relative z-20 flex-none pb-12 sm:pb-16 flex justify-center w-full pointer-events-none">
-                <div class="flex items-center gap-4 sm:gap-8 font-mono text-sm tracking-widest text-zinc-600">
+            <footer id="expertise-nav" class="relative z-20 flex-none pb-8 sm:pb-12 flex justify-center w-full pointer-events-none">
+                <div class="flex items-center gap-2 font-mono text-xs sm:text-sm tracking-widest text-zinc-600">
                     <span id="nav-num-0" class="nav-num text-white transition-colors duration-300">01</span>
-                    
-                    <!-- Progress Bar Container -->
-                    <div class="w-32 sm:w-64 h-px bg-zinc-800 relative overflow-hidden rounded-full">
-                        <div id="nav-progress-fill" class="absolute inset-y-0 left-0 bg-white w-1/3 transition-all duration-300 ease-out rounded-full translate-x-0"></div>
-                    </div>
-
+                    <span class="text-zinc-700">:::::::::::::::::</span>
                     <span id="nav-num-1" class="nav-num transition-colors duration-300">02</span>
-                    <span id="nav-num-2" class="nav-num transition-colors duration-300 ml-auto hidden sm:inline">03</span>
+                    <span class="text-zinc-700">:::::::::::::::::</span>
+                    <span id="nav-num-2" class="nav-num transition-colors duration-300 hidden sm:inline">03</span>
                 </div>
             </footer>
 
