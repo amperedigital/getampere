@@ -216,13 +216,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Update Progress Bar
             // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
-            const translateVal = progress * 200; 
-            if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
+            // const translateVal = progress * 200; 
+            // if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
 
-            // Update Numbers
+            // Update Numbers & Progress Dots
             const num0 = document.getElementById('nav-num-0');
             const num1 = document.getElementById('nav-num-1');
             const num2 = document.getElementById('nav-num-2');
+            const dots1 = document.getElementById('nav-dots-1');
+            const dots2 = document.getElementById('nav-dots-2');
             
             if(num0) num0.classList.remove('text-white');
             if(num1) num1.classList.remove('text-white');
@@ -231,6 +233,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeIndex === 0 && num0) num0.classList.add('text-white');
             if (activeIndex === 1 && num1) num1.classList.add('text-white');
             if (activeIndex === 2 && num2) num2.classList.add('text-white');
+
+            // Calculate granular progress (0.0 -> 2.0 total range for 3 slides)
+            // progress is 0->1. mapped to slides.
+            // visual progress needs to fill dots between 01-02 and 02-03.
+            // There are 2 sets of dots.
+            // progress 0.0 -> 0.5 : Fill dots1 (0% -> 100%)
+            // progress 0.5 -> 1.0 : Fill dots2 (0% -> 100%)
+            
+            let p = progress * 2; // Range 0 -> 2
+            
+            // Dots 1
+            if (dots1) {
+                let d1 = Math.max(0, Math.min(1, p)); // 0 to 1
+                dots1.style.width = `${d1 * 100}%`;
+            }
+
+            // Dots 2
+            if (dots2) {
+                let d2 = Math.max(0, Math.min(1, p - 1)); // 0 to 1 (starting after p=1)
+                dots2.style.width = `${d2 * 100}%`;
+            }
         }
 
         ticking = false;
