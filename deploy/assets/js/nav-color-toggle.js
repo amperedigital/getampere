@@ -1,6 +1,6 @@
 /**
- * Navigation Color Toggle v2
- * Uses elementFromPoint to accurately detect the visual section undergoing the header.
+ * Navigation Color Toggle v3
+ * Uses elementsFromPoint to "pierce" through the fixed nav and detect the underlying section.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,19 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!nav) return;
 
     function checkNavTheme() {
-        // Sample a point just below the nav bar (e.g., 100px down from top, center width)
-        // This tells us what the user is "looking at" or what is behind the nav area.
+        // Sample a point in the vertical center of the nav header
         const x = window.innerWidth / 2;
-        const y = 80; // approximate nav height
+        // 40px is rough center of h-20 (80px) nav header
+        const y = 40; 
 
-        // Get the element at that point
-        const element = document.elementFromPoint(x, y);
-        if (!element) return;
-
-        // Find the closest section or container with a theme defined
-        const section = element.closest('[data-nav-theme]');
+        // Get all elements at that point (z-order: top to bottom)
+        // This allows us to see "through" the nav bar if it is the top element.
+        const elements = document.elementsFromPoint(x, y);
         
-        if (section && section.dataset.navTheme === 'invert') {
+        let foundSection = null;
+
+        for (const el of elements) {
+            // Find the closest ancestor of this element that has a nav theme
+            const section = el.closest('[data-nav-theme]');
+            if (section) {
+                foundSection = section;
+                break; // Found the top-most thematic section
+            }
+        }
+
+        if (foundSection && foundSection.dataset.navTheme === 'invert') {
             nav.classList.add('nav-inverted');
         } else {
             nav.classList.remove('nav-inverted');
