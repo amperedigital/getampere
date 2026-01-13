@@ -113,193 +113,208 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /*
- * Expertise Section Logic (Sticky Slider & Intro Scrub)
- * Moved from index.html
+ * Generic Scroll & Sticky Feature Logic
+ * Replaces hardcoded expertise section logic with data-driven attributes.
  */
 document.addEventListener('DOMContentLoaded', () => {
-    const track = document.getElementById('expertise-scroll-track');
-    const slides = document.querySelectorAll('.expertise-slide');
-    const progressFill = document.getElementById('nav-progress-fill');
-    const section = document.getElementById('expertise-section');
-    const spotlight = document.getElementById('expertise-spotlight');
-    const gridV = document.getElementById('grid-line-v');
-    const gridH = document.getElementById('grid-line-h');
-    const gridHBottom = document.getElementById('grid-line-h-bottom');
-    const gridHTop = document.getElementById('grid-line-h-top');
-    const expertiseGradients = document.getElementById('expertise-gradients');
-
-    // Intro Elements (Slide 1 Content)
-    const introReveals = document.querySelectorAll('.intro-content-reveal');
-    // Pre-intro Elements
-    const introSection = document.getElementById('solid-expertise-intro');
-    const introTexts = document.querySelectorAll('.scroll-reveal-text');
-
-    // 1. Mouse Spotlight (Background Gradient Tracking)
-    if (section && spotlight) {
-        section.addEventListener('mousemove', (e) => {
-            const rect = section.getBoundingClientRect();
+    
+    // --- 1. Mouse Spotlight Logic (Generic) ---
+    const spotlights = document.querySelectorAll('[data-spotlight-container]');
+    spotlights.forEach(container => {
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            section.style.setProperty('--mouse-x', `${x}px`);
-            section.style.setProperty('--mouse-y', `${y}px`);
+            container.style.setProperty('--mouse-x', `${x}px`);
+            container.style.setProperty('--mouse-y', `${y}px`);
         });
-    }
+    });
 
-    // 2. Scroll Animation
-    let ticking = false;
-    let gridInView = false; // State tracking for grid animation
-
-    function updateSlider() {
-        // A. Handle Intro Scroll Scrub
-        if (introSection && introTexts.length) {
-             const rect = introSection.getBoundingClientRect();
-             const winH = window.innerHeight;
-             
-             // Distance of element center from viewport center
-             const centerDist = (rect.top + rect.height/2) - (winH / 2);
-             const bloomRange = winH * 0.6; // Distance over which it fades in/out
-             
-             // 1.0 = Center, 0.0 = Edges
-             let bloom = 1 - (Math.abs(centerDist) / bloomRange);
-             bloom = Math.max(0, Math.min(1, bloom));
-             
-             // Apply scrub to texts
-             introTexts.forEach((el, i) => {
-                // Add slight lag for 2nd line
+    // --- 2. Scroll Scrub Logic (Bloom/Fade In-Out) ---
+    class ScrollScrubber {
+        constructor(el) {
+            this.el = el;
+            this.targets = el.querySelectorAll('[data-scrub-target]');
+            this.targets.forEach(t => t.style.willChange = 'opacity, transform, filter');
+        }
+        
+        update() {
+            const rect = this.el.getBoundingClientRect();
+            const winH = window.innerHeight;
+            
+            const centerDist = (rect.top + rect.height/2) - (winH / 2);
+            const bloomRange = winH * 0.6; 
+            
+            let bloom = 1 - (Math.abs(centerDist) / bloomRange);
+            bloom = Math.max(0, Math.min(1, bloom));
+            
+            this.targets.forEach((target, i) => {
                 let p = bloom - (i * 0.15); 
                 p = Math.max(0, Math.min(1, p));
                 
-                // Easing for smoother feel
-                const eased = p * p * (3 - 2 * p); 
+                // Smoother easing
+                const eased = p * p * (3 - 2 * p);
                 
-                el.style.opacity = eased.toFixed(3);
-                el.style.transform = `translateY(${(1 - eased) * 40}px)`;
-                el.style.filter = `blur(${(1 - eased) * 10}px)`;
-             });
+                // Optimization: Round to 3 decimal places to avoid sub-pixel jitter
+                const opacity = eased.toFixed(3);
+                const transformY = ((1 - eased) * 40).toFixed(1);
+                const blur = ((1 - eased) * 10).toFixed(1);
+                
+                target.style.opacity = opacity;
+                target.style.transform = `translate3d(0, ${transformY}px, 0)`; // 3d for hardware accel
+                target.style.filter = `blur(${blur}px)`;
+            });
+        }
+    }
+
+    // --- 3. Sticky Slideshow Logic ---
+    class StickySlideshow {
+        constructor(el) {
+            this.el = el;
+            this.track = el.querySelector('[data-track]');
+            this.slides = el.querySelectorAll('[data-slide]');
+            this.spotlight = el.querySelector('[data-spotlight]');
+            this.revealGroup = el.querySelectorAll('[data-reveal-group]');
+            this.dots = Array.from(el.querySelectorAll('[data-nav-dot]'));
+            this.nums = Array.from(el.querySelectorAll('[data-nav-num]'));
+            
+            // Grid Elements (Optional: Specific animation toggles)
+            this.grids = el.querySelectorAll('[data-grid-anim]');
+            
+            this.state = {
+                inView: false,
+                activeIndex: -1
+            };
         }
 
-        // B. Handle Sticky Slider (only if track exists)
-        if (track) {
-            const rect = track.getBoundingClientRect();
+        update() {
+            if (!this.track) return;
             
-            // Grid Animation: Trigger when section enters view (and reset when leaving)
-            // Uses state tracking to prevent constant DOM updates/style invalidation
-            // Trigger earlier (30% down from top) and use partial opacity base
-            const currentlyInView = rect.top <= (window.innerHeight * 0.3) && rect.bottom >= 0;
+            const rect = this.track.getBoundingClientRect();
+            const winH = window.innerHeight;
+
+            // A. Visibility / Entrance Animation
+            // Trigger earlier (30% down)
+            const currentlyInView = rect.top <= (winH * 0.3) && rect.bottom >= 0;
             
-            if (currentlyInView !== gridInView) {
-                gridInView = currentlyInView;
-                
-                if (gridInView) {
-                     // REVEAL: Expand from center / Fade In Content
-                     if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
-                     if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
-                     if (gridHTop) { gridHTop.classList.remove('scale-x-0'); gridHTop.classList.add('scale-x-100'); }
-                     if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
-                     
-                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-20'); expertiseGradients.classList.add('opacity-100'); }
-                     if (spotlight) { spotlight.classList.remove('opacity-0'); spotlight.classList.add('opacity-100'); }
-                     
-                     introReveals.forEach(el => {
-                        el.classList.remove('opacity-0', 'translate-y-8');
-                        el.classList.add('opacity-100', 'translate-y-0');
-                     });
-                } else {
-                     // HIDE: Shrink to center / Fade Out Content
-                     if (gridV) { gridV.classList.remove('scale-y-100'); gridV.classList.add('scale-y-0'); }
-                     if (gridH) { gridH.classList.remove('scale-x-100'); gridH.classList.add('scale-x-0'); }
-                     if (gridHTop) { gridHTop.classList.remove('scale-x-100'); gridHTop.classList.add('scale-x-0'); }
-                     if (gridHBottom) { gridHBottom.classList.remove('scale-x-100'); gridHBottom.classList.add('scale-x-0'); }
-
-                     if (expertiseGradients) { expertiseGradients.classList.remove('opacity-100'); expertiseGradients.classList.add('opacity-20'); }
-                     if (spotlight) { spotlight.classList.remove('opacity-100'); spotlight.classList.add('opacity-0'); }
-
-                     introReveals.forEach(el => {
-                        el.classList.remove('opacity-100', 'translate-y-0');
-                        el.classList.add('opacity-0', 'translate-y-8');
-                     });
-                }
+            if (currentlyInView !== this.state.inView) {
+                this.state.inView = currentlyInView;
+                this.toggleVisibility(currentlyInView);
             }
 
-            const viewportHeight = window.innerHeight;
-            
-            // Current progress through the stickiness
-            const totalScrollable = rect.height - viewportHeight;
+            // B. Scroll Progress
+            const totalScrollable = rect.height - winH;
+            // Progress 0.0 to 1.0 (clamped)
             let progress = -rect.top / totalScrollable;
             progress = Math.max(0, Math.min(1, progress));
-
-            // Determine active slide
-            const slideCount = 3;
+            
+            // C. Active Slide Calculation
+            const slideCount = this.slides.length;
             let activeIndex = Math.floor(progress * slideCount);
             if (activeIndex >= slideCount) activeIndex = slideCount - 1;
-
-            // Update Slides
-            slides.forEach((slide, index) => {
+            
+            // Apply Slide Transitions
+            this.slides.forEach((slide, index) => {
+                // Determine checking state only to minimize DOM writes
+                // But typically simple style updates are okay
                 if (index === activeIndex) {
                     slide.style.opacity = '1';
-                    slide.style.transform = 'translateY(0) scale(1)';
+                    slide.style.transform = 'translate3d(0, 0, 0) scale(1)';
                 } else if (index < activeIndex) {
-                     // Previous slides go up
-                     slide.style.opacity = '0';
-                     slide.style.transform = 'translateY(-30px) scale(0.95)';
+                    slide.style.opacity = '0';
+                    slide.style.transform = 'translate3d(0, -30px, 0) scale(0.95)';
                 } else {
-                     // Next slides stay down
-                     slide.style.opacity = '0';
-                     slide.style.transform = 'translateY(30px) scale(0.95)';
+                    slide.style.opacity = '0';
+                    slide.style.transform = 'translate3d(0, 30px, 0) scale(0.95)';
                 }
             });
 
-            // Update Progress Bar
-            // Map 0 -> 1 progress to 0 -> 200% transform (since width is 1/3)
-            // const translateVal = progress * 200; 
-            // if(progressFill) progressFill.style.transform = `translateX(${translateVal}%)`;
-
-            // Update Numbers & Progress Dots
-            const num0 = document.getElementById('nav-num-0');
-            const num1 = document.getElementById('nav-num-1');
-            const num2 = document.getElementById('nav-num-2');
-            const dots1 = document.getElementById('nav-dots-1');
-            const dots2 = document.getElementById('nav-dots-2');
-            
-            if(num0) num0.classList.remove('text-white');
-            if(num1) num1.classList.remove('text-white');
-            if(num2) num2.classList.remove('text-white');
-
-            if (activeIndex === 0 && num0) num0.classList.add('text-white');
-            if (activeIndex === 1 && num1) num1.classList.add('text-white');
-            if (activeIndex === 2 && num2) num2.classList.add('text-white');
-
-            // Calculate granular progress (0.0 -> 2.0 total range for 3 slides)
-            // progress is 0->1. mapped to slides.
-            // visual progress needs to fill dots between 01-02 and 02-03.
-            // There are 2 sets of dots.
-            // progress 0.0 -> 0.5 : Fill dots1 (0% -> 100%)
-            // progress 0.5 -> 1.0 : Fill dots2 (0% -> 100%)
-            
-            let p = progress * 2; // Range 0 -> 2
-            
-            // Dots 1
-            if (dots1) {
-                let d1 = Math.max(0, Math.min(1, p)); // 0 to 1
-                dots1.style.width = `${d1 * 100}%`;
-            }
-
-            // Dots 2
-            if (dots2) {
-                let d2 = Math.max(0, Math.min(1, p - 1)); // 0 to 1 (starting after p=1)
-                dots2.style.width = `${d2 * 100}%`;
-            }
+            // D. Update Nav Dots
+            this.updateNav(progress, slideCount, activeIndex);
         }
 
-        ticking = false;
+        toggleVisibility(show) {
+            // Toggle Grids (Scale X/Y)
+            this.grids.forEach(g => {
+                const axis = g.dataset.gridAxis || 'x'; // 'x' or 'y'
+                if (show) {
+                    g.classList.remove(axis === 'y' ? 'scale-y-0' : 'scale-x-0');
+                    g.classList.add(axis === 'y' ? 'scale-y-100' : 'scale-x-100');
+                } else {
+                    g.classList.remove(axis === 'y' ? 'scale-y-100' : 'scale-x-100');
+                    g.classList.add(axis === 'y' ? 'scale-y-0' : 'scale-x-0');
+                }
+            });
+
+            // Toggle Spotlight
+            if (this.spotlight) {
+                this.spotlight.classList.toggle('opacity-100', show);
+                this.spotlight.classList.toggle('opacity-0', !show);
+            }
+
+            // Toggle generic reveal groups
+            this.revealGroup.forEach(el => {
+                if (show) {
+                    el.classList.remove('opacity-0', 'translate-y-8');
+                    el.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    el.classList.remove('opacity-100', 'translate-y-0');
+                    el.classList.add('opacity-0', 'translate-y-8');
+                }
+            });
+        }
+
+        updateNav(progress, count, activeIndex) {
+            // Update Numbers
+            this.nums.forEach((num, i) => {
+                if (i === activeIndex) num.classList.add('text-white');
+                else num.classList.remove('text-white');
+            });
+
+            // Update Dots (Fill based on segment progress)
+            // Total range is 0 -> (count - 1)
+            // If count is 3, segments are 0->1, 1->2. 
+            // Total progress 0->1 maps to 0->(count-1).
+            if (count <= 1) return;
+
+            const totalSegments = count - 1;
+            const mappedProgress = progress * totalSegments; // 0.0 -> 2.0
+
+            this.dots.forEach((dot, i) => {
+                // Dot 0 fills from 0.0->1.0
+                // Dot 1 fills from 1.0->2.0
+                let p = mappedProgress - i;
+                p = Math.max(0, Math.min(1, p));
+                dot.style.width = `${p * 100}%`;
+            });
+        }
     }
 
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(updateSlider);
-            ticking = true;
-        }
-    });
-    updateSlider(); // Initial run
+    // --- 4. Initialization ---
+    const scrubbers = Array.from(document.querySelectorAll('[data-scroll-scrub]'))
+                           .map(el => new ScrollScrubber(el));
+                           
+    const stickySlideshows = Array.from(document.querySelectorAll('[data-sticky-slideshow]'))
+                                  .map(el => new StickySlideshow(el));
+
+    let ticking = false;
+    
+    // Check if we have active components before attaching generic listener
+    if (scrubbers.length > 0 || stickySlideshows.length > 0) {
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    scrubbers.forEach(s => s.update());
+                    stickySlideshows.forEach(s => s.update());
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+        
+        // Initial Update
+        scrubbers.forEach(s => s.update());
+        stickySlideshows.forEach(s => s.update());
+    }
 });
 
