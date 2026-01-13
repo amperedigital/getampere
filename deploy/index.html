@@ -524,9 +524,9 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
 }
 
 /* 11. Request Demo Shiny Button - Navigation Override */
-/* Adjusts the shiny button to fit the nav, preserving the exact same visual effects */
+/* Default State: Clean Black Button (Static) */
 .shiny-cta.nav-cta {
-    padding: 0.5rem 1.25rem !important; /* Smaller size for nav */
+    padding: 0.5rem 1.25rem !important;
     font-size: 0.75rem !important;
     line-height: 1rem !important;
     text-transform: uppercase;
@@ -535,7 +535,41 @@ nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b
     gap: 0.5rem !important;
     display: flex !important;
     align-items: center !important;
-    /* Do NOT override box-shadow or background - keep standard shiny-cta effects */
+    
+    /* Force White Text/Icon even in inverted nav */
+    color: #ffffff !important; 
+    
+    /* Static Appearance: Remove spin/gradient, use subtle border */
+    background: #000000 !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    animation: none !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05) !important;
+}
+
+/* Force SVG Icon White */
+.shiny-cta.nav-cta svg {
+    stroke: #ffffff !important;
+    transition: transform 0.3s ease;
+}
+
+/* Hide Shimmer Trail by default */
+.shiny-cta.nav-cta::after {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+/* Hover State: Activate Shiny Effects */
+.shiny-cta.nav-cta:hover {
+    /* Restore the shiny gradient border */
+    background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box !important;
+    border: 2px solid transparent !important;
+    animation: border-spin 2.5s linear infinite !important;
+}
+
+/* Activate Shimmer on Hover */
+.shiny-cta.nav-cta:hover::after {
+    opacity: 0.6 !important;
+    animation: shimmer 4s linear infinite !important;
 }
 </style>
 </head>
