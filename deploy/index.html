@@ -440,14 +440,29 @@ nav.nav-inverted #amp-menu-segment a:hover {
 }
 
 /* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
+/* Update: Specific filtering based on user request */
+/* "A" Mark Area: Dark Fill (blend with bg), White Stroke */
 nav.nav-inverted .cls-1, 
-nav.nav-inverted .cls-2, 
+nav.nav-inverted .cls-2 {
+    fill: #0F172A !important;
+    stroke: #ffffff !important;
+}
+
+/* "get" text: Blue (#00bee6) */
 nav.nav-inverted .cls-3,
+nav.nav-inverted g.logo-wordmark path.cls-3,
+nav.nav-inverted svg .cls-3 {
+    fill: #00bee6 !important;
+}
+
+/* "ampere.ai" text: White */
 nav.nav-inverted .cls-4,
 nav.nav-inverted g.logo-wordmark path.cls-4,
-nav.nav-inverted g.logo-wordmark path.cls-3,
-nav.nav-inverted svg .cls-4,
-nav.nav-inverted svg .cls-3,
+nav.nav-inverted svg .cls-4 {
+    fill: #ffffff !important;
+}
+
+/* Mobile Logo: Keep all white for visibility */
 nav.nav-inverted .amp-logo-fill {
     fill: #ffffff !important;
     stroke: #ffffff !important;
