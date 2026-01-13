@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotlight = document.getElementById('expertise-spotlight');
     const gridV = document.getElementById('grid-line-v');
     const gridH = document.getElementById('grid-line-h');
+    const gridHBottom = document.getElementById('grid-line-h-bottom');
 
     // Intro Elements
     const introSection = document.getElementById('solid-expertise-intro');
@@ -180,11 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = track.getBoundingClientRect();
             
             // Grid Animation: Trigger when section enters view
-            if (gridV && gridH && rect.top <= window.innerHeight) {
-                 gridV.classList.remove('scale-y-0');
-                 gridV.classList.add('scale-y-100');
-                 gridH.classList.remove('scale-x-0');
-                 gridH.classList.add('scale-x-100');
+            if (track.getBoundingClientRect().top <= window.innerHeight) {
+                 if (gridV) { gridV.classList.remove('scale-y-0'); gridV.classList.add('scale-y-100'); }
+                 if (gridH) { gridH.classList.remove('scale-x-0'); gridH.classList.add('scale-x-100'); }
+                 if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
             }
             const viewportHeight = window.innerHeight;
             
