@@ -440,25 +440,17 @@ nav.nav-inverted #amp-menu-segment a:hover {
 }
 
 /* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
-/* Update: Specific filtering based on user request */
+/* Update: Strict Color Swap per User Request */
+/* "Change what is white to dark" */
 
-/* 1. The Logo Mark ("A") - cls-1 */
-/* Turn the solid triangle into a Hollow White Outline */
-nav.nav-inverted .cls-1 {
-    fill: transparent !important;    /* Show dark bg through the center */
-    stroke: #ffffff !important;      /* White Outline */
-    stroke-width: 12px !important;   /* Thicken the line to creates the logo body */
-    paint-order: stroke fill;
-}
-
-/* 2. The Background Tab Shape - cls-2 */
-/* Completely hide the background container in dark mode */
+/* cls-1 (Mark) and cls-2 (Background Shape) -> Dark */
+nav.nav-inverted .cls-1, 
 nav.nav-inverted .cls-2 {
-    display: none !important;
-    opacity: 0 !important;
+    fill: #0F172A !important;
+    stroke: #0F172A !important;
 }
 
-/* 3. "get" text: Blue (#00bee6) */
+/* "get" text: Blue (#00bee6) - Original */
 nav.nav-inverted .cls-3,
 nav.nav-inverted g.logo-wordmark path.cls-3,
 nav.nav-inverted svg .cls-3 {
@@ -466,7 +458,7 @@ nav.nav-inverted svg .cls-3 {
     stroke: none !important;
 }
 
-/* 4. "ampere.ai" text: White */
+/* "ampere.ai" text: White */
 nav.nav-inverted .cls-4,
 nav.nav-inverted g.logo-wordmark path.cls-4,
 nav.nav-inverted svg .cls-4 {
