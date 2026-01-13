@@ -440,14 +440,16 @@ nav.nav-inverted #amp-menu-segment a:hover {
 }
 
 /* 4. Ensure Logo remains WHITE (Default is white, just ensure no overrides) */
-/* Update: Strict Color Swap per User Request */
-/* "Change what is white to dark" */
+/* Update: User specified exact colors */
 
-/* cls-1 (Mark) and cls-2 (Background Shape) -> Dark */
+/* cls-1 (Mark) and cls-2 (Background Shape) */
 nav.nav-inverted .cls-1, 
 nav.nav-inverted .cls-2 {
-    fill: #0F172A !important;
-    stroke: #0F172A !important;
+    fill: rgba(5, 5, 5, 1) !important;
+}
+
+nav.nav-inverted .cls-1 {
+    stroke: rgba(5, 5, 5, 1) !important;
 }
 
 /* "get" text: Blue (#00bee6) - Original */
