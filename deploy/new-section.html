@@ -1,0 +1,172 @@
+<!-- Expertise Section with Scroll-Progress & Spotlight -->
+<section id="expertise-section" class="relative bg-zinc-950 py-24 sm:py-32 overflow-hidden group">
+  <!-- 1. Ambient Background (Noise) -->
+  <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none z-0"></div>
+  
+  <!-- 2. The Spotlight Gradient -->
+  <div class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+       style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);">
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <div class="grid lg:grid-cols-12 gap-12 lg:gap-24">
+      
+      <!-- Left Column: Sticky Title + Dynamic Progress -->
+      <div class="lg:col-span-5">
+        <div class="sticky top-24">
+          <h2 class="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-16">
+            A solid expertise. <br>
+            <span class="text-zinc-500 block mt-2">For more than 40 years.</span>
+          </h2>
+          
+          <!-- Interactivity: Dynamic Scroll Progress -->
+          <div class="hidden lg:flex items-center gap-6 font-mono text-xs tracking-widest text-zinc-500">
+            <!-- 01 -->
+            <span id="prog-num-1" class="transition-colors duration-300 text-white">01</span>
+            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
+                <div id="prog-bar-1" class="absolute inset-0 bg-white w-full transition-transform duration-500 translate-x-0"></div>
+            </div>
+            
+            <!-- 02 -->
+            <span id="prog-num-2" class="transition-colors duration-300">02</span>
+            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
+                <div id="prog-bar-2" class="absolute inset-0 bg-white w-full transition-transform duration-500 -translate-x-full"></div>
+            </div>
+            
+            <!-- 03 -->
+            <span id="prog-num-3" class="transition-colors duration-300">03</span>
+            <div class="h-px bg-zinc-800 w-12 relative overflow-hidden">
+                 <div id="prog-bar-3" class="absolute inset-0 bg-white w-full transition-transform duration-500 -translate-x-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Scroll Trigger Items -->
+      <div class="lg:col-span-7 flex flex-col space-y-24">
+        
+        <!-- Item 01 -->
+        <div id="expertise-item-1" class="group/item py-12 border-t border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
+          <div class="lg:pl-8 relative z-20">
+            <div class="flex items-baseline justify-between mb-6">
+                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Solutions</h3>
+                <span class="font-mono text-zinc-600 text-sm opacity-50">01</span>
+            </div>
+            <div class="overflow-hidden">
+              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
+                Tailored solutions designed and thought out to meet your security needs and perfectly adapt to your organization.
+              </p>
+            </div>
+          </div>
+          <!-- Line Animation -->
+          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
+        </div>
+
+        <!-- Item 02 -->
+        <div id="expertise-item-2" class="group/item py-12 border-t border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
+          <div class="lg:pl-8 relative z-20">
+            <div class="flex items-baseline justify-between mb-6">
+                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Centralized platform</h3>
+                <span class="font-mono text-zinc-600 text-sm opacity-50">02</span>
+            </div>
+            <div class="overflow-hidden space-y-6">
+              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
+                We created the Hub by NEVERHACK, a unique platform to facilitate your purchases and centralize your cyber tools.
+              </p>
+              <div class="pt-2">
+                 <button class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-medium text-sm transition-transform hover:scale-105 active:scale-95">
+                    Discover the Hub
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                 </button>
+              </div>
+            </div>
+          </div>
+          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
+        </div>
+
+        <!-- Item 03 -->
+        <div id="expertise-item-3" class="group/item py-12 border-t border-b border-zinc-800 transition-all duration-500 hover:bg-white/5 cursor-default relative scroll-mt-40 opacity-40 data-[active=true]:opacity-100">
+          <div class="lg:pl-8 relative z-20">
+            <div class="flex items-baseline justify-between mb-6">
+                <h3 class="text-3xl sm:text-4xl font-semibold text-white group-hover/item:translate-x-2 transition-transform duration-300">Expertises</h3>
+                <span class="font-mono text-zinc-600 text-sm opacity-50">03</span>
+            </div>
+            <div class="overflow-hidden">
+              <p class="text-lg text-zinc-400 leading-relaxed max-w-xl text-balance group-hover/item:text-zinc-300 transition-colors">
+                Our highly qualified and certified experts ensure the highest security standards to meet all your specific needs.
+              </p>
+            </div>
+          </div>
+          <div class="absolute bottom-0 left-0 w-0 h-px bg-white group-hover/item:w-full transition-all duration-700 ease-out z-20"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 1. Spotlight Effect
+      const section = document.getElementById('expertise-section');
+      if (section) {
+        section.addEventListener('mousemove', (e) => {
+          const rect = section.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          section.style.setProperty('--mouse-x', `${x}px`);
+          section.style.setProperty('--mouse-y', `${y}px`);
+        });
+      }
+
+      // 2. Scroll Progress Observer
+      const items = [1, 2, 3];
+      
+      const observerCallback = (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id; // expertise-item-1
+            const index = id.split('-')[2]; // 1
+            
+            // Activate Content Opacity
+            entry.target.setAttribute('data-active', 'true');
+            
+            // Update Indicators
+            items.forEach(i => {
+               const numEl = document.getElementById(`prog-num-${i}`);
+               const barEl = document.getElementById(`prog-bar-${i}`);
+               
+               if (i == index) {
+                 // Active
+                 numEl.classList.add('text-white');
+                 barEl.classList.remove('-translate-x-full');
+                 barEl.classList.add('translate-x-0');
+               } else {
+                 // Inactive
+                 numEl.classList.remove('text-white');
+                 barEl.classList.remove('translate-x-0');
+                 barEl.classList.add('-translate-x-full');
+               }
+            });
+          } else {
+             // Optional: Fade out when leaving? 
+             // Ideally we keep the last active one active, or just fade out when scrolling way past.
+             // For this style, typically non-centered items fade out.
+             if (entry.intersectionRatio < 0.2) {
+                entry.target.setAttribute('data-active', 'false');
+             }
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(observerCallback, {
+        threshold: 0.5, // Trigger when 50% visible
+        rootMargin: "-10% 0px -10% 0px"
+      });
+
+      items.forEach(i => {
+        const el = document.getElementById(`expertise-item-${i}`);
+        if(el) observer.observe(el);
+      });
+    })();
+  </script>
+</section>
