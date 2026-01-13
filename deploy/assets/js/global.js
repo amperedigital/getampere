@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         constructor(el) {
             this.el = el;
             this.targets = el.querySelectorAll('[data-scrub-target]');
-            this.targets.forEach(t => t.style.willChange = 'opacity, transform, filter');
+            this.targets.forEach(t => t.style.willChange = 'opacity, transform');
         }
         
         update() {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const winH = window.innerHeight;
             
             const centerDist = (rect.top + rect.height/2) - (winH / 2);
-            const bloomRange = winH * 0.6; 
+            const bloomRange = winH * 0.7; 
             
             let bloom = 1 - (Math.abs(centerDist) / bloomRange);
             bloom = Math.max(0, Math.min(1, bloom));
@@ -157,12 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Optimization: Round to 3 decimal places to avoid sub-pixel jitter
                 const opacity = eased.toFixed(3);
-                const transformY = ((1 - eased) * 40).toFixed(1);
-                const blur = ((1 - eased) * 10).toFixed(1);
+                const transformY = ((1 - eased) * 25).toFixed(1);
                 
                 target.style.opacity = opacity;
                 target.style.transform = `translate3d(0, ${transformY}px, 0)`; // 3d for hardware accel
-                target.style.filter = `blur(${blur}px)`;
+                // Removed blur to improve performance and sharpness
+                target.style.filter = ''; 
             });
         }
     }
