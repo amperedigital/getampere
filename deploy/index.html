@@ -2456,6 +2456,194 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
               </div>
 
               </div></div></div></div></section>
+<!-- ========================================== -->
+<!--       START: EXPERTISE & SLIDER AREA       -->
+<!-- ========================================== -->
+<!-- 1. Intro Screen (Black, Centered Text, Scroll Scrub) -->
+<section id="solid-expertise-intro" class="relative w-full h-screen bg-[#0a0b14] flex items-center justify-center z-10">
+    <div class="text-center px-4 font-geist">
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-white font-medium">
+            <span class="block scroll-reveal-text opacity-0 translate-y-5">Phone Conversations</span>
+            <span class="block scroll-reveal-text mt-2 opacity-0 translate-y-5">Handled End-to-End.</span>
+        </h2>
+    </div>
+</section>
+
+<!-- Expertise Section with Scroll-Progress & Spotlight -->
+<!-- Expertise Section: Full Screen Sticky Slider -->
+<section id="expertise-section" class="relative bg-[#0a0b14] text-white selection:bg-purple-500/30">
+    
+    <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
+    <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
+    <div id="expertise-scroll-track" class="relative h-[300vh]">
+        
+        <!-- Sticky Viewport: This pins to the screen while we scroll through the track -->
+        <div class="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+            
+            <!-- Ambient Background (Noise) -->
+            
+            <!-- Ambient Spotlight Background (Moves with Mouse) -->
+            <!-- Placed BEHIND the Unicorn Studio layer -->
+            <!-- Use a subtle, deep dark gradient to maintain high contrast (avoiding washed-out look) -->
+            <div id="expertise-spotlight" class="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0 bg-[radial-gradient(circle_1200px_at_var(--mouse-x,50%)_var(--mouse-y,50%),#060610_0%,#000000_100%)]">
+            </div>
+
+            <!-- Unicorn Studio Background Container -->
+            <!-- Using w-full h-full left-0 top-0 to match working hero implementation -->
+            <!-- Added opacity-20 (was 0) so it's faintly visible before full reveal -->
+            <!-- Project ID: dpD006WOWWQALxqKpHFZ -->
+            <div id="expertise-gradients" data-us-project="dpD006WOWWQALxqKpHFZ" class="absolute w-full h-full left-0 top-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-20 transition-opacity duration-1000 ease-in-out">
+            </div>
+            
+            <script>
+                // Force check for Unicorn Studio in case it initialized before this element was ready
+                if (window.UnicornStudio) {
+                    window.UnicornStudio.init();
+                } else {
+                    window.addEventListener('load', () => {
+                         if (window.UnicornStudio) window.UnicornStudio.init();
+                    });
+                }
+            </script>
+            
+            <!-- "Four Corner" Grid Lines Background -->
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <!-- Top Horizontal Line (Static Frame -> Animated) -->
+                <div id="grid-line-h-top" class="absolute top-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                
+                <!-- Vertical Center Line (Animates) - Stops before nav -->
+                <div id="grid-line-v" class="absolute left-1/2 top-0 bottom-[12vh] w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                
+                <!-- Horizontal Center Line (Animates) -->
+                <div id="grid-line-h" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                
+                <!-- Bottom Horizontal Line (Static Frame -> Animated) -->
+                <div id="grid-line-h-bottom" class="absolute bottom-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+            </div>
+
+            <!-- 2. Main Content Area (Slides) -->
+            <main id="expertise-slides" class="flex-1 relative w-full h-full">
+                
+                <!-- Slide 1: Resolution -->
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
+                     data-index="0">
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12 border-white/0">
+                        <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+                           Resolution
+                        </div>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
+                        <div class="max-w-md">
+                            <h3 class="text-3xl sm:text-4xl font-medium text-white mb-4 intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-75">
+                                Calls Solved, Not Just Answered.
+                            </h3>
+                            <p class="text-base sm:text-lg text-zinc-200 font-light leading-relaxed intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-100">
+                                Traditional phone answering breaks under scale. Ampere replaces missed calls, manual routing, and staffing bottlenecks with intelligent, always-on conversations — <strong class="font-semibold text-white">without relying on a traditional virtual receptionist or call center.</strong>
+                            </p>
+                        </div>
+                     </div>
+                </div>
+
+                <!-- Slide 2: The Hub -->
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
+                     data-index="1">
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
+                        <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                           Scale
+                        </div>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
+                        <div class="max-w-md space-y-6">
+                            <div class="space-y-1">
+                                <h3 class="text-white font-medium text-lg">Never Miss a Call</h3>
+                                <p class="text-base text-zinc-300 font-light leading-relaxed">Answer unlimited inbound calls, 24/7 — even during peak demand.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-white font-medium text-lg">Human-Like Conversations</h3>
+                                <p class="text-base text-zinc-300 font-light leading-relaxed">Natural, realistic dialogue that callers trust and respond to.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-white font-medium text-lg">No Hiring or Training</h3>
+                                <p class="text-base text-zinc-300 font-light leading-relaxed">Scale instantly without recruiting, onboarding, or turnover.</p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+
+                <!-- Slide 3: Expertise -->
+                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
+                     data-index="2">
+                     <!-- Q1: Heading -->
+                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
+                        <div class="flex flex-col items-start">
+                            <span class="text-3xl sm:text-4xl lg:text-5xl text-zinc-400 font-light mb-2">For</span>
+                            <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                                Business
+                            </div>
+                        </div>
+                     </div>
+                     <!-- Q4: Body -->
+                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
+                        <div class="max-w-md space-y-6">
+                            <div class="space-y-1">
+                                <h3 class="text-white font-medium text-lg">Built Around Your Business</h3>
+                                <p class="text-base text-zinc-300 font-light leading-relaxed">Custom workflows, scripts, routing rules, and integrations — not generic AI.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-white font-medium text-lg">Humans Where They Matter</h3>
+                                <p class="text-base text-zinc-300 font-light leading-relaxed">Smart escalation ensures complex or sensitive calls reach the right person.</p>
+                            </div>
+                            <div class="pt-6">
+                                <p class="text-2xl sm:text-3xl text-white font-medium italic leading-relaxed">
+                                    Every call answered. Every outcome visible.
+                                </p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+
+            </main>
+
+            <!-- 3. Bottom Navigation (Centered) -->
+            <!-- Adjusted bottom padding to align with the grid line at bottom-[15vh] -->
+            <footer id="expertise-nav" class="absolute bottom-[5vh] left-0 right-0 z-20 flex justify-center w-full pointer-events-none">
+                <div class="flex items-center gap-2 font-mono text-xs sm:text-sm tracking-widest text-zinc-600 px-4">
+                    <span id="nav-num-0" class="nav-num text-white transition-colors duration-300">01</span>
+                    
+                    <!-- Progress Dots 1 (01 -> 02) -->
+                    <div class="relative">
+                        <span class="text-zinc-800 md:hidden">:::::::</span>
+                        <span class="text-zinc-800 hidden md:inline">:::::::::::::::::</span>
+                        <span id="nav-dots-1" class="absolute inset-0 text-white overflow-hidden transition-all duration-75 w-0">:::::::::::::::::</span>
+                    </div>
+
+                    <span id="nav-num-1" class="nav-num transition-colors duration-300">02</span>
+                    
+                    <!-- Progress Dots 2 (02 -> 03) -->
+                    <div class="relative">
+                        <span class="text-zinc-800 md:hidden">:::::::</span>
+                        <span class="text-zinc-800 hidden md:inline">:::::::::::::::::</span>
+                        <span id="nav-dots-2" class="absolute inset-0 text-white overflow-hidden transition-all duration-75 w-0">:::::::::::::::::</span>
+                    </div>
+
+                    <span id="nav-num-2" class="nav-num transition-colors duration-300">03</span>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+
+    <!-- Logic moved to assets/js/global.js -->
+</section>
+<!-- ========================================== -->
+<!--        END: EXPERTISE & SLIDER AREA        -->
+<!-- ========================================== -->
+
     <script>
       function toggleMenu(trigger) {
         const menu = document.getElementById("mobile-menu");
@@ -3328,194 +3516,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </div>
   </section>
 
-
-<!-- ========================================== -->
-<!--       START: EXPERTISE & SLIDER AREA       -->
-<!-- ========================================== -->
-<!-- 1. Intro Screen (Black, Centered Text, Scroll Scrub) -->
-<section id="solid-expertise-intro" class="relative w-full h-screen bg-[#0a0b14] flex items-center justify-center z-10">
-    <div class="text-center px-4 font-geist">
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-white font-medium">
-            <span class="block scroll-reveal-text opacity-0 translate-y-5">Phone Conversations</span>
-            <span class="block scroll-reveal-text mt-2 opacity-0 translate-y-5">Handled End-to-End.</span>
-        </h2>
-    </div>
-</section>
-
-<!-- Expertise Section with Scroll-Progress & Spotlight -->
-<!-- Expertise Section: Full Screen Sticky Slider -->
-<section id="expertise-section" class="relative bg-[#0a0b14] text-white selection:bg-purple-500/30">
-    
-    <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
-    <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
-    <div id="expertise-scroll-track" class="relative h-[300vh]">
-        
-        <!-- Sticky Viewport: This pins to the screen while we scroll through the track -->
-        <div class="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
-            
-            <!-- Ambient Background (Noise) -->
-            
-            <!-- Ambient Spotlight Background (Moves with Mouse) -->
-            <!-- Placed BEHIND the Unicorn Studio layer -->
-            <!-- Use a subtle, deep dark gradient to maintain high contrast (avoiding washed-out look) -->
-            <div id="expertise-spotlight" class="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ease-in-out opacity-0 bg-[radial-gradient(circle_1200px_at_var(--mouse-x,50%)_var(--mouse-y,50%),#060610_0%,#000000_100%)]">
-            </div>
-
-            <!-- Unicorn Studio Background Container -->
-            <!-- Using w-full h-full left-0 top-0 to match working hero implementation -->
-            <!-- Added opacity-20 (was 0) so it's faintly visible before full reveal -->
-            <!-- Project ID: dpD006WOWWQALxqKpHFZ -->
-            <div id="expertise-gradients" data-us-project="dpD006WOWWQALxqKpHFZ" class="absolute w-full h-full left-0 top-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-20 transition-opacity duration-1000 ease-in-out">
-            </div>
-            
-            <script>
-                // Force check for Unicorn Studio in case it initialized before this element was ready
-                if (window.UnicornStudio) {
-                    window.UnicornStudio.init();
-                } else {
-                    window.addEventListener('load', () => {
-                         if (window.UnicornStudio) window.UnicornStudio.init();
-                    });
-                }
-            </script>
-            
-            <!-- "Four Corner" Grid Lines Background -->
-            <div class="absolute inset-0 z-0 pointer-events-none">
-                <!-- Top Horizontal Line (Static Frame -> Animated) -->
-                <div id="grid-line-h-top" class="absolute top-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                
-                <!-- Vertical Center Line (Animates) - Stops before nav -->
-                <div id="grid-line-v" class="absolute left-1/2 top-0 bottom-[12vh] w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                
-                <!-- Horizontal Center Line (Animates) -->
-                <div id="grid-line-h" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-                
-                <!-- Bottom Horizontal Line (Static Frame -> Animated) -->
-                <div id="grid-line-h-bottom" class="absolute bottom-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-            </div>
-
-            <!-- 2. Main Content Area (Slides) -->
-            <main id="expertise-slides" class="flex-1 relative w-full h-full">
-                
-                <!-- Slide 1: Resolution -->
-                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
-                     data-index="0">
-                     <!-- Q1: Heading -->
-                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12 border-white/0">
-                        <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out">
-                           Resolution
-                        </div>
-                     </div>
-                     <!-- Q4: Body -->
-                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
-                        <div class="max-w-md">
-                            <h3 class="text-3xl sm:text-4xl font-medium text-white mb-4 intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-75">
-                                Calls Solved, Not Just Answered.
-                            </h3>
-                            <p class="text-base sm:text-lg text-zinc-200 font-light leading-relaxed intro-content-reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-100">
-                                Traditional phone answering breaks under scale. Ampere replaces missed calls, manual routing, and staffing bottlenecks with intelligent, always-on conversations — <strong class="font-semibold text-white">without relying on a traditional virtual receptionist or call center.</strong>
-                            </p>
-                        </div>
-                     </div>
-                </div>
-
-                <!-- Slide 2: The Hub -->
-                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
-                     data-index="1">
-                     <!-- Q1: Heading -->
-                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
-                        <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
-                           Scale
-                        </div>
-                     </div>
-                     <!-- Q4: Body -->
-                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
-                        <div class="max-w-md space-y-6">
-                            <div class="space-y-1">
-                                <h3 class="text-white font-medium text-lg">Never Miss a Call</h3>
-                                <p class="text-base text-zinc-300 font-light leading-relaxed">Answer unlimited inbound calls, 24/7 — even during peak demand.</p>
-                            </div>
-                            <div class="space-y-1">
-                                <h3 class="text-white font-medium text-lg">Human-Like Conversations</h3>
-                                <p class="text-base text-zinc-300 font-light leading-relaxed">Natural, realistic dialogue that callers trust and respond to.</p>
-                            </div>
-                            <div class="space-y-1">
-                                <h3 class="text-white font-medium text-lg">No Hiring or Training</h3>
-                                <p class="text-base text-zinc-300 font-light leading-relaxed">Scale instantly without recruiting, onboarding, or turnover.</p>
-                            </div>
-                        </div>
-                     </div>
-                </div>
-
-                <!-- Slide 3: Expertise -->
-                <div class="expertise-slide absolute inset-0 w-full h-full grid grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95" 
-                     data-index="2">
-                     <!-- Q1: Heading -->
-                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
-                        <div class="flex flex-col items-start">
-                            <span class="text-3xl sm:text-4xl lg:text-5xl text-zinc-400 font-light mb-2">For</span>
-                            <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
-                                Business
-                            </div>
-                        </div>
-                     </div>
-                     <!-- Q4: Body -->
-                     <div class="col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
-                        <div class="max-w-md space-y-6">
-                            <div class="space-y-1">
-                                <h3 class="text-white font-medium text-lg">Built Around Your Business</h3>
-                                <p class="text-base text-zinc-300 font-light leading-relaxed">Custom workflows, scripts, routing rules, and integrations — not generic AI.</p>
-                            </div>
-                            <div class="space-y-1">
-                                <h3 class="text-white font-medium text-lg">Humans Where They Matter</h3>
-                                <p class="text-base text-zinc-300 font-light leading-relaxed">Smart escalation ensures complex or sensitive calls reach the right person.</p>
-                            </div>
-                            <div class="pt-6">
-                                <p class="text-2xl sm:text-3xl text-white font-medium italic leading-relaxed">
-                                    Every call answered. Every outcome visible.
-                                </p>
-                            </div>
-                        </div>
-                     </div>
-                </div>
-
-            </main>
-
-            <!-- 3. Bottom Navigation (Centered) -->
-            <!-- Adjusted bottom padding to align with the grid line at bottom-[15vh] -->
-            <footer id="expertise-nav" class="absolute bottom-[5vh] left-0 right-0 z-20 flex justify-center w-full pointer-events-none">
-                <div class="flex items-center gap-2 font-mono text-xs sm:text-sm tracking-widest text-zinc-600 px-4">
-                    <span id="nav-num-0" class="nav-num text-white transition-colors duration-300">01</span>
-                    
-                    <!-- Progress Dots 1 (01 -> 02) -->
-                    <div class="relative">
-                        <span class="text-zinc-800 md:hidden">:::::::</span>
-                        <span class="text-zinc-800 hidden md:inline">:::::::::::::::::</span>
-                        <span id="nav-dots-1" class="absolute inset-0 text-white overflow-hidden transition-all duration-75 w-0">:::::::::::::::::</span>
-                    </div>
-
-                    <span id="nav-num-1" class="nav-num transition-colors duration-300">02</span>
-                    
-                    <!-- Progress Dots 2 (02 -> 03) -->
-                    <div class="relative">
-                        <span class="text-zinc-800 md:hidden">:::::::</span>
-                        <span class="text-zinc-800 hidden md:inline">:::::::::::::::::</span>
-                        <span id="nav-dots-2" class="absolute inset-0 text-white overflow-hidden transition-all duration-75 w-0">:::::::::::::::::</span>
-                    </div>
-
-                    <span id="nav-num-2" class="nav-num transition-colors duration-300">03</span>
-                </div>
-            </footer>
-
-        </div>
-    </div>
-
-
-    <!-- Logic moved to assets/js/global.js -->
-</section>
-<!-- ========================================== -->
-<!--        END: EXPERTISE & SLIDER AREA        -->
-<!-- ========================================== -->
 
 
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
