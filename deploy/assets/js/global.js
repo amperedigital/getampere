@@ -188,8 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Grid Animation: Trigger when section enters view (and reset when leaving)
             // Uses state tracking to prevent constant DOM updates/style invalidation
-            // Trigger slightly before locking (15% down from top) to ensure visibility
-            const currentlyInView = rect.top <= (window.innerHeight * 0.15) && rect.bottom >= 0;
+            // Trigger earlier (20% down from top) to minimize "dark gap"
+            const currentlyInView = rect.top <= (window.innerHeight * 0.20) && rect.bottom >= 0;
             
             if (currentlyInView !== gridInView) {
                 gridInView = currentlyInView;
