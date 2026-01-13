@@ -500,28 +500,32 @@ nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
 }
 
 /* 10. Request Demo Button - Inverted Mode */
-/* Strategy: White Background, Dark Text */
+/* Fix: Hide the middle layer text blocker so animation shows */
 
-/* Override the dark gradient backgrounds on the spans */
-nav.nav-inverted #amp-menu-segment button.group span.bg-gradient-to-b {
+/* 1. Hide the background spacer layer (Layer 2) */
+nav.nav-inverted #amp-menu-segment button.group span.absolute.bg-gradient-to-b {
+    display: none !important;
+}
+
+/* 2. Style the Content Layer (Layer 3) - The actual white pill */
+nav.nav-inverted #amp-menu-segment button.group span.flex.bg-gradient-to-b {
     background: #ffffff !important;
-    border-radius: 9999px !important;
+    color: #0F172A !important;
+    border-color: transparent !important; /* Clean edge */
 }
 
-/* Text Color & Border */
-nav.nav-inverted #amp-menu-segment button.group span.flex {
-    color: #0F172A !important;        /* Dark Slate Text */
-    border-color: #ffffff !important; /* blend border */
-}
-
-/* Icon Stroke */
+/* 3. Icon Color */
 nav.nav-inverted #amp-menu-segment button.group svg {
     stroke: #0F172A !important;
 }
 
-/* Hover State for Demo Button in Dark Mode */
-nav.nav-inverted #amp-menu-segment button.group:hover span.bg-gradient-to-b {
-    background: #f4f4f5 !important; /* Slight gray on hover */
+/* 4. Ensure Spinner (Layer 1) is visible on hover */
+/* The spinner uses 'bg-[conic-gradient...]' so it is NOT affected by the bg-gradient-to-b selectors above. */
+/* It sits behind Layer 3. Layer 3 is inside p-[2px]. So Spinner shows in the gap. */
+
+/* Optional: Add hover effect to the white pill itself */
+nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b {
+    background: #f4f4f5 !important;
 }
 </style>
 </head>
