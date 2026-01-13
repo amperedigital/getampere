@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const introSection = document.getElementById('solid-expertise-intro');
     const introTexts = document.querySelectorAll('.scroll-reveal-text');
 
-    // 1. Mouse Spotlight
+    // 1. Mouse Spotlight (Background Gradient Tracking)
     if (section && spotlight) {
         section.addEventListener('mousemove', (e) => {
             const rect = section.getBoundingClientRect();
@@ -142,10 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = e.clientY - rect.top;
             section.style.setProperty('--mouse-x', `${x}px`);
             section.style.setProperty('--mouse-y', `${y}px`);
-            spotlight.style.opacity = '1';
-        });
-        section.addEventListener('mouseleave', () => {
-            spotlight.style.opacity = '0';
         });
     }
 
@@ -202,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      if (gridHBottom) { gridHBottom.classList.remove('scale-x-0'); gridHBottom.classList.add('scale-x-100'); }
                      
                      if (expertiseGradients) { expertiseGradients.classList.remove('opacity-20'); expertiseGradients.classList.add('opacity-100'); }
+                     if (spotlight) { spotlight.classList.remove('opacity-0'); spotlight.classList.add('opacity-100'); }
                      
                      introReveals.forEach(el => {
                         el.classList.remove('opacity-0', 'translate-y-8');
@@ -215,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      if (gridHBottom) { gridHBottom.classList.remove('scale-x-100'); gridHBottom.classList.add('scale-x-0'); }
 
                      if (expertiseGradients) { expertiseGradients.classList.remove('opacity-100'); expertiseGradients.classList.add('opacity-20'); }
+                     if (spotlight) { spotlight.classList.remove('opacity-100'); spotlight.classList.add('opacity-0'); }
 
                      introReveals.forEach(el => {
                         el.classList.remove('opacity-100', 'translate-y-0');
