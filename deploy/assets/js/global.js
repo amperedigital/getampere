@@ -314,22 +314,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. Initialization ---
+    // --- 4. ScrollSpy Logic (Table of Contents) ---
+    class ScrollSpy {
+        constructor(navEl) {
+            this.nav = navEl;
+            this.links = Array.from(navEl.querySelectorAll('[data-spy-link]'));
+            this.indicator = navEl.querySelector('[data-scrollspy-indicator]');
+            this.targets = [];
+            
+            // Map links to target elements
+            this.links.forEach((link) => {
+                const href = link.getAttribute('href');
+                const target = document.querySelector(href);
+                if (target) {
+                    this.targets.push({ link, target });
+                }
+            });
+        }
+
+        update() {
+            if (this.targets.length === 0) return;
+
+            const winH = window.innerHeight;
+            // Active zone line: 30% down the screen
+            const offset = winH * 0.3; 
+
+            // Find the current active section
+            // We want the last section that has its top "passed" the offset line
+            let activeIndex = -1;
+
+            for (let i = 0; i < this.targets.length; i++) {
+                const rect = this.targets[i].target.getBoundingClientRect();
+                
+                // If the section top is above the offset line, it is "active" or "passed"
+                if (rect.top <= offset) {
+                    activeIndex = i;
+                }
+            }
+            
+            // If nothing has passed the line (at top of page), default to first
+            if (activeIndex === -1 && this.targets.length > 0) activeIndex = 0;
+
+            this.setActive(activeIndex);
+        }
+
+        setActive(index) {
+            this.targets.forEach((item, i) => {
+                const isActive = (i === index);
+                
+                // Toggle Text Styles
+                if (isActive) {
+                    item.link.classList.remove('text-zinc-500');
+                    item.link.classList.add('text-white');
+                } else {
+                    item.link.classList.add('text-zinc-500');
+                    item.link.classList.remove('text-white');
+                }
+            });
+
+            // Move Indicator
+            if (this.indicator && this.targets[index]) {
+                const activeLink = this.targets[index].link;
+                
+                // Calculate position relative to the container (this.nav)
+                // Note: The indicator is absolute positioned inside a relative container.
+                // We assume the activeLink is inside that same container context.
+                const navRect = this.nav.getBoundingClientRect(); // This might be the `sticky top-32` div
+                const linkRect = activeLink.getBoundingClientRect();
+                
+                // To support nested structures properly, we look at the relative offset
+                // However, our HTML has the indicator inside a specific `relative` div that wraps the links.
+                // Let's refine: The indicator is inside the `div class="relative pl-4..."`.
+                // We should probably pass the parent wrapper to the class or calculate relative to the link's offsetParent.
+                
+                // Simpler: Just rely on offsetTop since they are siblings or close enough.
+                const relativeTop = activeLink.offsetTop;
+                const height = activeLink.offsetHeight;
+
+                this.indicator.style.transform = `translateY(${relativeTop}px)`;
+                this.indicator.style.height = `${height}px`;
+            }
+        }
+    }
+
+    // --- 5. Initialization ---
     const scrubbers = Array.from(document.querySelectorAll('[data-scroll-scrub]'))
                            .map(el => new ScrollScrubber(el));
                            
     const stickySlideshows = Array.from(document.querySelectorAll('[data-sticky-slideshow]'))
                                   .map(el => new StickySlideshow(el));
 
+    const scrollSpies = Array.from(document.querySelectorAll('[data-scrollspy-nav]'))
+                             .map(el => new ScrollSpy(el));
+
     let ticking = false;
     
     // Check if we have active components before attaching generic listener
-    if (scrubbers.length > 0 || stickySlideshows.length > 0) {
+    if (scrubbers.length > 0 || stickySlideshows.length > 0 || scrollSpies.length > 0) {
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     scrubbers.forEach(s => s.update());
                     stickySlideshows.forEach(s => s.update());
+                    scrollSpies.forEach(s => s.update());
                     ticking = false;
                 });
                 ticking = true;
@@ -339,6 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initial Update
         scrubbers.forEach(s => s.update());
         stickySlideshows.forEach(s => s.update());
+        scrollSpies.forEach(s => s.update());
     }
 });
 
