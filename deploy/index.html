@@ -2559,14 +2559,12 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <section id="new-section-placeholder" data-scroll-reveal-section class="relative w-full bg-[#0a0b14] py-12 lg:py-0 overflow-hidden lg:h-[47rem]">
     
     <!-- Background Grid Lines -->
-    <!-- Reverted v1.462: Using standard grid-anim classes to match StickySlideshow logic -->
-    <div class="absolute inset-0 pointer-events-none z-0">
-        <!-- Top Horizontal Line -->
-        <div data-grid-anim data-grid-axis="x" class="absolute top-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-        
-        <!-- Bottom Horizontal Line -->
-        <div data-grid-anim data-grid-axis="x" class="absolute bottom-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
-    </div>
+    <!-- Updated v1.463: Unwrapped horizontal lines and set z-20 to match vertical line visibility -->
+    <!-- Top Horizontal Line -->
+    <div data-grid-anim data-grid-axis="x" class="absolute top-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform z-20"></div>
+    
+    <!-- Bottom Horizontal Line -->
+    <div data-grid-anim data-grid-axis="x" class="absolute bottom-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform z-20"></div>
 
     <!-- Vertical Center Line (Desktop Only) -->
     <div data-grid-anim data-grid-axis="y" class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform z-20" aria-hidden="true"></div>
@@ -2948,7 +2946,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.462/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.463/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
