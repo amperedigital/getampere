@@ -2465,8 +2465,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 3: Expertise -->
-                <!-- Note: Same grid fix applied here -->
-                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(auto,1fr)_minmax(auto,1fr)] transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
+                <!-- Note: Adjusted grid to 35/65 split to accommodate dense content on short screens -->
+                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-[35%_65%] transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
                      data-index="2">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2487,7 +2487,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
                      <!-- Q4: Body (Bottom Right) -->
                      <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start p-6 sm:p-12 short:p-6 relative z-10 pb-[15vh] short:pb-12">
-                        <div class="max-w-md space-y-6">
+                        <div class="max-w-md space-y-6 short:space-y-3">
                             <!-- Mobile-only separator line -->
                             <div class="w-full h-px bg-white/10 mb-8 lg:hidden"></div>
 
@@ -2499,8 +2499,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                                 <h3 class="text-white font-medium text-lg">Humans Where They Matter</h3>
                                 <p class="text-base text-zinc-300 font-light leading-relaxed">Smart escalation ensures complex or sensitive calls reach the right person.</p>
                             </div>
-                            <div data-reveal-group class="pt-6 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200">
-                                <p class="text-2xl sm:text-3xl text-white font-medium italic leading-relaxed">
+                            <div data-reveal-group class="pt-6 short:pt-3 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200">
+                                <p class="text-2xl sm:text-3xl short:text-xl text-white font-medium italic leading-relaxed">
                                     Every call answered. Every outcome visible.
                                 </p>
                             </div>
