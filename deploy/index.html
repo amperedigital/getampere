@@ -2523,12 +2523,12 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </div>
 
     <!-- Vertical Center Line (Desktop Only) -->
-    <div data-grid-anim data-grid-axis="y" class="hidden lg:block animate-on-scroll absolute left-1/2 top-0 bottom-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform [&.animate]:scale-y-100 z-20"></div>
+    <div data-grid-anim data-grid-axis="y" class="hidden lg:block animate-on-scroll absolute left-1/2 top-0 bottom-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform [&.animate]:scale-y-100 z-20" aria-hidden="true"></div>
 
     <div class="relative w-full px-6 lg:px-12 z-10 h-full flex flex-col justify-center pointer-events-none">
         <!-- Breadcrumbs: Upper top left of the section -->
-        <div class="absolute top-0 left-0 pt-12 pl-6 lg:pt-16 lg:pl-12 flex items-center gap-2 opacity-0 translate-y-4 animate-on-scroll [&.animate]:opacity-100 [&.animate]:translate-y-0 transition-all duration-700 ease-out delay-200 z-20 pointer-events-auto">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+        <div class="absolute top-0 left-0 pt-12 pl-6 lg:pt-16 lg:pl-12 flex items-center gap-2 opacity-0 translate-y-4 animate-on-scroll [&.animate]:opacity-100 [&.animate]:translate-y-0 motion-reduce:opacity-100 motion-reduce:translate-y-0 transition-all duration-700 ease-out delay-200 z-20 pointer-events-auto">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500" aria-hidden="true"></span>
             <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">System Capabilities / v2.0</span>
         </div>
 
@@ -2536,7 +2536,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             
             <!-- Left Column: Content -->
             <!-- Using [&.animate] to trigger the transition state -->
-            <div class="animate-on-scroll flex flex-col justify-center items-start opacity-0 translate-y-8 transition-all duration-1000 ease-out [&.animate]:opacity-100 [&.animate]:translate-y-0 delay-100">
+            <div class="animate-on-scroll flex flex-col justify-center items-start opacity-0 translate-y-8 transition-all duration-1000 ease-out [&.animate]:opacity-100 [&.animate]:translate-y-0 motion-reduce:opacity-100 motion-reduce:translate-y-0 delay-100">
                 <h2 class="text-4xl sm:text-5xl lg:text-7xl font-medium tracking-tight text-white leading-[1.1] mb-6 font-geist">
                     Section Header Title
                 </h2>
@@ -2556,7 +2556,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- Right Column: Media Placeholder -->
             <div class="flex items-center justify-center w-full h-full">
-                <div class="animate-on-scroll relative w-full max-w-[550px] aspect-square lg:aspect-[4/3] rounded-2xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200 [&.animate]:opacity-100 [&.animate]:translate-y-0" role="img" aria-label="A placeholder for a future video or image demonstrating the system capabilities">
+                <div class="animate-on-scroll relative w-full max-w-[550px] aspect-square lg:aspect-[4/3] rounded-2xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200 [&.animate]:opacity-100 [&.animate]:translate-y-0 motion-reduce:opacity-100 motion-reduce:translate-y-0" role="img" aria-label="A placeholder for a future video or image demonstrating the system capabilities">
                     <span class="text-zinc-500 font-mono text-sm">Media Placeholder (Video/Image)</span>
                 </div>
             </div>
@@ -2574,7 +2574,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         
         <!-- Left Column: Sticky Navigation -->
         <div class="hidden lg:block lg:col-span-2">
-            <div class="sticky top-32" data-scrollspy-nav>
+            <nav class="sticky top-32" data-scrollspy-nav aria-label="Section Navigation">
                 <div class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-8 font-geist">Summary</div>
                 <div class="relative pl-4 border-l border-white/10 space-y-6">
                     <!-- The active indicator helps visualize current section -->
@@ -2593,7 +2593,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                         Our offers <span class="text-[10px] align-top opacity-50 ml-1 font-mono">04</span>
                     </a>
                 </div>
-            </div>
+            </nav>
         </div>
 
         <!-- Middle Column: Content -->
