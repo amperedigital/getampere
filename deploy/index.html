@@ -471,19 +471,10 @@ nav.nav-inverted .cls-4 {
     stroke: none !important;
 }
 
-/* Mobile Logo: Keep all white */
+/* Mobile Logo: Match Desktop Dark Mode */
 nav.nav-inverted .amp-logo-fill {
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-/* Fix: Mobile Logo Background - Dark in Inverted Mode */
-/* On desktop, the SVG itself (cls-2) provides the dark background. */
-/* On mobile, the SVG has no background shape, so we must add it to the container. */
-@media (max-width: 767px) {
-    nav.nav-inverted #amp-logo-segment > a {
-        background-color: #0F172A !important;
-    }
+    fill: #0F172A !important;
+    stroke: none !important;
 }
 
 /* 7. Hamburger Menu */
