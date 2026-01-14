@@ -319,6 +319,16 @@ document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
     .animate-on-scroll.animate {
       animation-play-state: running !important;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-on-scroll {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        visibility: visible !important;
+      }
+    }
   </style>
   <style id="aura-editor-visibility-style">
     .invisible {
