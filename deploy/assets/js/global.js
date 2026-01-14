@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Grid Elements (Optional: Specific animation toggles)
             this.grids = el.querySelectorAll('[data-grid-anim]');
+            this.glassPanels = el.querySelectorAll('[data-grid-glass]');
             
             this.state = {
                 inView: false,
@@ -272,6 +273,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     el.classList.remove('opacity-100');
                     el.classList.add('opacity-20');
+                }
+            });
+
+            // Toggle Glass Panels (Scale 0 <-> 1)
+            this.glassPanels.forEach(el => {
+                if (show) {
+                    el.classList.remove('scale-0');
+                    el.classList.add('scale-100');
+                } else {
+                    el.classList.remove('scale-100');
+                    el.classList.add('scale-0');
                 }
             });
         }
