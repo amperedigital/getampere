@@ -314,7 +314,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. Initialization ---
+    // --- 4. Generic Reveal-On-Scroll Logic (Observer) ---
+    // Targets any element with [data-observe-reveal]
+    // Automatically handles [data-grid-anim] and [data-reveal-group] inside it.
+    const observeSections = document.querySelectorAll('[data-observe-reveal]');
+    if (observeSections.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const section = entry.target;
+                    
+                    // 1. Animate Grids
+                    const grids = section.querySelectorAll('[data-grid-anim]');
+                    grids.forEach(g => {
+                        const axis = g.dataset.gridAxis || 'x';
+                        if (axis === 'y') {
+                            g.classList.remove('scale-y-0');
+                            g.classList.add('scale-y-100');
+                        } else {
+                            g.classList.remove('scale-x-0');
+                            g.classList.add('scale-x-100');
+                        }
+                    });
+
+                    // 2. Animate Reveal Groups (Staggered)
+                    const reveals = section.querySelectorAll('[data-reveal-group]');
+                    reveals.forEach((r, i) => {
+                        setTimeout(() => {
+                            r.classList.remove('opacity-0', 'translate-y-8');
+                            r.classList.add('opacity-100', 'translate-y-0');
+                        }, i * 100);
+                    });
+
+                    // Stop observing once animated
+                    observer.unobserve(section);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        observeSections.forEach(section => observer.observe(section));
+    }
+
+    // --- 5. Initialization ---
     const scrubbers = Array.from(document.querySelectorAll('[data-scroll-scrub]'))
                            .map(el => new ScrollScrubber(el));
                            
