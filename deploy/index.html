@@ -2361,7 +2361,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 top-0 bottom-[12vh] w-px bg-white/20 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block"></div>
                 
                 <!-- Horizontal Center Line -->
-                <div data-grid-anim data-grid-axis="x" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+                <div data-grid-anim data-grid-axis="x" class="absolute top-1/2 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block"></div>
                 
                 <!-- Bottom Horizontal Line -->
                 <div data-grid-anim data-grid-axis="x" class="absolute bottom-0 left-0 right-0 h-px bg-white/20 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
@@ -2372,17 +2372,20 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             <main class="flex-1 relative w-full h-full">
                 
                 <!-- Slide 1: Resolution -->
-                <div data-slide class="absolute inset-0 w-full h-full grid grid-cols-1 lg:grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
+                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
                      data-index="0">
                      <!-- Q1: Heading -->
-                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12 border-white/0">
-                        <div data-reveal-group class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+                     <div class="w-full lg:col-start-1 lg:row-start-1 flex flex-col justify-end items-start lg:items-end p-6 sm:p-12 border-white/0">
+                        <div data-reveal-group class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-left lg:text-right opacity-0 translate-y-8 transition-all duration-1000 ease-out">
                            Resolution
                         </div>
                      </div>
                      <!-- Q4: Body -->
-                     <div class="col-start-1 lg:col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
+                     <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
                         <div class="max-w-md">
+                            <!-- Mobile-only separator line -->
+                            <div class="w-full h-px bg-white/20 mb-8 lg:hidden"></div>
+                            
                             <h3 data-reveal-group class="text-3xl sm:text-4xl font-medium text-white mb-4 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-75">
                                 Calls Solved, Not Just Answered.
                             </h3>
@@ -2401,17 +2404,20 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 2: The Hub -->
-                <div data-slide class="absolute inset-0 w-full h-full grid grid-cols-1 lg:grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
+                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
                      data-index="1">
                      <!-- Q1: Heading -->
-                     <div class="col-start-1 lg:col-start-2 row-start-1 flex flex-col justify-end items-end lg:items-start p-6 sm:p-12">
-                        <div data-reveal-group class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right lg:text-left opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+                     <div class="w-full lg:col-start-2 lg:row-start-1 flex flex-col justify-end items-start lg:items-start p-6 sm:p-12">
+                        <div data-reveal-group class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-left lg:text-left opacity-0 translate-y-8 transition-all duration-1000 ease-out">
                            Scale
                         </div>
                      </div>
                      <!-- Q4: Body -->
-                     <div class="col-start-1 row-start-2 flex flex-col justify-start items-start lg:items-end p-6 sm:p-12">
+                     <div class="w-full lg:col-start-1 lg:row-start-2 flex flex-col justify-start items-start lg:items-end p-6 sm:p-12">
                         <div class="max-w-md text-left lg:text-right space-y-6">
+                            <!-- Mobile-only separator line -->
+                            <div class="w-full h-px bg-white/20 mb-8 lg:hidden"></div>
+
                             <div data-reveal-group class="space-y-1 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-75">
                                 <h3 class="text-white font-medium text-lg">Never Miss a Call</h3>
                                 <p class="text-base text-zinc-300 font-light leading-relaxed">Answer unlimited inbound calls, 24/7 — even during peak demand.</p>
@@ -2430,20 +2436,23 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
                 <!-- Slide 3: Expertise -->
                 <!-- Note: Same grid fix applied here -->
-                <div data-slide class="absolute inset-0 w-full h-full grid grid-cols-1 lg:grid-cols-2 grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
+                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
                      data-index="2">
                      <!-- Q1: Heading -->
-                     <div class="col-start-1 row-start-1 flex flex-col justify-end items-end p-6 sm:p-12">
-                        <div data-reveal-group class="flex flex-col items-end lg:items-end opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+                     <div class="w-full lg:col-start-1 lg:row-start-1 flex flex-col justify-end items-start lg:items-end p-6 sm:p-12">
+                        <div data-reveal-group class="flex flex-col items-start lg:items-end opacity-0 translate-y-8 transition-all duration-1000 ease-out">
                             <span class="text-3xl sm:text-4xl lg:text-5xl text-zinc-400 font-light mb-2">For</span>
-                            <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-right">
+                            <div class="text-4xl sm:text-6xl lg:text-[5rem] xl:text-[6rem] font-medium tracking-tight text-white leading-none text-left lg:text-right">
                                 Business
                             </div>
                         </div>
                      </div>
                      <!-- Q4: Body -->
-                     <div class="col-start-1 lg:col-start-2 row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
+                     <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start p-6 sm:p-12">
                         <div class="max-w-md space-y-6">
+                            <!-- Mobile-only separator line -->
+                            <div class="w-full h-px bg-white/20 mb-8 lg:hidden"></div>
+
                             <div data-reveal-group class="space-y-1 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-75">
                                 <h3 class="text-white font-medium text-lg">Built Around Your Business</h3>
                                 <p class="text-base text-zinc-300 font-light leading-relaxed">Custom workflows, scripts, routing rules, and integrations — not generic AI.</p>
