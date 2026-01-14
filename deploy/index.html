@@ -2377,7 +2377,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 
                 <!-- Vertical Center Line - Desktop Only -->
                 <!-- Restored v1.450: Fixed position to avoid nav overlap -->
-                <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 top-0 bottom-24 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block" aria-hidden="true"></div>
+                <!-- Removed v1.458: Moved inside main -->
+                <!-- <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 top-0 bottom-24 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block" aria-hidden="true"></div> -->
 
                 <!-- Bottom Horizontal Line -->
                 <div data-grid-anim data-grid-axis="x" class="absolute bottom-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
@@ -2387,6 +2388,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             <!-- Mobile: Stacked (grid-cols-1) | Desktop: Grid (grid-cols-2) -->
             <main class="flex-1 w-full relative grid grid-cols-1">
                 
+                <!-- Vertical Center Line - Desktop Only -->
+                <!-- Moved v1.458: Inside main to match slide height/footer boundary naturally -->
+                <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 inset-y-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block z-0" aria-hidden="true"></div>
+
                 <!-- Slide 1: Resolution -->
                 <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
                      data-index="0">
@@ -2402,7 +2407,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                      <div data-grid-glass class="hidden lg:block lg:col-start-2 lg:row-start-1 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-b border-white/10 origin-bottom-left transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q3: Glass Decoration (Bottom Left) -->
-                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full self-start h-[calc(100%-6rem)] bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
+                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q4: Body (Bottom Right) -->
                      <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start p-[clamp(1.5rem,3vh,3rem)] relative z-10 pb-[clamp(3rem,10vh,15vh)]">
@@ -2442,7 +2447,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                      <div data-grid-glass class="hidden lg:block lg:col-start-2 lg:row-start-1 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-b border-white/10 origin-bottom-left transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q3: Glass Decoration (Bottom Left) -->
-                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full self-start h-[calc(100%-6rem)] bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
+                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q4: Body (Bottom Right) -->
                      <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start lg:items-start p-[clamp(1.5rem,3vh,3rem)] relative z-10 pb-[clamp(3rem,10vh,15vh)]">
@@ -2484,7 +2489,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                      <div data-grid-glass class="hidden lg:block lg:col-start-2 lg:row-start-1 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-b border-white/10 origin-bottom-left transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q3: Glass Decoration (Bottom Left) -->
-                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full self-start h-[calc(100%-6rem)] bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
+                     <div data-grid-glass class="hidden lg:block lg:col-start-1 lg:row-start-2 w-full h-full bg-white/[0.03] backdrop-blur-[4px] border-t border-white/10 origin-top-right transition-transform duration-1000 ease-out will-change-transform scale-0"></div>
 
                      <!-- Q4: Body (Bottom Right) -->
                      <div class="w-full lg:col-start-2 lg:row-start-2 flex flex-col justify-start items-start p-[clamp(1.5rem,3vh,3rem)] relative z-10 pb-[clamp(3rem,10vh,15vh)]">
