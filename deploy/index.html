@@ -2512,7 +2512,20 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <!--             START: NEW SECTION             -->
 <!-- ========================================== -->
 <section id="new-section-placeholder" class="relative w-full bg-[#0a0b14] py-24 lg:py-32 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    
+    <!-- Background Grid Lines (Animated) -->
+    <div class="absolute inset-0 pointer-events-none">
+        <!-- Top Horizontal Line -->
+        <div data-grid-anim data-grid-axis="x" class="absolute top-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+        
+        <!-- Bottom Horizontal Line -->
+        <div data-grid-anim data-grid-axis="x" class="absolute bottom-0 left-0 right-0 h-px bg-white/10 scale-x-0 origin-center transition-transform duration-1000 ease-out will-change-transform"></div>
+
+        <!-- Vertical Center Line (Desktop Only - Optional depending on design, nice for splits) -->
+        <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 top-0 bottom-0 w-px bg-white/10 scale-y-0 origin-top transition-transform duration-1000 ease-out will-change-transform hidden lg:block"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
             <!-- Left Column: Content -->
             <div data-reveal-group class="flex flex-col justify-center items-start opacity-0 translate-y-8 transition-all duration-1000 ease-out">
@@ -2522,9 +2535,14 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 <p class="text-lg sm:text-xl text-zinc-400 font-light leading-relaxed max-w-xl mb-8">
                     This is the subheader text describing the value proposition. It is responsive and legible on all devices.
                 </p>
-                <!-- Optional CTA Placeholder -->
-                <button class="text-white font-medium border-b border-white pb-0.5 hover:opacity-80 transition-opacity">
-                    Learn more
+                
+                <!-- Shiny CTA Button -->
+                <button class="shiny-cta group relative overflow-hidden hover:-translate-y-0.5 transition-all duration-300 flex items-center">
+                    <span class="relative z-10">Request Demo</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transition-transform duration-300 group-hover:translate-x-1 ml-2">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
                 </button>
             </div>
 
