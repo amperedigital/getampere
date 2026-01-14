@@ -433,19 +433,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handles elements marked with .animate-on-scroll (like section borders)
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
     if (animatedElements.length > 0) {
+        console.log(`[Global] Found ${animatedElements.length} animate-on-scroll elements.`);
+        
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 // Trigger when 10% visible
+            threshold: 0 // Trigger as soon as 1 pixel is visible
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
+                    // console.log('[Global] Element entering view:', entry.target);
+                    entry.target.classList.add('in-view');
+                    entry.target.setAttribute('data-in-view', 'true');
                 } else {
-                    // Remove class to allow re-animation when scrolling "up and down"
-                    entry.target.classList.remove('animate');
+                    entry.target.classList.remove('in-view');
+                    entry.target.setAttribute('data-in-view', 'false');
                 }
             });
         }, observerOptions);
