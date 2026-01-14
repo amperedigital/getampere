@@ -430,6 +430,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Toggle Grid Lines (Scale 0 <-> 100)
             this.grids.forEach(g => {
                 const axis = g.dataset.gridAxis || 'x'; // 'x' or 'y'
+                
+                // Support optional delay attribute (data-anim-delay="ms")
+                if (g.dataset.animDelay) {
+                    g.style.transitionDelay = show ? `${g.dataset.animDelay}ms` : '0ms';
+                }
+
                 if (show) {
                     g.classList.remove(axis === 'y' ? 'scale-y-0' : 'scale-x-0');
                     g.classList.add(axis === 'y' ? 'scale-y-100' : 'scale-x-100');
