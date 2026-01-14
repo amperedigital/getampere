@@ -2511,7 +2511,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 <!--             START: NEW SECTION             -->
 <!-- ========================================== -->
-<section id="new-section-placeholder" class="relative w-full bg-[#0a0b14] py-24 lg:py-0 overflow-hidden min-h-screen flex items-center">
+<section id="new-section-placeholder" class="relative w-full bg-[#0a0b14] py-24 lg:py-32 overflow-hidden">
     
     <!-- Background Grid Lines (Animated using existing observer + CSS variants) -->
     <div class="absolute inset-0 pointer-events-none">
@@ -2531,6 +2531,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             <!-- Left Column: Content -->
             <!-- Using [&.animate] to trigger the transition state -->
             <div class="animate-on-scroll flex flex-col justify-center items-start opacity-0 translate-y-8 transition-all duration-1000 ease-out [&.animate]:opacity-100 [&.animate]:translate-y-0 delay-100">
+                <div class="flex items-center gap-2 mb-6 opacity-0 translate-y-4 animate-on-scroll [&.animate]:opacity-100 [&.animate]:translate-y-0 transition-all duration-700 ease-out delay-200">
+                   <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                   <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">System Capabilities / v2.0</span>
+                </div>
                 <h2 class="text-4xl sm:text-5xl lg:text-7xl font-medium tracking-tight text-white leading-[1.1] mb-6 font-geist">
                     Section Header Title
                 </h2>
