@@ -1,14 +1,17 @@
 /**
- * Tab Controlled Card Flipper v1.301
+ * Tab Controlled Card Flipper v1.302 (Updated for v1.471)
  * Modular Refactor: Uses data attributes for SMIL/Video control.
  * Removed hardcoded IDs.
- * Fixed: Mobile responsiveness (disables logic and hides tabs on small screens).
+ * Fixed: Mobile responsiveness 
+ *  - Disables logic < 768px
+ *  - Hides tabs
+ *  - Forces cards to display: block!important and position: relative!important so they stack vertically on mobile.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.301 (Modular) Loaded');
+  console.log('Tab Flipper v1.302 (Modular) Loaded');
 
-  // Inject styles for interaction utilities
+  // Inject styles for interaction utilities AND MOBILE OVERRIDES
   const style = document.createElement('style');
   style.textContent = `
     .manual-active .force-visible {
@@ -30,10 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
       animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
 
-    /* Generic Selector for hiding anims when not active if needed */
     [data-smil-behavior="force-display"]:not(.manual-active) animateMotion,
     [data-smil-behavior="force-display"]:not(.manual-active) circle {
-         /* Rely on JS removing classes, but this is a backup */
     }
 
     .smil-hide {
@@ -49,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    /* Interaction Utility Classes */
     .interaction-tag-label {
       opacity: 0.6;
       transition: opacity 0.3s ease;
@@ -64,6 +64,34 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
     [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
     [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
+
+    /* --- CRITICAL MOBILE OVERRIDES (v1.471) --- */
+    @media (max-width: 767px) {
+        /* Force Cards to be visible static blocks */
+        [data-tab-card],
+        .mobile-reveal[data-tab-card] {
+            display: block !important;
+            position: relative !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+            filter: none !important; /* Override blur form mobile-reveal */
+            pointer-events: auto !important;
+            grid-column: auto !important; /* Break grid overlap if used */
+            grid-row: auto !important;
+            height: auto !important;
+            margin-bottom: 3rem !important; /* Space between cards */
+        }
+        
+        /* Force container to allow stacking */
+        .group\/cards {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3rem !important;
+            height: auto !important;
+            perspective: none !important;
+        }
+    }
   `;
   document.head.appendChild(style);
 
@@ -112,10 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const isActive = cardParent.classList.contains('active');
         const cardInView = cardParent.classList.contains('in-view');
         
-        // On mobile, always consider revealed if in view? 
-        // Logic below tries to handle it, but we rely on generic intersection observer too.
-        const isRevealed = cardInView || window.innerWidth > 768;
-        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
+        // On mobile, card is always 'active' effectively. 
+        // We rely on 'in-view' class from intersection observer (mobile-reveal).
+        const isMobile = window.innerWidth < 768;
+        const isRevealed = cardInView || !isMobile; // On mobile, wait for scroll reveal? Or just check if in view.
+        
+        // Simplified Logic: 
+        // Desktop: Run if active OR hovered
+        // Mobile: Run if in viewport (via manual-active class or external observer).
+        
+        const shouldRun = isActive || isHovered || (isMobile && cardInView);
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
@@ -253,9 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
     triggers.forEach((trigger, index) => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
-        // Allow clicking on mobile? If tabs are hidden, they can't click.
-        // But if they are barely visible, we shouldn't block it unless strictly needed.
-        // But logic says "show no tab navigation on small screens".
         if (window.innerWidth < 768) return; 
 
         if (index === activeIndex) return;
@@ -278,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isMobile = window.innerWidth < 768;
         
         // 1. Force Hide/Show Tabs Container
-        // We look for the container with max-md:hidden
         const tabContainer = flipper.querySelector('.max-md\\:hidden');
         if (tabContainer) {
             tabContainer.style.display = isMobile ? 'none' : '';
@@ -286,12 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Control Cards State
         if (isMobile) {
-            // Strip classes so they stack naturally via CSS
             cards.forEach(c => {
                  c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
             });
         } else {
-            // Restore functionality
             setActive(activeIndex, true);
         }
     };
