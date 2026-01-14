@@ -411,12 +411,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = this.el.getBoundingClientRect();
             const winH = window.innerHeight;
             
-            // Allow animation when top is within view (threshold 20%)
-            const topThreshold = winH * 0.8; 
-            const bottomThreshold = winH * 0.2;
+            // Trigger animation when the top of the section reaches the visual "hot zone" (50% of viewport)
+            // This ensures the animation happens while the user is actively looking at the section,
+            // rather than triggering too early at the bottom edge.
+            const topThreshold = winH * 0.5; 
+            const bottomThreshold = 0; 
 
-            // Simple In-View Check:
-            // Element top is above the bottom 80% mark AND Element bottom is below the top 20% mark
+            // Element top is above the middle of the screen AND Element bottom is still visible
             const currentlyInView = (rect.top <= topThreshold) && (rect.bottom >= bottomThreshold);
 
             if (currentlyInView !== this.state.inView) {
