@@ -1,15 +1,12 @@
 /**
- * Tab Controlled Card Flipper v1.302 (Updated for v1.471)
- * Modular Refactor: Uses data attributes for SMIL/Video control.
- * Removed hardcoded IDs.
- * Fixed: Mobile responsiveness 
- *  - Disables logic < 768px
- *  - Hides tabs
- *  - Forces cards to display: block!important and position: relative!important so they stack vertically on mobile.
+ * Tab Controlled Card Flipper v1.303
+ * Fixes: Mobile visibility and SMIL animation triggers.
+ * - Tracks 'intersecting' state locally to trigger SMIL on mobile without relying on external 'in-view' classes.
+ * - Enforces mobile layout structure.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.302 (Modular) Loaded');
+  console.log('Tab Flipper v1.303 Loaded');
 
   // Inject styles for interaction utilities AND MOBILE OVERRIDES
   const style = document.createElement('style');
@@ -65,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
     [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
 
-    /* --- CRITICAL MOBILE OVERRIDES (v1.471) --- */
+    /* --- CRITICAL MOBILE OVERRIDES (v1.303) --- */
     @media (max-width: 767px) {
         /* Force Cards to be visible static blocks */
         [data-tab-card],
@@ -75,15 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
             opacity: 1 !important;
             visibility: visible !important;
             transform: none !important;
-            filter: none !important; /* Override blur form mobile-reveal */
+            filter: none !important;
             pointer-events: auto !important;
-            grid-column: auto !important; /* Break grid overlap if used */
+            grid-column: auto !important;
             grid-row: auto !important;
             height: auto !important;
-            margin-bottom: 3rem !important; /* Space between cards */
+            min-height: 400px; /* Prevent collapse */
+            margin-bottom: 3rem !important;
         }
         
-        /* Force container to allow stacking */
         .group\/cards {
             display: flex !important;
             flex-direction: column !important;
@@ -125,9 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAnimating = false;
     let isAutoScrolling = false; 
 
-    // Dynamic SMIL Container Discovery & State (kept for desktop mainly)
+    // Dynamic SMIL Container Discovery & State
     const smilContainers = flipper.querySelectorAll('[data-smil-container]');
-    const smilStates = new Map();
+    const smilStates = new Map(); // Stores { hovered, intersecting }
 
     function updateSmilState(container) {
         if (!container) return;
@@ -135,21 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardParent = container.closest('[data-tab-card]');
         if (!cardParent) return;
         
-        const state = smilStates.get(container) || { hovered: false };
-        const isHovered = state.hovered;
+        const state = smilStates.get(container) || { hovered: false, intersecting: false };
+        
         const isActive = cardParent.classList.contains('active');
-        const cardInView = cardParent.classList.contains('in-view');
-        
-        // On mobile, card is always 'active' effectively. 
-        // We rely on 'in-view' class from intersection observer (mobile-reveal).
         const isMobile = window.innerWidth < 768;
-        const isRevealed = cardInView || !isMobile; // On mobile, wait for scroll reveal? Or just check if in view.
         
-        // Simplified Logic: 
+        // Revised Logic:
         // Desktop: Run if active OR hovered
-        // Mobile: Run if in viewport (via manual-active class or external observer).
-        
-        const shouldRun = isActive || isHovered || (isMobile && cardInView);
+        // Mobile: Run if intersecting (viewport)
+        const shouldRun = isActive || state.hovered || (isMobile && state.intersecting);
 
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const motionElements = container.querySelectorAll("animateMotion");
@@ -172,10 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             anims.forEach(anim => {
                 try {
+                    // Only start if not already running (simplified check)
                     const beginAttr = anim.getAttribute('begin');
                     const isDependent = beginAttr && beginAttr.includes('anim-trigger');
                     const isTrigger = anim.id && anim.id.includes('anim-trigger');
 
+                    // Always restart indefinite animations or those without complex dependencies
                     if (isTrigger) {
                         anim.beginElement();
                     } else if (!isDependent) {
@@ -194,9 +187,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize SMIL Containers
+    // Initialize SMIL Containers with IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { 
+            const container = entry.target;
+            const s = smilStates.get(container) || { hovered: false, intersecting: false };
+            s.intersecting = entry.isIntersecting;
+            smilStates.set(container, s);
+            updateSmilState(container);
+        });
+    }, { threshold: 0.1 }); // Lower threshold for earlier activation
+
     smilContainers.forEach(container => {
-        smilStates.set(container, { hovered: false });
+        smilStates.set(container, { hovered: false, intersecting: false });
 
         container.addEventListener('mouseenter', () => { 
             const s = smilStates.get(container);
@@ -209,13 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSmilState(container); 
         });
         
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { 
-                if (entry.isIntersecting) {
-                     updateSmilState(container);
-                }
-            });
-        }, { threshold: 0.3 });
         observer.observe(container);
     });
 
@@ -252,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (i < index) {
           c.classList.add('inactive-prev');
           const depth = index - i;
-          if (depth <= 3) c.classList.add(`stack-${depth}`);
+            if (depth <= 3) c.classList.add(`stack-${depth}`);
           const video = c.querySelector('video');
           if (video) { video.pause(); video.currentTime = 0; }
         } else {
@@ -331,17 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth >= 768) {
         setActive(0, true);
     }
-
-    const revealObserver = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-            if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
-                const card = mutation.target;
-                const container = card.querySelector('[data-smil-container]');
-                if (container) updateSmilState(container);
-            }
-        });
-    });
-    cards.forEach(card => revealObserver.observe(card, { attributes: true }));
   };
 
   document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
