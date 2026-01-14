@@ -2725,6 +2725,26 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <!-- ========================================== -->
 
     <script>
+      // Specific Observer for New Section animations to ensure grid lines draw
+      (function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, { threshold: 0.1 }); 
+
+        // Wait for DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('#new-section-placeholder .animate-on-scroll').forEach(el => observer.observe(el));
+            });
+        } else {
+            document.querySelectorAll('#new-section-placeholder .animate-on-scroll').forEach(el => observer.observe(el));
+        }
+      })();
+
       function toggleMenu(trigger) {
         const menu = document.getElementById("mobile-menu");
         if (!menu) return;
