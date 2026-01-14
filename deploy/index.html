@@ -2545,7 +2545,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </p>
                 
                 <!-- Shiny CTA Button -->
-                <button class="shiny-cta group relative overflow-hidden hover:-translate-y-0.5 transition-all duration-300 flex items-center">
+                <button class="shiny-cta group relative overflow-hidden hover:-translate-y-0.5 transition-all duration-300 flex items-center" aria-label="Request a demo for system capabilities">
                     <span class="relative z-10">Request Demo</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 transition-transform duration-300 group-hover:translate-x-1 ml-2">
                         <path d="M5 12h14"></path>
@@ -2556,7 +2556,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- Right Column: Media Placeholder -->
             <div class="flex items-center justify-center w-full h-full">
-                <div class="animate-on-scroll relative w-full max-w-[550px] aspect-square lg:aspect-[4/3] rounded-2xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200 [&.animate]:opacity-100 [&.animate]:translate-y-0">
+                <div class="animate-on-scroll relative w-full max-w-[550px] aspect-square lg:aspect-[4/3] rounded-2xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200 [&.animate]:opacity-100 [&.animate]:translate-y-0" role="img" aria-label="A placeholder for a future video or image demonstrating the system capabilities">
                     <span class="text-zinc-500 font-mono text-sm">Media Placeholder (Video/Image)</span>
                 </div>
             </div>
@@ -2580,16 +2580,16 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                     <!-- The active indicator helps visualize current section -->
                     <div class="absolute left-[-1px] top-0 w-px h-5 bg-white transition-all duration-300" data-scrollspy-indicator style="transform: translateY(0px);"></div>
                     
-                    <a href="#sec-description" class="group block text-sm text-white font-medium transition-colors font-geist" data-spy-link>
+                    <a href="#sec-description" class="group block text-sm text-white font-medium transition-colors font-geist" data-spy-link title="Navigate to Description section" aria-label="Navigate to Description section">
                         Description <span class="text-[10px] align-top opacity-50 ml-1 font-mono">01</span>
                     </a>
-                    <a href="#sec-solutions" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link>
+                    <a href="#sec-solutions" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link title="Navigate to Solutions section" aria-label="Navigate to Solutions section">
                         Solutions <span class="text-[10px] align-top opacity-50 ml-1 font-mono">02</span>
                     </a>
-                    <a href="#sec-methodology" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link>
+                    <a href="#sec-methodology" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link title="Navigate to Methodology section" aria-label="Navigate to Methodology section">
                         Methodology <span class="text-[10px] align-top opacity-50 ml-1 font-mono">03</span>
                     </a>
-                    <a href="#sec-offers" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link>
+                    <a href="#sec-offers" class="group block text-sm text-zinc-500 hover:text-white transition-colors font-geist" data-spy-link title="Navigate to Offers section" aria-label="Navigate to Offers section">
                         Our offers <span class="text-[10px] align-top opacity-50 ml-1 font-mono">04</span>
                     </a>
                 </div>
@@ -2600,9 +2600,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         <div class="lg:col-span-7 space-y-24 lg:pr-12">
             
             <!-- 01 Description -->
-            <div id="sec-description" class="scroll-mt-32" data-scrollspy-section>
-                <h2 class="text-3xl sm:text-4xl font-medium text-white tracking-tight mb-8 font-geist">BSS & Security-Driven Services and Solutions</h2>
-                <div class="prose prose-invert prose-lg text-zinc-400 font-light leading-relaxed font-geist">
+            <div id="sec-description" class="scroll-mt-32" data-scrollspy-section itemscope itemtype="https://schema.org/Service">
+                <meta itemprop="serviceType" content="BSS & Security-Driven Services" />
+                <h2 class="text-3xl sm:text-4xl font-medium text-white tracking-tight mb-8 font-geist" itemprop="name">BSS & Security-Driven Services and Solutions</h2>
+                <div class="prose prose-invert prose-lg text-zinc-400 font-light leading-relaxed font-geist" itemprop="description">
                     <p class="mb-6">
                         We offer integrated solutions for Telco and Energy, designed to optimize the entire service lifecycle and customer interactions.
                     </p>
@@ -2626,9 +2627,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             </div>
 
             <!-- 02 Solutions -->
-            <div id="sec-solutions" class="scroll-mt-32 pt-12 border-t border-dashed border-white/10" data-scrollspy-section>
-                 <h2 class="text-3xl font-medium text-white tracking-tight mb-6 font-geist">Driving Business Success Through Secure Management</h2>
-                 <p class="text-zinc-400 font-light leading-relaxed mb-6 font-geist">
+            <div id="sec-solutions" class="scroll-mt-32 pt-12 border-t border-dashed border-white/10" data-scrollspy-section itemscope itemtype="https://schema.org/Service">
+                 <meta itemprop="serviceType" content="Secure Management Solutions" />
+                 <h2 class="text-3xl font-medium text-white tracking-tight mb-6 font-geist" itemprop="name">Driving Business Success Through Secure Management</h2>
+                 <p class="text-zinc-400 font-light leading-relaxed mb-6 font-geist" itemprop="description">
                     In an era where connectivity defines opportunity, our BSS solutions provide the backbone for scalable operations. We integrate security at every layer—not as an afterthought, but as a foundational element of your architecture.
                  </p>
                  <p class="text-zinc-400 font-light leading-relaxed font-geist">
@@ -2637,17 +2639,17 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             </div>
 
             <!-- 03 Methodology -->
-            <div id="sec-methodology" class="scroll-mt-32 pt-12 border-t border-dashed border-white/10" data-scrollspy-section>
-                <h2 class="text-3xl font-medium text-white tracking-tight mb-6 font-geist">Agile Methodology & Continuous Integration</h2>
-                <p class="text-zinc-400 font-light leading-relaxed mb-6 font-geist">
+            <div id="sec-methodology" class="scroll-mt-32 pt-12 border-t border-dashed border-white/10" data-scrollspy-section itemscope itemtype="https://schema.org/ItemList">
+                <h2 class="text-3xl font-medium text-white tracking-tight mb-6 font-geist" itemprop="name">Agile Methodology & Continuous Integration</h2>
+                <p class="text-zinc-400 font-light leading-relaxed mb-6 font-geist" itemprop="description">
                    We adopt a rigorous, iterative approach to deployment. Our methodology emphasizes transparency, rapid feedback loops, and automated testing to ensure that what we build today scales for tomorrow.
                 </p>
                 <ul class="list-disc pl-5 space-y-2 text-zinc-400 font-light font-geist marker:text-blue-500">
-                    <li>Assessment & Discovery</li>
-                    <li>Architecture Design with Security-First Principles</li>
-                    <li>Agile Development & Sprint Cycles</li>
-                    <li>Automated QA & Security Audits</li>
-                    <li>Deployment & Knowledge Transfer</li>
+                    <li itemprop="itemListElement">Assessment & Discovery</li>
+                    <li itemprop="itemListElement">Architecture Design with Security-First Principles</li>
+                    <li itemprop="itemListElement">Agile Development & Sprint Cycles</li>
+                    <li itemprop="itemListElement">Automated QA & Security Audits</li>
+                    <li itemprop="itemListElement">Deployment & Knowledge Transfer</li>
                 </ul>
            </div>
 
@@ -2658,13 +2660,13 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                     Choose the engagement model that fits your operational needs. From full-scale digital transformation to targeted security augmentations, our offers are flexible and outcome-oriented.
                  </p>
                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                     <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-colors cursor-default">
-                         <h4 class="text-white font-medium mb-2 font-geist">Managed Services</h4>
-                         <p class="text-sm text-zinc-500 font-geist">24/7 monitoring and optimization of your critical infrastructure.</p>
+                     <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-colors cursor-default" itemscope itemtype="https://schema.org/Offer">
+                         <h4 class="text-white font-medium mb-2 font-geist" itemprop="name">Managed Services</h4>
+                         <p class="text-sm text-zinc-500 font-geist" itemprop="description">24/7 monitoring and optimization of your critical infrastructure.</p>
                      </div>
-                     <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-colors cursor-default">
-                        <h4 class="text-white font-medium mb-2 font-geist">Consulting & Audit</h4>
-                        <p class="text-sm text-zinc-500 font-geist">Deep-dive analysis into your current BSS/OSS stack and security posture.</p>
+                     <div class="p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-colors cursor-default" itemscope itemtype="https://schema.org/Offer">
+                        <h4 class="text-white font-medium mb-2 font-geist" itemprop="name">Consulting & Audit</h4>
+                        <p class="text-sm text-zinc-500 font-geist" itemprop="description">Deep-dive analysis into your current BSS/OSS stack and security posture.</p>
                     </div>
                  </div>
            </div>
@@ -2688,22 +2690,22 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 <div>
                     <div class="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-4 font-geist">Related Industries</div>
                     <ul class="space-y-3">
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Telecommunications service providers">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Telecommunications service providers
                         </a></li>
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Internet service providers">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Internet service providers
                         </a></li>
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Cable operators">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Cable operators
                         </a></li>
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Satellite communication providers">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Satellite communication providers
                         </a></li>
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Enterprise networks">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Enterprise networks
                         </a></li>
-                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist">
+                        <li><a href="#" class="group flex items-center gap-2 text-sm text-white hover:text-blue-400 transition-colors font-geist" title="Explore Government organizations">
                             <span class="text-zinc-600 group-hover:text-blue-500 transition-colors">→</span> Government organizations
                         </a></li>
                     </ul>
