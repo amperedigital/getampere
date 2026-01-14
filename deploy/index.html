@@ -2343,7 +2343,9 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     <div data-track class="relative h-[300vh]">
         
         <!-- Sticky Viewport: This pins to the screen while we scroll through the track -->
-        <div class="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+        <!-- Changed v1.456: overflow-hidden removed to allow footer to be pushed off-screen without clipping if content expands -->
+        <!-- Changed v1.456: min-h-screen allows container to grow if content is huge -->
+        <div class="sticky top-0 h-screen min-h-screen w-full flex flex-col">
             
             <!-- Ambient Background (Noise) -->
             
@@ -2383,11 +2385,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- 2. Main Content Area (Slides) -->
             <!-- Mobile: Stacked (grid-cols-1) | Desktop: Grid (grid-cols-2) -->
-            <main class="flex-1 relative w-full h-full">
+            <main class="flex-1 w-full relative grid grid-cols-1">
                 
                 <!-- Slide 1: Resolution -->
-                <!-- Note: Adjusted grid to 35/65 split to accommodate dense content on short screens -->
-                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-[min-content_1fr] transition-all duration-700 ease-out opacity-100 scale-100" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
                      data-index="0">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2427,8 +2428,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 2: The Hub -->
-                <!-- Note: Adjusted grid to 35/65 split to accommodate dense content on short screens -->
-                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-[min-content_1fr] transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
                      data-index="1">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2467,8 +2467,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 3: Expertise -->
-                <!-- Note: Adjusted grid to 35/65 split to accommodate dense content on short screens -->
-                <div data-slide class="absolute inset-0 w-full h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-[min-content_1fr] transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 pointer-events-none" 
                      data-index="2">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2513,7 +2512,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             </main>
 
             <!-- 3. Bottom Navigation (Centered) -->
-            <footer data-sticky-nav class="absolute bottom-[5vh] left-0 right-0 z-20 flex justify-center w-full pointer-events-none">
+            <footer data-sticky-nav class="relative py-8 z-20 flex justify-center w-full pointer-events-none mt-auto">
                 <div class="flex items-center gap-2 font-mono text-xs sm:text-sm tracking-widest text-zinc-600 px-4">
                     <!-- Nav Item 0 -->
                     <span data-nav-num="0" class="text-white transition-colors duration-300">01</span>
