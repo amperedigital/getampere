@@ -2615,10 +2615,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   <!-- Removed border-t to rely on header's bottom grid line -->
   <section data-scroll-reveal-section class="relative w-full bg-[#0a0b14] py-24 sm:py-32 min-h-screen" data-nav-theme="invert">
     <!-- Four Corner Grid Lines Background -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
-        <!-- Vertical Center Line (Desktop Only) - Matching header alignment -->
-        <div data-grid-anim data-grid-axis="y" class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform" aria-hidden="true"></div>
-    </div>
+    <!-- Removed v1.467: Vertical line removed as requested (was cutting through text) -->
+    <div class="absolute inset-0 z-0 pointer-events-none"></div>
 
     <div class="w-full px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 relative z-10">
         
@@ -2647,7 +2645,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         </div>
 
         <!-- Middle Column: Content -->
-        <div class="lg:col-span-7 space-y-24 lg:pr-12">
+        <div data-reveal-group class="lg:col-span-7 space-y-24 lg:pr-12 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-200">
             
             <!-- 01 Description -->
             <div id="sec-description" class="scroll-mt-32" data-scrollspy-section itemscope itemtype="https://schema.org/Service">
@@ -2724,7 +2722,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         </div>
 
         <!-- Right Column: Metadata -->
-        <div class="lg:col-span-3 lg:pl-6">
+        <div data-reveal-group class="lg:col-span-3 lg:pl-6 opacity-0 translate-y-8 transition-all duration-1000 ease-out delay-300">
             <div class="sticky top-32 space-y-12">
                 
                 <!-- Type -->
