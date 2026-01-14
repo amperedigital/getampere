@@ -1,11 +1,12 @@
 /**
- * Tab Controlled Card Flipper v1.300
+ * Tab Controlled Card Flipper v1.301
  * Modular Refactor: Uses data attributes for SMIL/Video control.
  * Removed hardcoded IDs.
+ * Fixed: Mobile responsiveness (disables logic and hides tabs on small screens).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.300 (Modular) Loaded');
+  console.log('Tab Flipper v1.301 (Modular) Loaded');
 
   // Inject styles for interaction utilities
   const style = document.createElement('style');
@@ -96,9 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAnimating = false;
     let isAutoScrolling = false; 
 
-    // Dynamic SMIL Container Discovery & State
+    // Dynamic SMIL Container Discovery & State (kept for desktop mainly)
     const smilContainers = flipper.querySelectorAll('[data-smil-container]');
-    const smilStates = new Map(); // containerElement -> { hovered: boolean }
+    const smilStates = new Map();
 
     function updateSmilState(container) {
         if (!container) return;
@@ -109,10 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const state = smilStates.get(container) || { hovered: false };
         const isHovered = state.hovered;
         const isActive = cardParent.classList.contains('active');
-        
-        // 'in-view' class is managed by the Generic Reveal Observer below
         const cardInView = cardParent.classList.contains('in-view');
         
+        // On mobile, always consider revealed if in view? 
+        // Logic below tries to handle it, but we rely on generic intersection observer too.
         const isRevealed = cardInView || window.innerWidth > 768;
         const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
 
@@ -174,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSmilState(container); 
         });
         
-        // Intersection Observer for auto-playing visible cards on mobile/first-load
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { 
                 if (entry.isIntersecting) {
@@ -186,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const setActive = (index, skipAnimation = false) => {
+      // GUARD: Strictly disable tab logic on mobile
+      if (window.innerWidth < 768) return;
+
       if (index === activeIndex && !skipAnimation) return;
       activeIndex = index;
       if (!skipAnimation) isAnimating = true;
@@ -250,6 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     triggers.forEach((trigger, index) => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
+        // Allow clicking on mobile? If tabs are hidden, they can't click.
+        // But if they are barely visible, we shouldn't block it unless strictly needed.
+        // But logic says "show no tab navigation on small screens".
+        if (window.innerWidth < 768) return; 
+
         if (index === activeIndex) return;
         if (scrollTrack && window.innerWidth >= 768) {
             isAutoScrolling = true;
@@ -265,12 +273,40 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    setActive(0, true);
+    // Mobile Responsive Check
+    const checkResponsive = () => {
+        const isMobile = window.innerWidth < 768;
+        
+        // 1. Force Hide/Show Tabs Container
+        // We look for the container with max-md:hidden
+        const tabContainer = flipper.querySelector('.max-md\\:hidden');
+        if (tabContainer) {
+            tabContainer.style.display = isMobile ? 'none' : '';
+        }
+
+        // 2. Control Cards State
+        if (isMobile) {
+            // Strip classes so they stack naturally via CSS
+            cards.forEach(c => {
+                 c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
+            });
+        } else {
+            // Restore functionality
+            setActive(activeIndex, true);
+        }
+    };
+
+    window.addEventListener('resize', checkResponsive);
+    checkResponsive(); // Run immediate check
+    
+    // Only initialize active state if NOT mobile
+    if (window.innerWidth >= 768) {
+        setActive(0, true);
+    }
 
     const revealObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
-                // Find potential SMIL containers inside the revealed card
                 const card = mutation.target;
                 const container = card.querySelector('[data-smil-container]');
                 if (container) updateSmilState(container);
