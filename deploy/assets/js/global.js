@@ -428,5 +428,29 @@ document.addEventListener('DOMContentLoaded', () => {
         stickySlideshows.forEach(s => s.update());
         scrollSpies.forEach(s => s.update());
     }
+
+    // --- 6. Generic Animate-On-Scroll Observer ---
+    // Handles elements marked with .animate-on-scroll (like section borders)
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    if (animatedElements.length > 0) {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                } else {
+                    // Remove class to allow re-animation when scrolling "up and down"
+                    entry.target.classList.remove('animate');
+                }
+            });
+        }, observerOptions);
+
+        animatedElements.forEach(el => observer.observe(el));
+    }
 });
 
