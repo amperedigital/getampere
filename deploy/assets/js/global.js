@@ -397,6 +397,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- 4. Simple Scroll Reveal Section (New v1.462) ---
+    // Reuses the exact same animation logic as StickySlideshow but for standard static sections
+    class ScrollRevealSection {
+        constructor(el) {
+            this.el = el;
+            this.grids = el.querySelectorAll('[data-grid-anim]');
+            this.revealGroup = el.querySelectorAll('[data-reveal-group]');
+            this.state = { inView: false };
+        }
+
+        update() {
+            const rect = this.el.getBoundingClientRect();
+            const winH = window.innerHeight;
+            
+            // Allow animation when top is within view (threshold 20%)
+            const topThreshold = winH * 0.8; 
+            const bottomThreshold = winH * 0.2;
+
+            // Simple In-View Check:
+            // Element top is above the bottom 80% mark AND Element bottom is below the top 20% mark
+            const currentlyInView = (rect.top <= topThreshold) && (rect.bottom >= bottomThreshold);
+
+            if (currentlyInView !== this.state.inView) {
+                this.state.inView = currentlyInView;
+                this.toggleVisibility(currentlyInView);
+            }
+        }
+
+        toggleVisibility(show) {
+            // Toggle Grid Lines (Scale 0 <-> 100)
+            this.grids.forEach(g => {
+                const axis = g.dataset.gridAxis || 'x'; // 'x' or 'y'
+                if (show) {
+                    g.classList.remove(axis === 'y' ? 'scale-y-0' : 'scale-x-0');
+                    g.classList.add(axis === 'y' ? 'scale-y-100' : 'scale-x-100');
+                } else {
+                    g.classList.remove(axis === 'y' ? 'scale-y-100' : 'scale-x-100');
+                    g.classList.add(axis === 'y' ? 'scale-y-0' : 'scale-x-0');
+                }
+            });
+
+            // Toggle Reveal Groups (Opacity/Translate)
+            this.revealGroup.forEach(el => {
+                if (show) {
+                    el.classList.remove('opacity-0', 'translate-y-8');
+                    el.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    el.classList.remove('opacity-100', 'translate-y-0');
+                    el.classList.add('opacity-0', 'translate-y-8');
+                }
+            });
+        }
+    }
+
     // --- 5. Initialization ---
     const scrubbers = Array.from(document.querySelectorAll('[data-scroll-scrub]'))
                            .map(el => new ScrollScrubber(el));
@@ -406,17 +460,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const scrollSpies = Array.from(document.querySelectorAll('[data-scrollspy-nav]'))
                              .map(el => new ScrollSpy(el));
+                             
+    const simpleReveals = Array.from(document.querySelectorAll('[data-scroll-reveal-section]'))
+                               .map(el => new ScrollRevealSection(el));
 
     let ticking = false;
     
     // Check if we have active components before attaching generic listener
-    if (scrubbers.length > 0 || stickySlideshows.length > 0 || scrollSpies.length > 0) {
+    if (scrubbers.length > 0 || stickySlideshows.length > 0 || scrollSpies.length > 0 || simpleReveals.length > 0) {
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     scrubbers.forEach(s => s.update());
                     stickySlideshows.forEach(s => s.update());
                     scrollSpies.forEach(s => s.update());
+                    simpleReveals.forEach(s => s.update());
                     ticking = false;
                 });
                 ticking = true;
@@ -427,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrubbers.forEach(s => s.update());
         stickySlideshows.forEach(s => s.update());
         scrollSpies.forEach(s => s.update());
+        simpleReveals.forEach(s => s.update());
     }
 
     // --- 6. Generic Animate-On-Scroll Observer ---
