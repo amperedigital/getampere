@@ -1,165 +1,284 @@
 /**
- * Tab Controlled Card Flipper v1.510
- * - FIXED: Severe Z-Index logic (Explicitly set stacked cards).
- * - FIXED: Initial State (Forces Card 0 visible, others BELOW viewport).
- * - REVERT: Simplified opacity map to prevent "ghost" cards.
+ * Tab Controlled Card Flipper v1.300
+ * Modular Refactor: Uses data attributes for SMIL/Video control.
+ * Removed hardcoded IDs.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.510 (Strict Stack) Loaded');
+  console.log('Tab Flipper v1.300 (Modular) Loaded');
 
-    // --- 1. Styles ---
-    const style = document.createElement('style');
-    style.textContent = `
-    @media (min-width: 768px) {
-      .group\\/cards { 
-          perspective: 2000px;
-          transform-style: preserve-3d;
-      }
-      
-      [data-tab-card] {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        will-change: transform;
-        transform-style: preserve-3d;
+  // Inject styles for interaction utilities
+  const style = document.createElement('style');
+  style.textContent = `
+    .manual-active .force-visible {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .manual-active .force-smil-display {
+      display: block !important;
+      visibility: visible !important; 
+      opacity: 1 !important; 
+      transition: none !important;
+    }
+
+    .manual-active .crm-ping-element {
+      opacity: 1 !important;
+      display: block !important;
+      animation: crm-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+    }
+
+    /* Generic Selector for hiding anims when not active if needed */
+    [data-smil-behavior="force-display"]:not(.manual-active) animateMotion,
+    [data-smil-behavior="force-display"]:not(.manual-active) circle {
+         /* Rely on JS removing classes, but this is a backup */
+    }
+
+    .smil-hide {
+        visibility: hidden;
+        opacity: 1;
         transition: none !important;
-        display: block !important;
-        visibility: visible !important;
-        backface-visibility: hidden;
-        background-color: #0b0c15;
+    }
+    
+    @keyframes crm-ping {
+      75%, 100% {
+        transform: scale(2);
+        opacity: 0;
       }
     }
+
+    /* Interaction Utility Classes */
+    .interaction-tag-label {
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .group:hover .interaction-tag-label,
+    .active .interaction-tag-label {
+      opacity: 1;
+    }
+
+    /* Improved Stack CSS Overrides */
+    [data-tab-card].stack-0 { --stack-y: 0px !important; z-index: 30 !important; opacity: 1 !important; }
+    [data-tab-card].stack-1 { --stack-y: -20px !important; z-index: 20 !important; opacity: 1 !important; }
+    [data-tab-card].stack-2 { --stack-y: -40px !important; z-index: 10 !important; opacity: 1 !important; }
+    [data-tab-card].stack-3 { --stack-y: -60px !important; z-index: 5 !important; opacity: 1 !important; }
   `;
-    document.head.appendChild(style);
+  document.head.appendChild(style);
 
-    // --- 2. Helper: Animation ---
-    const triggerSVGAnimation = (card) => {
-        try {
-            const anims = card.querySelectorAll('animate, animateTransform, animateMotion');
-            anims.forEach(a => typeof a.beginElement === 'function' && a.beginElement());
-            card.querySelectorAll('.smil-hide, .hidden').forEach(el => {
-                el.style.visibility = 'visible';
-                el.classList.remove('hidden');
-            });
-        } catch(e) {}
-    };
+  // --- Text Interaction Engine ---
+  const initializeFlipText = (el) => {
+    if (el.dataset.initialized) return;
+    const text = el.textContent;
+    const delay = parseInt(el.dataset.flipDelay || 30);
+    
+    el.innerHTML = '';
+    Array.from(text).forEach((char, i) => {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.classList.add('char');
+      span.style.transitionDelay = `${i * delay}ms`;
+      el.appendChild(span);
+    });
+    el.dataset.initialized = 'true';
+  };
 
-    // --- 3. Flipper Logic ---
-    const initFlipper = (flipper) => {
-        const triggers = flipper.querySelectorAll('[data-tab-trigger]');
-        const cards = flipper.querySelectorAll('[data-tab-card]');
-        const scrollTrack = flipper.querySelector('[data-scroll-track]');
+  document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
-        if (!triggers.length || !cards.length) return;
+  // Re-usable Tab Flipper Logic
+  const initFlipper = (flipper) => {
+    const triggers = flipper.querySelectorAll('[data-tab-trigger]');
+    const cards = flipper.querySelectorAll('[data-tab-card]');
+    const scrollTrack = flipper.querySelector('[data-scroll-track]');
+    if (!triggers.length || !cards.length) return;
 
-        cards.forEach(c => {
-            c.removeAttribute('data-observer'); 
-            c.classList.remove('animate-on-scroll');
-        });
+    let activeIndex = 0;
+    let isAnimating = false;
+    let isAutoScrolling = false; 
 
-        let activeIndex = 0;
+    // Dynamic SMIL Container Discovery & State
+    const smilContainers = flipper.querySelectorAll('[data-smil-container]');
+    const smilStates = new Map(); // containerElement -> { hovered: boolean }
 
-        // --- Physics Engine ---
-        const updateCardState = (progress) => {
-            const viewportH = window.innerHeight;
+    function updateSmilState(container) {
+        if (!container) return;
+        
+        const cardParent = container.closest('[data-tab-card]');
+        if (!cardParent) return;
+        
+        const state = smilStates.get(container) || { hovered: false };
+        const isHovered = state.hovered;
+        const isActive = cardParent.classList.contains('active');
+        
+        // 'in-view' class is managed by the Generic Reveal Observer below
+        const cardInView = cardParent.classList.contains('in-view');
+        
+        const isRevealed = cardInView || window.innerWidth > 768;
+        const shouldRun = (isActive || isHovered || (window.innerWidth < 768 && cardInView)) && isRevealed;
 
-            cards.forEach((card, i) => {
-                const diff = i - progress;
-                
-                let y = 0;
-                let z = 0;
-                let scale = 1;
-                let zIndex = 0;
+        const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
+        const motionElements = container.querySelectorAll("animateMotion");
+        const behavior = container.dataset.smilBehavior;
 
-                // --- STRICT Z-INDEX ---
-                // Lower index = Bottom of stack (base)
-                // Higher index = Top of stack (slides over)
-                zIndex = 10 + i;
-
-                // 1. INCOMING CARD (Positive Diff)
-                // e.g. i=1, progress=0 -> diff=1. Should be BELOW viewport.
-                if (diff > 0) {
-                     y = viewportH * 1.5; // Default: Way off screen
-                     
-                     // If it's the "Next" card (0 < diff <= 1)
-                     // We map it:
-                     // diff=1 -> y=100vh
-                     // diff=0 -> y=0vh
-                     if (diff <= 1.0) {
-                        y = diff * viewportH; 
-                     }
-                } 
-                
-                // 2. ACTIVE / PASSED CARD (Negative Diff)
-                // e.g. i=0, progress=1 -> diff=-1. Should be pushed BACK.
-                else {
-                    const depth = Math.abs(diff);
-                    y = 0;
-                    z = -100 * depth; 
-                    scale = Math.max(0.8, 1 - (depth * 0.05));
+        if (shouldRun) {
+            container.classList.add("manual-active");
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    if (motion.parentElement.classList.contains('always-hide-anim')) return;
+                    
+                    if (behavior === 'force-display') {
+                        if (motion.parentElement.classList.contains('hidden')) return;
+                        motion.parentElement.classList.add('force-smil-display');
+                    } else {
+                        motion.parentElement.classList.add('force-visible');
+                    }
                 }
-
-                card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) scale(${scale})`;
-                card.style.zIndex = zIndex;
             });
-            
-            // Sync Triggers
-            const index = Math.round(progress);
-            if (index !== activeIndex) {
-                 activeIndex = index;
-                 triggers.forEach((tr, i) => {
-                     const isActive = i === index;
-                     tr.setAttribute('aria-selected', isActive);
-                     isActive ? tr.setAttribute('data-selected', 'true') : tr.removeAttribute('data-selected');
-                 });
-                 if (cards[index]) triggerSVGAnimation(cards[index]);
-            }
-        };
 
-        // --- INIT STATE ---
-        // Force calculation at 0 IMMEDIATELY
-        // This ensures Card 1,2,3 are pushed off screen (y=150vh) before paint
-        updateCardState(0);
+            anims.forEach(anim => {
+                try {
+                    const beginAttr = anim.getAttribute('begin');
+                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
 
-        if (scrollTrack) {
-            const handleScroll = () => {
-                if (window.innerWidth < 768) return;
-                const rect = scrollTrack.getBoundingClientRect();
-                const scrollableRange = rect.height - window.innerHeight;
-                let rawP = -rect.top / scrollableRange;
-                rawP = Math.max(0, Math.min(1, rawP));
-                const floatIndex = rawP * (triggers.length - 1);
-                requestAnimationFrame(() => updateCardState(floatIndex));
-            };
-            window.addEventListener('scroll', handleScroll, { passive: true });
+                    if (isTrigger) {
+                        anim.beginElement();
+                    } else if (!isDependent) {
+                        anim.beginElement();
+                    }
+                } catch(e) {}
+            });
+        } else {
+            container.classList.remove("manual-active");
+            motionElements.forEach(motion => {
+                if (motion.parentElement) {
+                    motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+                }
+            });
+            anims.forEach(anim => { try { anim.endElement(); } catch(e) {} });
         }
+    }
+
+    // Initialize SMIL Containers
+    smilContainers.forEach(container => {
+        smilStates.set(container, { hovered: false });
+
+        container.addEventListener('mouseenter', () => { 
+            const s = smilStates.get(container);
+            s.hovered = true;
+            updateSmilState(container); 
+        });
+        container.addEventListener('mouseleave', () => { 
+            const s = smilStates.get(container);
+            s.hovered = false;
+            updateSmilState(container); 
+        });
         
-        triggers.forEach((trigger, index) => {
-            trigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (window.innerWidth < 768) return;
-                
-                if (scrollTrack) {
-                    const rect = scrollTrack.getBoundingClientRect();
-                    const absoluteTop = window.scrollY + rect.top;
-                    const scrollableRange = rect.height - window.innerHeight;
-                    const p = index / (triggers.length - 1);
-                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 5, behavior: 'smooth' });
+        // Intersection Observer for auto-playing visible cards on mobile/first-load
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) {
+                     updateSmilState(container);
                 }
             });
-        });
+        }, { threshold: 0.3 });
+        observer.observe(container);
+    });
 
-        window.addEventListener('resize', () => {
-             if (window.innerWidth < 768) {
-                cards.forEach(c => {
-                    c.style.transform = '';
-                    c.style.zIndex = '';
-                });
-            }
-        });
-        
-        // Trigger First Animation
-        triggerSVGAnimation(cards[0]);
+    const setActive = (index, skipAnimation = false) => {
+      if (index === activeIndex && !skipAnimation) return;
+      activeIndex = index;
+      if (!skipAnimation) isAnimating = true;
+      
+      triggers.forEach((t, i) => {
+        const isActive = (i === index);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        t.setAttribute('data-selected', isActive ? 'true' : 'false');
+        t.classList.toggle('active', isActive);
+      });
+
+      const activeTrigger = triggers[index];
+      const triggerContainer = activeTrigger.parentElement;
+      if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
+          const containerRect = triggerContainer.getBoundingClientRect();
+          const triggerRect = activeTrigger.getBoundingClientRect();
+          const scrollLeft = triggerContainer.scrollLeft + (triggerRect.left - containerRect.left) - (containerRect.width / 2) + (triggerRect.width / 2);
+          triggerContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      }
+
+      cards.forEach((c, i) => {
+        c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
+        if (i === index) {
+          c.classList.add('active', 'stack-0');
+          const video = c.querySelector('video');
+          if (video && (c.dataset.autoPlay !== 'false')) video.play().catch(() => {});
+        } else if (i < index) {
+          c.classList.add('inactive-prev');
+          const depth = index - i;
+          if (depth <= 3) c.classList.add(`stack-${depth}`);
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
+        } else {
+          c.classList.add('inactive-next');
+          const video = c.querySelector('video');
+          if (video) { video.pause(); video.currentTime = 0; }
+        }
+      });
+
+      // Update all SMIL containers since active state changed
+      smilContainers.forEach(container => updateSmilState(container));
+
+      if (!skipAnimation) {
+          setTimeout(() => { isAnimating = false; }, 500);
+      }
     };
 
-    document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
+    if (scrollTrack) {
+        const handleScroll = () => {
+            if (isAutoScrolling || window.innerWidth < 768) return;
+            const rect = scrollTrack.getBoundingClientRect();
+            const relativeScroll = -rect.top;
+            const scrollableRange = rect.height - window.innerHeight;
+            let progress = Math.max(0, Math.min(1, relativeScroll / scrollableRange));
+            const index = Math.min(triggers.length - 1, Math.floor(progress * triggers.length));
+            if (index !== activeIndex) setActive(index, true);
+        };
+        if (window.lenis) window.lenis.on('scroll', handleScroll);
+        else window.addEventListener('scroll', handleScroll);
+    }
+
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (index === activeIndex) return;
+        if (scrollTrack && window.innerWidth >= 768) {
+            isAutoScrolling = true;
+            const rect = scrollTrack.getBoundingClientRect();
+            const sectionTop = window.scrollY + rect.top;
+            const scrollableRange = rect.height - window.innerHeight;
+            const targetProgress = (index + 0.5) / triggers.length;
+            const targetScroll = sectionTop + (targetProgress * scrollableRange);
+            if (window.lenis) window.lenis.scrollTo(targetScroll, { onComplete: () => { isAutoScrolling = false; } });
+            else { window.scrollTo({ top: targetScroll, behavior: 'smooth' }); setTimeout(() => { isAutoScrolling = false; }, 800); }
+        }
+        setActive(index);
+      });
+    });
+
+    setActive(0, true);
+
+    const revealObserver = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'class' && mutation.target.classList.contains('in-view')) {
+                // Find potential SMIL containers inside the revealed card
+                const card = mutation.target;
+                const container = card.querySelector('[data-smil-container]');
+                if (container) updateSmilState(container);
+            }
+        });
+    });
+    cards.forEach(card => revealObserver.observe(card, { attributes: true }));
+  };
+
+  document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
 });
