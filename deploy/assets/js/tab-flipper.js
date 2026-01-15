@@ -1,60 +1,60 @@
 /**
- * Tab Controlled Card Flipper v1.498
- * - Visual Update: "Snap-Flip" Carousel Physics
- * - Entry Animation: Incoming cards appear almost instantly at the bottom (opacity snap)
- *   and slide up into position (transform glide), eliminating the "ghost fade" feel.
- * - Layering: Ensures incoming Active card properly layers ON TOP of the receding Previous card.
+ * Tab Controlled Card Flipper v1.499
+ * - Visual Update: "Opaque Carousel" Physics
+ * - NO FADING: All cards are fully opaque (opacity: 1).
+ * - Carousel Logic: 
+ *      - Active Card: Top of stack (0px).
+ *      - Past Cards: Pushed back (-20px, -40px).
+ *      - Next Cards: Existing physically BELOW the stack (TranslateY 120%), sliding up into view.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.498 (Snap-Flip) Loaded');
+  console.log('Tab Flipper v1.499 (Opaque Carousel) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
   style.textContent = `
     @media (min-width: 768px) {
-      /* Base Transition Logic */
+      /* Shared Physics */
       [data-tab-card] {
-        /* Long transform for weight, but varying opacity based on state */
-        transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Elegant smooth slide */
         transform-origin: center center;
+        opacity: 1 !important; /* GLOBAL VISIBILITY - NO FADING */
       }
 
       /* --- ACTIVE CARD (Index 0) --- */
-      /* This is the card arriving at the front */
+      /* Slides to front/center */
       [data-tab-card].active {
          z-index: 30;
          --stack-y: 0px;
          --rot-y: 12deg;
          --rot-x: 6deg;
          
-         /* Snap Opacity: Become visible quickly to show the "Material" moving */
-         transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.1s ease-out !important;
-         opacity: 1 !important;
-         
          transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
       }
       
       /* --- PREVIOUS STACK (Receding Cards) --- */
-      /* "Cyber" card moving back */
-      [data-tab-card].stack-1 { z-index: 20; --stack-y: -20px; opacity: 1 !important; }
-      [data-tab-card].stack-2 { z-index: 10; --stack-y: -40px; opacity: 1 !important; }
-      [data-tab-card].stack-3 { z-index: 5; --stack-y: -60px; opacity: 1 !important; }
+      /* Pushed back into depth */
+      [data-tab-card].stack-1 { z-index: 20; --stack-y: -20px; }
+      [data-tab-card].stack-2 { z-index: 10; --stack-y: -40px; }
+      [data-tab-card].stack-3 { z-index: 5; --stack-y: -60px; }
 
-      /* --- NEXT QUEUE (Waiting below) --- */
-      /* "Test" card waiting to enter */
+      /* --- NEXT QUEUE (Incoming) --- */
+      /* 
+         Fully visible but positioned physically BELOW the active stack.
+         Mimics a vertical rolodex or scroll feed waiting to snap up.
+         110% puts it just below the current card's bottom edge.
+      */
       [data-tab-card].inactive-next {
-         /* Start MUCH lower to create a travel path */
-         --stack-y: 250px !important; 
-         /* Stronger tilt to mimic looking "under" or "up" at it */
-         --rot-x: -35deg !important;  
-         --rot-y: 25deg !important;   
+         z-index: 40; /* High Z to slide OVER the retreating stack if needed, or matched to transition */
+         --stack-y: 110% !important; 
          
-         /* Hide until active, but slow fade out if reversing */
-         opacity: 0 !important;
-         pointer-events: none;
+         /* Pre-rotation to match the arrival angle */
+         --rot-x: -10deg !important;  
+         --rot-y: 12deg !important;   
          
          transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+         pointer-events: none; /* Prevent interaction until active */
       }
     }
   `;
