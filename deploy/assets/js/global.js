@@ -495,32 +495,103 @@ document.addEventListener('DOMContentLoaded', () => {
         simpleReveals.forEach(s => s.update());
     }
 
-    // --- 6. Generic Animate-On-Scroll Observer ---
-    // Handles elements marked with .animate-on-scroll (like section borders)
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    if (animatedElements.length > 0) {
-        console.log(`[Global] Found ${animatedElements.length} animate-on-scroll elements.`);
+    // --- 6. Generic Animate-On-Scroll & Media Trigger Observer ---
+    // Handles elements marked with .animate-on-scroll or [data-observer]
+    // Triggers: .in-view class, SMIL animations, and Video playback
+    
+    // Helper: Trigger Media (SMIL/Video) - Exposed Globally
+    window.triggerMedia = function(container, shouldPlay) {
+        if (!container) return;
         
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0 // Trigger as soon as 1 pixel is visible
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // console.log('[Global] Element entering view:', entry.target);
-                    entry.target.classList.add('in-view');
-                    entry.target.setAttribute('data-in-view', 'true');
-                } else {
-                    entry.target.classList.remove('in-view');
-                    entry.target.setAttribute('data-in-view', 'false');
+        const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
+        const behavior = container.dataset.smilBehavior;
+        const motionElements = container.querySelectorAll("animateMotion");
+        const videos = container.querySelectorAll('video');
+  
+        if (shouldPlay) {
+            // A. SMIL Animations
+            container.classList.add("manual-active");
+            
+            // Force visibility for motion paths
+            motionElements.forEach(motion => {
+              if (motion.parentElement && !motion.parentElement.classList.contains('always-hide-anim')) {
+                  const cls = (behavior === 'force-display') ? 'force-smil-display' : 'force-visible';
+                  if (!motion.parentElement.classList.contains('hidden') || behavior !== 'force-display') {
+                      motion.parentElement.classList.add(cls);
+                  }
+              }
+            });
+  
+            // Begin Elements
+            anims.forEach(anim => {
+                try {
+                    const beginAttr = anim.getAttribute('begin');
+                    const isDependent = beginAttr && beginAttr.includes('anim-trigger');
+                    const isTrigger = anim.id && anim.id.includes('anim-trigger');
+                    if (isTrigger || !isDependent) {
+                        anim.beginElement(); 
+                    }
+                } catch(e) {}
+            });
+  
+            // B. Video Playback
+            videos.forEach(v => {
+                const playPromise = v.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {});
                 }
             });
-        }, observerOptions);
+  
+        } else {
+            // Stop/Pause
+            container.classList.remove("manual-active");
+            motionElements.forEach(motion => {
+               if (motion.parentElement) motion.parentElement.classList.remove('force-visible', 'force-smil-display');
+            });
+            videos.forEach(v => v.pause());
+        }
+    };
 
-        animatedElements.forEach(el => observer.observe(el));
+    // Consolidated Observer Logic
+    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer]');
+
+    // Define observer options
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -10% 0px', // Trigger slightly before bottom
+        threshold: 0.15 
+    };
+
+    // Create Global Observer
+    window.globalObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const target = entry.target;
+            // Check if target IS a smil container, or contains one
+            const smilContainer = target.hasAttribute('data-smil-container') ? target : target.querySelector('[data-smil-container]');
+            // Check for direct video children if not in smil container
+            const directVideo = target.querySelector('video');
+
+            if (entry.isIntersecting) {
+                target.classList.add('in-view');
+                target.setAttribute('data-in-view', 'true');
+                
+                if (smilContainer) window.triggerMedia(smilContainer, true);
+                if (directVideo && !smilContainer) directVideo.play().catch(()=>{});
+
+            } else {
+                // target.classList.remove('in-view'); 
+                target.setAttribute('data-in-view', 'false');
+
+                if (smilContainer) window.triggerMedia(smilContainer, false);
+                if (directVideo && !smilContainer) directVideo.pause();
+            }
+        });
+    }, observerOptions);
+
+    // Initial Observation
+    if (animatedElements.length > 0) {
+        console.log(`[Global] Found ${animatedElements.length} observable elements.`);
+        animatedElements.forEach(el => window.globalObserver.observe(el));
     }
 });
 
