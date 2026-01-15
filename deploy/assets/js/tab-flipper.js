@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         triggers.forEach((t, i) => {
           const isActive = (i === index);
           t.setAttribute('aria-selected', isActive);
-          t.classList.toggle('active', isActive);
+          t.classList.toggle('active', isActive); t.dataset.selected = isActive;
         });
   
         // 2. Scroll Tab (if needed)
