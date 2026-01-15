@@ -1,12 +1,11 @@
 /**
- * Tab Controlled Card Flipper v1.495
+ * Tab Controlled Card Flipper v1.496
  * - Restores Classic Parallel Stacking (Match v1.215)
- * - Removes enforced rotations (Inherits 12deg base for Even Look)
- * - Removes scaling and heavy brightness filters
+ * - Adds Entry Transition for Next Cards to simulate "Flip" (Fixes Fade-In look)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.495 (Classic Restore) Loaded');
+  console.log('Tab Flipper v1.496 (Flip Transition) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
@@ -40,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
         z-index: 5; 
         --stack-y: -60px;
         opacity: 1 !important;
+      }
+
+      /* Entry State for Next Cards - Simulates "Flip/Slide In" instead of just fading */
+      [data-tab-card].inactive-next {
+        --stack-y: 40px !important; /* Starts lower to slide up */
+        opacity: 0 !important;
+        pointer-events: none;
       }
     }
   `;
