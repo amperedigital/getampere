@@ -1,171 +1,162 @@
 /**
- * Tab Controlled Card Flipper v1.506
- * - REFERENCE: Matches "Neverhack" Sticky Stack Physics.
- * - MECHANISM: Incoming cards slide UP from bottom (100vh+) to 0px.
- * - STACKING: Active cards stay pinned (0px) but push slightly back (-Z) as next card arrives.
- * - CONFLICT: 'data-observer' removed from HTML, but this script ensures cleanup just in case.
+ * Tab Controlled Card Flipper v1.476
+ * Global Integration Update
+ * - Uses window.globalObserver via HTML attributes (data-observer/animate-on-scroll).
+ * - Removed forced CSS injection.
+ * - Relies on Tailwind for mobile layout.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.506 (Sticky Stack) Loaded');
+  console.log('Tab Flipper v1.476 (Global Observer Integration) Loaded');
 
-    // --- 1. Styles ---
-    const style = document.createElement('style');
-    style.textContent = `
-    @media (min-width: 768px) {
-      .group\\/cards { perspective: 1500px; }
-      
-      [data-tab-card] {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        transform-style: preserve-3d;
-        will-change: transform;
-        transition: none !important; 
-        display: block !important;
-        visibility: visible !important;
-      }
-    }
-  `;
-    document.head.appendChild(style);
+  // --- 1. Text Interaction Engine ---
+  const initializeFlipText = (el) => {
+    if (el.dataset.initialized) return;
+    const text = el.textContent;
+    const delay = parseInt(el.dataset.flipDelay || 30);
+    el.innerHTML = '';
+    Array.from(text).forEach((char, i) => {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.classList.add('char');
+      span.style.transitionDelay = `${i * delay}ms`;
+      el.appendChild(span);
+    });
+    el.dataset.initialized = 'true';
+  };
+  document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
-    // --- 2. Flipper Logic ---
-    const initFlipper = (flipper) => {
-        const triggers = flipper.querySelectorAll('[data-tab-trigger]');
-        const cards = flipper.querySelectorAll('[data-tab-card]');
-        const scrollTrack = flipper.querySelector('[data-scroll-track]');
+  // --- 2. Main Flipper Logic ---
+  const initFlipper = (flipper) => {
+    const triggers = flipper.querySelectorAll('[data-tab-trigger]');
+    const cards = flipper.querySelectorAll('[data-tab-card]');
+    const scrollTrack = flipper.querySelector('[data-scroll-track]');
+    
+    if (!triggers.length || !cards.length) return;
 
-        // Ensure clean slate
-        cards.forEach(c => {
-            c.removeAttribute('data-observer');
-            c.classList.remove('animate-on-scroll');
-            c.style.cssText = '';
-        });
+    let activeIndex = 0;
+    let isAnimating = false;
+    let isAutoScrolling = false;
 
-        if (!triggers.length || !cards.length) return;
-
-        let activeIndex = 0;
-
-        // --- Physics Engine ---
-        const updateCardState = (progress) => {
-            // Viewport calc for entrance
-            const viewportH = window.innerHeight;
-
-            cards.forEach((card, i) => {
-                const diff = i - progress;
-                // diff = 0  => Active (Top of stack)
-                // diff = 1  => Next (1 unit below)
-                // diff = -1 => Previous (1 unit behind)
-
-                let y = 0;
-                let z = 0;
-                let rotX = 0;
-                let opacity = 1;
-                let zIndex = 0;
-
-                // --- LOGIC: NEVERHACK STYLE ---
-                
-                // 1. INCOMING CARD (Positive Diff)
-                // Example: diff = 0.5 (Halfway entering)
-                // It should be at 50% height.
-                if (diff > 0) {
-                    zIndex = 50 - i; // Higher index = lower z-index usually, unless entering? 
-                                     // Actually, incoming is ON TOP.
-                    zIndex = 100 - i;
-                    
-                    // Entrance: Slide from bottom.
-                    // 1.0 diff = 100% height (or more)
-                    // 0.0 diff = 0% height
-                    
-                    // We map diff linear to Y offset.
-                    // Clamp at 1.5 to stop deep drawing.
-                    if (diff > 1.5) {
-                        y = viewportH * 2;
-                        opacity = 0; 
-                    } else {
-                        y = diff * (viewportH * 0.85); // 85% H slide
-                        
-                        // Subtle rotation while entering?
-                        // Reference had: rotateX(-5deg) -> 0deg
-                        rotX = -5 * diff; 
-                    }
-                } 
-                
-                // 2. ACTIVE / STACKED CARD (Negative or Zero Diff)
-                // It stays at Y=0 nominally, but pushes back in Z.
-                else {
-                    zIndex = 100 - i; // Lower in stack
-                    
-                    // Depth logic
-                    // diff goes 0 -> -1 -> -2
-                    const depth = Math.abs(diff);
-                    
-                    // Stick to top (Y=0)
-                    y = 0;
-                    
-                    // Push back Z
-                    // -200px per unit depth?
-                    z = -150 * depth;
-                    
-                    // Fade deep stack
-                    if (depth > 2) {
-                        opacity = 1 - (depth - 2); // Fade out after 2
-                        if(opacity < 0) opacity = 0;
-                    }
-                    
-                    // Optional: Slight scale down?
-                    // scale = 1 - (0.05 * depth)
-                }
-
-                // Apply
-                card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rotX.toFixed(2)}deg)`;
-                card.style.zIndex = Math.round(zIndex);
-                card.style.opacity = opacity;
-
-                if (Math.abs(diff) < 0.5 && i !== activeIndex) {
-                    // Update triggers if needed
-                }
-            });
-            
-            // Sync UI
-            const index = Math.round(progress);
-             if (index !== activeIndex && triggers[index]) {
-                 activeIndex = index;
-                 triggers.forEach(tr => tr.setAttribute('aria-selected', 'false'));
-                 triggers[index].setAttribute('aria-selected', 'true');
-             }
-        };
-
-        // --- Scroll Handler ---
-        if (scrollTrack) {
-            const handleScroll = () => {
-                if (window.innerWidth < 768) return;
-
-                const rect = scrollTrack.getBoundingClientRect();
-                const scrollableRange = rect.height - window.innerHeight;
-                // Raw Progress 
-                const rawP = Math.max(0, Math.min(1, -rect.top / scrollableRange));
-                const floatIndex = rawP * (triggers.length - 1);
-
-                requestAnimationFrame(() => updateCardState(floatIndex));
-            };
-
-            window.addEventListener('scroll', handleScroll, {
-                passive: true
-            });
-            handleScroll();
+    // --- Helper: Safe Media Trigger ---
+    const safeTriggerMedia = (container, play) => {
+        if (window.triggerMedia) {
+            window.triggerMedia(container, play);
+        } else {
+            // Fallback for video if global not ready
+            const v = container.querySelector('video');
+            if (v && play) v.play().catch(()=>{});
+            if (v && !play) v.pause();
         }
-
-        // Cleanup
-        const checkResponsive = () => {
-            if (window.innerWidth < 768) {
-                cards.forEach(c => {
-                    c.style.transform = '';
-                    c.style.opacity = '';
-                    c.style.zIndex = '';
-                });
-            }
-        };
-        window.addEventListener('resize', checkResponsive);
     };
 
-    document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
+    // --- DESKTOP: Tab/Stack Logic ---
+    const setActive = (index, skipAnimation = false) => {
+        // Desktop only logic
+        if (window.innerWidth < 768) return;
+  
+        if (index === activeIndex && !skipAnimation) return;
+        activeIndex = index;
+        if (!skipAnimation) isAnimating = true;
+        
+        // 1. Update Triggers
+        triggers.forEach((t, i) => {
+          const isActive = (i === index);
+          t.setAttribute('aria-selected', isActive);
+          t.classList.toggle('active', isActive);
+        });
+  
+        // 2. Scroll Tab (if needed)
+        const activeTrigger = triggers[index];
+        const triggerContainer = activeTrigger.parentElement;
+        if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
+             const containerRect = triggerContainer.getBoundingClientRect();
+             const triggerRect = activeTrigger.getBoundingClientRect();
+             const scrollLeft = triggerContainer.scrollLeft + (triggerRect.left - containerRect.left) - (containerRect.width/2) + (triggerRect.width/2);
+             triggerContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        }
+  
+        // 3. Update Cards
+        cards.forEach((c, i) => {
+          c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
+          const container = c.querySelector('[data-smil-container]');
+          
+          if (i === index) {
+            c.classList.add('active', 'stack-0');
+            // Desktop: Play media for active card
+            if (container) safeTriggerMedia(container, true);
+            const video = c.querySelector('video');
+            if (video && (c.dataset.autoPlay !== 'false')) video.play().catch(()=>{});
+            
+          } else if (i < index) {
+            c.classList.add('inactive-prev');
+            const depth = index - i;
+            if (depth <= 3) c.classList.add(`stack-${depth}`);
+            // Desktop: Pause inactive media
+            if (container) safeTriggerMedia(container, false);
+            const video = c.querySelector('video');
+            if (video) video.pause();
+            
+          } else {
+            c.classList.add('inactive-next');
+            // Desktop: Pause inactive media
+            if (container) safeTriggerMedia(container, false);
+            const video = c.querySelector('video');
+            if (video) video.pause();
+          }
+        });
+  
+        if (!skipAnimation) setTimeout(() => { isAnimating = false; }, 500);
+    };
+
+    // Scroll Track Logic (Desktop)
+    if (scrollTrack) {
+        const handleScroll = () => {
+            if (isAutoScrolling || window.innerWidth < 768) return;
+            const rect = scrollTrack.getBoundingClientRect();
+            const scrollableRange = rect.height - window.innerHeight;
+            let progress = Math.max(0, Math.min(1, -rect.top / scrollableRange));
+            const index = Math.min(triggers.length - 1, Math.floor(progress * triggers.length));
+            if (index !== activeIndex) setActive(index, true);
+        };
+        if (window.lenis) window.lenis.on('scroll', handleScroll);
+        else window.addEventListener('scroll', handleScroll);
+    }
+
+    // Click Logic (Desktop)
+    triggers.forEach((trigger, index) => {
+        trigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.innerWidth < 768) return; 
+          setActive(index);
+        });
+    });
+
+    // --- RESPONSIVE CHECK ---
+    const checkResponsive = () => {
+        const isMobile = window.innerWidth < 768;
+        const tabContainer = flipper.querySelector('.max-md\\:hidden');
+        if (tabContainer) tabContainer.style.display = isMobile ? 'none' : '';
+
+        if (isMobile) {
+            // Mobile: Cleanup Desktop classes to let Tailwind and Index.html handle layout
+            cards.forEach(c => {
+                c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
+            });
+            // We NO LONGER manually observe here. 
+            // The HTML should have [data-observer] or .animate-on-scroll to be picked up by global.js
+        } else {
+            // Desktop: Restore State
+            setActive(activeIndex, true);
+        }
+    };
+
+    window.addEventListener('resize', checkResponsive);
+    checkResponsive();
+    
+    // Initial Desktop Set
+    if (window.innerWidth >= 768) setActive(0, true);
+  };
+
+  document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
 });
