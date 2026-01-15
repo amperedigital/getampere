@@ -71,13 +71,16 @@
         display: none !important;
     }
 
-    /* Active State: Show/Run Animations ONLY ON HOVER of the CARD */
+    /* Active State: Show/Run Animations on Active OR Hover */
+    [data-tab-card].active .crm-animated-element,
+    [data-tab-card].active .crm-ping-element,
     [data-tab-card].active:hover .crm-animated-element,
     [data-tab-card].active:hover .crm-ping-element {
         display: block !important;
         opacity: 1 !important;
     }
     
+    [data-tab-card].active .crm-ping-element,
     [data-tab-card].active:hover .crm-ping-element {
         animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
     }
@@ -259,6 +262,11 @@
       transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
       touch-action: manipulation;
     }
+    
+    /* Restore Stacking Offsets */
+    [data-tab-card].stack-1 { --stack-y: -12px; z-index: 18 !important; }
+    [data-tab-card].stack-2 { --stack-y: -24px; z-index: 17 !important; }
+    [data-tab-card].stack-3 { --stack-y: -36px; z-index: 16 !important; }
 
     /* Flatten entire stack on Hover or Touch */
     .group\/cards:hover [data-tab-card],
@@ -2951,7 +2959,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.528/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.529/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
