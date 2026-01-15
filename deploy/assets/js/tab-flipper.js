@@ -1,13 +1,13 @@
 /**
- * Tab Controlled Card Flipper v1.506
- * - REFERENCE: Matches "Neverhack" Sticky Stack Physics.
- * - MECHANISM: Incoming cards slide UP from bottom (100vh+) to 0px.
- * - STACKING: Active cards stay pinned (0px) but push slightly back (-Z) as next card arrives.
- * - CONFLICT: 'data-observer' removed from HTML, but this script ensures cleanup just in case.
+ * Tab Controlled Card Flipper v1.507
+ * - FIXED: Tab Active State (Uses data-selected="true" for blue line).
+ * - FIXED: SMIL/SVG Animation Triggers (Manual .beginElement()).
+ * - FIXED: 3D Positioning & Opacity (Restored Z-Stacking).
+ * - PHYSICS: Neverhack Sticky Stack (Incoming slides up, Active pushes back).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.506 (Sticky Stack) Loaded');
+    console.log('Tab Flipper v1.507 (Fix All) Loaded');
 
     // --- 1. Styles ---
     const style = document.createElement('style');
@@ -22,39 +22,52 @@ document.addEventListener('DOMContentLoaded', () => {
         transition: none !important; 
         display: block !important;
         visibility: visible !important;
+        /* Ensure inputs are not hidden */
       }
     }
   `;
     document.head.appendChild(style);
 
-    // --- 2. Flipper Logic ---
+    // --- 2. Helper: Trigger SVG Animations ---
+    const triggerSVGAnimation = (card) => {
+        // Find main trigger SMIL element
+        const trigger = card.querySelector('#crm-anim-trigger');
+        if (trigger && trigger.beginElement) {
+            try {
+                // Restart animation
+                trigger.beginElement();
+            } catch (e) { console.warn('SMIL trigger failed', e); }
+        }
+        
+        // Also unhide elements that might be hidden by default
+        const circles = card.querySelectorAll('.smil-hide');
+        circles.forEach(c => c.style.visibility = 'visible');
+    };
+
+    // --- 3. Flipper Logic ---
     const initFlipper = (flipper) => {
         const triggers = flipper.querySelectorAll('[data-tab-trigger]');
         const cards = flipper.querySelectorAll('[data-tab-card]');
         const scrollTrack = flipper.querySelector('[data-scroll-track]');
 
-        // Ensure clean slate
+        if (!triggers.length || !cards.length) return;
+
+        // Cleanup HTML attributes that cause conflicts
         cards.forEach(c => {
             c.removeAttribute('data-observer');
             c.classList.remove('animate-on-scroll');
-            c.style.cssText = '';
         });
 
-        if (!triggers.length || !cards.length) return;
-
         let activeIndex = 0;
+        let lastScrollIndex = -1;
 
         // --- Physics Engine ---
         const updateCardState = (progress) => {
-            // Viewport calc for entrance
             const viewportH = window.innerHeight;
 
             cards.forEach((card, i) => {
                 const diff = i - progress;
-                // diff = 0  => Active (Top of stack)
-                // diff = 1  => Next (1 unit below)
-                // diff = -1 => Previous (1 unit behind)
-
+                
                 let y = 0;
                 let z = 0;
                 let rotX = 0;
@@ -62,75 +75,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 let zIndex = 0;
 
                 // --- LOGIC: NEVERHACK STYLE ---
-                
+
                 // 1. INCOMING CARD (Positive Diff)
-                // Example: diff = 0.5 (Halfway entering)
-                // It should be at 50% height.
+                // Slides UP from bottom
                 if (diff > 0) {
-                    zIndex = 50 - i; // Higher index = lower z-index usually, unless entering? 
-                                     // Actually, incoming is ON TOP.
-                    zIndex = 100 - i;
+                    zIndex = 100 - i; // Ensure incoming is ON TOP of previous
                     
-                    // Entrance: Slide from bottom.
-                    // 1.0 diff = 100% height (or more)
-                    // 0.0 diff = 0% height
-                    
-                    // We map diff linear to Y offset.
-                    // Clamp at 1.5 to stop deep drawing.
-                    if (diff > 1.5) {
-                        y = viewportH * 2;
-                        opacity = 0; 
+                    if (diff > 1.2) {
+                        y = viewportH * 1.5;
+                        opacity = 0; // Cutoff
                     } else {
-                        y = diff * (viewportH * 0.85); // 85% H slide
-                        
-                        // Subtle rotation while entering?
-                        // Reference had: rotateX(-5deg) -> 0deg
+                        // 0 diff = 0px
+                        // 1 diff = 90% viewport
+                        y = diff * (viewportH * 0.9);
                         rotX = -5 * diff; 
                     }
                 } 
                 
                 // 2. ACTIVE / STACKED CARD (Negative or Zero Diff)
-                // It stays at Y=0 nominally, but pushes back in Z.
+                // Pushes BACK into depth
                 else {
-                    zIndex = 100 - i; // Lower in stack
+                    zIndex = 100 - i; // Stack order
                     
-                    // Depth logic
-                    // diff goes 0 -> -1 -> -2
                     const depth = Math.abs(diff);
                     
-                    // Stick to top (Y=0)
-                    y = 0;
-                    
-                    // Push back Z
-                    // -200px per unit depth?
-                    z = -150 * depth;
+                    y = 0; // Pinned
+                    z = -150 * depth; // Push back
                     
                     // Fade deep stack
-                    if (depth > 2) {
-                        opacity = 1 - (depth - 2); // Fade out after 2
-                        if(opacity < 0) opacity = 0;
+                    if (depth > 1.5) {
+                        opacity = Math.max(0, 1 - (depth - 1.5));
                     }
-                    
-                    // Optional: Slight scale down?
-                    // scale = 1 - (0.05 * depth)
                 }
 
                 // Apply
                 card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rotX.toFixed(2)}deg)`;
                 card.style.zIndex = Math.round(zIndex);
                 card.style.opacity = opacity;
-
-                if (Math.abs(diff) < 0.5 && i !== activeIndex) {
-                    // Update triggers if needed
-                }
             });
             
-            // Sync UI
+            // Sync Triggers & Animations
             const index = Math.round(progress);
-             if (index !== activeIndex && triggers[index]) {
+             if (index !== activeIndex) {
                  activeIndex = index;
-                 triggers.forEach(tr => tr.setAttribute('aria-selected', 'false'));
-                 triggers[index].setAttribute('aria-selected', 'true');
+                 
+                 // Update Tabs (Blue Line)
+                 triggers.forEach((tr, i) => {
+                     const isActive = i === index;
+                     // Set BOTH aria-selected and data-selected for styling
+                     tr.setAttribute('aria-selected', isActive);
+                     if (isActive) {
+                         tr.setAttribute('data-selected', 'true');
+                     } else {
+                         tr.removeAttribute('data-selected');
+                     }
+                 });
+
+                 // Trigger SVG Animation for new active card
+                 if (cards[index]) {
+                     triggerSVGAnimation(cards[index]);
+                 }
              }
         };
 
@@ -141,18 +145,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const rect = scrollTrack.getBoundingClientRect();
                 const scrollableRange = rect.height - window.innerHeight;
-                // Raw Progress 
+                // Clamp 0..1
                 const rawP = Math.max(0, Math.min(1, -rect.top / scrollableRange));
                 const floatIndex = rawP * (triggers.length - 1);
 
                 requestAnimationFrame(() => updateCardState(floatIndex));
             };
 
-            window.addEventListener('scroll', handleScroll, {
-                passive: true
-            });
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Initial call to set state
             handleScroll();
+            
+            // Force trigger first animation
+            if(cards[0]) triggerSVGAnimation(cards[0]);
         }
+        
+        // --- Click Handler ---
+        triggers.forEach((trigger, index) => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.innerWidth < 768) return;
+                
+                if (scrollTrack) {
+                    const rect = scrollTrack.getBoundingClientRect();
+                    const absoluteTop = window.scrollY + rect.top;
+                    const scrollableRange = rect.height - window.innerHeight;
+                    const p = index / (triggers.length - 1);
+                    
+                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 10, behavior: 'smooth' });
+                }
+            });
+        });
 
         // Cleanup
         const checkResponsive = () => {
