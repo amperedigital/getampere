@@ -1,33 +1,31 @@
 /**
- * Tab Controlled Card Flipper v1.490
- * - Restores Exact 3D Stack Behavior (No Scale, Just Y-Offset + Rotation)
+ * Tab Controlled Card Flipper v1.491
+ * - Restores Exact 3D Stack Behavior (No Scale, Just Y-Offset)
+ * - FORCES ACTIVE CARD FLAT to prevent hover shift.
  * - Injects CSS variables for --stack-y
- * - Relies on Index.html for the master transform rule
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.490 (Classic Stack) Loaded');
+  console.log('Tab Flipper v1.491 (Flat Active + Classic Stack) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
   style.textContent = `
     @media (min-width: 768px) {
-      /* 
-         We DO NOT override 'transform' here. 
-         We let index.html handle 'transform: translateY(var(--stack-y)) rotateY(...) ...'
-         We only update the variables.
-      */
-
       /* Stack Depth Definitions */
       [data-tab-card].stack-0 { 
         z-index: 30; 
         --stack-y: 0px;
+        /* FORCE FLAT to match hover state and prevent shifting */
+        --rot-y: 0deg !important;
+        --rot-x: 0deg !important;
         filter: brightness(1);
         opacity: 1 !important;
       }
+      /* Background cards retain the 3D tilt defined in index.html defaults (12deg/6deg) */
       [data-tab-card].stack-1 { 
         z-index: 20; 
-        --stack-y: -20px; /* Tighter offset, NO scale */
+        --stack-y: -20px; 
         filter: brightness(0.7); 
         opacity: 1 !important;
       }
