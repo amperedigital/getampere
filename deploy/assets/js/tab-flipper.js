@@ -1,15 +1,72 @@
 /**
- * Tab Controlled Card Flipper v1.476
- * Global Integration Update
- * - Uses window.globalObserver via HTML attributes (data-observer/animate-on-scroll).
- * - Removed forced CSS injection.
- * - Relies on Tailwind for mobile layout.
+ * Tab Controlled Card Flipper v1.485
+ * - Restores 3D Rotation + Stacking (Hybrid approach)
+ * - Injects CSS variables for Stack Y/Scale
+ * - Preserves existing Index.html rotation logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.476 (Global Observer Integration) Loaded');
+  console.log('Tab Flipper v1.485 (3D Var Logic) Loaded');
 
-  // --- 1. Text Interaction Engine ---
+  // --- 1. Desktop 3D Stack Styles (Scoped) ---
+  const style = document.createElement('style');
+  style.textContent = `
+    @media (min-width: 768px) {
+      /* Define the Transform logic combining Stack + Rotation */
+      [data-tab-card] {
+        --stack-y: 0px;
+        --stack-scale: 1;
+        /* Default rotations if not set by inline/Tailwind */
+        --rot-y: 12deg; 
+        --rot-x: 6deg;
+        
+        transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, filter 0.4s ease;
+        transform-origin: center center;
+        /* Combine Translate, Scale, and Rotate */
+        transform: translateY(var(--stack-y)) scale(var(--stack-scale)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+      }
+      
+      /* Hover/Active triggers flatten via CSS vars (handled in index.html, but reinforced here) */
+      .group\\/cards:hover [data-tab-card],
+      [data-tab-card]:hover {
+        --rot-y: 0deg !important;
+        --rot-x: 0deg !important;
+      }
+
+      /* Stack Depth Definitions */
+      [data-tab-card].stack-0 { 
+        z-index: 30; 
+        --stack-y: 0px;
+        --stack-scale: 1;
+        filter: brightness(1);
+        opacity: 1 !important;
+      }
+      [data-tab-card].stack-1 { 
+        z-index: 20; 
+        --stack-y: -24px;
+        --stack-scale: 0.95;
+        filter: brightness(0.7); /* Darker for depth */
+        opacity: 1 !important;
+      }
+      [data-tab-card].stack-2 { 
+        z-index: 10; 
+        --stack-y: -48px;
+        --stack-scale: 0.90;
+        filter: brightness(0.5);
+        opacity: 1 !important;
+      }
+      [data-tab-card].stack-3 { 
+        z-index: 5; 
+        --stack-y: -72px;
+        --stack-scale: 0.85;
+        filter: brightness(0.3);
+        opacity: 1 !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // --- 2. Text Interaction Engine ---
   const initializeFlipText = (el) => {
     if (el.dataset.initialized) return;
     const text = el.textContent;
@@ -26,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   document.querySelectorAll('.hover-flip-text').forEach(initializeFlipText);
 
-  // --- 2. Main Flipper Logic ---
+  // --- 3. Main Flipper Logic ---
   const initFlipper = (flipper) => {
     const triggers = flipper.querySelectorAll('[data-tab-trigger]');
     const cards = flipper.querySelectorAll('[data-tab-card]');
@@ -43,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.triggerMedia) {
             window.triggerMedia(container, play);
         } else {
-            // Fallback for video if global not ready
             const v = container.querySelector('video');
             if (v && play) v.play().catch(()=>{});
             if (v && !play) v.pause();
@@ -52,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DESKTOP: Tab/Stack Logic ---
     const setActive = (index, skipAnimation = false) => {
-        // Desktop only logic
         if (window.innerWidth < 768) return;
   
         if (index === activeIndex && !skipAnimation) return;
@@ -63,10 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
         triggers.forEach((t, i) => {
           const isActive = (i === index);
           t.setAttribute('aria-selected', isActive);
-          t.classList.toggle('active', isActive); t.dataset.selected = isActive;
+          t.classList.toggle('active', isActive);
+          t.dataset.selected = isActive;
         });
   
-        // 2. Scroll Tab (if needed)
+        // 2. Scroll Tab
         const activeTrigger = triggers[index];
         const triggerContainer = activeTrigger.parentElement;
         if (triggerContainer && triggerContainer.classList.contains('overflow-x-auto')) {
@@ -83,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if (i === index) {
             c.classList.add('active', 'stack-0');
-            // Desktop: Play media for active card
             if (container) safeTriggerMedia(container, true);
             const video = c.querySelector('video');
             if (video && (c.dataset.autoPlay !== 'false')) video.play().catch(()=>{});
@@ -92,14 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
             c.classList.add('inactive-prev');
             const depth = index - i;
             if (depth <= 3) c.classList.add(`stack-${depth}`);
-            // Desktop: Pause inactive media
             if (container) safeTriggerMedia(container, false);
             const video = c.querySelector('video');
             if (video) video.pause();
             
           } else {
             c.classList.add('inactive-next');
-            // Desktop: Pause inactive media
             if (container) safeTriggerMedia(container, false);
             const video = c.querySelector('video');
             if (video) video.pause();
@@ -109,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!skipAnimation) setTimeout(() => { isAnimating = false; }, 500);
     };
 
-    // Scroll Track Logic (Desktop)
+    // Scroll Track
     if (scrollTrack) {
         const handleScroll = () => {
             if (isAutoScrolling || window.innerWidth < 768) return;
@@ -123,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else window.addEventListener('scroll', handleScroll);
     }
 
-    // Click Logic (Desktop)
+    // Click
     triggers.forEach((trigger, index) => {
         trigger.addEventListener('click', (e) => {
           e.preventDefault();
@@ -139,12 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tabContainer) tabContainer.style.display = isMobile ? 'none' : '';
 
         if (isMobile) {
-            // Mobile: Cleanup Desktop classes to let Tailwind and Index.html handle layout
+            // Mobile: Cleanup Desktop classes
             cards.forEach(c => {
                 c.classList.remove('active', 'inactive-prev', 'inactive-next', 'stack-0', 'stack-1', 'stack-2', 'stack-3');
             });
-            // We NO LONGER manually observe here. 
-            // The HTML should have [data-observer] or .animate-on-scroll to be picked up by global.js
         } else {
             // Desktop: Restore State
             setActive(activeIndex, true);
@@ -154,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', checkResponsive);
     checkResponsive();
     
-    // Initial Desktop Set
     if (window.innerWidth >= 768) setActive(0, true);
   };
 
