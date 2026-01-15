@@ -1,51 +1,44 @@
 /**
- * Tab Controlled Card Flipper v1.492
- * - Restores Exact 3D Stack Behavior
- * - Fixes Active Card Shift using precise CSS Variable Control
- * - Removes !important from flat rotation to allow smoother natural transitions if needed
+ * Tab Controlled Card Flipper v1.495
+ * - Restores Classic Parallel Stacking (Match v1.215)
+ * - Removes enforced rotations (Inherits 12deg base for Even Look)
+ * - Removes scaling and heavy brightness filters
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.492 (Anti-Shift Fix) Loaded');
+  console.log('Tab Flipper v1.495 (Classic Restore) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
   style.textContent = `
     @media (min-width: 768px) {
-      /* Stack Depth Definitions */
+      /* Stack Depth Definitions - Replicating v1.215 Exact Logic */
+      
+      /* Active: Neutral position, inherits base rotation (12deg) naturally */
       [data-tab-card].stack-0 { 
         z-index: 30; 
-        --stack-y: 0px;
-        /* 
-           MATCH THE ORIGINAL CSS DEFAULTS EXACTLY 
-           If the card is active, we basically want it "neutral".
-           The shift implies a conflict between 0deg and the 12deg default.
-           We force 0deg here to match the hover state exactly.
-        */
-        --rot-y: 0deg;
-        --rot-x: 0deg;
-        
-        filter: brightness(1);
+        --stack-y: 0px; 
         opacity: 1 !important;
       }
       
-      /* Background cards retain the 3D tilt */
+      /* Background 1: Simple offset, parallel to active */
       [data-tab-card].stack-1 { 
         z-index: 20; 
         --stack-y: -20px; 
-        filter: brightness(0.7); 
         opacity: 1 !important;
       }
+      
+      /* Background 2 */
       [data-tab-card].stack-2 { 
         z-index: 10; 
         --stack-y: -40px;
-        filter: brightness(0.5);
         opacity: 1 !important;
       }
+      
+      /* Background 3 */
       [data-tab-card].stack-3 { 
         z-index: 5; 
         --stack-y: -60px;
-        filter: brightness(0.3);
         opacity: 1 !important;
       }
     }
