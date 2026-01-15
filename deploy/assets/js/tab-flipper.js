@@ -1,51 +1,71 @@
 /**
- * Tab Controlled Card Flipper v1.496
- * - Restores Classic Parallel Stacking (Match v1.215)
- * - Adds Entry Transition for Next Cards to simulate "Flip" (Fixes Fade-In look)
+ * Tab Controlled Card Flipper v1.497
+ * - Physics Update: "Swing-Up Flip" Entry
+ * - Inactive (Next) cards start from lower + tilted angle to create a flip motion on entry.
+ * - Retains Classic Parallel Stacking for resting state.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.496 (Flip Transition) Loaded');
+  console.log('Tab Flipper v1.497 (Swing-Up Flip) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
   style.textContent = `
     @media (min-width: 768px) {
-      /* Stack Depth Definitions - Replicating v1.215 Exact Logic */
-      
-      /* Active: Neutral position, inherits base rotation (12deg) naturally */
+      /* 
+         TRANSITION OVERRIDE 
+         Ensure transform and opacity match duration for synced feel.
+      */
+      [data-tab-card] {
+        transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease-out !important;
+      }
+
+      /* --- ACTIVE CARD (Top of Stack) --- */
       [data-tab-card].stack-0 { 
         z-index: 30; 
         --stack-y: 0px; 
+        /* Match Index.html defaults for consistency */
+        --rot-y: 12deg;
+        --rot-x: 6deg;
         opacity: 1 !important;
+        transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
       }
       
-      /* Background 1: Simple offset, parallel to active */
+      /* --- BACKGROUND STACK (Retreating Cards) --- */
+      /* These slide back cleanly, keeping parallel alignment */
       [data-tab-card].stack-1 { 
         z-index: 20; 
         --stack-y: -20px; 
         opacity: 1 !important;
       }
-      
-      /* Background 2 */
       [data-tab-card].stack-2 { 
         z-index: 10; 
         --stack-y: -40px;
         opacity: 1 !important;
       }
-      
-      /* Background 3 */
       [data-tab-card].stack-3 { 
         z-index: 5; 
         --stack-y: -60px;
         opacity: 1 !important;
       }
 
-      /* Entry State for Next Cards - Simulates "Flip/Slide In" instead of just fading */
+      /* --- ENTRY STATE (The "Flip" Source) --- */
+      /* 
+         Instead of just fading in place, the Next card starts:
+         1. Lower (60px down)
+         2. Tilted DOWN (-15deg on X) 
+         3. Slightly rotated Y offset (15deg)
+         This creates a "Swing Up/Flip Up" motion into the Active state.
+      */
       [data-tab-card].inactive-next {
-        --stack-y: 40px !important; /* Starts lower to slide up */
+        --stack-y: 80px !important;
+        --rot-x: -15deg !important;  /* Tilted forward/down */
+        --rot-y: 15deg !important;   /* Slight Y twist override */
         opacity: 0 !important;
         pointer-events: none;
+        
+        /* Force the transform application here to ensure vars are caught */
+        transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
       }
     }
   `;
