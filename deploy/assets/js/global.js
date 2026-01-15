@@ -394,9 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.indicator.style.transform = `translateY(${relativeTop}px)`;
                 this.indicator.style.height = `${height}px`;
             }
-        }
-    }
-
+    
     // --- 4. Simple Scroll Reveal Section (New v1.462) ---
     // Reuses the exact same animation logic as StickySlideshow but for standard static sections
     class ScrollRevealSection {
