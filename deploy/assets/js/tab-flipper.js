@@ -1,64 +1,45 @@
 /**
- * Tab Controlled Card Flipper v1.485
- * - Restores 3D Rotation + Stacking (Hybrid approach)
- * - Injects CSS variables for Stack Y/Scale
- * - Preserves existing Index.html rotation logic
+ * Tab Controlled Card Flipper v1.490
+ * - Restores Exact 3D Stack Behavior (No Scale, Just Y-Offset + Rotation)
+ * - Injects CSS variables for --stack-y
+ * - Relies on Index.html for the master transform rule
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.485 (3D Var Logic) Loaded');
+  console.log('Tab Flipper v1.490 (Classic Stack) Loaded');
 
   // --- 1. Desktop 3D Stack Styles (Scoped) ---
   const style = document.createElement('style');
   style.textContent = `
     @media (min-width: 768px) {
-      /* Define the Transform logic combining Stack + Rotation */
-      [data-tab-card] {
-        --stack-y: 0px;
-        --stack-scale: 1;
-        /* Default rotations if not set by inline/Tailwind */
-        --rot-y: 12deg; 
-        --rot-x: 6deg;
-        
-        transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, filter 0.4s ease;
-        transform-origin: center center;
-        /* Combine Translate, Scale, and Rotate */
-        transform: translateY(var(--stack-y)) scale(var(--stack-scale)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
-      }
-      
-      /* Hover/Active triggers flatten via CSS vars (handled in index.html, but reinforced here) */
-      .group\\/cards:hover [data-tab-card],
-      [data-tab-card]:hover {
-        --rot-y: 0deg !important;
-        --rot-x: 0deg !important;
-      }
+      /* 
+         We DO NOT override 'transform' here. 
+         We let index.html handle 'transform: translateY(var(--stack-y)) rotateY(...) ...'
+         We only update the variables.
+      */
 
       /* Stack Depth Definitions */
       [data-tab-card].stack-0 { 
         z-index: 30; 
         --stack-y: 0px;
-        --stack-scale: 1;
         filter: brightness(1);
         opacity: 1 !important;
       }
       [data-tab-card].stack-1 { 
         z-index: 20; 
-        --stack-y: -24px;
-        --stack-scale: 0.95;
-        filter: brightness(0.7); /* Darker for depth */
+        --stack-y: -20px; /* Tighter offset, NO scale */
+        filter: brightness(0.7); 
         opacity: 1 !important;
       }
       [data-tab-card].stack-2 { 
         z-index: 10; 
-        --stack-y: -48px;
-        --stack-scale: 0.90;
+        --stack-y: -40px;
         filter: brightness(0.5);
         opacity: 1 !important;
       }
       [data-tab-card].stack-3 { 
         z-index: 5; 
-        --stack-y: -72px;
-        --stack-scale: 0.85;
+        --stack-y: -60px;
         filter: brightness(0.3);
         opacity: 1 !important;
       }
