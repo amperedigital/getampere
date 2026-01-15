@@ -1,19 +1,19 @@
 /**
- * Tab Controlled Card Flipper v1.508
- * - FIXED: Z-Index Inversion (Later cards now sit ON TOP: zIndex = 10 + i).
- * - FIXED: Tab Initialization (Forces active state on load).
- * - REFINED: Slide Physics (Cleaner calculation for incoming slides).
+ * Tab Controlled Card Flipper v1.509
+ * - FIXED: Card Indexing/Visibility. Forced Card 1 to top at start.
+ * - FIXED: Physics - Removed opacity cutoffs to prevent flashing.
+ * - FIXED: SMIL - Robust class-based searching for restart.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.508 (Z-Index Fix) Loaded');
+    console.log('Tab Flipper v1.509 (Physics Clean) Loaded');
 
     // --- 1. Styles ---
     const style = document.createElement('style');
     style.textContent = `
     @media (min-width: 768px) {
       .group\\/cards { 
-          perspective: 1500px; 
+          perspective: 2000px; /* Matched to HTML */
           transform-style: preserve-3d;
       }
       
@@ -21,11 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         will-change: transform;
         transform-style: preserve-3d;
-        transition: none !important; 
+        transition: none !important; /* JS Physics only */
         display: block !important;
         visibility: visible !important;
-        backface-visibility: hidden; /* Helps with rendering artifacts */
-        background-color: #0b0c15; /* Ensure cards are opaque */
+        backface-visibility: hidden;
+        background-color: #0b0c15; /* Opaque */
+        z-index: 0; /* Default */
       }
     }
   `;
@@ -33,11 +34,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. Helper: Trigger SVG Animations ---
     const triggerSVGAnimation = (card) => {
-        const trigger = card.querySelector('#crm-anim-trigger');
-        if (trigger && trigger.beginElement) {
-            try { trigger.beginElement(); } catch (e) { console.warn('SMIL err', e); }
-        }
-        card.querySelectorAll('.smil-hide').forEach(c => c.style.visibility = 'visible');
+        // Find the main duration-controlling animation or restart all children
+        // The user's HTML uses ID='crm-anim-trigger' (and others likely). 
+        // IDs might be duplicated across cards if they are copy-pasted, which breaks querySelectorAll('#id').
+        // We use tag selectors scoped to the card.
+        
+        try {
+            const anims = card.querySelectorAll('animate, animateTransform, animateMotion');
+            anims.forEach(anim => {
+                if (typeof anim.beginElement === 'function') {
+                    // Force restart
+                    anim.beginElement();
+                }
+            });
+            // Also unhide elements waiting for animation
+            card.querySelectorAll('.smil-hide, .hidden').forEach(el => {
+                el.style.visibility = 'visible';
+                el.classList.remove('hidden');
+            });
+        } catch(e) { console.warn('SMIL Restart Error', e); }
     };
 
     // --- 3. Flipper Logic ---
@@ -48,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!triggers.length || !cards.length) return;
 
-        // Cleanup attributes
+        // Cleanup
         cards.forEach(c => {
-            c.removeAttribute('data-observer');
+            c.removeAttribute('data-observer'); 
             c.classList.remove('animate-on-scroll');
         });
 
@@ -66,83 +81,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 let y = 0;
                 let z = 0;
                 let scale = 1;
-                let opacity = 1;
                 let zIndex = 0;
 
-                // --- Z-INDEX LOGIC FIXED ---
-                // Higher index = Higher Priority (Active card covers previous)
-                zIndex = 10 + i; 
+                // --- LOGIC: NEVERHACK STACK ---
+                // Lower index cards are "base". Higher index cards slide UP over them.
+                // So Card 1 is ON TOP of Card 0. Card 2 is ON TOP of Card 1.
+                // Z-index must increase with i.
+                zIndex = 10 + i;
 
                 // 1. INCOMING CARD (Positive Diff)
-                // Card is below the viewport, sliding UP.
+                // It is further down the scroll list. 
+                // diff=0.1 means it's ALMOST active (should be nearly at top).
+                // diff=1 means it is the NEXT card (should be at bottom of screen).
                 if (diff > 0) {
-                    // Start at 110% of viewport, end at 0
-                    // Multiplier controls how fast it comes up relative to scroll
-                    if (diff > 1.05) {
-                        y = viewportH * 1.2; // Off screen
-                        opacity = 0;
-                    } else {
-                        y = diff * (viewportH * 0.9); // Slide Phase
-                        opacity = 1;
-                    }
+                     // Map diff 0 -> y=0
+                     // Map diff 1 -> y=100% viewport (just peeking or fully transition)
+                     
+                     // We want it to just disappear off bottom at diff=1
+                     y = diff * viewportH; 
+                     
+                     // If it's way below, clamp visuals? No, let it translate naturally.
+                     // But prevent floating point errors or insane render layers
                 } 
                 
-                // 2. ACTIVE / STACKED CARD (Negative Diff)
-                // Card is active or passing above the viewport
-                // We want it to stay pinned (y=0) but push back (z<0)
+                // 2. ACTIVE / STACKED CARD (Negative or Zero Diff)
+                // It is currently active or passed.
+                // It stays pinned at 0, but pushes back into Z space.
                 else {
                     const depth = Math.abs(diff);
-                    
-                    y = 0; // Pinned to top
-                    z = -100 * depth; // Push back into depth
-                    scale = Math.max(0.8, 1 - (depth * 0.05)); // Slight scale down
-                    
-                    // Fade out if it gets too deep (handled by next card covering it mostly)
-                    // But explicitly fade deep history
-                    if (depth > 1) {
-                        opacity = Math.max(0, 1 - (depth - 1)); 
-                    }
+                    y = 0;
+                    z = -50 * depth; // Push back slightly
+                    scale = Math.max(0.9, 1 - (depth * 0.05)); // Subtle scale down
                 }
 
-                // Apply Transforms
-                // Use translate3d for GPU acceleration
-                card.style.transform = `translate3d(0, ${y}px, ${z.toFixed(2)}px) scale(${scale})`;
+                // Apply
+                card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) scale(${scale})`;
                 card.style.zIndex = zIndex;
-                card.style.opacity = opacity;
+                
+                // Opacity: Always 1 unless extremely deep/high to save render
+                card.style.opacity = '1';
             });
             
-            // Sync Triggers
+            // Sync UI
             const index = Math.round(progress);
             if (index !== activeIndex) {
                  activeIndex = index;
-                 
-                 // Update Tabs
                  triggers.forEach((tr, i) => {
                      const isActive = i === index;
                      tr.setAttribute('aria-selected', isActive);
-                     if (isActive) {
-                         tr.setAttribute('data-selected', 'true');
-                     } else {
-                         tr.removeAttribute('data-selected');
-                     }
+                     isActive ? tr.setAttribute('data-selected', 'true') : tr.removeAttribute('data-selected');
                  });
-
-                 // Trigger Animation
                  if (cards[index]) triggerSVGAnimation(cards[index]);
             }
         };
 
         // --- Initialization ---
-        // Force Active State Immediately (Before Scroll)
-        triggers.forEach((tr, i) => {
-            if (i === 0) {
-                tr.setAttribute('aria-selected', 'true');
-                tr.setAttribute('data-selected', 'true');
-            } else {
-                tr.setAttribute('aria-selected', 'false');
-                tr.removeAttribute('data-selected');
-            }
-        });
+        // Force state calculation immediately for progress=0
+        updateCardState(0);
         
         // --- Scroll Handler ---
         if (scrollTrack) {
@@ -152,16 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rect = scrollTrack.getBoundingClientRect();
                 const scrollableRange = rect.height - window.innerHeight;
                 
-                // Calculate Progress 0..N
+                // Clamp 0..1
                 let rawP = -rect.top / scrollableRange;
-                rawP = Math.max(0, Math.min(1, rawP)); // Clamp 0-1
-                const floatIndex = rawP * (triggers.length - 1);
+                rawP = Math.max(0, Math.min(1, rawP)); 
                 
+                const floatIndex = rawP * (triggers.length - 1);
                 requestAnimationFrame(() => updateCardState(floatIndex));
             };
 
             window.addEventListener('scroll', handleScroll, { passive: true });
-            handleScroll(); // Initial position
         }
         
         // --- Click Handler ---
@@ -175,14 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const absoluteTop = window.scrollY + rect.top;
                     const scrollableRange = rect.height - window.innerHeight;
                     const p = index / (triggers.length - 1);
-                    
-                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 5, behavior: 'smooth' });
+                    // Add small offset to ensure it snaps into range
+                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 1, behavior: 'smooth' });
                 }
             });
         });
-        
-        // --- Responsive Cleanup ---
-        const checkResponsive = () => {
+
+        // Cleanup
+        window.addEventListener('resize', () => {
              if (window.innerWidth < 768) {
                 cards.forEach(c => {
                     c.style.transform = '';
@@ -190,8 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     c.style.opacity = '';
                 });
             }
-        };
-        window.addEventListener('resize', checkResponsive);
+        });
+        
+        // Initial Trigger of 0
+        triggerSVGAnimation(cards[0]);
     };
 
     document.querySelectorAll('[data-tab-flipper]').forEach(initFlipper);
