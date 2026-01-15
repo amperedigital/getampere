@@ -1,28 +1,31 @@
 /**
- * Tab Controlled Card Flipper v1.507
- * - FIXED: Tab Active State (Uses data-selected="true" for blue line).
- * - FIXED: SMIL/SVG Animation Triggers (Manual .beginElement()).
- * - FIXED: 3D Positioning & Opacity (Restored Z-Stacking).
- * - PHYSICS: Neverhack Sticky Stack (Incoming slides up, Active pushes back).
+ * Tab Controlled Card Flipper v1.508
+ * - FIXED: Z-Index Inversion (Later cards now sit ON TOP: zIndex = 10 + i).
+ * - FIXED: Tab Initialization (Forces active state on load).
+ * - REFINED: Slide Physics (Cleaner calculation for incoming slides).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.507 (Fix All) Loaded');
+    console.log('Tab Flipper v1.508 (Z-Index Fix) Loaded');
 
     // --- 1. Styles ---
     const style = document.createElement('style');
     style.textContent = `
     @media (min-width: 768px) {
-      .group\\/cards { perspective: 1500px; }
+      .group\\/cards { 
+          perspective: 1500px; 
+          transform-style: preserve-3d;
+      }
       
       [data-tab-card] {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        transform-style: preserve-3d;
         will-change: transform;
+        transform-style: preserve-3d;
         transition: none !important; 
         display: block !important;
         visibility: visible !important;
-        /* Ensure inputs are not hidden */
+        backface-visibility: hidden; /* Helps with rendering artifacts */
+        background-color: #0b0c15; /* Ensure cards are opaque */
       }
     }
   `;
@@ -30,18 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. Helper: Trigger SVG Animations ---
     const triggerSVGAnimation = (card) => {
-        // Find main trigger SMIL element
         const trigger = card.querySelector('#crm-anim-trigger');
         if (trigger && trigger.beginElement) {
-            try {
-                // Restart animation
-                trigger.beginElement();
-            } catch (e) { console.warn('SMIL trigger failed', e); }
+            try { trigger.beginElement(); } catch (e) { console.warn('SMIL err', e); }
         }
-        
-        // Also unhide elements that might be hidden by default
-        const circles = card.querySelectorAll('.smil-hide');
-        circles.forEach(c => c.style.visibility = 'visible');
+        card.querySelectorAll('.smil-hide').forEach(c => c.style.visibility = 'visible');
     };
 
     // --- 3. Flipper Logic ---
@@ -52,16 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!triggers.length || !cards.length) return;
 
-        // Cleanup HTML attributes that cause conflicts
+        // Cleanup attributes
         cards.forEach(c => {
             c.removeAttribute('data-observer');
             c.classList.remove('animate-on-scroll');
         });
 
         let activeIndex = 0;
-        let lastScrollIndex = -1;
 
-        // --- Physics Engine ---
+        // --- Core Physics Engine ---
         const updateCardState = (progress) => {
             const viewportH = window.innerHeight;
 
@@ -70,59 +65,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 let y = 0;
                 let z = 0;
-                let rotX = 0;
+                let scale = 1;
                 let opacity = 1;
                 let zIndex = 0;
 
-                // --- LOGIC: NEVERHACK STYLE ---
+                // --- Z-INDEX LOGIC FIXED ---
+                // Higher index = Higher Priority (Active card covers previous)
+                zIndex = 10 + i; 
 
                 // 1. INCOMING CARD (Positive Diff)
-                // Slides UP from bottom
+                // Card is below the viewport, sliding UP.
                 if (diff > 0) {
-                    zIndex = 100 - i; // Ensure incoming is ON TOP of previous
-                    
-                    if (diff > 1.2) {
-                        y = viewportH * 1.5;
-                        opacity = 0; // Cutoff
+                    // Start at 110% of viewport, end at 0
+                    // Multiplier controls how fast it comes up relative to scroll
+                    if (diff > 1.05) {
+                        y = viewportH * 1.2; // Off screen
+                        opacity = 0;
                     } else {
-                        // 0 diff = 0px
-                        // 1 diff = 90% viewport
-                        y = diff * (viewportH * 0.9);
-                        rotX = -5 * diff; 
+                        y = diff * (viewportH * 0.9); // Slide Phase
+                        opacity = 1;
                     }
                 } 
                 
-                // 2. ACTIVE / STACKED CARD (Negative or Zero Diff)
-                // Pushes BACK into depth
+                // 2. ACTIVE / STACKED CARD (Negative Diff)
+                // Card is active or passing above the viewport
+                // We want it to stay pinned (y=0) but push back (z<0)
                 else {
-                    zIndex = 100 - i; // Stack order
-                    
                     const depth = Math.abs(diff);
                     
-                    y = 0; // Pinned
-                    z = -150 * depth; // Push back
+                    y = 0; // Pinned to top
+                    z = -100 * depth; // Push back into depth
+                    scale = Math.max(0.8, 1 - (depth * 0.05)); // Slight scale down
                     
-                    // Fade deep stack
-                    if (depth > 1.5) {
-                        opacity = Math.max(0, 1 - (depth - 1.5));
+                    // Fade out if it gets too deep (handled by next card covering it mostly)
+                    // But explicitly fade deep history
+                    if (depth > 1) {
+                        opacity = Math.max(0, 1 - (depth - 1)); 
                     }
                 }
 
-                // Apply
-                card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateX(${rotX.toFixed(2)}deg)`;
-                card.style.zIndex = Math.round(zIndex);
+                // Apply Transforms
+                // Use translate3d for GPU acceleration
+                card.style.transform = `translate3d(0, ${y}px, ${z.toFixed(2)}px) scale(${scale})`;
+                card.style.zIndex = zIndex;
                 card.style.opacity = opacity;
             });
             
-            // Sync Triggers & Animations
+            // Sync Triggers
             const index = Math.round(progress);
-             if (index !== activeIndex) {
+            if (index !== activeIndex) {
                  activeIndex = index;
                  
-                 // Update Tabs (Blue Line)
+                 // Update Tabs
                  triggers.forEach((tr, i) => {
                      const isActive = i === index;
-                     // Set BOTH aria-selected and data-selected for styling
                      tr.setAttribute('aria-selected', isActive);
                      if (isActive) {
                          tr.setAttribute('data-selected', 'true');
@@ -131,13 +127,23 @@ document.addEventListener('DOMContentLoaded', () => {
                      }
                  });
 
-                 // Trigger SVG Animation for new active card
-                 if (cards[index]) {
-                     triggerSVGAnimation(cards[index]);
-                 }
-             }
+                 // Trigger Animation
+                 if (cards[index]) triggerSVGAnimation(cards[index]);
+            }
         };
 
+        // --- Initialization ---
+        // Force Active State Immediately (Before Scroll)
+        triggers.forEach((tr, i) => {
+            if (i === 0) {
+                tr.setAttribute('aria-selected', 'true');
+                tr.setAttribute('data-selected', 'true');
+            } else {
+                tr.setAttribute('aria-selected', 'false');
+                tr.removeAttribute('data-selected');
+            }
+        });
+        
         // --- Scroll Handler ---
         if (scrollTrack) {
             const handleScroll = () => {
@@ -145,20 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const rect = scrollTrack.getBoundingClientRect();
                 const scrollableRange = rect.height - window.innerHeight;
-                // Clamp 0..1
-                const rawP = Math.max(0, Math.min(1, -rect.top / scrollableRange));
+                
+                // Calculate Progress 0..N
+                let rawP = -rect.top / scrollableRange;
+                rawP = Math.max(0, Math.min(1, rawP)); // Clamp 0-1
                 const floatIndex = rawP * (triggers.length - 1);
-
+                
                 requestAnimationFrame(() => updateCardState(floatIndex));
             };
 
             window.addEventListener('scroll', handleScroll, { passive: true });
-            
-            // Initial call to set state
-            handleScroll();
-            
-            // Force trigger first animation
-            if(cards[0]) triggerSVGAnimation(cards[0]);
+            handleScroll(); // Initial position
         }
         
         // --- Click Handler ---
@@ -173,18 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     const scrollableRange = rect.height - window.innerHeight;
                     const p = index / (triggers.length - 1);
                     
-                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 10, behavior: 'smooth' });
+                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 5, behavior: 'smooth' });
                 }
             });
         });
-
-        // Cleanup
+        
+        // --- Responsive Cleanup ---
         const checkResponsive = () => {
-            if (window.innerWidth < 768) {
+             if (window.innerWidth < 768) {
                 cards.forEach(c => {
                     c.style.transform = '';
-                    c.style.opacity = '';
                     c.style.zIndex = '';
+                    c.style.opacity = '';
                 });
             }
         };
