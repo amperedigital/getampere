@@ -1,19 +1,19 @@
 /**
- * Tab Controlled Card Flipper v1.509
- * - FIXED: Card Indexing/Visibility. Forced Card 1 to top at start.
- * - FIXED: Physics - Removed opacity cutoffs to prevent flashing.
- * - FIXED: SMIL - Robust class-based searching for restart.
+ * Tab Controlled Card Flipper v1.510
+ * - FIXED: Severe Z-Index logic (Explicitly set stacked cards).
+ * - FIXED: Initial State (Forces Card 0 visible, others BELOW viewport).
+ * - REVERT: Simplified opacity map to prevent "ghost" cards.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Tab Flipper v1.509 (Physics Clean) Loaded');
+    console.log('Tab Flipper v1.510 (Strict Stack) Loaded');
 
     // --- 1. Styles ---
     const style = document.createElement('style');
     style.textContent = `
     @media (min-width: 768px) {
       .group\\/cards { 
-          perspective: 2000px; /* Matched to HTML */
+          perspective: 2000px;
           transform-style: preserve-3d;
       }
       
@@ -21,38 +21,26 @@ document.addEventListener('DOMContentLoaded', () => {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         will-change: transform;
         transform-style: preserve-3d;
-        transition: none !important; /* JS Physics only */
+        transition: none !important;
         display: block !important;
         visibility: visible !important;
         backface-visibility: hidden;
-        background-color: #0b0c15; /* Opaque */
-        z-index: 0; /* Default */
+        background-color: #0b0c15;
       }
     }
   `;
     document.head.appendChild(style);
 
-    // --- 2. Helper: Trigger SVG Animations ---
+    // --- 2. Helper: Animation ---
     const triggerSVGAnimation = (card) => {
-        // Find the main duration-controlling animation or restart all children
-        // The user's HTML uses ID='crm-anim-trigger' (and others likely). 
-        // IDs might be duplicated across cards if they are copy-pasted, which breaks querySelectorAll('#id').
-        // We use tag selectors scoped to the card.
-        
         try {
             const anims = card.querySelectorAll('animate, animateTransform, animateMotion');
-            anims.forEach(anim => {
-                if (typeof anim.beginElement === 'function') {
-                    // Force restart
-                    anim.beginElement();
-                }
-            });
-            // Also unhide elements waiting for animation
+            anims.forEach(a => typeof a.beginElement === 'function' && a.beginElement());
             card.querySelectorAll('.smil-hide, .hidden').forEach(el => {
                 el.style.visibility = 'visible';
                 el.classList.remove('hidden');
             });
-        } catch(e) { console.warn('SMIL Restart Error', e); }
+        } catch(e) {}
     };
 
     // --- 3. Flipper Logic ---
@@ -63,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!triggers.length || !cards.length) return;
 
-        // Cleanup
         cards.forEach(c => {
             c.removeAttribute('data-observer'); 
             c.classList.remove('animate-on-scroll');
@@ -71,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let activeIndex = 0;
 
-        // --- Core Physics Engine ---
+        // --- Physics Engine ---
         const updateCardState = (progress) => {
             const viewportH = window.innerHeight;
 
@@ -83,46 +70,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 let scale = 1;
                 let zIndex = 0;
 
-                // --- LOGIC: NEVERHACK STACK ---
-                // Lower index cards are "base". Higher index cards slide UP over them.
-                // So Card 1 is ON TOP of Card 0. Card 2 is ON TOP of Card 1.
-                // Z-index must increase with i.
+                // --- STRICT Z-INDEX ---
+                // Lower index = Bottom of stack (base)
+                // Higher index = Top of stack (slides over)
                 zIndex = 10 + i;
 
                 // 1. INCOMING CARD (Positive Diff)
-                // It is further down the scroll list. 
-                // diff=0.1 means it's ALMOST active (should be nearly at top).
-                // diff=1 means it is the NEXT card (should be at bottom of screen).
+                // e.g. i=1, progress=0 -> diff=1. Should be BELOW viewport.
                 if (diff > 0) {
-                     // Map diff 0 -> y=0
-                     // Map diff 1 -> y=100% viewport (just peeking or fully transition)
+                     y = viewportH * 1.5; // Default: Way off screen
                      
-                     // We want it to just disappear off bottom at diff=1
-                     y = diff * viewportH; 
-                     
-                     // If it's way below, clamp visuals? No, let it translate naturally.
-                     // But prevent floating point errors or insane render layers
+                     // If it's the "Next" card (0 < diff <= 1)
+                     // We map it:
+                     // diff=1 -> y=100vh
+                     // diff=0 -> y=0vh
+                     if (diff <= 1.0) {
+                        y = diff * viewportH; 
+                     }
                 } 
                 
-                // 2. ACTIVE / STACKED CARD (Negative or Zero Diff)
-                // It is currently active or passed.
-                // It stays pinned at 0, but pushes back into Z space.
+                // 2. ACTIVE / PASSED CARD (Negative Diff)
+                // e.g. i=0, progress=1 -> diff=-1. Should be pushed BACK.
                 else {
                     const depth = Math.abs(diff);
                     y = 0;
-                    z = -50 * depth; // Push back slightly
-                    scale = Math.max(0.9, 1 - (depth * 0.05)); // Subtle scale down
+                    z = -100 * depth; 
+                    scale = Math.max(0.8, 1 - (depth * 0.05));
                 }
 
-                // Apply
                 card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) scale(${scale})`;
                 card.style.zIndex = zIndex;
-                
-                // Opacity: Always 1 unless extremely deep/high to save render
-                card.style.opacity = '1';
             });
             
-            // Sync UI
+            // Sync Triggers
             const index = Math.round(progress);
             if (index !== activeIndex) {
                  activeIndex = index;
@@ -135,30 +115,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // --- Initialization ---
-        // Force state calculation immediately for progress=0
+        // --- INIT STATE ---
+        // Force calculation at 0 IMMEDIATELY
+        // This ensures Card 1,2,3 are pushed off screen (y=150vh) before paint
         updateCardState(0);
-        
-        // --- Scroll Handler ---
+
         if (scrollTrack) {
             const handleScroll = () => {
                 if (window.innerWidth < 768) return;
-
                 const rect = scrollTrack.getBoundingClientRect();
                 const scrollableRange = rect.height - window.innerHeight;
-                
-                // Clamp 0..1
                 let rawP = -rect.top / scrollableRange;
-                rawP = Math.max(0, Math.min(1, rawP)); 
-                
+                rawP = Math.max(0, Math.min(1, rawP));
                 const floatIndex = rawP * (triggers.length - 1);
                 requestAnimationFrame(() => updateCardState(floatIndex));
             };
-
             window.addEventListener('scroll', handleScroll, { passive: true });
         }
         
-        // --- Click Handler ---
         triggers.forEach((trigger, index) => {
             trigger.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -169,24 +143,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     const absoluteTop = window.scrollY + rect.top;
                     const scrollableRange = rect.height - window.innerHeight;
                     const p = index / (triggers.length - 1);
-                    // Add small offset to ensure it snaps into range
-                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 1, behavior: 'smooth' });
+                    window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 5, behavior: 'smooth' });
                 }
             });
         });
 
-        // Cleanup
         window.addEventListener('resize', () => {
              if (window.innerWidth < 768) {
                 cards.forEach(c => {
                     c.style.transform = '';
                     c.style.zIndex = '';
-                    c.style.opacity = '';
                 });
             }
         });
         
-        // Initial Trigger of 0
+        // Trigger First Animation
         triggerSVGAnimation(cards[0]);
     };
 
