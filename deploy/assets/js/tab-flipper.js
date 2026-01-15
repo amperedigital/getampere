@@ -1,13 +1,14 @@
 /**
- * Tab Controlled Card Flipper v1.502
- * - Parallax Physics Engine
- * - Inner content (Text/Video) moves at different rates for 3D depth.
- * - Uses translate3d(x,y,z) for true GPU composition.
- * - Replicates specific "floating" behavior from reference.
+ * Tab Controlled Card Flipper v1.503
+ * - TRUE SCROLL CONTROL (Raw Physics)
+ * - Transitions disabled during scroll for pixel-perfect tracking.
+ * - Deep off-screen starting point to prevent "pop-in".
+ * - No opacity toggling (always 1).
+ * - Continuous Parallax.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Tab Flipper v1.502 (Parallax) Loaded');
+  console.log('Tab Flipper v1.503 (Raw Physics) Loaded');
 
   // --- 1. Styles ---
   const style = document.createElement('style');
@@ -15,28 +16,31 @@ document.addEventListener('DOMContentLoaded', () => {
     @media (min-width: 768px) {
       .group\\/cards { perspective: 1500px; }
       
+      /* Base Card - force GPU */
       [data-tab-card] {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         transform-style: preserve-3d;
-        will-change: transform, opacity;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        will-change: transform;
+        /* Default: No transition for instant response */
+        transition: none !important; 
       }
       
-      /* Inner Parallax Elements */
+      /* Only use transition during a "snap" event (click) */
+      .snap-anim [data-tab-card],
+      .snap-anim [data-tab-card] .parallax-text,
+      .snap-anim [data-tab-card] .parallax-media {
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      
       [data-tab-card] .parallax-text,
       [data-tab-card] .parallax-media {
         will-change: transform;
         transform: translate3d(0,0,0);
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .is-scrolling [data-tab-card],
-      .is-scrolling [data-tab-card] .parallax-text,
-      .is-scrolling [data-tab-card] .parallax-media {
         transition: none !important;
       }
 
-      [data-tab-card].active { z-index: 30; opacity: 1; }
+      /* Active State - Visuals only */
+      [data-tab-card].active { z-index: 30; }
     }
   `;
   document.head.appendChild(style);
@@ -65,14 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTrack = flipper.querySelector('[data-scroll-track]');
     const cardsContainer = flipper.querySelector('.group\\/cards');
     
-    // Tag inner elements for Parallax if not already tagged
+    // Tag inner elements
     cards.forEach(card => {
-        // Text Column
         const textCol = card.querySelector('.flex.flex-col.justify-start');
         if (textCol) textCol.classList.add('parallax-text');
-        
-        // Media Column (The Screen/Window)
-        // We target the inner 'screen' div to avoid disrupting layout
         const mediaCol = card.querySelector('.md\\:w-1\\/2 .relative.aspect-square');
         if (mediaCol) mediaCol.classList.add('parallax-media');
     });
@@ -80,103 +80,75 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!triggers.length || !cards.length) return;
 
     let activeIndex = 0;
-    let scrollTimeout;
-
+    
+    // --- Physics Engine ---
     const updateCardState = (progress) => {
+        const viewportH = window.innerHeight;
+        
         cards.forEach((card, i) => {
             const diff = i - progress;
             
-            // Physics Variables
-            let y = 0;      // Card Y (px or %)
-            let z = 0;      // Card Z (px)
-            let rotX = 0;   // Card Rotate X
-            let rotY = 0;   // Card Rotate Y (constant twist)
-            let opacity = 1;
+            let y = 0;
+            let z = 0;
+            let rotX = 0;
+            let rotY = 0;
             let zIndex = 0;
             
-            // Parallax Offsets
+            // Parallax
             let textY = 0;
             let mediaY = 0;
 
-            // --- ALL COMPUTATIONS IN PX FOR PRECISION PARALLAX ---
-            // We use window height to map % to px roughly, or just fixed large px values
-            const STAGE_HEIGHT = 800; // Reference height for animation scale
-
-            // 1. Gone (Deep Stack)
+            // 1. GONE (Deep Stack) - Push way back/up
             if (diff < -3) {
-                 opacity = 0;
-                 y = -60; 
+                 y = -100; 
                  zIndex = 0;
             }
-            // 2. Stack (Leaving)
+            // 2. STACK (Leaving)
             else if (diff <= 0) {
                 const depth = Math.abs(diff);
-                y = -20 * depth;
-                z = -10 * depth; // Recede into background slightly
+                y = -30 * depth; // Compress stack
+                z = -40 * depth;
                 rotX = 6; 
                 rotY = 12;
                 zIndex = 30 + (diff * 10);
             }
-            // 3. Entering (Positive Diff)
+            // 3. ENTERING (Incoming)
             else {
-                if (diff > 1.2) {
-                    opacity = 0;
-                    y = STAGE_HEIGHT * 1.2;
-                } else {
-                    opacity = 1;
-                    const enterP = Math.max(0, Math.min(1, diff));
-                    
-                    // Card Y: 0 to 800px (approx 110%)
-                    y = enterP * STAGE_HEIGHT;
-                    
-                    // Z-Axis Arc: 
-                    // Incoming cards might pop OUT (positive Z) slightly?
-                    // User example: translateZ(8.2px) at Y=171.
-                    // Let's model a slight arc.
-                    // Peak Z at diff=0.2 (just before locking)?
-                    // specific fn: 10 * sin(PI * (1-enterP)) ? 
-                    z = 8 * Math.sin(Math.PI * (1 - enterP)); 
-                    
-                    rotX = 6 + (enterP * -16); // 6 to -10
-                    rotY = 12;
-                    zIndex = 40;
+                // Enter Progress: 1.0 (Start, far below) -> 0.0 (Active)
+                const enterP = diff; // Linear map logic
+                
+                // Position Formula: Start massively off-screen
+                // 1.5 * Viewport ensures it's fully gone before entering
+                // Clamp slightly to avoid chaos with huge scrollbars
+                y = enterP * (viewportH * 1.2);
+                
+                // Z-Arc
+                // translateZ peaks at 8px when near 0
+                z = 12 * Math.sin(Math.PI * Math.max(0, 1 - enterP)); 
+                
+                rotX = 6 + (enterP * -16);
+                rotY = 12;
+                zIndex = 40; // On top
 
-                    // --- Parallax Calculation ---
-                    // As card comes UP (y decreases), inner content should LAG (move UP slower).
-                    // This means inner content starts with POSITIVE Y offset relative to card.
-                    // Text: Slower (more lag)
-                    // Media: Faster (less lag) or vice versa.
-                    
-                    // At diff=1 (Start):
-                    // Card Y = 800.
-                    // Text Y = 200. (Visual Y = 1000)
-                    // Media Y = 100. (Visual Y = 900)
-                    
-                    // At diff=0 (End):
-                    // Card Y = 0.
-                    // Text Y = 0.
-                    // Media Y = 0.
-                    
-                    textY = enterP * 250;  // Text lags behind 250px
-                    mediaY = enterP * 120; // Media lags behind 120px
-                }
+                // Parallax
+                textY = enterP * 250;
+                mediaY = enterP * 120;
             }
 
-            // Apply Main Transform
-            // We use translate3d for the z-axis and gpu boost
-            card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-            card.style.opacity = opacity;
+            // Apply
+            card.style.transform = `translate3d(0, ${y.toFixed(2)}px, ${z.toFixed(2)}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
             card.style.zIndex = Math.round(zIndex);
+            // Force Opacity 1
+            card.style.opacity = '1';
 
-            // Apply Parallax to inner elements
+            // Inner Parallax
             const textEl = card.querySelector('.parallax-text');
             const mediaEl = card.querySelector('.parallax-media');
-            
-            if (textEl) textEl.style.transform = `translate3d(0, ${textY}px, 0)`;
-            if (mediaEl) mediaEl.style.transform = `translate3d(0, ${mediaY}px, 0)`;
+            if (textEl) textEl.style.transform = `translate3d(0, ${textY.toFixed(2)}px, 0)`;
+            if (mediaEl) mediaEl.style.transform = `translate3d(0, ${mediaY.toFixed(2)}px, 0)`;
 
-            // Active Class
-            if (Math.abs(diff) < 0.01) card.classList.add('active');
+            // Active Class (State Only)
+            if (Math.abs(diff) < 0.05) card.classList.add('active');
             else card.classList.remove('active');
         });
         
@@ -194,24 +166,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Scroll Handler ---
     if (scrollTrack) {
+        // We use a persistent loop or event? Event is better for sync.
         const handleScroll = () => {
              if (window.innerWidth < 768) return;
-             if (!cardsContainer.classList.contains('is-scrolling')) {
-                 cardsContainer.classList.add('is-scrolling');
-             }
              
-             clearTimeout(scrollTimeout);
-             scrollTimeout = setTimeout(() => cardsContainer.classList.remove('is-scrolling'), 100);
+             // Ensure snap animation is OFF during user scroll
+             cardsContainer.classList.remove('snap-anim');
 
              const rect = scrollTrack.getBoundingClientRect();
              const scrollableRange = rect.height - window.innerHeight;
+             // Raw Progress 0..1
              const rawP = Math.max(0, Math.min(1, -rect.top / scrollableRange));
              
-             requestAnimationFrame(() => updateCardState(rawP * (triggers.length - 1)));
+             // Map to Index Float
+             const floatIndex = rawP * (triggers.length - 1);
+             
+             requestAnimationFrame(() => updateCardState(floatIndex));
         };
         
-        if (window.lenis) window.lenis.on('scroll', handleScroll);
-        else window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Initial Draw
+        handleScroll();
     }
 
     // --- Click Logic ---
@@ -219,12 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
         trigger.addEventListener('click', (e) => {
             e.preventDefault();
             if (window.innerWidth < 768) return;
-            cardsContainer.classList.remove('is-scrolling');
+            
+            // Enable CSS Transition for the Scroll Travel
+            // Actually, we are just scrolling the window.
+            // If we scroll the window, the handleScroll fires each frame.
+            // If users wants "smoothness", the smooth scroll behavior does it.
+            // But if we want "Snap", we can cheat.
+            // Let's stick to native smooth scrolling which drives the physics engine naturally.
+            
             if (scrollTrack) {
                 const rect = scrollTrack.getBoundingClientRect();
                 const absoluteTop = window.scrollY + rect.top;
                 const scrollableRange = rect.height - window.innerHeight;
                 const p = index / (triggers.length - 1);
+                
                 window.scrollTo({ top: absoluteTop + (p * scrollableRange) + 10, behavior: 'smooth' });
             }
         });
@@ -238,11 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const t = c.querySelector('.parallax-text'); if(t) t.style.transform = '';
                 const m = c.querySelector('.parallax-media'); if(m) m.style.transform = '';
             });
-        } else if (scrollTrack) {
-             const rect = scrollTrack.getBoundingClientRect();
-             const scrollableRange = rect.height - window.innerHeight;
-             const rawP = Math.max(0, Math.min(1, -rect.top / scrollableRange));
-             updateCardState(rawP * (triggers.length - 1));
         }
     };
     window.addEventListener('resize', checkResponsive);
