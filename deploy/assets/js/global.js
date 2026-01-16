@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
             motionElements.forEach(motion => {
               if (motion.parentElement && !motion.parentElement.classList.contains('always-hide-anim')) {
                   const cls = (behavior === 'force-display') ? 'force-smil-display' : 'force-visible';
-                  if (!motion.parentElement.classList.contains('hidden') || behavior !== 'force-display') {
+                  if ((behavior === 'force-display') || !motion.parentElement.classList.contains('hidden')) {
                       motion.parentElement.classList.add(cls);
                   }
               }
