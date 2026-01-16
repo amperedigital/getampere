@@ -2403,8 +2403,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <!-- 1. Intro Screen (Black, Centered Text, Scroll Scrub) -->
 <section data-scroll-scrub="center-bloom" class="relative w-full h-screen bg-[#0a0b14] flex items-center justify-center z-10">
     <div class="text-center px-4 w-full flex flex-col items-center">
-        <!-- 3D Key Container -->
-        <div id="hero-key-container" class="w-full max-w-[500px] h-[400px] mb-0 relative z-20 pointer-events-none"></div>
+        <!-- 3D Key Container (Instance) -->
+        <div data-ampere-key-3d class="w-full max-w-[500px] h-[400px] mb-0 relative z-20 pointer-events-none"></div>
 
         <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.5] text-white font-medium">
             <span class="block opacity-0 translate-y-5" data-scrub-target>Phone Conversations</span>
@@ -3969,40 +3969,42 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-   <!-- Ampere 3D Key Integration -->
+   <!-- Ampere 3D Key Integration (Global Manager) -->
    <script type="module">
-        import { Ampere3DKey } from 'https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.593/deploy/assets/js/ampere-3d-key.js';
+        import { Ampere3DKey } from 'https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.594/deploy/assets/js/ampere-3d-key.js';
 
-        const keyContainer = document.getElementById('hero-key-container');
+        // Find all potential instances
+        const keyContainers = document.querySelectorAll('[data-ampere-key-3d]');
         
-        if (keyContainer) {
-            // Initialize Component
-            const keyInstance = new Ampere3DKey(keyContainer);
+        if (keyContainers.length > 0) {
             
-            // Hook to Scroll Logic
-            const initScroll = () => {
-                if (window.lenis) {
+            // Allow Lenis to stabilize
+            const initKeys = () => {
+                if (!window.lenis) {
+                    requestAnimationFrame(initKeys);
+                    return;
+                }
+
+                keyContainers.forEach(container => {
+                    const instance = new Ampere3DKey(container);
+                    
                     window.lenis.on('scroll', () => {
-                        const rect = keyContainer.getBoundingClientRect();
+                        const rect = container.getBoundingClientRect();
                         const vh = window.innerHeight;
                         
-                        // Reveal Logic:
-                        // Starts when element is 85% down the viewport (entering)
-                        // Ends when element is 35% down the viewport (centered-ish)
+                        // Default Logic: 85% -> 35% viewport reveal
                         const start = vh * 0.85;
                         const end = vh * 0.35;
                         
                         let p = (start - rect.top) / (start - end);
                         p = Math.min(Math.max(p, 0), 1);
                         
-                        keyInstance.setProgress(p);
+                        instance.setProgress(p);
                     });
-                } else {
-                    requestAnimationFrame(initScroll);
-                }
+                });
             };
             
-            initScroll();
+            initKeys();
         }
    </script>
 </body></html>
