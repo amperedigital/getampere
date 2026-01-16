@@ -1,12 +1,12 @@
 /**
- * Scroll-Driven Card Stack v1.553 - "Down-Left" Angle Injection
- * - Adds RotateZ and RotateY to the incoming card transition.
- * - Creates a slightly skewed, imperfect "hand-dealt" feel.
- * - Retains delayed entry and extended scroll timing.
+ * Scroll-Driven Card Stack v1.554 - Sticky Fix & Visibility Clip
+ * - FORCE STICKY: Explicitly sets top/max-height to ensure sticking.
+ * - FORCE CLIP: Sets overflow:hidden on container to hide future cards.
+ * - ANGLED PHYSICS: Maintains v1.553 down-left tilt.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.553] Loading Angled Mode...');
+    console.log('[ScrollFlipper v1.554] Loading Sticky Fix Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -30,12 +30,25 @@
                 return;
             }
 
-            // --- CSS CLEANUP & PARENT SETUP ---
+            // --- STICKY CONTAINER ENFORCEMENT ---
+            // Fixes "Stickiness is gone" and "UC_004 visible"
+            if (stickyContainer) {
+                stickyContainer.style.setProperty('position', 'sticky', 'important');
+                stickyContainer.style.setProperty('top', '100px', 'important'); // Safe offset
+                // overflow: hidden is CRITICAL to hide the "waiting" cards below
+                stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
+                // Ensure it doesn't grow taller than viewport
+                stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
+            }
+
+            // --- PARENT SETUP ---
             cardParent = cards[0].parentElement;
             if (cardParent) {
                 cardParent.style.setProperty('position', 'relative', 'important');
-                cardParent.style.setProperty('min-height', '800px', 'important');
+                cardParent.style.setProperty('height', '650px', 'important'); // Fixed stage height
+                cardParent.style.setProperty('min-height', '650px', 'important');
                 cardParent.style.setProperty('display', 'block', 'important');
+                
                 // 3D STAGE
                 cardParent.style.setProperty('perspective', '1000px', 'important');
                 cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
@@ -43,8 +56,6 @@
 
             cards.forEach(c => {
                 c.classList.remove('inactive-prev', 'inactive-next', 'md:opacity-0');
-                
-                // FORCE RESET with preserve-3d
                 c.style.cssText = `
                     position: absolute !important;
                     top: 0 !important;
@@ -80,8 +91,6 @@
                     else window.scrollTo({ top: target, behavior: 'smooth' });
                 });
             });
-
-            if (stickyContainer) stickyContainer.style.position = 'sticky';
 
             if (!isRunning) {
                 isRunning = true;
@@ -141,12 +150,9 @@
             const PIXELS_PER_CARD = viewportHeight * 2.0;
             const TRIGGER_OFFSET_FACTOR = 0.1; 
             
-            let stackHeight = 800; 
-            if (cardParent && cardParent.offsetHeight > 100) {
-                stackHeight = cardParent.offsetHeight;
-            } else {
-                stackHeight = viewportHeight; 
-            }
+            // Fixed Stage Height to ensure y pushes offscreen relative to container
+            let stackHeight = 650; 
+            if (cardParent && cardParent.offsetHeight > 100) stackHeight = cardParent.offsetHeight;
 
             const rect = track.getBoundingClientRect();
             const startOffset = -rect.top + (viewportHeight * TRIGGER_OFFSET_FACTOR);
@@ -169,18 +175,26 @@
 
                 if (delta > 0) {
                     // FUTURE (Coming Up)
-                    const ENTRY_THRESHOLD = 0.6; 
-                    const ratio = Math.min(1, delta / ENTRY_THRESHOLD);
+                    const ENTRY_THRESHOLD = 0.6; // 40% wait time
+                    // Map [0.6 -> 0] to [1.0 -> 0.0]
+                    // If delta > 0.6, result is > 1 (clamped to 1.1 to push further offscreen)
+                    
+                    let ratio = 0;
+                    if (delta > ENTRY_THRESHOLD) {
+                        // Fully wait pattern
+                        ratio = 1.2; // Push 120% down
+                    } else {
+                        // Transition pattern [0.6 -> 0]
+                        ratio = delta / ENTRY_THRESHOLD;
+                    }
                     
                     y = ratio * stackHeight;
                     
-                    // ANGLED ENTRY
-                    // rotateX(-25): Title back
-                    // rotateZ(-2): Tilt left side down slightly (Down-Left)
-                    // rotateY(2): Tilt right side away slightly
-                    rotX = ratio * -25;
-                    rotZ = ratio * -2; 
-                    rotY = ratio * 2;
+                    // Angles match ratio 0->1
+                    const angleRatio = Math.min(1, ratio);
+                    rotX = angleRatio * -25;
+                    rotZ = angleRatio * -2; 
+                    rotY = angleRatio * 2;
 
                 } else {
                     // PAST (Underneath)
@@ -191,7 +205,6 @@
                     rotY = 0;
                 }
 
-                // Apply Styles
                 card.style.setProperty('z-index', zIndex.toString(), 'important');
                 card.style.setProperty(
                     'transform', 
