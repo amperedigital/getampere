@@ -1,15 +1,19 @@
 /**
- * Scroll-Driven Card Stack (Direct 1:1 Control) v1.540
- * - Uses requestAnimationFrame for guaranteed execution loop.
- * - Robust error handling.
- * - Ensures cards start "pushed down" immediately.
+ * Scroll-Driven Card Stack (Direct 1:1 Control) v1.542
+ * - Added explicit initialization retry loop.
+ * - Forces card visibility/stacking immediately on load.
+ * - Debug border on track to confirm script execution.
  */
 
 (function() {
-    console.log('[ScrollFlipper] Loading v1.540');
+    console.log('[ScrollFlipper] Loading v1.542');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers;
+
+    // Retry initialization for up to 2 seconds if elements aren't found immediately
+    let attempts = 0;
+    const MAX_ATTEMPTS = 10;
 
     const init = () => {
         try {
@@ -19,9 +23,20 @@
             triggers = Array.from(document.querySelectorAll('[data-tab-trigger]'));
 
             if (!track || !stickyContainer || !cards.length) {
-                console.warn('[ScrollFlipper] Missing elements:', { track, stickyContainer, cardsLen: cards?.length });
+                if (attempts < MAX_ATTEMPTS) {
+                    attempts++;
+                    console.log(`[ScrollFlipper] Retry init ${attempts}/${MAX_ATTEMPTS}`);
+                    setTimeout(init, 200);
+                    return;
+                }
+                console.warn('[ScrollFlipper] Missing elements after retries.');
                 return;
             }
+
+            console.log(`[ScrollFlipper] Init success. ${cards.length} cards found.`);
+            
+            // Visual Debug confirmation (Internal use - can remove later)
+            // track.style.border = "4px solid red"; 
 
             // Click Nav
             triggers.forEach((btn, index) => {
@@ -44,9 +59,11 @@
                 });
             });
 
-            // Start Loop
-            isRunning = true;
-            tick();
+            // Forces initial layout state
+            if (!isRunning) {
+                isRunning = true;
+                tick();
+            }
 
         } catch (e) {
             console.error('[ScrollFlipper] Init Error:', e);
@@ -78,11 +95,15 @@
                 
                 if (i === index) {
                     c.classList.add('active');
-                    if (window.triggerMedia && container) window.triggerMedia(container, true);
+                    if (typeof window.triggerMedia === 'function' && container) {
+                         window.triggerMedia(container, true);
+                    }
                     if (v) v.play().catch(()=>{});
                 } else {
                     c.classList.remove('active');
-                    if (window.triggerMedia && container) window.triggerMedia(container, false);
+                    if (typeof window.triggerMedia === 'function' && container) {
+                        window.triggerMedia(container, false);
+                    }
                     if (v) v.pause();
                 }
             });
@@ -94,7 +115,7 @@
     const tick = () => {
         if (!isRunning) return;
         requestAnimationFrame(tick);
-        render(); // Run every frame
+        render(); 
     };
 
     const render = () => {
@@ -123,25 +144,31 @@
 
                 if (delta > 0) {
                     // Coming Up (Below)
-                    // Ensure delta=3 pushes well offscreen
+                    // If delta >= 0.1, we start pushing it down.
+                    // Card 3 (when 0 is active) -> delta=3 -> y=3vh -> Offscreen
                     y = delta * viewportHeight; 
                     
-                    // Simple tilt
                     rotX = Math.max(-25, delta * -15);
                     z = delta * -50;
                     opacity = 1.0;
                 } else {
                     // Past (Active/Above)
                     const d = Math.abs(delta);
+                    // Push UP and BACK
                     y = -d * 100;
                     z = -d * 100;
-                    opacity = 1.0; // Keep solid
+                    opacity = 1.0; 
                 }
 
                 if (i === activeIdx) pointerEvents = 'auto';
 
-                // Safety Z-Index
-                // Higher index MUST be on top to slide over
+                // Explicitly set styles to override any CSS
+                card.style.position = 'absolute'; // Ensure they stack
+                card.style.top = '0';
+                card.style.left = '0';
+                card.style.width = '100%';
+                
+                // Z-index: Higher index = Higher stacking context
                 card.style.zIndex = 10 + i; 
                 
                 card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateX(${rotX}deg)`;
@@ -151,7 +178,7 @@
             });
         } catch (e) {
             console.error('[ScrollFlipper] Render Error:', e);
-            isRunning = false; // Stop loop if fatal
+            isRunning = false; 
         }
     };
 
