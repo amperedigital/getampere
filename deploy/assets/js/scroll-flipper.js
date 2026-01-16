@@ -59,7 +59,7 @@
                     // Cache the inner content wrapper (direct child with z-10 usually, or the second child)
                     // Based on HTML: card > outer-div > [bg, content-div]
                     // We want the content div.
-                    content: card.querySelector('.relative.w-full.h-full.flex.z-10'), 
+                    content: card.querySelector('.z-10.relative'),  // Simplified selector
                     smil: card.querySelector('[data-smil-container]'),
                     video: card.querySelector('video'),
                     // State tracking to prevent redundant writes
@@ -247,14 +247,16 @@
             }
 
             // SMART UPDATES: Content Opacity (Optimization: Hide content of covered cards)
-            // If delta <= -1.0 (card is ONE full step behind, i.e. fully covered by the next card), hide content.
-            // At delta -1.0, the next card is at y=0, covering this card (which is at y=-50).
+            // If delta <= -0.9 (card is mostly covered by the next card), hide content.
+            // Reduced threshold from -1.0 to -0.9 to ensure it triggers comfortably.
             if (cache.content) {
-                const contentOpacity = (delta <= -1.0) ? '0' : '1';
+                const contentOpacity = (delta <= -0.9) ? '0' : '1';
                 if (cache.lastContentOpacity !== contentOpacity) {
                     cache.content.style.setProperty('opacity', contentOpacity, 'important');
                     cache.content.style.setProperty('transition', 'opacity 0.3s ease', 'important'); 
                     cache.lastContentOpacity = contentOpacity;
+                    // Helper for debugging
+                    cache.content.dataset.culled = (contentOpacity === '0') ? 'true' : 'false';
                 }
             }
 
