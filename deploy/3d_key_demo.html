@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Ampere Key Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; background-color: #0a0b14; height: 300vh; }
+        #canvas-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            z-index: 10;
+        }
+    </style>
+    <!-- Import Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="fixed top-10 left-10 text-white z-50 mix-blend-difference">
+        <h1 class="text-4xl font-bold">Scroll Down</h1>
+        <p class="opacity-50">To see the key animation</p>
+    </div>
+
+    <!-- The 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+        // 1. Setup Scene
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+
+        // 2. Camera
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        camera.position.set(0, 0, 10);
+
+        // 3. Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        container.appendChild(renderer.domElement);
+
+        // 4. Geometry (The "Key" Card)
+        // Switch to ExtrudeGeometry to create a true single-molded shape with distinct bevels.
+        
+        // Define the shape (Rounded Square)
+        const shape = new THREE.Shape();
+        const size = 3.5;
+        const radius = 0.25; // Smoother, tighter corners (more square)
+        const x = -size/2, y = -size/2;
+        
+        // Draw Rounded Rect path
+        shape.moveTo(x, y + radius);
+        shape.lineTo(x, y + size - radius);
+        shape.quadraticCurveTo(x, y + size, x + radius, y + size);
+        shape.lineTo(x + size - radius, y + size);
+        shape.quadraticCurveTo(x + size, y + size, x + size, y + size - radius);
+        shape.lineTo(x + size, y + radius);
+        shape.quadraticCurveTo(x + size, y, x + size - radius, y);
+        shape.lineTo(x + radius, y);
+        shape.quadraticCurveTo(x, y, x, y + radius);
+
+        const extrudeSettings = {
+            steps: 2,
+            depth: 0.2,        // Base thickness
+            bevelEnabled: true,
+            bevelThickness: 0.15, // Reduced bevel (Half radius)
+            bevelSize: 0.15,      // Reduced bevel (Half radius)
+            bevelSegments: 32,   // High count for perfectly smooth, molded look
+            curveSegments: 64    // Smoother corners
+        };
+
+        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        
+        // Center the geometry
+        geometry.center();
+
+        // 5. Texture & Mapping
+        // Fix UVs for the Front Face (Material Index 0)
+        // ExtrudeGeometry creates standard UVs, but we need to normalize them to 0-1 for the logo
+        const posAttribute = geometry.attributes.position;
+        const uvAttribute = geometry.attributes.uv;
+        const count = posAttribute.count;
+        
+        // Bounding box for UV normalization
+        // Shape is approx -1.75 to 1.75 (3.5 width) + bevel (0.3) -> Total ~4.1 width
+        // We want the logo to map ONLY to the flat front face, which corresponds to the original shape dimensions (-1.75 to 1.75)
+        
+        for (let i = 0; i < count; i++) {
+            const px = posAttribute.getX(i);
+            const py = posAttribute.getY(i);
+            const pz = posAttribute.getZ(i);
+            
+            // Front face checks
+            // The front face is at the highest Z.
+            // UV Mapping Logic custom-tuned - Updated for 0.15 bevel:
+            // 1. Left Side: Start mapping at x = -1.75 (Flat edge) to prevent cutting off the "A".
+            // 2. Right Side: End mapping at x = +1.90 (1.75 + 0.15 bevel) to stretch fully to the right.
+            // 3. Top/Bottom: Map full range (-1.90 to 1.90) to cover bevels.
+            
+            // X Map: -1.75 to +1.90 -> 0 to 1
+            const u = (px - (-1.75)) / (1.90 - (-1.75));
+            
+            // Y Map: -1.90 to +1.90 -> 0 to 1
+            const v = (py - (-1.90)) / (1.90 - (-1.90));
+            
+            uvAttribute.setXY(i, u, v);
+        }
+        
+        // Create the SVG Texture (Refined: White BG, Dark Navy Logo, Full Bleed - No Margin)
+        // High Resolution + Anisotropy Fix
+        const svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" viewBox="0 0 424.1 423.6">
+            <!-- Background: Pure White -->
+            <rect width="100%" height="100%" fill="#ffffff"/> 
+            
+            <!-- Ampere Logo: Dark Navy (#0f172a) -->
+            <!-- Using original ViewBox for full bleed (0,0 to 424,423) -->
+            <path fill="#0f172a" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
+            <path fill="#0f172a" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z"></path>
+        </svg>
+        `;
+
+        const logoBase64 = "data:image/svg+xml;base64," + btoa(svgString);
+
+        const textureLoader = new THREE.TextureLoader();
+        const logoTexture = textureLoader.load(logoBase64);
+        
+        // High Quality Filtering
+        logoTexture.anisotropy = renderer.capabilities.maxAnisotropy;
+        logoTexture.minFilter = THREE.LinearMipmapLinearFilter;
+        logoTexture.magFilter = THREE.LinearFilter;
+        logoTexture.generateMipmaps = true;
+        
+        logoTexture.colorSpace = THREE.SRGBColorSpace; // Ensure colors match strictly
+
+        // 6. Materials
+        // Mat 0: Front Face (Dark/White Logo)
+        // Mat 1: Sides/Bevel (White)
+        
+        const whiteMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            roughness: 0.2,
+            metalness: 0.1,
+            clearcoat: 1.0, 
+            clearcoatRoughness: 0.1
+        });
+        
+        const logoMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff, // Pure white base to let texture colors shine true
+            map: logoTexture,
+            roughness: 0.2,
+            metalness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1
+        });
+
+        // Use Array for Multi-Material
+        // ExtrudeGeometry utilizes material indices: 0 = Front/Back, 1 = Bevel/Sides
+        const materials = [logoMaterial, whiteMaterial];
+
+        const keyMesh = new THREE.Mesh(geometry, materials);
+        
+        // Initial Orientation: "Dark, Face Down/Away"
+        keyMesh.rotation.x = -Math.PI / 2.1; 
+        keyMesh.rotation.y = 0;
+        
+        scene.add(keyMesh);
+
+        // 7. Lighting - "Dark in the beginning"
+        // Minimal ambient to just show outline
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Almost pitch black
+        scene.add(ambientLight);
+
+        // Rim Light - "Bevel showing with light"
+        const rimLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        rimLight.position.set(0, 5, -5); // Top Back
+        scene.add(rimLight);
+
+        // Main Light - Starts OFF
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0); 
+        mainLight.position.set(2, 2, 10);
+        scene.add(mainLight);
+
+        // Specular/Shiny Light - Starts OFF
+        const shinyLight = new THREE.PointLight(0xffffff, 0, 10);
+        shinyLight.position.set(-5, 0, 5);
+        scene.add(shinyLight);
+
+        // 8. Animation
+        const animate = () => {
+            requestAnimationFrame(animate);
+            const time = Date.now() * 0.001;
+            // Idle
+            keyMesh.position.y = Math.sin(time) * 0.05;
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        // 9. Scroll Interaction
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            
+            // "Quicker" Transition Logic
+            // Instead of mapping to the full page height (300vh), we map to a fixed shorter distance.
+            // This means the animation completes fully after scrolling just 700px (approx 70-80vh on desktop).
+            // On the main page, we will attach this to the specific section's scroll progress.
+            const animationDistance = 700; 
+            const progress = Math.min(Math.max(scrollY / animationDistance, 0), 1);
+            
+            // 1. ROTATION REVEAL
+            const startX = -Math.PI / 2.1; // Matches initial state
+            const endX = -0.2;
+            keyMesh.rotation.x = startX + (progress * (endX - startX));
+            
+            keyMesh.rotation.y = progress * -0.4;
+            keyMesh.rotation.z = progress * -0.1;
+
+            // 2. LIGHTING REVEAL (Dark -> White)
+            // Ambient: 0.05 -> 0.8
+            ambientLight.intensity = 0.05 + (progress * 0.85);
+
+            // Main Light: 0 -> 1.5
+            mainLight.intensity = progress * 1.5;
+
+            // Rim Light: 2.0 -> 0.5 (Fades as front takes over)
+            rimLight.intensity = 2.0 - (progress * 1.5);
+            
+            // 3. SPECULAR SWEEP
+            const lightX = -6 + (progress * 14); 
+            shinyLight.position.set(lightX, 2, 4);
+            shinyLight.intensity = Math.sin(progress * Math.PI) * 50; 
+        });
+
+        // 10. Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
+</body>
+</html>
