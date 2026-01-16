@@ -54,7 +54,8 @@
                     card.style.setProperty('display', 'block', 'important');
                     card.style.setProperty('transform-origin', 'center top', 'important');
                     card.style.setProperty('will-change', 'transform, opacity', 'important');
-                    card.style.setProperty('background-color', '#000', 'important');
+                    // Background removed to allow rounded corners of inner container to show
+                    card.style.removeProperty('background-color');
                     card.style.setProperty('transition', 'none', 'important');
                 } else {
                     // Mobile: Ensure cleanup of any previous inline styles if resized from desktop
