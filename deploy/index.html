@@ -3110,7 +3110,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.591/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.595/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3969,42 +3969,4 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
 
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-   <!-- Ampere 3D Key Integration (Global Manager) -->
-   <script type="module">
-        import { Ampere3DKey } from 'https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.594/deploy/assets/js/ampere-3d-key.js';
-
-        // Find all potential instances
-        const keyContainers = document.querySelectorAll('[data-ampere-key-3d]');
-        
-        if (keyContainers.length > 0) {
-            
-            // Allow Lenis to stabilize
-            const initKeys = () => {
-                if (!window.lenis) {
-                    requestAnimationFrame(initKeys);
-                    return;
-                }
-
-                keyContainers.forEach(container => {
-                    const instance = new Ampere3DKey(container);
-                    
-                    window.lenis.on('scroll', () => {
-                        const rect = container.getBoundingClientRect();
-                        const vh = window.innerHeight;
-                        
-                        // Default Logic: 85% -> 35% viewport reveal
-                        const start = vh * 0.85;
-                        const end = vh * 0.35;
-                        
-                        let p = (start - rect.top) / (start - end);
-                        p = Math.min(Math.max(p, 0), 1);
-                        
-                        instance.setProgress(p);
-                    });
-                });
-            };
-            
-            initKeys();
-        }
-   </script>
 </body></html>
