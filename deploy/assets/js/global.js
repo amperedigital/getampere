@@ -329,6 +329,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const target = document.querySelector(href);
                 if (target) {
                     this.targets.push({ link, target });
+                    
+                    // Add Click Listener for Smooth Scroll
+                    link.addEventListener('click', (e) => {
+                         e.preventDefault();
+                         if (window.lenis) {
+                             // Use Lenis for smooth scroll if available. 
+                             // Lenis.scrollTo identifies targets by selector string or element.
+                             window.lenis.scrollTo(target, { offset: 0 }); 
+                         } else {
+                             // Fallback for mobile/no-lenis
+                             target.scrollIntoView({ behavior: 'smooth' });
+                         }
+                    });
                 }
             });
         }
