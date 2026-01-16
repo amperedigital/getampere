@@ -221,4 +221,4 @@ export class Ampere3DKey {
         }
         // Could expand to dispose geometries/materials if needed
     }
-}
+}// Release v1.593
