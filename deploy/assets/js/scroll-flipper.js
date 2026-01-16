@@ -1,13 +1,12 @@
 /**
- * Scroll-Driven Card Stack v1.550 - NUCLEAR CSS OVERRIDE
- * - Overrides ALL Tailwind/CSS classes with !important inline styles.
- * - Forces correct stacking (Cards 0..3).
- * - Forces visibility and position.
- * - Cleans conflicting classes on init.
+ * Scroll-Driven Card Stack v1.551 - 3D Angle Injection
+ * - Adds perspective to parent container.
+ * - Adds RotateX to incoming cards for "Deck Flip" effect.
+ * - Maintains "Nuclear" CSS overrides for stability.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.550] Loading Nuclear Mode...');
+    console.log('[ScrollFlipper v1.551] Loading 3D Angle Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -36,15 +35,17 @@
             if (cardParent) {
                 cardParent.style.setProperty('position', 'relative', 'important');
                 cardParent.style.setProperty('min-height', '800px', 'important');
-                // Ensure no flex/grid weirdness on parent
-                cardParent.style.setProperty('display', 'block', 'important'); 
+                cardParent.style.setProperty('display', 'block', 'important');
+                
+                // 3D STAGE
+                cardParent.style.setProperty('perspective', '1000px', 'important');
+                cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
             }
 
             cards.forEach(c => {
-                // Remove conflicting Tailwind logic classes if possible
                 c.classList.remove('inactive-prev', 'inactive-next', 'md:opacity-0');
                 
-                // FORCE RESET
+                // FORCE RESET with preserve-3d
                 c.style.cssText = `
                     position: absolute !important;
                     top: 0 !important;
@@ -52,14 +53,19 @@
                     width: 100% !important;
                     height: 100% !important;
                     margin: 0 !important;
-                    transform-origin: center !important;
+                    transform-origin: center top !important; /* Rotation pivot at top */
+                    transform-style: preserve-3d !important;
                     will-change: transform !important;
                     transition: none !important;
+                    box-shadow: 0 4px 30px rgba(0,0,0,0.5) !important; /* Add shadow for depth */
+                    background-color: #000 !important; /* Ensure solid backing */
                 `;
+                // Note: Background color might need to match card design if transparent. 
+                // But generally cards need opacity 1 backings to cover.
             });
             // ----------------------------------
 
-            console.log(`[ScrollFlipper] Ready. ${cards.length} cards. Forced Styles Applied.`);
+            console.log(`[ScrollFlipper] Ready. ${cards.length} cards. 3D Styles Applied.`);
 
             // Click Nav
             triggers.forEach((btn, index) => {
@@ -114,7 +120,6 @@
             const v = c.querySelector('video');
             
             if (i === index) {
-                // Keep .active for internal animations
                 c.classList.add('active');
                 if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, true);
                 if (v) v.play().catch(()=>{});
@@ -140,12 +145,11 @@
             const PIXELS_PER_CARD = viewportHeight * 0.75;
             const TRIGGER_OFFSET_FACTOR = 0.25;
             
-            // Stack Height Calculation
             let stackHeight = 800; 
             if (cardParent && cardParent.offsetHeight > 100) {
                 stackHeight = cardParent.offsetHeight;
             } else {
-                stackHeight = viewportHeight; // Fallback
+                stackHeight = viewportHeight; 
             }
 
             const rect = track.getBoundingClientRect();
@@ -161,28 +165,42 @@
                 const delta = i - scrollProgress;
                 
                 let y = 0;
+                let rotX = 0;
+                let scale = 1;
                 
-                // Z-INDEX: Card 0 = 10, Card 1 = 11, Card 3 = 13.
-                // Higher index MUST cover lower index.
+                // Z-INDEX: Higher index covers lower index.
                 const zIndex = 10 + i;
 
                 if (delta > 0) {
-                    // FUTURE (Below):
+                    // FUTURE (Coming Up):
                     y = delta * stackHeight;
+                    
+                    // 3D ANGLE:
+                    // Starts tilted BACK (-30deg) and rotates to FLAT (0deg) as it arrives (delta -> 0).
+                    // This creates the "Arc" or "Flip" effect.
+                    rotX = Math.max(-25, delta * -25);
+                    
                 } else {
-                    // PAST (Top):
+                    // PAST (Underneath):
+                    // Stay pinned at y=0 (or slight parallax)
                     y = delta * 50; 
+                    
+                    // Stay flat, but maybe scale down slightly to look "buried"
+                    scale = Math.max(0.9, 1 - (Math.abs(delta) * 0.05));
+                    rotX = 0;
                 }
 
-                // NUCLEAR APPLICATION
-                // We use setProperty with 'important' to guarantee override
+                // Apply Styles
                 card.style.setProperty('z-index', zIndex.toString(), 'important');
-                card.style.setProperty('transform', `translate3d(0, ${y}px, 0)`, 'important');
+                card.style.setProperty(
+                    'transform', 
+                    `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) scale(${scale})`, 
+                    'important'
+                );
                 card.style.setProperty('opacity', '1', 'important'); 
                 card.style.setProperty('visibility', 'visible', 'important');
-                card.style.setProperty('display', 'block', 'important'); // Ensure not hidden
+                card.style.setProperty('display', 'block', 'important');
 
-                // Event Pointer Safety
                 if (i === safeIdx) card.style.setProperty('pointer-events', 'auto', 'important');
                 else card.style.setProperty('pointer-events', 'none', 'important');
             });
