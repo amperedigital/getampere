@@ -1,12 +1,12 @@
 /**
- * Scroll-Driven Card Stack v1.551 - 3D Angle Injection
- * - Adds perspective to parent container.
- * - Adds RotateX to incoming cards for "Deck Flip" effect.
- * - Maintains "Nuclear" CSS overrides for stability.
+ * Scroll-Driven Card Stack v1.552 - Delayed Entry & Extended Scroll
+ * - DELAYED ENTRY: Next card stays fully offscreen for 40% of the scroll section.
+ * - EXTENDED SCROLL: Increased PIXELS_PER_CARD to allow for reading time before transition.
+ * - PHYSICS: 'Flip' animation synced to the delayed entry.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.551] Loading 3D Angle Mode...');
+    console.log('[ScrollFlipper v1.552] Loading Delayed Entry Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -36,7 +36,6 @@
                 cardParent.style.setProperty('position', 'relative', 'important');
                 cardParent.style.setProperty('min-height', '800px', 'important');
                 cardParent.style.setProperty('display', 'block', 'important');
-                
                 // 3D STAGE
                 cardParent.style.setProperty('perspective', '1000px', 'important');
                 cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
@@ -53,34 +52,35 @@
                     width: 100% !important;
                     height: 100% !important;
                     margin: 0 !important;
-                    transform-origin: center top !important; /* Rotation pivot at top */
+                    transform-origin: center top !important; 
                     transform-style: preserve-3d !important;
                     will-change: transform !important;
                     transition: none !important;
-                    box-shadow: 0 4px 30px rgba(0,0,0,0.5) !important; /* Add shadow for depth */
-                    background-color: #000 !important; /* Ensure solid backing */
+                    box-shadow: 0 -10px 40px rgba(0,0,0,0.5) !important; /* Shadow UPWARDS to cast on prevented card */
+                    background-color: #000 !important; 
                 `;
-                // Note: Background color might need to match card design if transparent. 
-                // But generally cards need opacity 1 backings to cover.
             });
             // ----------------------------------
 
-            console.log(`[ScrollFlipper] Ready. ${cards.length} cards. 3D Styles Applied.`);
+            console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
 
-            // Click Nav
+            // Click Nav (Modified for new height)
             triggers.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (!track) return;
                     const viewportHeight = window.innerHeight;
-                    const PIXELS_PER_CARD = viewportHeight * 0.75;
-                    const TRIGGER_OFFSET_FACTOR = 0.25;
+                    
+                    // MUST MATCH RENDER LOGIC
+                    const PIXELS_PER_CARD = viewportHeight * 2.0; 
+                    
+                    const TRIGGER_OFFSET_FACTOR = 0.1; // Start a bit earlier
                     const rect = track.getBoundingClientRect();
                     const scrollTop = window.scrollY || document.documentElement.scrollTop;
                     const currentTop = rect.top + scrollTop;
                     const target = currentTop - (viewportHeight * TRIGGER_OFFSET_FACTOR) + (index * PIXELS_PER_CARD);
 
-                    if (window.lenis) window.lenis.scrollTo(target, { duration: 1.2 });
+                    if (window.lenis) window.lenis.scrollTo(target, { duration: 1.5 });
                     else window.scrollTo({ top: target, behavior: 'smooth' });
                 });
             });
@@ -142,8 +142,12 @@
 
         try {
             const viewportHeight = window.innerHeight || 800;
-            const PIXELS_PER_CARD = viewportHeight * 0.75;
-            const TRIGGER_OFFSET_FACTOR = 0.25;
+            
+            // --- PACING CONFIG ---
+            const PIXELS_PER_CARD = viewportHeight * 2.0; // Slower scroll (more reading time)
+            
+            // Start detection slightly earlier so index doesn't flip too late
+            const TRIGGER_OFFSET_FACTOR = 0.1; 
             
             let stackHeight = 800; 
             if (cardParent && cardParent.offsetHeight > 100) {
@@ -167,25 +171,28 @@
                 let y = 0;
                 let rotX = 0;
                 let scale = 1;
-                
-                // Z-INDEX: Higher index covers lower index.
                 const zIndex = 10 + i;
 
                 if (delta > 0) {
-                    // FUTURE (Coming Up):
-                    y = delta * stackHeight;
+                    // FUTURE (Coming Up)
                     
-                    // 3D ANGLE:
-                    // Starts tilted BACK (-30deg) and rotates to FLAT (0deg) as it arrives (delta -> 0).
-                    // This creates the "Arc" or "Flip" effect.
-                    rotX = Math.max(-25, delta * -25);
+                    // --- DELAYED ENTRY LOGIC ---
+                    // "The card on top needs to be flat for a bit longer"
+                    // We map delta [1.0 -> 0.0] to Movement [1.0 -> 0.0]
+                    // But we want it to stay at 1.0 (Offscreen) until delta hits threshold.
                     
+                    const ENTRY_THRESHOLD = 0.6; // Waiting until 40% of scroll is passed
+                    
+                    // If delta is 0.8, ratio is 0.8/0.6 = 1.33 -> Clamped to 1.
+                    // If delta is 0.3, ratio is 0.3/0.6 = 0.5.
+                    const ratio = Math.min(1, delta / ENTRY_THRESHOLD);
+                    
+                    y = ratio * stackHeight;
+                    rotX = ratio * -25; // Tilt back while waiting/moving
+
                 } else {
-                    // PAST (Underneath):
-                    // Stay pinned at y=0 (or slight parallax)
+                    // PAST (Underneath)
                     y = delta * 50; 
-                    
-                    // Stay flat, but maybe scale down slightly to look "buried"
                     scale = Math.max(0.9, 1 - (Math.abs(delta) * 0.05));
                     rotX = 0;
                 }
