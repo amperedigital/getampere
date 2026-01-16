@@ -42,16 +42,31 @@
             }
 
             // --- 1. PRE-CALCULATE STATIC PROPS & CACHE ELEMENTS ---
+            // Only apply static 3D styles on Desktop
+            const isDesktop = window.innerWidth >= 768;
+            
             cardCache = cards.map((card, i) => {
                 const zIndex = 10 + i;
                 
-                // Set static styles ONCE
-                card.style.setProperty('z-index', zIndex.toString(), 'important');
-                card.style.setProperty('display', 'block', 'important');
-                card.style.setProperty('transform-origin', 'center top', 'important');
-                card.style.setProperty('will-change', 'transform, opacity', 'important');
-                card.style.setProperty('background-color', '#000', 'important');
-                card.style.setProperty('transition', 'none', 'important');
+                if (isDesktop) {
+                    // Set static styles ONCE for Desktop 3D mode
+                    card.style.setProperty('z-index', zIndex.toString(), 'important');
+                    card.style.setProperty('display', 'block', 'important');
+                    card.style.setProperty('transform-origin', 'center top', 'important');
+                    card.style.setProperty('will-change', 'transform, opacity', 'important');
+                    card.style.setProperty('background-color', '#000', 'important');
+                    card.style.setProperty('transition', 'none', 'important');
+                } else {
+                    // Mobile: Ensure cleanup of any previous inline styles if resized from desktop
+                    card.style.removeProperty('z-index');
+                    card.style.removeProperty('display');
+                    card.style.removeProperty('transform-origin');
+                    card.style.removeProperty('will-change');
+                    card.style.removeProperty('background-color');
+                    card.style.removeProperty('transition');
+                    card.style.removeProperty('transform');
+                    card.style.removeProperty('opacity');
+                }
 
                 // Return cache object
                 return {
@@ -72,25 +87,48 @@
             });
 
             // --- 2. STICKY & LAYOUT SETUP ---
-            if (stickyContainer && window.innerWidth >= 768) {
-                stickyContainer.style.setProperty('position', 'sticky', 'important');
-                stickyContainer.style.setProperty('top', '100px', 'important');
-                stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
-                stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); 
-                stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
+            if (stickyContainer) {
+                if (isDesktop) {
+                    stickyContainer.style.setProperty('position', 'sticky', 'important');
+                    stickyContainer.style.setProperty('top', '100px', 'important');
+                    stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
+                    stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); 
+                    stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
+                } else {
+                    stickyContainer.style.removeProperty('position');
+                    stickyContainer.style.removeProperty('top');
+                    stickyContainer.style.removeProperty('overflow');
+                    stickyContainer.style.removeProperty('height');
+                    stickyContainer.style.removeProperty('max-height');
+                }
             }
 
             cardParent = cards[0].parentElement;
             if (cardParent) {
-                cardParent.style.setProperty('position', 'relative', 'important');
-                cardParent.style.setProperty('height', '650px', 'important'); 
-                cardParent.style.setProperty('perspective', '1000px', 'important');
-                cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
+                if (isDesktop) {
+                    cardParent.style.setProperty('position', 'relative', 'important');
+                    cardParent.style.setProperty('height', '650px', 'important'); 
+                    cardParent.style.setProperty('perspective', '1000px', 'important');
+                    cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
+                } else {
+                    cardParent.style.removeProperty('position');
+                    cardParent.style.removeProperty('height');
+                    cardParent.style.removeProperty('perspective');
+                    cardParent.style.removeProperty('perspective-origin');
+                }
             }
 
             // --- 3. METRIC CALCULATION ---
             updateMetrics();
-            window.addEventListener('resize', updateMetrics);
+            window.addEventListener('resize', () => {
+                // simple reload on resize across breakpoint to reset styles cleanly
+                const newDesktop = window.innerWidth >= 768;
+                if (newDesktop !== isDesktop) {
+                    location.reload(); 
+                    return;
+                }
+                updateMetrics();
+            });
 
             // --- 4. NAVIGATION ---
             triggers.forEach((btn, index) => {
@@ -127,6 +165,13 @@
 
     const updateMetrics = () => {
         if (!track || !cards.length) return;
+        
+        // On mobile, we DO NOT force track height. 
+        // We let the natural stacked content dictate height.
+        if (window.innerWidth < 768) {
+            track.style.removeProperty('height');
+            return;
+        }
         
         metrics.viewportHeight = window.innerHeight;
         metrics.pixelsPerCard = metrics.viewportHeight * 2.0;

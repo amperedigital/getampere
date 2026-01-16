@@ -1372,6 +1372,20 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             }
           }
         });
+
+        // Mobile SMIL Triggering (since scroll-flipper.js checks are disabled on mobile)
+        if (window.innerWidth < 768) {
+          const smilObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+               const container = entry.target.querySelector('[data-smil-container]');
+               if (container && window.triggerMedia) {
+                 window.triggerMedia(container, entry.isIntersecting);
+               }
+            });
+          }, { threshold: 0.4 });
+          document.querySelectorAll('[data-tab-card]').forEach(el => smilObserver.observe(el));
+        }
+
       });
     </script>
 
@@ -1380,7 +1394,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       <!-- Sticky Container -->
       <div class="sticky top-[6rem] md:top-[7.5rem] w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-120px)] flex flex-col overflow-visible max-md:relative max-md:top-0 max-md:h-auto max-md:overflow-visible" data-sticky-cards>
         <!-- Tabs (Box Layout) -->
-        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-md:hidden">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-md:!hidden">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
@@ -2963,7 +2977,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/hero-slider.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.568/deploy/assets/js/scroll-flipper.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.569/deploy/assets/js/scroll-flipper.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.422/deploy/assets/js/carousel.js" defer></script>
     
 <!--Modal-->
