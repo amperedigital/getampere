@@ -2401,17 +2401,17 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <!--       START: EXPERTISE & SLIDER AREA       -->
 <!-- ========================================== -->
 <!-- 1. Intro Screen (Black, Centered Text, Scroll Scrub) -->
-<section data-scroll-scrub="center-bloom" class="relative w-full h-screen bg-[#0a0b14] flex items-center justify-center z-10">
+<section data-scroll-scrub="center-bloom" data-scroll-reveal-section class="relative w-full h-screen bg-[#0a0b14] flex items-center justify-center z-10">
     <div class="text-center px-4 w-full flex flex-col items-center">
         <!-- 3D Key Container (Instance) -->
         <div data-ampere-key-3d data-scrub-target class="w-full max-w-[500px] h-[400px] mb-0 relative z-20 pointer-events-none"></div>
 
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.5] text-white font-medium">
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.5] text-white font-medium -mt-12">
             <span class="block opacity-0 translate-y-5" data-scrub-target>Phone Conversations</span>
             <span class="block mt-2 opacity-0 translate-y-5" data-scrub-target>Handled End-to-End.</span>
         </h2>
         
-        <div class="mt-8 opacity-0 translate-y-5 transition-all duration-700 delay-300" data-scrub-target>
+        <div class="mt-8 opacity-0 translate-y-8 transition-all duration-700 delay-300" data-reveal-group>
             <button onclick="document.querySelector('#platform-walkthrough-intro').scrollIntoView({behavior: 'smooth'})" class="shiny-cta group relative overflow-hidden hover:-translate-y-0.5 transition-all duration-300 flex items-center bg-white/5 backdrop-blur-sm border border-white/10 rounded-full py-3 px-6">
                 <!-- Shine effect -->
                 <div class="absolute inset-0 -translate-x-full group-hover:animate-[shine_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent z-0"></div>
