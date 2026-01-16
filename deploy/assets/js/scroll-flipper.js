@@ -1,18 +1,17 @@
 /**
- * Scroll-Driven Card Stack (Direct 1:1 Control) v1.543
- * - Added Visibility Culling: Cards pushed offscreen are hidden.
- * - Adds 'will-change' optimization.
- * - Forces container relative positioning.
+ * Scroll-Driven Card Stack (Direct 1:1 Control) v1.544
+ * - Features: Sticky Scroll, Fade-Out on Exit, Solid Entry.
+ * - Fixes: "Top Card" Flash (Culling), Z-Index layering.
  */
 
 (function() {
-    console.log('[ScrollFlipper] Loading v1.543');
+    console.log('[ScrollFlipper] Loading v1.544');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers;
 
     let attempts = 0;
-    const MAX_ATTEMPTS = 15;
+    const MAX_ATTEMPTS = 20;
 
     const init = () => {
         try {
@@ -24,7 +23,7 @@
             if (!track || !stickyContainer || !cards.length) {
                 if (attempts < MAX_ATTEMPTS) {
                     attempts++;
-                    setTimeout(init, 200);
+                    setTimeout(init, 100);
                     return;
                 }
                 console.warn('[ScrollFlipper] Failed to find elements.');
@@ -33,6 +32,7 @@
 
             console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
 
+            // Click Nav
             triggers.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -48,8 +48,8 @@
                 });
             });
 
-            // Force container parent to be a positioning context
-            if (stickyContainer) stickyContainer.style.position = 'sticky'; // Reinforced
+            // Force container context
+            if (stickyContainer) stickyContainer.style.position = 'sticky'; 
 
             if (!isRunning) {
                 isRunning = true;
@@ -107,7 +107,7 @@
         if (!track || !cards.length) return;
 
         try {
-            const viewportHeight = window.innerHeight;
+            const viewportHeight = window.innerHeight || 800;
             const PIXELS_PER_CARD = viewportHeight * 0.75;
             const TRIGGER_OFFSET_FACTOR = 0.25;
 
@@ -129,45 +129,57 @@
                 let isOffscreen = false;
 
                 if (delta > 0) {
-                    // Future (Below)
+                    // --- FUTURE (Coming Up) ---
+                    // Position: Below viewport, sliding up.
+                    // Opacity: Solid (1.0) so it covers the card behind it.
+                    
                     y = delta * viewportHeight; 
+                    
+                    // Tilt back slightly as it enters
                     rotX = Math.max(-25, delta * -15);
                     z = delta * -50;
-                    opacity = 1.0;
+                    opacity = 1.0; 
                     
-                    // CULLING: If card is more than 1.1 screens down, hide it
-                    // This explicitly prevents it from rendering on top if transform fails
-                    // or just saves GPU if it works. 
-                    if (y > viewportHeight * 1.1) isOffscreen = true;
+                    // CULLING: Hide if significantly offscreen to prevent "Stacking on top" bugs on load
+                    if (y > viewportHeight * 1.5) isOffscreen = true;
 
                 } else {
-                    // Past (Above/Active)
+                    // --- PAST (Being Covered) ---
+                    // Position: Stays roughly put, moves up slightly (parallax).
+                    // Opacity: FADES OUT as it gets covered.
+                    
                     const d = Math.abs(delta);
-                    y = -d * 100;
+                    
+                    // Move up slightly slower than the incoming card (Parallax)
+                    y = -d * 100; 
                     z = -d * 100;
-                    opacity = 1.0; 
+                    
+                    // Fade Out: 1.0 -> 0.0 as delta goes 0 -> 1
+                    opacity = Math.max(0, 1 - d);
                 }
 
                 if (i === activeIdx) pointerEvents = 'auto';
 
-                // Core Style Enforcement
+                // Render
                 card.style.position = 'absolute';
                 card.style.top = '0';
                 card.style.left = '0';
                 card.style.width = '100%';
-                card.style.height = '100%'; // Ensure height
-                card.style.willChange = 'transform';
+                card.style.height = '100%';
+                
+                // Z-Index: Higher index is ALWAYS on top.
                 card.style.zIndex = 10 + i; 
                 
                 if (isOffscreen) {
-                    card.style.visibility = 'hidden';
+                     card.style.visibility = 'hidden';
                 } else {
-                    card.style.visibility = 'visible';
-                    card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateX(${rotX}deg)`;
+                     card.style.visibility = 'visible';
+                     card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateX(${rotX}deg)`;
                 }
                 
                 card.style.opacity = opacity;
                 card.style.pointerEvents = pointerEvents;
+                card.style.willChange = 'transform, opacity';
                 card.style.transition = 'none';
             });
         } catch (e) {
