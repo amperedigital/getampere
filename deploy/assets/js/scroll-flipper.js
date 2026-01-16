@@ -1,19 +1,18 @@
 /**
- * Scroll-Driven Card Stack (Direct 1:1 Control) v1.542
- * - Added explicit initialization retry loop.
- * - Forces card visibility/stacking immediately on load.
- * - Debug border on track to confirm script execution.
+ * Scroll-Driven Card Stack (Direct 1:1 Control) v1.543
+ * - Added Visibility Culling: Cards pushed offscreen are hidden.
+ * - Adds 'will-change' optimization.
+ * - Forces container relative positioning.
  */
 
 (function() {
-    console.log('[ScrollFlipper] Loading v1.542');
+    console.log('[ScrollFlipper] Loading v1.543');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers;
 
-    // Retry initialization for up to 2 seconds if elements aren't found immediately
     let attempts = 0;
-    const MAX_ATTEMPTS = 10;
+    const MAX_ATTEMPTS = 15;
 
     const init = () => {
         try {
@@ -25,41 +24,33 @@
             if (!track || !stickyContainer || !cards.length) {
                 if (attempts < MAX_ATTEMPTS) {
                     attempts++;
-                    console.log(`[ScrollFlipper] Retry init ${attempts}/${MAX_ATTEMPTS}`);
                     setTimeout(init, 200);
                     return;
                 }
-                console.warn('[ScrollFlipper] Missing elements after retries.');
+                console.warn('[ScrollFlipper] Failed to find elements.');
                 return;
             }
 
-            console.log(`[ScrollFlipper] Init success. ${cards.length} cards found.`);
-            
-            // Visual Debug confirmation (Internal use - can remove later)
-            // track.style.border = "4px solid red"; 
+            console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
 
-            // Click Nav
             triggers.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (!track) return;
                     const PIXELS_PER_CARD = window.innerHeight * 0.75;
                     const TRIGGER_OFFSET_FACTOR = 0.25;
-                    
                     const rect = track.getBoundingClientRect();
                     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-                    const trackTopAbs = rect.top + scrollTop;
-                    const target = trackTopAbs - (window.innerHeight * TRIGGER_OFFSET_FACTOR) + (index * PIXELS_PER_CARD);
+                    const target = (rect.top + scrollTop) - (window.innerHeight * TRIGGER_OFFSET_FACTOR) + (index * PIXELS_PER_CARD);
 
-                    if (window.lenis) {
-                        window.lenis.scrollTo(target, { duration: 1.2 });
-                    } else {
-                        window.scrollTo({ top: target, behavior: 'smooth' });
-                    }
+                    if (window.lenis) window.lenis.scrollTo(target, { duration: 1.2 });
+                    else window.scrollTo({ top: target, behavior: 'smooth' });
                 });
             });
 
-            // Forces initial layout state
+            // Force container parent to be a positioning context
+            if (stickyContainer) stickyContainer.style.position = 'sticky'; // Reinforced
+
             if (!isRunning) {
                 isRunning = true;
                 tick();
@@ -95,21 +86,15 @@
                 
                 if (i === index) {
                     c.classList.add('active');
-                    if (typeof window.triggerMedia === 'function' && container) {
-                         window.triggerMedia(container, true);
-                    }
+                    if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, true);
                     if (v) v.play().catch(()=>{});
                 } else {
                     c.classList.remove('active');
-                    if (typeof window.triggerMedia === 'function' && container) {
-                        window.triggerMedia(container, false);
-                    }
+                    if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, false);
                     if (v) v.pause();
                 }
             });
-        } catch (err) {
-            // ignore media errors
-        }
+        } catch (err) {}
     };
 
     const tick = () => {
@@ -128,7 +113,7 @@
 
             const rect = track.getBoundingClientRect();
             
-            // Calculate Logic
+            // Logic
             const startOffset = -rect.top + (viewportHeight * TRIGGER_OFFSET_FACTOR);
             let scrollProgress = startOffset / PIXELS_PER_CARD;
 
@@ -141,20 +126,23 @@
                 const delta = i - scrollProgress;
                 
                 let y = 0, z = 0, rotX = 0, opacity = 1, pointerEvents = 'none';
+                let isOffscreen = false;
 
                 if (delta > 0) {
-                    // Coming Up (Below)
-                    // If delta >= 0.1, we start pushing it down.
-                    // Card 3 (when 0 is active) -> delta=3 -> y=3vh -> Offscreen
+                    // Future (Below)
                     y = delta * viewportHeight; 
-                    
                     rotX = Math.max(-25, delta * -15);
                     z = delta * -50;
                     opacity = 1.0;
+                    
+                    // CULLING: If card is more than 1.1 screens down, hide it
+                    // This explicitly prevents it from rendering on top if transform fails
+                    // or just saves GPU if it works. 
+                    if (y > viewportHeight * 1.1) isOffscreen = true;
+
                 } else {
-                    // Past (Active/Above)
+                    // Past (Above/Active)
                     const d = Math.abs(delta);
-                    // Push UP and BACK
                     y = -d * 100;
                     z = -d * 100;
                     opacity = 1.0; 
@@ -162,22 +150,28 @@
 
                 if (i === activeIdx) pointerEvents = 'auto';
 
-                // Explicitly set styles to override any CSS
-                card.style.position = 'absolute'; // Ensure they stack
+                // Core Style Enforcement
+                card.style.position = 'absolute';
                 card.style.top = '0';
                 card.style.left = '0';
                 card.style.width = '100%';
-                
-                // Z-index: Higher index = Higher stacking context
+                card.style.height = '100%'; // Ensure height
+                card.style.willChange = 'transform';
                 card.style.zIndex = 10 + i; 
                 
-                card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateX(${rotX}deg)`;
+                if (isOffscreen) {
+                    card.style.visibility = 'hidden';
+                } else {
+                    card.style.visibility = 'visible';
+                    card.style.transform = `translate3d(0, ${y}px, ${z}px) rotateX(${rotX}deg)`;
+                }
+                
                 card.style.opacity = opacity;
                 card.style.pointerEvents = pointerEvents;
                 card.style.transition = 'none';
             });
         } catch (e) {
-            console.error('[ScrollFlipper] Render Error:', e);
+            console.error(e);
             isRunning = false; 
         }
     };
