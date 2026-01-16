@@ -1,16 +1,27 @@
 /**
- * Scroll-Driven Card Stack v1.557 - Fix Initial Activation
- * - ENHANCEMENT: Ensures SMIL/Media triggers retry until global.js loads.
- * - PREVIOUS: Timing Fix (90%), Stickiness, Visibility retained.
+ * Scroll-Driven Card Stack v1.558 - Performance Optimization
+ * - OPTIMIZATION: Removed layout thrashing (cached metrics).
+ * - OPTIMIZATION: "Dirty checking" to only write DOM when values change.
+ * - OPTIMIZATION: Static properties moved out of render loop.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.557] Loading Retry-Enabled Mode...');
+    console.log('[ScrollFlipper v1.558] Loading High-Performance Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
     let attempts = 0;
     const MAX_ATTEMPTS = 30;
+
+    // Cache for performance
+    const metrics = {
+        viewportHeight: 0,
+        pixelsPerCard: 0,
+        trackTopAbsolute: 0
+    };
+
+    // Card State Cache (to avoid querying DOM or rewriting unchanged styles)
+    let cardCache = [];
 
     const init = () => {
         try {
@@ -25,79 +36,67 @@
                     setTimeout(init, 100);
                     return;
                 }
-                console.warn('[ScrollFlipper] Failed to find elements.');
                 return;
             }
 
-            // --- TRACK HEIGHT SYNC ---
-            const viewportHeight = window.innerHeight;
-            const PIXELS_PER_CARD = viewportHeight * 2.0; 
-            const requiredTrackHeight = (cards.length * PIXELS_PER_CARD) + viewportHeight;
-            
-            track.style.setProperty('height', `${requiredTrackHeight}px`, 'important');
-            track.style.setProperty('position', 'relative', 'important');
+            // --- 1. PRE-CALCULATE STATIC PROPS & CACHE ELEMENTS ---
+            cardCache = cards.map((card, i) => {
+                const zIndex = 10 + i;
+                
+                // Set static styles ONCE
+                card.style.setProperty('z-index', zIndex.toString(), 'important');
+                card.style.setProperty('display', 'block', 'important');
+                card.style.setProperty('transform-origin', 'center top', 'important');
+                card.style.setProperty('will-change', 'transform, opacity', 'important');
+                card.style.setProperty('background-color', '#000', 'important');
+                card.style.setProperty('transition', 'none', 'important');
 
-            // --- STICKY CONTAINER ENFORCEMENT ---
+                // Return cache object
+                return {
+                    el: card,
+                    smil: card.querySelector('[data-smil-container]'),
+                    video: card.querySelector('video'),
+                    // State tracking to prevent redundant writes
+                    lastOpacity: -1,
+                    lastEvents: '',
+                    lastVisibility: ''
+                };
+            });
+
+            // --- 2. STICKY & LAYOUT SETUP ---
             if (stickyContainer) {
                 stickyContainer.style.setProperty('position', 'sticky', 'important');
                 stickyContainer.style.setProperty('top', '100px', 'important');
                 stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
-                stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
                 stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); 
-                stickyContainer.style.setProperty('z-index', '50', 'important');
+                stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
             }
 
-            // --- PARENT SETUP ---
             cardParent = cards[0].parentElement;
             if (cardParent) {
                 cardParent.style.setProperty('position', 'relative', 'important');
                 cardParent.style.setProperty('height', '650px', 'important'); 
-                cardParent.style.setProperty('min-height', '650px', 'important');
                 cardParent.style.setProperty('perspective', '1000px', 'important');
                 cardParent.style.setProperty('perspective-origin', '50% 20%', 'important'); 
             }
 
-            cards.forEach(c => {
-                c.classList.remove('inactive-prev', 'inactive-next', 'md:opacity-0');
-                c.style.cssText = `
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    width: 100% !important;
-                    height: 100% !important;
-                    margin: 0 !important;
-                    transform-origin: center top !important; 
-                    transform-style: preserve-3d !important;
-                    will-change: transform !important;
-                    transition: none !important;
-                    box-shadow: 0 -10px 40px rgba(0,0,0,0.5) !important;
-                    background-color: #000 !important; 
-                `;
-            });
+            // --- 3. METRIC CALCULATION ---
+            updateMetrics();
+            window.addEventListener('resize', updateMetrics);
 
-            // Click Nav
+            // --- 4. NAVIGATION ---
             triggers.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if (!track) return;
-                    const vh = window.innerHeight;
-                    const ppc = vh * 2.0; 
-                    const rect = track.getBoundingClientRect();
-                    const absoluteTrackTop = rect.top + window.scrollY;
-                    const target = absoluteTrackTop + (index * ppc); 
-
+                    // Refined scroll target calc
+                    const target = metrics.trackTopAbsolute + (index * metrics.pixelsPerCard);
                     if (window.lenis) window.lenis.scrollTo(target, { duration: 1.5 });
                     else window.scrollTo({ top: target, behavior: 'smooth' });
                 });
             });
 
+            // --- 5. START LOOP ---
             if (!isRunning) {
-                window.addEventListener('resize', () => {
-                   const vh = window.innerHeight;
-                   const ppc = vh * 2.0;
-                   const h = (cards.length * ppc) + vh;
-                   if (track) track.style.setProperty('height', `${h}px`, 'important');
-                });
                 isRunning = true;
                 tick();
             }
@@ -107,45 +106,58 @@
         }
     };
 
+    const updateMetrics = () => {
+        if (!track || !cards.length) return;
+        
+        metrics.viewportHeight = window.innerHeight;
+        metrics.pixelsPerCard = metrics.viewportHeight * 2.0;
+
+        // Sync Track Height
+        const requiredHeight = (cards.length * metrics.pixelsPerCard) + metrics.viewportHeight;
+        track.style.setProperty('height', `${requiredHeight}px`, 'important');
+
+        // Cache absolute position. 
+        // Note: resizing might shift layout, so we grab rect + scrollY
+        const rect = track.getBoundingClientRect();
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        metrics.trackTopAbsolute = rect.top + scrollTop;
+    };
+
     let currentActiveIndex = -1;
 
     const updateMediaState = (index) => {
-        // RETRY LOGIC: If global.js hasn't loaded 'triggerMedia' yet, 
-        // we must NOT lock in the state (currentActiveIndex), 
-        // so that we keep retrying every frame until it is available.
+        // Retry logic for global.js
         const mediaReady = typeof window.triggerMedia === 'function';
-
         if (currentActiveIndex === index && mediaReady) return;
-        
-        // Only lock state if we are actually capable of triggering media
-        if (mediaReady) {
-            currentActiveIndex = index;
-        }
+        if (mediaReady) currentActiveIndex = index;
 
+        // Update Triggers (DOM write)
         triggers.forEach((t, i) => {
             if (i === index) {
-                t.dataset.selected = "true";
-                t.setAttribute('aria-selected', 'true');
-                t.classList.add('active'); 
+                if (t.dataset.selected !== "true") {
+                    t.dataset.selected = "true";
+                    t.setAttribute('aria-selected', 'true');
+                    t.classList.add('active'); 
+                }
             } else {
-                delete t.dataset.selected;
-                t.setAttribute('aria-selected', 'false');
-                t.classList.remove('active');
+                if (t.dataset.selected) {
+                    delete t.dataset.selected;
+                    t.setAttribute('aria-selected', 'false');
+                    t.classList.remove('active');
+                }
             }
         });
 
-        cards.forEach((c, i) => {
-            const container = c.querySelector('[data-smil-container]');
-            const v = c.querySelector('video');
-            
+        // Update Media (using Cache)
+        cardCache.forEach((cache, i) => {
             if (i === index) {
-                c.classList.add('active');
-                if (mediaReady && container) window.triggerMedia(container, true);
-                if (v) v.play().catch(()=>{});
+                cache.el.classList.add('active');
+                if (mediaReady && cache.smil) window.triggerMedia(cache.smil, true);
+                if (cache.video) cache.video.play().catch(()=>{});
             } else {
-                c.classList.remove('active');
-                if (mediaReady && container) window.triggerMedia(container, false);
-                if (v) v.pause();
+                cache.el.classList.remove('active');
+                if (mediaReady && cache.smil) window.triggerMedia(cache.smil, false);
+                if (cache.video) cache.video.pause();
             }
         });
     };
@@ -157,78 +169,76 @@
     };
 
     const render = () => {
-        if (!track || !cards.length) return;
+        if (!track) return;
 
-        try {
-            const viewportHeight = window.innerHeight || 800;
-            const PIXELS_PER_CARD = viewportHeight * 2.0;
-            const rect = track.getBoundingClientRect();
-            const dist = -rect.top; 
+        // FAST READ: No layout thrashing (getBoundingClientRect removed from loop)
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const dist = scrollTop - metrics.trackTopAbsolute; 
+        
+        // Note: dist is acts like (-rect.top). 
+        // If scrollTop == trackTop, dist = 0.
+        // If scrollTop > trackTop (scrolled down), dist > 0.
+        
+        let scrollProgress = dist / metrics.pixelsPerCard;
+
+        let activeIdx = Math.floor(scrollProgress + 0.1); 
+        const safeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
+
+        updateMediaState(safeIdx);
+
+        // BATCH WRITE
+        for (let i = 0; i < cardCache.length; i++) {
+            const cache = cardCache[i];
+            const delta = i - scrollProgress;
             
-            let scrollProgress = dist / PIXELS_PER_CARD;
+            let y = 0, rotX = 0, rotY = 0, rotZ = 0, scale = 1;
 
-            let activeIdx = Math.floor(scrollProgress + 0.1); 
-            const safeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
-
-            updateMediaState(safeIdx);
-
-            cards.forEach((card, i) => {
-                const delta = i - scrollProgress;
-                
-                let y = 0;
-                let rotX = 0;
-                let rotY = 0;
-                let rotZ = 0;
-                let scale = 1;
-                const zIndex = 10 + i;
-
-                if (delta > 0) {
-                    // FUTURE (Coming Up)
-                    const ENTRY_THRESHOLD = 0.6; 
-                    
-                    if (delta > ENTRY_THRESHOLD) {
-                        y = 2000; // Nuclear safe zone
-                    } else {
-                        // TRANSITION PHASE [0.6 -> 0]
-                        const ratio = delta / ENTRY_THRESHOLD;
-                        y = ratio * 650; 
-                        
-                        const angleRatio = Math.min(1, ratio);
-                        rotX = angleRatio * -25;
-                        rotZ = angleRatio * -2; 
-                        rotY = angleRatio * 2;
-                    }
-
+            // Logic matching v1.557
+            if (delta > 0) {
+                const ENTRY_THRESHOLD = 0.6; 
+                if (delta > ENTRY_THRESHOLD) {
+                    y = 2000; 
                 } else {
-                    // PAST (Underneath)
-                    y = delta * 50; 
-                    scale = Math.max(0.9, 1 - (Math.abs(delta) * 0.05));
-                    rotX = 0;
-                    rotZ = 0;
-                    rotY = 0;
+                    const ratio = delta / ENTRY_THRESHOLD;
+                    y = ratio * 650; 
+                    const angleRatio = Math.min(1, ratio);
+                    rotX = angleRatio * -25;
+                    rotZ = angleRatio * -2; 
+                    rotY = angleRatio * 2;
                 }
+            } else {
+                y = delta * 50; 
+                scale = Math.max(0.9, 1 - (Math.abs(delta) * 0.05));
+                rotX = 0; rotZ = 0; rotY = 0;
+            }
 
-                card.style.setProperty('z-index', zIndex.toString(), 'important');
-                card.style.setProperty(
-                    'transform', 
-                    `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`, 
-                    'important'
-                );
-                
-                if (delta > 0.6) {
-                     card.style.setProperty('opacity', '0', 'important');
-                } else {
-                     card.style.setProperty('opacity', '1', 'important');
-                }
-                card.style.setProperty('visibility', 'visible', 'important');
-                card.style.setProperty('display', 'block', 'important');
+            // Always write transform (it animates constantly)
+            cache.el.style.setProperty(
+                'transform', 
+                `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`, 
+                'important'
+            );
+            
+            // SMART UPDATES: Opacity
+            const targetOpacity = (delta > 0.6) ? '0' : '1';
+            if (cache.lastOpacity !== targetOpacity) {
+                cache.el.style.setProperty('opacity', targetOpacity, 'important');
+                cache.lastOpacity = targetOpacity;
+            }
 
-                if (i === safeIdx) card.style.setProperty('pointer-events', 'auto', 'important');
-                else card.style.setProperty('pointer-events', 'none', 'important');
-            });
-        } catch (e) {
-            console.error(e);
-            isRunning = false; 
+            // SMART UPDATES: Pointer Events
+            const targetEvents = (i === safeIdx) ? 'auto' : 'none';
+            if (cache.lastEvents !== targetEvents) {
+                cache.el.style.setProperty('pointer-events', targetEvents, 'important');
+                cache.lastEvents = targetEvents;
+            }
+
+            // SMART UPDATES: Visibility
+            // We can just keep it visible as we control opacity/pos, but let's stick to 'visible'
+            if (cache.lastVisibility !== 'visible') {
+                cache.el.style.setProperty('visibility', 'visible', 'important');
+                cache.lastVisibility = 'visible';
+            }
         }
     };
 
