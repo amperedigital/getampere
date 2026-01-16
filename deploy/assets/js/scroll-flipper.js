@@ -1,12 +1,13 @@
 /**
- * Scroll-Driven Card Stack v1.558 - Performance Optimization
- * - OPTIMIZATION: Removed layout thrashing (cached metrics).
+ * Scroll-Driven Card Stack v1.560 - Performance Optimization
+ * - OPTIMIZATION: Mobile Guard (Disabled on <768px).
+ * - OPTIMIZATION: Transform dirty checking (0 DOM writes when idle).
  * - OPTIMIZATION: "Dirty checking" to only write DOM when values change.
  * - OPTIMIZATION: Static properties moved out of render loop.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.558] Loading High-Performance Mode...');
+    console.log('[ScrollFlipper v1.560] Loading High-Performance Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -59,12 +60,13 @@
                     // State tracking to prevent redundant writes
                     lastOpacity: -1,
                     lastEvents: '',
-                    lastVisibility: ''
+                    lastVisibility: '',
+                    lastTransform: '' // Optimization: Track transform string
                 };
             });
 
             // --- 2. STICKY & LAYOUT SETUP ---
-            if (stickyContainer) {
+            if (stickyContainer && window.innerWidth >= 768) {
                 stickyContainer.style.setProperty('position', 'sticky', 'important');
                 stickyContainer.style.setProperty('top', '100px', 'important');
                 stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
@@ -95,11 +97,22 @@
                 });
             });
 
-            // --- 5. START LOOP ---
-            if (!isRunning) {
-                isRunning = true;
-                tick();
-            }
+            // --- 5. VISIBILITY OPTIMIZATION (Wake on Scroll) ---
+            // Only run the RAF loop when the section is actually in or near the viewport.
+            // This prevents "Inspector Calculation" noise when at the top of the page.
+            const observer = new IntersectionObserver((entries) => {
+                const entry = entries[0];
+                if (entry.isIntersecting) {
+                    if (!isRunning) {
+                        isRunning = true;
+                        tick(); // Wake up
+                    }
+                } else {
+                    isRunning = false; // Go to sleep (stops RAF)
+                }
+            }, { rootMargin: '200px 0px 200px 0px' }); // Pre-load slightly before entry
+            
+            observer.observe(track);
 
         } catch (e) {
             console.error('[ScrollFlipper] Init Error:', e);
@@ -165,7 +178,7 @@
     const tick = () => {
         if (!isRunning) return;
         requestAnimationFrame(tick);
-        render(); 
+        if (window.innerWidth >= 768) render(); 
     };
 
     const render = () => {
@@ -213,11 +226,12 @@
             }
 
             // Always write transform (it animates constantly)
-            cache.el.style.setProperty(
-                'transform', 
-                `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`, 
-                'important'
-            );
+            const transformString = `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`;
+            
+            if (cache.lastTransform !== transformString) {
+                cache.el.style.setProperty('transform', transformString, 'important');
+                cache.lastTransform = transformString;
+            }
             
             // SMART UPDATES: Opacity
             const targetOpacity = (delta > 0.6) ? '0' : '1';
