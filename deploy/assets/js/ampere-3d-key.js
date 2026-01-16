@@ -33,6 +33,10 @@ export class Ampere3DKey {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        // Visual fix: Hide canvas until texture loads to prevent white flicker
+        this.renderer.domElement.style.opacity = '0';
+        this.renderer.domElement.style.transition = 'opacity 0.5s ease-out';
         
         this.container.appendChild(this.renderer.domElement);
     }
@@ -98,7 +102,13 @@ export class Ampere3DKey {
         
         const logoBase64 = "data:image/svg+xml;base64," + btoa(svgString);
         const textureLoader = new THREE.TextureLoader();
-        const logoTexture = textureLoader.load(logoBase64);
+        const logoTexture = textureLoader.load(logoBase64, () => {
+            // Reveal canvas only when texture is ready
+            // Small timeout to ensure first frame render with texture
+            setTimeout(() => {
+                this.renderer.domElement.style.opacity = '1';
+            }, 50);
+        });
         
         // High Quality Filtering
         logoTexture.anisotropy = this.renderer.capabilities.maxAnisotropy;
