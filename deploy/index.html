@@ -48,6 +48,29 @@
       scrollbar-gutter: stable;
     }
 
+    /* CRITICAL MOBILE OVERRIDES 
+       Direct CSS fallback because tailwind max-md variants are conflicting with existing config 
+    */
+    @media (max-width: 768px) {
+      .mobile-force-hidden {
+        display: none !important;
+      }
+      .mobile-force-auto-height {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .mobile-force-block {
+        display: block !important;
+      }
+      .mobile-force-relative {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+      }
+    }
+
     .font-serif-italic {
       font-family: "Newsreader", serif;
       font-style: italic;
@@ -1377,11 +1400,11 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </script>
 
     <!-- Sticky Scroll Track -->
-    <div class="relative h-[250vh] lg:h-[400vh] max-md:h-auto" data-scroll-track-container>
+    <div class="relative h-[250vh] lg:h-[400vh] mobile-force-auto-height" data-scroll-track-container>
       <!-- Sticky Container -->
-      <div class="sticky top-[6rem] md:top-[7.5rem] w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-120px)] flex flex-col overflow-visible max-md:relative max-md:top-0 max-md:h-auto max-md:overflow-visible" data-sticky-cards>
+      <div class="sticky top-[6rem] md:top-[7.5rem] w-full h-[calc(100dvh-6rem)] md:h-auto md:min-h-[calc(100vh-120px)] flex flex-col overflow-visible mobile-force-relative mobile-force-auto-height" data-sticky-cards>
         <!-- Tabs (Box Layout) -->
-        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-md:!hidden">
+        <div class="w-full border-y border-white/10 bg-[#0a0b14] z-30 flex-none max-md:!hidden mobile-force-hidden">
       <div class="max-w-7xl mx-auto">
         <div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 divide-x divide-white/10 border-x border-white/10">
           <!-- Tab 1 -->
