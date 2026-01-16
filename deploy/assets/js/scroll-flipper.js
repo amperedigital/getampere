@@ -1,19 +1,18 @@
 /**
- * Scroll-Driven Card Stack (Direct 1:1 Control) v1.545
- * - Fixes: Layout context (Tab Overlap). Corrects stacking logic.
- * - Logic: "Deck" Style.
- *   - Active/Past Card: Pins at Top, Pushes back Z, Fades Out.
- *   - Future Card: Slides UP from bottom, Solid Opacity.
+ * Scroll-Driven Card Stack (Direct 1:1 Control) v1.546
+ * - FIX: Fallback for cardStackHeight (prevents y=0 collapse).
+ * - FIX: Ensure Cards are absolutely stacked correctly.
+ * - Logic: Deck Stack (Next Card Slides Over).
  */
 
 (function() {
-    console.log('[ScrollFlipper] Loading v1.545');
+    console.log('[ScrollFlipper] Loading v1.546');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
 
     let attempts = 0;
-    const MAX_ATTEMPTS = 20;
+    const MAX_ATTEMPTS = 30;
 
     const init = () => {
         try {
@@ -32,16 +31,14 @@
                 return;
             }
 
-            // Identify Parent to confine absolute positioning
+            // identify parent
             cardParent = cards[0].parentElement;
             if (cardParent) {
-                // Enforce relative context so cards stack INSIDE this box, not the page
-                cardParent.style.position = 'relative';
-                // Remove grid/flex that might fight with absolute
-                // (It's okay if it stays grid, absolute children ignore it mostly)
-                
-                // Ensure parent has height
-                // The HTML usually has h-[650px]
+                cardParent.style.position = 'relative'; 
+                // Force min-height if it collapsed
+                if (cardParent.offsetHeight < 100) {
+                     cardParent.style.minHeight = '650px';
+                }
             }
 
             console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
@@ -51,18 +48,19 @@
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (!track) return;
-                    const PIXELS_PER_CARD = window.innerHeight * 0.75;
+                    const viewportHeight = window.innerHeight;
+                    const PIXELS_PER_CARD = viewportHeight * 0.75;
                     const TRIGGER_OFFSET_FACTOR = 0.25;
                     const rect = track.getBoundingClientRect();
                     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-                    const target = (rect.top + scrollTop) - (window.innerHeight * TRIGGER_OFFSET_FACTOR) + (index * PIXELS_PER_CARD);
+                    const currentTop = rect.top + scrollTop;
+                    const target = currentTop - (viewportHeight * TRIGGER_OFFSET_FACTOR) + (index * PIXELS_PER_CARD);
 
                     if (window.lenis) window.lenis.scrollTo(target, { duration: 1.2 });
                     else window.scrollTo({ top: target, behavior: 'smooth' });
                 });
             });
 
-            // Force sticky context
             if (stickyContainer) stickyContainer.style.position = 'sticky'; 
 
             if (!isRunning) {
@@ -124,19 +122,22 @@
             const viewportHeight = window.innerHeight || 800;
             const PIXELS_PER_CARD = viewportHeight * 0.75;
             const TRIGGER_OFFSET_FACTOR = 0.25;
-            // Visual height of the container to slide past
-             const cardStackHeight = cardParent ? cardParent.offsetHeight : viewportHeight;
+            
+            // ROBUST HEIGHT CALCULATION
+            let stackHeight = 650; // Default fallback
+            if (cardParent && cardParent.offsetHeight > 0) stackHeight = cardParent.offsetHeight;
+            else stackHeight = viewportHeight * 0.8;
 
             const rect = track.getBoundingClientRect();
             
-            // Logic
             const startOffset = -rect.top + (viewportHeight * TRIGGER_OFFSET_FACTOR);
             let scrollProgress = startOffset / PIXELS_PER_CARD;
 
             let activeIdx = Math.floor(scrollProgress);
-            activeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
+            // Allow negative index logic if needed, but for active state clamping:
+            const safeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
 
-            updateMediaState(activeIdx);
+            updateMediaState(safeIdx);
 
             cards.forEach((card, i) => {
                 const delta = i - scrollProgress;
@@ -145,42 +146,27 @@
                 let isOffscreen = false;
 
                 if (delta > 0) {
-                    // --- FUTURE (Below) ---
-                    // Moves from Bottom -> Top
-                    // 100vh down when delta=1. 0 when delta=0.
-                    y = delta * cardStackHeight; 
+                    // --- FUTURE (Coming Up) ---
+                    // y should be positive (downwards)
+                    y = delta * stackHeight; 
                     
-                    // Simple tilt for entry
                     rotX = Math.max(-20, delta * -20);
-                    
-                    // Solid Opacity (User Request: "Card shown is on top")
+                    z = delta * -50;
                     opacity = 1.0; 
                     
                     // CULLING
-                    if (y > cardStackHeight * 1.5) isOffscreen = true;
+                    if (y > stackHeight * 1.5) isOffscreen = true;
 
                 } else {
-                    // --- PAST (Active/Above) ---
-                    // Stays Pinned at 0 (or slight parallax up)
-                    // Pushes back into Z
-                    // Fades Out
-                    
+                    // --- PAST (Within Stack) ---
                     const d = Math.abs(delta);
                     
-                    // Parallax: Move up 20% speed
-                    y = 0; // -d * (cardStackHeight * 0.1); 
-                    
-                    // Push back
-                    // Reference says -46px. Let's do roughly -100px per step
+                    y = 0; 
                     z = -d * 100;
-                    
-                    // Fade Out
-                    // "Slowly being reduced"
-                    // 1.0 -> 0.0
-                    opacity = Math.max(0, 1 - (d * 1.2)); // Fade slightly faster than scroll to prevent mess
+                    opacity = Math.max(0, 1 - (d * 1.2)); 
                 }
 
-                if (i === activeIdx) pointerEvents = 'auto';
+                if (i === safeIdx) pointerEvents = 'auto';
 
                 // Style Enforcement
                 card.style.position = 'absolute';
@@ -189,8 +175,7 @@
                 card.style.width = '100%';
                 card.style.height = '100%';
                 
-                // Z-Index hierarchy
-                // 0 is bottom, 1 is above it, 2 is above that.
+                // Z-Index: Higher index covers lower index
                 card.style.zIndex = 10 + i; 
                 
                 if (isOffscreen) {
@@ -203,7 +188,7 @@
                 card.style.opacity = opacity;
                 card.style.pointerEvents = pointerEvents;
                 card.style.willChange = 'transform, opacity';
-                card.style.transition = 'none';
+                card.style.transition = 'none'; // Absolutely kill transitions
             });
         } catch (e) {
             console.error(e);
