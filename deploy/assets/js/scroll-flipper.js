@@ -1,25 +1,21 @@
 /**
- * Scroll-Driven Card Stack v1.549 - DEBUG VERSION
- * - Adds console logs to debug position/stacking.
- * - Removes 'isOffscreen' optimization to ensure visibility.
- * - Enforces stackHeight fallback aggressively.
+ * Scroll-Driven Card Stack v1.550 - NUCLEAR CSS OVERRIDE
+ * - Overrides ALL Tailwind/CSS classes with !important inline styles.
+ * - Forces correct stacking (Cards 0..3).
+ * - Forces visibility and position.
+ * - Cleans conflicting classes on init.
  */
 
 (function() {
-    console.log('[DEBUG v1.549] Script Loaded.');
+    console.log('[ScrollFlipper v1.550] Loading Nuclear Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
     let attempts = 0;
     const MAX_ATTEMPTS = 30;
 
-    // --- DEBUG ---
-    let frameMod = 0;
-    // -------------
-
     const init = () => {
         try {
-            console.log('[DEBUG v1.549] init() called');
             track = document.querySelector('[data-scroll-track-container]');
             stickyContainer = document.querySelector('[data-sticky-cards]');
             cards = Array.from(document.querySelectorAll('[data-tab-card]'));
@@ -28,23 +24,42 @@
             if (!track || !stickyContainer || !cards.length) {
                 if (attempts < MAX_ATTEMPTS) {
                     attempts++;
-                    console.warn(`[DEBUG] Attempt ${attempts}: Elements not found. Retrying...`);
                     setTimeout(init, 100);
                     return;
                 }
-                console.error('[DEBUG] FAILED to find elements after 30 attempts.');
+                console.warn('[ScrollFlipper] Failed to find elements.');
                 return;
             }
 
-            // Setup Parent for height safety
+            // --- CSS CLEANUP & PARENT SETUP ---
             cardParent = cards[0].parentElement;
             if (cardParent) {
-                cardParent.style.position = 'relative'; 
-                cardParent.style.minHeight = '800px'; 
-                console.log('[DEBUG] Parent Height enforced to min 800px');
+                cardParent.style.setProperty('position', 'relative', 'important');
+                cardParent.style.setProperty('min-height', '800px', 'important');
+                // Ensure no flex/grid weirdness on parent
+                cardParent.style.setProperty('display', 'block', 'important'); 
             }
 
-            console.log(`[DEBUG] Ready. Found ${cards.length} cards. Track found.`);
+            cards.forEach(c => {
+                // Remove conflicting Tailwind logic classes if possible
+                c.classList.remove('inactive-prev', 'inactive-next', 'md:opacity-0');
+                
+                // FORCE RESET
+                c.style.cssText = `
+                    position: absolute !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    margin: 0 !important;
+                    transform-origin: center !important;
+                    will-change: transform !important;
+                    transition: none !important;
+                `;
+            });
+            // ----------------------------------
+
+            console.log(`[ScrollFlipper] Ready. ${cards.length} cards. Forced Styles Applied.`);
 
             // Click Nav
             triggers.forEach((btn, index) => {
@@ -82,16 +97,24 @@
         if (currentActiveIndex === index) return;
         currentActiveIndex = index;
 
-        // Visual Active Class
         triggers.forEach((t, i) => {
-            if (i === index) t.classList.add('active'); 
-            else t.classList.remove('active');
+            if (i === index) {
+                t.dataset.selected = "true";
+                t.setAttribute('aria-selected', 'true');
+                t.classList.add('active'); 
+            } else {
+                delete t.dataset.selected;
+                t.setAttribute('aria-selected', 'false');
+                t.classList.remove('active');
+            }
         });
 
         cards.forEach((c, i) => {
             const container = c.querySelector('[data-smil-container]');
             const v = c.querySelector('video');
+            
             if (i === index) {
+                // Keep .active for internal animations
                 c.classList.add('active');
                 if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, true);
                 if (v) v.play().catch(()=>{});
@@ -113,27 +136,19 @@
         if (!track || !cards.length) return;
 
         try {
-            frameMod++;
             const viewportHeight = window.innerHeight || 800;
             const PIXELS_PER_CARD = viewportHeight * 0.75;
             const TRIGGER_OFFSET_FACTOR = 0.25;
             
-            // Log dimensions every 120 frames (~2 sec)
-            const shouldLog = (frameMod % 120 === 0);
-
-            // Determine Stack Height
+            // Stack Height Calculation
             let stackHeight = 800; 
             if (cardParent && cardParent.offsetHeight > 100) {
                 stackHeight = cardParent.offsetHeight;
             } else {
-                 // Aggressive fallback
-                 stackHeight = viewportHeight;
+                stackHeight = viewportHeight; // Fallback
             }
 
             const rect = track.getBoundingClientRect();
-            // rect.top is distance from viewport top to track top.
-            // As we scroll down, rect.top becomes negative.
-            // startOffset grows positive.
             const startOffset = -rect.top + (viewportHeight * TRIGGER_OFFSET_FACTOR);
             let scrollProgress = startOffset / PIXELS_PER_CARD;
 
@@ -142,50 +157,37 @@
 
             updateMediaState(safeIdx);
 
-            if (shouldLog) {
-                console.log(`[DEBUG] ScrollProg: ${scrollProgress.toFixed(2)}, Active: ${safeIdx}, StackH: ${stackHeight}, TrackTop: ${rect.top.toFixed(0)}`);
-            }
-
             cards.forEach((card, i) => {
                 const delta = i - scrollProgress;
                 
                 let y = 0;
                 
-                // Z-Index: Card 1 (index 0) = 10. Card 2 (index 1) = 11.
-                // Higher index covers lower.
-                card.style.zIndex = 10 + i; 
+                // Z-INDEX: Card 0 = 10, Card 1 = 11, Card 3 = 13.
+                // Higher index MUST cover lower index.
+                const zIndex = 10 + i;
 
                 if (delta > 0) {
-                    // FUTURE: Below viewport
+                    // FUTURE (Below):
                     y = delta * stackHeight;
                 } else {
-                    // PAST: Slide up slowly
+                    // PAST (Top):
                     y = delta * 50; 
                 }
 
-                // Force Styles
-                card.style.position = 'absolute';
-                card.style.top = '0';
-                card.style.left = '0';
-                card.style.width = '100%';
-                card.style.height = '100%';
-                card.style.willChange = 'transform';
-                card.style.transition = 'none';
+                // NUCLEAR APPLICATION
+                // We use setProperty with 'important' to guarantee override
+                card.style.setProperty('z-index', zIndex.toString(), 'important');
+                card.style.setProperty('transform', `translate3d(0, ${y}px, 0)`, 'important');
+                card.style.setProperty('opacity', '1', 'important'); 
+                card.style.setProperty('visibility', 'visible', 'important');
+                card.style.setProperty('display', 'block', 'important'); // Ensure not hidden
 
-                // Apply without optimizations to verify visibility
-                card.style.visibility = 'visible';
-                card.style.opacity = '1';
-                card.style.transform = `translate3d(0, ${y}px, 0)`;
-
-                if (shouldLog && i < 3) {
-                     console.log(`   Card ${i}: delta=${delta.toFixed(2)} y=${y.toFixed(0)} z=${card.style.zIndex}`);
-                }
-
-                if (i === safeIdx) card.style.pointerEvents = 'auto';
-                else card.style.pointerEvents = 'none';
+                // Event Pointer Safety
+                if (i === safeIdx) card.style.setProperty('pointer-events', 'auto', 'important');
+                else card.style.setProperty('pointer-events', 'none', 'important');
             });
         } catch (e) {
-            console.error('[ScrollFlipper] Error in render:', e);
+            console.error(e);
             isRunning = false; 
         }
     };
