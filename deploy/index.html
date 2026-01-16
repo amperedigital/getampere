@@ -1327,7 +1327,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             }
           });
         }, observerOptions);
-        document.querySelectorAll('.fade-up-element, .mobile-reveal, [data-tab-card data-observer]').forEach(el => observer.observe(el));
+        document.querySelectorAll('.fade-up-element, .mobile-reveal, [data-tab-card]').forEach(el => observer.observe(el));
 
         // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
         document.body.addEventListener('click', function(e) {
