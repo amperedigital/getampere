@@ -248,9 +248,11 @@
 
             // SMART UPDATES: Content Opacity (Optimization: Hide content of covered cards)
             // If delta <= -0.9 (card is mostly covered by the next card), hide content.
-            // Reduced threshold from -1.0 to -0.9 to ensure it triggers comfortably.
+            // EXCEPTION: The last card should never have its content culled, as nothing covers it.
             if (cache.content) {
-                const contentOpacity = (delta <= -0.9) ? '0' : '1';
+                const isLastCard = (i === cardCache.length - 1);
+                const contentOpacity = (delta <= -0.9 && !isLastCard) ? '0' : '1';
+                
                 if (cache.lastContentOpacity !== contentOpacity) {
                     cache.content.style.setProperty('opacity', contentOpacity, 'important');
                     cache.content.style.setProperty('transition', 'opacity 0.3s ease', 'important'); 
