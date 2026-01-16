@@ -1,12 +1,11 @@
 /**
- * Scroll-Driven Card Stack v1.555 - Fix Track Height & Visibility
- * - FIX STICKY: Dynamic calculation of track height to match scroll logic.
- * - FIX VISIBILITY: Force "waiting" cards to be fully off-screen (viewport height).
- * - REINFORCE: Sticky/Overflow constraints.
+ * Scroll-Driven Card Stack v1.556 - Delayed Activation Logic
+ * - FIX ACTIVATION TIMING: Delays "Active" state until card is nearly fully settled.
+ * - PREVIOUS: Stickiness & Visibility fixes retained.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.555] Loading Height Sync Mode...');
+    console.log('[ScrollFlipper v1.556] Loading Sync-Timing Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -30,18 +29,13 @@
                 return;
             }
 
-            // --- TRACK HEIGHT SYNC (CRITICAL FIX) ---
-            // User reported stickiness ends too early ("scrolling away").
-            // We must force the track height to match the JS animation timeline.
+            // --- TRACK HEIGHT SYNC ---
             const viewportHeight = window.innerHeight;
-            const PIXELS_PER_CARD = viewportHeight * 2.0; // Same as render logic
-            // timeline + 100vh buffer for the final resting state
+            const PIXELS_PER_CARD = viewportHeight * 2.0; 
             const requiredTrackHeight = (cards.length * PIXELS_PER_CARD) + viewportHeight;
             
             track.style.setProperty('height', `${requiredTrackHeight}px`, 'important');
             track.style.setProperty('position', 'relative', 'important');
-
-            console.log(`[ScrollFlipper] Synced Track Height: ${requiredTrackHeight}px`);
 
             // --- STICKY CONTAINER ENFORCEMENT ---
             if (stickyContainer) {
@@ -49,7 +43,7 @@
                 stickyContainer.style.setProperty('top', '100px', 'important');
                 stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
                 stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
-                stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); // Explicit height
+                stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); 
                 stickyContainer.style.setProperty('z-index', '50', 'important');
             }
 
@@ -86,12 +80,11 @@
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (!track) return;
-                    // Recalculate context fresh on click
                     const vh = window.innerHeight;
                     const ppc = vh * 2.0; 
                     const rect = track.getBoundingClientRect();
                     const absoluteTrackTop = rect.top + window.scrollY;
-                    const target = absoluteTrackTop + (index * ppc); // Simple mapping
+                    const target = absoluteTrackTop + (index * ppc); 
 
                     if (window.lenis) window.lenis.scrollTo(target, { duration: 1.5 });
                     else window.scrollTo({ top: target, behavior: 'smooth' });
@@ -99,14 +92,12 @@
             });
 
             if (!isRunning) {
-                // Resize listener to keep height synced
                 window.addEventListener('resize', () => {
                    const vh = window.innerHeight;
                    const ppc = vh * 2.0;
                    const h = (cards.length * ppc) + vh;
                    if (track) track.style.setProperty('height', `${h}px`, 'important');
                 });
-
                 isRunning = true;
                 tick();
             }
@@ -162,25 +153,17 @@
         try {
             const viewportHeight = window.innerHeight || 800;
             const PIXELS_PER_CARD = viewportHeight * 2.0;
-            const TRIGGER_OFFSET_FACTOR = 0.0; // 0 to align exactly with track top
-            
             const rect = track.getBoundingClientRect();
-            // How far have we scrolled into the track?
-            // rect.top is positive when track starts below viewport top
-            // rect.top is 0 when track starts at viewport top
-            // we want 0 progress when rect.top = 0 (or some offset)
-            
-            // Adjust start point: slightly delayed so header clears? 
-            // Stickiness starts at top:100px. 
-            // So we want progress 0 when track.top is around 100px or 0.
-            
             const dist = -rect.top; 
-            // If track is at top of screen, dist is 0. 
-            // If track has scrolled up 1000px, dist is 1000.
             
             let scrollProgress = dist / PIXELS_PER_CARD;
 
-            let activeIdx = Math.floor(scrollProgress + 0.5); // Round to nearest for activation
+            // --- TIMING FIX ---
+            // Previous: Math.floor(scrollProgress + 0.5) -> Activated at 50% scroll (way too early)
+            // Current: Math.floor(scrollProgress + 0.1) -> Activates at 90% scroll.
+            // This ensures the card is nearly physically "on top" before the media triggers.
+            let activeIdx = Math.floor(scrollProgress + 0.1); 
+            
             const safeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
 
             updateMediaState(safeIdx);
@@ -200,19 +183,12 @@
                     const ENTRY_THRESHOLD = 0.6; 
                     
                     if (delta > ENTRY_THRESHOLD) {
-                        // WAITING PHASE
-                        // Force OFFSCREEN. 
-                        // Using viewportHeight + 100 ensures it is physically below the fold
-                        // regardless of parent height (unless parent is huge and visible).
-                        // Since overflow:hidden is on parent, pushing it > parent height is simplest.
-                        y = 2000; // Nuclear option: 2000px down.
+                        y = 2000; // Nuclear safe zone
                     } else {
                         // TRANSITION PHASE [0.6 -> 0]
-                        // Map delta 0.6->0 to ratio 1->0
                         const ratio = delta / ENTRY_THRESHOLD;
-                        y = ratio * 650; // Slide from bottom of stage (650) to top (0)
+                        y = ratio * 650; 
                         
-                        // Angles
                         const angleRatio = Math.min(1, ratio);
                         rotX = angleRatio * -25;
                         rotZ = angleRatio * -2; 
@@ -235,9 +211,8 @@
                     'important'
                 );
                 
-                // Extra safety for the "visible but shouldn't be" case
                 if (delta > 0.6) {
-                     card.style.setProperty('opacity', '0', 'important'); // Hide completely while waiting
+                     card.style.setProperty('opacity', '0', 'important');
                 } else {
                      card.style.setProperty('opacity', '1', 'important');
                 }
