@@ -1,11 +1,11 @@
 /**
- * Scroll-Driven Card Stack v1.556 - Delayed Activation Logic
- * - FIX ACTIVATION TIMING: Delays "Active" state until card is nearly fully settled.
- * - PREVIOUS: Stickiness & Visibility fixes retained.
+ * Scroll-Driven Card Stack v1.557 - Fix Initial Activation
+ * - ENHANCEMENT: Ensures SMIL/Media triggers retry until global.js loads.
+ * - PREVIOUS: Timing Fix (90%), Stickiness, Visibility retained.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.556] Loading Sync-Timing Mode...');
+    console.log('[ScrollFlipper v1.557] Loading Retry-Enabled Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -110,8 +110,17 @@
     let currentActiveIndex = -1;
 
     const updateMediaState = (index) => {
-        if (currentActiveIndex === index) return;
-        currentActiveIndex = index;
+        // RETRY LOGIC: If global.js hasn't loaded 'triggerMedia' yet, 
+        // we must NOT lock in the state (currentActiveIndex), 
+        // so that we keep retrying every frame until it is available.
+        const mediaReady = typeof window.triggerMedia === 'function';
+
+        if (currentActiveIndex === index && mediaReady) return;
+        
+        // Only lock state if we are actually capable of triggering media
+        if (mediaReady) {
+            currentActiveIndex = index;
+        }
 
         triggers.forEach((t, i) => {
             if (i === index) {
@@ -131,11 +140,11 @@
             
             if (i === index) {
                 c.classList.add('active');
-                if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, true);
+                if (mediaReady && container) window.triggerMedia(container, true);
                 if (v) v.play().catch(()=>{});
             } else {
                 c.classList.remove('active');
-                if (typeof window.triggerMedia === 'function' && container) window.triggerMedia(container, false);
+                if (mediaReady && container) window.triggerMedia(container, false);
                 if (v) v.pause();
             }
         });
@@ -158,12 +167,7 @@
             
             let scrollProgress = dist / PIXELS_PER_CARD;
 
-            // --- TIMING FIX ---
-            // Previous: Math.floor(scrollProgress + 0.5) -> Activated at 50% scroll (way too early)
-            // Current: Math.floor(scrollProgress + 0.1) -> Activates at 90% scroll.
-            // This ensures the card is nearly physically "on top" before the media triggers.
             let activeIdx = Math.floor(scrollProgress + 0.1); 
-            
             const safeIdx = Math.max(0, Math.min(activeIdx, cards.length - 1));
 
             updateMediaState(safeIdx);
