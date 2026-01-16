@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (i === index) {
                 // Active Card -> Trigger Media Play
+                c.classList.add('active');
                 if (window.triggerMedia && container) {
                     window.triggerMedia(container, true);
                 }
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (v) v.play().catch(()=>{});
             } else {
                 // Inactive -> Pause/Reset
+                c.classList.remove('active');
                 if (window.triggerMedia && container) {
                     window.triggerMedia(container, false);
                 }
