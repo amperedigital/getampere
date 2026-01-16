@@ -335,8 +335,10 @@ document.addEventListener('DOMContentLoaded', () => {
                          e.preventDefault();
                          if (window.lenis) {
                              // Use Lenis for smooth scroll if available. 
-                             // Lenis.scrollTo identifies targets by selector string or element.
-                             window.lenis.scrollTo(target, { offset: 0 }); 
+                             // Respect CSS scroll-margin-top for offset
+                             const style = window.getComputedStyle(target);
+                             const scrollMt = parseFloat(style.scrollMarginTop) || 0;
+                             window.lenis.scrollTo(target, { offset: -scrollMt }); 
                          } else {
                              // Fallback for mobile/no-lenis
                              target.scrollIntoView({ behavior: 'smooth' });
