@@ -198,9 +198,25 @@ export class Ampere3DKey {
         requestAnimationFrame(this.animate.bind(this));
         
         const time = Date.now() * 0.001;
-        // Idle Float
+
         if (this.mesh) {
-            this.mesh.position.y = Math.sin(time) * 0.05;
+             // Enhanced Floating Effect
+             // 1. Vertical Bobbing (Deeper and slightly faster mechanism)
+             this.mesh.position.y = Math.sin(time * 1.5) * 0.15;
+
+             // 2. Rotational "Drift" (Adds fluid feeling)
+             // We apply (Base Rotation from Progress) + (Time-based Wobble)
+             // Note: Rotation X is handled purely by scroll in setProgress
+             
+             // Y Axis Drift (Side to side look)
+             const baseY = this.progress * -0.4;
+             const wobbleY = Math.cos(time * 0.7) * 0.05;
+             this.mesh.rotation.y = baseY + wobbleY;
+
+             // Z Axis Drift (Subtle tilt)
+             const baseZ = this.progress * -0.1;
+             const wobbleZ = Math.sin(time * 1.1) * 0.015;
+             this.mesh.rotation.z = baseZ + wobbleZ;
         }
 
         this.renderer.render(this.scene, this.camera);
