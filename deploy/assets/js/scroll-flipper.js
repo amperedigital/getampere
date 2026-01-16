@@ -1,14 +1,16 @@
 /**
- * Scroll-Driven Card Stack (Direct 1:1 Control) v1.544
- * - Features: Sticky Scroll, Fade-Out on Exit, Solid Entry.
- * - Fixes: "Top Card" Flash (Culling), Z-Index layering.
+ * Scroll-Driven Card Stack (Direct 1:1 Control) v1.545
+ * - Fixes: Layout context (Tab Overlap). Corrects stacking logic.
+ * - Logic: "Deck" Style.
+ *   - Active/Past Card: Pins at Top, Pushes back Z, Fades Out.
+ *   - Future Card: Slides UP from bottom, Solid Opacity.
  */
 
 (function() {
-    console.log('[ScrollFlipper] Loading v1.544');
+    console.log('[ScrollFlipper] Loading v1.545');
 
     let isRunning = false;
-    let track, stickyContainer, cards, triggers;
+    let track, stickyContainer, cards, triggers, cardParent;
 
     let attempts = 0;
     const MAX_ATTEMPTS = 20;
@@ -30,6 +32,18 @@
                 return;
             }
 
+            // Identify Parent to confine absolute positioning
+            cardParent = cards[0].parentElement;
+            if (cardParent) {
+                // Enforce relative context so cards stack INSIDE this box, not the page
+                cardParent.style.position = 'relative';
+                // Remove grid/flex that might fight with absolute
+                // (It's okay if it stays grid, absolute children ignore it mostly)
+                
+                // Ensure parent has height
+                // The HTML usually has h-[650px]
+            }
+
             console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
 
             // Click Nav
@@ -48,7 +62,7 @@
                 });
             });
 
-            // Force container context
+            // Force sticky context
             if (stickyContainer) stickyContainer.style.position = 'sticky'; 
 
             if (!isRunning) {
@@ -110,6 +124,8 @@
             const viewportHeight = window.innerHeight || 800;
             const PIXELS_PER_CARD = viewportHeight * 0.75;
             const TRIGGER_OFFSET_FACTOR = 0.25;
+            // Visual height of the container to slide past
+             const cardStackHeight = cardParent ? cardParent.offsetHeight : viewportHeight;
 
             const rect = track.getBoundingClientRect();
             
@@ -129,45 +145,52 @@
                 let isOffscreen = false;
 
                 if (delta > 0) {
-                    // --- FUTURE (Coming Up) ---
-                    // Position: Below viewport, sliding up.
-                    // Opacity: Solid (1.0) so it covers the card behind it.
+                    // --- FUTURE (Below) ---
+                    // Moves from Bottom -> Top
+                    // 100vh down when delta=1. 0 when delta=0.
+                    y = delta * cardStackHeight; 
                     
-                    y = delta * viewportHeight; 
+                    // Simple tilt for entry
+                    rotX = Math.max(-20, delta * -20);
                     
-                    // Tilt back slightly as it enters
-                    rotX = Math.max(-25, delta * -15);
-                    z = delta * -50;
+                    // Solid Opacity (User Request: "Card shown is on top")
                     opacity = 1.0; 
                     
-                    // CULLING: Hide if significantly offscreen to prevent "Stacking on top" bugs on load
-                    if (y > viewportHeight * 1.5) isOffscreen = true;
+                    // CULLING
+                    if (y > cardStackHeight * 1.5) isOffscreen = true;
 
                 } else {
-                    // --- PAST (Being Covered) ---
-                    // Position: Stays roughly put, moves up slightly (parallax).
-                    // Opacity: FADES OUT as it gets covered.
+                    // --- PAST (Active/Above) ---
+                    // Stays Pinned at 0 (or slight parallax up)
+                    // Pushes back into Z
+                    // Fades Out
                     
                     const d = Math.abs(delta);
                     
-                    // Move up slightly slower than the incoming card (Parallax)
-                    y = -d * 100; 
+                    // Parallax: Move up 20% speed
+                    y = 0; // -d * (cardStackHeight * 0.1); 
+                    
+                    // Push back
+                    // Reference says -46px. Let's do roughly -100px per step
                     z = -d * 100;
                     
-                    // Fade Out: 1.0 -> 0.0 as delta goes 0 -> 1
-                    opacity = Math.max(0, 1 - d);
+                    // Fade Out
+                    // "Slowly being reduced"
+                    // 1.0 -> 0.0
+                    opacity = Math.max(0, 1 - (d * 1.2)); // Fade slightly faster than scroll to prevent mess
                 }
 
                 if (i === activeIdx) pointerEvents = 'auto';
 
-                // Render
+                // Style Enforcement
                 card.style.position = 'absolute';
                 card.style.top = '0';
                 card.style.left = '0';
                 card.style.width = '100%';
                 card.style.height = '100%';
                 
-                // Z-Index: Higher index is ALWAYS on top.
+                // Z-Index hierarchy
+                // 0 is bottom, 1 is above it, 2 is above that.
                 card.style.zIndex = 10 + i; 
                 
                 if (isOffscreen) {
