@@ -247,13 +247,13 @@
             }
 
             // SMART UPDATES: Content Opacity (Optimization: Hide content of covered cards)
-            // If delta < -0.5 (card is well behind in the stack), hide its content.
-            // This reduces overdraw/compositing cost significantly while keeping the card "spine" visible.
+            // If delta <= -1.0 (card is ONE full step behind, i.e. fully covered by the next card), hide content.
+            // At delta -1.0, the next card is at y=0, covering this card (which is at y=-50).
             if (cache.content) {
-                const contentOpacity = (delta < -0.5) ? '0' : '1';
+                const contentOpacity = (delta <= -1.0) ? '0' : '1';
                 if (cache.lastContentOpacity !== contentOpacity) {
                     cache.content.style.setProperty('opacity', contentOpacity, 'important');
-                    cache.content.style.setProperty('transition', 'opacity 0.3s ease', 'important'); // Smooth fade
+                    cache.content.style.setProperty('transition', 'opacity 0.3s ease', 'important'); 
                     cache.lastContentOpacity = contentOpacity;
                 }
             }
