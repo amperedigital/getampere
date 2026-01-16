@@ -69,6 +69,22 @@
         left: auto !important;
         transform: none !important;
       }
+      .mobile-force-tight-spacing {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important; 
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+      }
+      .mobile-force-no-margin {
+        margin: 0 !important;
+      }
+      .mobile-card-gap {
+        margin-bottom: 3rem !important;
+      }
+      /* Remove gap from last card */
+      .mobile-card-gap:last-child {
+        margin-bottom: 0 !important;
+      }
     }
 
     .font-serif-italic {
@@ -1460,10 +1476,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </div>
 
     <!-- Cards Container -->
-    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-0 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-md:px-4">
-        <div class="md:grid md:grid-cols-1 md:grid-rows-1 w-full h-[650px] max-md:h-auto [perspective:2000px] group/cards max-md:[perspective:none] max-md:block max-md:pb-12" ontouchstart="">
+    <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 mt-16 max-md:mt-0 lg:mt-24 pb-8 flex-1 min-h-[400px] md:min-h-0 max-md:px-4 mobile-force-no-margin">
+        <div class="md:grid md:grid-cols-1 md:grid-rows-1 w-full h-[650px] max-md:h-auto [perspective:2000px] group/cards max-md:[perspective:none] max-md:block max-md:pb-12 mobile-force-auto-height mobile-force-block" ontouchstart="">
         <!-- Card 1 -->
-        <div class="col-start-1 row-start-1 w-full h-full origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] md:pointer-events-none md:[&.active]:opacity-100 md:[&.active]:pointer-events-auto md:[&.active]:z-20 md:[&.active]:cursor-pointer md:[&.inactive-prev]:opacity-100 md:[&.inactive-prev]:pointer-events-none md:[&.inactive-prev]:z-10 md:[&.inactive-next]:opacity-0 md:[&.inactive-next]:pointer-events-none md:[&.inactive-next]:z-0 max-md:opacity-100 max-md:pointer-events-auto max-md:relative max-md:h-auto max-md:shrink-0 max-md:z-10 max-md:mb-8 group/card" data-tab-card data-observer>
+        <div class="col-start-1 row-start-1 w-full h-full origin-center active [backface-visibility:hidden] [transform-style:preserve-3d] md:pointer-events-none md:[&.active]:opacity-100 md:[&.active]:pointer-events-auto md:[&.active]:z-20 md:[&.active]:cursor-pointer md:[&.inactive-prev]:opacity-100 md:[&.inactive-prev]:pointer-events-none md:[&.inactive-prev]:z-10 md:[&.inactive-next]:opacity-0 md:[&.inactive-next]:pointer-events-none md:[&.inactive-next]:z-0 max-md:opacity-100 max-md:pointer-events-auto max-md:relative max-md:h-auto max-md:shrink-0 max-md:z-10 max-md:mb-8 group/card mobile-force-relative mobile-force-auto-height mobile-force-block mobile-card-gap" data-tab-card data-observer>
           <div class="w-full h-full relative group/smil flex flex-col md:block" data-smil-container data-smil-behavior="force-display">
             <!-- Background Layer -->
             <div class="absolute inset-0 bg-[#0a0b14] rounded-3xl border border-white/10 overflow-hidden">
