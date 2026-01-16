@@ -1,12 +1,12 @@
 /**
- * Scroll-Driven Card Stack v1.552 - Delayed Entry & Extended Scroll
- * - DELAYED ENTRY: Next card stays fully offscreen for 40% of the scroll section.
- * - EXTENDED SCROLL: Increased PIXELS_PER_CARD to allow for reading time before transition.
- * - PHYSICS: 'Flip' animation synced to the delayed entry.
+ * Scroll-Driven Card Stack v1.553 - "Down-Left" Angle Injection
+ * - Adds RotateZ and RotateY to the incoming card transition.
+ * - Creates a slightly skewed, imperfect "hand-dealt" feel.
+ * - Retains delayed entry and extended scroll timing.
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.552] Loading Delayed Entry Mode...');
+    console.log('[ScrollFlipper v1.553] Loading Angled Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -56,25 +56,21 @@
                     transform-style: preserve-3d !important;
                     will-change: transform !important;
                     transition: none !important;
-                    box-shadow: 0 -10px 40px rgba(0,0,0,0.5) !important; /* Shadow UPWARDS to cast on prevented card */
+                    box-shadow: 0 -10px 40px rgba(0,0,0,0.5) !important;
                     background-color: #000 !important; 
                 `;
             });
-            // ----------------------------------
 
             console.log(`[ScrollFlipper] Ready. ${cards.length} cards.`);
 
-            // Click Nav (Modified for new height)
+            // Click Nav
             triggers.forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (!track) return;
                     const viewportHeight = window.innerHeight;
-                    
-                    // MUST MATCH RENDER LOGIC
                     const PIXELS_PER_CARD = viewportHeight * 2.0; 
-                    
-                    const TRIGGER_OFFSET_FACTOR = 0.1; // Start a bit earlier
+                    const TRIGGER_OFFSET_FACTOR = 0.1;
                     const rect = track.getBoundingClientRect();
                     const scrollTop = window.scrollY || document.documentElement.scrollTop;
                     const currentTop = rect.top + scrollTop;
@@ -142,11 +138,7 @@
 
         try {
             const viewportHeight = window.innerHeight || 800;
-            
-            // --- PACING CONFIG ---
-            const PIXELS_PER_CARD = viewportHeight * 2.0; // Slower scroll (more reading time)
-            
-            // Start detection slightly earlier so index doesn't flip too late
+            const PIXELS_PER_CARD = viewportHeight * 2.0;
             const TRIGGER_OFFSET_FACTOR = 0.1; 
             
             let stackHeight = 800; 
@@ -170,38 +162,40 @@
                 
                 let y = 0;
                 let rotX = 0;
+                let rotY = 0;
+                let rotZ = 0;
                 let scale = 1;
                 const zIndex = 10 + i;
 
                 if (delta > 0) {
                     // FUTURE (Coming Up)
-                    
-                    // --- DELAYED ENTRY LOGIC ---
-                    // "The card on top needs to be flat for a bit longer"
-                    // We map delta [1.0 -> 0.0] to Movement [1.0 -> 0.0]
-                    // But we want it to stay at 1.0 (Offscreen) until delta hits threshold.
-                    
-                    const ENTRY_THRESHOLD = 0.6; // Waiting until 40% of scroll is passed
-                    
-                    // If delta is 0.8, ratio is 0.8/0.6 = 1.33 -> Clamped to 1.
-                    // If delta is 0.3, ratio is 0.3/0.6 = 0.5.
+                    const ENTRY_THRESHOLD = 0.6; 
                     const ratio = Math.min(1, delta / ENTRY_THRESHOLD);
                     
                     y = ratio * stackHeight;
-                    rotX = ratio * -25; // Tilt back while waiting/moving
+                    
+                    // ANGLED ENTRY
+                    // rotateX(-25): Title back
+                    // rotateZ(-2): Tilt left side down slightly (Down-Left)
+                    // rotateY(2): Tilt right side away slightly
+                    rotX = ratio * -25;
+                    rotZ = ratio * -2; 
+                    rotY = ratio * 2;
 
                 } else {
                     // PAST (Underneath)
                     y = delta * 50; 
                     scale = Math.max(0.9, 1 - (Math.abs(delta) * 0.05));
                     rotX = 0;
+                    rotZ = 0;
+                    rotY = 0;
                 }
 
                 // Apply Styles
                 card.style.setProperty('z-index', zIndex.toString(), 'important');
                 card.style.setProperty(
                     'transform', 
-                    `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) scale(${scale})`, 
+                    `translate3d(0, ${y}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`, 
                     'important'
                 );
                 card.style.setProperty('opacity', '1', 'important'); 
