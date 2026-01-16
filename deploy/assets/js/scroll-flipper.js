@@ -1,5 +1,6 @@
 /**
- * Scroll-Driven Card Stack v1.560 - Performance Optimization
+ * Scroll-Driven Card Stack v1.565 - Performance Optimization
+ * - OPTIMIZATION: Content Culling (Opacity 0 for covered card content).
  * - OPTIMIZATION: Mobile Guard (Disabled on <768px).
  * - OPTIMIZATION: Transform dirty checking (0 DOM writes when idle).
  * - OPTIMIZATION: "Dirty checking" to only write DOM when values change.
@@ -7,7 +8,7 @@
  */
 
 (function() {
-    console.log('[ScrollFlipper v1.560] Loading High-Performance Mode...');
+    console.log('[ScrollFlipper v1.565] Loading High-Performance Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -55,10 +56,15 @@
                 // Return cache object
                 return {
                     el: card,
+                    // Cache the inner content wrapper (direct child with z-10 usually, or the second child)
+                    // Based on HTML: card > outer-div > [bg, content-div]
+                    // We want the content div.
+                    content: card.querySelector('.relative.w-full.h-full.flex.z-10'), 
                     smil: card.querySelector('[data-smil-container]'),
                     video: card.querySelector('video'),
                     // State tracking to prevent redundant writes
                     lastOpacity: -1,
+                    lastContentOpacity: -1, // New optimization state
                     lastEvents: '',
                     lastVisibility: '',
                     lastTransform: '' // Optimization: Track transform string
@@ -233,11 +239,23 @@
                 cache.lastTransform = transformString;
             }
             
-            // SMART UPDATES: Opacity
+            // SMART UPDATES: Opacity (Whole Card - Exit)
             const targetOpacity = (delta > 0.6) ? '0' : '1';
             if (cache.lastOpacity !== targetOpacity) {
                 cache.el.style.setProperty('opacity', targetOpacity, 'important');
                 cache.lastOpacity = targetOpacity;
+            }
+
+            // SMART UPDATES: Content Opacity (Optimization: Hide content of covered cards)
+            // If delta < -0.5 (card is well behind in the stack), hide its content.
+            // This reduces overdraw/compositing cost significantly while keeping the card "spine" visible.
+            if (cache.content) {
+                const contentOpacity = (delta < -0.5) ? '0' : '1';
+                if (cache.lastContentOpacity !== contentOpacity) {
+                    cache.content.style.setProperty('opacity', contentOpacity, 'important');
+                    cache.content.style.setProperty('transition', 'opacity 0.3s ease', 'important'); // Smooth fade
+                    cache.lastContentOpacity = contentOpacity;
+                }
             }
 
             // SMART UPDATES: Pointer Events
