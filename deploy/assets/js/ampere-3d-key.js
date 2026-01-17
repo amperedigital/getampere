@@ -15,6 +15,10 @@ export class Ampere3DKey {
         this.targetMouseX = 0;
         this.targetMouseY = 0;
         
+        // Fidget Interaction State
+        this.targetPress = 0;
+        this.currentPress = 0;
+
         // Init
         this.initScene();
         this.initGeometry();
@@ -25,10 +29,19 @@ export class Ampere3DKey {
         this.resizeHandler = this.onResize.bind(this);
         this.mouseMoveHandler = this.onMouseMove.bind(this);
         this.mouseLeaveHandler = this.onMouseLeave.bind(this);
+        this.mouseDownHandler = this.onMouseDown.bind(this);
+        this.mouseUpHandler = this.onMouseUp.bind(this);
 
         window.addEventListener('resize', this.resizeHandler);
+        
+        // Touch/Mouse events
         this.container.addEventListener('mousemove', this.mouseMoveHandler);
         this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
+        this.container.addEventListener('mousedown', this.mouseDownHandler);
+        this.container.addEventListener('mouseup', this.mouseUpHandler);
+        // Add minimal touch support for mobile taps
+        this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
+        this.container.addEventListener('touchend', this.mouseUpHandler, {passive: true});
     }
 
     onMouseMove(event) {
@@ -50,6 +63,18 @@ export class Ampere3DKey {
         // Reset to center when mouse leaves
         this.targetMouseX = 0;
         this.targetMouseY = 0;
+        this.targetPress = 0;
+        if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
+    }
+
+    onMouseDown() {
+        this.targetPress = 1;
+        if(this.renderer) this.renderer.domElement.style.cursor = 'grabbing';
+    }
+
+    onMouseUp() {
+        this.targetPress = 0;
+        if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
     }
 
     initScene() {
@@ -69,6 +94,7 @@ export class Ampere3DKey {
         // Visual fix: Hide canvas until texture loads to prevent white flicker
         this.renderer.domElement.style.opacity = '0';
         this.renderer.domElement.style.transition = 'opacity 0.5s ease-out';
+        this.renderer.domElement.style.cursor = 'grab'; // Indicate interaction
         
         this.container.appendChild(this.renderer.domElement);
     }
@@ -231,18 +257,26 @@ export class Ampere3DKey {
              this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
              this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
 
+             // Interpolate Press State (Springy)
+             this.currentPress += (this.targetPress - this.currentPress) * 0.15;
+
              // Enhanced Floating Effect
              // 1. Vertical Bobbing (Deeper and slightly faster mechanism)
              this.mesh.position.y = Math.sin(time * 1.5) * 0.15;
+             
+             // 2. Push Effect (Z-depth)
+             // Moves object away from camera when clicked (-3 units back)
+             this.mesh.position.z = this.currentPress * -3.0;
 
-             // 2. Rotational Logic
-             // Base (Scroll) + Wobble (Time) + Interaction (Mouse)
+             // 3. Rotational Logic
+             // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Tilt)
              const startX = -Math.PI / 2.1; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
-             this.mesh.rotation.x = baseX - (this.mouseY * 0.5);
+             // Add extra backward tilt when pushed
+             this.mesh.rotation.x = baseX - (this.mouseY * 0.5) - (this.currentPress * 0.5);
              
              // Y Axis (Turn)
              const baseY = this.progress * -0.4;
@@ -280,6 +314,10 @@ export class Ampere3DKey {
         if (this.container) {
             this.container.removeEventListener('mousemove', this.mouseMoveHandler);
             this.container.removeEventListener('mouseleave', this.mouseLeaveHandler);
+            this.container.removeEventListener('mousedown', this.mouseDownHandler);
+            this.container.removeEventListener('mouseup', this.mouseUpHandler);
+            this.container.removeEventListener('touchstart', this.mouseDownHandler);
+            this.container.removeEventListener('touchend', this.mouseUpHandler);
         }
 
         // Basic three.js cleanup
