@@ -1389,72 +1389,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     
     <div id="integrations-tabs" class="scroll-mt-24 max-md:scroll-mt-[6rem]"></div>
 
-    <script>
-      // Simple Intersection Observer for fade-in animations on this section
-      document.addEventListener('DOMContentLoaded', () => {
-        // Fade up animation
-        const observerOptions = {
-          root: null,
-          rootMargin: '0px',
-          threshold: 0.15
-        };
-        const observer = new IntersectionObserver((entries, obs) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              obs.unobserve(entry.target); // Trigger once
-            }
-          });
-        }, observerOptions);
-        document.querySelectorAll('.fade-up-element, .mobile-reveal, [data-tab-card]').forEach(el => observer.observe(el));
-
-        // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
-        document.body.addEventListener('click', function(e) {
-          const el = e.target.closest('[data-scrollto]');
-          if (el) {
-            const targetSel = el.getAttribute('data-scrollto');
-            if (targetSel) {
-              const target = document.querySelector(targetSel);
-              if (target) {
-                e.preventDefault();
-                if (window.lenis) {
-                  window.lenis.scrollTo(target, {
-                    offset: -96,
-                    duration: 1.2, 
-                    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                  });
-                } else {
-                  // Fallback: Custom smooth scroll with easing for mobile
-                  const targetY = target.getBoundingClientRect().top + window.pageYOffset - 96;
-                  const startY = window.pageYOffset;
-                  const distance = targetY - startY;
-                  const duration = 1000;
-                  let startTime = null;
-
-                  function animation(currentTime) {
-                    if (startTime === null) startTime = currentTime;
-                    const timeElapsed = currentTime - startTime;
-                    const progress = Math.min(timeElapsed / duration, 1);
-                    
-                    // Easing: easeOutQuart
-                    const ease = 1 - Math.pow(1 - progress, 4);
-                    
-                    window.scrollTo(0, startY + (distance * ease));
-                    
-                    if (timeElapsed < duration) {
-                      requestAnimationFrame(animation);
-                    }
-                  }
-                  requestAnimationFrame(animation);
-                }
-              }
-            }
-          }
-        });
-
-      });
-    </script>
-
     <!-- Sticky Scroll Track -->
     <div class="relative h-[250vh] lg:h-[400vh] mobile-force-auto-height" data-scroll-track-container>
       <!-- Sticky Container -->
@@ -3162,7 +3096,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.598/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.663/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>

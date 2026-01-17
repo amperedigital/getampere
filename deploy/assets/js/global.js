@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Consolidated Observer Logic
-    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer]');
+    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card]');
 
     // Define observer options
     const observerOptions = {
@@ -609,6 +609,50 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`[Global] Found ${animatedElements.length} observable elements.`);
         animatedElements.forEach(el => window.globalObserver.observe(el));
     }
+
+    // Global data-scrollto handler for smooth anchor scroll (Lenis or fallback)
+    document.body.addEventListener('click', function(e) {
+      const el = e.target.closest('[data-scrollto]');
+      if (el) {
+        const targetSel = el.getAttribute('data-scrollto');
+        if (targetSel) {
+          const target = document.querySelector(targetSel);
+          if (target) {
+            e.preventDefault();
+            if (window.lenis) {
+              window.lenis.scrollTo(target, {
+                offset: -96,
+                duration: 1.2, 
+                easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+              });
+            } else {
+              // Fallback: Custom smooth scroll with easing for mobile
+              const targetY = target.getBoundingClientRect().top + window.pageYOffset - 96;
+              const startY = window.pageYOffset;
+              const distance = targetY - startY;
+              const duration = 1000;
+              let startTime = null;
+
+              function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                
+                // Easing: easeOutQuart
+                const ease = 1 - Math.pow(1 - progress, 4);
+                
+                window.scrollTo(0, startY + (distance * ease));
+                
+                if (timeElapsed < duration) {
+                  requestAnimationFrame(animation);
+                }
+              }
+              requestAnimationFrame(animation);
+            }
+          }
+        }
+      }
+    });
 });
 
 /*
