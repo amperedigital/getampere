@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.682 Loaded');
+  console.log('[Ampere Global] v1.683 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -522,6 +522,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.triggerMedia = function(container, shouldPlay) {
         if (!container) return;
         
+        // Log media trigger events for performance monitoring
+        if (shouldPlay) {
+            console.log('[Media] Playing:', container);
+        } else {
+            console.log('[Media] Pausing:', container);
+        }
+
         const anims = container.querySelectorAll("animate, animateTransform, animateMotion");
         const behavior = container.dataset.smilBehavior;
         const motionElements = container.querySelectorAll("animateMotion");
