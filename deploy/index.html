@@ -2466,11 +2466,12 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             
             <script>
                 // Force check for Unicorn Studio in case it initialized before this element was ready
-                if (window.UnicornStudio) {
+                // Only init if the function actually exists (loaded). If not, the script loader onload will handle it.
+                if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') {
                     window.UnicornStudio.init();
                 } else {
                     window.addEventListener('load', () => {
-                         if (window.UnicornStudio) window.UnicornStudio.init();
+                         if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') window.UnicornStudio.init();
                     });
                 }
             </script>
@@ -3163,7 +3164,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.598/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.653/deploy/assets/js/hero-slider.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.654/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.632/deploy/assets/js/scroll-flipper.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.422/deploy/assets/js/carousel.js" defer></script>
