@@ -175,13 +175,15 @@
       const children = this.slider.children;
       let target = 0;
 
+      // Dynamic Alignment: Use the first slide's offset (which includes its left margin)
+      // to determine standard alignment offset. This ensures active slides align with the page content line.
+      const alignOffset = children[0] ? children[0].offsetLeft : 0;
+
       // Calculate target based on actual child position for precision
       if (nextIndex < children.length && children[nextIndex]) {
-        // Subtract 4px buffer to prevent border clipping.
-        // Also ensure we are calculating relative to the scroll container (logic below assumes offsetLeft relies on consistent parent context)
-        target = children[nextIndex].offsetLeft - 4;
+        target = children[nextIndex].offsetLeft - alignOffset;
       } else {
-        // Wrap around
+        // Wrap around logic
         target = 0;
       }
       
@@ -238,15 +240,15 @@
 
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
       const current = this.slider.scrollLeft;
+      const children = this.slider.children;
+      const alignOffset = children[0] ? children[0].offsetLeft : 0;
 
       // Find nearest logical index
       const bestIndex = Math.round(current / stepDistance);
-      const children = this.slider.children;
 
       let target = 0;
       if (children[bestIndex]) {
-         // Apply same 4px buffer
-         target = children[bestIndex].offsetLeft - 4;
+         target = children[bestIndex].offsetLeft - alignOffset;
       } else {
          target = bestIndex * stepDistance;
       }
