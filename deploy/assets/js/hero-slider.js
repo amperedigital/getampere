@@ -186,42 +186,38 @@
 
     runAuto() {
       if (this.state.pointerActive || this.state.isHover) {
-        // Retry later
         this.scheduleAuto(this.config.retryDelay);
         return;
       }
-      const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
-      const step = this.getStepDistance();
-      const current = this.slider.scrollLeft;
-      
-      // Determine current index based on closest snap point
-      const currentIndex = Math.round(current / step);
-      const nextIndex = currentIndex + 1;
-      
+
+      // Robust Index Finding: Do not rely on fixed step size
       const children = this.slider.querySelectorAll('.amp-hero-card');
+      if (children.length === 0) return;
+
+      const current = this.slider.scrollLeft;
+      const alignOffset = children[0].offsetLeft;
+      
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      
+      children.forEach((child, i) => {
+        const pos = child.offsetLeft - alignOffset;
+        const diff = Math.abs(current - pos);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestIndex = i;
+        }
+      });
+
+      let nextIndex = closestIndex + 1;
       let target = 0;
 
-      // Dynamic Alignment: Use the first slide's offset (which includes its left margin)
-      // to determine standard alignment offset. This ensures active slides align with the page content line.
-      const alignOffset = children[0] ? children[0].offsetLeft : 0;
-
-      // Calculate target based on actual child position for precision
-      if (nextIndex < children.length && children[nextIndex]) {
+      if (nextIndex < children.length) {
         target = children[nextIndex].offsetLeft - alignOffset;
       } else {
-        // We've reached the end of the full set (originals + clones)
-        // Since we have clones, we can jump back to the start of the original set (index 0) virtually
-        // But for smooth infinite loop, we should have reset the scroll positions earlier.
+        // Fallback (should be caught by loop reset)
         target = 0;
       }
-      
-      // INFINITY CHECK:
-      // If we are about to scroll into the cloned set, or are deeply into it, check if we can reset.
-      // Logic: If currentIndex >= originalCount, we are sitting on a clone. 
-      // We should silently jump back to (currentIndex - originalCount) BEFORE animating to the next one?
-      // Or animate to the clone, then silent jump?
-      // Smoothest: Animate to the clone (nextIndex). 
-      // Then in the step() completion callback, if we are in clone territory, jump back.
       
       this.animateScrollTo(target);
     }
@@ -229,15 +225,17 @@
     animateScrollTo(target) {
       this.stopAuto();
       
+      // Disable scroll snap strictly during animation to prevent fighting
+      this.slider.style.scrollSnapType = 'none';
+      this.slider.classList.add('is-animating');
+
       const start = this.slider.scrollLeft;
       const distance = target - start;
       const duration = this.config.autoDuration;
       let startTime = null;
       
-      // Easing: easeInOutCubic/similar
       const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-      // define step function for RAF
       this.animationContext = { start, distance, duration, startTime, ease, target };
       this.state.animFrame = window.requestAnimationFrame(this.step);
     }
@@ -256,37 +254,37 @@
         this.state.animFrame = window.requestAnimationFrame(this.step);
       } else {
         // Animation complete
-        this.slider.scrollLeft = ctx.target; // Snap to exact
+        this.slider.scrollLeft = ctx.target;
         
-        // INFINITE LOOP RESET LOGIC
-        // If we have clones, and we just landed on a clone (index >= originalCount),
-        // we snap back to the corresponding original slide instantly.
+        // Restore Snap (unless we are about to jump)
+        // Check Infinite Loop logic FIRST
         if (this.clonedCount) {
              const children = this.slider.querySelectorAll('.amp-hero-card');
-             const step = this.getStepDistance();
+             const alignOffset = children[0] ? children[0].offsetLeft : 0;
              const current = this.slider.scrollLeft;
-             // Calculate precise index we landed on
-             const landedIndex = Math.round(current / step);
              
-             // If we are past the originals (e.g. standard set is 6, we valid indices are 0-11)
-             // If we land on index 6 (the first clone), we usually want to let it sit there?
-             // Actually, the standard pattern is:
-             // 0 1 2 3 4 5 [6 7 8 9 10 11]
-             // When we animate from 5 -> 6. visual is smooth.
-             // Once animation ends at 6. We silently swap to 0.
-             // Visual content of 6 == Visual content of 0.
+             // Confirm where we landed
+             let landedIndex = 0;
+             let minDiff = Infinity;
+             children.forEach((child, i) => {
+                const pos = child.offsetLeft - alignOffset;
+                const diff = Math.abs(current - pos);
+                if (diff < minDiff) { minDiff = diff; landedIndex = i; }
+             });
              
              if (landedIndex >= this.clonedCount) {
                  const originalEquivalentIndex = landedIndex % this.clonedCount;
-                 // Find position of original
-                 const alignOffset = children[0] ? children[0].offsetLeft : 0;
                  if (children[originalEquivalentIndex]) {
                      const newPos = children[originalEquivalentIndex].offsetLeft - alignOffset;
-                     this.slider.scrollLeft = newPos; // Jump
+                     this.slider.scrollLeft = newPos; // Instant Jump
                      log('Silent Jump to', originalEquivalentIndex);
                  }
              }
         }
+        
+        // Cleanup Styles
+        this.slider.style.scrollSnapType = '';
+        this.slider.classList.remove('is-animating');
         
         this.scheduleAuto(this.config.autoDelay);
       }
