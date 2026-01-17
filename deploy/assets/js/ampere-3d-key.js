@@ -62,6 +62,9 @@ export class Ampere3DKey {
         const x = (event.clientX / winW) * 2 - 1;
         const y = -(event.clientY / winH) * 2 + 1; // Invert Y
 
+        // DEBUG: Check tracking
+        // console.log(`[Ampere3D] Move: ${x.toFixed(2)}, ${y.toFixed(2)}`);
+
         this.targetMouseX = x;
         this.targetMouseY = y;
     }
@@ -70,12 +73,6 @@ export class Ampere3DKey {
         // Reset to center when mouse leaves window
         this.targetMouseX = 0;
         this.targetMouseY = 0;
-        if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
-    }
-        this.targetMouseX = 0;
-        this.targetMouseY = 0;
-        // Do NOT reset press state here to allow holding while dragging out (handled by window mouseup)
-        // this.targetPress = 0; 
         if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
     }
 
