@@ -28,6 +28,7 @@
         lastTime: 0,
         velocity: 0,
         isHover: false,
+        isVisible: true, // Optimistically true
         autoTimer: null,
         resumeTimer: null,
         animFrame: null,
@@ -67,7 +68,7 @@
       // Intersection Observer to prevent running when out of viewport
       if ('IntersectionObserver' in window) {
         this.observer = new IntersectionObserver(this.handleIntersection, {
-            threshold: 0.1 // Run if at least 10% visible
+            threshold: 0.5 // Run only if 50% visible (prevents distraction when scrolling past)
         });
         this.observer.observe(this.slider);
       }
@@ -187,6 +188,10 @@
       if (this.state.animFrame) {
         window.cancelAnimationFrame(this.state.animFrame);
         this.state.animFrame = null;
+        
+        // Cleanup if stopped mid-animation
+        this.slider.style.scrollSnapType = '';
+        this.slider.classList.remove('is-animating');
       }
     }
 
@@ -208,7 +213,12 @@
     }
 
     runAuto() {
-      if (this.state.pointerActive || this.state.isHover) {
+      if (this.state.pointerActive || this.state.isHover || !this.state.isVisible) {
+        // If invisible, retry slower. If obscured, we trust IntersectionObserver will resume us eventually.
+        if (!this.state.isVisible) {
+            // Do nothing, wait for observer
+            return;
+        }
         this.scheduleAuto(this.config.retryDelay);
         return;
       }
@@ -444,12 +454,16 @@
 
     handleIntersection(entries) {
       const entry = entries[0];
+      this.state.isVisible = entry.isIntersecting;
+      
       if (entry.isIntersecting) {
-         log('In viewport. Resuming.');
+         log('In viewport (>=50%). Resuming.');
          this.resumeAutoDelayed(500);
       } else {
-         log('Out of viewport. Pausing.');
+         log('Out of viewport (<50%). Pausing.');
          this.pauseAuto();
+         // Also cancel momentum to save resources
+         this.cancelMomentum();
       }
     }
 
