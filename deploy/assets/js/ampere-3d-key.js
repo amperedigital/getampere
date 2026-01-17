@@ -34,31 +34,34 @@ export class Ampere3DKey {
 
         window.addEventListener('resize', this.resizeHandler);
         
-        // Use Global Window Listeners for consistent Dragging
-        // This ensures tracking works even if the mouse leaves the container/canvas
-        // but started inside it.
+        // Interaction Zone: Use the parent section if available for broader mouse tracking
+        this.interactionZone = this.container.closest('section') || this.container;
         
-        // 1. Container-specific triggers (Start Interacting)
-        this.container.addEventListener('mouseenter', (e) => this.onMouseMove(e));
-        this.container.addEventListener('mousemove', this.mouseMoveHandler);
+        // 1. Mouse/Tilt Tracking (Broad Scope - "Fidget Widget" feel)
+        // Attach to the whole section so the key follows the mouse even when not directly over it
+        this.interactionZone.addEventListener('mouseenter', (e) => this.onMouseMove(e));
+        this.interactionZone.addEventListener('mousemove', this.mouseMoveHandler);
+        this.interactionZone.addEventListener('mouseleave', this.mouseLeaveHandler);
+
+        // 2. Click/Push Interaction (Focused Scope)
+        // Only trigger the "push" effect when directly interacting with the key
         this.container.addEventListener('mousedown', this.mouseDownHandler);
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
 
-        // 2. Window-level releases (Stop Interacting anywhere)
+        // 3. Window-level releases (Stop Interacting anywhere)
         window.addEventListener('mouseup', this.mouseUpHandler);
         window.addEventListener('touchend', this.mouseUpHandler);
-        
-        // 3. Reset when mouse leaves container
-        this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
     }
 
     onMouseMove(event) {
-        if (!this.container) return;
+        // Track relative to the INTERACTION ZONE (Section), not just the canvas
+        const target = this.interactionZone || this.container;
+        if (!target) return;
         
-        // Get rect of container
-        const rect = this.container.getBoundingClientRect();
+        // Get rect of interaction zone
+        const rect = target.getBoundingClientRect();
         
-        // Calculate mouse position relative to container center
+        // Calculate mouse position relative to zone center
         // -1 to 1 range
         const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         const y = -((event.clientY - rect.top) / rect.height) * 2 + 1; // Invert Y for 3D coords
