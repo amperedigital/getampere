@@ -80,13 +80,10 @@
            clone.id = ''; // clear ID to avoid duplicates
            fragment.appendChild(clone);
         });
-        // Insert before the spacer if it exists, otherwise append
-        const spacer = this.slider.querySelector('.pointer-events-none[aria-hidden="true"]');
-        if (spacer) {
-           this.slider.insertBefore(fragment, spacer);
-        } else {
-           this.slider.appendChild(fragment);
-        }
+        
+        // Append clones effectively to the end
+        this.slider.appendChild(fragment);
+        
         this.clonedCount = originalCards.length;
       }
 
