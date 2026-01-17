@@ -42,6 +42,7 @@
       this.handleMouseEnter = this.handleMouseEnter.bind(this);
       this.handleMouseLeave = this.handleMouseLeave.bind(this);
       this.handleVisibility = this.handleVisibility.bind(this);
+      this.handleIntersection = this.handleIntersection.bind(this);
       this.handleBlur = this.handleBlur.bind(this);
       this.handleFocus = this.handleFocus.bind(this);
 
@@ -62,6 +63,15 @@
       this.slider.addEventListener("mouseenter", this.handleMouseEnter);
       this.slider.addEventListener("mouseleave", this.handleMouseLeave);
       document.addEventListener("visibilitychange", this.handleVisibility);
+      
+      // Intersection Observer to prevent running when out of viewport
+      if ('IntersectionObserver' in window) {
+        this.observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: 0.1 // Run if at least 10% visible
+        });
+        this.observer.observe(this.slider);
+      }
+
       // Disable blur/focus auto-pause to prevent issues during dev/preview
       // window.addEventListener("blur", this.handleBlur, { passive: true });
       // window.addEventListener("focus", this.handleFocus, { passive: true });
@@ -125,6 +135,11 @@
       document.removeEventListener("visibilitychange", this.handleVisibility);
       window.removeEventListener("blur", this.handleBlur);
       window.removeEventListener("focus", this.handleFocus);
+
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
 
       // Clean up styles/classes if any were stuck
       this.slider.classList.remove("is-dragging");
@@ -425,6 +440,17 @@
     handleMouseLeave() {
       this.state.isHover = false;
       this.resumeAutoDelayed();
+    }
+
+    handleIntersection(entries) {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
+         log('In viewport. Resuming.');
+         this.resumeAutoDelayed(500);
+      } else {
+         log('Out of viewport. Pausing.');
+         this.pauseAuto();
+      }
     }
 
     handleVisibility() {
