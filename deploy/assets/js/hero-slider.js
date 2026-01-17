@@ -106,7 +106,7 @@
     }
 
     getStepDistance() {
-      const children = this.slider.children;
+      const children = this.slider.querySelectorAll('.amp-hero-card');
       if (!children || children.length === 0) {
         return this.slider.clientWidth || 0;
       }
@@ -172,7 +172,7 @@
       const currentIndex = Math.round(current / step);
       const nextIndex = currentIndex + 1;
       
-      const children = this.slider.children;
+      const children = this.slider.querySelectorAll('.amp-hero-card');
       let target = 0;
 
       // Dynamic Alignment: Use the first slide's offset (which includes its left margin)
@@ -240,7 +240,7 @@
 
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
       const current = this.slider.scrollLeft;
-      const children = this.slider.children;
+      const children = this.slider.querySelectorAll('.amp-hero-card');
       const alignOffset = children[0] ? children[0].offsetLeft : 0;
 
       // Find nearest logical index
