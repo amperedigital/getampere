@@ -46,7 +46,15 @@ export class Ampere3DKey {
         window.addEventListener('touchmove', this.mouseMoveHandler, {passive: true});
         
         // Handle "leaving the window"
+        // We attach to multiple targets to be robust against iframes/editors/fast movements
         document.body.addEventListener('mouseleave', this.mouseLeaveHandler);
+        document.addEventListener('mouseleave', this.mouseLeaveHandler);
+        window.addEventListener('mouseout', (e) => {
+            if (!e.relatedTarget && !e.toElement) {
+                this.mouseLeaveHandler();
+            }
+        });
+        window.addEventListener('blur', this.mouseLeaveHandler);
 
         // Click Interaction (Focused on key)
         this.container.addEventListener('mousedown', this.mouseDownHandler);
