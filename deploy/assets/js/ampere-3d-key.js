@@ -34,16 +34,25 @@ export class Ampere3DKey {
 
         window.addEventListener('resize', this.resizeHandler);
         
-        // Touch/Mouse events - Use window for mouseup/mousemove to handle drag-out
+        // Use Global Window Listeners for consistent Dragging
+        // This ensures tracking works even if the mouse leaves the container/canvas
+        // but started inside it.
+        
+        // 1. Container-specific triggers (Start Interacting)
+        this.container.addEventListener('mouseenter', (e) => this.onMouseMove(e));
         this.container.addEventListener('mousemove', this.mouseMoveHandler);
-        this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
         this.container.addEventListener('mousedown', this.mouseDownHandler);
-        
-        window.addEventListener('mouseup', this.mouseUpHandler);
-        
-        // Add minimal touch support for mobile taps
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
-        window.addEventListener('touchend', this.mouseUpHandler, {passive: true});
+
+        // 2. Window-level releases (Stop Interacting anywhere)
+        window.addEventListener('mouseup', this.mouseUpHandler);
+        window.addEventListener('touchend', this.mouseUpHandler);
+        
+        // 3. Reset when mouse leaves container (but only if not held?)
+        // Actually, for "Fidget" mode, we want it to reset tilt when not hovering,
+        // but if we are holding (mousedown), we might want to keep the "push" state?
+        // Let's keep it simple: MouseLeave resets TILT, but MouseUp resets PRESS.
+        this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
     }
 
     onMouseMove(event) {
@@ -93,12 +102,13 @@ export class Ampere3DKey {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-        // Visual fix: Hide canvas until texture loads to prevent white flicker
+        
+        // Ensure Canvas receives Pointer Events
+        this.renderer.domElement.style.pointerEvents = 'auto'; // Force events
+        this.renderer.domElement.style.cursor = 'grab'; // Indicate interaction
+        // Visual: Hide until loaded
         this.renderer.domElement.style.opacity = '0';
         this.renderer.domElement.style.transition = 'opacity 0.5s ease-out';
-        this.renderer.domElement.style.cursor = 'grab'; // Indicate interaction
-        this.renderer.domElement.style.pointerEvents = 'auto'; // Force events
         
         this.container.appendChild(this.renderer.domElement);
     }
