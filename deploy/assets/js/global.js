@@ -144,11 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const winH = window.innerHeight;
             
             const centerDist = (rect.top + rect.height/2) - (winH / 2);
-            const bloomRange = winH * 0.7; 
             
-            let bloom = 1 - (Math.abs(centerDist) / bloomRange);
-            bloom = Math.max(0, Math.min(1, bloom));
+            // Modified to create a "plateau" of visibility (User Request: Opacity 1 at 50% view)
+            // Allow bloom to exceed 1.0 so that staggered items can still reach full opacity
+            const bloomRange = winH * 0.75; 
             
+            let bloom = 1.5 - (Math.abs(centerDist) / bloomRange);
+            // Note: bloom is NOT clamped to 1.0 here, allowing it to drive the stagger logic below
+             
             this.targets.forEach((target, i) => {
                 let p = bloom - (i * 0.15); 
                 p = Math.max(0, Math.min(1, p));
