@@ -3096,7 +3096,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.688/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.689/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3112,13 +3112,17 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
             </div>
             <span class="text-[10px] uppercase text-white/80 tracking-widest font-mono">System Operational</span>
           </div>
-          <div class="overflow-hidden group h-auto bg-[#0a0b14] w-full border-white/10 border rounded-3xl relative shadow-3xl">
+          <div class="overflow-hidden group h-auto bg-white/10 backdrop-blur-2xl w-full border-white/10 border rounded-3xl relative shadow-3xl">
+            <!-- Background Image (Dots) -->
+            <div class="absolute inset-0 w-full h-full opacity-100 pointer-events-none z-0" style="background-image: url('./assets/dots-use-cases.png'); background-repeat: repeat; background-size: auto;"></div>
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-transparent via-[#0a0b14]/10 to-[#0a0b14]/60 pointer-events-none z-0"></div>
 
       <div class="lg:w-full h-auto flex flex-col lg:mt-0 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.15s_both] animate z-30 mt-0 relative justify-end xl:justify-center">
       <div class="h-auto group min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] w-full relative top-3 xl:top-0 shadow-3xl overscroll-contain touch-pan-y" data-modal-scroll data-lenis-prevent>
     
         <!-- Digital Graph Container -->
-        <div class="bg-[#0a0b14] w-full min-h-[auto] relative pb-1">
+        <div class="bg-transparent w-full min-h-[auto] relative pb-1">
     
     
           <!-- Key Metric Overlay -->
