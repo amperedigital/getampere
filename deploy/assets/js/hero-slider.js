@@ -65,6 +65,9 @@
       window.addEventListener("blur", this.handleBlur, { passive: true });
       window.addEventListener("focus", this.handleFocus, { passive: true });
 
+      // Enforce touch-action for desktop dragging
+      this.slider.style.touchAction = "pan-y";
+
       log("Initialized (Desktop Mode)", this.slider.id ? `#${this.slider.id}` : "");
       this.scheduleAuto(this.config.autoDelay);
       this.initialized = true;
@@ -91,6 +94,7 @@
 
       // Clean up styles/classes if any were stuck
       this.slider.classList.remove("is-dragging");
+      this.slider.style.touchAction = "";
 
       log("Destroyed (Mobile Mode)", this.slider.id ? `#${this.slider.id}` : "");
       this.initialized = false;
