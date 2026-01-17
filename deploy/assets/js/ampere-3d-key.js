@@ -62,6 +62,9 @@ export class Ampere3DKey {
         const x = (event.clientX / winW) * 2 - 1;
         const y = -(event.clientY / winH) * 2 + 1; // Invert Y
 
+        // DEBUG: Verify tracking is working globally
+        console.log(`[Ampere3D] Mouse: ${x.toFixed(2)}, ${y.toFixed(2)}`);
+
         this.targetMouseX = x;
         this.targetMouseY = y;
     }
