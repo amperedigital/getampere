@@ -34,44 +34,44 @@ export class Ampere3DKey {
 
         window.addEventListener('resize', this.resizeHandler);
         
-        // Interaction Zone: Use the parent section if available for broader mouse tracking
-        this.interactionZone = this.container.closest('section') || this.container;
+        // GLOBAL INTERACTION (Window-Scope)
+        // User requested wide scoping ("a lot wider").
+        // We track the mouse relative to the entire screen.
+        // The effect's visibility is gated by 'this.progress' (scroll position) in animate().
         
-        // 1. Mouse/Tilt Tracking (Broad Scope - "Fidget Widget" feel)
-        // Attach to the whole section so the key follows the mouse even when not directly over it
-        this.interactionZone.addEventListener('mouseenter', (e) => this.onMouseMove(e));
-        this.interactionZone.addEventListener('mousemove', this.mouseMoveHandler);
-        this.interactionZone.addEventListener('mouseleave', this.mouseLeaveHandler);
+        window.addEventListener('mousemove', this.mouseMoveHandler);
+        
+        // Handle "leaving the window"
+        document.body.addEventListener('mouseleave', this.mouseLeaveHandler);
 
-        // 2. Click/Push Interaction (Focused Scope)
-        // Only trigger the "push" effect when directly interacting with the key
+        // Click Interaction (Focused on key)
         this.container.addEventListener('mousedown', this.mouseDownHandler);
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
 
-        // 3. Window-level releases (Stop Interacting anywhere)
+        // Release anywhere
         window.addEventListener('mouseup', this.mouseUpHandler);
         window.addEventListener('touchend', this.mouseUpHandler);
     }
 
     onMouseMove(event) {
-        // Track relative to the INTERACTION ZONE (Section), not just the canvas
-        const target = this.interactionZone || this.container;
-        if (!target) return;
-        
-        // Get rect of interaction zone
-        const rect = target.getBoundingClientRect();
-        
-        // Calculate mouse position relative to zone center
+        // Calculate mouse position relative to WINDOW (Screen Center)
         // -1 to 1 range
-        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        const y = -((event.clientY - rect.top) / rect.height) * 2 + 1; // Invert Y for 3D coords
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        
+        const x = (event.clientX / winW) * 2 - 1;
+        const y = -(event.clientY / winH) * 2 + 1; // Invert Y
 
         this.targetMouseX = x;
         this.targetMouseY = y;
     }
 
     onMouseLeave() {
-        // Reset to center when mouse leaves components
+        // Reset to center when mouse leaves window
+        this.targetMouseX = 0;
+        this.targetMouseY = 0;
+        if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
+    }
         this.targetMouseX = 0;
         this.targetMouseY = 0;
         // Do NOT reset press state here to allow holding while dragging out (handled by window mouseup)
@@ -289,18 +289,22 @@ export class Ampere3DKey {
              const startX = -Math.PI / 2.1; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
-             // Add extra backward tilt when pushed
-             this.mesh.rotation.x = baseX - (this.mouseY * 0.5) - (this.currentPress * 0.5);
+             
+             // Multiply Interaction by Progress (Only fidget when visible)
+             // Increased sensitivity (0.8 instead of 0.5) for broader feel
+             const interactionWeight = Math.max(0, this.progress); 
+             
+             this.mesh.rotation.x = baseX - (this.mouseY * 0.8 * interactionWeight) - (this.currentPress * 0.5);
              
              // Y Axis (Turn)
              const baseY = this.progress * -0.4;
              const wobbleY = Math.cos(time * 0.7) * 0.05;
-             this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.5);
+             this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.8 * interactionWeight);
 
              // Z Axis (Bank)
              const baseZ = this.progress * -0.1;
              const wobbleZ = Math.sin(time * 1.1) * 0.015;
-             this.mesh.rotation.z = baseZ + wobbleZ + (this.mouseX * 0.1);
+             this.mesh.rotation.z = baseZ + wobbleZ + (this.mouseX * 0.2 * interactionWeight);
         }
 
         this.renderer.render(this.scene, this.camera);
