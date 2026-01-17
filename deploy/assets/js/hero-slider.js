@@ -165,23 +165,29 @@
         return;
       }
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
-      
       const step = this.getStepDistance();
-      const padding = this.getScrollPadding(); 
       const current = this.slider.scrollLeft;
       
-      // Determine current index based on centerpoint or left edge?
-      // Using left edge is safer for exact snap alignment
+      // Determine current index based on closest snap point
       const currentIndex = Math.round(current / step);
       const nextIndex = currentIndex + 1;
       
-      // Target the exact start of the next card (ignoring padding offset to align with text)
-      // If user wants scroll-padding to be effective, they would rely on CSS snap. 
-      // JavaScript scrollLeft=0 puts element at edge.
-      let target = (nextIndex * step);
+      const children = this.slider.children;
+      let target = 0;
+
+      // Calculate target based on actual child position for precision
+      if (nextIndex < children.length && children[nextIndex]) {
+        // Subtract 4px buffer to prevent border clipping
+        target = children[nextIndex].offsetLeft - 4;
+      } else {
+        // Wrap around
+        target = 0;
+      }
       
-      // Wrap around logic
-      if (target >= maxScroll + 5) { // tolerance
+      // Secondary wrap check: if target is past maxScroll, standard clamp handles it, 
+      // but loop logic implies we should go to 0 if we are effectively at the end.
+      // Current index logic handles the increment, so strict bounds check:
+      if (target >= maxScroll - 10) { 
         target = 0;
       } else {
         target = this.clamp(target, 0, maxScroll);
@@ -234,7 +240,15 @@
 
       // Find nearest logical index
       const bestIndex = Math.round(current / stepDistance);
-      let target = (bestIndex * stepDistance);
+      const children = this.slider.children;
+
+      let target = 0;
+      if (children[bestIndex]) {
+         // Apply same 4px buffer
+         target = children[bestIndex].offsetLeft - 4;
+      } else {
+         target = bestIndex * stepDistance;
+      }
       
       target = this.clamp(target, 0, maxScroll);
 
