@@ -67,6 +67,28 @@
 
       // Enforce touch-action for desktop dragging
       this.slider.style.touchAction = "pan-y";
+      
+      // INFINITE SCROLL: Duplicate Slides
+      // We clone the existing slides to create a buffer for infinite scrolling
+      const originalCards = this.slider.querySelectorAll('.amp-hero-card');
+      if (originalCards.length > 0) {
+        // Clone twice to ensure we have enough buffer in both directions if needed, or just once for fwd loop
+        const fragment = document.createDocumentFragment();
+        originalCards.forEach(card => {
+           const clone = card.cloneNode(true);
+           clone.setAttribute('data-clone', 'true');
+           clone.id = ''; // clear ID to avoid duplicates
+           fragment.appendChild(clone);
+        });
+        // Insert before the spacer if it exists, otherwise append
+        const spacer = this.slider.querySelector('.pointer-events-none[aria-hidden="true"]');
+        if (spacer) {
+           this.slider.insertBefore(fragment, spacer);
+        } else {
+           this.slider.appendChild(fragment);
+        }
+        this.clonedCount = originalCards.length;
+      }
 
       log("Initialized (Desktop Mode)", this.slider.id ? `#${this.slider.id}` : "");
       this.scheduleAuto(this.config.autoDelay);
@@ -75,6 +97,10 @@
 
     destroy() {
       if (!this.initialized) return;
+
+      // Clean up clones
+      const clones = this.slider.querySelectorAll('[data-clone="true"]');
+      clones.forEach(el => el.remove());
 
       // Clean up timers & frames
       this.stopAuto();
@@ -183,18 +209,19 @@
       if (nextIndex < children.length && children[nextIndex]) {
         target = children[nextIndex].offsetLeft - alignOffset;
       } else {
-        // Wrap around logic
+        // We've reached the end of the full set (originals + clones)
+        // Since we have clones, we can jump back to the start of the original set (index 0) virtually
+        // But for smooth infinite loop, we should have reset the scroll positions earlier.
         target = 0;
       }
       
-      // Loop Logic:
-      // If we are already at the end (maxScroll), loop back to 0.
-      // Otherwise, clamp to maxScroll (which just holds the position if target > maxScroll).
-      if (Math.abs(current - maxScroll) < 5 && maxScroll > 0) { 
-        target = 0;
-      } else {
-        target = this.clamp(target, 0, maxScroll);
-      }
+      // INFINITY CHECK:
+      // If we are about to scroll into the cloned set, or are deeply into it, check if we can reset.
+      // Logic: If currentIndex >= originalCount, we are sitting on a clone. 
+      // We should silently jump back to (currentIndex - originalCount) BEFORE animating to the next one?
+      // Or animate to the clone, then silent jump?
+      // Smoothest: Animate to the clone (nextIndex). 
+      // Then in the step() completion callback, if we are in clone territory, jump back.
       
       this.animateScrollTo(target);
     }
@@ -230,6 +257,37 @@
       } else {
         // Animation complete
         this.slider.scrollLeft = ctx.target; // Snap to exact
+        
+        // INFINITE LOOP RESET LOGIC
+        // If we have clones, and we just landed on a clone (index >= originalCount),
+        // we snap back to the corresponding original slide instantly.
+        if (this.clonedCount) {
+             const children = this.slider.querySelectorAll('.amp-hero-card');
+             const step = this.getStepDistance();
+             const current = this.slider.scrollLeft;
+             // Calculate precise index we landed on
+             const landedIndex = Math.round(current / step);
+             
+             // If we are past the originals (e.g. standard set is 6, we valid indices are 0-11)
+             // If we land on index 6 (the first clone), we usually want to let it sit there?
+             // Actually, the standard pattern is:
+             // 0 1 2 3 4 5 [6 7 8 9 10 11]
+             // When we animate from 5 -> 6. visual is smooth.
+             // Once animation ends at 6. We silently swap to 0.
+             // Visual content of 6 == Visual content of 0.
+             
+             if (landedIndex >= this.clonedCount) {
+                 const originalEquivalentIndex = landedIndex % this.clonedCount;
+                 // Find position of original
+                 const alignOffset = children[0] ? children[0].offsetLeft : 0;
+                 if (children[originalEquivalentIndex]) {
+                     const newPos = children[originalEquivalentIndex].offsetLeft - alignOffset;
+                     this.slider.scrollLeft = newPos; // Jump
+                     log('Silent Jump to', originalEquivalentIndex);
+                 }
+             }
+        }
+        
         this.scheduleAuto(this.config.autoDelay);
       }
     }
