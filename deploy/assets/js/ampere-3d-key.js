@@ -2,7 +2,6 @@ import * as THREE from 'three';
 
 export class Ampere3DKey {
     constructor(container) {
-        console.log("[Ampere3DKey] Initializing...", container);
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
@@ -40,10 +39,7 @@ export class Ampere3DKey {
         // but started inside it.
         
         // 1. Container-specific triggers (Start Interacting)
-        this.container.addEventListener('mouseenter', (e) => {
-            console.log("[Ampere3DKey] Mouse Enter");
-            this.onMouseMove(e);
-        });
+        this.container.addEventListener('mouseenter', (e) => this.onMouseMove(e));
         this.container.addEventListener('mousemove', this.mouseMoveHandler);
         this.container.addEventListener('mousedown', this.mouseDownHandler);
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
@@ -66,8 +62,6 @@ export class Ampere3DKey {
         // -1 to 1 range
         const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         const y = -((event.clientY - rect.top) / rect.height) * 2 + 1; // Invert Y for 3D coords
-        
-        // console.log("[Ampere3DKey] Mouse Move:", x.toFixed(2), y.toFixed(2));
 
         this.targetMouseX = x;
         this.targetMouseY = y;
@@ -75,7 +69,6 @@ export class Ampere3DKey {
 
     onMouseLeave() {
         // Reset to center when mouse leaves components
-        console.log("[Ampere3DKey] Mouse Leave");
         this.targetMouseX = 0;
         this.targetMouseY = 0;
         // Do NOT reset press state here to allow holding while dragging out (handled by window mouseup)
@@ -84,15 +77,11 @@ export class Ampere3DKey {
     }
 
     onMouseDown() {
-        console.log("[Ampere3DKey] Mouse Down / Press");
         this.targetPress = 1;
         if(this.renderer) this.renderer.domElement.style.cursor = 'grabbing';
     }
 
     onMouseUp() {
-        if (this.targetPress === 1) {
-             console.log("[Ampere3DKey] Mouse Up / Release");
-        }
         this.targetPress = 0;
         if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
     }

@@ -680,8 +680,6 @@ document.addEventListener('DOMContentLoaded', () => {
                  componentUrl = './assets/js/ampere-3d-key.js';
             }
 
-            console.log("[Global] Loading 3D Key from:", componentUrl);
-
             import(componentUrl)
                 .then(({ Ampere3DKey }) => {
                     const initKeys = () => {
