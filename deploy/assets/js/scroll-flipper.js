@@ -91,10 +91,10 @@
             if (stickyContainer) {
                 if (isDesktop) {
                     stickyContainer.style.setProperty('position', 'sticky', 'important');
-                    stickyContainer.style.setProperty('top', '100px', 'important');
+                    stickyContainer.style.setProperty('top', '140px', 'important');
                     stickyContainer.style.setProperty('overflow', 'hidden', 'important'); 
-                    stickyContainer.style.setProperty('height', 'calc(100vh - 100px)', 'important'); 
-                    stickyContainer.style.setProperty('max-height', 'calc(100vh - 100px)', 'important');
+                    stickyContainer.style.setProperty('height', 'calc(100vh - 140px)', 'important'); 
+                    stickyContainer.style.setProperty('max-height', 'calc(100vh - 140px)', 'important');
                 } else {
                     stickyContainer.style.removeProperty('position');
                     stickyContainer.style.removeProperty('top');
