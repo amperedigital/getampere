@@ -34,14 +34,16 @@ export class Ampere3DKey {
 
         window.addEventListener('resize', this.resizeHandler);
         
-        // Touch/Mouse events
+        // Touch/Mouse events - Use window for mouseup/mousemove to handle drag-out
         this.container.addEventListener('mousemove', this.mouseMoveHandler);
         this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
         this.container.addEventListener('mousedown', this.mouseDownHandler);
-        this.container.addEventListener('mouseup', this.mouseUpHandler);
+        
+        window.addEventListener('mouseup', this.mouseUpHandler);
+        
         // Add minimal touch support for mobile taps
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
-        this.container.addEventListener('touchend', this.mouseUpHandler, {passive: true});
+        window.addEventListener('touchend', this.mouseUpHandler, {passive: true});
     }
 
     onMouseMove(event) {
@@ -60,10 +62,11 @@ export class Ampere3DKey {
     }
 
     onMouseLeave() {
-        // Reset to center when mouse leaves
+        // Reset to center when mouse leaves components
         this.targetMouseX = 0;
         this.targetMouseY = 0;
-        this.targetPress = 0;
+        // Do NOT reset press state here to allow holding while dragging out (handled by window mouseup)
+        // this.targetPress = 0; 
         if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
     }
 
@@ -84,7 +87,7 @@ export class Ampere3DKey {
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         this.camera.position.set(0, 0, 10);
 
-        // Renderer
+        // Initialize renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -95,6 +98,7 @@ export class Ampere3DKey {
         this.renderer.domElement.style.opacity = '0';
         this.renderer.domElement.style.transition = 'opacity 0.5s ease-out';
         this.renderer.domElement.style.cursor = 'grab'; // Indicate interaction
+        this.renderer.domElement.style.pointerEvents = 'auto'; // Force events
         
         this.container.appendChild(this.renderer.domElement);
     }
@@ -310,14 +314,15 @@ export class Ampere3DKey {
     
     dispose() {
         window.removeEventListener('resize', this.resizeHandler);
+        // Remove window listeners
+        window.removeEventListener('mouseup', this.mouseUpHandler);
+        window.removeEventListener('touchend', this.mouseUpHandler);
         
         if (this.container) {
             this.container.removeEventListener('mousemove', this.mouseMoveHandler);
             this.container.removeEventListener('mouseleave', this.mouseLeaveHandler);
             this.container.removeEventListener('mousedown', this.mouseDownHandler);
-            this.container.removeEventListener('mouseup', this.mouseUpHandler);
             this.container.removeEventListener('touchstart', this.mouseDownHandler);
-            this.container.removeEventListener('touchend', this.mouseUpHandler);
         }
 
         // Basic three.js cleanup
