@@ -672,7 +672,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Resolve sibling URL (replaces 'global.js' with 'ampere-3d-key.js')
             // Works for CDN paths: .../v1.XYZ/deploy/assets/js/global.js -> .../ampere-3d-key.js
             // Uses a flexible regex to handle potential .min suffix
-            const componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
+            let componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
+            
+            // LOCAL DEV FALLBACK
+            // If the scriptUrl is not found (sometimes happens with bundled environments) or we are local
+            if (!componentUrl || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                 componentUrl = './assets/js/ampere-3d-key.js';
+            }
+
+            console.log("[Global] Loading 3D Key from:", componentUrl);
 
             import(componentUrl)
                 .then(({ Ampere3DKey }) => {
