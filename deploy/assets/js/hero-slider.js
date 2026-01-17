@@ -167,18 +167,21 @@
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
       
       const step = this.getStepDistance();
-      const padding = this.getScrollPadding();
+      const padding = this.getScrollPadding(); 
       const current = this.slider.scrollLeft;
       
-      // Compute next logical index based on padded position
-      const currentIndex = Math.round((current + padding) / step);
+      // Determine current index based on centerpoint or left edge?
+      // Using left edge is safer for exact snap alignment
+      const currentIndex = Math.round(current / step);
       const nextIndex = currentIndex + 1;
       
-      let target = (nextIndex * step) - padding;
+      // Target the exact start of the next card (ignoring padding offset to align with text)
+      // If user wants scroll-padding to be effective, they would rely on CSS snap. 
+      // JavaScript scrollLeft=0 puts element at edge.
+      let target = (nextIndex * step);
       
-      // Wrap around logic & clamping
-      // If we are essentially at the end, wrap to 0
-      if (target >= maxScroll - 5) { // tolerance
+      // Wrap around logic
+      if (target >= maxScroll + 5) { // tolerance
         target = 0;
       } else {
         target = this.clamp(target, 0, maxScroll);
@@ -227,12 +230,11 @@
       if (!stepDistance) return false;
 
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
-      const padding = this.getScrollPadding();
       const current = this.slider.scrollLeft;
 
       // Find nearest logical index
-      const bestIndex = Math.round((current + padding) / stepDistance);
-      let target = (bestIndex * stepDistance) - padding;
+      const bestIndex = Math.round(current / stepDistance);
+      let target = (bestIndex * stepDistance);
       
       target = this.clamp(target, 0, maxScroll);
 
@@ -369,8 +371,12 @@
     // If width < 768px, destroy (Mobile Guard)
     // Else init
     const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-    instances.forEach(instance => {
-      if (isMobile) {
+    instances.forEach(instance => {      // Update config with user overrides if needed
+      // Force a shorter resume delay for snappier feel
+      if (!instance.dataset.resumeDelay) {
+        instance.config.resumeDelay = 2500;
+      }
+            if (isMobile) {
         instance.destroy();
       } else {
         instance.init();
