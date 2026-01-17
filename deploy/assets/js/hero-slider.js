@@ -123,6 +123,11 @@
       return offsetDistance || referenceWidth || this.slider.clientWidth || 0;
     }
 
+    getScrollPadding() {
+      const style = window.getComputedStyle(this.slider);
+      return parseInt(style.scrollPaddingLeft || "0", 10) || 0;
+    }
+
     // --- Animation Logic ---
 
     stopAuto() {
@@ -160,10 +165,25 @@
         return;
       }
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
-      const next = this.slider.scrollLeft + this.getStepDistance();
       
-      // Wrap around logic
-      const target = next >= maxScroll - 1 ? 0 : this.clamp(next, 0, maxScroll);
+      const step = this.getStepDistance();
+      const padding = this.getScrollPadding();
+      const current = this.slider.scrollLeft;
+      
+      // Compute next logical index based on padded position
+      const currentIndex = Math.round((current + padding) / step);
+      const nextIndex = currentIndex + 1;
+      
+      let target = (nextIndex * step) - padding;
+      
+      // Wrap around logic & clamping
+      // If we are essentially at the end, wrap to 0
+      if (target >= maxScroll - 5) { // tolerance
+        target = 0;
+      } else {
+        target = this.clamp(target, 0, maxScroll);
+      }
+      
       this.animateScrollTo(target);
     }
 
@@ -205,13 +225,17 @@
     alignToNearestStep() {
       const stepDistance = this.getStepDistance();
       if (!stepDistance) return false;
+
       const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
+      const padding = this.getScrollPadding();
       const current = this.slider.scrollLeft;
-      const target = this.clamp(
-        Math.round(current / stepDistance) * stepDistance,
-        0,
-        maxScroll
-      );
+
+      // Find nearest logical index
+      const bestIndex = Math.round((current + padding) / stepDistance);
+      let target = (bestIndex * stepDistance) - padding;
+      
+      target = this.clamp(target, 0, maxScroll);
+
       if (Math.abs(target - current) < 1) {
         return false;
       }
