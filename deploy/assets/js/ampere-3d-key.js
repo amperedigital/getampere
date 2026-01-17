@@ -9,15 +9,47 @@ export class Ampere3DKey {
         // State
         this.progress = 0;
         
+        // Mouse Interaction State
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.targetMouseX = 0;
+        this.targetMouseY = 0;
+        
         // Init
         this.initScene();
         this.initGeometry();
         this.initLights();
         this.animate();
         
-        // Bind resize
+        // Bind handlers
         this.resizeHandler = this.onResize.bind(this);
+        this.mouseMoveHandler = this.onMouseMove.bind(this);
+        this.mouseLeaveHandler = this.onMouseLeave.bind(this);
+
         window.addEventListener('resize', this.resizeHandler);
+        this.container.addEventListener('mousemove', this.mouseMoveHandler);
+        this.container.addEventListener('mouseleave', this.mouseLeaveHandler);
+    }
+
+    onMouseMove(event) {
+        if (!this.container) return;
+        
+        // Get rect of container
+        const rect = this.container.getBoundingClientRect();
+        
+        // Calculate mouse position relative to container center
+        // -1 to 1 range
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -((event.clientY - rect.top) / rect.height) * 2 + 1; // Invert Y for 3D coords
+
+        this.targetMouseX = x;
+        this.targetMouseY = y;
+    }
+
+    onMouseLeave() {
+        // Reset to center when mouse leaves
+        this.targetMouseX = 0;
+        this.targetMouseY = 0;
     }
 
     initScene() {
@@ -174,12 +206,7 @@ export class Ampere3DKey {
         this.progress = Math.max(0, Math.min(1, progress));
 
         // 1. Rotation Reveal
-        const startX = -Math.PI / 2.1; 
-        const endX = -0.2;
-        this.mesh.rotation.x = startX + (this.progress * (endX - startX));
-        
-        this.mesh.rotation.y = this.progress * -0.4;
-        this.mesh.rotation.z = this.progress * -0.1;
+        // Handled in animate() loop to combine with mouse interaction
 
         // 2. Lighting Reveal
         this.ambientLight.intensity = 0.05 + (this.progress * 0.85); // Dark -> Light
@@ -200,23 +227,32 @@ export class Ampere3DKey {
         const time = Date.now() * 0.001;
 
         if (this.mesh) {
+             // Smoothly interpolate mouse values
+             this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
+             this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
+
              // Enhanced Floating Effect
              // 1. Vertical Bobbing (Deeper and slightly faster mechanism)
              this.mesh.position.y = Math.sin(time * 1.5) * 0.15;
 
-             // 2. Rotational "Drift" (Adds fluid feeling)
-             // We apply (Base Rotation from Progress) + (Time-based Wobble)
-             // Note: Rotation X is handled purely by scroll in setProgress
+             // 2. Rotational Logic
+             // Base (Scroll) + Wobble (Time) + Interaction (Mouse)
+
+             // X Axis (Tilt)
+             const startX = -Math.PI / 2.1; 
+             const endX = -0.2;
+             const baseX = startX + (this.progress * (endX - startX));
+             this.mesh.rotation.x = baseX - (this.mouseY * 0.5);
              
-             // Y Axis Drift (Side to side look)
+             // Y Axis (Turn)
              const baseY = this.progress * -0.4;
              const wobbleY = Math.cos(time * 0.7) * 0.05;
-             this.mesh.rotation.y = baseY + wobbleY;
+             this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.5);
 
-             // Z Axis Drift (Subtle tilt)
+             // Z Axis (Bank)
              const baseZ = this.progress * -0.1;
              const wobbleZ = Math.sin(time * 1.1) * 0.015;
-             this.mesh.rotation.z = baseZ + wobbleZ;
+             this.mesh.rotation.z = baseZ + wobbleZ + (this.mouseX * 0.1);
         }
 
         this.renderer.render(this.scene, this.camera);
@@ -240,6 +276,12 @@ export class Ampere3DKey {
     
     dispose() {
         window.removeEventListener('resize', this.resizeHandler);
+        
+        if (this.container) {
+            this.container.removeEventListener('mousemove', this.mouseMoveHandler);
+            this.container.removeEventListener('mouseleave', this.mouseLeaveHandler);
+        }
+
         // Basic three.js cleanup
         if (this.renderer) {
             this.renderer.dispose();
