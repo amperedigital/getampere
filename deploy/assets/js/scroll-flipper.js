@@ -149,14 +149,10 @@
                 const entry = entries[0];
                 if (entry.isIntersecting) {
                     if (!isRunning) {
-                        console.log('[ScrollFlipper] Status: WAKING UP (In View)');
                         isRunning = true;
                         tick(); // Wake up
                     }
                 } else {
-                    if (isRunning) {
-                        console.log('[ScrollFlipper] Status: SLEEPING (Out of View)');
-                    }
                     isRunning = false; // Go to sleep (stops RAF)
                 }
             }, { rootMargin: '200px 0px 200px 0px' }); // Pre-load slightly before entry
