@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.676 Loaded');
+  console.log('[Ampere Global] v1.678 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -677,11 +677,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Uses a flexible regex to handle potential .min suffix
             let componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
             
+            // Appending a cache buster timestamp to ensure latest version is loaded
+            // (Updates when global.js updates)
+            const cacheBuster = new Date().getTime();
+            
             // LOCAL DEV FALLBACK
-            // If the scriptUrl is not found (sometimes happens with bundled environments) or we are local
             if (!componentUrl || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                  componentUrl = './assets/js/ampere-3d-key.js';
             }
+            
+            // Append query string
+            componentUrl += `?v=${cacheBuster}`;
 
             import(componentUrl)
                 .then(({ Ampere3DKey }) => {
