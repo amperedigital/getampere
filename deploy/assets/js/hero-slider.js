@@ -62,8 +62,9 @@
       this.slider.addEventListener("mouseenter", this.handleMouseEnter);
       this.slider.addEventListener("mouseleave", this.handleMouseLeave);
       document.addEventListener("visibilitychange", this.handleVisibility);
-      window.addEventListener("blur", this.handleBlur, { passive: true });
-      window.addEventListener("focus", this.handleFocus, { passive: true });
+      // Disable blur/focus auto-pause to prevent issues during dev/preview
+      // window.addEventListener("blur", this.handleBlur, { passive: true });
+      // window.addEventListener("focus", this.handleFocus, { passive: true });
 
       // Enforce touch-action for desktop dragging
       this.slider.style.touchAction = "pan-y";
@@ -81,6 +82,16 @@
            fragment.appendChild(clone);
         });
         
+        // Handle Spacer: Remove it to ensure seamless transition to clones
+        // We must check direct children to avoid grabbing overlays inside cards
+        const children = Array.from(this.slider.children);
+        const spacer = children.find(el => 
+            el.classList.contains('pointer-events-none') && 
+            el.getAttribute('aria-hidden') === 'true' &&
+            !el.classList.contains('absolute')
+        );
+        if (spacer) spacer.remove();
+
         // Append clones effectively to the end
         this.slider.appendChild(fragment);
         
