@@ -41,6 +41,10 @@ export class Ampere3DKey {
         
         window.addEventListener('mousemove', this.mouseMoveHandler);
         
+        // Touch Move Support (Mobile Fidget)
+        // Use passive listener to ensure scrolling remains smooth
+        window.addEventListener('touchmove', this.mouseMoveHandler, {passive: true});
+        
         // Handle "leaving the window"
         document.body.addEventListener('mouseleave', this.mouseLeaveHandler);
 
@@ -48,7 +52,7 @@ export class Ampere3DKey {
         this.container.addEventListener('mousedown', this.mouseDownHandler);
         this.container.addEventListener('touchstart', this.mouseDownHandler, {passive: true});
 
-        // Release anywhere
+        // Release anywhere (Stop Interaction)
         window.addEventListener('mouseup', this.mouseUpHandler);
         window.addEventListener('touchend', this.mouseUpHandler);
     }
@@ -59,8 +63,20 @@ export class Ampere3DKey {
         const winW = window.innerWidth;
         const winH = window.innerHeight;
         
-        const x = (event.clientX / winW) * 2 - 1;
-        const y = -(event.clientY / winH) * 2 + 1; // Invert Y
+        let clientX, clientY;
+
+        if (event.touches && event.touches.length > 0) {
+            // Touch Event
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+        } else {
+            // Mouse Event
+            clientX = event.clientX;
+            clientY = event.clientY;
+        }
+        
+        const x = (clientX / winW) * 2 - 1;
+        const y = -(clientY / winH) * 2 + 1; // Invert Y
 
         this.targetMouseX = x;
         this.targetMouseY = y;
@@ -80,6 +96,12 @@ export class Ampere3DKey {
 
     onMouseUp() {
         this.targetPress = 0;
+        
+        // Mobile/Touch: When finger lifts, also reset the Tilt (X/Y)
+        // because there is no "hover" state on mobile to return to.
+        this.targetMouseX = 0;
+        this.targetMouseY = 0;
+
         if(this.renderer) this.renderer.domElement.style.cursor = 'grab';
     }
 
