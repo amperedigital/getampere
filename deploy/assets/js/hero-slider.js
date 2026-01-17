@@ -177,17 +177,18 @@
 
       // Calculate target based on actual child position for precision
       if (nextIndex < children.length && children[nextIndex]) {
-        // Subtract 4px buffer to prevent border clipping
+        // Subtract 4px buffer to prevent border clipping.
+        // Also ensure we are calculating relative to the scroll container (logic below assumes offsetLeft relies on consistent parent context)
         target = children[nextIndex].offsetLeft - 4;
       } else {
         // Wrap around
         target = 0;
       }
       
-      // Secondary wrap check: if target is past maxScroll, standard clamp handles it, 
-      // but loop logic implies we should go to 0 if we are effectively at the end.
-      // Current index logic handles the increment, so strict bounds check:
-      if (target >= maxScroll - 10) { 
+      // Loop Logic:
+      // If we are already at the end (maxScroll), loop back to 0.
+      // Otherwise, clamp to maxScroll (which just holds the position if target > maxScroll).
+      if (Math.abs(current - maxScroll) < 5 && maxScroll > 0) { 
         target = 0;
       } else {
         target = this.clamp(target, 0, maxScroll);
