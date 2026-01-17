@@ -256,6 +256,7 @@
     }
 
     animateScrollTo(target) {
+      console.log('➡️ [HeroSlider] Auto-advancing...');
       this.stopAuto();
       
       // Disable scroll snap strictly during animation to prevent fighting
@@ -457,10 +458,10 @@
       this.state.isVisible = entry.isIntersecting;
       
       if (entry.isIntersecting) {
-         log('In viewport (>=50%). Resuming.');
+         console.log('✅ [HeroSlider] In viewport (>=50%). Resuming auto-scroll.');
          this.resumeAutoDelayed(500);
       } else {
-         log('Out of viewport (<50%). Pausing.');
+         console.log('🛑 [HeroSlider] Out of viewport (<50%). Pausing auto-scroll.');
          this.pauseAuto();
          // Also cancel momentum to save resources
          this.cancelMomentum();
