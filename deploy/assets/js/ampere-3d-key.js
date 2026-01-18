@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.733 Loaded (High Ambient + Slate-700)");
+        console.log("Ampere3DKey v1.734 Loaded (Matte Material + Slate-600)");
 
         // State
         this.progress = 0;
@@ -226,15 +226,15 @@ export class Ampere3DKey {
 
         // Materials
         // Side/Body Color: White (Default) or Dark Navy (Theme)
-        // Updated v1.733: Using Slate-700 (#334155) + High Ambient to force visibility.
-        // 3D rendering crushes dark colors; we must go significantly lighter to appear "Navy".
-        const bodyColor = isDark ? 0x334155 : 0xffffff; 
+        // Updated v1.734: Using Slate-600 (#475569) + Matte Finish.
+        // Removed reflective clearcoat on dark mode so it doesn't reflect the black void.
+        const bodyColor = isDark ? 0x475569 : 0xffffff; 
 
         const whiteMaterial = new THREE.MeshPhysicalMaterial({
             color: bodyColor,
-            roughness: 0.2,
+            roughness: isDark ? 0.6 : 0.2, // Matte for Dark (0.6), Glossy for White (0.2)
             metalness: 0.1,
-            clearcoat: 1.0, 
+            clearcoat: isDark ? 0.0 : 1.0, // No clearcoat on Dark
             clearcoatRoughness: 0.1
         });
         
