@@ -270,6 +270,12 @@
                     const rect = this.parent.getBoundingClientRect();
                     this.mouse.x = e.clientX - rect.left;
                     this.mouse.y = e.clientY - rect.top;
+                    
+                    // Wake up animation if sleeping
+                    if (!this.isAnimating) {
+                        this.isAnimating = true;
+                        this.animate();
+                    }
                 });
 
                 this.parent.addEventListener('mouseleave', () => {
@@ -306,7 +312,16 @@
                 }
             }
 
-            animate() {
+            animate() {                // Determine if we should sleep to save CPU
+                // Sleep condition: Not hovered AND activity has settled to 0
+                if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
+                    this.isAnimating = false;
+                    // One final clear/draw to ensure clean state? 
+                    // Actually, if we just stop here, the *last* frame drawn is what remains on canvas.
+                    // The last frame had activityLevel ~0.001, so it's practically the idle state.
+                    // We can just return.
+                    return; 
+                }
                 this.ctx.clearRect(0, 0, this.width, this.height);
 
                 // Smooth activity transition (saves CPU when idle)
