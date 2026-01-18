@@ -305,10 +305,20 @@
 
             animate() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
-                // this.time += 0.015; // Animation Paused to save CPU
+
+                // Smooth activity transition (saves CPU when idle)
+                if (typeof this.activityLevel === 'undefined') this.activityLevel = 0;
                 
-                // Detection for "Hover State" vs "Idle State"
                 const isHovered = this.mouse.x !== -1000;
+                
+                // Ramp activity up to 1 on hover, down to 0 on idle
+                const targetLevel = isHovered ? 1 : 0;
+                this.activityLevel += (targetLevel - this.activityLevel) * 0.05; // 0.05 for slower smooth entry
+                
+                // Only advance time if there's visible activity
+                if (this.activityLevel > 0.001) {
+                    this.time += 0.015;
+                }
                 
                 this.dots.forEach(dot => {
                     const dx = this.mouse.x - dot.baseX;
@@ -319,27 +329,28 @@
                     let drawY = dot.baseY;
                     let currentRadius = this.config.dotRadius;
                     
-                    /* AUTO ANIMATION DISABLED FOR PERFORMANCE
                     // 0. Automatic Ambient Movement (Organic / Random feel)
-                    // Sum of sines to simulate Perlin-like noise without library
-                    const t = this.time;
-                    
-                    // X-Axis Noise: Mix of 3 frequencies
-                    const noiseX = Math.sin((dot.baseY * 0.03) + t) 
-                                 + Math.sin((dot.baseY * 0.1) + (t * 1.5)) * 0.5 
-                                 + Math.cos((dot.baseX * 0.05) + (t * 0.8)) * 0.3;
+                    // Optimization: Only calc heavy trig if activityLevel is visible
+                    if (this.activityLevel > 0.001) {
+                        const t = this.time;
+                        
+                        // X-Axis Noise: Mix of 3 frequencies
+                        const noiseX = Math.sin((dot.baseY * 0.03) + t) 
+                                     + Math.sin((dot.baseY * 0.1) + (t * 1.5)) * 0.5 
+                                     + Math.cos((dot.baseX * 0.05) + (t * 0.8)) * 0.3;
 
-                    // Y-Axis Noise: Different phases/frequencies
-                    const noiseY = Math.cos((dot.baseX * 0.03) + t) 
-                                 + Math.cos((dot.baseX * 0.1) + (t * 1.5)) * 0.5
-                                 + Math.sin((dot.baseY * 0.05) + (t * 0.8)) * 0.3;
+                        // Y-Axis Noise: Different phases/frequencies
+                        const noiseY = Math.cos((dot.baseX * 0.03) + t) 
+                                     + Math.cos((dot.baseX * 0.1) + (t * 1.5)) * 0.5
+                                     + Math.sin((dot.baseY * 0.05) + (t * 0.8)) * 0.3;
 
-                    const autoWaveX = noiseX * (this.config.gridSpacing * 0.4); 
-                    const autoWaveY = noiseY * (this.config.gridSpacing * 0.4);
-                    
-                    drawX += autoWaveX;
-                    drawY += autoWaveY;
-                    */
+                        const autoWaveX = noiseX * (this.config.gridSpacing * 0.4); 
+                        const autoWaveY = noiseY * (this.config.gridSpacing * 0.4);
+                        
+                        // Apply scaled by activity (smooths entrance/exit)
+                        drawX += autoWaveX * this.activityLevel;
+                        drawY += autoWaveY * this.activityLevel;
+                    }
 
                     // Base Visibility Logic:
                     let r = 255, g = 255, b = 255, a = 0.05;
