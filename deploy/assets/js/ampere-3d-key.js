@@ -235,6 +235,9 @@ export class Ampere3DKey {
         const materials = [logoMaterial, whiteMaterial];
         this.mesh = new THREE.Mesh(geometry, materials);
         
+        // Scale down by 7% (Factor 0.93)
+        this.mesh.scale.set(0.93, 0.93, 0.93);
+
         // Initial Start State
         // Face down (-PI/2.1), slightly tilted
         this.mesh.rotation.x = -Math.PI / 2.1; 
