@@ -215,19 +215,14 @@
                 this.ctx = this.canvas.getContext('2d');
                 
                 // Define 3 variants based on index (RGB for dynamic lighting)
+                // Unified 'mode' to 'wave' for consistency as per request
                 const variants = [
-                     // 0: Standard  (Blue-ish White)
-                    { r: 200, g: 230, b: 255, strength: 0.4, mode: 'magnify' },
-                     // 1: Strong Repel (Cyan-ish)
-                    { r: 180, g: 240, b: 255, strength: 0.6, mode: 'push' },
-                     // 2: Flow (Indigo-ish)
-                    { r: 200, g: 210, b: 255, strength: 0.3, mode: 'flow' },
-                     // 3: High Force (Violet-ish)
-                    { r: 220, g: 200, b: 255, strength: 0.5, mode: 'push' }, 
-                     // 4: Standard Repel 
-                    { r: 200, g: 255, b: 240, strength: 0.45, mode: 'magnify' },
-                     // 5: Empty Card Spl
-                    { r: 255, g: 255, b: 255, strength: 0.8, mode: 'magnify' } 
+                    { r: 200, g: 230, b: 255, strength: 0.8 }, // Blue-ish
+                    { r: 180, g: 240, b: 255, strength: 1.0 }, // Cyan-ish
+                    { r: 200, g: 210, b: 255, strength: 0.6 }, // Indigo-ish
+                    { r: 220, g: 200, b: 255, strength: 0.9 }, // Violet-ish
+                    { r: 200, g: 255, b: 240, strength: 0.8 }, // Teal-ish
+                    { r: 255, g: 255, b: 255, strength: 1.2 }  // White
                 ];
 
                 const selectedVariant = variants[index % variants.length];
@@ -235,14 +230,12 @@
                 this.config = {
                     gridSpacing: 8, 
                     dotRadius: 0.8,
-                    // Very dim base state
                     dotColor: 'rgba(255, 255, 255, 0.1)', 
                     r: selectedVariant.r,
                     g: selectedVariant.g,
                     b: selectedVariant.b,
                     mouseRadius: 200, 
-                    strength: selectedVariant.strength,
-                    mode: selectedVariant.mode
+                    strength: selectedVariant.strength
                 };
 
                 this.mouse = { x: -1000, y: -1000 };
@@ -309,7 +302,6 @@
 
             animate() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
-                // Removed time increment - Wave depends on spatial positions only
                 
                 this.dots.forEach(dot => {
                     const dx = this.mouse.x - dot.baseX;
@@ -326,21 +318,24 @@
                         // Smooth smoothstep-like curve for the envelope
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
-                        // 2. Spatial Wave Calculation (Concentric Ripples)
-                        // 'dist' drives the sine wave phase. Moving mouse = moving phase.
-                        const rippleFreq = 0.1; // Frequency of the rings
-                        const ripple = Math.sin(dist * rippleFreq); 
+                        // 2. Planar Wave Physics (No Radial Geometry)
+                        // This creates a broad wave 'sheet' that slides over the dots
+                        // Phase is locked to mouse position, creating interaction without "center orbs"
+                        
+                        const phaseX = this.mouse.x * 0.02; 
+                        const phaseY = this.mouse.y * 0.02;
+                        
+                        // Wave functions using Dot Position + Mouse Phase
+                        // Using Y position for X wave creates a 'Shear' or 'Flag' motion
+                        const waveX = Math.sin((dot.baseY * 0.04) + phaseX) * this.config.gridSpacing * this.config.strength;
+                        const waveY = Math.cos((dot.baseX * 0.04) + phaseY) * this.config.gridSpacing * this.config.strength;
 
-                        // 3. Combine Envelope & Ripple
-                        // We push dots along the angle based on the ripple
-                        const angle = Math.atan2(dy, dx);
-                        const distortion = ripple * this.config.gridSpacing * this.config.strength * envelope * 4;
-
-                        drawX += Math.cos(angle) * distortion;
-                        drawY += Math.sin(angle) * distortion;
+                        // Apply
+                        drawX += waveX * envelope * 2.0;
+                        drawY += waveY * envelope * 2.0;
                         
                         // Light Shift: Glow based on Envelope intensity
-                        const alpha = 0.1 + (envelope * 0.9);
+                        const alpha = 0.1 + (envelope * 0.8);
                         color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
                     }
 
