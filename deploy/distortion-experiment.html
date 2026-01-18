@@ -229,8 +229,8 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 5,   
-                    dotRadius: 0.95,   // Slightly reduced (User request)
+                    gridSpacing: 7,   // Increased gap (User request)
+                    dotRadius: 0.95,   
                     dotColor: 'rgba(255, 255, 255, 0.05)', 
                     r: selectedVariant.r,
                     g: selectedVariant.g,
@@ -238,6 +238,8 @@
                     mouseRadius: 400, 
                     strength: selectedVariant.strength
                 };
+
+                this.time = 0; // Initialize time for auto-movement
 
                 this.mouse = { x: -1000, y: -1000 };
                 this.dots = [];
@@ -303,6 +305,7 @@
 
             animate() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
+                this.time += 0.015; // Slow automatic time increment
                 
                 // Detection for "Hover State" vs "Idle State"
                 const isHovered = this.mouse.x !== -1000;
@@ -316,9 +319,15 @@
                     let drawY = dot.baseY;
                     let currentRadius = this.config.dotRadius;
                     
+                    // 0. Automatic Ambient Movement (Global Wave)
+                    // Gentle floating occurring always
+                    const autoWaveX = Math.sin((dot.baseY * 0.02) + this.time) * (this.config.gridSpacing * 0.3);
+                    const autoWaveY = Math.cos((dot.baseX * 0.02) + this.time) * (this.config.gridSpacing * 0.3);
+                    
+                    drawX += autoWaveX;
+                    drawY += autoWaveY;
+
                     // Base Visibility Logic:
-                    // If Hovered: Light up ALL dots to specific variant color (dim but visible)
-                    // If Idle: Use base dotColor (very dim/invisible)
                     let r = 255, g = 255, b = 255, a = 0.05;
 
                     if (isHovered) {
@@ -338,7 +347,8 @@
                         const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
-                        // 2. Wave Physics
+                        // 2. Wave Physics (Mouse Driven)
+                        // Add mouse-driven wave ON TOP of auto wave
                         const phaseX = this.mouse.x * 0.02; 
                         const phaseY = this.mouse.y * 0.02;
                         
