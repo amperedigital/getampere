@@ -338,7 +338,7 @@ export class Ampere3DKey {
              // Z Axis (Bank)
              // Final State: "Left-side down, right-side up" -> Counter-Clockwise -> Positive Z
              // Increased angle significantly (0.35) to catch light
-             const startZ = 0;
+             const startZ = 0.25;
              const endZ = 0.35; 
              const baseZ = startZ + (this.progress * (endZ - startZ));
 
