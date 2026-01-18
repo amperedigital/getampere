@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.737 Loaded (Medium Navy - #1e2a40)");
+        console.log("Ampere3DKey v1.738 Loaded (Unified Ink - #1e2a40)");
 
         // State
         this.progress = 0;
@@ -144,11 +144,10 @@ export class Ampere3DKey {
         const theme = this.container.dataset.keyTheme || 'light';
         const isDark = theme === 'dark';
         
-        // Color Configuration (v1.737)
+        // Color Configuration (v1.738)
         // 1. Ink Color (The 'A' Logo on the face)
-        //    - Dark Mode: Medium-Dark Navy (#1e2a40) - Rich dark navy, visible against black but true to brand.
-        //    - Light Mode: Brand Navy (#0f172a)
-        const inkHex = isDark ? "#1e2a40" : "#0f172a";
+        //    - Standardized to #1e2a40 (Medium-Dark Navy) for BOTH Dark and Light modes.
+        const inkHex = "#1e2a40";
         
         // 2. Body Color (The Sides and Back)
         //    - Dark Mode: Medium-Dark Navy (0x1e2a40)
