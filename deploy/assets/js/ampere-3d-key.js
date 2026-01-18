@@ -6,6 +6,8 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
+        console.log("Ampere3DKey v1.720 Loaded (Lights ON + Reduced Pitch)");
+
         // State
         this.progress = 0;
         
@@ -277,8 +279,8 @@ export class Ampere3DKey {
         // Handled in animate() loop to combine with mouse interaction
 
         // 2. Lighting Reveal
-        this.ambientLight.intensity = 0.05 + (this.progress * 0.85); // Dark -> Light
-        this.mainLight.intensity = this.progress * 1.5;              // Off -> On
+        this.ambientLight.intensity = 0.1 + (this.progress * 0.80);  // Dark -> Light (Boosted start)
+        this.mainLight.intensity = 0.8 + (this.progress * 1.2);      // Off -> On (Start ON so face isn't black)
         this.rimLight.intensity = 2.0 - (this.progress * 1.5);       // Bright -> Dim
 
         // 3. Specular Sweep
@@ -287,7 +289,8 @@ export class Ampere3DKey {
         // Y: Higher (3) to hit top-down
         // Z: Closer to camera (6) to reflect off the front
         this.shinyLight.position.set(lightX, 3, 6);
-        this.shinyLight.intensity = Math.sin(this.progress * Math.PI) * 50; 
+        // Add base intensity (15.0) so it glistens at start
+        this.shinyLight.intensity = 15.0 + Math.sin(this.progress * Math.PI) * 35; 
     }
 
     animate() {
@@ -317,9 +320,9 @@ export class Ampere3DKey {
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Pitch - Flip)
-             // "More Forward" -> Tilt top more toward camera
-             // -1.1 is significantly pitched forward (~63 degrees)
-             const startX = -1.1; 
+             // "Pitch it forward a bit" -> Slightly less extreme than -1.1
+             // -1.25 is pitched forward (~71 deg), catching the now-active main light
+             const startX = -1.25; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
