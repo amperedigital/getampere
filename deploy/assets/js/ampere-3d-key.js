@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.735 Loaded (Dynamic Ink + Unified Color)");
+        console.log("Ampere3DKey v1.736 Loaded (Lighter Navy - #2d3b59)");
 
         // State
         this.progress = 0;
@@ -144,16 +144,16 @@ export class Ampere3DKey {
         const theme = this.container.dataset.keyTheme || 'light';
         const isDark = theme === 'dark';
         
-        // Color Configuration (v1.735)
+        // Color Configuration (v1.736)
         // 1. Ink Color (The 'A' Logo on the face)
-        //    - Dark Mode: Matches the Body (Slate-600 #475569) for unification
+        //    - Dark Mode: Lighter Navy (#2d3b59) - Blue/Navy hue, but raised value to reflect light
         //    - Light Mode: Brand Navy (#0f172a)
-        const inkHex = isDark ? "#475569" : "#0f172a";
+        const inkHex = isDark ? "#2d3b59" : "#0f172a";
         
         // 2. Body Color (The Sides and Back)
-        //    - Dark Mode: Slate-600 (0x475569)
+        //    - Dark Mode: Lighter Navy (0x2d3b59)
         //    - Light Mode: White (0xffffff)
-        const bodyColor = isDark ? 0x475569 : 0xffffff;
+        const bodyColor = isDark ? 0x2d3b59 : 0xffffff;
 
         // Define the shape (Rounded Square)
         const shape = new THREE.Shape();
