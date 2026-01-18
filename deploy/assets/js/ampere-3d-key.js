@@ -277,14 +277,15 @@ export class Ampere3DKey {
         // Handled in animate() loop to combine with mouse interaction
 
         // 2. Lighting Reveal
-        this.ambientLight.intensity = 0.05 + (this.progress * 0.85); // Dark -> Light
-        this.mainLight.intensity = this.progress * 1.5;              // Off -> On
+        this.ambientLight.intensity = 0.1 + (this.progress * 0.80);  // Dark -> Light (Increased base)
+        this.mainLight.intensity = 0.5 + (this.progress * 1.0);      // Off -> On (Start with visible face)
         this.rimLight.intensity = 2.0 - (this.progress * 1.5);       // Bright -> Dim
 
         // 3. Specular Sweep
+        // We add a base intensity (8.0) so there is always a glint, even at start
         const lightX = -6 + (this.progress * 14); 
         this.shinyLight.position.set(lightX, 2, 4);
-        this.shinyLight.intensity = Math.sin(this.progress * Math.PI) * 50; 
+        this.shinyLight.intensity = 8.0 + Math.sin(this.progress * Math.PI) * 42; 
     }
 
     animate() {
