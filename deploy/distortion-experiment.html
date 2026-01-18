@@ -68,6 +68,16 @@
             position: relative;
             overflow: hidden; 
         }
+
+        /* Gradient Overlay to soften dots */
+        ._keyCard_ogirg_83::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 5; /* Above canvas (0), below content (10) */
+            background: radial-gradient(circle at center, rgba(10, 11, 20, 0.2) 0%, rgba(10, 11, 20, 0.9) 100%);
+            pointer-events: none;
+        }
         
         /* Ensure content sits above canvas */
         ._keyCard_ogirg_83 > *:not(canvas) {
@@ -206,18 +216,18 @@
                 
                 // Define 3 variants based on index
                 const variants = [
-                     // 0: Standard Magnify (Blue)
-                    { activeColor: '#38bdf8', strength: 0.6, mode: 'magnify' },
+                     // 0: Standard Magnify (Blue) - NOW SUBTLE WAVE
+                    { strength: 0.3, mode: 'magnify' },
                      // 1: Push / Repel Strong (Cyan)
-                    { activeColor: '#22d3ee', strength: 1.2, mode: 'push' },
+                    { strength: 0.5, mode: 'push' },
                      // 2: Flow/Spiral (Indigo)
-                    { activeColor: '#818cf8', strength: 0.4, mode: 'flow' },
+                    { strength: 0.2, mode: 'flow' },
                      // 3: High Force (Violet)
-                    { activeColor: '#a78bfa', strength: 0.9, mode: 'push' }, 
+                    { strength: 0.4, mode: 'push' }, 
                      // 4: Standard Repel (Teal)
-                    { activeColor: '#2dd4bf', strength: 0.7, mode: 'magnify' },
+                    { strength: 0.35, mode: 'magnify' },
                      // 5: Empty Card Special (White/Bright)
-                    { activeColor: '#f8fafc', strength: 1.5, mode: 'magnify' } 
+                    { strength: 0.6, mode: 'magnify' } 
                 ];
 
                 const selectedVariant = variants[index % variants.length];
@@ -225,9 +235,8 @@
                 this.config = {
                     gridSpacing: 8, // Even tighter (8px)
                     dotRadius: 0.8,  // Tiny squares (~1.6px)
-                    dotColor: '#334155', 
-                    activeColor: selectedVariant.activeColor,
-                    mouseRadius: 100, 
+                    dotColor: 'rgba(51, 65, 85, 0.5)', // Slate-700 with Opacity for subtlety
+                    mouseRadius: 200, // Larger radius for 'wave' feel
                     strength: selectedVariant.strength,
                     mode: selectedVariant.mode
                 };
@@ -303,43 +312,36 @@
 
                     let drawX = dot.baseX;
                     let drawY = dot.baseY;
-                    let radius = this.config.dotRadius;
                     let color = this.config.dotColor;
 
                     if (dist < this.config.mouseRadius) {
-                        const force = (this.config.mouseRadius - dist) / this.config.mouseRadius; // 0 to 1
+                        // Use a smoother curve (Cosine or SmoothStep-like)
+                        // This creates the "wave" rather than a linear cone
+                        const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
+                        const force = (1 - Math.cos(rawForce * Math.PI)) / 2; // Smooth sine ease
+                        
                         const angle = Math.atan2(dy, dx);
                         
                         let moveDist = 0;
 
                         if (this.config.mode === 'magnify') {
-                             // Push away from mouse
-                             moveDist = force * this.config.gridSpacing * 3 * this.config.strength; 
+                             moveDist = force * this.config.gridSpacing * 4 * this.config.strength; 
                         } else if (this.config.mode === 'push') {
-                             // Stronger Push / Linear
-                             moveDist = Util_easeOutQuad(force) * this.config.gridSpacing * 5 * this.config.strength;
+                             moveDist = force * this.config.gridSpacing * 6 * this.config.strength;
                         } else if (this.config.mode === 'flow') {
-                             // Perpendicular flow (Spin)
-                             // x' = x cos θ - y sin θ
-                             moveDist = force * this.config.gridSpacing * 3 * this.config.strength;
-                             // Add 90 degrees to angle
+                             moveDist = force * this.config.gridSpacing * 4 * this.config.strength;
                              drawX += Math.cos(angle + 1.57) * moveDist;
                              drawY += Math.sin(angle + 1.57) * moveDist;
                              
-                             radius = this.config.dotRadius + (force * 1);
-                             if(force > 0.1) color = this.config.activeColor;
-                             this.drawDot(drawX, drawY, radius, color);
+                             this.drawDot(drawX, drawY, this.config.dotRadius, color);
                              return; 
                         }
 
                         drawX += Math.cos(angle) * moveDist;
                         drawY += Math.sin(angle) * moveDist;
-
-                        radius = this.config.dotRadius + (force * 2.0);
-                        if(force > 0.1) color = this.config.activeColor;
                     }
 
-                    this.drawDot(drawX, drawY, radius, color);
+                    this.drawDot(drawX, drawY, this.config.dotRadius, color);
                 });
 
                 requestAnimationFrame(this.animate.bind(this));
