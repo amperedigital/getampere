@@ -140,6 +140,12 @@ export class Ampere3DKey {
     }
 
     initGeometry() {
+        // Theme Detection
+        // 'light' (default) or 'dark'
+        // In dark mode: Body is dark, Face remains white (User Spec)
+        const theme = this.container.dataset.keyTheme || 'light';
+        const isDark = theme === 'dark';
+        
         // Define the shape (Rounded Square)
         const shape = new THREE.Shape();
         const size = 3.5;
@@ -217,8 +223,12 @@ export class Ampere3DKey {
         logoTexture.colorSpace = THREE.SRGBColorSpace;
 
         // Materials
+        // Side/Body Color: White (Default) or Dark Navy (Theme)
+        // #0f172a is Slate-900 (Brand Navy)
+        const bodyColor = isDark ? 0x0f172a : 0xffffff; 
+
         const whiteMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff,
+            color: bodyColor,
             roughness: 0.2,
             metalness: 0.1,
             clearcoat: 1.0, 
@@ -226,7 +236,7 @@ export class Ampere3DKey {
         });
         
         const logoMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff,
+            color: 0xffffff, // Face always white base to show texture correctly
             map: logoTexture,
             roughness: 0.2,
             metalness: 0.1,
