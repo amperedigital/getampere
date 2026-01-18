@@ -51,22 +51,22 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1px; /* The 'border' look */
-            background-color: rgba(255,255,255,0.1); /* Divider color */
-            border: 1px solid rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.15); /* Increased visibility for divider */
+            border: 1px solid rgba(255, 255, 255, 0.15);
             max-width: 1200px;
             width: 100%;
             margin: 2rem;
         }
 
         ._keyCard_ogirg_83 {
-            background-color: #0a0b14; /* Match body to hide grid lines except gaps */
+            background-color: #0a0b14; /* Match body */
             padding: 2.5rem;
             min-height: 320px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            overflow: hidden; /* Contain the canvas */
+            overflow: hidden; 
         }
         
         /* Ensure content sits above canvas */
@@ -223,11 +223,11 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 12, // Tight grid spacing (12px)
-                    dotRadius: 1.2,
-                    dotColor: '#334155', // Slate-700 (Darker/Subtle)
+                    gridSpacing: 10, // Tighter spacing
+                    dotRadius: 1.0,  // Slightly smaller for squares
+                    dotColor: '#334155', 
                     activeColor: selectedVariant.activeColor,
-                    mouseRadius: 120, // Localized effect radius
+                    mouseRadius: 120, 
                     strength: selectedVariant.strength,
                     mode: selectedVariant.mode
                 };
@@ -346,11 +346,11 @@
             }
 
             drawDot(x, y, r, c) {
-                this.ctx.beginPath();
-                this.ctx.arc(x, y, r, 0, Math.PI * 2);
+                // Square implementation
                 this.ctx.fillStyle = c;
-                this.ctx.fill();
-                this.ctx.closePath();
+                // r is half-width/radius, so width is r*2
+                const size = r * 2;
+                this.ctx.fillRect(x - r, y - r, size, size);
             }
         }
 
