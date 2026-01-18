@@ -229,13 +229,13 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 5,   // Tighter (User request)
-                    dotRadius: 0.6,   // Adjusted for tighter grid
-                    dotColor: 'rgba(255, 255, 255, 0.05)', // Even dimmer base state
+                    gridSpacing: 5,   // Fixed spacing (doesn't scale with container)
+                    dotRadius: 1.1,   // Increased Size (~2.2px squares)
+                    dotColor: 'rgba(255, 255, 255, 0.05)', 
                     r: selectedVariant.r,
                     g: selectedVariant.g,
                     b: selectedVariant.b,
-                    mouseRadius: 400, // Reduced slightly to allow corners to darken, but still broad
+                    mouseRadius: 400, 
                     strength: selectedVariant.strength
                 };
 
