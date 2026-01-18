@@ -257,6 +257,7 @@
             }
 
             init() {
+                this.time = 0; // Add time for wave animation
                 this.resize();
                 // Create dots is called by resize
             }
@@ -308,6 +309,7 @@
 
             animate() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
+                this.time += 0.05; // Increment time
                 
                 this.dots.forEach(dot => {
                     const dx = this.mouse.x - dot.baseX;
@@ -319,33 +321,27 @@
                     let color = this.config.dotColor;
 
                     if (dist < this.config.mouseRadius) {
+                        // Smooth Force (0 at edge, 1 at center)
                         const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
-                        const force = (1 - Math.cos(rawForce * Math.PI)) / 2; // Smooth sine ease
+                        const force = (1 - Math.cos(rawForce * Math.PI)) / 2; 
                         
-                        const angle = Math.atan2(dy, dx);
+                        // NEW LOGIC: Wave / Liquid Distortion instead of Radial
+                        // This removes the "center cluster" or "hole" effect.
+                        // Dots simply "swim" or "float" in place based on position + time
                         
-                        let moveDist = 0;
+                        // Frequency of the spatial wave
+                        const freq = 0.05; 
+                        
+                        // Calculate offsets using Sine/Cosine fields
+                        // We use dot.baseY for X-offset to create "shear" feel, or mix them
+                        const waveX = Math.sin((dot.baseY * freq) + this.time) * this.config.gridSpacing * this.config.strength;
+                        const waveY = Math.cos((dot.baseX * freq) + this.time) * this.config.gridSpacing * this.config.strength;
 
-                        if (this.config.mode === 'magnify') {
-                             moveDist = force * this.config.gridSpacing * 4 * this.config.strength; 
-                        } else if (this.config.mode === 'push') {
-                             moveDist = force * this.config.gridSpacing * 6 * this.config.strength;
-                        } else if (this.config.mode === 'flow') {
-                             moveDist = force * this.config.gridSpacing * 4 * this.config.strength;
-                             drawX += Math.cos(angle + 1.57) * moveDist;
-                             drawY += Math.sin(angle + 1.57) * moveDist;
-                             
-                             // Light Shift for flow
-                             const alpha = 0.1 + (force * 0.9); // glow up to 1.0
-                             this.drawDot(drawX, drawY, this.config.dotRadius, `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`);
-                             return; 
-                        }
-
-                        drawX += Math.cos(angle) * moveDist;
-                        drawY += Math.sin(angle) * moveDist;
+                        // Apply offset scaled by proximity force
+                        drawX += waveX * force;
+                        drawY += waveY * force;
                         
                         // Light Shift Logic
-                        // As force increases, dot becomes brighter/more opaque
                         const alpha = 0.1 + (force * 0.9);
                         color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
                     }
