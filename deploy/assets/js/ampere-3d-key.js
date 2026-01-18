@@ -259,7 +259,7 @@ export class Ampere3DKey {
 
         // Main (Starts Off)
         this.mainLight = new THREE.DirectionalLight(0xffffff, 0); 
-        this.mainLight.position.set(2, 2, 10);
+        this.mainLight.position.set(-5, 5, 10); // Moved to Left (was 2,2,10)
         this.scene.add(this.mainLight);
 
         // Specular Sweep (Starts Off)
@@ -284,8 +284,8 @@ export class Ampere3DKey {
         this.rimLight.intensity = 2.0 - (this.progress * 1.5);       // Bright -> Dim
 
         // 3. Specular Sweep
-        const lightX = -6 + (this.progress * 14); 
-        // Adjusted Light Position (v1.719) to catch the face angle better
+        const lightX = -10 + (this.progress * 20); 
+        // Adjusted Light Position (v1.721) to catch the face angle better from LEFT
         // Y: Higher (3) to hit top-down
         // Z: Closer to camera (6) to reflect off the front
         this.shinyLight.position.set(lightX, 3, 6);
