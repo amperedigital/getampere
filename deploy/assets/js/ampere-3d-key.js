@@ -6,6 +6,8 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
+        console.log("Ampere3DKey v1.710 Loaded (Adjusted Bank/Pitch)"); // DEBUG VERSION
+
         // State
         this.progress = 0;
         
@@ -313,8 +315,10 @@ export class Ampere3DKey {
              // 3. Rotational Logic
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
-             // X Axis (Tilt)
-             const startX = -Math.PI / 2.1; 
+             // X Axis (Pitch - Flip)
+             // Adjusted startX (-1.2) to be less flat than -PI/2.1 (-1.49)
+             // This tilts the face TOWARDS the camera slightly at the start
+             const startX = -1.2; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
@@ -324,17 +328,19 @@ export class Ampere3DKey {
              
              this.mesh.rotation.x = baseX - (this.mouseY * 0.8 * interactionWeight) - (this.currentPress * 0.5);
              
-             // Y Axis (Turn)
-             const baseY = this.progress * -0.4;
+             // Y Axis (Roll/Bank) 
+             // IMPORTANT: Because X Rotation is ~-90, Y Rotation turns into Roll/Bank relative to camera
+             // We add a Start Angle here (-0.3) to "Bank" it (Right Side Up, Left Side Down)
+             const startY = -0.3; // Banked
+             const endY = 0.0;    // Leveling out
+             const baseY = startY + (this.progress * (-0.4 - startY)); // Blends into original scroll turn
+             
              const wobbleY = Math.cos(time * 0.7) * 0.05;
              this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.8 * interactionWeight);
 
-             // Z Axis (Bank)
-             // Start tilted (Right Up / Left Down) to catch light better per user feedback
-             const startZ = 0.25; 
-             const endZ = -0.1;
-             const baseZ = startZ + (this.progress * (endZ - startZ));
-             
+             // Z Axis (Yaw/Spin)
+             // Reverted to standard behavior (Spin)
+             const baseZ = this.progress * -0.1;
              const wobbleZ = Math.sin(time * 1.1) * 0.015;
              this.mesh.rotation.z = baseZ + wobbleZ + (this.mouseX * 0.2 * interactionWeight);
         }
