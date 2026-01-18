@@ -195,12 +195,12 @@ export class Ampere3DKey {
         }
 
         // Texture Generation (White BG, Navy Logo, Full Bleed)
-        // Updated v1.726: Flush Top-Right, Gap on Left only.
-        // Scale 0.95 (5% gap total). Translate Right by 5% (21.2px) to flush right. Translate Y=0 to flush top.
+        // Updated v1.727: Non-Uniform Scale.
+        // Scale X=0.95 (Gap Left), Scale Y=1.0 (Flush Top/Bottom).
         const svgString = `
         <svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" viewBox="0 0 424.1 423.6">
             <rect width="100%" height="100%" fill="#ffffff"/> 
-            <g transform="translate(21.2, 0) scale(0.95)">
+            <g transform="translate(21.2, 0) scale(0.95, 1.0)">
                 <path fill="#0f172a" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
                 <path fill="#0f172a" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z"></path>
             </g>
