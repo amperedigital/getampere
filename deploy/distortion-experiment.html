@@ -50,9 +50,9 @@
         ._itemsContainer_ogirg_70 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1px; /* The 'border' look */
-            background-color: rgba(255, 255, 255, 0.15); /* Increased visibility for divider */
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            gap: 2px; /* Increased to make divider clearly visible */
+            background-color: rgba(255, 255, 255, 0.2); /* Brighter divider */
+            border: 2px solid rgba(255, 255, 255, 0.2);
             max-width: 1200px;
             width: 100%;
             margin: 2rem;
@@ -223,11 +223,11 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 10, // Tighter spacing
-                    dotRadius: 1.0,  // Slightly smaller for squares
+                    gridSpacing: 8, // Even tighter (8px)
+                    dotRadius: 0.8,  // Tiny squares (~1.6px)
                     dotColor: '#334155', 
                     activeColor: selectedVariant.activeColor,
-                    mouseRadius: 120, 
+                    mouseRadius: 100, 
                     strength: selectedVariant.strength,
                     mode: selectedVariant.mode
                 };
