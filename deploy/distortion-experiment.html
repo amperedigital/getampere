@@ -75,7 +75,8 @@
             position: absolute;
             inset: 0;
             z-index: 5; /* Above canvas (0), below content (10) */
-            background: radial-gradient(circle at center, rgba(10, 11, 20, 0.2) 0%, rgba(10, 11, 20, 0.9) 100%);
+            /* Stronger Vignette for Shadow Sensing */
+            background: radial-gradient(circle at center, rgba(10, 11, 20, 0.1) 0%, rgba(10, 11, 20, 0.95) 90%);
             pointer-events: none;
         }
         
@@ -228,13 +229,13 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 8, 
-                    dotRadius: 0.8,
-                    dotColor: 'rgba(255, 255, 255, 0.1)', 
+                    gridSpacing: 5,   // Tighter (User request)
+                    dotRadius: 0.6,   // Adjusted for tighter grid
+                    dotColor: 'rgba(255, 255, 255, 0.05)', // Even dimmer base state
                     r: selectedVariant.r,
                     g: selectedVariant.g,
                     b: selectedVariant.b,
-                    mouseRadius: 600, // Large radius to remove 'beam' look
+                    mouseRadius: 400, // Reduced slightly to allow corners to darken, but still broad
                     strength: selectedVariant.strength
                 };
 
@@ -326,17 +327,17 @@
                         const waveX = Math.sin((dot.baseY * 0.04) + phaseX) * this.config.gridSpacing * this.config.strength;
                         const waveY = Math.cos((dot.baseX * 0.04) + phaseY) * this.config.gridSpacing * this.config.strength;
 
-                        // Apply Position - SUBTLE (Reduced multiplier from 2.0 to 0.5)
+                        // Apply Position - SUBTLE
                         drawX += waveX * envelope * 0.5;
                         drawY += waveY * envelope * 0.5;
                         
-                        // Light Shift: Glow based on Envelope intensity
-                        const alpha = 0.1 + (envelope * 0.8);
+                        // Light Shift: Quadratic/Cubic Falloff for Shadow Retention
+                        // Even if physics are broad, light should focus on the mouse to create depth
+                        const lightEnvelope = Math.pow(envelope, 3); // Sharp falloff
+                        const alpha = 0.05 + (lightEnvelope * 0.9);
                         color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
                         
-                        // 3. Zoom Distortion (3D Ripple Effect)
-                        // Scale up the squares based on the wave intensity to simulate Z-axis displacement
-                        // Reduced zoom multiplier from 2.5 to 0.8 for subtle pop
+                        // 3. Zoom Distortion
                         currentRadius = this.config.dotRadius + (envelope * this.config.dotRadius * 0.8);
                     }
 
