@@ -326,9 +326,9 @@
                         const waveX = Math.sin((dot.baseY * 0.04) + phaseX) * this.config.gridSpacing * this.config.strength;
                         const waveY = Math.cos((dot.baseX * 0.04) + phaseY) * this.config.gridSpacing * this.config.strength;
 
-                        // Apply Position
-                        drawX += waveX * envelope * 2.0;
-                        drawY += waveY * envelope * 2.0;
+                        // Apply Position - SUBTLE (Reduced multiplier from 2.0 to 0.5)
+                        drawX += waveX * envelope * 0.5;
+                        drawY += waveY * envelope * 0.5;
                         
                         // Light Shift: Glow based on Envelope intensity
                         const alpha = 0.1 + (envelope * 0.8);
@@ -336,7 +336,8 @@
                         
                         // 3. Zoom Distortion (3D Ripple Effect)
                         // Scale up the squares based on the wave intensity to simulate Z-axis displacement
-                        currentRadius = this.config.dotRadius + (envelope * this.config.dotRadius * 2.5);
+                        // Reduced zoom multiplier from 2.5 to 0.8 for subtle pop
+                        currentRadius = this.config.dotRadius + (envelope * this.config.dotRadius * 0.8);
                     }
 
                     this.drawDot(drawX, drawY, currentRadius, color);
