@@ -214,29 +214,33 @@
                 this.parent.appendChild(this.canvas);
                 this.ctx = this.canvas.getContext('2d');
                 
-                // Define 3 variants based on index
+                // Define 3 variants based on index (RGB for dynamic lighting)
                 const variants = [
-                     // 0: Standard Magnify (Blue) - NOW SUBTLE WAVE
-                    { strength: 0.3, mode: 'magnify' },
-                     // 1: Push / Repel Strong (Cyan)
-                    { strength: 0.5, mode: 'push' },
-                     // 2: Flow/Spiral (Indigo)
-                    { strength: 0.2, mode: 'flow' },
-                     // 3: High Force (Violet)
-                    { strength: 0.4, mode: 'push' }, 
-                     // 4: Standard Repel (Teal)
-                    { strength: 0.35, mode: 'magnify' },
-                     // 5: Empty Card Special (White/Bright)
-                    { strength: 0.6, mode: 'magnify' } 
+                     // 0: Standard  (Blue-ish White)
+                    { r: 200, g: 230, b: 255, strength: 0.4, mode: 'magnify' },
+                     // 1: Strong Repel (Cyan-ish)
+                    { r: 180, g: 240, b: 255, strength: 0.6, mode: 'push' },
+                     // 2: Flow (Indigo-ish)
+                    { r: 200, g: 210, b: 255, strength: 0.3, mode: 'flow' },
+                     // 3: High Force (Violet-ish)
+                    { r: 220, g: 200, b: 255, strength: 0.5, mode: 'push' }, 
+                     // 4: Standard Repel 
+                    { r: 200, g: 255, b: 240, strength: 0.45, mode: 'magnify' },
+                     // 5: Empty Card Spl
+                    { r: 255, g: 255, b: 255, strength: 0.8, mode: 'magnify' } 
                 ];
 
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 8, // Even tighter (8px)
-                    dotRadius: 0.8,  // Tiny squares (~1.6px)
-                    dotColor: 'rgba(51, 65, 85, 0.5)', // Slate-700 with Opacity for subtlety
-                    mouseRadius: 200, // Larger radius for 'wave' feel
+                    gridSpacing: 8, 
+                    dotRadius: 0.8,
+                    // Very dim base state
+                    dotColor: 'rgba(255, 255, 255, 0.1)', 
+                    r: selectedVariant.r,
+                    g: selectedVariant.g,
+                    b: selectedVariant.b,
+                    mouseRadius: 200, 
                     strength: selectedVariant.strength,
                     mode: selectedVariant.mode
                 };
@@ -315,8 +319,6 @@
                     let color = this.config.dotColor;
 
                     if (dist < this.config.mouseRadius) {
-                        // Use a smoother curve (Cosine or SmoothStep-like)
-                        // This creates the "wave" rather than a linear cone
                         const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
                         const force = (1 - Math.cos(rawForce * Math.PI)) / 2; // Smooth sine ease
                         
@@ -333,12 +335,19 @@
                              drawX += Math.cos(angle + 1.57) * moveDist;
                              drawY += Math.sin(angle + 1.57) * moveDist;
                              
-                             this.drawDot(drawX, drawY, this.config.dotRadius, color);
+                             // Light Shift for flow
+                             const alpha = 0.1 + (force * 0.9); // glow up to 1.0
+                             this.drawDot(drawX, drawY, this.config.dotRadius, `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`);
                              return; 
                         }
 
                         drawX += Math.cos(angle) * moveDist;
                         drawY += Math.sin(angle) * moveDist;
+                        
+                        // Light Shift Logic
+                        // As force increases, dot becomes brighter/more opaque
+                        const alpha = 0.1 + (force * 0.9);
+                        color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
                     }
 
                     this.drawDot(drawX, drawY, this.config.dotRadius, color);
