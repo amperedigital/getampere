@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.715 Loaded (Pitched Forward)"); // DEBUG VERSION
+        console.log("Ampere3DKey v1.715 Loaded (Reset + Subtle Pitch Forward)"); // DEBUG VERSION
 
         // State
         this.progress = 0;
@@ -316,11 +316,10 @@ export class Ampere3DKey {
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Pitch - Flip)
-             // "Pitch it forward" -> Tilt top toward camera (Less negative X)
-             // -PI/2 is Flat (-1.57). 
-             // We want it tilted forward to catch the main light (coming from front-top-right)
-             // -1.2 is roughly ~68 degrees (tilted forward significantly)
-             const startX = -1.2; 
+             // Reset to near-flat but slightly pitched forward to catch light
+             // Original: -Math.PI / 2.1 (~-1.496)
+             // Adjusted: -1.35 (Top tilts slightly toward camera to face the light source)
+             const startX = -1.35; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
@@ -330,7 +329,7 @@ export class Ampere3DKey {
              this.mesh.rotation.x = baseX - (this.mouseY * 0.8 * interactionWeight) - (this.currentPress * 0.5);
              
              // Y Axis (Turn) 
-             // Standard scroll turn
+             // Reset to standard
              const startY = 0;
              const endY = -0.4;
              const baseY = startY + (this.progress * (endY - startY));
@@ -339,10 +338,9 @@ export class Ampere3DKey {
              this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.8 * interactionWeight);
 
              // Z Axis (Bank)
-             // Positive Z = Counter-Clockwise (Right Up, Left Down)
-             // Subtle angle to catch light without looking "broken"
-             const startZ = 0.08;
-             const endZ = 0.20; 
+             // Reset to 0 (No banking in start state, just scroll spin)
+             const startZ = 0;
+             const endZ = -0.1; // Standard subtle bank on scroll
              const baseZ = startZ + (this.progress * (endZ - startZ));
 
              const wobbleZ = Math.sin(time * 1.1) * 0.015;
