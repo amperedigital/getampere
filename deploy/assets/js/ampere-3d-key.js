@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.714 Loaded (Leaned Back)"); // DEBUG VERSION
+        console.log("Ampere3DKey v1.715 Loaded (Pitched Forward)"); // DEBUG VERSION
 
         // State
         this.progress = 0;
@@ -316,9 +316,11 @@ export class Ampere3DKey {
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Pitch - Flip)
-             // "Lean it back" -> Tilt top away from camera (More negative X)
-             // -PI/2 is Flat. -1.8 is leaning back (~103 degrees)
-             const startX = -1.8; 
+             // "Pitch it forward" -> Tilt top toward camera (Less negative X)
+             // -PI/2 is Flat (-1.57). 
+             // We want it tilted forward to catch the main light (coming from front-top-right)
+             // -1.2 is roughly ~68 degrees (tilted forward significantly)
+             const startX = -1.2; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
