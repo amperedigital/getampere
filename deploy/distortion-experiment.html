@@ -75,8 +75,8 @@
             position: absolute;
             inset: 0;
             z-index: 5; /* Above canvas (0), below content (10) */
-            /* Stronger Vignette for Shadow Sensing */
-            background: radial-gradient(circle at center, rgba(10, 11, 20, 0.1) 0%, rgba(10, 11, 20, 0.95) 90%);
+            /* REDUCED Vignette for better low-light visibility */
+            background: radial-gradient(circle at center, rgba(10, 11, 20, 0) 0%, rgba(10, 11, 20, 0.85) 100%);
             pointer-events: none;
         }
         
@@ -319,10 +319,22 @@
                     let drawY = dot.baseY;
                     let currentRadius = this.config.dotRadius;
                     
-                    // 0. Automatic Ambient Movement (Global Wave)
-                    // Gentle floating occurring always
-                    const autoWaveX = Math.sin((dot.baseY * 0.02) + this.time) * (this.config.gridSpacing * 0.3);
-                    const autoWaveY = Math.cos((dot.baseX * 0.02) + this.time) * (this.config.gridSpacing * 0.3);
+                    // 0. Automatic Ambient Movement (Organic / Random feel)
+                    // Sum of sines to simulate Perlin-like noise without library
+                    const t = this.time;
+                    
+                    // X-Axis Noise: Mix of 3 frequencies
+                    const noiseX = Math.sin((dot.baseY * 0.03) + t) 
+                                 + Math.sin((dot.baseY * 0.1) + (t * 1.5)) * 0.5 
+                                 + Math.cos((dot.baseX * 0.05) + (t * 0.8)) * 0.3;
+
+                    // Y-Axis Noise: Different phases/frequencies
+                    const noiseY = Math.cos((dot.baseX * 0.03) + t) 
+                                 + Math.cos((dot.baseX * 0.1) + (t * 1.5)) * 0.5
+                                 + Math.sin((dot.baseY * 0.05) + (t * 0.8)) * 0.3;
+
+                    const autoWaveX = noiseX * (this.config.gridSpacing * 0.4); 
+                    const autoWaveY = noiseY * (this.config.gridSpacing * 0.4);
                     
                     drawX += autoWaveX;
                     drawY += autoWaveY;
@@ -334,11 +346,11 @@
                         r = this.config.r; 
                         g = this.config.g; 
                         b = this.config.b;
-                        // Base visibility when hovering (uniform blanket)
-                        a = 0.2; 
+                        // HOVER: Bright blanket (0.25)
+                        a = 0.25; 
                     } else {
-                         // Idle state
-                         a = 0.05;
+                         // IDLE: Increased visibility (0.12) based on request "Underneath"
+                         a = 0.12;
                     }
 
                     // Physics Interaction (Localized to Mouse)
