@@ -226,8 +226,9 @@ export class Ampere3DKey {
 
         // Materials
         // Side/Body Color: White (Default) or Dark Navy (Theme)
-        // Updated v1.730: Using #0a0b14 to match site background (was #0f172a Slate-900)
-        const bodyColor = isDark ? 0x0a0b14 : 0xffffff; 
+        // Updated v1.731: Using Lighter Navy (#1e293b Slate-800) to compensate for lighting shadows.
+        // #0a0b14 was too dark and crushed to black.
+        const bodyColor = isDark ? 0x1e293b : 0xffffff; 
 
         const whiteMaterial = new THREE.MeshPhysicalMaterial({
             color: bodyColor,
@@ -291,7 +292,8 @@ export class Ampere3DKey {
         // Handled in animate() loop to combine with mouse interaction
 
         // 2. Lighting Reveal
-        this.ambientLight.intensity = 0.1 + (this.progress * 0.80);  // Dark -> Light (Boosted start)
+        // Updated v1.731: Boosted ambient base (0.1 -> 0.4) to lift shadows on dark materials.
+        this.ambientLight.intensity = 0.4 + (this.progress * 0.50);  // Was 0.1 + p*0.80
         this.mainLight.intensity = 0.8 + (this.progress * 1.2);      // Off -> On (Start ON so face isn't black)
         this.rimLight.intensity = 2.0 - (this.progress * 1.5);       // Bright -> Dim
 
