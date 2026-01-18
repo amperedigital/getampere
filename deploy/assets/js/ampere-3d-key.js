@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.711 Loaded (Final Angle Fix)"); // DEBUG VERSION
+        console.log("Ampere3DKey v1.714 Loaded (Leaned Back)"); // DEBUG VERSION
 
         // State
         this.progress = 0;
@@ -316,8 +316,9 @@ export class Ampere3DKey {
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Pitch - Flip)
-             // Revert to original Flat start state (-PI/2.1)
-             const startX = -Math.PI / 2.1; 
+             // "Lean it back" -> Tilt top away from camera (More negative X)
+             // -PI/2 is Flat. -1.8 is leaning back (~103 degrees)
+             const startX = -1.8; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
@@ -336,10 +337,10 @@ export class Ampere3DKey {
              this.mesh.rotation.y = baseY + wobbleY + (this.mouseX * 0.8 * interactionWeight);
 
              // Z Axis (Bank)
-             // Final State: "Left-side down, right-side up" -> Counter-Clockwise -> Positive Z
-             // Increased angle significantly (0.35) to catch light
-             const startZ = 0.25;
-             const endZ = 0.35; 
+             // Positive Z = Counter-Clockwise (Right Up, Left Down)
+             // Subtle angle to catch light without looking "broken"
+             const startZ = 0.08;
+             const endZ = 0.20; 
              const baseZ = startZ + (this.progress * (endZ - startZ));
 
              const wobbleZ = Math.sin(time * 1.1) * 0.015;
