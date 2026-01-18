@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.723 Loaded (Dark Mode Support)");
+        console.log("Ampere3DKey v1.732 Loaded (Lighting & Material Fixed)");
 
         // State
         this.progress = 0;
