@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.715 Loaded (Reset + Subtle Pitch Forward)"); // DEBUG VERSION
+        console.log("Ampere3DKey v1.717 Loaded (More Forward)"); // DEBUG VERSION
 
         // State
         this.progress = 0;
@@ -316,10 +316,9 @@ export class Ampere3DKey {
              // Base (Scroll) + Wobble (Time) + Interaction (Mouse) + Push (Click)
 
              // X Axis (Pitch - Flip)
-             // Reset to near-flat but slightly pitched forward to catch light
-             // Original: -Math.PI / 2.1 (~-1.496)
-             // Adjusted: -1.35 (Top tilts slightly toward camera to face the light source)
-             const startX = -1.35; 
+             // "More Forward" -> Tilt top more toward camera
+             // -1.1 is significantly pitched forward (~63 degrees)
+             const startX = -1.1; 
              const endX = -0.2;
              const baseX = startX + (this.progress * (endX - startX));
              
