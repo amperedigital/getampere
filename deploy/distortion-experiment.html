@@ -24,16 +24,20 @@
     </script>
     <style>
         body { margin: 0; overflow-x: hidden; background-color: #0a0b14; color: white; }
-        canvas#distortion-canvas {
-            position: fixed;
-            display: block; /* Ensure block display */
+        
+        /* Local Canvas for each card */
+        .distortion-canvas-local {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1; /* Above body background, below content */
-            pointer-events: none; 
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind content */
+            pointer-events: none; /* Let clicks pass through */
+            border-radius: inherit; /* Follow card radius if any */
+            opacity: 0.6; /* Slight fade for subtlety */
         }
+
         main {
             position: relative;
             z-index: 10;
@@ -41,11 +45,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Let mouse pass through container to body/window listener */
         }
         
         ._itemsContainer_ogirg_70 {
-            pointer-events: auto; /* Re-enable events on cards */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1px; /* The 'border' look */
@@ -59,17 +61,23 @@
         ._keyCard_ogirg_83 {
             background-color: #0a0b14; /* Match body to hide grid lines except gaps */
             padding: 2.5rem;
-            min-height: 300px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+            overflow: hidden; /* Contain the canvas */
+        }
+        
+        /* Ensure content sits above canvas */
+        ._keyCard_ogirg_83 > *:not(canvas) {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Let mouse interact with card container */
         }
         
         ._keyCard_ogirg_83._empty_ogirg_181 {
             /* Empty card style */
-            background-color: rgba(10, 11, 20, 0.5); /* Semi transparent to see dots? */
-            /* Or fully transparent if we want dots to show through ONLY empty slots */
             background-color: #0a0b14; 
         }
 
@@ -115,8 +123,6 @@
     </style>
 </head>
 <body>
-
-    <canvas id="distortion-canvas"></canvas>
 
     <main>
         <!-- User Provided Snippet Wrapped -->
@@ -187,27 +193,50 @@
     </main>
 
     <script type="module">
-        // INLINED JS to avoid CORS issues when opening file:// directly
+        // INLINED JS wrapper for local Distortion
         
         class DistortionGrid {
-            constructor(canvasElement) {
-                console.log("DistortionGrid initialized (Inline)");
-                this.canvas = canvasElement;
+            constructor(parentElement, index) {
+                this.parent = parentElement;
+                this.index = index;
+                this.canvas = document.createElement('canvas');
+                this.canvas.className = 'distortion-canvas-local';
+                this.parent.appendChild(this.canvas);
                 this.ctx = this.canvas.getContext('2d');
                 
-                // Configuration
+                // Define 3 variants based on index
+                const variants = [
+                     // 0: Standard Magnify (Blue)
+                    { activeColor: '#38bdf8', strength: 0.6, mode: 'magnify' },
+                     // 1: Push / Repel Strong (Cyan)
+                    { activeColor: '#22d3ee', strength: 1.2, mode: 'push' },
+                     // 2: Flow/Spiral (Indigo)
+                    { activeColor: '#818cf8', strength: 0.4, mode: 'flow' },
+                     // 3: High Force (Violet)
+                    { activeColor: '#a78bfa', strength: 0.9, mode: 'push' }, 
+                     // 4: Standard Repel (Teal)
+                    { activeColor: '#2dd4bf', strength: 0.7, mode: 'magnify' },
+                     // 5: Empty Card Special (White/Bright)
+                    { activeColor: '#f8fafc', strength: 1.5, mode: 'magnify' } 
+                ];
+
+                const selectedVariant = variants[index % variants.length];
+
                 this.config = {
-                    gridSpacing: 40, 
-                    dotRadius: 2.0,    // Increased for visibility
-                    dotColor: '#475569', // Slate-600 (Lighter than background)
-                    activeColor: '#38bdf8', // Sky-400 (Bright Cyan Highlight)
-                    mouseRadius: 250, 
-                    strength: 0.8,    
-                    ease: 0.1         
+                    gridSpacing: 12, // Tight grid spacing (12px)
+                    dotRadius: 1.2,
+                    dotColor: '#334155', // Slate-700 (Darker/Subtle)
+                    activeColor: selectedVariant.activeColor,
+                    mouseRadius: 120, // Localized effect radius
+                    strength: selectedVariant.strength,
+                    mode: selectedVariant.mode
                 };
 
                 this.mouse = { x: -1000, y: -1000 };
                 this.dots = [];
+                
+                // Ensure parent position is relative so canvas absolute works
+                // (Already handled in CSS but good safety)
                 
                 this.init();
                 this.bindEvents();
@@ -216,32 +245,35 @@
 
             init() {
                 this.resize();
-                this.createDots();
+                // Create dots is called by resize
             }
 
             bindEvents() {
-                window.addEventListener('resize', () => {
+                // Resize observer for the specific element
+                this.resizeObserver = new ResizeObserver(() => {
                     this.resize();
-                    this.createDots();
                 });
+                this.resizeObserver.observe(this.parent);
 
-                window.addEventListener('mousemove', (e) => {
-                    const rect = this.canvas.getBoundingClientRect();
+                // Mouse events on the PARENT element to ensure hit testing works
+                this.parent.addEventListener('mousemove', (e) => {
+                    const rect = this.parent.getBoundingClientRect();
                     this.mouse.x = e.clientX - rect.left;
                     this.mouse.y = e.clientY - rect.top;
                 });
 
-                window.addEventListener('mouseleave', () => {
+                this.parent.addEventListener('mouseleave', () => {
                     this.mouse.x = -1000;
                     this.mouse.y = -1000;
                 });
             }
 
             resize() {
-                this.width = window.innerWidth;
-                this.height = window.innerHeight;
+                this.width = this.parent.offsetWidth;
+                this.height = this.parent.offsetHeight;
                 this.canvas.width = this.width;
                 this.canvas.height = this.height;
+                this.createDots();
             }
 
             createDots() {
@@ -275,33 +307,61 @@
                     let color = this.config.dotColor;
 
                     if (dist < this.config.mouseRadius) {
-                        const force = (this.config.mouseRadius - dist) / this.config.mouseRadius;
+                        const force = (this.config.mouseRadius - dist) / this.config.mouseRadius; // 0 to 1
                         const angle = Math.atan2(dy, dx);
-                        const moveDist = force * this.config.gridSpacing * 2.5 * this.config.strength; 
                         
+                        let moveDist = 0;
+
+                        if (this.config.mode === 'magnify') {
+                             // Push away from mouse
+                             moveDist = force * this.config.gridSpacing * 3 * this.config.strength; 
+                        } else if (this.config.mode === 'push') {
+                             // Stronger Push / Linear
+                             moveDist = Util_easeOutQuad(force) * this.config.gridSpacing * 5 * this.config.strength;
+                        } else if (this.config.mode === 'flow') {
+                             // Perpendicular flow (Spin)
+                             // x' = x cos θ - y sin θ
+                             moveDist = force * this.config.gridSpacing * 3 * this.config.strength;
+                             // Add 90 degrees to angle
+                             drawX += Math.cos(angle + 1.57) * moveDist;
+                             drawY += Math.sin(angle + 1.57) * moveDist;
+                             
+                             radius = this.config.dotRadius + (force * 1);
+                             if(force > 0.1) color = this.config.activeColor;
+                             this.drawDot(drawX, drawY, radius, color);
+                             return; 
+                        }
+
                         drawX += Math.cos(angle) * moveDist;
                         drawY += Math.sin(angle) * moveDist;
 
-                        radius = this.config.dotRadius + (force * 1.5);
-                        if(force > 0.2) color = this.config.activeColor;
+                        radius = this.config.dotRadius + (force * 2.0);
+                        if(force > 0.1) color = this.config.activeColor;
                     }
 
-                    this.ctx.beginPath();
-                    this.ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-                    this.ctx.fillStyle = color;
-                    this.ctx.fill();
-                    this.ctx.closePath();
+                    this.drawDot(drawX, drawY, radius, color);
                 });
 
                 requestAnimationFrame(this.animate.bind(this));
             }
+
+            drawDot(x, y, r, c) {
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, r, 0, Math.PI * 2);
+                this.ctx.fillStyle = c;
+                this.ctx.fill();
+                this.ctx.closePath();
+            }
         }
+
+        // Helper
+        function Util_easeOutQuad(t) { return t * (2 - t); }
         
         document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('distortion-canvas');
-            if(canvas) {
-                new DistortionGrid(canvas);
-            }
+            const cards = document.querySelectorAll('._keyCard_ogirg_83');
+            cards.forEach((card, index) => {
+                new DistortionGrid(card, index);
+            });
         });
     </script>
 </body>
