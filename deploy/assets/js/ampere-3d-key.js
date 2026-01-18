@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.732 Loaded (Lighting & Material Fixed)");
+        console.log("Ampere3DKey v1.733 Loaded (High Ambient + Slate-700)");
 
         // State
         this.progress = 0;
@@ -226,9 +226,9 @@ export class Ampere3DKey {
 
         // Materials
         // Side/Body Color: White (Default) or Dark Navy (Theme)
-        // Updated v1.731: Using Lighter Navy (#1e293b Slate-800) to compensate for lighting shadows.
-        // #0a0b14 was too dark and crushed to black.
-        const bodyColor = isDark ? 0x1e293b : 0xffffff; 
+        // Updated v1.733: Using Slate-700 (#334155) + High Ambient to force visibility.
+        // 3D rendering crushes dark colors; we must go significantly lighter to appear "Navy".
+        const bodyColor = isDark ? 0x334155 : 0xffffff; 
 
         const whiteMaterial = new THREE.MeshPhysicalMaterial({
             color: bodyColor,
@@ -292,8 +292,8 @@ export class Ampere3DKey {
         // Handled in animate() loop to combine with mouse interaction
 
         // 2. Lighting Reveal
-        // Updated v1.731: Boosted ambient base (0.1 -> 0.4) to lift shadows on dark materials.
-        this.ambientLight.intensity = 0.4 + (this.progress * 0.50);  // Was 0.1 + p*0.80
+        // Updated v1.733: Ambient Base 0.8 to wash out shadows and show color.
+        this.ambientLight.intensity = 0.8 + (this.progress * 0.20);
         this.mainLight.intensity = 0.8 + (this.progress * 1.2);      // Off -> On (Start ON so face isn't black)
         this.rimLight.intensity = 2.0 - (this.progress * 1.5);       // Bright -> Dim
 
