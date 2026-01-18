@@ -6,14 +6,6 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.718 Loaded (Debug Enabled)"); 
-        // DEBUG: Periodically log the current rotation values for the user
-        setInterval(() => {
-             if (this.mesh) {
-                 console.log(`[Key Debug] Rot X: ${this.mesh.rotation.x.toFixed(3)} | Rot Y: ${this.mesh.rotation.y.toFixed(3)} | Rot Z: ${this.mesh.rotation.z.toFixed(3)}`);
-             }
-        }, 2000);
-
         // State
         this.progress = 0;
         
@@ -291,7 +283,10 @@ export class Ampere3DKey {
 
         // 3. Specular Sweep
         const lightX = -6 + (this.progress * 14); 
-        this.shinyLight.position.set(lightX, 2, 4);
+        // Adjusted Light Position (v1.719) to catch the face angle better
+        // Y: Higher (3) to hit top-down
+        // Z: Closer to camera (6) to reflect off the front
+        this.shinyLight.position.set(lightX, 3, 6);
         this.shinyLight.intensity = Math.sin(this.progress * Math.PI) * 50; 
     }
 
