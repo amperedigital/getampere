@@ -309,7 +309,7 @@
 
             animate() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
-                this.time += 0.05; // Increment time
+                // Removed time increment - Wave depends on spatial positions only
                 
                 this.dots.forEach(dot => {
                     const dx = this.mouse.x - dot.baseX;
@@ -321,28 +321,26 @@
                     let color = this.config.dotColor;
 
                     if (dist < this.config.mouseRadius) {
-                        // Smooth Force (0 at edge, 1 at center)
+                        // 1. Calculate Local Envelope (The "Lens" effect area)
                         const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
-                        const force = (1 - Math.cos(rawForce * Math.PI)) / 2; 
-                        
-                        // NEW LOGIC: Wave / Liquid Distortion instead of Radial
-                        // This removes the "center cluster" or "hole" effect.
-                        // Dots simply "swim" or "float" in place based on position + time
-                        
-                        // Frequency of the spatial wave
-                        const freq = 0.05; 
-                        
-                        // Calculate offsets using Sine/Cosine fields
-                        // We use dot.baseY for X-offset to create "shear" feel, or mix them
-                        const waveX = Math.sin((dot.baseY * freq) + this.time) * this.config.gridSpacing * this.config.strength;
-                        const waveY = Math.cos((dot.baseX * freq) + this.time) * this.config.gridSpacing * this.config.strength;
+                        // Smooth smoothstep-like curve for the envelope
+                        const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
-                        // Apply offset scaled by proximity force
-                        drawX += waveX * force;
-                        drawY += waveY * force;
+                        // 2. Spatial Wave Calculation (Concentric Ripples)
+                        // 'dist' drives the sine wave phase. Moving mouse = moving phase.
+                        const rippleFreq = 0.1; // Frequency of the rings
+                        const ripple = Math.sin(dist * rippleFreq); 
+
+                        // 3. Combine Envelope & Ripple
+                        // We push dots along the angle based on the ripple
+                        const angle = Math.atan2(dy, dx);
+                        const distortion = ripple * this.config.gridSpacing * this.config.strength * envelope * 4;
+
+                        drawX += Math.cos(angle) * distortion;
+                        drawY += Math.sin(angle) * distortion;
                         
-                        // Light Shift Logic
-                        const alpha = 0.1 + (force * 0.9);
+                        // Light Shift: Glow based on Envelope intensity
+                        const alpha = 0.1 + (envelope * 0.9);
                         color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
                     }
 
