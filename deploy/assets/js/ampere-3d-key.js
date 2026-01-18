@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.734 Loaded (Matte Material + Slate-600)");
+        console.log("Ampere3DKey v1.735 Loaded (Dynamic Ink + Unified Color)");
 
         // State
         this.progress = 0;
@@ -141,11 +141,20 @@ export class Ampere3DKey {
 
     initGeometry() {
         // Theme Detection
-        // 'light' (default) or 'dark'
-        // In dark mode: Body is dark, Face remains white (User Spec)
         const theme = this.container.dataset.keyTheme || 'light';
         const isDark = theme === 'dark';
         
+        // Color Configuration (v1.735)
+        // 1. Ink Color (The 'A' Logo on the face)
+        //    - Dark Mode: Matches the Body (Slate-600 #475569) for unification
+        //    - Light Mode: Brand Navy (#0f172a)
+        const inkHex = isDark ? "#475569" : "#0f172a";
+        
+        // 2. Body Color (The Sides and Back)
+        //    - Dark Mode: Slate-600 (0x475569)
+        //    - Light Mode: White (0xffffff)
+        const bodyColor = isDark ? 0x475569 : 0xffffff;
+
         // Define the shape (Rounded Square)
         const shape = new THREE.Shape();
         const size = 3.5;
@@ -195,13 +204,13 @@ export class Ampere3DKey {
         }
 
         // Texture Generation (White BG, Navy Logo, Full Bleed)
-        // Updated v1.730: Matched color to site background #0a0b14
+        // Updated v1.735: Dynamic Fill Color to match Body in Dark Mode.
         const svgString = `
         <svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" viewBox="0 0 424.1 423.6">
             <rect width="100%" height="100%" fill="#ffffff"/> 
             <g transform="translate(21.2, 0) scale(0.95, 1.0)">
-                <path fill="#0a0b14" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
-                <path fill="#0a0b14" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z"></path>
+                <path fill="${inkHex}" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
+                <path fill="${inkHex}" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z"></path>
             </g>
         </svg>
         `;
@@ -228,7 +237,7 @@ export class Ampere3DKey {
         // Side/Body Color: White (Default) or Dark Navy (Theme)
         // Updated v1.734: Using Slate-600 (#475569) + Matte Finish.
         // Removed reflective clearcoat on dark mode so it doesn't reflect the black void.
-        const bodyColor = isDark ? 0x475569 : 0xffffff; 
+        // (bodyColor is defined at top of function)
 
         const whiteMaterial = new THREE.MeshPhysicalMaterial({
             color: bodyColor,
