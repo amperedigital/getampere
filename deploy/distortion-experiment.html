@@ -138,7 +138,7 @@
     <main>
         <!-- User Provided Snippet Wrapped -->
         <div class="_itemsContainer_ogirg_70">
-            <!-- Card 1 -->
+            <!-- Card 1: Defaults (uses variant 1 color) -->
             <div data-object="grid" class="_keyCard_ogirg_83">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
                     <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
@@ -152,11 +152,19 @@
                 </div>
             </div>
 
-            <!-- Card 2 (Empty) -->
-            <div data-object="grid" class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
+            <!-- Card 2 (Empty): Large Pixels -->
+            <div data-object="grid" 
+                 data-grid-spacing="12" 
+                 data-dot-radius="2.5" 
+                 data-idle-alpha="0.08"
+                 class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
 
-            <!-- Card 3 -->
-            <div data-object="grid" class="_keyCard_ogirg_83">
+            <!-- Card 3: Dense Grid, Red Interaction -->
+            <div data-object="grid"
+                 data-grid-spacing="5"
+                 data-dot-radius="0.8"
+                 data-hover-color="255, 200, 200"
+                 class="_keyCard_ogirg_83">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
                     <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
                 </svg>
@@ -212,40 +220,80 @@
                 this.index = index;
                 this.canvas = document.createElement('canvas');
                 this.canvas.className = 'distortion-canvas-local';
+                
+                // Ensure the canvas is behind content but visible
+                this.canvas.style.position = 'absolute';
+                this.canvas.style.top = '0';
+                this.canvas.style.left = '0';
+                this.canvas.style.pointerEvents = 'none';
+                this.canvas.style.zIndex = '0'; 
+                
                 this.parent.appendChild(this.canvas);
                 this.ctx = this.canvas.getContext('2d');
                 
-                // Define 3 variants based on index (RGB for dynamic lighting)
-                // Unified 'mode' to 'wave' for consistency as per request
-                const variants = [
-                    { r: 200, g: 230, b: 255, strength: 0.8 }, // Blue-ish
-                    { r: 180, g: 240, b: 255, strength: 1.0 }, // Cyan-ish
-                    { r: 200, g: 210, b: 255, strength: 0.6 }, // Indigo-ish
-                    { r: 220, g: 200, b: 255, strength: 0.9 }, // Violet-ish
-                    { r: 200, g: 255, b: 240, strength: 0.8 }, // Teal-ish
-                    { r: 255, g: 255, b: 255, strength: 1.2 }  // White
-                ];
+                // --- Configuration & Data Attribute Parsing ---
+                
+                // 1. Defaults
+                const defaults = {
+                    gridSpacing: 7,
+                    dotRadius: 0.95,
+                    mouseRadius: 400,
+                    strength: 0.8,
+                    idleColor: '255, 255, 255',
+                    hoverColor: '200, 230, 255',
+                    idleAlpha: 0.12,
+                    hoverAlpha: 0.25
+                };
 
-                const selectedVariant = variants[index % variants.length];
+                // 2. Fallback Variants (preserves original demo logic if no data-attrs)
+                const variants = [
+                    { r: 200, g: 230, b: 255 }, // Blue-ish
+                    { r: 180, g: 240, b: 255 }, // Cyan-ish
+                    { r: 200, g: 210, b: 255 }, // Indigo-ish
+                    { r: 220, g: 200, b: 255 }, // Violet-ish
+                    { r: 200, g: 255, b: 240 }, // Teal-ish
+                    { r: 255, g: 255, b: 255 }  // White
+                ];
+                const variant = variants[index % variants.length];
+                
+                // 3. Parse Dataset
+                const d = this.parent.dataset;
+                
+                // Helper to parse "255, 255, 255" string to object
+                const parseRGB = (str) => {
+                    const parts = str.split(',').map(n => parseInt(n.trim()));
+                    return { r: parts[0], g: parts[1], b: parts[2] };
+                };
+
+                // Determine final values
+                const spacing = parseFloat(d.gridSpacing || defaults.gridSpacing);
+                const radius = parseFloat(d.dotRadius || defaults.dotRadius);
+                const mouseRad = parseFloat(d.mouseRadius || defaults.mouseRadius);
+                const strength = parseFloat(d.strength || (variant.strength ?? defaults.strength)); // variant fallback
+                
+                // Colors
+                let hoverRGB = variant; // Default to variant
+                if (d.hoverColor) hoverRGB = parseRGB(d.hoverColor);
+                
+                let idleRGB = parseRGB(defaults.idleColor);
+                if (d.idleColor) idleRGB = parseRGB(d.idleColor);
 
                 this.config = {
-                    gridSpacing: 7,   // Increased gap (User request)
-                    dotRadius: 0.95,   
-                    dotColor: 'rgba(255, 255, 255, 0.05)', 
-                    r: selectedVariant.r,
-                    g: selectedVariant.g,
-                    b: selectedVariant.b,
-                    mouseRadius: 400, 
-                    strength: selectedVariant.strength
+                    gridSpacing: spacing,
+                    dotRadius: radius,
+                    mouseRadius: mouseRad,
+                    strength: strength,
+                    // Colors separated
+                    idleR: idleRGB.r, idleG: idleRGB.g, idleB: idleRGB.b,
+                    hoverR: hoverRGB.r, hoverG: hoverRGB.g, hoverB: hoverRGB.b,
+                    // Alphas
+                    idleAlpha: parseFloat(d.idleAlpha || defaults.idleAlpha),
+                    hoverAlpha: parseFloat(d.hoverAlpha || defaults.hoverAlpha)
                 };
 
                 this.time = 0; // Initialize time for auto-movement
-
                 this.mouse = { x: -1000, y: -1000 };
                 this.dots = [];
-                
-                // Ensure parent position is relative so canvas absolute works
-                // (Already handled in CSS but good safety)
                 
                 this.init();
                 this.bindEvents();
@@ -373,14 +421,17 @@
                     }
 
                     // Base Visibility Logic:
-                    let r = 255, g = 255, b = 255, a = 0.05;
+                    let r = this.config.idleR;
+                    let g = this.config.idleG;
+                    let b = this.config.idleB;
+                    let a = this.config.idleAlpha;
 
                     if (isHovered) {
-                        r = this.config.r; 
-                        g = this.config.g; 
-                        b = this.config.b;
-                        // HOVER: Bright blanket (0.25)
-                        a = 0.25; 
+                        r = this.config.hoverR;
+                        g = this.config.hoverG;
+                        b = this.config.hoverB;
+                        // HOVER: Bright blanket
+                        a = this.config.hoverAlpha; 
 
                         // Interact Physics Check
                         const dx = this.mouse.x - baseX;
@@ -414,8 +465,8 @@
                             }
                         }
                     } else {
-                         // IDLE: Increased visibility (0.12)
-                         a = 0.12;
+                         // IDLE
+                         a = this.config.idleAlpha;
                     }
                     
                     const color = `rgba(${r},${g},${b},${a})`;
@@ -446,11 +497,20 @@
         // Helper
         function Util_easeOutQuad(t) { return t * (2 - t); }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('._keyCard_ogirg_83');
-            cards.forEach((card, index) => {
-                new DistortionGrid(card, index);
+        // Static Initialization Helper
+        DistortionGrid.initAll = function(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach((el, index) => {
+                // Check if already initialized to prevent duplicates
+                if (!el.dataset.distortionInitialized) {
+                    new DistortionGrid(el, index);
+                    el.dataset.distortionInitialized = "true";
+                }
             });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+             DistortionGrid.initAll('[data-object="grid"]');
         });
     </script>
 </body>
