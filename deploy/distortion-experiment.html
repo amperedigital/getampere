@@ -229,8 +229,8 @@
                 const selectedVariant = variants[index % variants.length];
 
                 this.config = {
-                    gridSpacing: 5,   // Fixed spacing (doesn't scale with container)
-                    dotRadius: 1.1,   // Increased Size (~2.2px squares)
+                    gridSpacing: 5,   
+                    dotRadius: 0.95,   // Slightly reduced (User request)
                     dotColor: 'rgba(255, 255, 255, 0.05)', 
                     r: selectedVariant.r,
                     g: selectedVariant.g,
@@ -364,11 +364,20 @@
             }
 
             drawDot(x, y, r, c) {
-                // Square implementation
                 this.ctx.fillStyle = c;
-                // r is half-width/radius, so width is r*2
                 const size = r * 2;
-                this.ctx.fillRect(x - r, y - r, size, size);
+                // Rounded Square ("Digital Pixel" look)
+                // Corner radius ~40% of size for soft square
+                const cornerRadius = size * 0.4;
+                
+                this.ctx.beginPath();
+                if (this.ctx.roundRect) {
+                    this.ctx.roundRect(x - r, y - r, size, size, cornerRadius);
+                } else {
+                    // Fallback to simple rect if browser is old
+                    this.ctx.rect(x - r, y - r, size, size);
+                }
+                this.ctx.fill();
             }
         }
 
