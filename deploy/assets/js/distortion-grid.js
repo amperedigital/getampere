@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.776-density-increase
+// Version: v1.777-smart-density
 
 (function() {
-console.log('[DistortionGrid] v1.776 Loaded');
+console.log('[DistortionGrid] v1.777 Loaded'); // Smart Density
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -17,13 +17,14 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 8, // Tightened from 10 to 8
+            gridSpacing: 8, // Target spacing (Tight)
+            maxDots: 8000,  // Performance Cap (prevents lag on huge screens)
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
-            idleAlpha: 0.10, // Increased from 0.05 to 0.10 for better visibility on load
+            idleAlpha: 0.10, 
             hoverAlpha: 0.25
         };
 
@@ -76,7 +77,8 @@ class DistortionGrid {
         };
 
         this.config = {
-            gridSpacing: safeSpacing,
+            targetSpacing: safeSpacing, // User desired spacing (Target)
+            maxDots: defaults.maxDots,
             dotRadius: radius,
             mouseRadius: mouseRad,
             strength: strength,
@@ -87,6 +89,9 @@ class DistortionGrid {
             idleAlpha: parseAlpha(d.idleAlpha, defaults.idleAlpha),
             hoverAlpha: parseAlpha(d.hoverAlpha, defaults.hoverAlpha)
         };
+        
+        // Dynamic Variable
+        this.computedSpacing = this.config.targetSpacing;
 
         // Setup Canvas
         this.canvas = document.createElement('canvas');
@@ -183,12 +188,32 @@ class DistortionGrid {
         this.height = this.parent.offsetHeight;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
+        
+        // Smart Spacing Calculation
+        const target = this.config.targetSpacing;
+        const area = this.width * this.height;
+        const maxDots = this.config.maxDots;
+        
+        // Check theoretical count with target spacing
+        const theoreticalDots = area / (target * target);
+        
+        if (theoreticalDots > maxDots) {
+             // Reverse calc: Sqrt(Area / MaxDots)
+             this.computedSpacing = Math.sqrt(area / maxDots);
+             // console.log(`[DistortionGrid] Scaling Back. Area: ${area}, TargetDots: ${Math.round(theoreticalDots)}, NewSpacing: ${this.computedSpacing.toFixed(2)}`);
+        } else {
+             this.computedSpacing = target;
+        }
+
         this.createDots();
     }
 
     createDots() {
-        const cols = Math.ceil(this.width / this.config.gridSpacing) + 1;
-        const rows = Math.ceil(this.height / this.config.gridSpacing) + 1;
+        // Use computedSpacing instead of config.gridSpacing
+        const s = this.computedSpacing;
+        
+        const cols = Math.ceil(this.width / s) + 1;
+        const rows = Math.ceil(this.height / s) + 1;
         this.numDots = cols * rows;
 
         // Optimization: Typed Arrays (Float32Array)
@@ -198,8 +223,8 @@ class DistortionGrid {
         let index = 0;
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
-                this.dotsX[index] = i * this.config.gridSpacing;
-                this.dotsY[index] = j * this.config.gridSpacing;
+                this.dotsX[index] = i * s;
+                this.dotsY[index] = j * s;
                 index++;
             }
         }
@@ -236,7 +261,7 @@ class DistortionGrid {
         const height = this.height;
         const dotsX = this.dotsX;
         const dotsY = this.dotsY;
-        const spacing = this.config.gridSpacing;
+        const spacing = this.computedSpacing; // Use dynamic spacing
         const strength = this.config.strength;
         const mouseRadius = this.config.mouseRadius;
         const mouseX = this.mouse.x;
