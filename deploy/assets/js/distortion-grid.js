@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.784-pure-sweep
+// Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.784 Loaded'); // Pure Sweep (Noise Removed)
+console.log('[DistortionGrid] v1.790 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
