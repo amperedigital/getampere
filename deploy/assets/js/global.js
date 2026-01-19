@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.817 Loaded');
+  console.log('[Ampere Global] v1.818 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -857,16 +857,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- CLOSING ---
                 if (currentAnimation) currentAnimation.cancel();
 
-                // 1. Lock current height explicitly (in case it was 'auto')
+                // 1. Measure current state
                 const startHeight = content.offsetHeight;
+                const style = window.getComputedStyle(content);
+                const startPadBottom = style.paddingBottom;
+                const startPadTop = style.paddingTop;
+
+                // Lock dimensions
                 content.style.height = startHeight + 'px';
+                content.style.overflow = 'hidden'; 
 
                 // 2. Play Animation
-                // Force a repaint request to ensure the start height is registered? 
-                // WAAPI handles this, but explicit frames help.
                 currentAnimation = content.animate([
-                    { height: startHeight + 'px', opacity: 1 },
-                    { height: '0px', opacity: 0 }
+                    { height: startHeight + 'px', opacity: 1, paddingBottom: startPadBottom, paddingTop: startPadTop },
+                    { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' }
                 ], {
                     duration: 300,
                     easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
@@ -875,7 +879,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 3. Cleanup on finish
                 currentAnimation.onfinish = () => {
                     detail.removeAttribute('open');
-                    content.style.height = ''; // Clean up inline style
+                    content.style.height = ''; 
+                    content.style.overflow = '';
                     currentAnimation = null;
                 };
 
@@ -885,23 +890,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 1. Open the element
                 detail.setAttribute('open', '');
+                content.style.overflow = 'hidden'; // Lock overflow
                 
-                // 2. Measure the natural height
+                // 2. Measure the natural height & styles
+                const style = window.getComputedStyle(content);
+                const targetPadBottom = style.paddingBottom;
+                const targetPadTop = style.paddingTop;
                 const endHeight = content.scrollHeight;
                 
                 // 3. Play Animation
                 currentAnimation = content.animate([
-                    { height: '0px', opacity: 0 },
-                    { height: endHeight + 'px', opacity: 1 }
+                    { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' },
+                    { height: endHeight + 'px', opacity: 1, paddingBottom: targetPadBottom, paddingTop: targetPadTop }
                 ], {
                     duration: 300,
                     easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
                 });
 
                 currentAnimation.onfinish = () => {
-                    // Clean up inline styles so content can react to window resizes naturally
                     content.style.height = ''; 
                     content.style.opacity = '';
+                    content.style.overflow = ''; // Release overflow
                     currentAnimation = null;
                 };
             }
