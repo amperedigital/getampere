@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.825 Loaded');
+  console.log('[Ampere Global] v1.826 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -399,9 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
         update() {
             if (this.targets.length === 0) return;
 
-             // Mobile Optimization: Disable scrollspy on small screens
-            if (window.innerWidth < 768) return;
-
+            // Mobile limit removed to allow horizontal indexer
+            
             const winH = window.innerHeight;
             // Active zone line: 30% down the screen
             const offset = winH * 0.3; 
@@ -433,9 +432,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isActive) {
                     item.link.classList.remove('text-zinc-500');
                     item.link.classList.add('text-white');
+                    item.link.setAttribute('data-active', 'true');
+                    
+                    // Support for Mobile Border-Bottom Indicator
+                    if (item.link.classList.contains('border-b-2')) {
+                        item.link.classList.remove('border-transparent');
+                        item.link.classList.add('border-blue-500');
+                    }
+
+                    // Mobile Horizontal Scroll Auto-Center
+                    if (window.innerWidth < 1024) {
+                        try {
+                            item.link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        } catch(e){}
+                    }
+
                 } else {
                     item.link.classList.add('text-zinc-500');
                     item.link.classList.remove('text-white');
+                    item.link.removeAttribute('data-active');
+
+                    // Support for Mobile Border-Bottom Indicator
+                    if (item.link.classList.contains('border-b-2')) {
+                        item.link.classList.add('border-transparent');
+                        item.link.classList.remove('border-blue-500');
+                    }
                 }
             });
 
