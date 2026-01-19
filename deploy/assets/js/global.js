@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.769 Loaded');
+  console.log('[Ampere Global] v1.770 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -45,7 +45,7 @@
                 window.DistortionGrid.initAll(selector);
             } else if (!document.querySelector('script[src*="distortion-grid.js"]')) {
                 const script = document.createElement('script');
-                script.src = 'assets/js/distortion-grid.js';
+                script.src = 'assets/js/distortion-grid.js?v=' + Date.now();
                 script.onload = () => {
                    if (window.DistortionGrid) window.DistortionGrid.initAll(selector);
                 };

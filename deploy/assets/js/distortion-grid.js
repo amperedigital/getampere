@@ -1,7 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
+// Version: v1.770-optimized
 
 (function() {
+console.log('[DistortionGrid] v1.770 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -15,7 +17,7 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 7,
+            gridSpacing: 10, // Increased default from 7 to 10 for less density
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
@@ -50,6 +52,9 @@ class DistortionGrid {
 
         // Determine final values
         const spacing = parseFloat(d.gridSpacing || defaults.gridSpacing);
+        // Ensure minimum spacing to prevent extreme density
+        const safeSpacing = Math.max(spacing, 4); 
+        
         const radius = parseFloat(d.dotRadius || defaults.dotRadius);
         const mouseRad = parseFloat(d.mouseRadius || defaults.mouseRadius);
         const strength = parseFloat(d.strength || (variant.strength ?? defaults.strength)); 
@@ -65,7 +70,7 @@ class DistortionGrid {
         if (idleData) idleRGB = idleData;
 
         this.config = {
-            gridSpacing: spacing,
+            gridSpacing: safeSpacing,
             dotRadius: radius,
             mouseRadius: mouseRad,
             strength: strength,
@@ -109,7 +114,8 @@ class DistortionGrid {
         
         this.init();
         this.bindEvents();
-        // Start animate initially to render first frame
+        
+        // Initial render (one frame)
         this.animate();
     }
 
@@ -121,34 +127,50 @@ class DistortionGrid {
     bindEvents() {
         // Resize observer
         this.resizeObserver = new ResizeObserver(() => {
-            this.resize();
-            // Force re-render if static
-            if (!this.isAnimating) {
-                // One-shot render for resize
-                this.isAnimating = true;
-                this.animate();
+            if (this.width !== this.parent.offsetWidth || this.height !== this.parent.offsetHeight) {
+                this.resize();
+                // Force re-render if static
+                if (!this.isAnimating && !this.forcePause) {
+                    this.isAnimating = true;
+                    this.animate();
+                }
             }
         });
         this.resizeObserver.observe(this.parent);
 
-        // Mouse Move
-        this.parent.addEventListener('mousemove', (e) => {
-            const rect = this.parent.getBoundingClientRect();
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
-            
-            // Wake Up
-            if (!this.isAnimating) {
-                this.isAnimating = true;
-                this.animate();
-            }
-        });
+        // Global Mouse Handler to fix occlusion issues
+        this.mouseHandler = (e) => {
+            // Only calc if we are allowed to animate (in view)
+            if (this.forcePause) return;
 
-        // Mouse Leave
-        this.parent.addEventListener('mouseleave', () => {
-            this.mouse.x = -1000;
-            this.mouse.y = -1000;
-        });
+            const rect = this.parent.getBoundingClientRect();
+           
+            // Check if mouse is within bounds (with buffer)
+            // Buffer allows the effect to "bleed" slightly out or catch fast movements
+            const buffer = 50; 
+            
+            if (
+                e.clientX >= rect.left - buffer && 
+                e.clientX <= rect.right + buffer &&
+                e.clientY >= rect.top - buffer && 
+                e.clientY <= rect.bottom + buffer
+            ) {
+                 this.mouse.x = e.clientX - rect.left;
+                 this.mouse.y = e.clientY - rect.top;
+                 
+                 // Wake Up
+                 if (!this.isAnimating) {
+                     console.log('[DistortionGrid] Waking up loop (Interaction)');
+                     this.isAnimating = true;
+                     this.animate();
+                 }
+            } else {
+                 this.mouse.x = -1000;
+                 this.mouse.y = -1000;
+            }
+        };
+
+        window.addEventListener('mousemove', this.mouseHandler, { passive: true });
     }
 
     resize() {
@@ -181,6 +203,7 @@ class DistortionGrid {
     animate() {
         // GLOBAL PAUSE (IntersectionObserver)
         if (this.forcePause) {
+            if (this.isAnimating) console.log('[DistortionGrid] Paused by Observer');
             this.isAnimating = false;
             return;
         }
@@ -189,6 +212,7 @@ class DistortionGrid {
         // If mouse is gone AND visual activity matches idle state (approx 0)
         // We stop the loop to save CPU.
         if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
+            if (this.isAnimating) console.log('[DistortionGrid] Sleeping (Idle)');
             this.isAnimating = false;
             return; 
         }
@@ -210,14 +234,34 @@ class DistortionGrid {
         }
         
         // RENDER LOOP
-        for (let i = 0; i < this.numDots; i++) {
-            const baseX = this.dotsX[i];
-            const baseY = this.dotsY[i];
+        // Using local vars decreases lookups in loop
+        const n = this.numDots;
+        const width = this.width;
+        const height = this.height;
+        const dotsX = this.dotsX;
+        const dotsY = this.dotsY;
+        const spacing = this.config.gridSpacing;
+        const strength = this.config.strength;
+        const mouseRadius = this.config.mouseRadius;
+        const mouseX = this.mouse.x;
+        const mouseY = this.mouse.y;
+        
+        const idleR = this.config.idleR;
+        const idleG = this.config.idleG;
+        const idleB = this.config.idleB;
+        const idleAlpha = this.config.idleAlpha;
+        
+        const dotRadius = this.config.dotRadius;
+
+        for (let i = 0; i < n; i++) {
+            const baseX = dotsX[i];
+            const baseY = dotsY[i];
 
             let drawX = baseX;
             let drawY = baseY;
-            let currentRadius = this.config.dotRadius;
-            
+            let currentRadius = dotRadius;
+            let a = idleAlpha;
+
             // 0. Automatic Ambient Movement (Organic / Random feel)
             // Optimization: Only calc heavy trig if activityLevel is visible
             if (this.activityLevel > 0.001) {
@@ -233,82 +277,68 @@ class DistortionGrid {
                              + Math.cos((baseX * 0.1) + (t * 1.5)) * 0.5
                              + Math.sin((baseY * 0.05) + (t * 0.8)) * 0.3;
 
-                const autoWaveX = noiseX * (this.config.gridSpacing * 0.4); 
-                const autoWaveY = noiseY * (this.config.gridSpacing * 0.4);
+                const autoWaveX = noiseX * (spacing * 0.4); 
+                const autoWaveY = noiseY * (spacing * 0.4);
                 
                 // Scale by activity
                 drawX += autoWaveX * this.activityLevel;
                 drawY += autoWaveY * this.activityLevel;
             }
 
-            // Base Visibility Logic
-            let r = this.config.idleR;
-            let g = this.config.idleG;
-            let b = this.config.idleB;
-            let a = this.config.idleAlpha;
-
             if (isHovered) {
-                r = this.config.hoverR;
-                g = this.config.hoverG;
-                b = this.config.hoverB;
-                // HOVER state alpha
-                a = this.config.hoverAlpha; 
-
                 // Optimize: Simple bounding box check before expensive Sqrt
-                const dx = this.mouse.x - baseX;
-                const dy = this.mouse.y - baseY;
+                const dx = mouseX - baseX;
+                const dy = mouseY - baseY;
                 
-                if (Math.abs(dx) < this.config.mouseRadius && Math.abs(dy) < this.config.mouseRadius) {
+                if (Math.abs(dx) < mouseRadius && Math.abs(dy) < mouseRadius) {
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     
                     // Physics Interaction (Localized to Mouse)
-                    if (dist < this.config.mouseRadius) {
+                    if (dist < mouseRadius) {
                         // 1. Envelope (0 to 1 scaling factor based on distance)
-                        const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
+                        const rawForce = (mouseRadius - dist) / mouseRadius; 
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
                         // 2. Wave Physics (Mouse Driven)
-                        const phaseX = this.mouse.x * 0.02; 
-                        const phaseY = this.mouse.y * 0.02;
+                        const phaseX = mouseX * 0.02; 
+                        const phaseY = mouseY * 0.02;
                         
-                        const waveX = Math.sin((baseY * 0.04) + phaseX) * this.config.gridSpacing * this.config.strength;
-                        const waveY = Math.cos((baseX * 0.04) + phaseY) * this.config.gridSpacing * this.config.strength;
+                        const waveX = Math.sin((baseY * 0.04) + phaseX) * spacing * strength;
+                        const waveY = Math.cos((baseX * 0.04) + phaseY) * spacing * strength;
 
                         drawX += waveX * envelope * 0.5;
                         drawY += waveY * envelope * 0.5;
                         
                         // 3. Zoom
-                        currentRadius = this.config.dotRadius + (envelope * this.config.dotRadius * 0.6);
+                        currentRadius = dotRadius + (envelope * dotRadius * 0.6);
                         
                         // 4. Light Boost 
-                        a += (envelope * 0.3); 
+                        // REMOVED FLASHLIGHT EFFECT: We do NOT boost alpha significantly here anymore.
+                        // We rely on simple movement/size change for interaction feedback.
+                        // Maybe tiny boost for localized clarity
+                        a += (envelope * 0.05); // Reduced from 0.3 to 0.05
                     }
                 }
-            } else {
-                 // IDLE
-                 a = this.config.idleAlpha;
             }
             
-            const color = `rgba(${r},${g},${b},${a})`;
-            this.drawDot(drawX, drawY, currentRadius, color);
+            const color = `rgba(${idleR},${idleG},${idleB},${a})`;
+            
+            // Draw
+            this.ctx.fillStyle = color;
+            const size = currentRadius * 2;
+            const cornerRadius = size * 0.4;
+            this.ctx.beginPath();
+             // Optimization: Skipping check for roundRect each iter if we know target browser
+             // But for safety keeping it simple
+            if (this.ctx.roundRect) {
+                this.ctx.roundRect(drawX - currentRadius, drawY - currentRadius, size, size, cornerRadius);
+            } else {
+                this.ctx.rect(drawX - currentRadius, drawY - currentRadius, size, size);
+            }
+            this.ctx.fill();
         }
 
         requestAnimationFrame(this.animate.bind(this));
-    }
-
-    drawDot(x, y, r, c) {
-        this.ctx.fillStyle = c;
-        const size = r * 2;
-        // Rounded Square ("Digital Pixel" look)
-        const cornerRadius = size * 0.4;
-        
-        this.ctx.beginPath();
-        if (this.ctx.roundRect) {
-            this.ctx.roundRect(x - r, y - r, size, size, cornerRadius);
-        } else {
-            this.ctx.rect(x - r, y - r, size, size);
-        }
-        this.ctx.fill();
     }
 
     // --- External Control Methods ---
@@ -318,6 +348,7 @@ class DistortionGrid {
 
     resume() {
         if (this.forcePause) {
+            console.log('[DistortionGrid] Resumed by Observer');
             this.forcePause = false;
             if (!this.isAnimating) {
                 this.isAnimating = true;
