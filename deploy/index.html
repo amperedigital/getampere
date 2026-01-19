@@ -2380,12 +2380,12 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     
     <!-- Scroll Content Track: Determines the height/length of the scroll interaction -->
     <!-- We use 300vh so we have 3 screens worth of scrolling to cycle through slides -->
-    <div data-track class="relative h-auto lg:h-[300vh]">
+    <div data-track class="relative h-[300vh]">
         
         <!-- Sticky Viewport: This pins to the screen while we scroll through the track -->
         <!-- Changed v1.456: overflow-hidden removed to allow footer to be pushed off-screen without clipping if content expands -->
         <!-- Changed v1.456: min-h-screen allows container to grow if content is huge -->
-        <div class="relative h-auto lg:sticky lg:top-0 lg:h-screen lg:min-h-screen w-full flex flex-col">
+        <div class="relative sticky top-0 h-screen min-h-screen w-full flex flex-col">
             
             <!-- Ambient Background (Noise) -->
             
@@ -2428,14 +2428,14 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
             <!-- 2. Main Content Area (Slides) -->
             <!-- Mobile: Stacked (grid-cols-1) | Desktop: Grid (grid-cols-2) -->
-            <main class="flex-1 w-full relative block lg:grid lg:grid-cols-1">
+            <main class="flex-1 w-full relative grid grid-cols-1">
                 
                 <!-- Vertical Center Line - Desktop Only -->
                 <!-- Moved v1.458: Inside main to match slide height/footer boundary naturally -->
                 <div data-grid-anim data-grid-axis="y" class="absolute left-1/2 inset-y-0 w-px bg-white/10 scale-y-0 origin-center transition-transform duration-1000 ease-out will-change-transform hidden lg:block z-0" aria-hidden="true"></div>
 
                 <!-- Slide 1: Resolution -->
-                <div data-slide class="sticky top-0 h-screen lg:h-auto lg:static z-10 lg:z-auto bg-[#0a0b14] lg:bg-transparent col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 scale-100 z-10" 
                      data-index="0">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2475,7 +2475,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 2: The Hub -->
-                <div data-slide class="sticky top-0 h-screen lg:h-auto lg:static z-20 lg:z-auto bg-[#0a0b14] lg:bg-transparent col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 lg:opacity-0 scale-100 lg:scale-95 pointer-events-auto lg:pointer-events-none" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 z-20 pointer-events-none" 
                      data-index="1">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -2514,7 +2514,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
                 </div>
 
                 <!-- Slide 3: Expertise -->
-                <div data-slide class="sticky top-0 h-screen lg:h-auto lg:static z-30 lg:z-auto bg-[#0a0b14] lg:bg-transparent col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-100 lg:opacity-0 scale-100 lg:scale-95 pointer-events-auto lg:pointer-events-none" 
+                <div data-slide class="col-start-1 row-start-1 w-full min-h-full flex flex-col justify-center lg:grid lg:grid-cols-2 lg:grid-rows-2 transition-all duration-700 ease-out opacity-0 scale-95 z-30 pointer-events-none" 
                      data-index="2">
                      
                      <!-- Q1: Heading (Top Left) -->
@@ -3347,7 +3347,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.854/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.855/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>

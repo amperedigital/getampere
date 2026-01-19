@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.854 Loaded');
+  console.log('[Ampere Global] v1.855 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -243,24 +243,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, { rootMargin: '200px' });
                 this.observer.observe(el);
             }
+
+            // Performance: Pre-calculate absolute geometry to avoid repaint on scroll
+            this.calculateCache = this.calculateCache.bind(this);
+            // Debounce resize slightly or just RAF
+            window.addEventListener('resize', () => {
+                 this.calculateCache(); 
+            });
+            // Init cache after layout settles
+            setTimeout(this.calculateCache, 100);
+        }
+
+        calculateCache() {
+            if (!this.track) return;
+            // Force a read to get current dimensions
+            const rect = this.track.getBoundingClientRect();
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            
+            this.cache = {
+                // Absolute top position of the track
+                top: rect.top + scrollTop,
+                height: rect.height,
+                winH: window.innerHeight
+            };
         }
 
         update() {
-            // Mobile Optimization: Disabled for Sticky Slideshow below 1024px (used for CSS Native fallback)
-            // This prevents fighting with the CSS Card Stack implementation
-            if (window.innerWidth < 1024) return;
-            
-            // Optimization: Skip expensive getBoundingClientRect if off-screen
+            // Optimization: Skip expensive calc if off-screen
             if (!this.state.isOnScreen) return;
-
-            if (!this.track) return;
             
-            const rect = this.track.getBoundingClientRect();
-            const winH = window.innerHeight;
+            // Ensure cache exists
+            if (!this.cache || !this.cache.top) this.calculateCache();
+            
+            // Read ONLY scroll position (cheap)
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            const { top, height, winH } = this.cache;
+            
+            // Calculate relative position from cached absolute values
+            const rectTop = top - scrollY;
+            const rectBottom = rectTop + height;
 
             // A. Visibility / Entrance Animation
             // Trigger earlier (30% down)
-            const currentlyInView = rect.top <= (winH * 0.3) && rect.bottom >= 0;
+            const currentlyInView = rectTop <= (winH * 0.3) && rectBottom >= 0;
             
             if (currentlyInView !== this.state.inView) {
                 this.state.inView = currentlyInView;
@@ -268,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // B. Scroll Progress
-            const totalScrollable = rect.height - winH;
+            const totalScrollable = height - winH;
             // Progress 0.0 to 1.0 (clamped)
-            let progress = -rect.top / totalScrollable;
+            let progress = -rectTop / totalScrollable;
             progress = Math.max(0, Math.min(1, progress));
             
             // C. Active Slide Calculation
