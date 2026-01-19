@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.783-clean-planar
+// Version: v1.784-pure-sweep
 
 (function() {
-console.log('[DistortionGrid] v1.783 Loaded'); // Clean Planar (No Swirl)
+console.log('[DistortionGrid] v1.784 Loaded'); // Pure Sweep (Noise Removed)
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -312,9 +312,9 @@ class DistortionGrid {
                 drawY += offsetY * this.activityLevel;
             }
 
-            // --- 0b. AMBIENT NOISE (Interaction Dependent) ---
-            // Optimization: Only calc heavy trig if activityLevel is visible
-            if (this.activityLevel > 0.001) {
+            // --- 0b. AMBIENT NOISE (Standard Mode Only) ---
+            // If Planar is active, we skip this to keep the wave clean.
+            if (this.config.waveType !== 'planar' && this.activityLevel > 0.001) {
                 const t = this.time;
                 
                 // X-Axis Noise
