@@ -350,38 +350,42 @@ class DistortionGrid {
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
                         // 2. Wave/Physics Selection
-                        if (this.config.waveType === 'balloon') {
-                            // --- BALLOON / LENS EFFECT ---
-                            // Push dots away from center (Repulsion) + Magnify size
+                        // "balloon" is now the "tight" lens version (v1.786).
+                        // "balloon-heavy" preserves the v1.785 high-repulsion version.
+                        if (this.config.waveType === 'balloon' || this.config.waveType === 'lens') {
+                            // --- TIGHT BALLOON (LENS) ---
+                            // Reduced repulsion, higher magnification to close the gap.
                             
-                            // Repulsion: Stronger closer to center
-                            // Scale by spacing so it works on all densities
-                            const repulsionStrength = spacing * 2.0; 
-                            
-                            // Direction vector (Mouse -> Dot) is (-dx, -dy)
-                            // We want to move along that vector. 
-                            // dx = mouse - dot. -dx = dot - mouse.
-                            // Moving in direction of (-dx, -dy) means subtracting dx/dy?
-                            // Let's verify:
-                            // If Dot is at 0, Mouse is at 10. dx = 10. 
-                            // We want Dot to move to -1 (away from 10).
-                            // drawX = 0 - (10/dist * strength). Correct.
-                            
+                            const repulsionStrength = spacing * 0.5; // v1.785 was 2.0
                             const pushFactor = envelope * repulsionStrength;
                             
-                            // Avoid division by zero if dist is super small (unlikely due to < radius, but safe)
                             if (dist > 0.1) {
                                 drawX -= (dx / dist) * pushFactor;
                                 drawY -= (dy / dist) * pushFactor;
                             }
                             
-                            // Magnification: Balloon dots get much larger
-                            const magFactor = 1.25; 
+                            // Higher magnification to fill the space
+                            const magFactor = 2.0; // v1.785 was 1.25
                             currentRadius = dotRadius + (envelope * dotRadius * magFactor);
                             
-                            // High Highlight
                             a += (envelope * 0.35);
                             
+                        } else if (this.config.waveType === 'balloon-heavy') {
+                            // --- HEAVY BALLOON (High Repulsion) ---
+                            // Preserved from v1.785
+                            
+                            const repulsionStrength = spacing * 2.0; 
+                            const pushFactor = envelope * repulsionStrength;
+                            
+                            if (dist > 0.1) {
+                                drawX -= (dx / dist) * pushFactor;
+                                drawY -= (dy / dist) * pushFactor;
+                            }
+                            
+                            const magFactor = 1.25; 
+                            currentRadius = dotRadius + (envelope * dotRadius * magFactor);
+                            a += (envelope * 0.35);
+
                         } else {
                             // --- STANDARD & PLANAR INTERACTIONS ---
                             
