@@ -8,6 +8,10 @@ class DistortionGrid {
         this.parent = parentElement;
         this.index = index;
         
+        // Expose instance for Global Observer
+        this.parent._distortionInstance = this;
+        this.forcePause = false; // Controlled by IntersectionObserver
+        
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
@@ -175,6 +179,12 @@ class DistortionGrid {
     }
 
     animate() {
+        // GLOBAL PAUSE (IntersectionObserver)
+        if (this.forcePause) {
+            this.isAnimating = false;
+            return;
+        }
+
         // SLEEP CONDITION:
         // If mouse is gone AND visual activity matches idle state (approx 0)
         // We stop the loop to save CPU.
@@ -299,6 +309,21 @@ class DistortionGrid {
             this.ctx.rect(x - r, y - r, size, size);
         }
         this.ctx.fill();
+    }
+
+    // --- External Control Methods ---
+    pause() {
+        this.forcePause = true;
+    }
+
+    resume() {
+        if (this.forcePause) {
+            this.forcePause = false;
+            if (!this.isAnimating) {
+                this.isAnimating = true;
+                this.animate();
+            }
+        }
     }
 
     // Static Initialization Helper

@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.768 Loaded');
+  console.log('[Ampere Global] v1.769 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Consolidated Observer Logic
-    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card]');
+    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card], [data-object="grid"]');
 
     // Define observer options
     const observerOptions = {
@@ -613,6 +613,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const smilContainer = target.hasAttribute('data-smil-container') ? target : target.querySelector('[data-smil-container]');
             // Check for direct video children if not in smil container
             const directVideo = target.querySelector('video');
+            // Check for DistortionGrid instance
+            const distGrid = target._distortionInstance;
 
             if (entry.isIntersecting) {
                 target.classList.add('in-view');
@@ -620,6 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (smilContainer) window.triggerMedia(smilContainer, true);
                 if (directVideo && !smilContainer) directVideo.play().catch(()=>{});
+                if (distGrid) distGrid.resume();
 
             } else {
                 // target.classList.remove('in-view'); 
@@ -627,6 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (smilContainer) window.triggerMedia(smilContainer, false);
                 if (directVideo && !smilContainer) directVideo.pause();
+                if (distGrid) distGrid.pause();
             }
         });
     }, observerOptions);
