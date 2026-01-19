@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.790 Loaded'); 
+console.log('[DistortionGrid] v1.791 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -26,7 +26,7 @@ class DistortionGrid {
             hoverColor: '200, 230, 255',
             idleAlpha: 0.10, 
             hoverAlpha: 0.25,
-            waveType: 'interaction' // Options: 'interaction' | 'planar'
+            waveType: 'balloon' // Defaults to "Tight Balloon" (v1.790)
         };
 
         // 2. Fallback Variants (preserves original demo logic if no data-attrs)
@@ -314,7 +314,13 @@ class DistortionGrid {
 
             // --- 0b. AMBIENT NOISE (Standard Mode Only) ---
             // If Planar or Balloon is active, we skip this to keep the effect clean.
-            if (this.config.waveType !== 'planar' && this.config.waveType !== 'balloon' && this.activityLevel > 0.001) {
+            // Check for ANY balloon variant (balloon, lens, balloon-void, balloon-heavy)
+            const isBalloon = this.config.waveType && (
+                this.config.waveType.startsWith('balloon') || 
+                this.config.waveType === 'lens'
+            );
+            
+            if (this.config.waveType !== 'planar' && !isBalloon && this.activityLevel > 0.001) {
                 const t = this.time;
                 
                 // X-Axis Noise
