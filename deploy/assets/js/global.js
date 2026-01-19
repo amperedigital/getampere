@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.837 Loaded');
+  console.log('[Ampere Global] v1.838 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -387,36 +387,28 @@ document.addEventListener('DOMContentLoaded', () => {
                              const style = window.getComputedStyle(target);
                              const scrollMt = parseFloat(style.scrollMarginTop) || 0;
                              window.lenis.scrollTo(target, { offset: -scrollMt }); 
-                         } else {
-                             // Fallback for mobile/no-lenis with custom easing
-                             // Dynamic offset from CSS scroll-margin-top (or default 160)
-                             const style = window.getComputedStyle(target);
-                             const scrollMt = parseFloat(style.scrollMarginTop);
-                             // If scroll-mt is 0 or NaN, use 160 as safe default for header + nav
-                             const offset = (isNaN(scrollMt) || scrollMt < 20) ? 160 : scrollMt;
-                             
-                             const targetY = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                             const startY = window.pageYOffset;
-                             const distance = targetY - startY;
-                             const duration = 1200; // Slower/smoother
-                             let startTime = null;
-
-                             function animation(currentTime) {
-                                if (startTime === null) startTime = currentTime;
-                                const timeElapsed = currentTime - startTime;
-                                const progress = Math.min(timeElapsed / duration, 1);
-                                
-                                // Easing: easeOutExpo
-                                const ease = (progress === 1) ? 1 : 1 - Math.pow(2, -10 * progress);
-                                
-                                window.scrollTo(0, startY + (distance * ease));
-                                
-                                if (timeElapsed < duration) {
-                                  requestAnimationFrame(animation);
-                                }
-                             }
-                             requestAnimationFrame(animation);
-                         }
+                        // Mobile Fallback: Use native scroll (Instant/Smooth via CSS)
+                        // Custom JS easing fights with touch interactions, causing "stuck" scroll.
+                        // We'll rely on CSS 'scroll-behavior: smooth' or just instant jump and let browser handle it.
+                        
+                         const style = window.getComputedStyle(target);
+                         const scrollMt = parseFloat(style.scrollMarginTop);
+                         const offset = (isNaN(scrollMt) || scrollMt < 20) ? 160 : scrollMt;
+                         
+                         const targetY = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                         
+                         // Cleanest fix: Native scrollTo with 'smooth' behavior if supported, 
+                         // but "auto" is safer to prevent locking.
+                         // Let's use a simple window.scrollTo which doesn't lock the thread.
+                         
+                         window.scrollTo({
+                            top: targetY,
+                            behavior: 'smooth'
+                         });
+                         
+                         // Note: If 'smooth' behavior is missing in CSS reset or conflicting,
+                         // it will jump instantly, which is better than locking.
+                         // (Old JS animation loop removed)
                     });
                 }
             });
