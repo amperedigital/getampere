@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.847 Loaded');
+  console.log('[Ampere Global] v1.848 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -371,6 +371,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.indicator = navEl.querySelector('[data-scrollspy-indicator]');
             this.targets = [];
             this.activeIndex = -1;
+            
+            // Recalculate on resize (ensures indicator position updates if window width changes)
+            window.addEventListener('resize', () => {
+                this.activeIndex = -1; 
+                this.update();
+            }, { passive: true });
             
             // Map links to target elements
             this.links.forEach((link) => {
