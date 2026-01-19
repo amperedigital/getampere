@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.851 Loaded');
+  console.log('[Ampere Global] v1.852 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -229,11 +229,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             this.state = {
                 inView: false,
-                activeIndex: -1
+                activeIndex: -1,
+                isOnScreen: true // Optimistic default
             };
+            
+            // Optimization: Stop layout thrashing when element is not even visible.
+            // Using a broad margin to ensure we catch it before it enters screen.
+            if ('IntersectionObserver' in window) {
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        this.state.isOnScreen = entry.isIntersecting;
+                    });
+                }, { rootMargin: '200px' });
+                this.observer.observe(el);
+            }
         }
 
         update() {
+            // Optimization: Skip expensive getBoundingClientRect if off-screen
+            if (!this.state.isOnScreen && window.innerWidth < 768) return;
+
             if (!this.track) return;
             
             const rect = this.track.getBoundingClientRect();
