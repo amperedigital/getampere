@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.770-optimized
+// Version: v1.771-gradient-fix
 
 (function() {
-console.log('[DistortionGrid] v1.770 Loaded');
+console.log('[DistortionGrid] v1.771 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -17,13 +17,13 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 10, // Increased default from 7 to 10 for less density
+            gridSpacing: 15, // Reverted to 15 (less sparse than 20, less dense than 5)
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
-            idleAlpha: 0.12,
+            idleAlpha: 0.0, // Default to invisible/hidden when idle
             hoverAlpha: 0.25
         };
 
@@ -69,6 +69,12 @@ class DistortionGrid {
         const idleData = parseRGB(d.idleColor);
         if (idleData) idleRGB = idleData;
 
+        // Parse Alphas safely allowing 0
+        const parseAlpha = (val, def) => {
+            const parsed = parseFloat(val);
+            return isNaN(parsed) ? def : parsed;
+        };
+
         this.config = {
             gridSpacing: safeSpacing,
             dotRadius: radius,
@@ -78,8 +84,8 @@ class DistortionGrid {
             idleR: idleRGB.r, idleG: idleRGB.g, idleB: idleRGB.b,
             hoverR: hoverRGB.r, hoverG: hoverRGB.g, hoverB: hoverRGB.b,
             // Alphas
-            idleAlpha: parseFloat(d.idleAlpha || defaults.idleAlpha),
-            hoverAlpha: parseFloat(d.hoverAlpha || defaults.hoverAlpha)
+            idleAlpha: parseAlpha(d.idleAlpha, defaults.idleAlpha),
+            hoverAlpha: parseAlpha(d.hoverAlpha, defaults.hoverAlpha)
         };
 
         // Setup Canvas
@@ -146,7 +152,6 @@ class DistortionGrid {
             const rect = this.parent.getBoundingClientRect();
            
             // Check if mouse is within bounds (with buffer)
-            // Buffer allows the effect to "bleed" slightly out or catch fast movements
             const buffer = 50; 
             
             if (
@@ -313,13 +318,15 @@ class DistortionGrid {
                         currentRadius = dotRadius + (envelope * dotRadius * 0.6);
                         
                         // 4. Light Boost 
-                        // REMOVED FLASHLIGHT EFFECT: We do NOT boost alpha significantly here anymore.
-                        // We rely on simple movement/size change for interaction feedback.
-                        // Maybe tiny boost for localized clarity
-                        a += (envelope * 0.05); // Reduced from 0.3 to 0.05
+                        // Modified Flashlight: Subtle boost instead of intense beam
+                        // Max add +0.3 alpha so it becomes visible if idleAlpha is 0
+                        a += (envelope * 0.3); 
                     }
                 }
             }
+            
+            // Safety cap alpha
+            if (a > 0.8) a = 0.8;
             
             const color = `rgba(${idleR},${idleG},${idleB},${a})`;
             
