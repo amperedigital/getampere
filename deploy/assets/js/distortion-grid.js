@@ -351,7 +351,7 @@ class DistortionGrid {
 
                         // 2. Wave/Physics Selection
                         // "balloon" is now the "tight" lens version (v1.786).
-                        // "balloon-heavy" preserves the v1.785 high-repulsion version.
+                        // "balloon-void" preserves the v1.785 high-repulsion version (The "Gap" version).
                         if (this.config.waveType === 'balloon' || this.config.waveType === 'lens') {
                             // --- TIGHT BALLOON (LENS) ---
                             // Reduced repulsion, higher magnification to close the gap.
@@ -370,9 +370,10 @@ class DistortionGrid {
                             
                             a += (envelope * 0.35);
                             
-                        } else if (this.config.waveType === 'balloon-heavy') {
-                            // --- HEAVY BALLOON (High Repulsion) ---
+                        } else if (this.config.waveType === 'balloon-void' || this.config.waveType === 'balloon-heavy') {
+                            // --- BALLOON VOID (High Repulsion) ---
                             // Preserved from v1.785
+
                             
                             const repulsionStrength = spacing * 2.0; 
                             const pushFactor = envelope * repulsionStrength;
