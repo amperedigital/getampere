@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.838 Loaded');
+  console.log('[Ampere Global] v1.839 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -387,6 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                              const style = window.getComputedStyle(target);
                              const scrollMt = parseFloat(style.scrollMarginTop) || 0;
                              window.lenis.scrollTo(target, { offset: -scrollMt }); 
+                         } else {
                         // Mobile Fallback: Use native scroll (Instant/Smooth via CSS)
                         // Custom JS easing fights with touch interactions, causing "stuck" scroll.
                         // We'll rely on CSS 'scroll-behavior: smooth' or just instant jump and let browser handle it.
@@ -409,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
                          // Note: If 'smooth' behavior is missing in CSS reset or conflicting,
                          // it will jump instantly, which is better than locking.
                          // (Old JS animation loop removed)
+                        }
                     });
                 }
             });
