@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.812 Loaded');
+  console.log('[Ampere Global] v1.813 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -824,3 +824,63 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 
+// ... (End of previous file content)
+
+/*
+ * FAQ Accordion Animation (WAAPI)
+ * Provides smooth open/close transitions for <details> elements.
+ * Necessary because CSS cannot animate 'height: auto' or delay the 'open' attribute removal naturally.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const details = document.querySelectorAll('#faq-section details');
+    
+    details.forEach(detail => {
+        const summary = detail.querySelector('summary');
+        const content = detail.querySelector('summary + div'); // The content wrapper
+        
+        if (!summary || !content) return;
+
+        // Apply initial styles to content wrapper to prepare for animation
+        content.style.overflow = 'hidden';
+
+        summary.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop default instant toggle
+
+            if (detail.open) {
+                // CLOSING ANIMATION
+                // 1. Get current height
+                const startHeight = content.scrollHeight;
+                
+                // 2. Animate from height to 0
+                const animation = content.animate([
+                    { height: startHeight + 'px', opacity: 1 },
+                    { height: '0px', opacity: 0 }
+                ], {
+                    duration: 300,
+                    easing: 'ease-in-out' // The requested easing
+                });
+
+                // 3. When finished, remove 'open' attribute
+                animation.onfinish = () => {
+                    detail.removeAttribute('open');
+                };
+            } else {
+                // OPENING ANIMATION
+                // 1. Set open immediately so content exists in DOM (but is invisible if we could, but we can't)
+                detail.setAttribute('open', '');
+                
+                // 2. Get target height
+                const endHeight = content.scrollHeight;
+                
+                // 3. Animate from 0 to height
+                content.animate([
+                    { height: '0px', opacity: 0 },
+                    { height: endHeight + 'px', opacity: 1 }
+                ], {
+                    duration: 300,
+                    easing: 'ease-out' // The requested easing
+                });
+            }
+        });
+    });
+});
