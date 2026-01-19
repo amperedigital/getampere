@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.805 Loaded');
+  console.log('[Ampere Global] v1.806 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Consolidated Observer Logic
-    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card], [data-object="grid"]');
+    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card], [data-object="grid"], [data-us-project]');
 
     // Define observer options
     const observerOptions = {
@@ -641,6 +641,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const distGrid = target._distortionInstance;
             // Check for Ampere3DKey instance
             const keyInstance = target._key3dInstance;
+            // Check for Unicorn Studio Project
+            const isUnicornProject = target.hasAttribute('data-us-project');
 
             if (entry.isIntersecting) {
                 target.classList.add('in-view');
@@ -650,6 +652,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (directVideo && !smilContainer) directVideo.play().catch(()=>{});
                 if (distGrid) distGrid.resume();
                 if (keyInstance) keyInstance.resume();
+                
+                if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
+                    const scene = window.UnicornStudio.scenes.find(s => s.element === target);
+                    if (scene) scene.paused = false;
+                }
 
             } else {
                 // target.classList.remove('in-view'); 
@@ -659,6 +666,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (directVideo && !smilContainer) directVideo.pause();
                 if (distGrid) distGrid.pause();
                 if (keyInstance) keyInstance.pause();
+
+                if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
+                    const scene = window.UnicornStudio.scenes.find(s => s.element === target);
+                    if (scene) scene.paused = true;
+                }
             }
         });
     }, observerOptions);
