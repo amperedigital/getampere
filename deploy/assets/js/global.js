@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.822 Loaded');
+  console.log('[Ampere Global] v1.823 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -837,6 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
     details.forEach(detail => {
         const summary = detail.querySelector('summary');
         const content = detail.querySelector('summary + div');
+        const chevron = summary ? summary.querySelector('.faq-chevron') : null; // Get the arrow
         let currentAnimation = null; // Store active animation to cancel on interrupt
         
         if (!summary || !content) return;
@@ -856,6 +857,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (detail.open) {
                 // --- CLOSING ---
                 if (currentAnimation) currentAnimation.cancel();
+                
+                // Immediately rotate arrow back
+                if (chevron) chevron.classList.remove('rotate-180');
 
                 // 1. Measure current state
                 const startHeight = content.offsetHeight;
@@ -897,6 +901,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (currentAnimation) currentAnimation.cancel();
+                
+                // Immediately rotate arrow down
+                if (chevron) chevron.classList.add('rotate-180');
 
                 // 1. Open the element
                 detail.setAttribute('open', '');
