@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.781-giant-ripple
+// Version: v1.782-interaction-ripple
 
 (function() {
-console.log('[DistortionGrid] v1.781 Loaded'); // Giant Ripple Mode
+console.log('[DistortionGrid] v1.782 Loaded'); // Interaction-Only Ripple Mode
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -258,12 +258,9 @@ class DistortionGrid {
         this.activityLevel += (targetLevel - this.activityLevel) * 0.05; 
         
         // Timer Logic:
-        // - Planar Wave: Always runs (continuous sweep)
-        // - Interaction: Only runs if there's visual motion (activity > 0)
-        if (this.config.waveType === 'planar' || this.activityLevel > 0.001) {
+        // - Interaction (and Planar): Only runs if there's visual motion (activity > 0)
+        if (this.activityLevel > 0.001) {
             this.time += 0.015;
-        } else {
-             // If not planar and not active, we might sleep...
         }
         
         // RENDER LOOP
@@ -297,7 +294,8 @@ class DistortionGrid {
             let a = idleAlpha;
             
             // --- 0a. PLANAR WAVE (Deep Ocean Swell) ---
-            if (this.config.waveType === 'planar') {
+            // Only calc Planar if active
+            if (this.config.waveType === 'planar' && this.activityLevel > 0.001) {
                 const t = this.time;
                 // Wave 1: Giant Diagonal Swell (Low Freq, High Amp)
                 const w1 = (baseX * 0.0015) + (baseY * 0.0025) + (t * 0.3);
@@ -309,8 +307,9 @@ class DistortionGrid {
                 const offsetX = Math.cos(w1) * (spacing * 1.8) + Math.sin(w2) * (spacing * 0.4);
                 const offsetY = Math.sin(w1) * (spacing * 1.8) + Math.cos(w2) * (spacing * 0.4);
 
-                drawX += offsetX;
-                drawY += offsetY;
+                // Modulate amplitude by activityLevel (Fade in/out on hover)
+                drawX += offsetX * this.activityLevel;
+                drawY += offsetY * this.activityLevel;
             }
 
             // --- 0b. AMBIENT NOISE (Interaction Dependent) ---
@@ -391,8 +390,9 @@ class DistortionGrid {
         }
 
         // SLEEP CONDITION:
-        // Only if NOT planar mode. Planar mode must keep running.
-        if (this.config.waveType !== 'planar' && this.mouse.x === -1000 && this.activityLevel <= 0.001) {
+        // If mouse is gone AND visual activity matches idle state (approx 0)
+        // We stop the loop to save CPU, but leave the canvas painted (frozen idle state).
+        if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
             if (this.isAnimating) console.log('[DistortionGrid] Sleeping (Idle)');
             this.isAnimating = false;
             return; 
