@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.796 Loaded'); 
+console.log('[DistortionGrid] v1.798 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -144,8 +144,8 @@ class DistortionGrid {
         this.resizeObserver = new ResizeObserver(() => {
             if (this.width !== this.parent.offsetWidth || this.height !== this.parent.offsetHeight) {
                 this.resize();
-                // Force re-render if static
-                if (!this.isAnimating && !this.forcePause) {
+                // Force re-render if static (and not mobile)
+                if (!this.isAnimating && !this.forcePause && window.innerWidth >= 1024) {
                     this.isAnimating = true;
                     this.animate();
                 }
@@ -155,9 +155,16 @@ class DistortionGrid {
 
         // Global Mouse Handler to fix occlusion issues
         this.mouseHandler = (e) => {
+            // Absolute Mobile Guard: Do no math on small screens
+            if (window.innerWidth < 1024) return;
+
             // Only calc if we are allowed to animate (in view)
             if (this.forcePause) return;
 
+            // Optimization: Throttle GBCR checks? 
+            // Currently running every frame. 
+            // TODO: Move GBCR to a cached property updated on Scroll/Refresh intersection?
+            // For now, checks are necessary for accurate coordinate mapping relative to viewport.
             const rect = this.parent.getBoundingClientRect();
            
             // Check if mouse is within bounds (with buffer)
@@ -188,6 +195,33 @@ class DistortionGrid {
     }
 
     resize() {
+        // Mobile Guard: strictly disable functionality & apply fallback
+        if (window.innerWidth < 1024) {
+             // Fallback: Static SVG Background (Dots)
+             // Simple grid pattern: 20x20px cell, 1.5px radius dot at top-left (2,2)
+             const svg = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='rgba(255,255,255,0.15)' /%3E%3C/svg%3E";
+             
+             if (this.parent) {
+                 this.parent.style.backgroundImage = `url("${svg}")`;
+                 this.parent.style.backgroundRepeat = 'repeat';
+                 this.parent.style.backgroundSize = '20px 20px';
+             }
+
+             this.width = 0;
+             this.height = 0;
+             if (this.canvas) {
+                 this.canvas.width = 0;
+                 this.canvas.height = 0;
+             }
+             this.isAnimating = false;
+             return;
+        }
+
+        // On Desktop: Remove fallback if present (e.g. window resize crossover)
+        if (this.parent.style.backgroundImage && this.parent.style.backgroundImage.includes('data:image/svg')) {
+             this.parent.style.backgroundImage = '';
+        }
+
         this.width = this.parent.offsetWidth;
         this.height = this.parent.offsetHeight;
         this.canvas.width = this.width;
@@ -241,8 +275,8 @@ class DistortionGrid {
 
     animate() {
         // GLOBAL PAUSE (IntersectionObserver)
-        if (this.forcePause) {
-            if (this.isAnimating) console.log('[DistortionGrid] Paused by Observer');
+        if (this.forcePause || window.innerWidth < 1024) { // Explicit Mobile Guard
+            if (this.isAnimating) console.log('[DistortionGrid] Paused by Observer/Mobile');
             this.isAnimating = false;
             return;
         }
@@ -475,13 +509,6 @@ class DistortionGrid {
 
     // Static Initialization Helper
     static initAll(selector = '[data-object="distortion-grid"]') {
-         // Optimization: Skip initialization on mobile/tablet devices (< 1024px)
-         // This prevents performance hits on scroll for touch devices.
-         if (window.innerWidth < 1024) {
-             console.log('[DistortionGrid] Mobile width detected. Skipping initialization to save resources.');
-             return;
-         }
-
          const elements = document.querySelectorAll(selector);
          elements.forEach((el, index) => {
              // Check if already initialized

@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.796 Loaded');
+  console.log('[Ampere Global] v1.798 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -164,6 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         update() {
+            // Mobile Optimization: Force visibility and abort to prevent scroll jitter
+            if (window.innerWidth < 1024) {
+                 this.targets.forEach(t => {
+                     t.style.opacity = '1';
+                     t.style.transform = 'translate3d(0, 0, 0)';
+                 });
+                 return;
+            }
+
             const rect = this.el.getBoundingClientRect();
             const winH = window.innerHeight;
             
@@ -451,6 +460,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         update() {
+            // Mobile Optimization: Force visibility and abort to prevent scroll jitter
+            if (window.innerWidth < 1024) {
+                 if (!this.state.inView) {
+                     this.state.inView = true;
+                     this.toggleVisibility(true);
+                 }
+                 return;
+            }
+
             const rect = this.el.getBoundingClientRect();
             const winH = window.innerHeight;
             
