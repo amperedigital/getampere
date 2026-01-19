@@ -25,8 +25,6 @@ export class Ampere3DKey {
         this.initScene();
         this.initGeometry();
         this.initLights();
-        // Optimization: Track visibility
-        this.initVisibility();
         this.animate();
         
         // Bind handlers
@@ -317,24 +315,17 @@ export class Ampere3DKey {
         this.shinyLight.intensity = 15.0 + Math.sin(this.progress * Math.PI) * 35; 
     }
 
-    initVisibility() {
-        this.isVisible = true; 
-        
-        if ('IntersectionObserver' in window) {
-            const options = {
-                root: null,
-                rootMargin: '200px 0px', 
-                threshold: 0
-            };
-            
-            this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    this.isVisible = entry.isIntersecting;
-                });
-            }, options);
-            
-            this.observer.observe(this.container);
-        }
+    /* 
+       Visibility API (Driven by Global Observer)
+       Replaced internal IntersectionObserver with public methods to be managed by global.js
+    */
+    pause() {
+        this.isVisible = false;
+    }
+
+    resume() {
+        this.isVisible = true;
+        // Optional: Force a render or time update if needed on resume
     }
 
     animate() {
@@ -342,7 +333,8 @@ export class Ampere3DKey {
 
         requestAnimationFrame(this.animate.bind(this));
         
-        if (!this.isVisible) return;
+        // Paused by Global Observer?
+        if (this.isVisible === false) return;
 
         const time = Date.now() * 0.001;
 
@@ -416,10 +408,6 @@ export class Ampere3DKey {
     }
     
     dispose() {
-        if (this.observer) {
-            this.observer.disconnect();
-        }
-
         window.removeEventListener('resize', this.resizeHandler);
         // Remove window listeners
         window.removeEventListener('mouseup', this.mouseUpHandler);

@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.804 Loaded');
+  console.log('[Ampere Global] v1.805 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -639,6 +639,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const directVideo = target.querySelector('video');
             // Check for DistortionGrid instance
             const distGrid = target._distortionInstance;
+            // Check for Ampere3DKey instance
+            const keyInstance = target._key3dInstance;
 
             if (entry.isIntersecting) {
                 target.classList.add('in-view');
@@ -647,6 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (smilContainer) window.triggerMedia(smilContainer, true);
                 if (directVideo && !smilContainer) directVideo.play().catch(()=>{});
                 if (distGrid) distGrid.resume();
+                if (keyInstance) keyInstance.resume();
 
             } else {
                 // target.classList.remove('in-view'); 
@@ -655,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (smilContainer) window.triggerMedia(smilContainer, false);
                 if (directVideo && !smilContainer) directVideo.pause();
                 if (distGrid) distGrid.pause();
+                if (keyInstance) keyInstance.pause();
             }
         });
     }, observerOptions);
@@ -751,10 +755,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const instance = new Ampere3DKey(container);
                             
+                            // Register with Global Observer
+                            container._key3dInstance = instance;
+                            if (window.globalObserver) {
+                                window.globalObserver.observe(container);
+                            }
+
                             // Hook into Lenis if available
                             if (window.lenis) {
                                 window.lenis.on('scroll', () => {
-                                    // Optimization: Skip calculation if off-screen (managed by IntersectionObserver in class)
+                                    // Optimization: Skip calculation if off-screen (managed by Global Observer)
                                     if (instance.isVisible === false) return;
 
                                     const rect = container.getBoundingClientRect();
