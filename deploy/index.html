@@ -2925,9 +2925,13 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   <div class="absolute inset-0 w-full h-full z-0 opacity-30 pointer-events-none">
     <div data-object="distortion-grid" class="w-full h-full" 
          data-grid-spacing="14" 
+         data-max-dots="20000"
          data-dot-radius="1.2"
          data-idle-color="255, 255, 255"
          data-hover-color="200, 230, 255"></div>
+         
+    <!-- Bottom Fade to hide any canvas/section height mismatches -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0b14] to-transparent"></div>
   </div>
 
   <div class="container mx-auto px-6 lg:px-12 relative z-10">
@@ -3289,7 +3293,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.819/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.820/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
