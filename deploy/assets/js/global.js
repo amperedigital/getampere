@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.852 Loaded');
+  console.log('[Ampere Global] v1.853 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -246,8 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         update() {
+            // Mobile Optimization: Disabled for Sticky Slideshow below 1024px (used for CSS Native fallback)
+            // This prevents fighting with the CSS Card Stack implementation
+            if (window.innerWidth < 1024) return;
+            
             // Optimization: Skip expensive getBoundingClientRect if off-screen
-            if (!this.state.isOnScreen && window.innerWidth < 768) return;
+            if (!this.state.isOnScreen) return;
 
             if (!this.track) return;
             
