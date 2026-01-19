@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.820 Loaded');
+  console.log('[Ampere Global] v1.821 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Consolidated Observer Logic
-    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card], [data-object="grid"], [data-us-project]');
+    const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-observer], .fade-up-element, .mobile-reveal, [data-tab-card], [data-object="grid"], [data-object="distortion-grid"], [data-us-project]');
 
     // Define observer options
     const observerOptions = {
