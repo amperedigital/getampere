@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.772-visual-fix
+// Version: v1.773-alpha-tweak
 
 (function() {
-console.log('[DistortionGrid] v1.772 Loaded');
+console.log('[DistortionGrid] v1.773 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -23,7 +23,7 @@ class DistortionGrid {
             strength: 0.8,
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
-            idleAlpha: 0.05, // Restored faint visibility (not 0, not 0.12)
+            idleAlpha: 0.10, // Increased from 0.05 to 0.10 for better visibility on load
             hoverAlpha: 0.25
         };
 
