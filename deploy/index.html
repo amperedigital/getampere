@@ -2687,10 +2687,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     <div class="w-full px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 relative z-10">
         
         <!-- Mobile Sticky Nav (Horizontal Scroll) -->
-        <div class="lg:hidden col-span-1 sticky top-28 z-40 bg-[#0a0b14]/90 backdrop-blur-md pt-4 -mx-6" data-reveal-group>
+        <!-- Removed -mx-6 to respect section padding & removed px-6 from nav -->
+        <div class="lg:hidden col-span-1 sticky top-28 z-40 bg-[#0a0b14]/90 backdrop-blur-md pt-4" data-reveal-group>
             <!-- Added pointer-events-none to indicator to prevent click blocking -->
-            <!-- Added explicit padding to nav to ensure text isn't on edge -->
-            <nav class="flex relative overflow-x-auto gap-8 no-scrollbar snap-x px-6 border-b border-white/10" data-scrollspy-nav aria-label="Section Navigation Mobile">
+            <nav class="flex relative overflow-x-auto gap-8 no-scrollbar snap-x border-b border-white/10" data-scrollspy-nav aria-label="Section Navigation Mobile">
                 <!-- Range Slider Element (Horizontal Active Indicator) -->
                 <div class="absolute bottom-0 left-0 h-0.5 bg-white z-10 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none" data-scrollspy-indicator></div>
 
@@ -3339,7 +3339,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.835/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.836/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
