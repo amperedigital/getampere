@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.846 Loaded');
+  console.log('[Ampere Global] v1.847 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -370,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.links = Array.from(navEl.querySelectorAll('[data-spy-link]'));
             this.indicator = navEl.querySelector('[data-scrollspy-indicator]');
             this.targets = [];
+            this.activeIndex = -1;
             
             // Map links to target elements
             this.links.forEach((link) => {
@@ -440,7 +441,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // If nothing has passed the line (at top of page), default to first
             if (activeIndex === -1 && this.targets.length > 0) activeIndex = 0;
 
-            this.setActive(activeIndex);
+            if (activeIndex !== this.activeIndex) {
+                this.activeIndex = activeIndex;
+                this.setActive(activeIndex);
+            }
         }
 
         setActive(index) {
