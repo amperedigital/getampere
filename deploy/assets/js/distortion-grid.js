@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.798 Loaded'); 
+console.log('[DistortionGrid] v1.799 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -145,7 +145,7 @@ class DistortionGrid {
             if (this.width !== this.parent.offsetWidth || this.height !== this.parent.offsetHeight) {
                 this.resize();
                 // Force re-render if static (and not mobile)
-                if (!this.isAnimating && !this.forcePause && window.innerWidth >= 1024) {
+                if (!this.isAnimating && !this.forcePause && window.innerWidth >= 768) {
                     this.isAnimating = true;
                     this.animate();
                 }
@@ -156,7 +156,7 @@ class DistortionGrid {
         // Global Mouse Handler to fix occlusion issues
         this.mouseHandler = (e) => {
             // Absolute Mobile Guard: Do no math on small screens
-            if (window.innerWidth < 1024) return;
+            if (window.innerWidth < 768) return;
 
             // Only calc if we are allowed to animate (in view)
             if (this.forcePause) return;
@@ -196,10 +196,10 @@ class DistortionGrid {
 
     resize() {
         // Mobile Guard: strictly disable functionality & apply fallback
-        if (window.innerWidth < 1024) {
+        if (window.innerWidth < 768) {
              // Fallback: Static SVG Background (Dots)
              // Simple grid pattern: 20x20px cell, 1.5px radius dot at top-left (2,2)
-             const svg = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='rgba(255,255,255,0.15)' /%3E%3C/svg%3E";
+             const svg = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAnIGhlaWdodD0nMjAnIHZpZXdCb3g9JzAgMCAyMCAyMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48Y2lyY2xlIGN4PScyJyBjeT0nMicgcj0nMS41JyBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTUiIC8+PC9zdmc+";
              
              if (this.parent) {
                  this.parent.style.backgroundImage = `url("${svg}")`;
@@ -217,7 +217,7 @@ class DistortionGrid {
              return;
         }
 
-        // On Desktop: Remove fallback if present (e.g. window resize crossover)
+        // On Desktop: Remove fallback if present (e.g. window resize crossover) - match base64 logic
         if (this.parent.style.backgroundImage && this.parent.style.backgroundImage.includes('data:image/svg')) {
              this.parent.style.backgroundImage = '';
         }
@@ -275,7 +275,7 @@ class DistortionGrid {
 
     animate() {
         // GLOBAL PAUSE (IntersectionObserver)
-        if (this.forcePause || window.innerWidth < 1024) { // Explicit Mobile Guard
+        if (this.forcePause || window.innerWidth < 768) { // Explicit Mobile Guard
             if (this.isAnimating) console.log('[DistortionGrid] Paused by Observer/Mobile');
             this.isAnimating = false;
             return;
