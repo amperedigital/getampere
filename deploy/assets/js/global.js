@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.839 Loaded');
+  console.log('[Ampere Global] v1.840 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -398,13 +398,12 @@ document.addEventListener('DOMContentLoaded', () => {
                          
                          const targetY = target.getBoundingClientRect().top + window.pageYOffset - offset;
                          
-                         // Cleanest fix: Native scrollTo with 'smooth' behavior if supported, 
-                         // but "auto" is safer to prevent locking.
-                         // Let's use a simple window.scrollTo which doesn't lock the thread.
+                         // Cleanest fix: Native scrollTo with 'auto' (instant) behavior for mobile.
+                         // 'smooth' can sometimes cause scroll-jacking or locking on older iOS/Android versions.
                          
                          window.scrollTo({
                             top: targetY,
-                            behavior: 'smooth'
+                            behavior: 'auto'
                          });
                          
                          // Note: If 'smooth' behavior is missing in CSS reset or conflicting,
