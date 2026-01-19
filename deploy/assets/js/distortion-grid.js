@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.778-proportional-radius
+// Version: v1.779-planar-wave
 
 (function() {
-console.log('[DistortionGrid] v1.778 Loaded'); // Proportional Radius SCALING
+console.log('[DistortionGrid] v1.779 Loaded'); // Includes Planar Wave Support
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -18,14 +18,15 @@ class DistortionGrid {
         // 1. Defaults
         const defaults = {
             gridSpacing: 8, // Target spacing (Tight)
-            maxDots: 8000,  // Performance Cap (prevents lag on huge screens)
+            maxDots: 8000,  // Performance Cap
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
             idleAlpha: 0.10, 
-            hoverAlpha: 0.25
+            hoverAlpha: 0.25,
+            waveType: 'interaction' // Options: 'interaction' | 'planar'
         };
 
         // 2. Fallback Variants (preserves original demo logic if no data-attrs)
@@ -87,7 +88,9 @@ class DistortionGrid {
             hoverR: hoverRGB.r, hoverG: hoverRGB.g, hoverB: hoverRGB.b,
             // Alphas
             idleAlpha: parseAlpha(d.idleAlpha, defaults.idleAlpha),
-            hoverAlpha: parseAlpha(d.hoverAlpha, defaults.hoverAlpha)
+            hoverAlpha: parseAlpha(d.hoverAlpha, defaults.hoverAlpha),
+            // Wave type
+            waveType: d.waveType || defaults.waveType
         };
         
         // Dynamic Variable
@@ -254,9 +257,13 @@ class DistortionGrid {
         const targetLevel = isHovered ? 1 : 0;
         this.activityLevel += (targetLevel - this.activityLevel) * 0.05; 
         
-        // Only increment animation time if there's visual motion
-        if (this.activityLevel > 0.001) {
+        // Timer Logic:
+        // - Planar Wave: Always runs (continuous sweep)
+        // - Interaction: Only runs if there's visual motion (activity > 0)
+        if (this.config.waveType === 'planar' || this.activityLevel > 0.001) {
             this.time += 0.015;
+        } else {
+             // If not planar and not active, we might sleep...
         }
         
         // RENDER LOOP
@@ -288,8 +295,22 @@ class DistortionGrid {
             let drawY = baseY;
             let currentRadius = dotRadius;
             let a = idleAlpha;
+            
+            // --- 0a. PLANAR WAVE (Continuous Sweep) ---
+            if (this.config.waveType === 'planar') {
+                const t = this.time;
+                // Diagonal Plane Wave: sin(x + y + t)
+                // Low frequency (broad wave), Medium Amplitude
+                const waveInput = (baseX * 0.003) + (baseY * 0.003) + (t * 0.5);
+                const sweepOffset = Math.sin(waveInput) * (spacing * 0.5);
+                
+                // Apply to diagonal vector or just X/Y? 
+                // Let's do a circular shift for organic feeling
+                drawX += Math.cos(waveInput) * (spacing * 0.3);
+                drawY += Math.sin(waveInput) * (spacing * 0.3);
+            }
 
-            // 0. Automatic Ambient Movement (Organic / Random feel)
+            // --- 0b. AMBIENT NOISE (Interaction Dependent) ---
             // Optimization: Only calc heavy trig if activityLevel is visible
             if (this.activityLevel > 0.001) {
                 const t = this.time;
@@ -367,9 +388,8 @@ class DistortionGrid {
         }
 
         // SLEEP CONDITION:
-        // If mouse is gone AND visual activity matches idle state (approx 0)
-        // We stop the loop to save CPU, but leave the canvas painted (frozen idle state).
-        if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
+        // Only if NOT planar mode. Planar mode must keep running.
+        if (this.config.waveType !== 'planar' && this.mouse.x === -1000 && this.activityLevel <= 0.001) {
             if (this.isAnimating) console.log('[DistortionGrid] Sleeping (Idle)');
             this.isAnimating = false;
             return; 
