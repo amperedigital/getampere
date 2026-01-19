@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.827 Loaded');
+  console.log('[Ampere Global] v1.828 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -389,8 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
                              window.lenis.scrollTo(target, { offset: -scrollMt }); 
                          } else {
                              // Fallback for mobile/no-lenis with custom easing
-                             // Offset accounts for sticky header + sticky nav (approx 160px)
-                             const offset = 160; 
+                             // Dynamic offset from CSS scroll-margin-top (or default 160)
+                             const style = window.getComputedStyle(target);
+                             const scrollMt = parseFloat(style.scrollMarginTop);
+                             // If scroll-mt is 0 or NaN, use 160 as safe default for header + nav
+                             const offset = (isNaN(scrollMt) || scrollMt < 20) ? 160 : scrollMt;
+                             
                              const targetY = target.getBoundingClientRect().top + window.pageYOffset - offset;
                              const startY = window.pageYOffset;
                              const distance = targetY - startY;
