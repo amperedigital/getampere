@@ -354,9 +354,9 @@ class DistortionGrid {
                         // "balloon-void" preserves the v1.785 high-repulsion version (The "Gap" version).
                         if (this.config.waveType === 'balloon' || this.config.waveType === 'lens') {
                             // --- TIGHT BALLOON (LENS) ---
-                            // V1.788: Eliminated Void, Removed Flashlight, Reduced Corner Scale
+                            // v1.789: Slight boost to visibility (Mag + Spotlight)
                             
-                            // 1. Repulsion: Reduced almost to zero to eliminate "Void"
+                            // 1. Repulsion: Low to keep it tight
                             const repulsionStrength = spacing * 0.1; 
                             const pushFactor = envelope * repulsionStrength;
                             
@@ -365,12 +365,12 @@ class DistortionGrid {
                                 drawY -= (dy / dist) * pushFactor;
                             }
                             
-                            // 2. Magnification: Reduced to prevent "blob" look
-                            const magFactor = 0.8; 
+                            // 2. Magnification: Boosted slightly from 0.8 -> 1.2
+                            const magFactor = 1.2; 
                             currentRadius = dotRadius + (envelope * dotRadius * magFactor);
                             
-                            // 3. Flashlight: Disabled
-                            // a += (envelope * 0.35); 
+                            // 3. Flashlight: Re-enabled (Subtle)
+                            a += (envelope * 0.15); 
                             
                         } else if (this.config.waveType === 'balloon-void' || this.config.waveType === 'balloon-heavy') {
                             // --- BALLOON VOID (High Repulsion) ---
