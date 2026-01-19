@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.779-planar-wave
+// Version: v1.781-giant-ripple
 
 (function() {
-console.log('[DistortionGrid] v1.779 Loaded'); // Includes Planar Wave Support
+console.log('[DistortionGrid] v1.781 Loaded'); // Giant Ripple Mode
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -296,18 +296,21 @@ class DistortionGrid {
             let currentRadius = dotRadius;
             let a = idleAlpha;
             
-            // --- 0a. PLANAR WAVE (Continuous Sweep) ---
+            // --- 0a. PLANAR WAVE (Deep Ocean Swell) ---
             if (this.config.waveType === 'planar') {
                 const t = this.time;
-                // Diagonal Plane Wave: sin(x + y + t)
-                // Low frequency (broad wave), Medium Amplitude
-                const waveInput = (baseX * 0.003) + (baseY * 0.003) + (t * 0.5);
-                const sweepOffset = Math.sin(waveInput) * (spacing * 0.5);
+                // Wave 1: Giant Diagonal Swell (Low Freq, High Amp)
+                const w1 = (baseX * 0.0015) + (baseY * 0.0025) + (t * 0.3);
                 
-                // Apply to diagonal vector or just X/Y? 
-                // Let's do a circular shift for organic feeling
-                drawX += Math.cos(waveInput) * (spacing * 0.3);
-                drawY += Math.sin(waveInput) * (spacing * 0.3);
+                // Wave 2: Secondary Rolling Swell (Interference pattern)
+                const w2 = (baseX * 0.004) - (baseY * 0.002) + (t * 0.5);
+
+                // Combined Displacement (Dramatic but organic)
+                const offsetX = Math.cos(w1) * (spacing * 1.8) + Math.sin(w2) * (spacing * 0.4);
+                const offsetY = Math.sin(w1) * (spacing * 1.8) + Math.cos(w2) * (spacing * 0.4);
+
+                drawX += offsetX;
+                drawY += offsetY;
             }
 
             // --- 0b. AMBIENT NOISE (Interaction Dependent) ---
