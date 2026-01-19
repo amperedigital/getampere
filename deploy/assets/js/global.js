@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.840 Loaded');
+  console.log('[Ampere Global] v1.841 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -459,11 +459,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         item.link.classList.add('border-blue-500');
                     }
 
-                    // Mobile Horizontal Scroll Auto-Center
-                    if (window.innerWidth < 1024) {
+                    // Mobile Horizontal Scroll Auto-Center (Safer implementation)
+                    // Use container scrollTo instead of scrollIntoView to avoid hijacking global window scroll
+                    if (window.innerWidth < 1024 && this.nav.scrollWidth > this.nav.clientWidth) {
                         try {
-                            item.link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                        } catch(e){}
+                            const nav = this.nav;
+                            const linkRect = item.link.getBoundingClientRect();
+                            const navRect = nav.getBoundingClientRect();
+                            
+                            // Calculate center position relative to the container
+                            // We need the link's offset relative to the container's current scroll position
+                            const linkCenter = item.link.offsetLeft + (item.link.offsetWidth / 2);
+                            const navCenter = nav.offsetWidth / 2;
+                            
+                            nav.scrollTo({
+                                left: linkCenter - navCenter,
+                                behavior: 'smooth'
+                            });
+                        } catch(e){ console.warn(e); }
                     }
 
                 } else {
