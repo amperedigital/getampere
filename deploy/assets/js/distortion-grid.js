@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.777-smart-density
+// Version: v1.778-proportional-radius
 
 (function() {
-console.log('[DistortionGrid] v1.777 Loaded'); // Smart Density
+console.log('[DistortionGrid] v1.778 Loaded'); // Proportional Radius SCALING
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -204,6 +204,11 @@ class DistortionGrid {
         } else {
              this.computedSpacing = target;
         }
+        
+        // Maintain visual density ratio (Dot Size scales with Spacing)
+        // Ratio based on config defaults: 0.95 (radius) / 8 (spacing) = ~0.11875
+        const densityRatio = this.config.dotRadius / this.config.targetSpacing;
+        this.computedRadius = this.computedSpacing * densityRatio;
 
         this.createDots();
     }
@@ -272,7 +277,8 @@ class DistortionGrid {
         const idleB = this.config.idleB;
         const idleAlpha = this.config.idleAlpha;
         
-        const dotRadius = this.config.dotRadius;
+        // Use computed Dynamic Radius for visual consistency
+        const dotRadius = this.computedRadius || this.config.dotRadius;
 
         for (let i = 0; i < n; i++) {
             const baseX = dotsX[i];
