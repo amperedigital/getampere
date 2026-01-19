@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.802 Loaded');
+  console.log('[Ampere Global] v1.803 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -168,11 +168,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         update() {
-            // Mobile Optimization: Force visibility and abort to prevent scroll jitter
+            // Mobile Optimization: Force visibility and abort (keep simple fade, no bloom)
+            // The jitter risk > benefit of subtle bloom on mobile
             if (window.innerWidth < 768) {
                  this.targets.forEach(t => {
-                     t.style.opacity = '1';
-                     t.style.transform = 'translate3d(0, 0, 0)';
+                     if (t.style.opacity !== '1') {
+                         t.style.opacity = '1';
+                         t.style.transform = 'translate3d(0, 0, 0)';
+                     }
                  });
                  return;
             }
@@ -256,30 +259,28 @@ document.addEventListener('DOMContentLoaded', () => {
             let activeIndex = Math.floor(progress * slideCount);
             if (activeIndex >= slideCount) activeIndex = slideCount - 1;
             
-            // Mobile Optimization (v1.802): Avoid all the transforms below if on mobile
-            // Just updated Nav Dots and exit
-            if (window.innerWidth < 768) {
-                  this.updateNav(progress, slideCount, activeIndex);
-                  return;
+            // Optimization: Only update slide styles if index changed
+            // This prevents massive layout thrashing on every scroll pixel
+            if (this.state.activeIndex !== activeIndex) {
+                this.state.activeIndex = activeIndex;
+                
+                // Apply Slide Transitions
+                this.slides.forEach((slide, index) => {
+                    if (index === activeIndex) {
+                        slide.style.opacity = '1';
+                        slide.style.transform = 'translate3d(0, 0, 0) scale(1)';
+                    } else if (index < activeIndex) {
+                        slide.style.opacity = '0';
+                        slide.style.transform = 'translate3d(0, -30px, 0) scale(0.95)';
+                    } else {
+                        slide.style.opacity = '0';
+                        slide.style.transform = 'translate3d(0, 30px, 0) scale(0.95)';
+                    }
+                });
             }
 
-            // Apply Slide Transitions
-            this.slides.forEach((slide, index) => {
-                // Determine checking state only to minimize DOM writes
-                // But typically simple style updates are okay
-                if (index === activeIndex) {
-                    slide.style.opacity = '1';
-                    slide.style.transform = 'translate3d(0, 0, 0) scale(1)';
-                } else if (index < activeIndex) {
-                    slide.style.opacity = '0';
-                    slide.style.transform = 'translate3d(0, -30px, 0) scale(0.95)';
-                } else {
-                    slide.style.opacity = '0';
-                    slide.style.transform = 'translate3d(0, 30px, 0) scale(0.95)';
-                }
-            });
-
             // D. Update Nav Dots
+            // This needs to run every frame for smooth bar filling, but it's cheap (width change)
             this.updateNav(progress, slideCount, activeIndex);
         }
 
@@ -474,15 +475,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         update() {
-            // Mobile Optimization: Force visibility and abort to prevent scroll jitter
-            if (window.innerWidth < 768) {
-                 if (!this.state.inView) {
-                     this.state.inView = true;
-                     this.toggleVisibility(true);
-                 }
-                 return;
-            }
-
             const rect = this.el.getBoundingClientRect();
             const winH = window.innerHeight;
             
@@ -551,9 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if we have active components before attaching generic listener
     if (scrubbers.length > 0 || stickySlideshows.length > 0 || scrollSpies.length > 0 || simpleReveals.length > 0) {
         window.addEventListener('scroll', () => {
-             // Mobile Optimization: Throttle scroll updates on mobile
-             if (window.innerWidth < 768) return; 
-
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     scrubbers.forEach(s => s.update());
