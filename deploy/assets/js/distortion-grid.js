@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.773-alpha-tweak
+// Version: v1.774-spacing-tweak
 
 (function() {
-console.log('[DistortionGrid] v1.773 Loaded');
+console.log('[DistortionGrid] v1.774 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -17,7 +17,7 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 12, // Reduced from 15/20 to 12 per user "come in closer"
+            gridSpacing: 10, // Tightened from 12 to 10
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
