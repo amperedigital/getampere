@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.791 Loaded'); 
+console.log('[DistortionGrid] v1.792 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -16,17 +16,18 @@ class DistortionGrid {
         
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
+        // Updated v1.792: Matching the balanced look defined in HTML
         const defaults = {
-            gridSpacing: 8, // Target spacing (Tight)
-            maxDots: 8000,  // Performance Cap
-            dotRadius: 0.95,
+            gridSpacing: 12, // User preferred spacing
+            maxDots: 8000,   // Performance Cap
+            dotRadius: 1.2,  // Proportional radius (Ratio ~0.1)
             mouseRadius: 400,
-            strength: 0.8,
+            strength: 0.6,   // Subtle strength
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
             idleAlpha: 0.10, 
             hoverAlpha: 0.25,
-            waveType: 'balloon' // Defaults to "Tight Balloon" (v1.790)
+            waveType: 'balloon' // Defaults to "Tight Balloon"
         };
 
         // 2. Fallback Variants (preserves original demo logic if no data-attrs)
