@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.801 Loaded');
+  console.log('[Ampere Global] v1.802 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function checkNavTheme() {
+        // Mobile Optimization: Disable heavy scroll logic for nav bar
+        if (window.innerWidth < 768) return;
+
         // We trigger around the vertical middle of the nav bar (approx 40px down)
         const triggerPoint = 40; 
         
@@ -147,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotlights = document.querySelectorAll('[data-spotlight-container]');
     spotlights.forEach(container => {
         container.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; 
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -252,6 +256,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let activeIndex = Math.floor(progress * slideCount);
             if (activeIndex >= slideCount) activeIndex = slideCount - 1;
             
+            // Mobile Optimization (v1.802): Avoid all the transforms below if on mobile
+            // Just updated Nav Dots and exit
+            if (window.innerWidth < 768) {
+                  this.updateNav(progress, slideCount, activeIndex);
+                  return;
+            }
+
             // Apply Slide Transitions
             this.slides.forEach((slide, index) => {
                 // Determine checking state only to minimize DOM writes
@@ -540,6 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if we have active components before attaching generic listener
     if (scrubbers.length > 0 || stickySlideshows.length > 0 || scrollSpies.length > 0 || simpleReveals.length > 0) {
         window.addEventListener('scroll', () => {
+             // Mobile Optimization: Throttle scroll updates on mobile
+             if (window.innerWidth < 768) return; 
+
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     scrubbers.forEach(s => s.update());
