@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.826 Loaded');
+  console.log('[Ampere Global] v1.827 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -388,8 +388,30 @@ document.addEventListener('DOMContentLoaded', () => {
                              const scrollMt = parseFloat(style.scrollMarginTop) || 0;
                              window.lenis.scrollTo(target, { offset: -scrollMt }); 
                          } else {
-                             // Fallback for mobile/no-lenis
-                             target.scrollIntoView({ behavior: 'smooth' });
+                             // Fallback for mobile/no-lenis with custom easing
+                             // Offset accounts for sticky header + sticky nav (approx 160px)
+                             const offset = 160; 
+                             const targetY = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                             const startY = window.pageYOffset;
+                             const distance = targetY - startY;
+                             const duration = 1200; // Slower/smoother
+                             let startTime = null;
+
+                             function animation(currentTime) {
+                                if (startTime === null) startTime = currentTime;
+                                const timeElapsed = currentTime - startTime;
+                                const progress = Math.min(timeElapsed / duration, 1);
+                                
+                                // Easing: easeOutExpo
+                                const ease = (progress === 1) ? 1 : 1 - Math.pow(2, -10 * progress);
+                                
+                                window.scrollTo(0, startY + (distance * ease));
+                                
+                                if (timeElapsed < duration) {
+                                  requestAnimationFrame(animation);
+                                }
+                             }
+                             requestAnimationFrame(animation);
                          }
                     });
                 }
