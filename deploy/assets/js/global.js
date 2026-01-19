@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.803 Loaded');
+  console.log('[Ampere Global] v1.804 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -754,6 +754,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Hook into Lenis if available
                             if (window.lenis) {
                                 window.lenis.on('scroll', () => {
+                                    // Optimization: Skip calculation if off-screen (managed by IntersectionObserver in class)
+                                    if (instance.isVisible === false) return;
+
                                     const rect = container.getBoundingClientRect();
                                     const vh = window.innerHeight;
                                     // Default Logic: 85% -> 35% viewport reveal
@@ -768,6 +771,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             } else {
                                 // Fallback for no-lenis (native scroll)
                                 window.addEventListener('scroll', () => {
+                                    if (instance.isVisible === false) return;
+                                    
                                     const rect = container.getBoundingClientRect();
                                     const vh = window.innerHeight;
                                     const start = vh * 0.85;
