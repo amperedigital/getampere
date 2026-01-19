@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.782-interaction-ripple
+// Version: v1.783-clean-planar
 
 (function() {
-console.log('[DistortionGrid] v1.782 Loaded'); // Interaction-Only Ripple Mode
+console.log('[DistortionGrid] v1.783 Loaded'); // Clean Planar (No Swirl)
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -350,17 +350,23 @@ class DistortionGrid {
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
                         // 2. Wave Physics (Mouse Driven)
-                        const phaseX = mouseX * 0.02; 
-                        const phaseY = mouseY * 0.02;
-                        
-                        const waveX = Math.sin((baseY * 0.04) + phaseX) * spacing * strength;
-                        const waveY = Math.cos((baseX * 0.04) + phaseY) * spacing * strength;
+                        // In Planar Mode, we DISABLE the local swirl to let the Global Wave be the hero.
+                        // We ONLY keep the Zoom and Light Boost (Spotlight effect).
+                        if (this.config.waveType !== 'planar') {
+                            const phaseX = mouseX * 0.02; 
+                            const phaseY = mouseY * 0.02;
+                            
+                            const waveX = Math.sin((baseY * 0.04) + phaseX) * spacing * strength;
+                            const waveY = Math.cos((baseX * 0.04) + phaseY) * spacing * strength;
 
-                        drawX += waveX * envelope * 0.5;
-                        drawY += waveY * envelope * 0.5;
+                            drawX += waveX * envelope * 0.5;
+                            drawY += waveY * envelope * 0.5;
+                        }
                         
                         // 3. Zoom
-                        currentRadius = dotRadius + (envelope * dotRadius * 0.6);
+                        // In Planar mode, reduce zoom slightly to keep it clean
+                        const zoomFactor = (this.config.waveType === 'planar') ? 0.3 : 0.6;
+                        currentRadius = dotRadius + (envelope * dotRadius * zoomFactor);
                         
                         // 4. Light Boost 
                         // Modified Flashlight: Soft boost
