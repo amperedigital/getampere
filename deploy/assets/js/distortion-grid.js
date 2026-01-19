@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.795 Loaded'); 
+console.log('[DistortionGrid] v1.796 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -184,7 +184,7 @@ class DistortionGrid {
             }
         };
 
-        window.addEventListener('mousemove', this.mouseHandler, { passive: true });
+        window.addEventListener('pointermove', this.mouseHandler, { passive: true });
     }
 
     resize() {
@@ -475,6 +475,13 @@ class DistortionGrid {
 
     // Static Initialization Helper
     static initAll(selector = '[data-object="distortion-grid"]') {
+         // Optimization: Skip initialization on mobile/tablet devices (< 1024px)
+         // This prevents performance hits on scroll for touch devices.
+         if (window.innerWidth < 1024) {
+             console.log('[DistortionGrid] Mobile width detected. Skipping initialization to save resources.');
+             return;
+         }
+
          const elements = document.querySelectorAll(selector);
          elements.forEach((el, index) => {
              // Check if already initialized
