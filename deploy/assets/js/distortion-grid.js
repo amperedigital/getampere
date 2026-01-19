@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.792 Loaded'); 
+console.log('[DistortionGrid] v1.793 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -474,7 +474,7 @@ class DistortionGrid {
     }
 
     // Static Initialization Helper
-    static initAll(selector = '[data-object="grid"]') {
+    static initAll(selector = '[data-object="distortion-grid"]') {
          const elements = document.querySelectorAll(selector);
          elements.forEach((el, index) => {
              // Check if already initialized

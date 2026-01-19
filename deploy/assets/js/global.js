@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.792 Loaded');
+  console.log('[Ampere Global] v1.793 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -39,7 +39,7 @@
 // --- Initialize Distortion Grid (Lazy Load) ---
 (function() {
     function checkAndLoad() {
-        const selector = '[data-object="grid"]';
+        const selector = '[data-object="distortion-grid"]';
         if (document.querySelector(selector)) {
             if (window.DistortionGrid) {
                 window.DistortionGrid.initAll(selector);
