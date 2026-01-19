@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.814 Loaded');
+  console.log('[Ampere Global] v1.815 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -827,59 +827,83 @@ document.addEventListener('DOMContentLoaded', () => {
 // ... (End of previous file content)
 
 /*
- * FAQ Accordion Animation (WAAPI)
+ * FAQ Accordion Animation (WAAPI) - Refined v2
  * Provides smooth open/close transitions for <details> elements.
- * Necessary because CSS cannot animate 'height: auto' or delay the 'open' attribute removal naturally.
+ * Handles rapid clicking, prevents layout flashing, and uses custom easing.
  */
 document.addEventListener('DOMContentLoaded', () => {
     const details = document.querySelectorAll('#faq-section details');
     
     details.forEach(detail => {
         const summary = detail.querySelector('summary');
-        const content = detail.querySelector('summary + div'); // The content wrapper
+        const content = detail.querySelector('summary + div');
+        let currentAnimation = null; // Store active animation to cancel on interrupt
         
         if (!summary || !content) return;
 
-        // Apply initial styles to content wrapper to prepare for animation
+        // Ensure content is prepared for height animation
         content.style.overflow = 'hidden';
+        content.style.display = 'block'; // Ensure it behaves as a block for height calc
 
         summary.addEventListener('click', (e) => {
-            e.preventDefault(); // Stop default instant toggle
+            e.preventDefault();
+
+            // Calculate height of the content content
+            // We need to temporarily ensure it's visible to measure 'scrollHeight'
+            // If it's closed, we momentarily open it but keep height locked if possible, 
+            // or rely on the logic below.
 
             if (detail.open) {
-                // CLOSING ANIMATION
-                // 1. Get current height
-                const startHeight = content.scrollHeight;
-                
-                // 2. Animate from height to 0
-                const animation = content.animate([
+                // --- CLOSING ---
+                if (currentAnimation) currentAnimation.cancel();
+
+                // 1. Lock current height explicitly (in case it was 'auto')
+                const startHeight = content.offsetHeight;
+                content.style.height = startHeight + 'px';
+
+                // 2. Play Animation
+                // Force a repaint request to ensure the start height is registered? 
+                // WAAPI handles this, but explicit frames help.
+                currentAnimation = content.animate([
                     { height: startHeight + 'px', opacity: 1 },
                     { height: '0px', opacity: 0 }
                 ], {
                     duration: 300,
-                    easing: 'ease-in-out' // The requested easing
+                    easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
                 });
 
-                // 3. When finished, remove 'open' attribute
-                animation.onfinish = () => {
+                // 3. Cleanup on finish
+                currentAnimation.onfinish = () => {
                     detail.removeAttribute('open');
+                    content.style.height = ''; // Clean up inline style
+                    currentAnimation = null;
                 };
+
             } else {
-                // OPENING ANIMATION
-                // 1. Set open immediately so content exists in DOM (but is invisible if we could, but we can't)
+                // --- OPENING ---
+                if (currentAnimation) currentAnimation.cancel();
+
+                // 1. Open the element
                 detail.setAttribute('open', '');
                 
-                // 2. Get target height
+                // 2. Measure the natural height
                 const endHeight = content.scrollHeight;
                 
-                // 3. Animate from 0 to height
-                content.animate([
+                // 3. Play Animation
+                currentAnimation = content.animate([
                     { height: '0px', opacity: 0 },
                     { height: endHeight + 'px', opacity: 1 }
                 ], {
                     duration: 300,
-                    easing: 'ease-out' // The requested easing
+                    easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
                 });
+
+                currentAnimation.onfinish = () => {
+                    // Clean up inline styles so content can react to window resizes naturally
+                    content.style.height = ''; 
+                    content.style.opacity = '';
+                    currentAnimation = null;
+                };
             }
         });
     });
