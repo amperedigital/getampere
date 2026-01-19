@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.828 Loaded');
+  console.log('[Ampere Global] v1.829 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -490,23 +490,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.indicator && this.targets[index]) {
                 const activeLink = this.targets[index].link;
                 
-                // Calculate position relative to the container (this.nav)
-                // Note: The indicator is absolute positioned inside a relative container.
-                // We assume the activeLink is inside that same container context.
-                const navRect = this.nav.getBoundingClientRect(); // This might be the `sticky top-32` div
-                const linkRect = activeLink.getBoundingClientRect();
-                
-                // To support nested structures properly, we look at the relative offset
-                // However, our HTML has the indicator inside a specific `relative` div that wraps the links.
-                // Let's refine: The indicator is inside the `div class="relative pl-4..."`.
-                // We should probably pass the parent wrapper to the class or calculate relative to the link's offsetParent.
-                
-                // Simpler: Just rely on offsetTop since they are siblings or close enough.
-                const relativeTop = activeLink.offsetTop;
-                const height = activeLink.offsetHeight;
+                // Determine layout orientation
+                // If flex-row, we treat as horizontal.
+                const navStyle = window.getComputedStyle(this.nav);
+                const isHorizontal = navStyle.display === 'flex' && navStyle.flexDirection === 'row';
 
-                this.indicator.style.transform = `translateY(${relativeTop}px)`;
-                this.indicator.style.height = `${height}px`;
+                if (isHorizontal) {
+                    // Mobile / Horizontal Mode
+                    const relativeLeft = activeLink.offsetLeft;
+                    const width = activeLink.offsetWidth;
+                    
+                    // Reset vertical props just in case
+                    this.indicator.style.transform = `translateX(${relativeLeft}px)`;
+                    this.indicator.style.width = `${width}px`;
+                    this.indicator.style.height = ''; // Let CSS control height or keep existing
+                } else {
+                    // Desktop / Vertical Mode
+                    const relativeTop = activeLink.offsetTop;
+                    const height = activeLink.offsetHeight;
+
+                    this.indicator.style.transform = `translateY(${relativeTop}px)`;
+                    this.indicator.style.height = `${height}px`;
+                    this.indicator.style.width = ''; // Reset width
+                }
             }
         }
     }
@@ -981,3 +987,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// --- ROI Calculator Logic ---
+(function() {
+    const slider = document.getElementById('roi-calls');
+    const displayCalls = document.getElementById('roi-calls-display');
+    const displaySavings = document.getElementById('roi-savings');
+    const displayHours = document.getElementById('roi-hours');
+
+    if (!slider || !displayCalls || !displaySavings || !displayHours) return;
+
+    function updateROI() {
+        const calls = parseInt(slider.value, 10);
+        
+        // Assumptions:
+        // - Average call handling time (including interruption context switching): 3 minutes
+        // - Average hourly cost of employee (salary + benefits + overhead): $30/hr
+        // - Cost per call = (3/60) * 30 = $1.50
+        // - Revenue recovery factor (missed calls recovered): +$1.00 per call (conservative avg)
+        // - Total Value per Call = $2.50
+        
+        const savings = Math.floor(calls * 2.5);
+        const hours = Math.floor(calls * (3/60));
+
+        displayCalls.textContent = calls.toLocaleString();
+        displaySavings.textContent = '$' + savings.toLocaleString();
+        displayHours.textContent = hours + 'h';
+        
+        // Update slider track background size for "fill" effect (Webkit)
+        const min = parseInt(slider.min) || 0;
+        const max = parseInt(slider.max) || 2500;
+        const percentage = ((calls - min) / (max - min)) * 100;
+        slider.style.backgroundSize = percentage + '% 100%';
+    }
+
+    // Initial update
+    updateROI();
+
+    // Event listener
+    slider.addEventListener('input', updateROI);
+})();
