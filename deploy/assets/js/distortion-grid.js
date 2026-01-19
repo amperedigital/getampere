@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.807 Loaded'); 
+console.log('[DistortionGrid] v1.808 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -198,13 +198,13 @@ class DistortionGrid {
         // Mobile Guard: strictly disable functionality & apply fallback
         if (window.innerWidth < 768) {
              // Fallback: Static SVG Background (Dots)
-             // Simple grid pattern: 20x20px cell, 1.5px radius dot at top-left (2,2)
-             const svg = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAnIGhlaWdodD0nMjAnIHZpZXdCb3g9JzAgMCAyMCAyMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48Y2lyY2xlIGN4PScyJyBjeT0nMicgcj0nMS41JyBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMTUiIC8+PC9zdmc+";
+             // Simple grid pattern: 12x12px cell (tighter), 1.5px radius dot at top-left (2,2)
+             const svg = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTInIGhlaWdodD0nMTInIHZpZXdCb3g9JzAgMCAxMiAxMicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48Y2lyY2xlIGN4PScyJyBjeT0nMicgcj0nMS41JyBmaWxsPScjZmZmZmZmJyBmaWxsLW9wYWNpdHk9JzAuMTUnIC8+PC9zdmc+";
              
              if (this.parent) {
                  this.parent.style.backgroundImage = `url("${svg}")`;
                  this.parent.style.backgroundRepeat = 'repeat';
-                 this.parent.style.backgroundSize = '20px 20px';
+                 this.parent.style.backgroundSize = '12px 12px';
              }
 
              this.width = 0;
