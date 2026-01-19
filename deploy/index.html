@@ -2921,14 +2921,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 <!-- START: FAQ Section -->
 <section id="faq-section" class="relative w-full bg-[#0a0b14] py-24 sm:py-32 border-t border-white/10 overflow-hidden" itemscope itemtype="https://schema.org/FAQPage">
   
-  <!-- Distortion Grid Background -->
-  <div data-object="distortion-grid" 
-       data-strength="1.0" 
-       data-mouse-radius="500" 
-       data-hover-alpha="0.4"
-       class="absolute inset-0 z-0 pointer-events-none opacity-25 mix-blend-screen">
-      <!-- Vignette Mask: Fade to section background #0a0b14 -->
-      <div class="absolute inset-0 w-full h-full z-10 bg-[radial-gradient(circle_at_center,transparent_10%,#0a0b14_90%)]"></div>
+  <!-- Distortion Grid Background (Standard Config) -->
+  <div data-object="distortion-grid" class="absolute inset-0 w-full h-full z-0 block">
+      <!-- Vignette Mask: Standard fade to section background -->
+      <div class="absolute inset-0 w-full h-full z-10 bg-[radial-gradient(circle_at_center,transparent_0%,#0a0b14_80%)] pointer-events-none"></div>
   </div>
 
   <div class="container mx-auto px-6 lg:px-12 relative z-10">
@@ -3290,7 +3286,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.815/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.816/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
