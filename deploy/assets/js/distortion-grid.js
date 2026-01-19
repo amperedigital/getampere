@@ -313,8 +313,8 @@ class DistortionGrid {
             }
 
             // --- 0b. AMBIENT NOISE (Standard Mode Only) ---
-            // If Planar is active, we skip this to keep the wave clean.
-            if (this.config.waveType !== 'planar' && this.activityLevel > 0.001) {
+            // If Planar or Balloon is active, we skip this to keep the effect clean.
+            if (this.config.waveType !== 'planar' && this.config.waveType !== 'balloon' && this.activityLevel > 0.001) {
                 const t = this.time;
                 
                 // X-Axis Noise
@@ -349,28 +349,64 @@ class DistortionGrid {
                         const rawForce = (mouseRadius - dist) / mouseRadius; 
                         const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
 
-                        // 2. Wave Physics (Mouse Driven)
-                        // In Planar Mode, we DISABLE the local swirl to let the Global Wave be the hero.
-                        // We ONLY keep the Zoom and Light Boost (Spotlight effect).
-                        if (this.config.waveType !== 'planar') {
-                            const phaseX = mouseX * 0.02; 
-                            const phaseY = mouseY * 0.02;
+                        // 2. Wave/Physics Selection
+                        if (this.config.waveType === 'balloon') {
+                            // --- BALLOON / LENS EFFECT ---
+                            // Push dots away from center (Repulsion) + Magnify size
                             
-                            const waveX = Math.sin((baseY * 0.04) + phaseX) * spacing * strength;
-                            const waveY = Math.cos((baseX * 0.04) + phaseY) * spacing * strength;
-
-                            drawX += waveX * envelope * 0.5;
-                            drawY += waveY * envelope * 0.5;
+                            // Repulsion: Stronger closer to center
+                            // Scale by spacing so it works on all densities
+                            const repulsionStrength = spacing * 2.0; 
+                            
+                            // Direction vector (Mouse -> Dot) is (-dx, -dy)
+                            // We want to move along that vector. 
+                            // dx = mouse - dot. -dx = dot - mouse.
+                            // Moving in direction of (-dx, -dy) means subtracting dx/dy?
+                            // Let's verify:
+                            // If Dot is at 0, Mouse is at 10. dx = 10. 
+                            // We want Dot to move to -1 (away from 10).
+                            // drawX = 0 - (10/dist * strength). Correct.
+                            
+                            const pushFactor = envelope * repulsionStrength;
+                            
+                            // Avoid division by zero if dist is super small (unlikely due to < radius, but safe)
+                            if (dist > 0.1) {
+                                drawX -= (dx / dist) * pushFactor;
+                                drawY -= (dy / dist) * pushFactor;
+                            }
+                            
+                            // Magnification: Balloon dots get much larger
+                            const magFactor = 1.25; 
+                            currentRadius = dotRadius + (envelope * dotRadius * magFactor);
+                            
+                            // High Highlight
+                            a += (envelope * 0.35);
+                            
+                        } else {
+                            // --- STANDARD & PLANAR INTERACTIONS ---
+                            
+                            // Wave Physics (Mouse Driven)
+                            // In Planar Mode, we DISABLE the local swirl to let the Global Wave be the hero.
+                            if (this.config.waveType !== 'planar') {
+                                const phaseX = mouseX * 0.02; 
+                                const phaseY = mouseY * 0.02;
+                                
+                                const waveX = Math.sin((baseY * 0.04) + phaseX) * spacing * strength;
+                                const waveY = Math.cos((baseX * 0.04) + phaseY) * spacing * strength;
+    
+                                drawX += waveX * envelope * 0.5;
+                                drawY += waveY * envelope * 0.5;
+                            }
+                            
+                            // Zoom
+                            // In Planar mode, reduce zoom slightly to keep it clean
+                            const zoomFactor = (this.config.waveType === 'planar') ? 0.3 : 0.6;
+                            currentRadius = dotRadius + (envelope * dotRadius * zoomFactor);
+                            
+                            // Light Boost 
+                            // Modified Flashlight: Soft boost
+                            a += (envelope * 0.25); 
                         }
-                        
-                        // 3. Zoom
-                        // In Planar mode, reduce zoom slightly to keep it clean
-                        const zoomFactor = (this.config.waveType === 'planar') ? 0.3 : 0.6;
-                        currentRadius = dotRadius + (envelope * dotRadius * zoomFactor);
-                        
-                        // 4. Light Boost 
-                        // Modified Flashlight: Soft boost
-                        a += (envelope * 0.25); 
                     }
                 }
             }
