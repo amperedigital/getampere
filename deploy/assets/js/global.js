@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.818 Loaded');
+  console.log('[Ampere Global] v1.819 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -886,6 +886,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 // --- OPENING ---
+                
+                // Auto-close other items (Accordion behavior)
+                details.forEach(otherDetail => {
+                     if (otherDetail !== detail && otherDetail.open) {
+                         const otherSummary = otherDetail.querySelector('summary');
+                         // Trigger the click logic for the other item so it animates closed
+                         if (otherSummary) otherSummary.click();
+                     }
+                });
+
                 if (currentAnimation) currentAnimation.cancel();
 
                 // 1. Open the element
