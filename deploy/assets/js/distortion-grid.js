@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.774-spacing-tweak
+// Version: v1.775-idle-fix
 
 (function() {
-console.log('[DistortionGrid] v1.774 Loaded');
+console.log('[DistortionGrid] v1.775 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -213,15 +213,6 @@ class DistortionGrid {
             return;
         }
 
-        // SLEEP CONDITION:
-        // If mouse is gone AND visual activity matches idle state (approx 0)
-        // We stop the loop to save CPU.
-        if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
-            if (this.isAnimating) console.log('[DistortionGrid] Sleeping (Idle)');
-            this.isAnimating = false;
-            return; 
-        }
-
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         // Smooth activity transition
@@ -342,6 +333,15 @@ class DistortionGrid {
                 this.ctx.rect(drawX - currentRadius, drawY - currentRadius, size, size);
             }
             this.ctx.fill();
+        }
+
+        // SLEEP CONDITION:
+        // If mouse is gone AND visual activity matches idle state (approx 0)
+        // We stop the loop to save CPU, but leave the canvas painted (frozen idle state).
+        if (this.mouse.x === -1000 && this.activityLevel <= 0.001) {
+            if (this.isAnimating) console.log('[DistortionGrid] Sleeping (Idle)');
+            this.isAnimating = false;
+            return; 
         }
 
         requestAnimationFrame(this.animate.bind(this));
