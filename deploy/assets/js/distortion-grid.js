@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.771-gradient-fix
+// Version: v1.772-visual-fix
 
 (function() {
-console.log('[DistortionGrid] v1.771 Loaded');
+console.log('[DistortionGrid] v1.772 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -17,13 +17,13 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 15, // Reverted to 15 (less sparse than 20, less dense than 5)
+            gridSpacing: 12, // Reduced from 15/20 to 12 per user "come in closer"
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
             idleColor: '255, 255, 255',
             hoverColor: '200, 230, 255',
-            idleAlpha: 0.0, // Default to invisible/hidden when idle
+            idleAlpha: 0.05, // Restored faint visibility (not 0, not 0.12)
             hoverAlpha: 0.25
         };
 
@@ -318,9 +318,8 @@ class DistortionGrid {
                         currentRadius = dotRadius + (envelope * dotRadius * 0.6);
                         
                         // 4. Light Boost 
-                        // Modified Flashlight: Subtle boost instead of intense beam
-                        // Max add +0.3 alpha so it becomes visible if idleAlpha is 0
-                        a += (envelope * 0.3); 
+                        // Modified Flashlight: Soft boost
+                        a += (envelope * 0.25); 
                     }
                 }
             }
