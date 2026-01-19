@@ -1,9 +1,9 @@
 // Distortion Grid Effect
 // Standalone Script (Global)
-// Version: v1.775-idle-fix
+// Version: v1.776-density-increase
 
 (function() {
-console.log('[DistortionGrid] v1.775 Loaded');
+console.log('[DistortionGrid] v1.776 Loaded');
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -17,7 +17,7 @@ class DistortionGrid {
         // --- Configuration & Data Attribute Parsing ---
         // 1. Defaults
         const defaults = {
-            gridSpacing: 10, // Tightened from 12 to 10
+            gridSpacing: 8, // Tightened from 10 to 8
             dotRadius: 0.95,
             mouseRadius: 400,
             strength: 0.8,
