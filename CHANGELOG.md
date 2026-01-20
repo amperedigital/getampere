@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.918 - 2026-01-20
+- **Visual Revert**:
+  - **Glass Material**: Restored the `MeshPhongMaterial` settings from v1.916.
+  - **Settings**: Opacity is reset to `0.15` (15%).
+
 ## v1.917 - 2026-01-20
 - **Visual Enhancement (Glass Mechanics)**:
   - **Refraction Enabled**: Switched back to `MeshPhysicalMaterial` to support the user's request for "blur and distortion" which `Phong` cannot provide.

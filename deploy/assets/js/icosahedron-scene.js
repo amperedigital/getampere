@@ -73,19 +73,17 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // Switch back to Physical for Refraction/Blur, but keep DepthWrite: False for safety
-        const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xcd7f32,     // Bronze/Copper Tint
-            metalness: 0.1,
-            roughness: 0.25,     // Adds the requested BLUR/Distortion
-            transmission: 0.95,  // High transmission (Glass)
-            thickness: 0.5,      // Refraction volume
-            ior: 1.4,            // Refraction index
+        // Restored to v1.916 (Phong) state as requested
+        const glassMaterial = new THREE.MeshPhongMaterial({
+            color: 0x331a00,     // Slightly lighter base
+            emissive: 0x050200,  // Very faint constant visibility
+            specular: 0xffaa88,
+            shininess: 30,       // Spread highlight to fill faces more
             transparent: true,
-            opacity: 0.5,        // Reduced visual weight of the surface itself
+            opacity: 0.15,       // Restored opacity value
             side: THREE.DoubleSide,
-            depthWrite: false,   // CRITICAL: Floating glass must not block depth buffer
-            flatShading: true    // Keep the "faceted" look
+            depthWrite: false,
+            flatShading: true    // Emphasize the facets
         });
         
         const glassShell = new THREE.Mesh(geometry, glassMaterial);
