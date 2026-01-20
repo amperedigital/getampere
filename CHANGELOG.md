@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.877 - 2026-01-19
+- **Refactor**:
+  - **Logo SVG Optimization**: Extracted extensive inline SVG markup from `index.html` into a new dedicated loader (`logo-loader.js`).
+    - *Action*: Replaced raw SVG block with a container div and an injected script.
+    - *Benefit*: Cleaner HTML structure and decoupled logo logic (handling mobile/desktop variants dynamically).
+- **Build System**:
+  - **Asset Workflow**: Updated `publish.sh` to automatically convert local `assets/` references to CDN links for production.
+  - **Exclusion Policy**: Added support for excluded local assets (e.g., `logo-loader.js`) to remain served via Cloudflare Workers for performance/compatibility.
+
 ## v1.876 - 2026-01-19
 - **Hotfix**:
   - **Mobile Menu**: Restored inline critical styles for `.amp-hamburger` to resolve visibility/interaction regression on mobile devices.
@@ -510,3 +519,12 @@
 - **Build**: Regenerated static CSS assets using stable v3 CLI.
 - **Verification**: Confirmed standard utility classes and reset styles are present in output.
 
+
+## v1.877
+- **CSS Architecture**: Extracted non-standard/dependent styles (Hamburger, Nav Transitions, Animations) from `index.html` into a dedicated `assets/css/components.css` file.
+- **Cleanup**: Removed inline `<style>` blocks from `index.html` to improve markup cleanliness and maintainability.
+- **Fix**: Persisted critical mobile menu and reduced motion styles that were risked by Tailwind purging.
+
+- **Dead Code Removal**: Removed unused `.font-oswald` class from `components.css`.
+- **Logo Optimization**: Moved inline SVG styles (`.cls-1`, etc.) to `components.css`, cleaning up `index.html`.
+- **Safety**: Created backup `backups/index.html.backup.20260119.pre_logo_refactor` completely intact.
