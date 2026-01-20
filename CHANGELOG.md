@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.894 - 2026-01-20
+- **Visual Update**:
+  - **Icosahedron**: Reduced Central Sphere radius by 25% (0.8 -> 0.6).
+  - **Material**: Changed central sphere from dark metal to Blue Glass (`transmission: 0.9`, `color: 0x3b82f6`).
+  - **Lighting**: Increased scene brightness with stronger Camera Light (Intensity 4) and added new Fill Light and Rim Light for better glass definition.
+
 ## v1.893 - 2026-01-20
 - **Fix**:
   - **Icosahedron Experiment**: Configured `importmap` in `Icosahedron.html` to correctly resolve `three` and `three/addons/` module paths.
