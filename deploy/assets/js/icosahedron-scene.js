@@ -97,7 +97,7 @@ export class IcosahedronScene {
             
             // Glow Settings
             emissive: 0xffffff,   // White multiplier (lets texture colors show true)
-            emissiveIntensity: 2.0, // High intensity for the wires themselves
+            emissiveIntensity: 0.1, // Reduced Base Glow (Inactive state)
 
             // Physical Properties
             roughness: 0.35,
@@ -346,14 +346,45 @@ export class IcosahedronScene {
 
             // 2. Select the ONE best candidate (closest to camera = smallest Z in NDC)
             let bestNode = null;
+            let sphereActiveFactor = 0; // 0 to 1
+
             if (candidates.length > 0) {
                 // Sort by Z (ascending) to find front-most
                 candidates.sort((a, b) => a.z - b.z);
                 
                 // The front-most candidate in the hot zone is the winner
-                // Note: We might want to stricter 'dist' check for the winner?
-                // For now, if it's in the zone and in front, it wins.
                 bestNode = candidates[0].node;
+            }
+
+            // Central Sphere Electrification
+            if (this.centralSphere) {
+                let targetSphereIntensity = 0.1; // Base
+
+                if (bestNode) {
+                    // Recalculate dist
+                    bestNode.getWorldPosition(tempV);
+                    tempV.project(this.camera);
+                    const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
+                    const factor = 1 - (dist / maxDist);
+                    sphereActiveFactor = factor;
+
+                    // Wave / Electrification Effect
+                    // High frequency flicker (Electricity) + Pulse
+                    const time = Date.now() * 0.01;
+                    const electricNoise = (Math.sin(time * 10) + Math.cos(time * 23)) * 0.3; 
+                    
+                    targetSphereIntensity = 0.1 + (factor * 1.5) + (factor * electricNoise * 0.5);
+                    
+                    // Texture Scroll Wave
+                    if (this.centralSphere.material.emissiveMap) {
+                        // Move texture vertically to simulate flowing energy
+                         this.centralSphere.material.emissiveMap.offset.y -= 0.005 * factor;
+                    }
+                }
+
+                // Lerp Sphere Intensity
+                 const curr = this.centralSphere.material.emissiveIntensity;
+                 this.centralSphere.material.emissiveIntensity += (targetSphereIntensity - curr) * 0.1;
             }
 
             // 3. Apply States

@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.900 - 2026-01-20
+- **Visual Update**:
+  - **Dynamic Electrification**: The central orb's circuitry now glows and flickers ("electrifies") only when an outer lattice node is highlighted.
+  - **Wave Effect**: The circuitry texture flows vertically (`offset.y`) when active to simulate moving energy.
+  - **Reduced Base**: The base glow of the circuitry has been reduced to near zero (0.1) and only ramps up to full intensity (~1.6) during interaction.
+
 ## v1.899 - 2026-01-20
 - **Visual Update**:
   - **Procedural Texture**: Added `createCircuitryTexture()` to generate dynamic, glowing circuitry patterns.
