@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.931 - 2026-01-20
+- **Fix**: Renamed `Icosahedron.html` to `icosahedron.html` (lowercase) to fix URL accessibility issues.
+
 ## v1.930 - 2026-01-20
 - **Theme Overhaul (Bluey Silver)**:
   - **Goal**: Transition the entire Icosahedron aesthetic from Copper/Gold to a "Bluey Silver" palette.
