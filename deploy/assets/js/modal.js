@@ -1,3 +1,6 @@
+// Modal system - handles modal open/close with scroll locking
+// Wrapped in IIFE to prevent redeclaration errors
+(function() {
 const initModal = () => {
   // Modal system - handles modal open/close with scroll locking
   const namespace = (window.ampere ??= {});
@@ -349,3 +352,4 @@ initModal();
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initModal);
 }
+})();

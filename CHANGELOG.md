@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.872 - 2026-01-19
+- **Bug Fix**:
+  - **Script Redundancy**: Removed duplicate script inclusions in `index.html` (Modal, Global, etc.) that were causing undefined behavior and redeclaration errors.
+  - **Modal Safety**: Wrapped `modal.js` in an IIFE to scope `initModal` locally, preventing potential future namespace collisions.
+
 ## v1.871 - 2026-01-19
 - **Code Optimization**:
   - **Component Refactor**: Moved logic for "Shiny CTA" buttons from inline HTML `<style>` blocks to `input.css`.
