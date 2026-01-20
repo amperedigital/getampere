@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.920 - 2026-01-20
+- **Visual Repair (True Increment)**:
+  - **Adjustment**: Replaced the "extreme" glass settings of v1.919 with a much more subtle configuration that mimics the visibility of v1.918 (Phong, 15% opacity) while introducing the requested "little bit of blur".
+  - **Settings**:
+    - `opacity: 0.2` (Was 1.0): Drastically reduced visual weight to match the previous "ghost" look.
+    - `transmission: 0.2` (Was 0.9): Reduced refraction intensity to just 20%, creating a subtle blur without dominating the scene.
+    - `emissive: 0x050200`: Restored the faint glow for visibility in shadows.
+    - `roughness: 0.2`: Maintained the blurriness factor.
+
 ## v1.919 - 2026-01-20
 - **Visual Enhancement (Incremental Blur)**:
   - **Material**: Switched back to `MeshPhysicalMaterial` to enable blur capabilities.

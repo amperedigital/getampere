@@ -73,17 +73,17 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // Incremental Blur: Physical Material with high transparency logic
+        // Incremental Blur: Physical Material, but low opacity/transmission to stay close to Phong look
         const glassMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x331a00,     // Dark tint (Matches Phong)
-            emissive: 0x000000,
+            emissive: 0x050200,  // Keep the faint glow from v1.918
             roughness: 0.2,      // Light Blur (Frosted)
             metalness: 0.1,
-            transmission: 0.9,   // High transmission (mostly see-through)
-            thickness: 0.1,      // Minimal refraction distance (avoids "extreme" distortion)
-            ior: 1.15,           // Low Index of Refraction (Subtle bending)
-            transparent: true,   // Essential for transmission mix
-            opacity: 1.0,        // Let transmission handle the "see through" nature
+            transmission: 0.2,   // Low transmission (Just a hint of glass physics)
+            thickness: 0.1,      // Minimal refraction
+            ior: 1.1,            // Minimal distortion
+            transparent: true,   // Essential
+            opacity: 0.2,        // Low opacity (Close to v1.918's 0.15, not 1.0)
             side: THREE.DoubleSide,
             depthWrite: false,   // Prevent depth occlusion
             flatShading: true
