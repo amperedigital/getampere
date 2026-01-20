@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.880 - 2026-01-19
+- **Refactor**:
+  - **Logo Performance**: Reverted to inline SVG injection for the logo to eliminate visual flash/delay.
+    - *Action*: Moved SVGs back into `index.html` from `logo-loader.js`.
+    - *Reason*: The deferred loading of the logo script caused the "tail end" of the logo to flash in after the layout was established.
+    - *Note*: Container sizing fixes from v1.879 are preserved in `components.css`.
+
 ## v1.879 - 2026-01-19
 - **Fix**:
   - **Logo Layout Shift (CLS)**: Forced explicit width for `#amp-logo-container` in `components.css`.
