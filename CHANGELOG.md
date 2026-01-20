@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.875 - 2026-01-19
+- **Code Optimization**:
+  - **Inline CSS Migration**: Moved ~300 lines of inline styles from `index.html` (after `<head>`) to `input.css`.
+    - *Scope*: Migrated `body`, utility overrides, hamburger menu, card stack logic, and animation keyframes.
+    - *Benefit*: Centralized style definitions and significantly reduced HTML payload size.
+
 ## v1.874 - 2026-01-19
 - **Code Optimization**:
   - **Gradient Blur Refactor**: Migrated large `.gradient-blur` inline style block to `input.css`.

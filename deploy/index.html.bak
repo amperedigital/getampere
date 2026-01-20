@@ -39,6 +39,308 @@
     })();
   </script>
   <style>
+    body {
+      font-family: "Geist", "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scrollbar-gutter: stable;
+    }
+
+    /* CRITICAL MOBILE OVERRIDES 
+       Direct CSS fallback because tailwind max-md variants are conflicting with existing config 
+    */
+    @media (max-width: 768px) {
+      .mobile-force-hidden {
+        display: none !important;
+      }
+      .mobile-force-auto-height {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .mobile-force-block {
+        display: block !important;
+      }
+      .mobile-force-relative {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+      }
+      .mobile-force-tight-spacing {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important; 
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+      }
+      .mobile-force-medium-spacing {
+        margin-top: 5rem !important;
+        margin-bottom: 5rem !important; 
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+      }
+      .mobile-force-no-margin {
+        margin: 0 !important;
+      }
+      .mobile-card-gap {
+        margin-bottom: 3rem !important;
+      }
+      /* Remove gap from last card */
+      .mobile-card-gap:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    /* SVG Distortion Grid Fallback (Mobile) */
+    .distortion-grid-fallback {
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    .font-serif-italic {
+      font-family: "Newsreader", serif;
+      font-style: italic;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Manual Active State for CRM Card */
+    /* Animation Control: Default Hidden/Stopped */
+    .crm-animated-element, .crm-ping-element {
+        display: none !important;
+    }
+
+    /* Force Display Helper from Global.js */
+    .force-smil-display, .force-visible {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Active State: Show/Run Animations on Active OR Hover OR In-View */
+    [data-tab-card].active .crm-animated-element,
+    [data-tab-card].in-view .crm-animated-element,
+    [data-tab-card].active .crm-ping-element,
+    [data-tab-card].in-view .crm-ping-element,
+    [data-tab-card].active:hover .crm-animated-element,
+    [data-tab-card].active:hover .crm-ping-element {
+        display: block !important;
+        opacity: 1 !important;
+    }
+    
+    [data-tab-card].active .crm-ping-element,
+    [data-tab-card].in-view .crm-ping-element,
+    [data-tab-card].active:hover .crm-ping-element {
+        animation: amp-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+    }
+
+    @keyframes amp-ping {
+        75%, 100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+
+    @keyframes ping {
+        75%, 100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+
+    /* Smooth Carousel Transitions */
+    .carousel-card {
+      transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Grid/List View Transitions */
+    #projects-container {
+      transition: opacity 0.3s ease;
+    }
+
+    /* Custom Selection Color */
+    ::selection {
+      background: rgba(59, 130, 246, 0.2);
+      color: white;
+    }
+
+    .amp-hamburger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .amp-hamburger:focus-visible {
+      outline: 2px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    .amp-hamburger-line {
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background-color: #0F172A;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .amp-hamburger-line:first-child {
+      transform: translateY(-5px);
+    }
+
+    .amp-hamburger-line:last-child {
+      transform: translateY(5px);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line:first-child {
+      transform: rotate(45deg);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line:last-child {
+      transform: rotate(-45deg);
+    }
+
+    .amp-hamburger.is-open .amp-hamburger-line {
+      background-color: #0F172A;
+    }
+
+    /* --- Global Interaction Library --- */
+    
+    /* Text Physics: Flip-In-Place */
+    .hover-flip-text .char {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .group:hover .hover-flip-text .char,
+    .hover-flip-text:hover .char {
+      transform: rotateX(360deg);
+    }
+
+    /* Re-usable Mono Labels */
+    .tag-mono-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .uc-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #60a5fa; /* text-blue-400 */
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .group:hover .uc-label,
+    .active .uc-label {
+      opacity: 1;
+    }
+    @media (min-width: 1024px) {
+      .uc-label { font-size: 12px; }
+    }
+
+    /* Icon Physics: Pick up & Drop (Arrow-style) */
+    .hover-push-down-parent {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hover-push-down {
+      display: inline-block;
+      transition: transform 0.4s linear, opacity 0.3s linear;
+      will-change: transform, opacity;
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: none;
+    }
+    .group:hover .hover-push-down {
+      animation: arrow-pickup-drop 0.8s linear forwards;
+    }
+    @keyframes arrow-pickup-drop {
+      0% { transform: translateY(0); opacity: 1; }
+      20% { transform: translateY(-15px); opacity: 1; }
+      40% { transform: translateY(25px); opacity: 0; }
+      50% { transform: translateY(-40px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Standard Reveal Animations */
+    .fade-up-element {
+      opacity: 0;
+      transform: translateY(30px);
+      will-change: opacity, transform;
+    }
+    .fade-up-element.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-heading {
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal-content {
+      transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Mobile Reveal Animation */
+    .mobile-reveal:not([data-tab-card data-observer]) {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      filter: blur(10px);
+      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .mobile-reveal:not([data-tab-card data-observer]).in-view {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    /* Special reveal for cards to avoid transform conflicts */
+    .mobile-reveal[data-tab-card data-observer] {
+      opacity: 0;
+      filter: blur(10px);
+      transition: opacity 0.8s ease, filter 0.8s ease;
+    }
+    .mobile-reveal[data-tab-card data-observer].in-view {
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    /* Precision 3D Card Stack & Interaction */
+    [data-tab-card data-observer] {
+      --stack-y: 0px;
+      --rot-y: 12deg;
+      --rot-x: 6deg;
+      transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
+      touch-action: manipulation;
+    }
+    
+    /* Restore Stacking Offsets */
+    [data-tab-card data-observer].stack-1 { --stack-y: -12px; z-index: 18 !important; }
+    [data-tab-card data-observer].stack-2 { --stack-y: -24px; z-index: 17 !important; }
+    [data-tab-card data-observer].stack-3 { --stack-y: -36px; z-index: 16 !important; }
+
+    /* Flatten entire stack on Hover or Touch */
+    .group\/cards:hover [data-tab-card data-observer],
+    .group\/cards:active [data-tab-card data-observer],
+    [data-tab-card data-observer]:hover,
+    [data-tab-card data-observer]:active {
+      --rot-y: 0deg !important;
+      --rot-x: 6deg !important; /* Keep the tilt to prevent "upward" jump */
+    }
+  </style>
+  <style>
     @media (min-width: 1440px) {
       .amp-hero-card {
         flex: 0 0 calc((100% - 1.9rem) / 3) !important;
