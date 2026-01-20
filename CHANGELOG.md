@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.866 - 2026-01-19
+- **Hero Typography**:
+  - **Layout Refinement**: Updated the hero heading "Built to Handle Every Call".
+    - *Change*: Forced a line break between "Built to" and "Handle Every" to improve visual balance and impact.
+
 ## v1.865 - 2026-01-19
 - **Hero Fixes**:
   - **Background Images**: Restored missing background images on Hero Slide 2.
