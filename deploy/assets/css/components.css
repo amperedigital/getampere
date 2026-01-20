@@ -306,3 +306,30 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         min-width: 280px;
     }
 }
+
+/* --- Hero Slider --- */
+#amp-hero-slider {
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+  cursor: grab;
+}
+
+#amp-hero-slider::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+#amp-hero-slider * {
+  cursor: inherit;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#amp-hero-slider.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+#amp-hero-slider.is-dragging * {
+  cursor: grabbing;
+}

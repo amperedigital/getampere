@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.881 - 2026-01-19
+- **Refactor**:
+  - **Inline CSS Migration**: Moved `#amp-hero-slider` styles from `index.html` to `components.css`.
+    - *Action*: Removed inline `<style>` block and appended rules to external stylesheet.
+    - *Benefit*: Improved separation of concerns and reduced `index.html` file size.
+
 ## v1.880 - 2026-01-19
 - **Refactor**:
   - **Logo Performance**: Reverted to inline SVG injection for the logo to eliminate visual flash/delay.
