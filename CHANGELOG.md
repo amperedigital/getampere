@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.888 - 2026-01-19
+- **Refactor**:
+  - **HTML Structure Audit**: Removed redundant container wrappers from `index.html`.
+    - *Action*: Deleted `#wrapper` div which contained the gradient blur effect but served no structural purpose.
+    - *Action*: Verified and preserved `.gradient-blur` layer stack (6 levels) for visual fidelity.
+    - *Benefit*: Simplified DOM hierarchy without visual regression.
+
+## v1.887 - 2026-01-19
+- **Performance**:
+  - **Iconify Optimization**: Deferred loading of the Iconify library to unblock main thread rendering.
+
+## v1.886 - 2026-01-19
+- **Refactor**:
+  - **Three.js Cleanup**: Optimized modular imports for 3D components.
+
+## v1.885 - 2026-01-19
+- **Refactor**:
+  - **GSAP Removal**: Removed GSAP dependency in favor of native CSS/JS animations for reduced bundle size.
+
+## v1.883 - 2026-01-19
+- **Refactor**:
+  - **Observer Consolidation**: Merged multiple duplicate IntersectionObserver instances into a unified handler in `global.js`.
+
 ## v1.882 - 2026-01-19
 - **Refactor**:
   - **Chart.js Cleanup**: Consolidated all inline Chart.js initialization logic into a single external file.
