@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.882 - 2026-01-19
+- **Refactor**:
+  - **Chart.js Cleanup**: Consolidated all inline Chart.js initialization logic into a single external file.
+    - *Action*: Extracted 3 inline scripts (Fixed Chart, 3D Chart, Aura Chart) from `index.html`.
+    - *Action*: Created `deploy/assets/js/chart-init.js` to manage all chart instances.
+    - *Benefit*: Significantly reduced `index.html` complexity (~200 lines removed) and standardized chart initialization.
+
 ## v1.881 - 2026-01-19
 - **Refactor**:
   - **Inline CSS Migration**: Moved `#amp-hero-slider` styles from `index.html` to `components.css`.
