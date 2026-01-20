@@ -114,10 +114,11 @@ export class IcosahedronScene {
         const surfaceRadius = sphereRadius + 0.005; 
         
         // 1. Materials
+        // Trace is "Inert" (Dark) - only lights up when electron is on it
         const traceMaterial = new THREE.LineBasicMaterial({
-            color: 0xffaa44, // Bright Gold
+            color: 0x2a1005, // Very Dark Copper (almost black)
             transparent: true,
-            opacity: 0.35
+            opacity: 0.1     // Barely visible
         });
 
         // Chip Materials (Motherboard Elements)
@@ -144,12 +145,12 @@ export class IcosahedronScene {
         };
 
         // 2. PCB Logic - "Manhattan Sphere"
-        // We generate "Nodes" (Chips) and route "Traces" (Parallel-ish lines) from them
-        const numChips = 18;
+        // Increased density to remove "huge gaps"
+        const numChips = 32; // Double density (18 -> 32)
         
         for(let i=0; i<numChips; i++) {
             // A. Place Motherboard Component (Chip)
-            const phi = Math.acos(2 * Math.random() - 1); // Random distribution
+            const phi = Math.acos(2 * Math.random() - 1); 
             const theta = Math.random() * Math.PI * 2;
             
             const pos = getPos(phi, theta, surfaceRadius);
@@ -160,63 +161,49 @@ export class IcosahedronScene {
             
             const chip = new THREE.Mesh(geo, chipMaterial);
             chip.position.copy(pos);
-            // Orient outward: lookAt normal, then rotate flat
-            // Vector from center to pos is the normal
             chip.lookAt(pos.clone().multiplyScalar(2)); 
             
-            // Add decorative "Gold Pad/Dot" on top to signify active element
             const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
-            pad.position.z = 0.008; // Slightly above chip surface
+            pad.position.z = 0.008; 
             chip.add(pad);
 
             this.centralSphere.add(chip);
 
             // B. Route Parallel Traces from this Chip
-            // Create a "Bus" of lines leaving the chip
-            const tracesPerChip = 3 + Math.floor(Math.random() * 4);
+            // MORE TRACES per chip to fill gaps
+            const tracesPerChip = 6 + Math.floor(Math.random() * 6); // 6-12 traces (was 3-7)
             
             for (let t=0; t<tracesPerChip; t++) {
                 // Determine Start Point (near chip)
                 let currentPhi = phi + (Math.random() * 0.1 - 0.05);
                 let currentTheta = theta + (Math.random() * 0.1 - 0.05);
 
-                const numSegs = 4 + Math.floor(Math.random() * 5); // Longer paths
+                const numSegs = 6 + Math.floor(Math.random() * 6); // Longer paths (was 4-9)
                 
                 // Trace Path Generation
                 for(let s=0; s<numSegs; s++) {
-                    const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal for Manhattan look
+                    const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal
                     
-                    // Length of segment (varied)
-                    const len = 0.2 + Math.random() * 0.3;
+                    // Shorter segments but more of them = better grid adherence & density
+                    const len = 0.1 + Math.random() * 0.25; 
                     
                     let startP = getPos(currentPhi, currentTheta, surfaceRadius);
                     let endP, midP;
                     
                     if (isVertical) {
-                        // Move Phi (North/South) - Longitude Line
-                        // Keep Theta constant
                         const dir = Math.random() > 0.5 ? 1 : -1;
                         let nextPhi = currentPhi + (len * dir);
-                        // Clamp poles to prevent singularity weirdness
                         nextPhi = Math.max(0.1, Math.min(Math.PI - 0.1, nextPhi));
 
                         endP = getPos(nextPhi, currentTheta, surfaceRadius);
-                        // Simple arc approximation
                         midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-
-                        // Update cursor
                         currentPhi = nextPhi;
                     } else {
-                        // Move Theta (East/West) - Latitude Line
-                        // Keep Phi constant
                         const dir = Math.random() > 0.5 ? 1 : -1;
                         let nextTheta = currentTheta + (len * dir);
 
                         endP = getPos(currentPhi, nextTheta, surfaceRadius);
-                        // Simple arc approximation
                         midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-
-                        // Update cursor
                         currentTheta = nextTheta;
                     }
                     
@@ -224,7 +211,7 @@ export class IcosahedronScene {
                     const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
                     this.circuitCurves.push(curve);
 
-                    // Draw Static Trace
+                    // Draw Static Trace (Dark/Inert)
                     const points = curve.getPoints(8);
                     const geometry = new THREE.BufferGeometry().setFromPoints(points);
                     const trace = new THREE.Line(geometry, traceMaterial);
@@ -234,11 +221,11 @@ export class IcosahedronScene {
         }
 
         // 2. Initialize Electrons (The "Glow")
-        // We recycle these
-        const electronGeometry = new THREE.BoxGeometry(0.015, 0.015, 0.015); // Digital "Packet" look (Cube)
-        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); // Pure Golden Fire
+        // We use a BoxGeometry scaled to be a "Beam" to simulate the trace lighting up
+        const electronGeometry = new THREE.BoxGeometry(0.015, 0.015, 0.06); // Long "Pulse" beam
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); 
 
-        const numElectrons = 100; // High density data flow
+        const numElectrons = 150; // High density pulses (150 active)
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             electron.visible = false; 
@@ -463,6 +450,10 @@ export class IcosahedronScene {
                             if (curve) {
                                 const pos = curve.getPoint(e.t);
                                 e.mesh.position.copy(pos);
+                                
+                                // Orient Beam along path tangent
+                                const tangent = curve.getTangent(e.t).normalize();
+                                e.mesh.lookAt(pos.clone().add(tangent));
                             }
                         }
                     }

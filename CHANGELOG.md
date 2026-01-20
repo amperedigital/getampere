@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.904 - 2026-01-20
+- **Visual Enhancement (Circuitry)**:
+  - **Inert Traces**: Changed the static circuitry traces to be barely visible ("inert") dark lines (`opacity: 0.1`, `color: 0x2a1005`), so they only appear "active" when electrons travel over them.
+  - **Beam Electrons**: Replaced digital "cube" electrons with elongated "Beam/Pulse" geometry that orients along the path tangent, simulating a streak of light moving through the traces.
+  - **Density Boost**: Increased trace density significantly (Chips: 18->32, Traces: 3->6 per chip) to fill visual gaps and create a more continuous web.
+
 ## v1.903 - 2026-01-20
 - **Visual Enhancement (Motherboard)**:
   - **Manhattan Traces**: Implemented a "Grid-Aligned" trace generation algorithm. Circuit paths now run parallel (North-South / East-West relative to the sphere's poles), creating a structured PCB look instead of random squiggles.
