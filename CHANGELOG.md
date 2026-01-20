@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.891 - 2026-01-20
+- **Fix**:
+  - **Logo SVG**: Corrected the "i" dot in the "Ampere.ai" wordmark to use the correct dark color (`cls-4`) instead of blue (`cls-3`). This restores the correct visual identity for the logo "eye".
+
 ## v1.890 - 2026-01-19
 - **Build System**:
   - **Smart Dependency Linking**: Updated `publish.sh` to automatically force updates of parent "loader" scripts (e.g., `global.js`) when their child dependencies (e.g., `ampere-3d-key.js`) are modified.

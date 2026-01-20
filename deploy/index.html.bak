@@ -3,17 +3,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Ampere AI - Intelligent voice agents for business. Automate inbound calls, bookings, and customer support with human-like AI phone answering.">
-  <!-- Three.js Import Map -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
-      }
-    }
-  </script>
   <title>getAmpere.ai - AI Voice Agents</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.880/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.885/deploy/assets/css/components.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <script>
@@ -38,380 +32,11 @@
       } catch (e) {}
     })();
   </script>
-  <style>
-    body {
-      font-family: "Geist", "DM Sans", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      scrollbar-gutter: stable;
-    }
 
-    /* CRITICAL MOBILE OVERRIDES 
-       Direct CSS fallback because tailwind max-md variants are conflicting with existing config 
-    */
-    @media (max-width: 768px) {
-      .mobile-force-hidden {
-        display: none !important;
-      }
-      .mobile-force-auto-height {
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
-      }
-      .mobile-force-block {
-        display: block !important;
-      }
-      .mobile-force-relative {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        transform: none !important;
-      }
-      .mobile-force-tight-spacing {
-        margin-top: 2rem !important;
-        margin-bottom: 2rem !important; 
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-      }
-      .mobile-force-medium-spacing {
-        margin-top: 5rem !important;
-        margin-bottom: 5rem !important; 
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-      }
-      .mobile-force-no-margin {
-        margin: 0 !important;
-      }
-      .mobile-card-gap {
-        margin-bottom: 3rem !important;
-      }
-      /* Remove gap from last card */
-      .mobile-card-gap:last-child {
-        margin-bottom: 0 !important;
-      }
-    }
 
-    /* SVG Distortion Grid Fallback (Mobile) */
-    .distortion-grid-fallback {
-      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-    }
 
-    .font-serif-italic {
-      font-family: "Newsreader", serif;
-      font-style: italic;
-    }
 
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
 
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    /* Manual Active State for CRM Card */
-    /* Animation Control: Default Hidden/Stopped */
-    .crm-animated-element, .crm-ping-element {
-        display: none !important;
-    }
-
-    /* Force Display Helper from Global.js */
-    .force-smil-display, .force-visible {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Active State: Show/Run Animations on Active OR Hover OR In-View */
-    [data-tab-card].active .crm-animated-element,
-    [data-tab-card].in-view .crm-animated-element,
-    [data-tab-card].active .crm-ping-element,
-    [data-tab-card].in-view .crm-ping-element,
-    [data-tab-card].active:hover .crm-animated-element,
-    [data-tab-card].active:hover .crm-ping-element {
-        display: block !important;
-        opacity: 1 !important;
-    }
-    
-    [data-tab-card].active .crm-ping-element,
-    [data-tab-card].in-view .crm-ping-element,
-    [data-tab-card].active:hover .crm-ping-element {
-        animation: amp-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
-    }
-
-    @keyframes amp-ping {
-        75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-        }
-    }
-
-    @keyframes ping {
-        75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-        }
-    }
-
-    /* Smooth Carousel Transitions */
-    .carousel-card {
-      transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    /* Grid/List View Transitions */
-    #projects-container {
-      transition: opacity 0.3s ease;
-    }
-
-    /* Custom Selection Color */
-    ::selection {
-      background: rgba(59, 130, 246, 0.2);
-      color: white;
-    }
-
-    .amp-hamburger {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      overflow: hidden;
-      transition: box-shadow 0.25s ease, transform 0.25s ease;
-    }
-
-    .amp-hamburger:focus-visible {
-      outline: 2px solid rgba(37, 99, 235, 0.4);
-      outline-offset: 2px;
-    }
-
-    .amp-hamburger-line {
-      position: absolute;
-      width: 18px;
-      height: 2px;
-      border-radius: 999px;
-      background-color: #0F172A;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-
-    .amp-hamburger-line:first-child {
-      transform: translateY(-5px);
-    }
-
-    .amp-hamburger-line:last-child {
-      transform: translateY(5px);
-    }
-
-    .amp-hamburger.is-open .amp-hamburger-line:first-child {
-      transform: rotate(45deg);
-    }
-
-    .amp-hamburger.is-open .amp-hamburger-line:last-child {
-      transform: rotate(-45deg);
-    }
-
-    .amp-hamburger.is-open .amp-hamburger-line {
-      background-color: #0F172A;
-    }
-
-    /* --- Global Interaction Library --- */
-    
-    /* Text Physics: Flip-In-Place */
-    .hover-flip-text .char {
-      display: inline-block;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transform-origin: center center;
-      will-change: transform;
-    }
-    .group:hover .hover-flip-text .char,
-    .hover-flip-text:hover .char {
-      transform: rotateX(360deg);
-    }
-
-    /* Re-usable Mono Labels */
-    .tag-mono-label {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    .uc-label {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color: #60a5fa; /* text-blue-400 */
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
-    }
-    .group:hover .uc-label,
-    .active .uc-label {
-      opacity: 1;
-    }
-    @media (min-width: 1024px) {
-      .uc-label { font-size: 12px; }
-    }
-
-    /* Icon Physics: Pick up & Drop (Arrow-style) */
-    .hover-push-down-parent {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hover-push-down {
-      display: inline-block;
-      transition: transform 0.4s linear, opacity 0.3s linear;
-      will-change: transform, opacity;
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: none;
-    }
-    .group:hover .hover-push-down {
-      animation: arrow-pickup-drop 0.8s linear forwards;
-    }
-    @keyframes arrow-pickup-drop {
-      0% { transform: translateY(0); opacity: 1; }
-      20% { transform: translateY(-15px); opacity: 1; }
-      40% { transform: translateY(25px); opacity: 0; }
-      50% { transform: translateY(-40px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Standard Reveal Animations */
-    .fade-up-element {
-      opacity: 0;
-      transform: translateY(30px);
-      will-change: opacity, transform;
-    }
-    .fade-up-element.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-heading {
-      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .reveal-content {
-      transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    /* Mobile Reveal Animation */
-    .mobile-reveal:not([data-tab-card data-observer]) {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-      filter: blur(10px);
-      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .mobile-reveal:not([data-tab-card data-observer]).in-view {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-    /* Special reveal for cards to avoid transform conflicts */
-    .mobile-reveal[data-tab-card data-observer] {
-      opacity: 0;
-      filter: blur(10px);
-      transition: opacity 0.8s ease, filter 0.8s ease;
-    }
-    .mobile-reveal[data-tab-card data-observer].in-view {
-      opacity: 1;
-      filter: blur(0);
-    }
-
-    /* Precision 3D Card Stack & Interaction */
-    [data-tab-card data-observer] {
-      --stack-y: 0px;
-      --rot-y: 12deg;
-      --rot-x: 6deg;
-      transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
-      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
-      touch-action: manipulation;
-    }
-    
-    /* Restore Stacking Offsets */
-    [data-tab-card data-observer].stack-1 { --stack-y: -12px; z-index: 18 !important; }
-    [data-tab-card data-observer].stack-2 { --stack-y: -24px; z-index: 17 !important; }
-    [data-tab-card data-observer].stack-3 { --stack-y: -36px; z-index: 16 !important; }
-
-    /* Flatten entire stack on Hover or Touch */
-    .group\/cards:hover [data-tab-card data-observer],
-    .group\/cards:active [data-tab-card data-observer],
-    [data-tab-card data-observer]:hover,
-    [data-tab-card data-observer]:active {
-      --rot-y: 0deg !important;
-      --rot-x: 6deg !important; /* Keep the tilt to prevent "upward" jump */
-    }
-  </style>
-  <style>
-    @media (min-width: 1440px) {
-      .amp-hero-card {
-        flex: 0 0 calc((100% - 1.9rem) / 3) !important;
-        max-width: calc((100% - 1.9rem) / 3) !important;
-      }
-    }
-  </style>
-  <style class="">
-    @keyframes animationIn {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-        filter: blur(8px);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0px);
-      }
-    }
-  </style>
-  <script>
-    (function () {
-const style = document.createElement("style");
-style.textContent = `
-.animate-on-scroll { animation-play-state: paused !important; }
-.animate-on-scroll.animate { animation-play-state: running !important; }
-`;
-document.head.appendChild(style);
-const once = true;
-if (!window.__inViewIO) {
-window.__inViewIO = new IntersectionObserver(
-(entries) => {
-entries.forEach((entry) => {
-if (entry.isIntersecting) {
-entry.target.classList.add("animate");
-if (once) window.__inViewIO.unobserve(entry.target);
-}
-});
-},
-{ threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
-);
-}
-window.initInViewAnimations = function (selector = ".animate-on-scroll") {
-document.querySelectorAll(selector).forEach((el) => {
-window.__inViewIO.observe(el);
-});
-};
-document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
-})();
-  </script>
-  <style>
-    .animate-on-scroll {
-      animation-play-state: paused !important;
-    }
-
-    .animate-on-scroll.animate {
-      animation-play-state: running !important;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .animate-on-scroll {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-        visibility: visible !important;
-      }
-    }
-  </style>
   <style id="aura-editor-visibility-style">
     .invisible {
       visibility: hidden !important;
@@ -420,178 +45,8 @@ document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
 
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@1,6..72,200..800&display=swap">
-.font-oswald {
-font-family: 'Oswald', sans-serif !important;
-}
-</style>
-<style>
-/* Nav Smart Transitions & Dark Mode Logic */
 
-/* 1. Shared Transitions (Enable smooth animations for ALL state changes) */
-nav,
-nav #amp-logo-segment,
-nav #amp-menu-segment,
-nav a,
-nav svg,
-nav path,
-nav .cls-1, nav .cls-2, nav .cls-3, nav .cls-4,
-nav .amp-hamburger, nav .amp-hamburger-line {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
 
-/* 2. Nav Wrapper - Always Transparent */
-nav.nav-inverted {
-    background-color: transparent !important; 
-}
-
-/* 3. Logo Segment - Always Transparent (per user request) */
-nav.nav-inverted #amp-logo-segment {
-    background-color: transparent !important; 
-}
-
-/* 4. Menu Segment - Turns Dark in Inverted Mode */
-nav.nav-inverted #amp-menu-segment {
-    background-color: #0F172A !important; /* Slate-900 */
-}
-
-/* 5. Menu Links - Turn White */
-nav.nav-inverted #amp-menu-segment a {
-    color: #ffffff !important;
-}
-
-/* Hover on Inactive Links: Dark/Glassy Background (To Fix White-on-White issue) */
-nav.nav-inverted #amp-menu-segment a:not(.shadow-sm):hover {
-    background-color: rgba(255, 255, 255, 0.15) !important; 
-    color: #ffffff !important;
-    opacity: 1 !important;
-}
-
-/* 6. Logo Colors - Custom Dark Mode Palette */
-nav.nav-inverted .cls-1, 
-nav.nav-inverted .cls-2 {
-    fill: #0F172A !important; /* Matches Menu BG */
-    stroke: none !important;
-}
-
-nav.nav-inverted .cls-3 {
-    fill: #00bee6 !important; /* Blue "get" */
-    stroke: none !important;
-}
-
-nav.nav-inverted .cls-4 {
-    fill: #ffffff !important; /* White "Ampere.ai" */
-    stroke: none !important;
-}
-
-/* Mobile Logo: Match Desktop Dark Mode */
-nav.nav-inverted .amp-logo-fill {
-    fill: #0F172A !important;
-    stroke: none !important;
-}
-
-/* 7. Hamburger Menu */
-nav.nav-inverted .amp-hamburger-line {
-    background-color: #ffffff !important;
-}
-nav.nav-inverted .amp-hamburger {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* 8. Link Container (Pill) */
-nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
-    background-color: rgba(255,255,255,0.1) !important;
-    border-color: rgba(255,255,255,0.2) !important;
-    color: white !important;
-}
-
-/* 9. Active Link State */
-nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
-    background-color: #ffffff !important;
-    color: #0F172A !important;
-}
-
-/* 10. Request Demo Button - Inverted Mode */
-/* Fix: Hide the middle layer text blocker so animation shows */
-
-/* 2. Style the Content Layer (Layer 3) - The actual white pill */
-nav.nav-inverted #amp-menu-segment button.group span.flex.bg-gradient-to-b {
-    background: #ffffff !important;
-    color: #0F172A !important;
-    border-color: transparent !important; /* Clean edge */
-}
-
-/* 3. Icon Color */
-nav.nav-inverted #amp-menu-segment button.group svg {
-    stroke: #0F172A !important;
-}
-
-/* 4. Ensure Spinner (Layer 1) is visible on hover */
-/* The spinner uses 'bg-[conic-gradient...]' so it is NOT affected by the bg-gradient-to-b selectors above. */
-/* It sits behind Layer 3. Layer 3 is inside p-[2px]. So Spinner shows in the gap. */
-
-/* Optional: Add hover effect to the white pill itself */
-nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b {
-    background: #f4f4f5 !important;
-}
-
-/* 11. Request Demo Shiny Button - Navigation Override */
-/* Default State: Clean Black Button (Static) */
-.shiny-cta.nav-cta {
-    /* Height Balancing: 
-       Nav Container = 42px (32px content + 8px pad + 2px border)
-       Button Content = 16px (1rem line-height)
-       Button Border = 4px (2px top/bottom)
-       Remaining for Padding = 22px -> 11px per side (0.6875rem)
-    */
-    padding: 0.6875rem 1.5rem !important;
-    font-size: 0.75rem !important;
-    line-height: 1rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.2em !important;
-    font-weight: 600 !important;
-    gap: 0.5rem !important;
-    display: flex !important;
-    align-items: center !important;
-    
-    /* Force White Text/Icon even in inverted nav */
-    color: #ffffff !important; 
-    
-    /* Static Appearance: Remove spin/gradient, use subtle border */
-    /* Use 2px border to match hover state prevents layout shift */
-    background: #000000 !important;
-    border: 2px solid rgba(255,255,255,0.12) !important; 
-    animation: none !important;
-    box-shadow: none !important;
-}
-
-/* Force SVG Icon White - with high specificity to override old inverted rules */
-.shiny-cta.nav-cta svg,
-nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
-    stroke: #ffffff !important;
-    transition: transform 0.3s ease;
-}
-
-/* Hide Shimmer Trail by default */
-.shiny-cta.nav-cta::after {
-    opacity: 0 !important;
-    animation: none !important;
-}
-
-/* Hover State: Activate Shiny Effects */
-.shiny-cta.nav-cta:hover {
-    /* Restore the shiny gradient border */
-    background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box !important;
-    border: 2px solid transparent !important;
-    animation: border-spin 2.5s linear infinite !important;
-}
-
-/* Activate Shimmer on Hover */
-.shiny-cta.nav-cta:hover::after {
-    opacity: 0.6 !important;
-    animation: shimmer 4s linear infinite !important;
-}
-</style>
 </head>
 
 <body class="font-geist bg-[#0a0b14] text-slate-900 min-h-screen flex flex-col">
@@ -616,82 +71,50 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   </div>
 
 
-  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent transform-gpu" style="backface-visibility: hidden; -webkit-backface-visibility: hidden;">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-transparent" style="backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     <div class="flex w-full justify-end">
         <div class="flex items-stretch h-20 gap-0" id="amp-logo-segment">
           <a href="https://getampere.ai" class="group cursor-pointer shrink-0 flex items-center bg-transparent h-full pl-0 pr-[22px] md:pr-0 md:pl-4 -mr-6" aria-label="Ampere AI - Autonomous Voice Agents">
-            <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
-              <defs>
-                <style>
-                  .amp-logo-fill {
-                    fill: #fff;
-                  }
-                </style>
-              </defs>
-              <path fill="none" d="M0,0h423.3c.1,0,.3.1.3.3v423.3H0V0h0Z"></path>
-              <path class="amp-logo-fill" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
-              <path class="amp-logo-fill" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z">
-              </path>
-            </svg>
-            <svg class="hidden md:block md:w-[220px] md:min-w-[220px] lg:w-[300px] lg:min-w-[280px] h-full object-contain" viewBox="0 0 681.89 196.35" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet" stroke-width="2" data-icon-replaced="true" style="width: 280px; height: 80px; color: rgb(228, 228, 231);">
-               <title>Ampere AI - Autonomous Voice Agents</title>
-            <defs>
-              <style>
-                .cls-1 {
-                  /* stroke: #fff; User requested removal */
-                  /* stroke-miterlimit: 10; */
-                }
-
-                .cls-1,
-                .cls-2 {
-                  fill: #fff;
-                }
-
-                .cls-3 {
-                  fill: #00bee6;
-                }
-
-                .cls-4 {
-                  fill: #231f20;
-                }
-
-                @media (max-width: 767px) {
-                  .logo-wordmark {
-                    display: none;
-                  }
-                }
-              </style>
-            </defs>
-            <path class="cls-2" d="M89.98,13.08l73.55,177.45c1.46,3.52,4.89,5.81,8.7,5.81l509.66-.05V0L98.68.05c-6.71,0-11.27,6.82-8.7,13.03Z">
-            </path>
-            <path class="cls-1" d="M89.9,146.93L47.3,45.27C30.02,76.88-9.1,126.82,2.67,154.9c11.77,28.07,54.58,6.85,87.24-7.97Z"></path>
-            <g class="logo-wordmark">
-              <path class="cls-4" d="M300.55,119.17l17.13-44.88c.44-1.18,1.4-1.85,3.99-1.85s3.54.66,3.99,1.85l17.2,44.88c.15.44-1.18,1.55-2.88,1.62-1.4.15-2.73-.52-3.47-2.58l-5.02-12.99h-19.78l-5.09,13.07c-.66,2.14-2.07,2.66-3.32,2.51-1.62-.07-2.88-1.26-2.73-1.62ZM330.01,100.64l-8.42-22.44-8.49,22.44h16.91Z">
-              </path>
-              <path class="cls-4" d="M401.91,99.39v18.9c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.46c0-6.79-3.03-10.56-8.86-10.56-4.13,0-8.12,2.66-9.82,7.01v22c0,1.92-1.03,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.9c0-6.42-2.95-10.11-8.86-10.11-4.06,0-8.05,2.66-9.89,7.01v22c0,1.92-.96,2.51-2.29,2.51h-.66c-1.33,0-2.36-.59-2.36-2.51v-32.63c0-.15.89-.59,1.92-.59,1.62,0,3.1.81,3.25,4.36l.07,1.77c2.29-3.91,6.28-6.64,11.15-6.64,5.98,0,9.97,3.03,11.66,7.83,2.14-4.58,6.42-7.83,12.25-7.83,8.64,0,13.07,5.54,13.07,14.84Z">
-              </path>
-              <path class="cls-4" d="M445.45,102.86c0,11-6.87,18.53-16.39,18.53-6.42,0-10.85-3.54-12.7-7.38v18.31c0,1.85-.96,2.51-2.29,2.51h-.59c-1.4,0-2.36-.66-2.36-2.51v-46.66c0-.15.81-.59,1.84-.59,1.55,0,3.03.89,3.25,3.99,0,.89.07,2.07.07,3.03,2.58-4.58,6.79-7.53,12.92-7.53,9.23,0,16.24,7.31,16.24,18.31ZM440.21,102.93c0-8.19-5.09-13.88-11.96-13.88-5.91,0-9.97,3.4-11.96,8.49v7.82c0,6.5,5.32,11.52,11.81,11.52,7.23,0,12.11-5.61,12.11-13.95Z">
-              </path>
-              <path class="cls-4" d="M467.89,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.84,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM467.89,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
-              </path>
-              <path class="cls-4" d="M510.78,88.39c0,2.14-1.48,3.03-1.62,2.88-.89-.89-2.29-1.48-4.21-1.48-5.76,0-8.42,5.68-8.42,14.54v13.95c0,1.85-.96,2.51-2.29,2.51h-.59c-1.48,0-2.44-.59-2.44-2.51v-32.63c0-.15.81-.59,1.92-.59,1.48,0,2.81.74,3.1,3.54.07,1.25.15,2.51.15,3.84,1.4-5.32,4.65-7.9,9.15-7.9,3.17,0,5.24,1.55,5.24,3.84Z">
-              </path>
-              <path class="cls-4" d="M530.04,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.85,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM530.04,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
-              </path>
-              <path class="cls-4" d="M552.55,117.03c0-2.14,1.11-3.32,3.25-3.32h.66c2.21,0,3.25,1.18,3.25,3.32v.66c0,2.14-1.11,3.32-3.25,3.32h-.66c-2.14,0-3.25-1.18-3.25-3.32v-.66Z">
-              </path>
-              <path class="cls-4" d="M590.28,99.91h.81v-1.48c0-5.98-3.47-9.3-9.52-9.3-5.61,0-9.01,2.73-10.78,6.27-.15.07-3.25-.07-3.25-2.73,0-1.03.74-2.58,2.14-3.91,2.29-2.21,6.35-4.21,12.18-4.21,9.38,0,14.47,5.24,14.47,13.95v21.78c0,.22-.96.59-1.92.59-1.55,0-2.81-.74-3.1-3.4-.07-1.03-.15-2.14-.15-3.25-2.36,4.28-7.16,7.09-13.07,7.09-7.38,0-11.96-3.84-11.96-9.82,0-7.97,7.53-11.37,24.14-11.59ZM591.09,103.38l-1.25.07c-12.85.3-18.38,2.51-18.38,7.9,0,3.69,2.95,5.98,7.68,5.98,6.79,0,11.96-4.58,11.96-10.56v-3.4Z">
-              </path>
-              <path class="cls-4" d="M608.58,70.89c2.14,0,3.4,1.18,3.4,3.4s-1.33,3.32-3.47,3.32-3.32-1.18-3.32-3.32,1.25-3.4,3.4-3.4ZM605.85,87.65c0-1.92.96-2.58,2.36-2.58h.59c1.4,0,2.36.59,2.36,2.58v30.64c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-30.64Z">
-              </path>
-              <path class="cls-3" d="M192.77,125.01c0-5.17,4.87-8.64,11.29-9.74-.89-.74-1.4-1.85-1.4-3.32s.81-2.81,1.99-3.84c-5.68-1.77-9.3-6.27-9.3-11.81,0-7.46,6.42-13.44,15.21-13.44,3.1,0,6.05.81,8.49,2.14l1.92-3.4c1.18-1.92,2.36-2.81,4.21-2.81,2.73,0,3.99,2.95,3.77,3.1l-6.05,6.27c1.92,2.21,3.1,4.95,3.1,7.9,0,7.46-6.35,12.92-15.36,12.92h-1.33c-.3.44-.37.81-.37,1.25,0,2.29,3.4,2.51,9.6,4.06,5.02,1.33,10.33,3.84,10.33,9.67,0,6.72-6.87,10.85-18.6,10.85s-17.5-3.17-17.5-9.82ZM221.79,124.2c0-2.81-3.32-3.84-7.23-4.8l-3.69-.89c-6.05.37-11.07,2.51-11.07,6.27,0,3.17,3.62,4.95,10.63,4.95s11.37-1.99,11.37-5.54ZM218.91,96.15c0-4.72-3.4-8.05-8.42-8.05s-8.19,3.25-8.19,8.05,3.47,8.05,8.34,8.05,8.27-3.25,8.27-8.05Z">
-              </path>
-              <path class="cls-3" d="M246.81,82.86c10.26,0,17.05,7.23,17.05,17.86v.59c0,1.55-.52,2.14-2.21,2.14h-26.21c0,.44.07.89.15,1.33,1.03,5.83,5.68,9.67,11.96,9.67s9.3-2.73,11.15-5.91c.15-.15,3.84.52,3.84,3.62,0,1.55-1.33,3.54-3.91,5.17s-6.35,2.88-11.22,2.88c-11.22,0-18.75-7.46-18.75-18.53s7.68-18.82,18.16-18.82ZM246.73,88.4c-5.83,0-10.33,4.21-11.22,10.11h21.26c-.37-6.13-4.13-10.11-10.04-10.11Z">
-              </path>
-              <path class="cls-3" d="M270.58,108.48v-18.75h-2.58c-2.29,0-3.17-.96-3.17-2.73v-.52c0-1.77.89-2.73,3.17-2.73h2.58v-5.46c0-2.51,1.25-3.47,3.25-3.47h.74c1.92,0,3.17.74,3.17,3.47v5.46h8.05c2.29,0,3.1.89,3.1,2.66v.52c0,1.85-.89,2.81-3.17,2.81h-8.05v17.94c0,4.43,1.25,6.57,4.72,6.57,2.29,0,3.91-1.03,5.02-2.51.22-.22,2.07.81,2.07,3.1,0,1.18-.52,2.29-1.55,3.25-1.4,1.25-3.69,2.14-6.72,2.14-7.31,0-10.63-4.06-10.63-11.74Z">
-              </path>
-            </g>
-          </svg>
+            <div id="amp-logo-container" class="h-full flex items-center w-20 md:w-[220px] md:min-w-[220px] lg:w-[300px] lg:min-w-[280px]">
+  <svg class="block md:hidden h-full w-auto max-h-20" viewBox="0 0 424.1 423.6" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet">
+    <path fill="none" d="M0,0h423.3c.1,0,.3.1.3.3v423.3H0V0h0Z"></path>
+    <path class="amp-logo-fill" d="M4.8,334c26.1,60.7,121.1,14.8,193.6-17.2L103.9,97.2C65.5,165.5-21.3,273.4,4.8,334Z"></path>
+    <path class="amp-logo-fill" d="M424.1,423.3l-1-423.3h-210.7c-12.4,0-20.8,12.7-16,24.1l161.1,383.3c4.1,9.7,13.6,16,24.1,16h42.5Z">
+    </path>
+  </svg>
+  <svg class="hidden md:block md:w-[220px] md:min-w-[220px] lg:w-[300px] lg:min-w-[280px] h-full object-contain" viewBox="0 0 681.89 196.35" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMinYMid meet" stroke-width="2" data-icon-replaced="true" style="width: 280px; height: 80px; color: rgb(228, 228, 231);">
+     <title>Ampere AI - Autonomous Voice Agents</title>
+  <path class="cls-2" d="M89.98,13.08l73.55,177.45c1.46,3.52,4.89,5.81,8.7,5.81l509.66-.05V0L98.68.05c-6.71,0-11.27,6.82-8.7,13.03Z">
+  </path>
+  <path class="cls-1" d="M89.9,146.93L47.3,45.27C30.02,76.88-9.1,126.82,2.67,154.9c11.77,28.07,54.58,6.85,87.24-7.97Z"></path>
+  <g class="logo-wordmark">
+    <path class="cls-4" d="M300.55,119.17l17.13-44.88c.44-1.18,1.4-1.85,3.99-1.85s3.54.66,3.99,1.85l17.2,44.88c.15.44-1.18,1.55-2.88,1.62-1.4.15-2.73-.52-3.47-2.58l-5.02-12.99h-19.78l-5.09,13.07c-.66,2.14-2.07,2.66-3.32,2.51-1.62-.07-2.88-1.26-2.73-1.62ZM330.01,100.64l-8.42-22.44-8.49,22.44h16.91Z">
+    </path>
+    <path class="cls-4" d="M401.91,99.39v18.9c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.46c0-6.79-3.03-10.56-8.86-10.56-4.13,0-8.12,2.66-9.82,7.01v22c0,1.92-1.03,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-18.9c0-6.42-2.95-10.11-8.86-10.11-4.06,0-8.05,2.66-9.89,7.01v22c0,1.92-.96,2.51-2.29,2.51h-.66c-1.33,0-2.36-.59-2.36-2.51v-32.63c0-.15.89-.59,1.92-.59,1.62,0,3.1.81,3.25,4.36l.07,1.77c2.29-3.91,6.28-6.64,11.15-6.64,5.98,0,9.97,3.03,11.66,7.83,2.14-4.58,6.42-7.83,12.25-7.83,8.64,0,13.07,5.54,13.07,14.84Z">
+    </path>
+    <path class="cls-4" d="M445.45,102.86c0,11-6.87,18.53-16.39,18.53-6.42,0-10.85-3.54-12.7-7.38v18.31c0,1.85-.96,2.51-2.29,2.51h-.59c-1.4,0-2.36-.66-2.36-2.51v-46.66c0-.15.81-.59,1.84-.59,1.55,0,3.03.89,3.25,3.99,0,.89.07,2.07.07,3.03,2.58-4.58,6.79-7.53,12.92-7.53,9.23,0,16.24,7.31,16.24,18.31ZM440.21,102.93c0-8.19-5.09-13.88-11.96-13.88-5.91,0-9.97,3.4-11.96,8.49v7.82c0,6.5,5.32,11.52,11.81,11.52,7.23,0,12.11-5.61,12.11-13.95Z">
+    </path>
+    <path class="cls-4" d="M467.89,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.84,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM467.89,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
+    </path>
+    <path class="cls-4" d="M510.78,88.39c0,2.14-1.48,3.03-1.62,2.88-.89-.89-2.29-1.48-4.21-1.48-5.76,0-8.42,5.68-8.42,14.54v13.95c0,1.85-.96,2.51-2.29,2.51h-.59c-1.48,0-2.44-.59-2.44-2.51v-32.63c0-.15.81-.59,1.92-.59,1.48,0,2.81.74,3.1,3.54.07,1.25.15,2.51.15,3.84,1.4-5.32,4.65-7.9,9.15-7.9,3.17,0,5.24,1.55,5.24,3.84Z">
+    </path>
+    <path class="cls-4" d="M530.04,84.55c9.82,0,16.17,6.94,16.17,17.35v.52c0,1.25-.52,1.7-1.85,1.7h-26.65c0,.3,0,.66.07,1.03.66,7.09,5.76,11.81,12.84,11.81,6.57,0,9.67-3.1,11.44-6.5.29-.15,3.03.44,3.03,2.81,0,1.11-.89,2.81-2.8,4.36-2.21,1.92-6.28,3.77-11.74,3.77-10.7,0-17.94-7.46-17.94-18.23s7.31-18.6,17.42-18.6ZM530.04,88.83c-6.42,0-11.22,4.72-12.18,11.44h23.11c-.29-6.87-4.5-11.44-10.93-11.44Z">
+    </path>
+    <path class="cls-4" d="M552.55,117.03c0-2.14,1.11-3.32,3.25-3.32h.66c2.21,0,3.25,1.18,3.25,3.32v.66c0,2.14-1.11,3.32-3.25,3.32h-.66c-2.14,0-3.25-1.18-3.25-3.32v-.66Z">
+    </path>
+    <path class="cls-4" d="M590.28,99.91h.81v-1.48c0-5.98-3.47-9.3-9.52-9.3-5.61,0-9.01,2.73-10.78,6.27-.15.07-3.25-.07-3.25-2.73,0-1.03.74-2.58,2.14-3.91,2.29-2.21,6.35-4.21,12.18-4.21,9.38,0,14.47,5.24,14.47,13.95v21.78c0,.22-.96.59-1.92.59-1.55,0-2.81-.74-3.1-3.4-.07-1.03-.15-2.14-.15-3.25-2.36,4.28-7.16,7.09-13.07,7.09-7.38,0-11.96-3.84-11.96-9.82,0-7.97,7.53-11.37,24.14-11.59ZM591.09,103.38l-1.25.07c-12.85.3-18.38,2.51-18.38,7.9,0,3.69,2.95,5.98,7.68,5.98,6.79,0,11.96-4.58,11.96-10.56v-3.4Z">
+    </path>
+    <path class="cls-3" d="M608.58,70.89c2.14,0,3.4,1.18,3.4,3.4s-1.33,3.32-3.47,3.32-3.32-1.18-3.32-3.32,1.25-3.4,3.4-3.4ZM605.85,87.65c0-1.92.96-2.58,2.36-2.58h.59c1.4,0,2.36.59,2.36,2.58v30.64c0,1.92-.96,2.51-2.36,2.51h-.59c-1.4,0-2.36-.59-2.36-2.51v-30.64Z">
+    </path>
+    <path class="cls-3" d="M192.77,125.01c0-5.17,4.87-8.64,11.29-9.74-.89-.74-1.4-1.85-1.4-3.32s.81-2.81,1.99-3.84c-5.68-1.77-9.3-6.27-9.3-11.81,0-7.46,6.42-13.44,15.21-13.44,3.1,0,6.05.81,8.49,2.14l1.92-3.4c1.18-1.92,2.36-2.81,4.21-2.81,2.73,0,3.99,2.95,3.77,3.1l-6.05,6.27c1.92,2.21,3.1,4.95,3.1,7.9,0,7.46-6.35,12.92-15.36,12.92h-1.33c-.3.44-.37.81-.37,1.25,0,2.29,3.4,2.51,9.6,4.06,5.02,1.33,10.33,3.84,10.33,9.67,0,6.72-6.87,10.85-18.6,10.85s-17.5-3.17-17.5-9.82ZM221.79,124.2c0-2.81-3.32-3.84-7.23-4.8l-3.69-.89c-6.05.37-11.07,2.51-11.07,6.27,0,3.17,3.62,4.95,10.63,4.95s11.37-1.99,11.37-5.54ZM218.91,96.15c0-4.72-3.4-8.05-8.42-8.05s-8.19,3.25-8.19,8.05,3.47,8.05,8.34,8.05,8.27-3.25,8.27-8.05Z">
+    </path>
+    <path class="cls-3" d="M246.81,82.86c10.26,0,17.05,7.23,17.05,17.86v.59c0,1.55-.52,2.14-2.21,2.14h-26.21c0,.44.07.89.15,1.33,1.03,5.83,5.68,9.67,11.96,9.67s9.3-2.73,11.15-5.91c.15-.15,3.84.52,3.84,3.62,0,1.55-1.33,3.54-3.91,5.17s-6.35,2.88-11.22,2.88c-11.22,0-18.75-7.46-18.75-18.53s7.68-18.82,18.16-18.82ZM246.73,88.4c-5.83,0-10.33,4.21-11.22,10.11h21.26c-.37-6.13-4.13-10.11-10.04-10.11Z">
+    </path>
+    <path class="cls-3" d="M270.58,108.48v-18.75h-2.58c-2.29,0-3.17-.96-3.17-2.73v-.52c0-1.77.89-2.73,3.17-2.73h2.58v-5.46c0-2.51,1.25-3.47,3.25-3.47h.74c1.92,0,3.17.74,3.17,3.47v5.46h8.05c2.29,0,3.1.89,3.1,2.66v.52c0,1.85-.89,2.81-3.17,2.81h-8.05v17.94c0,4.43,1.25,6.57,4.72,6.57,2.29,0,3.91-1.03,5.02-2.51.22-.22,2.07.81,2.07,3.1,0,1.18-.52,2.29-1.55,3.25-1.4,1.25-3.69,2.14-6.72,2.14-7.31,0-10.63-4.06-10.63-11.74Z">
+    </path>
+  </g>
+  </svg>
+            </div>
         </a>
         <div id="amp-menu-segment" class="md:max-w-[75vw] lg:max-w-[99vw] flex bg-white w-full h-full max-w-[83vw] items-center">
           <div class="flex w-full items-center justify-between px-4 lg:pr-6 gap-3">
@@ -720,16 +143,13 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     </div>
 
   </nav>
-  <div id="wrapper" class="">
-    <div class="gradient-blur pointer-events-none">
-      <div class="z-10"></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-
+  <div class="gradient-blur pointer-events-none">
+    <div class="z-10"></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
 
 
@@ -982,33 +402,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
           </div>
         </div>
-        <style>
-          #amp-hero-slider {
-            scrollbar-width: none;
-            overscroll-behavior-inline: contain;
-            cursor: grab;
-          }
-
-          #amp-hero-slider::-webkit-scrollbar {
-            height: 0;
-            width: 0;
-          }
-
-          #amp-hero-slider * {
-            cursor: inherit;
-            user-select: none;
-            -webkit-user-drag: none;
-          }
-
-          #amp-hero-slider.is-dragging {
-            scroll-snap-type: none;
-            cursor: grabbing;
-          }
-
-          #amp-hero-slider.is-dragging * {
-            cursor: grabbing;
-          }
-        </style>
         <div class="w-full mt-6 mb-2 md:mb-12">
           <button class="shiny-cta focus:outline-none">
     <span class="sm:text-xs xl:text-sm lg:text-xs">Learn How it Works</span>
@@ -2327,7 +1720,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         </div>
     </div>
 </section>
-<!--         END: Platform Walkthrough Header        -->
 
 <!--         END: Platform Walkthrough Header        -->
 <!-- ========================================== -->
@@ -3057,350 +2449,9 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
               </div>
               <div class="transition-all duration-700 ease-out group-hover:scale-[1.02] origin-center w-full h-full relative drop-shadow-2xl">
                 <canvas class="w-full h-full mt-[8%] mb-4" id="canvas-3d-ai-graph-fixed"></canvas>
-                <script class="">
-                  (function() {
-                const initChart = () => {
-                    const canvas = document.getElementById('canvas-3d-ai-graph-fixed');
-                    if (!canvas) return;
-                    
-                    // Ensure Chart.js is loaded
-                    if (typeof Chart === 'undefined') {
-                        setTimeout(initChart, 100);
-                        return;
-                    }
-    
-                    if (!Chart.registry.plugins.get('datasetPadding')) {
-                        Chart.register({
-                            id: 'datasetPadding',
-                            beforeDatasetsDraw(chart, args, pluginOptions) {
-                                const padding = pluginOptions?.padding;
-                                if (!padding) return;
-                                const { left = 0, right = 0 } = padding;
-                                const { ctx, chartArea } = chart;
-                                ctx.save();
-                                ctx.beginPath();
-                                ctx.rect(
-                                    chartArea.left + left,
-                                    chartArea.top,
-                                    chartArea.width - left - right,
-                                    chartArea.height
-                                );
-                                ctx.clip();
-                                chart.$datasetPadding = true;
-                            },
-                            afterDatasetsDraw(chart) {
-                                if (chart.$datasetPadding) {
-                                    chart.ctx.restore();
-                                    chart.$datasetPadding = false;
-                                }
-                            }
-                        });
-                    }
-    
-                    const width = window.innerWidth;
-                    const hideStacks = width <= 640 || (width >= 769 && width <= 1024);
-    
-                    const ctx = canvas.getContext('2d');
-                    // Destroy existing chart if initialized
-                    if (canvas.chart) canvas.chart.destroy();
-                    ctx.save();
-                    ctx.setTransform(1, 0, 0, 1, 0, 0);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.restore();
-    
-                    const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
-                    gradient1.addColorStop(0, 'rgba(34, 197, 94, 0.6)');
-                    gradient1.addColorStop(1, 'rgba(34, 197, 94, 0.05)');
-    
-                    const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
-                    gradient2.addColorStop(0, 'rgba(56, 189, 248, 0.6)');
-                    gradient2.addColorStop(1, 'rgba(56, 189, 248, 0.05)');
-    
-                    canvas.chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                            datasets: [
-                                {
-                                    label: 'Incoming',
-                                    data: [150, 190, 150, 110, 160, 150, 100],
-                                    borderColor: '#22c55e',
-                                    backgroundColor: gradient1,
-                                    borderWidth: 3,
-                                    fill: true,
-                                    tension: 0.4,
-                                    pointRadius: 0,
-                                    pointHoverRadius: 6,
-                                    pointBackgroundColor: '#22c55e',
-                                    pointBorderColor: '#fff',
-                                    pointBorderWidth: 2,
-                                    yAxisID: 'volume'
-                                },
-                                {
-                                    label: 'Close Rate',
-                                    data: [22, 24, 21, 18, 25, 23, 20],
-                                    borderColor: '#38bdf8',
-                                    backgroundColor: gradient2,
-                                    borderWidth: 3,
-                                    fill: true,
-                                    tension: 0.4,
-                                    pointRadius: 0,
-                                    pointHoverRadius: 6,
-                                    pointBackgroundColor: '#38bdf8',
-                                    pointBorderColor: '#fff',
-                                    pointBorderWidth: 2,
-                                    yAxisID: 'closeRate'
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            layout: hideStacks ? { padding: 0 } : { padding: { left: 4, right: 4 } },
-                            interaction: {
-                                mode: 'index',
-                                intersect: false,
-                            },
-                            plugins: {
-                                datasetPadding: hideStacks ? undefined : { padding: { left: 16, right: 16 } },
-                                legend: { display: false },
-                                tooltip: {
-                                    backgroundColor: 'rgba(9, 9, 11, 0.95)',
-                                    titleColor: '#fff',
-                                    bodyColor: '#A1A1AA',
-                                    titleFont: { family: 'Geist', size: 13, weight: '600' },
-                                    bodyFont: { family: 'Geist', size: 12 },
-                                    padding: 12,
-                                    borderColor: 'rgba(255,255,255,0.1)',
-                                    borderWidth: 1,
-                                    cornerRadius: 8,
-                                    displayColors: true,
-                                    boxPadding: 4,
-                                    usePointStyle: true,
-                                    callbacks: {
-                                        label: function(context) {
-                                            const value = context.parsed.y;
-                                            const label = context.dataset.label || '';
-                                            if (context.dataset.yAxisID === 'closeRate') {
-                                                return ` ${label}: ${value}%`;
-                                            }
-                                            return ` ${label}: ${value}`;
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false, tickLength: 0 },
-                                    ticks: {
-                                        color: 'rgba(161, 161, 170, 0.7)',
-                                        font: { family: 'Geist', size: 11 },
-                                        padding: 4
-                                    },
-                                    border: { display: false },
-                                    offset: hideStacks ? false : true
-                                },
-                                volume: {
-                                    type: 'linear',
-                                    grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false, tickLength: 0 },
-                                    ticks: {
-                                        display: !hideStacks,
-                                        color: 'rgba(161, 161, 170, 0.7)',
-                                        font: { family: 'Geist', size: 10 },
-                                        padding: 4,
-                                        callback: (value) => value
-                                    },
-                                    border: { display: false },
-                                    min: 0,
-                                    suggestedMax: 220,
-                                    title: {
-                                        display: !hideStacks,
-                                        text: 'Calls per day',
-                                        color: '#22c55e',
-                                        font: { family: 'Geist', size: 12, weight: '500' },
-                                        padding: { bottom: 4 }
-                                    }
-                                },
-                                closeRate: {
-                                    type: 'linear',
-                                    position: 'right',
-                                    grid: { drawOnChartArea: false, drawBorder: false, tickLength: 0 },
-                                    ticks: {
-                                        display: !hideStacks,
-                                        color: 'rgba(161, 161, 170, 0.7)',
-                                        font: { family: 'Geist', size: 10 },
-                                        callback: (value) => `${value}%`,
-                                        padding: 4
-                                    },
-                                    min: 0,
-                                    max: 30,
-                                    title: {
-                                        display: !hideStacks,
-                                        text: 'AI Close Rate',
-                                        color: '#38bdf8',
-                                        font: { family: 'Geist', size: 12, weight: '500' },
-                                        padding: { bottom: 4 }
-                                    }
-                                }
-                            },
-                            animation: {
-                                duration: 2000,
-                                easing: 'easeOutQuart'
-                            }
-                        }
-                    });
-                };
-    
-                const bootChart = () => {
-                    initChart();
-                    if (!window.__ampFixedChartResizeBound) {
-                        window.__ampFixedChartResizeBound = true;
-                        let resizeTimeout;
-                        window.addEventListener('resize', () => {
-                            clearTimeout(resizeTimeout);
-                            resizeTimeout = setTimeout(initChart, 200);
-                        });
-                    }
-                };
-    
-                if (document.readyState === 'complete') bootChart();
-                else window.addEventListener('load', bootChart);
-            })();
-                </script>
+                
               </div>
-              <script class="">
-                (function() {
-            const init3DChart = () => {
-                const canvas = document.getElementById('canvas-3d-ai-graph');
-                if (!canvas) return;
-                
-                if (typeof Chart === 'undefined') {
-                    setTimeout(init3DChart, 100);
-                    return;
-                }
-    
-                const ctx = canvas.getContext('2d');
-                
-                // Rich gradients for 3D depth effect
-                const gradient1 = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient1.addColorStop(0, 'rgba(59, 130, 246, 0.7)');
-                gradient1.addColorStop(0.5, 'rgba(59, 130, 246, 0.2)');
-                gradient1.addColorStop(1, 'rgba(59, 130, 246, 0)');
-                
-                const gradient2 = ctx.createLinearGradient(0, 0, 0, 300);
-                gradient2.addColorStop(0, 'rgba(139, 92, 246, 0.7)');
-                gradient2.addColorStop(0.5, 'rgba(139, 92, 246, 0.2)');
-                gradient2.addColorStop(1, 'rgba(139, 92, 246, 0)');
-    
-                // Grid gradient
-                const gridColor = 'rgba(255, 255, 255, 0.05)';
-    
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [
-                            {
-                                label: 'AI Processing',
-                                data: [35, 55, 45, 75, 60, 85, 70],
-                                borderColor: '#8b5cf6',
-                                backgroundColor: gradient2,
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 0,
-                                pointHoverRadius: 6,
-                                pointBackgroundColor: '#8b5cf6',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                order: 1
-                            },
-                            {
-                                label: 'System Load',
-                                data: [20, 40, 35, 50, 45, 60, 50],
-                                borderColor: '#3b82f6',
-                                backgroundColor: gradient1,
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 0,
-                                pointHoverRadius: 6,
-                                pointBackgroundColor: '#3b82f6',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                order: 2
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: 'rgba(9, 9, 11, 0.9)',
-                                titleColor: '#fff',
-                                bodyColor: '#A1A1AA',
-                                titleFont: { family: 'Geist', size: 13, weight: '600' },
-                                bodyFont: { family: 'Geist', size: 12 },
-                                padding: 12,
-                                borderColor: 'rgba(255,255,255,0.1)',
-                                borderWidth: 1,
-                                cornerRadius: 8,
-                                displayColors: true,
-                                boxPadding: 4,
-                                usePointStyle: true,
-                                callbacks: {
-                                    label: function(context) {
-                                        return ' ' + context.dataset.label + ': ' + context.parsed.y + '%';
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                display: true,
-                                grid: { 
-                                    color: gridColor,
-                                    drawBorder: false,
-                                    tickLength: 0
-                                },
-                                ticks: {
-                                    color: 'rgba(161, 161, 170, 0.6)',
-                                    font: { family: 'Geist', size: 11 },
-                                    padding: 10
-                                },
-                                border: { display: false }
-                            },
-                            y: {
-                                display: true,
-                                grid: { 
-                                    color: gridColor,
-                                    drawBorder: false 
-                                },
-                                ticks: { display: false },
-                                border: { display: false },
-                                beginAtZero: true,
-                                suggestedMax: 100
-                            }
-                        },
-                        animation: {
-                            duration: 2000,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                });
-            };
-            
-            if (document.readyState === 'complete') init3DChart();
-            else window.addEventListener('load', init3DChart);
-            setTimeout(init3DChart, 100);
-        })();
-              </script>
+              
             </div>
             </div>
           </div>
@@ -3436,114 +2487,8 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
         </div>
     
         <!-- Chart.js Implementation -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js" class=""></script>
-        <script class="">
-          (function() {
-            const initChart = () => {
-                const ctx = document.getElementById('canvas-aura-emjbw7gzb246u5fyi');
-                if (!ctx || typeof Chart === 'undefined') return setTimeout(initChart, 100);
-                
-                // Gradient Setup for Dataset 1
-                const gradient1 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-                gradient1.addColorStop(0, 'rgba(34, 197, 94, 0.8)'); // Green-500
-                gradient1.addColorStop(1, 'rgba(34, 197, 94, 0.1)');
-    
-                // Gradient Setup for Dataset 2
-                const gradient2 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-                gradient2.addColorStop(0, 'rgba(59, 130, 246, 0.8)'); // Blue-500
-                gradient2.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
-    
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                        datasets: [
-                            {
-                                label: 'Total Calls',
-                                data: [3100, 3400, 2900, 3100],
-                                backgroundColor: gradient1,
-                                hoverBackgroundColor: '#22c55e',
-                                borderColor: '#22c55e',
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                barPercentage: 0.6,
-                                categoryPercentage: 0.8,
-                                order: 2
-                            },
-                            {
-                                label: 'Closed Deals',
-                                data: [620, 680, 580, 620], // 20%
-                                backgroundColor: gradient2,
-                                hoverBackgroundColor: '#3b82f6',
-                                borderColor: '#3b82f6',
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                barPercentage: 0.6,
-                                categoryPercentage: 0.8,
-                                order: 1
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { 
-                                display: true,
-                                position: 'top',
-                                align: 'end',
-                                labels: {
-                                    color: 'rgba(255,255,255,0.6)',
-                                    font: { family: 'Geist', size: 10 },
-                                    boxWidth: 8,
-                                    usePointStyle: true,
-                                    pointStyle: 'circle'
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(24, 24, 27, 0.9)',
-                                titleColor: '#fff',
-                                bodyColor: '#A1A1AA',
-                                titleFont: { family: 'Geist', size: 12, weight: '600' },
-                                bodyFont: { family: 'Geist', size: 12 },
-                                padding: 12,
-                                cornerRadius: 8,
-                                borderColor: 'rgba(255,255,255,0.1)',
-                                borderWidth: 1,
-                                displayColors: true,
-                                boxPadding: 4
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: 'rgba(255,255,255,0.03)' },
-                                ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'Geist', size: 10 } },
-                                border: { display: false }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'Geist', size: 10 } },
-                                border: { display: false }
-                            }
-                        },
-                        animation: {
-                            duration: 1500,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                });
-            };
-            
-            // Initialize when ready
-            if (document.readyState === 'complete') {
-                initChart();
-            } else {
-                window.addEventListener('load', initChart);
-                setTimeout(initChart, 500); // Fallback
-            }
-        })();
-        </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.882/deploy/assets/js/chart-init.js" defer></script>
       </div>
     </div>
     
@@ -3712,9 +2657,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.871/deploy/assets/js/global.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.890/deploy/assets/js/global.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.872/deploy/assets/js/modal.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
