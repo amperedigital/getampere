@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.867 - 2026-01-19
+- **Hero Typography**:
+  - **SVG Dot**: Replaced the font-based full stop in "CALL." with an SVG circle.
+    - *Goal*: Ensure a perfectly round geometric dot at all sizes, replacing the previous `font-space-grotesk` period.
+
 ## v1.866 - 2026-01-19
 - **Hero Typography**:
   - **Layout Refinement**: Updated the hero heading "Built to Handle Every Call".
