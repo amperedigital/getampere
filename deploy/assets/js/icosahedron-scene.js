@@ -73,17 +73,20 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // Restored to v1.916 (Phong) state as requested
-        const glassMaterial = new THREE.MeshPhongMaterial({
-            color: 0x331a00,     // Slightly lighter base
-            emissive: 0x050200,  // Very faint constant visibility
-            specular: 0xffaa88,
-            shininess: 30,       // Spread highlight to fill faces more
-            transparent: true,
-            opacity: 0.15,       // Restored opacity value
+        // Incremental Blur: Physical Material with high transparency logic
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x331a00,     // Dark tint (Matches Phong)
+            emissive: 0x000000,
+            roughness: 0.2,      // Light Blur (Frosted)
+            metalness: 0.1,
+            transmission: 0.9,   // High transmission (mostly see-through)
+            thickness: 0.1,      // Minimal refraction distance (avoids "extreme" distortion)
+            ior: 1.15,           // Low Index of Refraction (Subtle bending)
+            transparent: true,   // Essential for transmission mix
+            opacity: 1.0,        // Let transmission handle the "see through" nature
             side: THREE.DoubleSide,
-            depthWrite: false,
-            flatShading: true    // Emphasize the facets
+            depthWrite: false,   // Prevent depth occlusion
+            flatShading: true
         });
         
         const glassShell = new THREE.Mesh(geometry, glassMaterial);

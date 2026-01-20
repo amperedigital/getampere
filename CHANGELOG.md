@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.919 - 2026-01-20
+- **Visual Enhancement (Incremental Blur)**:
+  - **Material**: Switched back to `MeshPhysicalMaterial` to enable blur capabilities.
+  - **Tuning (Subtle)**:
+    - `roughness: 0.2`: Adds the requested "little bit of blur".
+    - `transmission: 0.9`: Makes the glass highly transparent (mostly clear) rather than solid.
+    - `opacity: 1.0`: Adjusted to rely on `transmission` for visibility physics rather than alpha blending.
+    - `ior: 1.15` & `thickness: 0.1`: Drastically reduced refraction settings compared to v1.917 to avoid the "extreme" distortion/fisheye effect, ensuring the geometry stays grounded.
+
 ## v1.918 - 2026-01-20
 - **Visual Revert**:
   - **Glass Material**: Restored the `MeshPhongMaterial` settings from v1.916.
