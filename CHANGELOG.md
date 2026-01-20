@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.926 - 2026-01-20
+- **Reversion**: Restored "Glass Panel" look (v1.921/1.923).
+  - **Reason**: The "Light Circuitry" experiment (v1.924/1.925) was not the desired "face meshing" effect.
+  - **Archive**: The glitchy circuitry mesh code has been backed up to `backups/icosahedron-scene.backup.v1.924.glitchy_circuit` for future reference.
+
 ## v1.925 - 2026-01-20
 - **Visual Repair (Geometric Alignment)**:
   - **Issue**: The "Light Circuitry" mesh was misaligned with the outer copper frame.
