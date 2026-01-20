@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.914 - 2026-01-20
+- **Visual Enhancement (Glass Shell)**:
+  - **Icosahedron Faces**: Added a subtle `MeshPhysicalMaterial` shell to the Icosahedron faces. This creates a faint "Glass" effect between the wireframe edges.
+  - **Subtlety Tuning**: Configured with high transmission (`0.6`), low opacity (`0.1`), and low IOR (`1.2`) to ensure the central sphere remains clearly visible and the outer shell doesn't obstruct the view, just adds depth.
+
 ## v1.913 - 2026-01-20
 - **Visual Repair (Finish)**:
   - **Matte Finish**: Switched the Central Sphere material to `MeshLambertMaterial`. This material significantly differs from Standard/Physical materials as it uses Gouraud shading with **zero specular highlights**, effectively guaranteeing the removal of the persistent "white ring" artifact while keeping the dark copper base color (`0x1a0b04`).

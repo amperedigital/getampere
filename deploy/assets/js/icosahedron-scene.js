@@ -72,6 +72,25 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
+        // 1b. Glass Shell (Subtle Faces)
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x221100,     // Warm tint
+            metalness: 0.1,
+            roughness: 0.1,
+            transmission: 0.6,   // Mostly see-through
+            thickness: 0.1,      // Thin glass
+            transparent: true,
+            opacity: 0.1,        // Very subtle presence
+            ior: 1.2,            // Low index of refraction (faint distortion)
+            side: THREE.DoubleSide,
+            clearcoat: 0.5,
+            clearcoatRoughness: 0.1
+        });
+        
+        const glassShell = new THREE.Mesh(geometry, glassMaterial);
+        glassShell.scale.setScalar(0.995); // Just inside wireframe
+        this.group.add(glassShell);
+
         // 2. Nodes (Vertices)
         this.addNodes(geometry);
 
