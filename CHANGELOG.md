@@ -1,11 +1,17 @@
 # Changelog
 
+## v1.902.1 - 2026-01-20
+- **Refinement**:
+  - Implemented **Connected Circuit Chains** algorithm to ensure traces are visibly connected and uniform.
+  - Fixed electron interaction reactivity bug.
+
 ## v1.902 - 2026-01-20
 - **Visual Enhancement**:
+  - **Connected Circuitry**: Replaced random segments with **Continuous Circuit Chains**. Generated 24 long winding paths (20 segments each) that form a cohesive "web" across the sphere surface to solve visual separation issues.
   - **Dark Orb**: Changed central sphere base to deep Dark Copper/Chocolate (`0x220e05`) for high contrast.
-  - **Visible Traces**: Increased circuitry path density (60 -> 120) and changed trace color to Bright Gold (`0xffaa44`) to be visible against the dark sphere.
-  - **More Electrons**: Increased electron particle count (20 -> 60) and size for "more dots" and activity.
-  - **Lighting**: Adjusted lighting for more drama (Lower ambient, higher contrast spotlight).
+  - **Visible Traces**: Changed trace color to Bright Gold (`0xffaa44`) and optimized geometry for visibility.
+  - **More Electrons**: Increased electron particle count (80 active particles) and size.
+  - **Interaction Fix**: Fixed a bug where electron activity levels were not correctly linked to the scanner focus (added `sphereActiveFactor` calculation).
 
 ## v1.901 - 2026-01-20
 - **Feature (Path Animation)**:

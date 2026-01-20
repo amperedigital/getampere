@@ -111,51 +111,56 @@ export class IcosahedronScene {
         this.electrons = [];
         
         const sphereRadius = 0.6;
-        const surfaceRadius = sphereRadius + 0.005; // Slightly above
-        const numPaths = 120; // Increased density from 60
+        const surfaceRadius = sphereRadius + 0.005; 
         
-        // Material for the static "Etched" traces - Lighter gold/copper for visibility against dark orb
+        // Material for the static "Etched" traces
         const traceMaterial = new THREE.LineBasicMaterial({
-            color: 0xffaa44, // Bright Gold/Copper
+            color: 0xffaa44, // Bright Gold
             transparent: true,
             opacity: 0.3
         });
 
-        // 1. Generate Paths
-        for(let i=0; i<numPaths; i++) {
-            // Random Start Point
-            const startV = this.randomSpherePoint(surfaceRadius);
+        // Algorithm: Long Connected "Circuit Chains"
+        // Instead of random short dashes, we create long continuous paths
+        // that wind around the sphere, simulating connected circuitry.
+        const numChains = 24; 
+        const stepsPerChain = 20;
+        
+        for(let c=0; c<numChains; c++) {
+            let currentPoint = this.randomSpherePoint(surfaceRadius);
             
-            // End Point (Wander slightly)
-            // We want short-ish traces, not global ones
-            const endV = startV.clone().add(
-                new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.5,
-                    (Math.random() - 0.5) * 0.5,
-                    (Math.random() - 0.5) * 0.5
-                )
-            ).normalize().multiplyScalar(surfaceRadius);
+            for(let s=0; s<stepsPerChain; s++) {
+                // Determine next point in the chain (Random Walk on Surface)
+                const wander = new THREE.Vector3(
+                    (Math.random() - 0.5), 
+                    (Math.random() - 0.5), 
+                    (Math.random() - 0.5)
+                ).normalize().multiplyScalar(0.2); // segment length ~0.2
+                
+                const nextPoint = currentPoint.clone().add(wander).normalize().multiplyScalar(surfaceRadius);
+                
+                // Create Curve (Surface Arc)
+                const midPoint = currentPoint.clone().add(nextPoint).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
+                const curve = new THREE.QuadraticBezierCurve3(currentPoint, midPoint, nextPoint);
+                this.circuitCurves.push(curve);
 
-            // Create Curve (Surface Arc)
-            // Use midpoint normalized to surface to create arc
-            const midV = startV.clone().add(endV).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-            
-            const curve = new THREE.QuadraticBezierCurve3(startV, midV, endV);
-            this.circuitCurves.push(curve);
-
-            // Draw Static Trace
-            const points = curve.getPoints(20);
-            const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const trace = new THREE.Line(geometry, traceMaterial);
-            this.centralSphere.add(trace); // Add to sphere so it rotates with it
+                // Draw Static Trace Segment
+                const points = curve.getPoints(10);
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const trace = new THREE.Line(geometry, traceMaterial);
+                this.centralSphere.add(trace);
+                
+                // Continue the chain
+                currentPoint = nextPoint;
+            }
         }
 
         // 2. Initialize Electrons (The "Glow")
         // We recycle these
-        const electronGeometry = new THREE.SphereGeometry(0.012, 8, 8); // Slightly larger for visibility
+        const electronGeometry = new THREE.SphereGeometry(0.012, 8, 8); // Visible dots
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); // Pure Golden Fire
 
-        const numElectrons = 60; // Increased from 20 for more activity
+        const numElectrons = 80; // Dense electron flow
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             electron.visible = false; 
@@ -163,11 +168,11 @@ export class IcosahedronScene {
             
             this.electrons.push({
                 mesh: electron,
-                curveIndex: -1,
-                t: 0,
+                curveIndex: Math.floor(Math.random() * this.circuitCurves.length), // Assign initially
+                t: Math.random(), // Random start position on curve
                 speed: 0,
                 active: false,
-                delay: Math.random() * 100 // Random start delay
+                delay: Math.random() * 100 
             });
         }
     }
@@ -337,6 +342,9 @@ export class IcosahedronScene {
                 
                 // The front-most candidate in the hot zone is the winner
                 bestNode = candidates[0].node;
+                
+                // Calculate Activity Factor for Global Effects (0.0 to 1.0)
+                sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
 
             // Central Sphere Electrification & Path Animation
