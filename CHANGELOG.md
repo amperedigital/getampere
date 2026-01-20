@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.917 - 2026-01-20
+- **Visual Enhancement (Glass Mechanics)**:
+  - **Refraction Enabled**: Switched back to `MeshPhysicalMaterial` to support the user's request for "blur and distortion" which `Phong` cannot provide.
+  - **Mechanics**:
+    - `transmission: 0.95`: Nearly clear glass.
+    - `roughness: 0.25`: Provides the "frosted/blur" effect on objects seen through the glass.
+    - `depthWrite: false`: Maintained this critical setting to ensure the inner circuitry is not occluded by the depth buffer.
+    - `color`: Switched to `0xcd7f32` (Bronze Tint) to match the copper aesthetic while remaining translucent.
+
 ## v1.916 - 2026-01-20
 - **Visual Enhancement (Glass Visibility)**:
   - **Omni-Directional Visibility**: Adjusted the `glassShell` material to ensure it is visible on all faces, not just strictly where the light hits.
