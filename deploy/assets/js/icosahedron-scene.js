@@ -72,29 +72,54 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Glass Shell (Subtle Faces)
-        // High Reflectiveness Update: Adding Clearcoat for "Panel" look
-        const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x331a00,
-            emissive: 0x050200,
-            roughness: 0.2,       // Blurry base
-            metalness: 0.1,
-            transmission: 0.25,   // Slight bump
-            thickness: 0.1,
-            ior: 1.3,             // Increased IOR for more reflection intensity
-            transparent: true,
-            opacity: 0.25,        // Slight bump
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            flatShading: true,
-            // Reflectivity Boosters
-            clearcoat: 1.0,       // Max clearcoat for "Panel" shine
-            clearcoatRoughness: 0.1 // Sharp surface reflections
-        });
+        // 1b. Mesh-Mapped Circuitry Faces (Texture on Flat Planes)
+        // Generate a grid texture programmatically
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
         
-        const glassShell = new THREE.Mesh(geometry, glassMaterial);
-        glassShell.scale.setScalar(0.995); // Just inside wireframe
-        this.group.add(glassShell);
+        // Transparent Background
+        ctx.clearRect(0, 0, 256, 256);
+        
+        // Draw Grid Pattern
+        ctx.strokeStyle = '#d0f0ff'; // Bright Cyan-White
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        
+        const gridSize = 32; // Density of the mesh
+        for (let i = 0; i <= 256; i += gridSize) {
+            // Vertical
+            ctx.moveTo(i, 0); ctx.lineTo(i, 256);
+            // Horizontal
+            ctx.moveTo(0, i); ctx.lineTo(256, i);
+        }
+        ctx.stroke();
+        
+        // Add diagonal for triangular stability look? Optional.
+        // Let's stick to square grid for "circuitry" feel.
+        
+        const circuitTexture = new THREE.CanvasTexture(canvas);
+        circuitTexture.wrapS = THREE.RepeatWrapping;
+        circuitTexture.wrapT = THREE.RepeatWrapping;
+        circuitTexture.repeat.set(2, 1); // Adjust for UV mapping stretch
+        circuitTexture.anisotropy = 16;  // Crisp lines at angles
+
+        // Material: Renders texture on flat faces
+        const circuitMaterial = new THREE.MeshBasicMaterial({
+            map: circuitTexture,
+            color: 0xffffff,
+            transparent: true,    // Allow seeing through the grid holes
+            opacity: 0.9,         // High visibility
+            side: THREE.DoubleSide,
+            depthWrite: false,    // Don't occlude inner sphere
+            blending: THREE.AdditiveBlending
+        });
+
+        // Use same geometry as frame (0 detail) for perfect planar alignment
+        const circuitShell = new THREE.Mesh(geometry, circuitMaterial);
+        circuitShell.scale.setScalar(0.99); // Sit perfectly flush inside wires
+        this.group.add(circuitShell);
 
         // 2. Nodes (Vertices)
         this.addNodes(geometry);

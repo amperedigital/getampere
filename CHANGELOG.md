@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.927 - 2026-01-20
+- **Feature Pivot (Face-Mapped Mesh)**:
+  - **Goal**: Implement a "Light Opaque Circuitry" mesh that is mapped *onto* the faces of the icosahedron, without creating a separate displaced wireframe geometry (avoiding the v1.924 interference pattern).
+  - **Implementation**:
+    - Generates a procedural 256x256 Grid Texture (Cyan-White lines, Transparent BG) via HTML5 Canvas.
+    - Applies this texture to a `MeshBasicMaterial` on the standard Icosahedron layout (`detail: 0`).
+    - **Result**: The flat faces of the icosahedron now display a glowing grid/circuit mesh pattern that aligns perfectly with the copper wireframe edges, creating a "holographic panel" aesthetic.
+
 ## v1.926 - 2026-01-20
 - **Reversion**: Restored "Glass Panel" look (v1.921/1.923).
   - **Reason**: The "Light Circuitry" experiment (v1.924/1.925) was not the desired "face meshing" effect.
