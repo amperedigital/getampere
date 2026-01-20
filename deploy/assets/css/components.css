@@ -287,3 +287,22 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 .amp-logo-fill {
     fill: #fff;
 }
+
+/* Fixed Logo Container Sizing to prevent CLS */
+#amp-logo-container {
+    width: 5rem;
+}
+
+@media (min-width: 768px) {
+    #amp-logo-container {
+        width: 220px;
+        min-width: 220px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #amp-logo-container {
+        width: 300px;
+        min-width: 280px;
+    }
+}

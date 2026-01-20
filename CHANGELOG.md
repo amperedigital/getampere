@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.879 - 2026-01-19
+- **Fix**:
+  - **Logo Layout Shift (CLS)**: Forced explicit width for `#amp-logo-container` in `components.css`.
+    - *Action*: Added hardcoded `width`/`min-width` rules (220px desktop, 300px large) to CSS.
+    - *Reason*: Tailwind arbitrary value classes were not generating reliably in the build.
+  - **Animation Glitch**: Removed `transform-gpu` from main navigation.
+    - *Reason*: Reduce layer composition repaints during load.
+
 ## v1.878 - 2026-01-19
 - **Hotfix**:
   - **Logo Layout Shift**: Applied strict width/height constraints to `#amp-logo-container` in `index.html`.
