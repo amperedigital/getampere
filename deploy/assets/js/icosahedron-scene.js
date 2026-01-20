@@ -87,27 +87,27 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Golden Copper Frosted Glass
+        // Material: Real Copper (Browny-Red)
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0xffaa33,     // Golden Copper (warm orange-gold)
-            emissive: 0xcc4400,  // Deep copper/orange inner glow
-            emissiveIntensity: 3.0, 
-            roughness: 0.4,      // Frosted / Matte finish
-            metalness: 0.3,      // Slight metallic sheen for copper
-            transmission: 0.6,   // Clouded glass
+            color: 0xb87333,     // Real Copper (brown/red base)
+            emissive: 0x5a2010,  // Dark reddish-brown internal glow
+            emissiveIntensity: 1.0, // Significantly reduced (was 3.0) to reveal surface color
+            roughness: 0.35,     // Frosted metal
+            metalness: 0.6,      // Higher metalness for copper definition
+            transmission: 0.4,   // Denser material
             thickness: 1.5,
             clearcoat: 1.0,      
-            clearcoatRoughness: 0.4, 
+            clearcoatRoughness: 0.3, 
             ior: 1.5,
-            attenuationColor: new THREE.Color(0xffaa33),
-            attenuationDistance: 2.0
+            attenuationColor: new THREE.Color(0x8a4020), // Deep copper absorption
+            attenuationDistance: 1.5
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
         this.group.add(this.centralSphere);
 
-        // Add an internal light to make the glass "active"
-        const coreLight = new THREE.PointLight(0xffaa00, 3, 10);
+        // Add an internal light to make the glass "active" - Lower intensity
+        const coreLight = new THREE.PointLight(0xff8855, 1.5, 8);
         this.centralSphere.add(coreLight);
     }
 

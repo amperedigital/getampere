@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.897 - 2026-01-20
+- **Visual Update**:
+  - **Icosahedron**: Adjusted Central Orb material to Real Copper (`0xb87333` base, `0x5a2010` glow).
+  - **Correction**: Heavily reduced `emissiveIntensity` (3.0 -> 1.0) to prevent orange saturation and increased `metalness` (0.6) to capture the "browny red" metallic look defined by the user.
+
 ## v1.896 - 2026-01-20
 - **Visual Update**:
   - **Icosahedron**: Changed Central Orb material from Blue to Golden Copper.
