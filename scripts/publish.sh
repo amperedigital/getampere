@@ -15,6 +15,38 @@ cd "$ROOT_DIR"
 
 echo "🚀 Starting release process for $NEW_TAG..."
 
+# 0. CHECK CHANGELOG
+# Ensure the changelog has been updated for this release
+if [ -f "CHANGELOG.md" ]; then
+  if ! grep -q "$NEW_TAG" "CHANGELOG.md"; then
+    echo "❌ Error: CHANGELOG.md does not appear to contain an entry for $NEW_TAG."
+    echo "   Please document the details of this publish in CHANGELOG.md before proceeding."
+    exit 1
+  else
+    echo "   ✅ CHANGELOG.md entry found for $NEW_TAG."
+  fi
+fi
+
+# -1. BUILD CSS
+echo "   🎨 Building Tailwind CSS..."
+npm run build:css
+
+# 0. AUTOMATIC VERSION INJECTION
+# Automatically update the console log version in local source files before processing
+GLOBAL_JS="$ROOT_DIR/deploy/assets/js/global.js"
+if [ -f "$GLOBAL_JS" ]; then
+  echo "   🖊️  Injecting version $NEW_TAG into global.js..."
+  # Matches: [Ampere Global] v... Loaded
+  sed -i "s/\[Ampere Global\] v.* Loaded/[Ampere Global] $NEW_TAG Loaded/" "$GLOBAL_JS"
+fi
+
+DISTORTION_JS="$ROOT_DIR/deploy/assets/js/distortion-grid.js"
+if [ -f "$DISTORTION_JS" ]; then
+  echo "   🖊️  Injecting version $NEW_TAG into distortion-grid.js..."
+  # Matches: [DistortionGrid] v... Loaded
+  sed -i "s/\[DistortionGrid\] v.* Loaded/[DistortionGrid] $NEW_TAG Loaded/" "$DISTORTION_JS"
+fi
+
 # 1. Identify changed files in deploy/
 # Check for uncommitted changes (staged or unstaged)
 CHANGED_FILES=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
@@ -64,6 +96,9 @@ done
 # 3. Commit changes
 echo "📦 Committing changes..."
 git add deploy/
+if [ -f "CHANGELOG.md" ]; then
+  git add CHANGELOG.md
+fi
 git commit -m "chore(release): $NEW_TAG" || echo "   (Nothing to commit, proceeding...)"
 
 # 4. Tag
