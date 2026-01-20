@@ -72,8 +72,8 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes (Vertices)
-        this.addNodes(geometry);
+        // 2. Nodes (Vertices) - REMOVED per user request ("Green dots")
+        // this.addNodes(geometry);
 
         // 3. Central Sphere
         this.addCentralSphere();
@@ -145,13 +145,27 @@ export class IcosahedronScene {
         };
 
         // 2. PCB Logic - "Manhattan Sphere"
-        // Increased density to remove "huge gaps"
-        const numChips = 32; // Double density (18 -> 32)
+        // Increased density + Polar Coverage
+        let numChips = 64; 
         
         for(let i=0; i<numChips; i++) {
             // A. Place Motherboard Component (Chip)
-            const phi = Math.acos(2 * Math.random() - 1); 
-            const theta = Math.random() * Math.PI * 2;
+            let phi, theta;
+
+            // Force coverage at poles for first 12 chips
+            if (i < 6) {
+                // North Pole area
+                phi = Math.random() * 0.3; 
+                theta = Math.random() * Math.PI * 2;
+            } else if (i < 12) {
+                // South Pole area
+                phi = Math.PI - (Math.random() * 0.3);
+                theta = Math.random() * Math.PI * 2;
+            } else {
+                // Random Sphere distribution
+                phi = Math.acos(2 * Math.random() - 1);
+                theta = Math.random() * Math.PI * 2;
+            }
             
             const pos = getPos(phi, theta, surfaceRadius);
             
@@ -163,28 +177,27 @@ export class IcosahedronScene {
             chip.position.copy(pos);
             chip.lookAt(pos.clone().multiplyScalar(2)); 
             
-            const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
-            pad.position.z = 0.008; 
-            chip.add(pad);
+            // REMOVED Pad (Gold contacts) to avoid "Green Dot" artifacts
+            // const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
+            // pad.position.z = 0.008; 
+            // chip.add(pad);
 
             this.centralSphere.add(chip);
 
             // B. Route Parallel Traces from this Chip
-            // MORE TRACES per chip to fill gaps
-            const tracesPerChip = 6 + Math.floor(Math.random() * 6); // 6-12 traces (was 3-7)
+            const tracesPerChip = 5 + Math.floor(Math.random() * 5); 
             
             for (let t=0; t<tracesPerChip; t++) {
                 // Determine Start Point (near chip)
                 let currentPhi = phi + (Math.random() * 0.1 - 0.05);
                 let currentTheta = theta + (Math.random() * 0.1 - 0.05);
 
-                const numSegs = 6 + Math.floor(Math.random() * 6); // Longer paths (was 4-9)
+                const numSegs = 5 + Math.floor(Math.random() * 8); 
                 
                 // Trace Path Generation
                 for(let s=0; s<numSegs; s++) {
                     const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal
                     
-                    // Shorter segments but more of them = better grid adherence & density
                     const len = 0.1 + Math.random() * 0.25; 
                     
                     let startP = getPos(currentPhi, currentTheta, surfaceRadius);
@@ -193,7 +206,8 @@ export class IcosahedronScene {
                     if (isVertical) {
                         const dir = Math.random() > 0.5 ? 1 : -1;
                         let nextPhi = currentPhi + (len * dir);
-                        nextPhi = Math.max(0.1, Math.min(Math.PI - 0.1, nextPhi));
+                        // Relaxed clamping to allow Pole coverage
+                        nextPhi = Math.max(0.01, Math.min(Math.PI - 0.01, nextPhi));
 
                         endP = getPos(nextPhi, currentTheta, surfaceRadius);
                         midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);

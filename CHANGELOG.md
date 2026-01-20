@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.907 - 2026-01-20
+- **Visual Repair (Cleanup & Coverage)**:
+  - **Removed Artifacts**: Disabled the `addNodes` call (vertex spheres) and removed `pads` from chips. This eliminates the "four or five permanent green/gold dots" that were cluttering the view.
+  - **Full Orb Coverage**: Increased `numChips` to `64` and implemented a biased distribution logic that forces 12 chips to spawn specifically in the North and South Pole regions.
+  - **Pole Connectivity**: Relaxed the trace clamping from `0.1` to `0.01` radians, allowing circuitry lines to flow almost entirely to the geometric poles, fixing the "huge gaps" issue.
+
 ## v1.906 - 2026-01-20
 - **Visual Repair (Electrons)**:
   - **Glowing Dots**: Reverted electron geometry to small points (`0.012` cube) and attached a **Glow Sprite** (Halo) to each one. This creates the requested "Glowing Dot" effect traversing the lines, rather than "long rectangles".
