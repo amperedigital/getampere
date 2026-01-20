@@ -568,3 +568,9 @@
     - *Action*: Centralized the "animate-on-scroll" play-state management.
   - **CSS Optimization**: Moved animation pause/running styles to `components.css`.
     - *Benefit*: Eliminates JavaScript-based style injection and potential FOUC.
+## v1.884 - 2026-01-19
+- **Refactor**:
+  - **Global Observer Consolidation**: Removed the redundant "animate-on-scroll" observer added in v1.883.
+    - *Action*: Updated `components.css` to listen for the `.in-view` class (standard) instead of `.animate`.
+    - *Action*: Deleted the duplicated observer logic from `global.js`.
+    - *Result*: The site now uses the single, existing `window.globalObserver` to trigger all scroll animations.

@@ -335,10 +335,10 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 }
 
 /* --- Scroll Animation Triggers --- */
-/* Pauses animations until the element enters the viewport (JS adds .animate) */
+/* Pauses animations until the element enters the viewport (Global Observer adds .in-view) */
 .animate-on-scroll {
     animation-play-state: paused !important;
 }
-.animate-on-scroll.animate {
+.animate-on-scroll.in-view {
     animation-play-state: running !important;
 }
