@@ -13,7 +13,7 @@
   </script>
   <title>getAmpere.ai - AI Voice Agents</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.880/deploy/assets/css/styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.881/deploy/assets/css/components.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.883/deploy/assets/css/components.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -42,36 +42,7 @@
 
 
 
-  <script>
-    (function () {
-const style = document.createElement("style");
-style.textContent = `
-.animate-on-scroll { animation-play-state: paused !important; }
-.animate-on-scroll.animate { animation-play-state: running !important; }
-`;
-document.head.appendChild(style);
-const once = true;
-if (!window.__inViewIO) {
-window.__inViewIO = new IntersectionObserver(
-(entries) => {
-entries.forEach((entry) => {
-if (entry.isIntersecting) {
-entry.target.classList.add("animate");
-if (once) window.__inViewIO.unobserve(entry.target);
-}
-});
-},
-{ threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
-);
-}
-window.initInViewAnimations = function (selector = ".animate-on-scroll") {
-document.querySelectorAll(selector).forEach((el) => {
-window.__inViewIO.observe(el);
-});
-};
-document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
-})();
-  </script>
+
 
   <style id="aura-editor-visibility-style">
     .invisible {
@@ -1759,7 +1730,6 @@ document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
         </div>
     </div>
 </section>
-<!--         END: Platform Walkthrough Header        -->
 
 <!--         END: Platform Walkthrough Header        -->
 <!-- ========================================== -->
@@ -2699,7 +2669,7 @@ document.addEventListener("DOMContentLoaded", () => initInViewAnimations());
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.871/deploy/assets/js/global.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.883/deploy/assets/js/global.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.872/deploy/assets/js/modal.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>

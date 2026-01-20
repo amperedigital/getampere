@@ -333,3 +333,12 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 #amp-hero-slider.is-dragging * {
   cursor: grabbing;
 }
+
+/* --- Scroll Animation Triggers --- */
+/* Pauses animations until the element enters the viewport (JS adds .animate) */
+.animate-on-scroll {
+    animation-play-state: paused !important;
+}
+.animate-on-scroll.animate {
+    animation-play-state: running !important;
+}

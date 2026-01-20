@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.871 Loaded');
+  console.log('[Ampere Global] v1.883 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -1086,4 +1086,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener
     slider.addEventListener('input', updateROI);
+})();
+
+/*
+ * CSS Animation Scroll Trigger (Global)
+ * Replaces inline script in index.html
+ * Pauses CSS animations until they enter the viewport.
+ */
+(function() {
+    // 1. Styles: Handled in components.css (prevents FOUC)
+
+
+    // 2. Initialize Observer
+    function initScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("animate");
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, { 
+            threshold: 0.2, 
+            rootMargin: "0px 0px -10% 0px" 
+        });
+
+        const elements = document.querySelectorAll(".animate-on-scroll");
+        elements.forEach(el => observer.observe(el));
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollAnimations);
+    } else {
+        initScrollAnimations();
+    }
 })();

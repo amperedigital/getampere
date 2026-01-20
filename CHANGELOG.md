@@ -562,3 +562,9 @@
 - **Dead Code Removal**: Removed unused `.font-oswald` class from `components.css`.
 - **Logo Optimization**: Moved inline SVG styles (`.cls-1`, etc.) to `components.css`, cleaning up `index.html`.
 - **Safety**: Created backup `backups/index.html.backup.20260119.pre_logo_refactor` completely intact.
+## v1.883 - 2026-01-19
+- **Refactor**:
+  - **Global Animation Trigger**: Moved inline IntersectionObserver logic from `index.html` to `global.js`.
+    - *Action*: Centralized the "animate-on-scroll" play-state management.
+  - **CSS Optimization**: Moved animation pause/running styles to `components.css`.
+    - *Benefit*: Eliminates JavaScript-based style injection and potential FOUC.
