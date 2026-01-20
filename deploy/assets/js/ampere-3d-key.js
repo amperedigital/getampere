@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.886 Loaded (Unified Ink - #1e2a40)");
+        console.log("Ampere3DKey v1.887 Loaded (Unified Ink - #1e2a40)");
 
         // State
         this.progress = 0;

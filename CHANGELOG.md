@@ -584,3 +584,8 @@
   - **Three.js Import Cleanup**: Removed the `importmap` from `index.html`.
     - *Action*: Updated `ampere-3d-key.js` to use a direct CDN URL for Three.js.
     - *Benefit*: Cleared `<head>` of config scripts; Three.js remains fully lazy-loaded via dynamic import in `global.js`.
+## v1.887 - 2026-01-19
+- **Performance**:
+  - **Defer Iconify**: Added `defer` attribute to `iconify-icon.min.js`.
+    - *Action*: Unblocks the HTML parser during initial page load.
+    - *Result*: Faster First Contentful Paint (FCP) as icon upgrades happen asynchronously.
