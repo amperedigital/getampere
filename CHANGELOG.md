@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.870 - 2026-01-19
+- **Code Optimization**:
+  - **Inline Styles Refactor**: Moved inline animation styles and keyframes for the hero "CALL" animation into `styles.css`.
+    - *Action*: Extracted `@keyframes letterSlideIn` to `input.css` and created a reusable `.animate-letter-reveal` utility class.
+    - *Benefit*: Reduces HTML bloat, improves maintainability, and allows for cleaner markup.
+
 ## v1.869 - 2026-01-19
 - **Hero Typography**:
   - **SVG Dot Alignment**: Lowered the position of the period dot.
