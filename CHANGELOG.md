@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.922 - 2026-01-20
+- **Visual Repair (Lighting & Material)**:
+  - **Goal**: Address "shaded" appearance and "pinpoint" reflections; achieve "lighter tinge of white".
+  - **Lighting**:
+    - Added a **Secondary Fill Light** (Cool Blue/White, Intensity 5) from the bottom right to illuminate the shadowed back faces of the glass, reducing the single-point reflection issue.
+  - **Material**:
+    - **Color**: Changed from Dark Copper (`0x331a00`) to **Pure White** (`0xffffff`) to give the requested "lighter tinge".
+    - **Reflectivity**: Increased `ior` to `1.5` (Standard Glass) and sharpened `roughness` to `0.1`.
+    - **Definition**: Increased `opacity` to `0.3` to ensure the white glass surface catches the light visibly.
+
 ## v1.921 - 2026-01-20
 - **Visual Repair (Glass Reflectivity)**:
   - **Goal**: Create a "Glass Panel" look that is visible but not overwhelming.
