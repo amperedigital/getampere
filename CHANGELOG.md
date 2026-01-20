@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.890 - 2026-01-19
+- **Build System**:
+  - **Smart Dependency Linking**: Updated `publish.sh` to automatically force updates of parent "loader" scripts (e.g., `global.js`) when their child dependencies (e.g., `ampere-3d-key.js`) are modified.
+  - **Benefit**: Prevents version skew where a cached parent script tries to load a non-existent older version of a child script.
+
 ## v1.889 - 2026-01-19
 - **Fix**:
   - **Version Alignment**: Force updated `global.js` reference in `index.html` to `v1.888` to ensure correct loading of the updated `ampere-3d-key.js` component.
