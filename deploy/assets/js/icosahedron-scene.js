@@ -74,7 +74,8 @@ export class IcosahedronScene {
 
         // 1b. Light Opaque Circuitry Mesh (Replacement for Glass)
         // detailed geometry for a "circuitry" lattice look
-        const circuitGeometry = new THREE.IcosahedronGeometry(radius, 1); // Detail=1 for denser grid
+        // MATCHED DETAIL to 0 to align perfectly with copper frame
+        const circuitGeometry = new THREE.IcosahedronGeometry(radius, 0); 
         
         // Using Basic material for "Light" (self-illuminated look) appearance
         // Wireframe: true creates the network/circuitry aesthetic

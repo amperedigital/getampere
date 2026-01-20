@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.925 - 2026-01-20
+- **Visual Repair (Geometric Alignment)**:
+  - **Issue**: The "Light Circuitry" mesh was misaligned with the outer copper frame.
+  - **Root Cause**: The circuitry mesh was generated with `detail: 1` (geodesic sphere) while the frame was `detail: 0` (angular icosahedron), causing their edges to cross.
+  - **Fix**: Reduced circuitry mesh to `detail: 0` to match the outer frame perfectly. It now sits as a perfect, slightly smaller inner cage (`scale: 0.98`) without intersecting lines.
+
 ## v1.924 - 2026-01-20
 - **Feature Pivot (Circuitry Shell)**:
   - **Change**: Removed the physical glass simulation entirely in favor of a "Light, Opaque Circuitry" mesh as requested.
