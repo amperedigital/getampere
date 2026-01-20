@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.901 - 2026-01-20
+- **Feature (Path Animation)**:
+  - Replaced texture-based circuitry with **Geometric Paths** (`initCircuitryPaths`).
+  - Added 60 randomized `QuadraticBezierCurve3` arcs along the sphere surface to represent copper traces.
+  - Implemented an **Electron System**: Small glowing pulses that travel along these curves individually.
+- **Interaction (Scanner)**:
+  - When the user "scans" (rotates lattice in front of camera), the electron activity level increases, Spawning more pulses and increasing their speed.
+  - Static traces rendered as faint etched lines (`LineBasicMaterial`) for structure.
+
 ## v1.900 - 2026-01-20
 - **Visual Update**:
   - **Dynamic Electrification**: The central orb's circuitry now glows and flickers ("electrifies") only when an outer lattice node is highlighted.

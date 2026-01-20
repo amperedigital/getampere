@@ -83,123 +83,105 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Procedural Circuitry Texture
-        const circuitTexture = this.createCircuitryTexture();
-
-        // Material: Real Copper (Browny-Red) with Glowing Circuitry
+        // Material: Real Copper (Browny-Red) - Pure Surface
         const material = new THREE.MeshPhysicalMaterial({
             color: 0xb87333,     // Copper base
-            
-            // Texture Maps
-            emissiveMap: circuitTexture,
-            bumpMap: circuitTexture,
-            bumpScale: 0.015,     // Slight relief for wires
-            
-            // Glow Settings
-            emissive: 0xffffff,   // White multiplier (lets texture colors show true)
-            emissiveIntensity: 0.1, // Reduced Base Glow (Inactive state)
-
-            // Physical Properties
-            roughness: 0.35,
-            metalness: 0.6,
-            transmission: 0.4,
-            thickness: 1.5,
+            emissive: 0x000000,  // No self-glow
+            roughness: 0.35,     // Frosted metal
+            metalness: 0.6,      
+            transmission: 0.0,   // Opaque
             clearcoat: 1.0,      
             clearcoatRoughness: 0.3, 
-            ior: 1.5,
-            attenuationColor: new THREE.Color(0x8a4020),
-            attenuationDistance: 1.5
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
-        
-        // Improve texture mapping on sphere (prevent pole pinching artifacts look too bad)
-        // Note: UV mapping is standard for SphereGeometry, good enough for abstract orb.
-        
         this.group.add(this.centralSphere);
+        
+        // Add Procedural "Path" Circuitry
+        this.initCircuitryPaths();
 
         // Add an internal light to make the glass "active" - Lower intensity
         const coreLight = new THREE.PointLight(0xff8855, 1.5, 8);
         this.centralSphere.add(coreLight);
     }
 
-    createCircuitryTexture() {
-        const size = 1024;
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-
-        // 1. Background: Black (No emissive glow by default)
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, size, size);
-
-        // 2. Settings for Circuit Traces
-        const numPaths = 80;
+    initCircuitryPaths() {
+        this.circuitCurves = [];
+        this.electrons = [];
         
-        // Glowy Colors: Bright Amber, Gold, Hot White
-        const colors = ['#ff9933', '#ffcc66', '#ffeedd', '#ff5522'];
-
-        ctx.lineJoin = 'round';
-        ctx.shadowBlur = 10; // Glow effect burned into texture
+        const sphereRadius = 0.6;
+        const surfaceRadius = sphereRadius + 0.005; // Slightly above
+        const numPaths = 60;
         
-        // 3. Draw Paths
-        for (let i = 0; i < numPaths; i++) {
-            let x = Math.random() * size;
-            let y = Math.random() * size;
-            let steps = 5 + Math.random() * 25;
+        // Material for the static "Etched" traces
+        const traceMaterial = new THREE.LineBasicMaterial({
+            color: 0x5a2010, // Dark etched copper
+            transparent: true,
+            opacity: 0.4
+        });
+
+        // 1. Generate Paths
+        for(let i=0; i<numPaths; i++) {
+            // Random Start Point
+            const startV = this.randomSpherePoint(surfaceRadius);
             
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;
-            ctx.shadowColor = color;
-            ctx.lineWidth = 2 + Math.random() * 4;
+            // End Point (Wander slightly)
+            // We want short-ish traces, not global ones
+            const endV = startV.clone().add(
+                new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5
+                )
+            ).normalize().multiplyScalar(surfaceRadius);
 
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-
-            // Draw "Chip" at start
-            if (Math.random() > 0.7) {
-                const chipSize = 10 + Math.random() * 20;
-                ctx.fillRect(x - chipSize/2, y - chipSize/2, chipSize, chipSize);
-            }
-
-            for (let j = 0; j < steps; j++) {
-                // Move in Manhatten Grid (90 degree angles)
-                const dist = 50 + Math.random() * 100;
-                if (Math.random() > 0.5) {
-                    x += (Math.random() > 0.5 ? 1 : -1) * dist;
-                } else {
-                    y += (Math.random() > 0.5 ? 1 : -1) * dist;
-                }
-                
-                // Keep inside canvas logic
-                if(x < 0) x = 0; if(x > size) x = size;
-                if(y < 0) y = 0; if(y > size) y = size;
-
-                ctx.lineTo(x, y);
-                
-                // "Transistor" Node along the path
-                if (Math.random() > 0.9) {
-                   ctx.fillRect(x - 6, y - 6, 12, 12);
-                }
-            }
-            ctx.stroke();
+            // Create Curve (Surface Arc)
+            // Use midpoint normalized to surface to create arc
+            const midV = startV.clone().add(endV).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
             
-            // Terminal Circle
-            ctx.beginPath();
-            ctx.arc(x, y, 4 + Math.random() * 4, 0, Math.PI * 2);
-            ctx.fill();
+            const curve = new THREE.QuadraticBezierCurve3(startV, midV, endV);
+            this.circuitCurves.push(curve);
+
+            // Draw Static Trace
+            const points = curve.getPoints(20);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const trace = new THREE.Line(geometry, traceMaterial);
+            this.centralSphere.add(trace); // Add to sphere so it rotates with it
         }
 
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
+        // 2. Initialize Electrons (The "Glow")
+        // We recycle these
+        const electronGeometry = new THREE.SphereGeometry(0.008, 8, 8);
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffddaa }); // Hot amber
+
+        const numElectrons = 20;
+        for(let i=0; i<numElectrons; i++) {
+            const electron = new THREE.Mesh(electronGeometry, electronMaterial);
+            electron.visible = false; 
+            this.centralSphere.add(electron);
+            
+            this.electrons.push({
+                mesh: electron,
+                curveIndex: -1,
+                t: 0,
+                speed: 0,
+                active: false,
+                delay: Math.random() * 100 // Random start delay
+            });
+        }
+    }
+
+    randomSpherePoint(radius) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = 2 * Math.PI * u;
+        const phi = Math.acos(2 * v - 1);
         
-        // Repeat texture so it tiles nicely around the sphere
-        texture.repeat.set(2, 1); 
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
         
-        return texture;
+        return new THREE.Vector3(x, y, z);
     }
 
     addNodes(geometry) {
@@ -356,35 +338,48 @@ export class IcosahedronScene {
                 bestNode = candidates[0].node;
             }
 
-            // Central Sphere Electrification
-            if (this.centralSphere) {
-                let targetSphereIntensity = 0.1; // Base
+            // Central Sphere Electrification & Path Animation
+            if (this.circuitCurves && this.electrons) {
+                // How "active" is the system?
+                const activityLevel = sphereActiveFactor; // 0 to 1 based on interaction
 
-                if (bestNode) {
-                    // Recalculate dist
-                    bestNode.getWorldPosition(tempV);
-                    tempV.project(this.camera);
-                    const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
-                    const factor = 1 - (dist / maxDist);
-                    sphereActiveFactor = factor;
-
-                    // Wave / Electrification Effect
-                    // High frequency flicker (Electricity) + Pulse
-                    const time = Date.now() * 0.01;
-                    const electricNoise = (Math.sin(time * 10) + Math.cos(time * 23)) * 0.3; 
-                    
-                    targetSphereIntensity = 0.1 + (factor * 1.5) + (factor * electricNoise * 0.5);
-                    
-                    // Texture Scroll Wave
-                    if (this.centralSphere.material.emissiveMap) {
-                        // Move texture vertically to simulate flowing energy
-                         this.centralSphere.material.emissiveMap.offset.y -= 0.005 * factor;
+                this.electrons.forEach(e => {
+                    // 1. Activate logic
+                    if (!e.active) {
+                        if (e.delay > 0) {
+                            e.delay--;
+                        } else {
+                             // Probability to spawn based on activity
+                             // Always some low background activity (0.01)
+                             // High activity when scanning (up to 0.5)
+                             if (Math.random() < (0.01 + activityLevel * 0.2)) {
+                                 e.active = true;
+                                 e.curveIndex = Math.floor(Math.random() * this.circuitCurves.length);
+                                 e.t = 0;
+                                 e.speed = 0.01 + Math.random() * 0.02 + (activityLevel * 0.03); // Faster when active
+                                 e.mesh.visible = true;
+                             }
+                        }
                     }
-                }
 
-                // Lerp Sphere Intensity
-                 const curr = this.centralSphere.material.emissiveIntensity;
-                 this.centralSphere.material.emissiveIntensity += (targetSphereIntensity - curr) * 0.1;
+                    // 2. Update Position
+                    if (e.active) {
+                        e.t += e.speed;
+                        if (e.t >= 1.0) {
+                            // Reset
+                            e.active = false;
+                            e.mesh.visible = false;
+                            e.delay = Math.random() * 20;
+                        } else {
+                            // Move along curve
+                            const curve = this.circuitCurves[e.curveIndex];
+                            if (curve) {
+                                const pos = curve.getPoint(e.t);
+                                e.mesh.position.copy(pos);
+                            }
+                        }
+                    }
+                });
             }
 
             // 3. Apply States
