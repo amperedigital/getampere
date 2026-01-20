@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.929 - 2026-01-20
+## v1.930 - 2026-01-20
 - **Theme Overhaul (Bluey Silver)**:
   - **Goal**: Transition the entire Icosahedron aesthetic from Copper/Gold to a "Bluey Silver" palette.
   - **Implementation**:
