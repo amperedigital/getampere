@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.856 Loaded'); 
+console.log('[DistortionGrid] v1.857 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -509,6 +509,14 @@ class DistortionGrid {
 
     // Static Initialization Helper
     static initAll(selector = '[data-object="distortion-grid"]') {
+         // Mobile Performance Guard:
+         // Do not initialize canvas on devices smaller than 768px.
+         // This leaves the CSS background/SVG fallback visible with 0 JS cost.
+         if (window.innerWidth < 768) {
+             console.log('[DistortionGrid] Mobile detected (<768px). Skipping initialization.');
+             return;
+         }
+
          const elements = document.querySelectorAll(selector);
          elements.forEach((el, index) => {
              // Check if already initialized
