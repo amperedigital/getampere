@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.910 - 2026-01-20
+- **Visual Cleanup**:
+  - **Remove Chips**: Removed the square "motherboard chip" geometries. The user felt they looked weird and randomly placed. The circuitry traces remain, radiating from these invisible origin points, creating a cleaner "pure energy" look.
+  - **Retained Density**: Kept the high density (90 clusters) and restored nodes from v1.909.
+
 ## v1.909 - 2026-01-20
 - **Visual Repair (Coverage & Nodes)**:
   - **Circuitry Gaps**: Significantly increased `numChips` from 48 to **90** and increased pole-biased chips to 16. This provides much denser coverage across the sphere surface to eliminate "huge gaps".

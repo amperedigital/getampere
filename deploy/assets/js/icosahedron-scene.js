@@ -167,24 +167,8 @@ export class IcosahedronScene {
                 theta = Math.random() * Math.PI * 2;
             }
             
-            const pos = getPos(phi, theta, surfaceRadius);
-            
-            // Randomly select chip shape (More small ones for detail)
-            const r = Math.random();
-            const geo = r > 0.8 ? chipGeoWide : (r > 0.5 ? chipGeoLong : chipGeoSmall);
-            
-            const chip = new THREE.Mesh(geo, chipMaterial);
-            chip.position.copy(pos);
-            chip.lookAt(pos.clone().multiplyScalar(2)); 
-            
-            // Pad (Gold contacts) - REMOVED permanently to avoid "Green Dot" artifacts
-            // const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
-            // pad.position.z = 0.008; 
-            // chip.add(pad);
-
-            this.centralSphere.add(chip);
-
-            // B. Route Parallel Traces from this Chip
+            // Chips Removed (v1.910) - Pure Circuitry traces only
+            // b. Route Parallel Traces from this Cluster Origin
             // Reduced trace count for separation (Circuit vs Mesh)
             const tracesPerChip = 3 + Math.floor(Math.random() * 4); // 3-6 traces (was 5-10)
             
