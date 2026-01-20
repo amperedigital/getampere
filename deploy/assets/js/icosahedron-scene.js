@@ -34,12 +34,13 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Ambient Light (Soft but warm base)
-        const ambientLight = new THREE.AmbientLight(0xffccaa, 1.0); 
+        // Ambient Light (Soft but warm base) - Low intesity for drama
+        const ambientLight = new THREE.AmbientLight(0xffccaa, 0.2); 
         this.scene.add(ambientLight);
 
         // Single Main Soft Spotlight (Top Left) - Wide & Diffused
-        const spotLight = new THREE.SpotLight(0xffebd6, 5); // Warm white
+        const spotLight = new THREE.SpotLight(0xffebd6, 8); // Brighter spot for contrast
+
         spotLight.position.set(-10, 10, 10);
         spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
         spotLight.penumbra = 1.0; // Max softness/diffusion
@@ -83,15 +84,15 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Real Copper (Browny-Red) - Pure Surface
+        // Material: Darkened Copper for Drama
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0xb87333,     // Copper base
-            emissive: 0x000000,  // No self-glow
-            roughness: 0.35,     // Frosted metal
-            metalness: 0.6,      
-            transmission: 0.0,   // Opaque
+            color: 0x220e05,     // Deep Dark Copper/Chocolate
+            emissive: 0x000000,
+            roughness: 0.2,      // Smoother for sharper reflections
+            metalness: 0.8,      
+            transmission: 0.0,
             clearcoat: 1.0,      
-            clearcoatRoughness: 0.3, 
+            clearcoatRoughness: 0.2, 
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
@@ -101,7 +102,7 @@ export class IcosahedronScene {
         this.initCircuitryPaths();
 
         // Add an internal light to make the glass "active" - Lower intensity
-        const coreLight = new THREE.PointLight(0xff8855, 1.5, 8);
+        const coreLight = new THREE.PointLight(0xff8855, 0.8, 8);
         this.centralSphere.add(coreLight);
     }
 
@@ -111,13 +112,13 @@ export class IcosahedronScene {
         
         const sphereRadius = 0.6;
         const surfaceRadius = sphereRadius + 0.005; // Slightly above
-        const numPaths = 60;
+        const numPaths = 120; // Increased density from 60
         
-        // Material for the static "Etched" traces
+        // Material for the static "Etched" traces - Lighter gold/copper for visibility against dark orb
         const traceMaterial = new THREE.LineBasicMaterial({
-            color: 0x5a2010, // Dark etched copper
+            color: 0xffaa44, // Bright Gold/Copper
             transparent: true,
-            opacity: 0.4
+            opacity: 0.3
         });
 
         // 1. Generate Paths
@@ -151,10 +152,10 @@ export class IcosahedronScene {
 
         // 2. Initialize Electrons (The "Glow")
         // We recycle these
-        const electronGeometry = new THREE.SphereGeometry(0.008, 8, 8);
-        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffddaa }); // Hot amber
+        const electronGeometry = new THREE.SphereGeometry(0.012, 8, 8); // Slightly larger for visibility
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); // Pure Golden Fire
 
-        const numElectrons = 20;
+        const numElectrons = 60; // Increased from 20 for more activity
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             electron.visible = false; 

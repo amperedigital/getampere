@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.902 - 2026-01-20
+- **Visual Enhancement**:
+  - **Dark Orb**: Changed central sphere base to deep Dark Copper/Chocolate (`0x220e05`) for high contrast.
+  - **Visible Traces**: Increased circuitry path density (60 -> 120) and changed trace color to Bright Gold (`0xffaa44`) to be visible against the dark sphere.
+  - **More Electrons**: Increased electron particle count (20 -> 60) and size for "more dots" and activity.
+  - **Lighting**: Adjusted lighting for more drama (Lower ambient, higher contrast spotlight).
+
 ## v1.901 - 2026-01-20
 - **Feature (Path Animation)**:
   - Replaced texture-based circuitry with **Geometric Paths** (`initCircuitryPaths`).
