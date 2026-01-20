@@ -72,29 +72,23 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Glass Shell (Subtle Faces)
-        // High Reflectiveness Update: Adding Clearcoat for "Panel" look
-        const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x331a00,
-            emissive: 0x050200,
-            roughness: 0.2,       // Blurry base
-            metalness: 0.1,
-            transmission: 0.25,   // Slight bump
-            thickness: 0.1,
-            ior: 1.3,             // Increased IOR for more reflection intensity
-            transparent: true,
-            opacity: 0.25,        // Slight bump
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            flatShading: true,
-            // Reflectivity Boosters
-            clearcoat: 1.0,       // Max clearcoat for "Panel" shine
-            clearcoatRoughness: 0.1 // Sharp surface reflections
+        // 1b. Light Opaque Circuitry Mesh (Replacement for Glass)
+        // detailed geometry for a "circuitry" lattice look
+        const circuitGeometry = new THREE.IcosahedronGeometry(radius, 1); // Detail=1 for denser grid
+        
+        // Using Basic material for "Light" (self-illuminated look) appearance
+        // Wireframe: true creates the network/circuitry aesthetic
+        const circuitMaterial = new THREE.MeshBasicMaterial({
+            color: 0xe0f7fa, // Cyan-ish White ("Light")
+            wireframe: true,
+            transparent: false, // "Opaque"
+            opacity: 1.0,
+            side: THREE.DoubleSide
         });
         
-        const glassShell = new THREE.Mesh(geometry, glassMaterial);
-        glassShell.scale.setScalar(0.995); // Just inside wireframe
-        this.group.add(glassShell);
+        const circuitShell = new THREE.Mesh(circuitGeometry, circuitMaterial);
+        circuitShell.scale.setScalar(0.98); // Slightly inside the main copper frame
+        this.group.add(circuitShell);
 
         // 2. Nodes (Vertices)
         this.addNodes(geometry);

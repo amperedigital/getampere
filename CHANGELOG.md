@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.924 - 2026-01-20
+- **Feature Pivot (Circuitry Shell)**:
+  - **Change**: Removed the physical glass simulation entirely in favor of a "Light, Opaque Circuitry" mesh as requested.
+  - **Implementation**:
+    - Replaced `MeshPhysicalMaterial` (Glass) with a `MeshBasicMaterial` (Self-illuminated/Light).
+    - **Visual**: A dense, opaque, light-cyan (`0xe0f7fa`) wireframe mesh (`detail: 1`) that sits just inside the copper frame.
+    - **Effect**: Creates a "holographic blueprint" or "circuit net" aesthetic that is visually light but opaque in structure.
+
 ## v1.923 - 2026-01-20
 - **Regression Fix**: Reverted changes from v1.922 (White Glass + Fill Light).
   - **Reason**: User feedback indicated the "white tinge" and extra lighting were not desired.
