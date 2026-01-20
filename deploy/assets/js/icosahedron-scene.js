@@ -43,13 +43,13 @@ export class IcosahedronScene {
         this.camera.add(cameraLight);
         this.scene.add(this.camera);
 
-        // Rim Light (Top Right) - Softened
-        const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.5);
+        // Rim Light (Top Right) - Warm Highlight
+        const rimLight = new THREE.DirectionalLight(0xffccaa, 0.5);
         rimLight.position.set(5, 5, -5);
         this.scene.add(rimLight);
         
-        // Fill Light (Bottom Left) - Softened
-        const fillLight = new THREE.DirectionalLight(0x2233aa, 0.5);
+        // Fill Light (Bottom Left) - Warm Shadow Fill
+        const fillLight = new THREE.DirectionalLight(0xaa5533, 0.5);
         fillLight.position.set(-5, -5, 5);
         this.scene.add(fillLight);
     }
@@ -87,19 +87,19 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Blue Frosted Glass / Glowing Orb (No sharp reflections)
+        // Material: Golden Copper Frosted Glass
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0x3b82f6,     // Brighter Blue
-            emissive: 0x0044aa,  // Stronger blue inner glow
-            emissiveIntensity: 3.0, // Significant brightness
-            roughness: 0.4,      // Frosted / Matte finish to diffuse light
-            metalness: 0.1,      
-            transmission: 0.6,   // Less transparent, more milky
+            color: 0xffaa33,     // Golden Copper (warm orange-gold)
+            emissive: 0xcc4400,  // Deep copper/orange inner glow
+            emissiveIntensity: 3.0, 
+            roughness: 0.4,      // Frosted / Matte finish
+            metalness: 0.3,      // Slight metallic sheen for copper
+            transmission: 0.6,   // Clouded glass
             thickness: 1.5,
-            clearcoat: 1.0,      // Keep coat for depth...
-            clearcoatRoughness: 0.4, // ...but make it rough/satin
+            clearcoat: 1.0,      
+            clearcoatRoughness: 0.4, 
             ior: 1.5,
-            attenuationColor: new THREE.Color(0x3b82f6),
+            attenuationColor: new THREE.Color(0xffaa33),
             attenuationDistance: 2.0
         });
 
@@ -107,7 +107,7 @@ export class IcosahedronScene {
         this.group.add(this.centralSphere);
 
         // Add an internal light to make the glass "active"
-        const coreLight = new THREE.PointLight(0x60a5fa, 3, 10);
+        const coreLight = new THREE.PointLight(0xffaa00, 3, 10);
         this.centralSphere.add(coreLight);
     }
 

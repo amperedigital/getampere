@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.896 - 2026-01-20
+- **Visual Update**:
+  - **Icosahedron**: Changed Central Orb material from Blue to Golden Copper.
+  - **Lighting**: Updated Rim and Fill lights to warm tones (`0xffccaa`, `0xaa5533`) to compliment the copper aesthetic.
+
 ## v1.895 - 2026-01-20
 - **Visual Update**:
   - **Icosahedron**: Removed sharp specular reflections ("three points of light") from the central sphere.
