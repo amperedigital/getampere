@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.874 - 2026-01-19
+- **Code Optimization**:
+  - **Gradient Blur Refactor**: Migrated large `.gradient-blur` inline style block to `input.css`.
+    - *Action*: Moved ~80 lines of CSS controlling the progressive top-blur effect into the main component layer.
+    - *Benefit*: Improved `index.html` readability and maintainability by removing extensive inline visual definitions.
+
 ## v1.873 - 2026-01-19
 - **Code Optimization**:
   - **Styles Refactor**: Eliminated heavy inline styles for background grids and complex shadows.
