@@ -101,6 +101,12 @@
       }
     }
 
+    /* SVG Distortion Grid Fallback (Mobile) */
+    .distortion-grid-fallback {
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
     .font-serif-italic {
       font-family: "Newsreader", serif;
       font-style: italic;
@@ -2618,7 +2624,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
     <!-- Wrapped in data-reveal-group to participate in global fade-in -->
     <div data-reveal-group class="opacity-0 transition-opacity duration-1000 ease-out absolute inset-0 w-full h-full z-0">
         <div data-object="distortion-grid" 
-             class="block absolute top-0 bottom-0 left-0 w-full lg:w-1/2 z-0">
+             class="distortion-grid-fallback block absolute top-0 bottom-0 left-0 w-full lg:w-1/2 z-0">
              <!-- Gradient Overlay to vignette the grid edges -->
              <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#0a0b14_90%)] z-10 pointer-events-none"></div>
         </div>
@@ -2986,7 +2992,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
 
   <!-- Distortion Grid Background -->
   <div class="absolute inset-0 w-full h-full z-0 opacity-30 pointer-events-none">
-    <div data-object="distortion-grid" class="w-full h-full" 
+    <div data-object="distortion-grid" class="distortion-grid-fallback w-full h-full" 
          data-grid-spacing="14" 
          data-dot-radius="1.2"
          data-idle-color="255, 255, 255"
@@ -3347,7 +3353,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.857/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.858/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>

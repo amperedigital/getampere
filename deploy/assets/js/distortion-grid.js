@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v1.857 Loaded'); 
+console.log('[DistortionGrid] v1.858 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -115,6 +115,9 @@ class DistortionGrid {
         if (parentStyle.position === 'static') {
             this.parent.style.position = 'relative'; 
         }
+
+        // Remove fallback CSS (SVG) if JS successfully initialized
+        this.parent.classList.remove('distortion-grid-fallback');
 
         this.parent.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
