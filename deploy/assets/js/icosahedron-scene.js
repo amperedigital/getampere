@@ -145,19 +145,19 @@ export class IcosahedronScene {
         };
 
         // 2. PCB Logic - "Manhattan Sphere"
-        // Cleanup: Reduced to 48 chips for "Circuit-like" separation (less mesh-like)
-        let numChips = 48; 
+        // Cleanup: Increased count to 90 to close "huge gaps", traces kept sparse for separation
+        let numChips = 90; 
         
         for(let i=0; i<numChips; i++) {
             // A. Place Motherboard Component (Chip)
             let phi, theta;
 
-            // Force coverage at poles for first 12 chips
-            if (i < 6) {
+            // Force coverage at poles for first 16 chips
+            if (i < 8) {
                 // North Pole area - Tighter cluster
                 phi = Math.random() * 0.35; 
                 theta = Math.random() * Math.PI * 2;
-            } else if (i < 12) {
+            } else if (i < 16) {
                 // South Pole area - Tighter cluster
                 phi = Math.PI - (Math.random() * 0.35);
                 theta = Math.random() * Math.PI * 2;
@@ -324,12 +324,14 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Create Node: INVISIBLE Material initially
-                const nodeGeometry = new THREE.SphereGeometry(0.01, 8, 8); // Tiny
-                const nodeMaterial = new THREE.MeshBasicMaterial({ 
-                    opacity: 0,
-                    transparent: true,
-                    color: 0x000000 // Invisible base
+                // Create Node: Visible Base State (Dark Copper)
+                const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); // Slightly larger base size
+                const nodeMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x885533, // Visible Copper
+                    emissive: 0xff8800,
+                    emissiveIntensity: 0.2, // Faint glow
+                    roughness: 0.3,
+                    metalness: 0.8
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -488,9 +490,7 @@ export class IcosahedronScene {
                 });
             }
 
-            // 3. Apply States
-            this.nodes.forEach(node => {
-                let targetIntensity = 0;
+            // 3. Apply States.2; // Base intensity (not 0)
                 let targetScale = 1.0;
                 let targetGlowOpacity = 0;
 
@@ -502,6 +502,8 @@ export class IcosahedronScene {
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
 
                     const factor = 1 - (dist / maxDist);
+                    // Power curve for bright snap
+                    targetIntensity = 0.2 +- (dist / maxDist);
                     // Power curve for bright snap
                     targetIntensity = Math.pow(factor, 2) * 5.0; 
                     targetScale = 1 + (factor * 0.4);

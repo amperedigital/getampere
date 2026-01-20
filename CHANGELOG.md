@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.909 - 2026-01-20
+- **Visual Repair (Coverage & Nodes)**:
+  - **Circuitry Gaps**: Significantly increased `numChips` from 48 to **90** and increased pole-biased chips to 16. This provides much denser coverage across the sphere surface to eliminate "huge gaps".
+  - **Node Restoration**: Restored the "Light Up Nodes" feature. Nodes (vertices) are now **visible at all times** as small dark copper spheres and light up (scale & emissive brightness) when in focus, fixing the issue of them being "too small" or invisible initially.
+  - **Material Update**: Switched nodes to `MeshStandardMaterial` to support true emissive lighting effects.
+
 ## v1.908 - 2026-01-20
 - **Visual Repair (Cleanup & Logic)**:
   - **Fixed Electron Traces**: Restored `addNodes` (formerly the outer vertices) but initialized them as **invisible** (`opacity: 0`). This ensures the `sphereActiveFactor` logic in the animation loop works correctly (fixing missing electrons) without rendering the unwanted "permanent green/gold dots".
