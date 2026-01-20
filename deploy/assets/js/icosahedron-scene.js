@@ -85,14 +85,12 @@ export class IcosahedronScene {
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
         // Material: Darkened Copper for Drama
-        const material = new THREE.MeshPhysicalMaterial({
+        // Removed clearcoat to eliminate the "white ring" artifact
+        const material = new THREE.MeshStandardMaterial({
             color: 0x220e05,     // Deep Dark Copper/Chocolate
             emissive: 0x000000,
-            roughness: 0.2,      // Smoother for sharper reflections
-            metalness: 0.8,      
-            transmission: 0.0,
-            clearcoat: 1.0,      
-            clearcoatRoughness: 0.2, 
+            roughness: 0.6,      // Much rougher to diffuse any specular highlights
+            metalness: 0.6,      // Reduced metalness to avoid harsh rim reflections
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
@@ -102,7 +100,7 @@ export class IcosahedronScene {
         this.initCircuitryPaths();
 
         // Add an internal light to make the glass "active" - Lower intensity
-        const coreLight = new THREE.PointLight(0xff8855, 0.8, 8);
+        const coreLight = new THREE.PointLight(0xff8855, 0.4, 8); // Dimmer core light
         this.centralSphere.add(coreLight);
     }
 

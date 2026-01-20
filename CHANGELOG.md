@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.912 - 2026-01-20
+- **Visual Repair (Artifacts)**:
+  - **White Ring Removal**: Downgraded the Central Sphere material from `MeshPhysicalMaterial` to a rougher `MeshStandardMaterial`. Removed `clearcoat` entirely and increased roughness (`0.2` -> `0.6`) to eliminate the unwanted white specular rim highlight ("White Ring") while maintaining the dark copper aesthetic.
+
 ## v1.911 - 2026-01-20
 - **Visual Repair (Illumination)**:
   - **Trace Illumination**: Implemented vertex-color animation for pure circuitry traces. When an electron pulse travels along a path, the entire trace segment now flashes bright Orange/Gold (`intensity: 1.0`) and fades out rapidly (`intensity *= 0.92`), creating the requested "brief second of illumination".
