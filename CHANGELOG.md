@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.915 - 2026-01-20
+- **Visual Fix (Transparency)**:
+  - **Glass Occlusion Fix**: Replaced the experimental `MeshPhysicalMaterial` (Transmission) with a stable `MeshPhongMaterial` (Alpha Blending) for the outer glass shell.
+  - **Visibility Restoration**: Set `depthWrite: false` on the glass shell. This is a critical fix that forces the renderer to process the glass *after* the inner transparent circuitry, restoring the visibility of the glowing traces which were previously occluded by the depth buffer.
+
 ## v1.914 - 2026-01-20
 - **Visual Enhancement (Glass Shell)**:
   - **Icosahedron Faces**: Added a subtle `MeshPhysicalMaterial` shell to the Icosahedron faces. This creates a faint "Glass" effect between the wireframe edges.
