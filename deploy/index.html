@@ -39,6 +39,35 @@
     })();
   </script>
   <style>
+    /* Critical Mobile Menu Styles (Restored) */
+    .amp-hamburger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .amp-hamburger:focus-visible {
+      outline: 2px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+    .amp-hamburger-line {
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background-color: #0F172A;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .amp-hamburger-line:first-child { transform: translateY(-5px); }
+    .amp-hamburger-line:last-child { transform: translateY(5px); }
+    .amp-hamburger.is-open .amp-hamburger-line:first-child { transform: rotate(45deg); }
+    .amp-hamburger.is-open .amp-hamburger-line:last-child { transform: rotate(-45deg); }
+    .amp-hamburger.is-open .amp-hamburger-line { background-color: #0F172A; }
+  </style>
+  <style>
     @media (min-width: 1440px) {
       .amp-hero-card {
         flex: 0 0 calc((100% - 1.9rem) / 3) !important;

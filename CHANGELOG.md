@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.876 - 2026-01-19
+- **Hotfix**:
+  - **Mobile Menu**: Restored inline critical styles for `.amp-hamburger` to resolve visibility/interaction regression on mobile devices.
+    - *Action*: Re-injected specific CSS for hamburger toggle button back into `index.html`.
+    - *Note*: Tailwind build latency or specificity issues were likely causing the menu button to disappear.
+
 ## v1.875 - 2026-01-19
 - **Code Optimization**:
   - **Inline CSS Migration**: Moved ~300 lines of inline styles from `index.html` (after `<head>`) to `input.css`.
