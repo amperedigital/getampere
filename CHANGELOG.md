@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.905 - 2026-01-20
+- **Visual Refinement (Visibility)**:
+  - **Visible Circuit Grid**: Increased opacity of static traces (`0.3`) and brightened the color to a distinct dark bronze (`0x553311`) so the underlying "Motherboard Pattern" is clearly visible even when inert.
+  - **Rectangular Packets**: Significantly elongated the electron meshes (`0.18` length) to create distinct "Long Rectangular" data packets instead of short pulses, matching visual reference.
+
+
 ## v1.904 - 2026-01-20
 - **Visual Enhancement (Circuitry)**:
   - **Inert Traces**: Changed the static circuitry traces to be barely visible ("inert") dark lines (`opacity: 0.1`, `color: 0x2a1005`), so they only appear "active" when electrons travel over them.

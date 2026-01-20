@@ -116,9 +116,9 @@ export class IcosahedronScene {
         // 1. Materials
         // Trace is "Inert" (Dark) - only lights up when electron is on it
         const traceMaterial = new THREE.LineBasicMaterial({
-            color: 0x2a1005, // Very Dark Copper (almost black)
+            color: 0x553311, // Visible dark bronze
             transparent: true,
-            opacity: 0.1     // Barely visible
+            opacity: 0.3     // Visible path structure
         });
 
         // Chip Materials (Motherboard Elements)
@@ -222,7 +222,7 @@ export class IcosahedronScene {
 
         // 2. Initialize Electrons (The "Glow")
         // We use a BoxGeometry scaled to be a "Beam" to simulate the trace lighting up
-        const electronGeometry = new THREE.BoxGeometry(0.015, 0.015, 0.06); // Long "Pulse" beam
+        const electronGeometry = new THREE.BoxGeometry(0.025, 0.015, 0.18); // Defined Rectangle (Packet)
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); 
 
         const numElectrons = 150; // High density pulses (150 active)
