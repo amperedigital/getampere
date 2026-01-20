@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.893 - 2026-01-20
+- **Fix**:
+  - **Icosahedron Experiment**: Configured `importmap` in `Icosahedron.html` to correctly resolve `three` and `three/addons/` module paths.
+  - **Refactor**: Updated `icosahedron-scene.js` to use mapped imports for OrbitControls stability.
+
 ## v1.892 - 2026-01-20
 - **Feature**:
   - **3D Playground**: Added `Icosahedron.html` featuring a 3GS (Three.js) wireframe implementation of an Icosahedron (12 vertices, 20 faces).
