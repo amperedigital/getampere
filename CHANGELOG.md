@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.898 - 2026-01-20
+- **Visual Update**:
+  - **Cohesion**: Unified Icosahedron wireframe (`0xb87333`) and Nodes (`0xb87333`) to match the Central Orb's copper material.
+  - **Lighting**: Replaced complex 3-point setup with a **Single Diffused Spotlight** (`penumbra: 1.0`, `angle: 60deg`) to create soft, broad-spectrum illumination without sharp inputs.
+  - **Glow**: Updated interaction glow texture to Amber/Copper gradient.
+
 ## v1.897 - 2026-01-20
 - **Visual Update**:
   - **Icosahedron**: Adjusted Central Orb material to Real Copper (`0xb87333` base, `0x5a2010` glow).

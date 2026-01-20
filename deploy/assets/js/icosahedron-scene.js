@@ -34,24 +34,20 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Ambient Light (Overall brightness - boosted to compensate for reduced spots)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 2.5); 
+        // Ambient Light (Soft but warm base)
+        const ambientLight = new THREE.AmbientLight(0xffccaa, 1.0); 
         this.scene.add(ambientLight);
 
-        // Point Light attached to camera (Headlamp) - Reduced to prevent sharp reflection
-        const cameraLight = new THREE.PointLight(0xffffff, 0.5, 30);
-        this.camera.add(cameraLight);
-        this.scene.add(this.camera);
-
-        // Rim Light (Top Right) - Warm Highlight
-        const rimLight = new THREE.DirectionalLight(0xffccaa, 0.5);
-        rimLight.position.set(5, 5, -5);
-        this.scene.add(rimLight);
+        // Single Main Soft Spotlight (Top Left) - Wide & Diffused
+        const spotLight = new THREE.SpotLight(0xffebd6, 5); // Warm white
+        spotLight.position.set(-10, 10, 10);
+        spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
+        spotLight.penumbra = 1.0; // Max softness/diffusion
+        spotLight.decay = 2;
+        spotLight.distance = 50;
+        this.scene.add(spotLight);
         
-        // Fill Light (Bottom Left) - Warm Shadow Fill
-        const fillLight = new THREE.DirectionalLight(0xaa5533, 0.5);
-        fillLight.position.set(-5, -5, 5);
-        this.scene.add(fillLight);
+        // Removed specific Rim/Fill lights to focus on single diffused source
     }
 
     initGeometry() {
@@ -66,7 +62,7 @@ export class IcosahedronScene {
         // 1. Lattice (Wireframe)
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0xffffff,
+            color: 0xb87333, // Copper wire
             linewidth: 1,
             opacity: 1,
             transparent: false
@@ -122,7 +118,7 @@ export class IcosahedronScene {
         const glowTexture = this.createGlowTexture();
         const glowMaterial = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x0088ff, // LED Blue tint
+            color: 0xffaa55, // Copper/Amber tint
             transparent: true, 
             opacity: 0,
             blending: THREE.AdditiveBlending,
@@ -148,18 +144,16 @@ export class IcosahedronScene {
                 uniquePoints.push(vertex.clone());
 
                 // Create Node: 3D Sphere with Physical Material for shading/glow
-                // Base: Glassy, Reduced Size (50%)
+                // Base: Copper, Reduced Size (50%)
                 const nodeGeometry = new THREE.SphereGeometry(0.03, 32, 32); 
                 const nodeMaterial = new THREE.MeshPhysicalMaterial({ 
-                    color: 0xaaddff,    // Pale Blue base
-                    emissive: 0x0088ff, // LED Blue light
+                    color: 0xb87333,    // Copper base
+                    emissive: 0xff8855, // Amber heat
                     emissiveIntensity: 0,
-                    roughness: 0.1,     // Smooth
-                    metalness: 0.1,     // Dielectric
-                    transmission: 0.2,  // Slight transparency
-                    thickness: 0.1,
-                    clearcoat: 1.0,     // Glass shell
-                    ior: 1.5
+                    roughness: 0.3,     // Metallic rough
+                    metalness: 0.8,     // Metallic
+                    transmission: 0,    // Solid metal
+                    clearcoat: 1.0,     // Shiny coat
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -184,10 +178,10 @@ export class IcosahedronScene {
         canvas.height = 64;
         const context = canvas.getContext('2d');
         
-        // Radial Gradient: Blue center -> Transparent edge
+        // Radial Gradient: Amber/White center -> Transparent edge
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(200, 240, 255, 1)'); // Bright Cyan center
-        gradient.addColorStop(0.4, 'rgba(0, 100, 255, 0.4)'); // Deep Blue mid
+        gradient.addColorStop(0, 'rgba(255, 220, 180, 1)'); // Hot White/Amber center
+        gradient.addColorStop(0.4, 'rgba(255, 100, 50, 0.4)'); // Copper Orange mid
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade out
 
         context.fillStyle = gradient;
