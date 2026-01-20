@@ -73,16 +73,17 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // Switched to MeshPhongMaterial to fix visibility of inner circuitry
+        // Adjusted for consistent visibility across all faces
         const glassMaterial = new THREE.MeshPhongMaterial({
-            color: 0x221100,     // Warm tint
-            emissive: 0x000000,
-            specular: 0xffaa88,  // Warmish specular highlights
-            shininess: 90,       // Glossy
+            color: 0x331a00,     // Slightly lighter base
+            emissive: 0x050200,  // Very faint constant visibility
+            specular: 0xffaa88,
+            shininess: 30,       // Spread highlight to fill faces more
             transparent: true,
-            opacity: 0.1,        // Very transparent
+            opacity: 0.15,       // Increased from 0.1 for visibility
             side: THREE.DoubleSide,
-            depthWrite: false    // CRITICAL: Prevents occlusion of inner transparent objects
+            depthWrite: false,
+            flatShading: true    // Emphasize the facets
         });
         
         const glassShell = new THREE.Mesh(geometry, glassMaterial);

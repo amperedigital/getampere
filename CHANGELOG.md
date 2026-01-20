@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.916 - 2026-01-20
+- **Visual Enhancement (Glass Visibility)**:
+  - **Omni-Directional Visibility**: Adjusted the `glassShell` material to ensure it is visible on all faces, not just strictly where the light hits.
+  - **Tuning**: 
+    - Added faint `emissive` glow (`0x050200`) to prevent faces from disappearing in shadow.
+    - Increased `opacity` (`0.1` -> `0.15`).
+    - Reduced `shininess` (`90` -> `30`) to spread specular highlights across the entire face rather than a sharp point.
+    - Enabled `flatShading: true` to distinctively emphasize the faceted icosahedron geometry.
+
 ## v1.915 - 2026-01-20
 - **Visual Fix (Transparency)**:
   - **Glass Occlusion Fix**: Replaced the experimental `MeshPhysicalMaterial` (Transmission) with a stable `MeshPhongMaterial` (Alpha Blending) for the outer glass shell.
