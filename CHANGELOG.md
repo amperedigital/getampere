@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.878 - 2026-01-19
+- **Hotfix**:
+  - **Logo Layout Shift**: Applied strict width/height constraints to `#amp-logo-container` in `index.html`.
+    - *Action*: Replaced `class="contents"` with explicit responsive sizing (e.g., `md:w-[220px]`).
+    - *Benefit*: Reserves screen space for the logo immediately, preventing navigation elements from sliding/jumping once the JS injects the SVG.
+
 ## v1.877 - 2026-01-19
 - **Refactor**:
   - **Logo SVG Optimization**: Extracted extensive inline SVG markup from `index.html` into a new dedicated loader (`logo-loader.js`).
