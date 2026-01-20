@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.868 - 2026-01-19
+- **Hero Typography**:
+  - **Layout**: Split "Handle Every" into two lines ("Handle" / "Every").
+  - **SVG Dot Alignment**: Adjusted the period dot after "CALL".
+    - *Spacing*: Increased left margin (`ml-2`) for better visual separation.
+    - *Alignment*: Applied `align-baseline` and `mb-[0.06em]` to strictly align the dot with the text baseline.
+
 ## v1.867 - 2026-01-19
 - **Hero Typography**:
   - **SVG Dot**: Replaced the font-based full stop in "CALL." with an SVG circle.
