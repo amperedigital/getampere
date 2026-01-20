@@ -574,3 +574,8 @@
     - *Action*: Updated `components.css` to listen for the `.in-view` class (standard) instead of `.animate`.
     - *Action*: Deleted the duplicated observer logic from `global.js`.
     - *Result*: The site now uses the single, existing `window.globalObserver` to trigger all scroll animations.
+## v1.885 - 2026-01-19
+- **Cleanup**:
+  - **Removed Unused Dependencies**: Removed `GSAP`/`ScrollTrigger` from `index.html`.
+    - *Reason*: No longer used in the codebase; replaced by custom JS and CSS animations.
+    - *Benefit*: Reduced page load weight by ~60KB.
