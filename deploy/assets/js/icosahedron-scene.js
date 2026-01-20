@@ -221,13 +221,30 @@ export class IcosahedronScene {
         }
 
         // 2. Initialize Electrons (The "Glow")
-        // We use a BoxGeometry scaled to be a "Beam" to simulate the trace lighting up
-        const electronGeometry = new THREE.BoxGeometry(0.025, 0.015, 0.18); // Defined Rectangle (Packet)
+        // We use a small geometry + Sprite for "Glowing Dot" effect
+        const electronGeometry = new THREE.BoxGeometry(0.012, 0.012, 0.012); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); 
+        
+        // Create Glow Sprite for Electrons
+        const glowTexture = this.createGlowTexture();
+        const electronGlowMat = new THREE.SpriteMaterial({ 
+            map: glowTexture, 
+            color: 0xff6600, // Hot orange/gold
+            transparent: true, 
+            opacity: 1.0,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
 
         const numElectrons = 150; // High density pulses (150 active)
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
+            
+            // Attach Glow Sprite
+            const sprite = new THREE.Sprite(electronGlowMat);
+            sprite.scale.set(0.06, 0.06, 0.06); // Halo size
+            electron.add(sprite);
+
             electron.visible = false; 
             this.centralSphere.add(electron);
             

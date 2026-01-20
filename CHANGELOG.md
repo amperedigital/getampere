@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.906 - 2026-01-20
+- **Visual Repair (Electrons)**:
+  - **Glowing Dots**: Reverted electron geometry to small points (`0.012` cube) and attached a **Glow Sprite** (Halo) to each one. This creates the requested "Glowing Dot" effect traversing the lines, rather than "long rectangles".
+  - **Trace Visibility**: Kept the traces visible (`opacity: 0.3`) as requested, so the path pattern is evident.
+
 ## v1.905 - 2026-01-20
 - **Visual Refinement (Visibility)**:
   - **Visible Circuit Grid**: Increased opacity of static traces (`0.3`) and brightened the color to a distinct dark bronze (`0x553311`) so the underlying "Motherboard Pattern" is clearly visible even when inert.
