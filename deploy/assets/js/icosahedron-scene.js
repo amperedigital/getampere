@@ -72,8 +72,8 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes (Vertices) - REMOVED per user request ("Green dots")
-        // this.addNodes(geometry);
+        // 2. Nodes (Vertices)
+        this.addNodes(geometry);
 
         // 3. Central Sphere
         this.addCentralSphere();
@@ -145,8 +145,8 @@ export class IcosahedronScene {
         };
 
         // 2. PCB Logic - "Manhattan Sphere"
-        // Increased density + Polar Coverage
-        let numChips = 64; 
+        // Cleanup: Reduced to 48 chips for "Circuit-like" separation (less mesh-like)
+        let numChips = 48; 
         
         for(let i=0; i<numChips; i++) {
             // A. Place Motherboard Component (Chip)
@@ -154,12 +154,12 @@ export class IcosahedronScene {
 
             // Force coverage at poles for first 12 chips
             if (i < 6) {
-                // North Pole area
-                phi = Math.random() * 0.3; 
+                // North Pole area - Tighter cluster
+                phi = Math.random() * 0.35; 
                 theta = Math.random() * Math.PI * 2;
             } else if (i < 12) {
-                // South Pole area
-                phi = Math.PI - (Math.random() * 0.3);
+                // South Pole area - Tighter cluster
+                phi = Math.PI - (Math.random() * 0.35);
                 theta = Math.random() * Math.PI * 2;
             } else {
                 // Random Sphere distribution
@@ -169,15 +169,15 @@ export class IcosahedronScene {
             
             const pos = getPos(phi, theta, surfaceRadius);
             
-            // Randomly select chip shape
+            // Randomly select chip shape (More small ones for detail)
             const r = Math.random();
-            const geo = r > 0.7 ? chipGeoWide : (r > 0.4 ? chipGeoLong : chipGeoSmall);
+            const geo = r > 0.8 ? chipGeoWide : (r > 0.5 ? chipGeoLong : chipGeoSmall);
             
             const chip = new THREE.Mesh(geo, chipMaterial);
             chip.position.copy(pos);
             chip.lookAt(pos.clone().multiplyScalar(2)); 
             
-            // REMOVED Pad (Gold contacts) to avoid "Green Dot" artifacts
+            // Pad (Gold contacts) - REMOVED permanently to avoid "Green Dot" artifacts
             // const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
             // pad.position.z = 0.008; 
             // chip.add(pad);
@@ -185,20 +185,22 @@ export class IcosahedronScene {
             this.centralSphere.add(chip);
 
             // B. Route Parallel Traces from this Chip
-            const tracesPerChip = 5 + Math.floor(Math.random() * 5); 
+            // Reduced trace count for separation (Circuit vs Mesh)
+            const tracesPerChip = 3 + Math.floor(Math.random() * 4); // 3-6 traces (was 5-10)
             
             for (let t=0; t<tracesPerChip; t++) {
                 // Determine Start Point (near chip)
-                let currentPhi = phi + (Math.random() * 0.1 - 0.05);
-                let currentTheta = theta + (Math.random() * 0.1 - 0.05);
+                let currentPhi = phi + (Math.random() * 0.08 - 0.04);
+                let currentTheta = theta + (Math.random() * 0.08 - 0.04);
 
-                const numSegs = 5 + Math.floor(Math.random() * 8); 
+                // Longer, more distinct paths
+                const numSegs = 6 + Math.floor(Math.random() * 8); 
                 
                 // Trace Path Generation
                 for(let s=0; s<numSegs; s++) {
                     const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal
                     
-                    const len = 0.1 + Math.random() * 0.25; 
+                    const len = 0.15 + Math.random() * 0.2; // Slightly longer segments
                     
                     let startP = getPos(currentPhi, currentTheta, surfaceRadius);
                     let endP, midP;
@@ -322,17 +324,12 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Create Node: 3D Sphere with Physical Material for shading/glow
-                // Base: Copper, Reduced Size (50%)
-                const nodeGeometry = new THREE.SphereGeometry(0.03, 32, 32); 
-                const nodeMaterial = new THREE.MeshPhysicalMaterial({ 
-                    color: 0xb87333,    // Copper base
-                    emissive: 0xff8855, // Amber heat
-                    emissiveIntensity: 0,
-                    roughness: 0.3,     // Metallic rough
-                    metalness: 0.8,     // Metallic
-                    transmission: 0,    // Solid metal
-                    clearcoat: 1.0,     // Shiny coat
+                // Create Node: INVISIBLE Material initially
+                const nodeGeometry = new THREE.SphereGeometry(0.01, 8, 8); // Tiny
+                const nodeMaterial = new THREE.MeshBasicMaterial({ 
+                    opacity: 0,
+                    transparent: true,
+                    color: 0x000000 // Invisible base
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);

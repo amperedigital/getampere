@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.908 - 2026-01-20
+- **Visual Repair (Cleanup & Logic)**:
+  - **Fixed Electron Traces**: Restored `addNodes` (formerly the outer vertices) but initialized them as **invisible** (`opacity: 0`). This ensures the `sphereActiveFactor` logic in the animation loop works correctly (fixing missing electrons) without rendering the unwanted "permanent green/gold dots".
+  - **Circuit Separation**: Reduced `numChips` to `48` and `tracesPerChip` to `3-6` with longer path segments (`0.15` - `0.35`). This creates more distinct, separated "Circuit Lines" rather than a dense "Mesh" web, addressing the "mesh-like" feedback.
+  - **Pole Coverage**: Maintained the biased distribution for North/South pole coverage to prevent gaps.
+
 ## v1.907 - 2026-01-20
 - **Visual Repair (Cleanup & Coverage)**:
   - **Removed Artifacts**: Disabled the `addNodes` call (vertex spheres) and removed `pads` from chips. This eliminates the "four or five permanent green/gold dots" that were cluttering the view.
