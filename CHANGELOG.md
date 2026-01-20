@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.923 - 2026-01-20
+- **Regression Fix**: Reverted changes from v1.922 (White Glass + Fill Light).
+  - **Reason**: User feedback indicated the "white tinge" and extra lighting were not desired.
+  - **Restored State (v1.921)**:
+    - Lighting: Single spotlight (no fill).
+    - Material: Dark Copper (`0x331a00`) with `opacity: 0.25`, `ior: 1.3`, and `clearcoat: 1.0`.
+
 ## v1.922 - 2026-01-20
 - **Visual Repair (Lighting & Material)**:
   - **Goal**: Address "shaded" appearance and "pinpoint" reflections; achieve "lighter tinge of white".

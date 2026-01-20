@@ -38,23 +38,15 @@ export class IcosahedronScene {
         const ambientLight = new THREE.AmbientLight(0xffccaa, 0.2); 
         this.scene.add(ambientLight);
 
-        // Main Spotlight (Top Left) - Warm Highlight
-        const spotLight = new THREE.SpotLight(0xffebd6, 8); 
+        // Single Main Soft Spotlight (Top Left) - Wide & Diffused
+        const spotLight = new THREE.SpotLight(0xffebd6, 8); // Brighter spot for contrast
+
         spotLight.position.set(-10, 10, 10);
-        spotLight.angle = Math.PI / 3;
-        spotLight.penumbra = 1.0;
+        spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
+        spotLight.penumbra = 1.0; // Max softness/diffusion
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
-
-        // Secondary Light (Bottom Right) - Cool Fill to define glass edges and add extra reflection
-        const fillLight = new THREE.SpotLight(0xddeeff, 5); // Blue-ish white for contrast
-        fillLight.position.set(10, -5, 5);
-        fillLight.angle = Math.PI / 3;
-        fillLight.penumbra = 1.0;
-        fillLight.decay = 2;
-        fillLight.distance = 50;
-        this.scene.add(fillLight);
         
         // Removed specific Rim/Fill lights to focus on single diffused source
     }
@@ -81,23 +73,23 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // High Reflectiveness Update: White Glass + Clearcoat
+        // High Reflectiveness Update: Adding Clearcoat for "Panel" look
         const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff,      // Pure White for true glass look
-            emissive: 0x000000,
-            roughness: 0.1,       // Sharper reflections
+            color: 0x331a00,
+            emissive: 0x050200,
+            roughness: 0.2,       // Blurry base
             metalness: 0.1,
-            transmission: 0.2,    // Visible glass body
+            transmission: 0.25,   // Slight bump
             thickness: 0.1,
-            ior: 1.5,             // Standard Glass Index of Refraction
+            ior: 1.3,             // Increased IOR for more reflection intensity
             transparent: true,
-            opacity: 0.3,         // Low opacity but white color = glass haze
+            opacity: 0.25,        // Slight bump
             side: THREE.DoubleSide,
             depthWrite: false,
             flatShading: true,
             // Reflectivity Boosters
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.1
+            clearcoat: 1.0,       // Max clearcoat for "Panel" shine
+            clearcoatRoughness: 0.1 // Sharp surface reflections
         });
         
         const glassShell = new THREE.Mesh(geometry, glassMaterial);
