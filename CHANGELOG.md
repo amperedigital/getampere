@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.903 - 2026-01-20
+- **Visual Enhancement (Motherboard)**:
+  - **Manhattan Traces**: Implemented a "Grid-Aligned" trace generation algorithm. Circuit paths now run parallel (North-South / East-West relative to the sphere's poles), creating a structured PCB look instead of random squiggles.
+  - **Components (Chips)**: Added 18 random "Chip/CPU" meshes to the sphere surface using `BoxGeometry`, aligned to the surface normal, serving as hubs for the circuitry tracks.
+  - **Digital Packets**: Changed electron particles from spheres to small cubes (`BoxGeometry`) to represent "Data Packets" flowing through the motherboard.
+
 ## v1.902.1 - 2026-01-20
 - **Refinement**:
   - Implemented **Connected Circuit Chains** algorithm to ensure traces are visibly connected and uniform.

@@ -113,54 +113,132 @@ export class IcosahedronScene {
         const sphereRadius = 0.6;
         const surfaceRadius = sphereRadius + 0.005; 
         
-        // Material for the static "Etched" traces
+        // 1. Materials
         const traceMaterial = new THREE.LineBasicMaterial({
             color: 0xffaa44, // Bright Gold
             transparent: true,
-            opacity: 0.3
+            opacity: 0.35
         });
 
-        // Algorithm: Long Connected "Circuit Chains"
-        // Instead of random short dashes, we create long continuous paths
-        // that wind around the sphere, simulating connected circuitry.
-        const numChains = 24; 
-        const stepsPerChain = 20;
+        // Chip Materials (Motherboard Elements)
+        // Various sizes for random "components"
+        const chipGeoSmall = new THREE.BoxGeometry(0.04, 0.04, 0.015);
+        const chipGeoWide = new THREE.BoxGeometry(0.08, 0.03, 0.015);
+        const chipGeoLong = new THREE.BoxGeometry(0.02, 0.08, 0.015);
         
-        for(let c=0; c<numChains; c++) {
-            let currentPoint = this.randomSpherePoint(surfaceRadius);
-            
-            for(let s=0; s<stepsPerChain; s++) {
-                // Determine next point in the chain (Random Walk on Surface)
-                const wander = new THREE.Vector3(
-                    (Math.random() - 0.5), 
-                    (Math.random() - 0.5), 
-                    (Math.random() - 0.5)
-                ).normalize().multiplyScalar(0.2); // segment length ~0.2
-                
-                const nextPoint = currentPoint.clone().add(wander).normalize().multiplyScalar(surfaceRadius);
-                
-                // Create Curve (Surface Arc)
-                const midPoint = currentPoint.clone().add(nextPoint).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-                const curve = new THREE.QuadraticBezierCurve3(currentPoint, midPoint, nextPoint);
-                this.circuitCurves.push(curve);
+        const chipMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x050505, // Dark silicon/plastic
+            roughness: 0.4,
+            metalness: 0.8,
+            clearcoat: 1.0,
+            emissive: 0x000000
+        });
+        const padMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc44 }); // Gold contacts
 
-                // Draw Static Trace Segment
-                const points = curve.getPoints(10);
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const trace = new THREE.Line(geometry, traceMaterial);
-                this.centralSphere.add(trace);
+        // Helper: Spherical to Cartesian
+        const getPos = (phi, theta, r) => {
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.sin(phi) * Math.sin(theta);
+            const z = r * Math.cos(phi);
+            return new THREE.Vector3(x, y, z);
+        };
+
+        // 2. PCB Logic - "Manhattan Sphere"
+        // We generate "Nodes" (Chips) and route "Traces" (Parallel-ish lines) from them
+        const numChips = 18;
+        
+        for(let i=0; i<numChips; i++) {
+            // A. Place Motherboard Component (Chip)
+            const phi = Math.acos(2 * Math.random() - 1); // Random distribution
+            const theta = Math.random() * Math.PI * 2;
+            
+            const pos = getPos(phi, theta, surfaceRadius);
+            
+            // Randomly select chip shape
+            const r = Math.random();
+            const geo = r > 0.7 ? chipGeoWide : (r > 0.4 ? chipGeoLong : chipGeoSmall);
+            
+            const chip = new THREE.Mesh(geo, chipMaterial);
+            chip.position.copy(pos);
+            // Orient outward: lookAt normal, then rotate flat
+            // Vector from center to pos is the normal
+            chip.lookAt(pos.clone().multiplyScalar(2)); 
+            
+            // Add decorative "Gold Pad/Dot" on top to signify active element
+            const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.015, 0.015), padMaterial);
+            pad.position.z = 0.008; // Slightly above chip surface
+            chip.add(pad);
+
+            this.centralSphere.add(chip);
+
+            // B. Route Parallel Traces from this Chip
+            // Create a "Bus" of lines leaving the chip
+            const tracesPerChip = 3 + Math.floor(Math.random() * 4);
+            
+            for (let t=0; t<tracesPerChip; t++) {
+                // Determine Start Point (near chip)
+                let currentPhi = phi + (Math.random() * 0.1 - 0.05);
+                let currentTheta = theta + (Math.random() * 0.1 - 0.05);
+
+                const numSegs = 4 + Math.floor(Math.random() * 5); // Longer paths
                 
-                // Continue the chain
-                currentPoint = nextPoint;
+                // Trace Path Generation
+                for(let s=0; s<numSegs; s++) {
+                    const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal for Manhattan look
+                    
+                    // Length of segment (varied)
+                    const len = 0.2 + Math.random() * 0.3;
+                    
+                    let startP = getPos(currentPhi, currentTheta, surfaceRadius);
+                    let endP, midP;
+                    
+                    if (isVertical) {
+                        // Move Phi (North/South) - Longitude Line
+                        // Keep Theta constant
+                        const dir = Math.random() > 0.5 ? 1 : -1;
+                        let nextPhi = currentPhi + (len * dir);
+                        // Clamp poles to prevent singularity weirdness
+                        nextPhi = Math.max(0.1, Math.min(Math.PI - 0.1, nextPhi));
+
+                        endP = getPos(nextPhi, currentTheta, surfaceRadius);
+                        // Simple arc approximation
+                        midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
+
+                        // Update cursor
+                        currentPhi = nextPhi;
+                    } else {
+                        // Move Theta (East/West) - Latitude Line
+                        // Keep Phi constant
+                        const dir = Math.random() > 0.5 ? 1 : -1;
+                        let nextTheta = currentTheta + (len * dir);
+
+                        endP = getPos(currentPhi, nextTheta, surfaceRadius);
+                        // Simple arc approximation
+                        midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
+
+                        // Update cursor
+                        currentTheta = nextTheta;
+                    }
+                    
+                    // Build Geometry
+                    const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
+                    this.circuitCurves.push(curve);
+
+                    // Draw Static Trace
+                    const points = curve.getPoints(8);
+                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const trace = new THREE.Line(geometry, traceMaterial);
+                    this.centralSphere.add(trace);
+                }
             }
         }
 
         // 2. Initialize Electrons (The "Glow")
         // We recycle these
-        const electronGeometry = new THREE.SphereGeometry(0.012, 8, 8); // Visible dots
+        const electronGeometry = new THREE.BoxGeometry(0.015, 0.015, 0.015); // Digital "Packet" look (Cube)
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); // Pure Golden Fire
 
-        const numElectrons = 80; // Dense electron flow
+        const numElectrons = 100; // High density data flow
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             electron.visible = false; 
@@ -168,8 +246,8 @@ export class IcosahedronScene {
             
             this.electrons.push({
                 mesh: electron,
-                curveIndex: Math.floor(Math.random() * this.circuitCurves.length), // Assign initially
-                t: Math.random(), // Random start position on curve
+                curveIndex: Math.floor(Math.random() * this.circuitCurves.length), 
+                t: Math.random(), 
                 speed: 0,
                 active: false,
                 delay: Math.random() * 100 
