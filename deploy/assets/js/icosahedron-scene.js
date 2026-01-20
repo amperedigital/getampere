@@ -108,17 +108,19 @@ export class IcosahedronScene {
 
     initCircuitryPaths() {
         this.circuitCurves = [];
+        this.circuitMeshes = []; // Store meshes to animate color
         this.electrons = [];
         
         const sphereRadius = 0.6;
         const surfaceRadius = sphereRadius + 0.005; 
         
         // 1. Materials
-        // Trace is "Inert" (Dark) - only lights up when electron is on it
+        // Trace Material: VertexColors = true to allow individual animation
         const traceMaterial = new THREE.LineBasicMaterial({
-            color: 0x553311, // Visible dark bronze
+            vertexColors: true,  // Important: allow per-vertex color
             transparent: true,
-            opacity: 0.3     // Visible path structure
+            opacity: 0.3,
+            blending: THREE.AdditiveBlending // Glowier look
         });
 
         // Chip Materials (Motherboard Elements)
@@ -211,11 +213,24 @@ export class IcosahedronScene {
                     const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
                     this.circuitCurves.push(curve);
 
-                    // Draw Static Trace (Dark/Inert)
+                    // Draw Trace with Color Attribute
                     const points = curve.getPoints(8);
                     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                    
+                    // Initialize Vertex Colors (Dark Bronze default)
+                    const colors = [];
+                    const baseColor = new THREE.Color(0x553311);
+                    for(let k=0; k<=8; k++) { // 8 segments = 9 points
+                        colors.push(baseColor.r, baseColor.g, baseColor.b);
+                    }
+                    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
                     const trace = new THREE.Line(geometry, traceMaterial);
+                    // Store intensity data for animation
+                    trace.userData = { intensity: 0 }; 
+                    
                     this.centralSphere.add(trace);
+                    this.circuitMeshes.push(trace);
                 }
             }
         }
@@ -431,6 +446,39 @@ export class IcosahedronScene {
                 // How "active" is the system?
                 const activityLevel = sphereActiveFactor; // 0 to 1 based on interaction
 
+                // 1. Decay Trace Intensity (Fade out)
+                if (this.circuitMeshes) {
+                    const baseR = 0.33; // 0x55
+                    const baseG = 0.20; // 0x33
+                    const baseB = 0.07; // 0x11
+                    
+                    this.circuitMeshes.forEach(mesh => {
+                        if (mesh.userData.intensity > 0.01) {
+                            mesh.userData.intensity *= 0.92; // Fast decay
+                            
+                            // Apply Color
+                            const intensity = mesh.userData.intensity;
+                            const r = baseR + (1.0 - baseR) * intensity; // -> 1.0 (OrangeRed)
+                            const g = baseG + (0.66 - baseG) * intensity; // -> 0.66 (Orange)
+                            const b = baseB + (0.0 - baseB) * intensity; // -> 0.0
+                            
+                            const colors = mesh.geometry.attributes.color;
+                            for (let i = 0; i < colors.count; i++) {
+                                colors.setXYZ(i, r, g, b);
+                            }
+                            colors.needsUpdate = true;
+                        } else if (mesh.userData.intensity > 0) {
+                            // Reset to exact base if near zero
+                            mesh.userData.intensity = 0;
+                            const colors = mesh.geometry.attributes.color;
+                            for (let i = 0; i < colors.count; i++) {
+                                colors.setXYZ(i, baseR, baseG, baseB);
+                            }
+                            colors.needsUpdate = true;
+                        }
+                    });
+                }
+
                 this.electrons.forEach(e => {
                     // 1. Activate logic
                     if (!e.active) {
@@ -452,6 +500,11 @@ export class IcosahedronScene {
 
                     // 2. Update Position
                     if (e.active) {
+                        // Illuminate the trace we are on
+                        if (this.circuitMeshes && this.circuitMeshes[e.curveIndex]) {
+                            this.circuitMeshes[e.curveIndex].userData.intensity = 1.0;
+                        }
+
                         e.t += e.speed;
                         if (e.t >= 1.0) {
                             // Reset

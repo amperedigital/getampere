@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.911 - 2026-01-20
+- **Visual Repair (Illumination)**:
+  - **Trace Illumination**: Implemented vertex-color animation for pure circuitry traces. When an electron pulse travels along a path, the entire trace segment now flashes bright Orange/Gold (`intensity: 1.0`) and fades out rapidly (`intensity *= 0.92`), creating the requested "brief second of illumination".
+  - **Color Decay**: Added a decay loop to the animation frame to smoothly revert traces to their dark bronze base color after the pulse passes.
+
 ## v1.910 - 2026-01-20
 - **Visual Cleanup**:
   - **Remove Chips**: Removed the square "motherboard chip" geometries. The user felt they looked weird and randomly placed. The circuitry traces remain, radiating from these invisible origin points, creating a cleaner "pure energy" look.
