@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.892 - 2026-01-20
+- **Feature**:
+  - **3D Playground**: Added `Icosahedron.html` featuring a 3GS (Three.js) wireframe implementation of an Icosahedron (12 vertices, 20 faces).
+  - **Component**: created `assets/js/icosahedron-scene.js`.
+
 ## v1.891 - 2026-01-20
 - **Fix**:
   - **Logo SVG**: Corrected the "i" dot in the "Ampere.ai" wordmark to use the correct dark color (`cls-4`) instead of blue (`cls-3`). This restores the correct visual identity for the logo "eye".

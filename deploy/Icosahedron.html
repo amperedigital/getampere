@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Icosahedron | Ampere AI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.880/deploy/assets/css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #05060f; /* Match scene bg */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .instruction-overlay {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div class="instruction-overlay">Drag to Rotate • Scroll to Zoom</div>
+
+    <script type="module">
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('canvas-container');
+            new IcosahedronScene(container);
+        });
+    </script>
+</body>
+</html>
