@@ -834,152 +834,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
           <div class="h-px w-12 bg-gradient-to-r from-white/20 to-transparent"></div>
           <h1 class="uppercase text-xs text-[#A1A1AA] tracking-widest font-mono">AI Phone Answering, Done Right</h1>
         </div>
-        <div class="inline-block bg-transparent">
-          <style>
-            @property --gradient-angle {
-              syntax: "<angle>";
-              initial-value: 0deg;
-              inherits: false;
-            }
-
-            @property --gradient-angle-offset {
-              syntax: "<angle>";
-              initial-value: 0deg;
-              inherits: false;
-            }
-
-            @property --gradient-percent {
-              syntax: "<percentage>";
-              initial-value: 20%;
-              inherits: false;
-            }
-
-            @property --gradient-shine {
-              syntax: "<color>";
-              initial-value: #8484ff;
-              inherits: false;
-            }
-
-            .shiny-cta {
-              --gradient-angle: 0deg;
-              --gradient-angle-offset: 0deg;
-              --gradient-percent: 20%;
-              --gradient-shine: #8484ff;
-              --shadow-size: 2px;
-              position: relative;
-              overflow: hidden;
-              border-radius: 9999px;
-              padding: 1.25rem 2.5rem;
-              font-size: 1.125rem;
-              line-height: 1.2;
-              font-weight: 500;
-              color: #ffffff;
-              background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
-              border: 2px solid transparent;
-              box-shadow: inset 0 0 0 1px #1a1818;
-              outline: none;
-              transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
-              cursor: pointer;
-              isolation: isolate;
-              outline-offset: 4px;
-              font-family: 'Geist', 'Helvetica Neue', sans-serif;
-              z-index: 0;
-              animation: border-spin 2.5s linear infinite;
-            }
-
-            @keyframes border-spin {
-              to {
-                --gradient-angle: 360deg;
-              }
-            }
-
-            .shiny-cta:active {
-              transform: translateY(1px);
-            }
-
-            .shiny-cta::before {
-              content: '';
-              pointer-events: none;
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 0;
-              --size: calc(100% - 6px);
-              --position: 2px;
-              --space: 4px;
-              width: var(--size);
-              height: var(--size);
-              background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
-              background-size: var(--space) var(--space);
-              background-repeat: space;
-              mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
-              border-radius: inherit;
-              opacity: 0.4;
-              pointer-events: none;
-            }
-
-            .shiny-cta::after {
-              content: '';
-              pointer-events: none;
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 1;
-              width: 100%;
-              aspect-ratio: 1;
-              background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
-              mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-              opacity: 0.6;
-              animation: shimmer 4s linear infinite;
-              animation-play-state: running;
-            }
-
-            .shiny-cta span {
-              position: relative;
-              z-index: 2;
-              display: inline-block;
-            }
-
-            .shiny-cta span::before {
-              content: '';
-              pointer-events: none;
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              z-index: -1;
-              --size: calc(100% + 1rem);
-              width: var(--size);
-              height: var(--size);
-              box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
-              opacity: 0;
-              border-radius: inherit;
-              transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
-              animation: breathe 4.5s linear infinite;
-            }
-
-            @keyframes shimmer {
-              to {
-                transform: translate(-50%, -50%) rotate(360deg);
-              }
-            }
-
-            @keyframes breathe {
-
-              0%,
-              100% {
-                transform: translate(-50%, -50%) scale(1);
-              }
-
-              50% {
-                transform: translate(-50%, -50%) scale(1.20);
-              }
-            }
-          </style>
-
-        </div>
 
         <span class="leading-[1.05] animate-on-scroll [animation:animationIn_0.8s_ease-out_0.1s_both] animate ml:1 sm:ml-0 lg:text-7xl lg:ml-0 lg:mb-1 text-5xl font-medium text-[#E4E4E7] tracking-tight max-w-xs mr-9 mb-1 ml-0">Built to<br>Handle<br>Every</span>
         <span class="leading-none select-none text-white tracking-tight">
@@ -3242,7 +3096,7 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
       }
     </script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.870/deploy/assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.871/deploy/assets/js/global.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
@@ -3855,149 +3709,6 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
               customer data, bookings, and workflows stay synchronized — without changing how your business already
               runs.</p>
             <div class="inline-block bg-transparent">
-              <style>
-                @property --gradient-angle {
-                  syntax: "<angle>";
-                  initial-value: 0deg;
-                  inherits: false;
-                }
-
-                @property --gradient-angle-offset {
-                  syntax: "<angle>";
-                  initial-value: 0deg;
-                  inherits: false;
-                }
-
-                @property --gradient-percent {
-                  syntax: "<percentage>";
-                  initial-value: 20%;
-                  inherits: false;
-                }
-
-                @property --gradient-shine {
-                  syntax: "<color>";
-                  initial-value: #8484ff;
-                  inherits: false;
-                }
-
-                .shiny-cta {
-                  --gradient-angle: 0deg;
-                  --gradient-angle-offset: 0deg;
-                  --gradient-percent: 20%;
-                  --gradient-shine: #8484ff;
-                  --shadow-size: 2px;
-                  position: relative;
-                  overflow: hidden;
-                  border-radius: 9999px;
-                  padding: 1.25rem 2.5rem;
-                  font-size: 1.125rem;
-                  line-height: 1.2;
-                  font-weight: 500;
-                  color: #ffffff;
-                  background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
-                  border: 2px solid transparent;
-                  box-shadow: inset 0 0 0 1px #1a1818;
-                  outline: none;
-                  transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
-                  cursor: pointer;
-                  isolation: isolate;
-                  outline-offset: 4px;
-                  font-family: 'Geist', 'Helvetica Neue', sans-serif;
-                  z-index: 0;
-                  animation: border-spin 2.5s linear infinite;
-                }
-
-                @keyframes border-spin {
-                  to {
-                    --gradient-angle: 360deg;
-                  }
-                }
-
-                .shiny-cta:active {
-                  transform: translateY(1px);
-                }
-
-                .shiny-cta::before {
-                  content: '';
-                  pointer-events: none;
-                  position: absolute;
-                  left: 50%;
-                  top: 50%;
-                  transform: translate(-50%, -50%);
-                  z-index: 0;
-                  --size: calc(100% - 6px);
-                  --position: 2px;
-                  --space: 4px;
-                  width: var(--size);
-                  height: var(--size);
-                  background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
-                  background-size: var(--space) var(--space);
-                  background-repeat: space;
-                  mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
-                  border-radius: inherit;
-                  opacity: 0.4;
-                  pointer-events: none;
-                }
-
-                .shiny-cta::after {
-                  content: '';
-                  pointer-events: none;
-                  position: absolute;
-                  left: 50%;
-                  top: 50%;
-                  transform: translate(-50%, -50%);
-                  z-index: 1;
-                  width: 100%;
-                  aspect-ratio: 1;
-                  background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
-                  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-                  opacity: 0.6;
-                  animation: shimmer 4s linear infinite;
-                  animation-play-state: running;
-                }
-
-                .shiny-cta span {
-                  position: relative;
-                  z-index: 2;
-                  display: inline-block;
-                }
-
-                .shiny-cta span::before {
-                  content: '';
-                  pointer-events: none;
-                  position: absolute;
-                  left: 50%;
-                  top: 50%;
-                  transform: translate(-50%, -50%);
-                  z-index: -1;
-                  --size: calc(100% + 1rem);
-                  width: var(--size);
-                  height: var(--size);
-                  box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
-                  opacity: 0;
-                  border-radius: inherit;
-                  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
-                  animation: breathe 4.5s linear infinite;
-                }
-
-                @keyframes shimmer {
-                  to {
-                    transform: translate(-50%, -50%) rotate(360deg);
-                  }
-                }
-
-                @keyframes breathe {
-
-                  0%,
-                  100% {
-                    transform: translate(-50%, -50%) scale(1);
-                  }
-
-                  50% {
-                    transform: translate(-50%, -50%) scale(1.20);
-                  }
-                }
-              </style>
               <button class="shiny-cta focus:outline-none my-4">
     <span class="text-sm">Learn about Integration</span>
   </button>
@@ -4102,13 +3813,13 @@ nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.870/deploy/assets/js/global.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.871/deploy/assets/js/global.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.660/deploy/assets/js/hero-slider.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.260/deploy/assets/js/modal-helpers.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.684/deploy/assets/js/scroll-flipper.js" defer></script>
   <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.422/deploy/assets/js/carousel.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.870/deploy/assets/js/distortion-grid.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.871/deploy/assets/js/distortion-grid.js" defer></script>
 
    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"95195c6e164642ba87d6a379e2f23637","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>

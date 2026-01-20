@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.871 - 2026-01-19
+- **Code Optimization**:
+  - **Component Refactor**: Moved logic for "Shiny CTA" buttons from inline HTML `<style>` blocks to `input.css`.
+    - *Action*: Extracted `.shiny-cta`, hover states, and complex `@property` definitions into the main stylesheet.
+    - *Benefit*: Significantly reduced HTML file size, removed duplicate code blocks, and centralized button styling.
+
 ## v1.870 - 2026-01-19
 - **Code Optimization**:
   - **Inline Styles Refactor**: Moved inline animation styles and keyframes for the hero "CALL" animation into `styles.css`.
