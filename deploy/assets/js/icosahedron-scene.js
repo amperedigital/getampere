@@ -490,7 +490,9 @@ export class IcosahedronScene {
                 });
             }
 
-            // 3. Apply States.2; // Base intensity (not 0)
+            // 3. Apply States
+            this.nodes.forEach(node => {
+                let targetIntensity = 0.2; // Base intensity (not 0)
                 let targetScale = 1.0;
                 let targetGlowOpacity = 0;
 
@@ -503,9 +505,7 @@ export class IcosahedronScene {
 
                     const factor = 1 - (dist / maxDist);
                     // Power curve for bright snap
-                    targetIntensity = 0.2 +- (dist / maxDist);
-                    // Power curve for bright snap
-                    targetIntensity = Math.pow(factor, 2) * 5.0; 
+                    targetIntensity = 0.2 + Math.pow(factor, 2) * 5.0; 
                     targetScale = 1 + (factor * 0.4);
                     targetGlowOpacity = Math.pow(factor, 3);
                 }
