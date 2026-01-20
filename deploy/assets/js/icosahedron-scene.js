@@ -83,28 +83,123 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Real Copper (Browny-Red)
+        // Procedural Circuitry Texture
+        const circuitTexture = this.createCircuitryTexture();
+
+        // Material: Real Copper (Browny-Red) with Glowing Circuitry
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0xb87333,     // Real Copper (brown/red base)
-            emissive: 0x5a2010,  // Dark reddish-brown internal glow
-            emissiveIntensity: 1.0, // Significantly reduced (was 3.0) to reveal surface color
-            roughness: 0.35,     // Frosted metal
-            metalness: 0.6,      // Higher metalness for copper definition
-            transmission: 0.4,   // Denser material
+            color: 0xb87333,     // Copper base
+            
+            // Texture Maps
+            emissiveMap: circuitTexture,
+            bumpMap: circuitTexture,
+            bumpScale: 0.015,     // Slight relief for wires
+            
+            // Glow Settings
+            emissive: 0xffffff,   // White multiplier (lets texture colors show true)
+            emissiveIntensity: 2.0, // High intensity for the wires themselves
+
+            // Physical Properties
+            roughness: 0.35,
+            metalness: 0.6,
+            transmission: 0.4,
             thickness: 1.5,
             clearcoat: 1.0,      
             clearcoatRoughness: 0.3, 
             ior: 1.5,
-            attenuationColor: new THREE.Color(0x8a4020), // Deep copper absorption
+            attenuationColor: new THREE.Color(0x8a4020),
             attenuationDistance: 1.5
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
+        
+        // Improve texture mapping on sphere (prevent pole pinching artifacts look too bad)
+        // Note: UV mapping is standard for SphereGeometry, good enough for abstract orb.
+        
         this.group.add(this.centralSphere);
 
         // Add an internal light to make the glass "active" - Lower intensity
         const coreLight = new THREE.PointLight(0xff8855, 1.5, 8);
         this.centralSphere.add(coreLight);
+    }
+
+    createCircuitryTexture() {
+        const size = 1024;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // 1. Background: Black (No emissive glow by default)
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, size, size);
+
+        // 2. Settings for Circuit Traces
+        const numPaths = 80;
+        
+        // Glowy Colors: Bright Amber, Gold, Hot White
+        const colors = ['#ff9933', '#ffcc66', '#ffeedd', '#ff5522'];
+
+        ctx.lineJoin = 'round';
+        ctx.shadowBlur = 10; // Glow effect burned into texture
+        
+        // 3. Draw Paths
+        for (let i = 0; i < numPaths; i++) {
+            let x = Math.random() * size;
+            let y = Math.random() * size;
+            let steps = 5 + Math.random() * 25;
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.lineWidth = 2 + Math.random() * 4;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+
+            // Draw "Chip" at start
+            if (Math.random() > 0.7) {
+                const chipSize = 10 + Math.random() * 20;
+                ctx.fillRect(x - chipSize/2, y - chipSize/2, chipSize, chipSize);
+            }
+
+            for (let j = 0; j < steps; j++) {
+                // Move in Manhatten Grid (90 degree angles)
+                const dist = 50 + Math.random() * 100;
+                if (Math.random() > 0.5) {
+                    x += (Math.random() > 0.5 ? 1 : -1) * dist;
+                } else {
+                    y += (Math.random() > 0.5 ? 1 : -1) * dist;
+                }
+                
+                // Keep inside canvas logic
+                if(x < 0) x = 0; if(x > size) x = size;
+                if(y < 0) y = 0; if(y > size) y = size;
+
+                ctx.lineTo(x, y);
+                
+                // "Transistor" Node along the path
+                if (Math.random() > 0.9) {
+                   ctx.fillRect(x - 6, y - 6, 12, 12);
+                }
+            }
+            ctx.stroke();
+            
+            // Terminal Circle
+            ctx.beginPath();
+            ctx.arc(x, y, 4 + Math.random() * 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        
+        // Repeat texture so it tiles nicely around the sphere
+        texture.repeat.set(2, 1); 
+        
+        return texture;
     }
 
     addNodes(geometry) {

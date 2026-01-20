@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.899 - 2026-01-20
+- **Visual Update**:
+  - **Procedural Texture**: Added `createCircuitryTexture()` to generate dynamic, glowing circuitry patterns.
+  - **Material**: Applied Circuitry Texture to Central Orb as `emissiveMap` (for glow) and `bumpMap` (for relief).
+  - **Colors**: Circuit patterns use warm amber/gold tones (`#ff9933` to `#ff5522`) set against the copper base.
+
 ## v1.898 - 2026-01-20
 - **Visual Update**:
   - **Cohesion**: Unified Icosahedron wireframe (`0xb87333`) and Nodes (`0xb87333`) to match the Central Orb's copper material.
