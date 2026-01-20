@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.921 - 2026-01-20
+- **Visual Repair (Glass Reflectivity)**:
+  - **Goal**: Create a "Glass Panel" look that is visible but not overwhelming.
+  - **Enhancements**:
+    - **Clearcoat**: Enabled `clearcoat: 1.0` and `clearcoatRoughness: 0.1` to add a sharp, highly reflective layer on top of the frosted base. This mimics the dual nature of polished glass (shiny surface, blurry depth).
+    - **IOR**: Increased to `1.3` (from `1.1`) to naturally increase the Fresnel reflection intensity at glancing angles.
+    - **Presence**: Slightly bumped `opacity` and `transmission` to `0.25` to support the reflective layer better.
+
 ## v1.920 - 2026-01-20
 - **Visual Repair (True Increment)**:
   - **Adjustment**: Replaced the "extreme" glass settings of v1.919 with a much more subtle configuration that mimics the visibility of v1.918 (Phong, 15% opacity) while introducing the requested "little bit of blur".

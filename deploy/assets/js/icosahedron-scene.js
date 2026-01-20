@@ -73,20 +73,23 @@ export class IcosahedronScene {
         this.group.add(this.icosahedron);
 
         // 1b. Glass Shell (Subtle Faces)
-        // Incremental Blur: Physical Material, but low opacity/transmission to stay close to Phong look
+        // High Reflectiveness Update: Adding Clearcoat for "Panel" look
         const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x331a00,     // Dark tint (Matches Phong)
-            emissive: 0x050200,  // Keep the faint glow from v1.918
-            roughness: 0.2,      // Light Blur (Frosted)
+            color: 0x331a00,
+            emissive: 0x050200,
+            roughness: 0.2,       // Blurry base
             metalness: 0.1,
-            transmission: 0.2,   // Low transmission (Just a hint of glass physics)
-            thickness: 0.1,      // Minimal refraction
-            ior: 1.1,            // Minimal distortion
-            transparent: true,   // Essential
-            opacity: 0.2,        // Low opacity (Close to v1.918's 0.15, not 1.0)
+            transmission: 0.25,   // Slight bump
+            thickness: 0.1,
+            ior: 1.3,             // Increased IOR for more reflection intensity
+            transparent: true,
+            opacity: 0.25,        // Slight bump
             side: THREE.DoubleSide,
-            depthWrite: false,   // Prevent depth occlusion
-            flatShading: true
+            depthWrite: false,
+            flatShading: true,
+            // Reflectivity Boosters
+            clearcoat: 1.0,       // Max clearcoat for "Panel" shine
+            clearcoatRoughness: 0.1 // Sharp surface reflections
         });
         
         const glassShell = new THREE.Mesh(geometry, glassMaterial);
