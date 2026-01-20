@@ -34,22 +34,22 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Ambient Light (Overall brightness)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+        // Ambient Light (Overall brightness - boosted to compensate for reduced spots)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2.5); 
         this.scene.add(ambientLight);
 
-        // Point Light attached to camera (Headlamp) - High intensity for glass reflections
-        const cameraLight = new THREE.PointLight(0xffffff, 4, 30);
+        // Point Light attached to camera (Headlamp) - Reduced to prevent sharp reflection
+        const cameraLight = new THREE.PointLight(0xffffff, 0.5, 30);
         this.camera.add(cameraLight);
         this.scene.add(this.camera);
 
-        // Rim Light (Top Right)
-        const rimLight = new THREE.DirectionalLight(0x60a5fa, 3);
+        // Rim Light (Top Right) - Softened
+        const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.5);
         rimLight.position.set(5, 5, -5);
         this.scene.add(rimLight);
         
-        // Fill Light (Bottom Left) - To catch bottom curvature of glass
-        const fillLight = new THREE.DirectionalLight(0x2233aa, 2);
+        // Fill Light (Bottom Left) - Softened
+        const fillLight = new THREE.DirectionalLight(0x2233aa, 0.5);
         fillLight.position.set(-5, -5, 5);
         this.scene.add(fillLight);
     }
@@ -87,17 +87,18 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Blue Glass-like appearance
+        // Material: Blue Frosted Glass / Glowing Orb (No sharp reflections)
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0x3b82f6,     // Brighter Blue (Tailwind Blue-500 approx)
-            emissive: 0x001d4a,  // Deep blue inner glow
-            roughness: 0.05,     // Ultra polished
-            metalness: 0.1,      // Glass/Dielectric
-            transmission: 0.9,   // High transparency for glass effect
-            thickness: 1.5,      // Volume definition
-            clearcoat: 1.0,      // High gloss
-            clearcoatRoughness: 0.0,
-            ior: 1.5,            // Glass Index of Refraction
+            color: 0x3b82f6,     // Brighter Blue
+            emissive: 0x0044aa,  // Stronger blue inner glow
+            emissiveIntensity: 3.0, // Significant brightness
+            roughness: 0.4,      // Frosted / Matte finish to diffuse light
+            metalness: 0.1,      
+            transmission: 0.6,   // Less transparent, more milky
+            thickness: 1.5,
+            clearcoat: 1.0,      // Keep coat for depth...
+            clearcoatRoughness: 0.4, // ...but make it rough/satin
+            ior: 1.5,
             attenuationColor: new THREE.Color(0x3b82f6),
             attenuationDistance: 2.0
         });
@@ -106,7 +107,7 @@ export class IcosahedronScene {
         this.group.add(this.centralSphere);
 
         // Add an internal light to make the glass "active"
-        const coreLight = new THREE.PointLight(0x60a5fa, 2, 10);
+        const coreLight = new THREE.PointLight(0x60a5fa, 3, 10);
         this.centralSphere.add(coreLight);
     }
 

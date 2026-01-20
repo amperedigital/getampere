@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.895 - 2026-01-20
+- **Visual Update**:
+  - **Icosahedron**: Removed sharp specular reflections ("three points of light") from the central sphere.
+  - **Material**: Switched to "Frosted Glass/Satin" look (`roughness: 0.4`, `clearcoatRoughness: 0.4`) and boosted `emissiveIntensity` to 3.0 for a pure glow.
+  - **Lighting**: Heavily reduced directional/point light intensity to preventing glare, increased ambient light to maintain visibility.
+
 ## v1.894 - 2026-01-20
 - **Visual Update**:
   - **Icosahedron**: Reduced Central Sphere radius by 25% (0.8 -> 0.6).
