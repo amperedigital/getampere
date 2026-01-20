@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
 export class Ampere3DKey {
     constructor(container) {
@@ -6,7 +6,7 @@ export class Ampere3DKey {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         
-        console.log("Ampere3DKey v1.738 Loaded (Unified Ink - #1e2a40)");
+        console.log("Ampere3DKey v1.886 Loaded (Unified Ink - #1e2a40)");
 
         // State
         this.progress = 0;

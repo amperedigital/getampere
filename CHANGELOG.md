@@ -579,3 +579,8 @@
   - **Removed Unused Dependencies**: Removed `GSAP`/`ScrollTrigger` from `index.html`.
     - *Reason*: No longer used in the codebase; replaced by custom JS and CSS animations.
     - *Benefit*: Reduced page load weight by ~60KB.
+## v1.886 - 2026-01-19
+- **Refactor**:
+  - **Three.js Import Cleanup**: Removed the `importmap` from `index.html`.
+    - *Action*: Updated `ampere-3d-key.js` to use a direct CDN URL for Three.js.
+    - *Benefit*: Cleared `<head>` of config scripts; Three.js remains fully lazy-loaded via dynamic import in `global.js`.
