@@ -34,12 +34,12 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Ambient Light (Soft but warm base) - Low intesity for drama
-        const ambientLight = new THREE.AmbientLight(0xffccaa, 0.2); 
+        // Ambient Light (Cool Blue)
+        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
         this.scene.add(ambientLight);
 
-        // Single Main Soft Spotlight (Top Left) - Wide & Diffused
-        const spotLight = new THREE.SpotLight(0xffebd6, 8); // Brighter spot for contrast
+        // Single Main Soft Spotlight (Cool White)
+        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); // Brighter spot for contrast
 
         spotLight.position.set(-10, 10, 10);
         spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
@@ -60,10 +60,10 @@ export class IcosahedronScene {
         const detail = 0; // 0 = standard icosahedron
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
 
-        // 1. Lattice (Wireframe)
+        // 1. Lattice (Wireframe) - Silver Blue
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0xb87333, // Copper wire
+            color: 0x88b0d1, // Silver Blue
             linewidth: 1,
             opacity: 1,
             transparent: false
@@ -98,14 +98,14 @@ export class IcosahedronScene {
         meshTexture.wrapS = THREE.RepeatWrapping;
         meshTexture.wrapT = THREE.RepeatWrapping;
         // High repeat to create density (make it look like a screen, not big bars)
-        meshTexture.repeat.set(10, 10); 
+        meshTexture.repeat.set(30, 30); 
         meshTexture.anisotropy = 16;
         
         const meshMaterial = new THREE.MeshBasicMaterial({
             map: meshTexture,
-            color: 0x88ccff,      // Light blue tint
+            color: 0x88b0d1,      // Silver Blue to match wireframe
             transparent: true,
-            opacity: 0.15,        // Subtle visibility
+            opacity: 0.5,         // Increased from 0.15 for better visibility
             side: THREE.DoubleSide,
             depthWrite: false,    // No occlusion
             blending: THREE.AdditiveBlending
@@ -113,7 +113,7 @@ export class IcosahedronScene {
 
         // Use same geometry (detail: 0) so it's perfectly flat against the faces
         const meshShell = new THREE.Mesh(geometry, meshMaterial);
-        meshShell.scale.setScalar(0.99); // Just barely inside the copper wires
+        meshShell.scale.setScalar(0.99); // Just barely inside the wires
         this.group.add(meshShell);
 
         // 2. Nodes (Vertices)
@@ -128,10 +128,10 @@ export class IcosahedronScene {
         // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Darkened Copper for Drama
+        // Material: Dark Blue Metal
         // Switched to MeshLambertMaterial to completely remove specular highlights (White Ring)
         const material = new THREE.MeshLambertMaterial({
-            color: 0x1a0b04,     // Slightly darker copper to compensate for Lambert brightness
+            color: 0x051a24,     // Dark Blue Metal
             emissive: 0x000000,
         });
 
@@ -141,8 +141,8 @@ export class IcosahedronScene {
         // Add Procedural "Path" Circuitry
         this.initCircuitryPaths();
 
-        // Add an internal light to make the glass "active" - Lower intensity
-        const coreLight = new THREE.PointLight(0xff8855, 0.4, 8); // Dimmer core light
+        // Add an internal light to make the glass "active" - Blue
+        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8); // Electric Blue core light
         this.centralSphere.add(coreLight);
     }
 
@@ -176,7 +176,7 @@ export class IcosahedronScene {
             clearcoat: 1.0,
             emissive: 0x000000
         });
-        const padMaterial = new THREE.MeshBasicMaterial({ color: 0xffcc44 }); // Gold contacts
+        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x00aaff }); // Cyan/Blue contacts
 
         // Helper: Spherical to Cartesian
         const getPos = (phi, theta, r) => {
@@ -257,9 +257,9 @@ export class IcosahedronScene {
                     const points = curve.getPoints(8);
                     const geometry = new THREE.BufferGeometry().setFromPoints(points);
                     
-                    // Initialize Vertex Colors (Dark Bronze default)
+                    // Initialize Vertex Colors (Dark Blue Trace default)
                     const colors = [];
-                    const baseColor = new THREE.Color(0x553311);
+                    const baseColor = new THREE.Color(0x0a2a47); // Dark Blue
                     for(let k=0; k<=8; k++) { // 8 segments = 9 points
                         colors.push(baseColor.r, baseColor.g, baseColor.b);
                     }
@@ -278,13 +278,13 @@ export class IcosahedronScene {
         // 2. Initialize Electrons (The "Glow")
         // We use a small geometry + Sprite for "Glowing Dot" effect
         const electronGeometry = new THREE.BoxGeometry(0.012, 0.012, 0.012); 
-        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 }); 
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // Cyan
         
         // Create Glow Sprite for Electrons
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0xff6600, // Hot orange/gold
+            color: 0x0088ff, // Electric Blue
             transparent: true, 
             opacity: 1.0,
             blending: THREE.AdditiveBlending,
@@ -338,7 +338,7 @@ export class IcosahedronScene {
         const glowTexture = this.createGlowTexture();
         const glowMaterial = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0xffaa55, // Copper/Amber tint
+            color: 0x00ccff, // Cyan tint
             transparent: true, 
             opacity: 0,
             blending: THREE.AdditiveBlending,
@@ -363,11 +363,11 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Create Node: Visible Base State (Dark Copper)
+                // Create Node: Visible Base State (Blue Steel)
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); // Slightly larger base size
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0x885533, // Visible Copper
-                    emissive: 0xff8800,
+                    color: 0x446688, // Blue Steel
+                    emissive: 0x0044aa, // Deep Blue Glow
                     emissiveIntensity: 0.2, // Faint glow
                     roughness: 0.3,
                     metalness: 0.8
@@ -395,10 +395,10 @@ export class IcosahedronScene {
         canvas.height = 64;
         const context = canvas.getContext('2d');
         
-        // Radial Gradient: Amber/White center -> Transparent edge
+        // Radial Gradient: Blue/White center -> Transparent edge
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(255, 220, 180, 1)'); // Hot White/Amber center
-        gradient.addColorStop(0.4, 'rgba(255, 100, 50, 0.4)'); // Copper Orange mid
+        gradient.addColorStop(0, 'rgba(200, 240, 255, 1)'); // Blue-White center
+        gradient.addColorStop(0.4, 'rgba(0, 120, 255, 0.4)'); // Electric Blue mid
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade out
 
         context.fillStyle = gradient;
@@ -488,9 +488,9 @@ export class IcosahedronScene {
 
                 // 1. Decay Trace Intensity (Fade out)
                 if (this.circuitMeshes) {
-                    const baseR = 0.33; // 0x55
-                    const baseG = 0.20; // 0x33
-                    const baseB = 0.07; // 0x11
+                    const baseR = 0.04; // Dark Blue R
+                    const baseG = 0.16; // Dark Blue G
+                    const baseB = 0.28; // Dark Blue B
                     
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
@@ -498,9 +498,9 @@ export class IcosahedronScene {
                             
                             // Apply Color
                             const intensity = mesh.userData.intensity;
-                            const r = baseR + (1.0 - baseR) * intensity; // -> 1.0 (OrangeRed)
-                            const g = baseG + (0.66 - baseG) * intensity; // -> 0.66 (Orange)
-                            const b = baseB + (0.0 - baseB) * intensity; // -> 0.0
+                            const r = baseR + (0.6 - baseR) * intensity; // -> 0.6 (Cyan R)
+                            const g = baseG + (0.9 - baseG) * intensity; // -> 0.9 (Cyan G)
+                            const b = baseB + (1.0 - baseB) * intensity; // -> 1.0 (Cyan B)
                             
                             const colors = mesh.geometry.attributes.color;
                             for (let i = 0; i < colors.count; i++) {

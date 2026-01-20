@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.929 - 2026-01-20
+- **Theme Overhaul (Bluey Silver)**:
+  - **Goal**: Transition the entire Icosahedron aesthetic from Copper/Gold to a "Bluey Silver" palette.
+  - **Implementation**:
+    - **Wireframe & Mesh**: Changed colors to Silver Blue (`0x88b0d1`).
+    - **Mesh Visibility**: Increased fine mesh opacity from 0.15 to 0.5 and density to 30x repeat for a clearer screen effect.
+    - **Lighting**: Switched ambient and spotlights to Cool Blue/White (`0xaaccff` / `0xe6f3ff`).
+    - **Central Sphere**: Updated to Dark Blue Metal (`0x051a24`).
+    - **Effects**: Circuit traces, nodes, and electrons now use Electric Blue and Cyan hues.
+
 ## v1.928 - 2026-01-20
 - **Visual Repair (Fine Mesh Texture)**:
   - **Goal**: Replace the "yarn-like" thick circuitry with a fine, screen-like mesh texture.
