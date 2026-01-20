@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.913 - 2026-01-20
+- **Visual Repair (Finish)**:
+  - **Matte Finish**: Switched the Central Sphere material to `MeshLambertMaterial`. This material significantly differs from Standard/Physical materials as it uses Gouraud shading with **zero specular highlights**, effectively guaranteeing the removal of the persistent "white ring" artifact while keeping the dark copper base color (`0x1a0b04`).
+
 ## v1.912 - 2026-01-20
 - **Visual Repair (Artifacts)**:
   - **White Ring Removal**: Downgraded the Central Sphere material from `MeshPhysicalMaterial` to a rougher `MeshStandardMaterial`. Removed `clearcoat` entirely and increased roughness (`0.2` -> `0.6`) to eliminate the unwanted white specular rim highlight ("White Ring") while maintaining the dark copper aesthetic.

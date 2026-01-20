@@ -85,12 +85,10 @@ export class IcosahedronScene {
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
         // Material: Darkened Copper for Drama
-        // Removed clearcoat to eliminate the "white ring" artifact
-        const material = new THREE.MeshStandardMaterial({
-            color: 0x220e05,     // Deep Dark Copper/Chocolate
+        // Switched to MeshLambertMaterial to completely remove specular highlights (White Ring)
+        const material = new THREE.MeshLambertMaterial({
+            color: 0x1a0b04,     // Slightly darker copper to compensate for Lambert brightness
             emissive: 0x000000,
-            roughness: 0.6,      // Much rougher to diffuse any specular highlights
-            metalness: 0.6,      // Reduced metalness to avoid harsh rim reflections
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
