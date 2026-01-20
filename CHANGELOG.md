@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.873 - 2026-01-19
+- **Code Optimization**:
+  - **Styles Refactor**: Eliminated heavy inline styles for background grids and complex shadows.
+    - *Action*: Introduced `.bg-grid-blue-fade` and `.shadow-card-cyan` utilities in `input.css`.
+    - *Benefit*: Cleaner HTML markup and consistent reuse of design tokens.
+
 ## v1.872 - 2026-01-19
 - **Bug Fix**:
   - **Script Redundancy**: Removed duplicate script inclusions in `index.html` (Modal, Global, etc.) that were causing undefined behavior and redeclaration errors.
