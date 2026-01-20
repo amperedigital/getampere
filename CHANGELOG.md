@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.889 - 2026-01-19
+- **Fix**:
+  - **Version Alignment**: Force updated `global.js` reference in `index.html` to `v1.888` to ensure correct loading of the updated `ampere-3d-key.js` component.
+  - **3D Key**: Resolved potential version mismatch causing the 3D key to fail to load.
+
 ## v1.888 - 2026-01-19
 - **Refactor**:
   - **HTML Structure Audit**: Removed redundant container wrappers from `index.html`.
