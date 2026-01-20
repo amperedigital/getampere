@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.928 - 2026-01-20
+- **Visual Repair (Fine Mesh Texture)**:
+  - **Goal**: Replace the "yarn-like" thick circuitry with a fine, screen-like mesh texture.
+  - **Implementation**:
+    - **Texture Generation**: Created a high-density 64x64px repeating cross-hatch pattern with 1px thin lines.
+    - **Mapping**: Repeated the texture 10x per face (`repeat: [10, 10]`) to create a dense, fine-grain mesh look.
+    - **Material**: `MeshBasicMaterial` with `opacity: 0.15` and `additive` blending for a subtle, holographic screen effect.
+  - **Backup**: Archived the "yarn" experiment to `backups/icosahedron-scene.backup.v1.927.yarn_texture`.
+
 ## v1.927 - 2026-01-20
 - **Feature Pivot (Face-Mapped Mesh)**:
   - **Goal**: Implement a "Light Opaque Circuitry" mesh that is mapped *onto* the faces of the icosahedron, without creating a separate displaced wireframe geometry (avoiding the v1.924 interference pattern).

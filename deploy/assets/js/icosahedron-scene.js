@@ -72,54 +72,49 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh-Mapped Circuitry Faces (Texture on Flat Planes)
-        // Generate a grid texture programmatically
+        // 1b. Mesh Texture Approach (Fine Grid)
+        // Using a highly repeated grid texture to simulate a fine mesh screen
         const canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 256;
+        canvas.width = 64; 
+        canvas.height = 64;
         const ctx = canvas.getContext('2d');
         
-        // Transparent Background
-        ctx.clearRect(0, 0, 256, 256);
+        // Transparent BG
+        ctx.clearRect(0, 0, 64, 64);
         
-        // Draw Grid Pattern
-        ctx.strokeStyle = '#d0f0ff'; // Bright Cyan-White
-        ctx.lineWidth = 4;
+        // Very thin, sharp mesh lines
+        ctx.strokeStyle = '#ffffff'; 
+        ctx.lineWidth = 1; // Thinnest possible line
         ctx.beginPath();
         
-        const gridSize = 32; // Density of the mesh
-        for (let i = 0; i <= 256; i += gridSize) {
-            // Vertical
-            ctx.moveTo(i, 0); ctx.lineTo(i, 256);
-            // Horizontal
-            ctx.moveTo(0, i); ctx.lineTo(256, i);
-        }
+        // Draw cross-hatch
+        // Horizontal
+        ctx.moveTo(0, 32); ctx.lineTo(64, 32);
+        // Vertical
+        ctx.moveTo(32, 0); ctx.lineTo(32, 64);
         ctx.stroke();
-        
-        // Add diagonal for triangular stability look? Optional.
-        // Let's stick to square grid for "circuitry" feel.
-        
-        const circuitTexture = new THREE.CanvasTexture(canvas);
-        circuitTexture.wrapS = THREE.RepeatWrapping;
-        circuitTexture.wrapT = THREE.RepeatWrapping;
-        circuitTexture.repeat.set(2, 1); // Adjust for UV mapping stretch
-        circuitTexture.anisotropy = 16;  // Crisp lines at angles
 
-        // Material: Renders texture on flat faces
-        const circuitMaterial = new THREE.MeshBasicMaterial({
-            map: circuitTexture,
-            color: 0xffffff,
-            transparent: true,    // Allow seeing through the grid holes
-            opacity: 0.9,         // High visibility
+        const meshTexture = new THREE.CanvasTexture(canvas);
+        meshTexture.wrapS = THREE.RepeatWrapping;
+        meshTexture.wrapT = THREE.RepeatWrapping;
+        // High repeat to create density (make it look like a screen, not big bars)
+        meshTexture.repeat.set(10, 10); 
+        meshTexture.anisotropy = 16;
+        
+        const meshMaterial = new THREE.MeshBasicMaterial({
+            map: meshTexture,
+            color: 0x88ccff,      // Light blue tint
+            transparent: true,
+            opacity: 0.15,        // Subtle visibility
             side: THREE.DoubleSide,
-            depthWrite: false,    // Don't occlude inner sphere
+            depthWrite: false,    // No occlusion
             blending: THREE.AdditiveBlending
         });
 
-        // Use same geometry as frame (0 detail) for perfect planar alignment
-        const circuitShell = new THREE.Mesh(geometry, circuitMaterial);
-        circuitShell.scale.setScalar(0.99); // Sit perfectly flush inside wires
-        this.group.add(circuitShell);
+        // Use same geometry (detail: 0) so it's perfectly flat against the faces
+        const meshShell = new THREE.Mesh(geometry, meshMaterial);
+        meshShell.scale.setScalar(0.99); // Just barely inside the copper wires
+        this.group.add(meshShell);
 
         // 2. Nodes (Vertices)
         this.addNodes(geometry);
