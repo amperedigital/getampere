@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.869 - 2026-01-19
+- **Hero Typography**:
+  - **SVG Dot Alignment**: Lowered the position of the period dot.
+    - *Fix*: Removed `mb-[0.06em]` to drop the dot down to the natural baseline, aligning it with the bottom of the "L".
+
 ## v1.868 - 2026-01-19
 - **Hero Typography**:
   - **Layout**: Split "Handle Every" into two lines ("Handle" / "Every").
