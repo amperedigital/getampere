@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.965 - 2026-01-21
+- **Design Two Visuals (Wireframe)**:
+  - **Opacity**: Reduced outer lattice wireframe opacity to 50% (`0.5`) and enabled transparency.
+  - **Goal**: Make the outer cage less intrusive, allowing the inner "brain" circuitry to be the primary focal point.
+
 ## v1.964 - 2026-01-21
 - **Design Two Geometry (Orientation)**:
   - **Start Rotation**: Rotated the entire icosahedron group 90 degrees on the X-axis (`Math.PI / 2`).

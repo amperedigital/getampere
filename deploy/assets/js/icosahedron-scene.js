@@ -62,8 +62,8 @@ export class IcosahedronScene {
         const material = new THREE.LineBasicMaterial({
             color: 0x4e6578, 
             linewidth: 1,
-            opacity: 1,
-            transparent: false
+            opacity: 0.5,
+            transparent: true
         });
 
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
