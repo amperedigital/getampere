@@ -1,3 +1,5 @@
+## v2.021 - 2026-01-21
+- **Favicon Update**: Removed explicit SVG icon reference as the provided PNG is the source of truth. Relying on `favicon.ico` and PNG variants.
 ## v2.020 - 2026-01-21
 - **Bugfix**: Fixed `SyntaxError` due to duplicate variable declaration (`pulse`) in `icosahedron-scene.js` that was missed in v2.019.
 - **Assets**: Added `favicon.ico` (sourced from Slack icon) and updated all HTML pages to include the favicon link.
