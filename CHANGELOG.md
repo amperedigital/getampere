@@ -1,3 +1,7 @@
+## v2.029 - 2026-01-21
+- **Animation Fix**: Smoothed the electron trace "Power Down" sequence.
+    - **Logic**: Removed the strict state check for electron spawning. Spawning logic is now purely driven by `simIntensity`.
+    - **Effect**: Electron traces now continue to spawn (with decreasing probability) as the system powers off, mirroring the "Power Up" ramp in reverse, instead of abruptly cutting off.
 ## v2.028 - 2026-01-21
 - **UI Update**: Renamed "ON" state to "POWER UP" on the toggle switch to match "POWER DOWN".
 ## v2.027 - 2026-01-21

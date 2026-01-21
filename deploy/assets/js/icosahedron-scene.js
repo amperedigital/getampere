@@ -877,8 +877,10 @@ export class IcosahedronScene {
                 this.electrons.forEach(e => {
                     if (!e.active) {
                         if (e.delay > 0) e.delay--;
-                        // Only spawn if simIntensity is high enough (>10%) and ACTIVE
-                        else if (this.systemState === 'ACTIVE' && this.simIntensity > 0.1 && Math.random() < (0.01 + activityLevel * 0.1) * this.simIntensity) {
+                        // Remove strict 'systemState === ACTIVE' check.
+                        // Allow electrons to spawn as long as simIntensity is > 0.1.
+                        // This allows activity to "wind down" gracefully during Power Down/Standby transitions.
+                        else if (this.simIntensity > 0.1 && Math.random() < (0.01 + activityLevel * 0.1) * this.simIntensity) {
                              e.active = true;
                              e.pathIndex = Math.floor(Math.random() * this.paths.length);
                              e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); 
