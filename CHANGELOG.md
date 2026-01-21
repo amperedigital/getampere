@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.991 - 2026-01-21
+- **Visual Cleanup**: Removed the "light pin dots" (LED nodes) from the icosahedron vertexes to reduce visual clutter and focus on the central sphere.
+- **UX Fix**: Constrained the `OrbitControls` zoom to a safe range (`minDistance: 2.5`, `maxDistance: 10.0`). This prevents the user from zooming "through" the object or losing it in the void (the "disappearing" bug).
+
 ## v1.990 - 2026-01-21
 - **Texture Upgrade (Brushed Metal)**:
   - **Procedural Grain**: Rewrote `createMetalTexture` to generate a directional "brushed steel" effect using thousands of randomized horizontal streaks instead of generic noise.

@@ -78,8 +78,10 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes
-        this.addNodes(geometry);
+        // 2. Nodes - DISABLED as per request (removed light pin dots)
+        // this.addNodes(geometry);
+        this.nodes = []; // Empty array to prevent crash in animate loop
+
 
         // 3. Central Sphere
         this.addCentralSphere();
@@ -644,7 +646,11 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
-        this.controls.autoRotate = false; 
+        this.controls.autoRotate = false;
+        
+        // Prevent "disappearing" issue
+        this.controls.minDistance = 2.5;  // Don't clip inside sphere
+        this.controls.maxDistance = 10.0; // Don't lose it in void
     }
 
     handleResize() {
