@@ -1,3 +1,7 @@
+## v2.010 - 2026-01-21
+- **Restoration**: Restored 'Blue Silver' variants (html and js files).
+    - **Note**: These files are preserved as legacy/backup variants.
+
 ## v2.009 - 2026-01-21
 - **Cleanup**: Removed duplicate file `deploy/Icosahedron.html`.
     - **Consolidation**: `deploy/icosahedron.html` (lowercase) is the canonical source.
