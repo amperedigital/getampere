@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.000 - 2026-01-21
+- **Hard Rollback**: Restored the entire `deploy/` directory to **v1.900** as requested.
+- **Reason**: Persistent dissatisfaction with recent zoom/scroll mechanics in v1.98x/v1.99x series. The user specifically identified "incremental zoom" issues.
+- **State**: This reverts the project to the state before the "Metal Orb" and "high density circuit" experiments, likely returning to a lighter visuals or previous geometry configuration that had the correct "feel".
+
 ## v1.999 - 2026-01-21
 - **Zoom Crash Fix (Post-Revert)**: Although v1.981 was fully restored, the "broken zoom" issue persists because the v1.981 code lacks collision constraints. Code analysis shows that without `minDistance`, users can zoom inside the opaque central sphere (radius 0.86), causing the "disappearing / 1000% black screen" effect.
 - **Correction**: Added `minDistance: 2.0` to the v1.981 codebase. This forces the camera to stay outside the lattice, mimicking the "safe" viewing distance of the Blue Steel demo (which didn't have a solid core to clip into). This should permanently solve the "extreme magnification" disorientation.

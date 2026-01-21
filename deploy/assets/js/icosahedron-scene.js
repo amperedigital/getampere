@@ -1,8 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 
 export class IcosahedronScene {
     constructor(container) {
@@ -10,9 +7,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
-
-        this.lightsActive = true; 
+        console.log("Icosahedron Scene Initialized");
 
         this.initScene();
         this.initLights();
@@ -23,12 +18,15 @@ export class IcosahedronScene {
     }
 
     initScene() {
+        // Scene setup
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x05060f); 
+        this.scene.background = new THREE.Color(0x05060f); // Dark background matching project theme
 
+        // Camera setup
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         this.camera.position.z = 5;
 
+        // Renderer setup
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -36,40 +34,44 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
+        // Ambient Light (Soft but warm base)
+        const ambientLight = new THREE.AmbientLight(0xffccaa, 1.0); 
         this.scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
+        // Single Main Soft Spotlight (Top Left) - Wide & Diffused
+        const spotLight = new THREE.SpotLight(0xffebd6, 5); // Warm white
         spotLight.position.set(-10, 10, 10);
-        spotLight.angle = Math.PI / 3; 
-        spotLight.penumbra = 1.0;
+        spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
+        spotLight.penumbra = 1.0; // Max softness/diffusion
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
+        
+        // Removed specific Rim/Fill lights to focus on single diffused source
     }
 
     initGeometry() {
         this.group = new THREE.Group();
-        this.group.rotation.x = Math.PI / 2; 
         this.scene.add(this.group);
 
+        // Icosahedron: 12 vertices, 20 faces, 30 edges
         const radius = 1.5;
-        const detail = 2; 
+        const detail = 0; // 0 = standard icosahedron
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
 
-        // 1. Lattice 
+        // 1. Lattice (Wireframe)
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0x4e6578, 
+            color: 0xb87333, // Copper wire
             linewidth: 1,
-            opacity: 0.6,
-            transparent: true
+            opacity: 1,
+            transparent: false
         });
 
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes
+        // 2. Nodes (Vertices)
         this.addNodes(geometry);
 
         // 3. Central Sphere
@@ -77,322 +79,150 @@ export class IcosahedronScene {
     }
 
     addCentralSphere() {
-        const geometry = new THREE.SphereGeometry(0.864, 64, 64);
-        const material = new THREE.MeshLambertMaterial({
-            color: 0x020a12,     
-            emissive: 0x000000,
+        // Create a perfectly round sphere in the center
+        // Radius reduced by 25% (0.8 -> 0.6)
+        const geometry = new THREE.SphereGeometry(0.6, 64, 64);
+        
+        // Procedural Circuitry Texture
+        const circuitTexture = this.createCircuitryTexture();
+
+        // Material: Real Copper (Browny-Red) with Glowing Circuitry
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0xb87333,     // Copper base
+            
+            // Texture Maps
+            emissiveMap: circuitTexture,
+            bumpMap: circuitTexture,
+            bumpScale: 0.015,     // Slight relief for wires
+            
+            // Glow Settings
+            emissive: 0xffffff,   // White multiplier (lets texture colors show true)
+            emissiveIntensity: 0.1, // Reduced Base Glow (Inactive state)
+
+            // Physical Properties
+            roughness: 0.35,
+            metalness: 0.6,
+            transmission: 0.4,
+            thickness: 1.5,
+            clearcoat: 1.0,      
+            clearcoatRoughness: 0.3, 
+            ior: 1.5,
+            attenuationColor: new THREE.Color(0x8a4020),
+            attenuationDistance: 1.5
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
-        this.group.add(this.centralSphere);
         
-        this.initCircuitryPaths();
+        // Improve texture mapping on sphere (prevent pole pinching artifacts look too bad)
+        // Note: UV mapping is standard for SphereGeometry, good enough for abstract orb.
+        
+        this.group.add(this.centralSphere);
 
-        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
+        // Add an internal light to make the glass "active" - Lower intensity
+        const coreLight = new THREE.PointLight(0xff8855, 1.5, 8);
         this.centralSphere.add(coreLight);
     }
 
-    getPos(phi, theta, r) {
-        const x = r * Math.sin(phi) * Math.cos(theta);
-        const y = r * Math.sin(phi) * Math.sin(theta);
-        const z = r * Math.cos(phi);
-        return new THREE.Vector3(x, y, z);
-    }
+    createCircuitryTexture() {
+        const size = 1024;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
 
-    initCircuitryPaths() {
-        this.circuitMeshes = []; 
-        this.electrons = [];
-        this.fatLines = []; 
-        this.paths = []; 
-        this.routes = []; // Store connected paths as routes
-        this.pads = []; 
+        // 1. Background: Black (No emissive glow by default)
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, size, size);
 
-        const surfaceRadius = 0.87; 
-        const padGeometry = new THREE.CircleGeometry(0.0126, 8); // Increased size by 50%
-        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
-
-        // INCREASED DENSITY & WRAP-AROUND (v1.980 settings)
-        // Doubled resolution to allow finer, denser paths
-        const PHI_STEPS = 90;   
-        const THETA_STEPS = 120; 
+        // 2. Settings for Circuit Traces
+        const numPaths = 80;
         
-        const phiStepSize = Math.PI / PHI_STEPS;
-        const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
+        // Glowy Colors: Bright Amber, Gold, Hot White
+        const colors = ['#ff9933', '#ffcc66', '#ffeedd', '#ff5522'];
+
+        ctx.lineJoin = 'round';
+        ctx.shadowBlur = 10; // Glow effect burned into texture
         
-        const numBuses = 200; // Increased significantly for density
-        const gridMap = new Set(); // To track occupied grid points and prevent overlap
-
-        // Darker Base color (v1.960 settings)
-        const baseColorHex = 0x03121d;
-        for (let b = 0; b < numBuses; b++) {
-            let startGridPhi, startGridTheta;
-            let attempts = 0;
-            // Find a valid start point
-            do {
-                startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
-                startGridTheta = Math.floor(Math.random() * THETA_STEPS);
-                attempts++;
-            } while (gridMap.has(`${startGridPhi},${startGridTheta}`) && attempts < 50);
-
-            if (attempts >= 50) continue; // Skip if no spot found
-
-            let gridPhi = startGridPhi;
-            let gridTheta = startGridTheta;
+        // 3. Draw Paths
+        for (let i = 0; i < numPaths; i++) {
+            let x = Math.random() * size;
+            let y = Math.random() * size;
+            let steps = 5 + Math.random() * 25;
             
-            const lanes = 1 + Math.floor(Math.random() * 3); 
-            // Much longer lifetime to allow full sphere wrapping
-            const busSteps = 100 + Math.floor(Math.random() * 100); 
-            
-            let dir = Math.random() > 0.5 ? 'H' : 'V'; 
-            
-            let laneHeads = [];
-            let laneRoutes = []; 
-            let laneCollided = false; 
-            let laneLastPads = []; // Track chain
-            
-            // Temporary buffer for this bus (meshing only)
-            let currentBusMeshes = [];
-            let currentBusPads = [];
-            let currentBusPaths = [];
-            let currentBusFatLines = [];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.lineWidth = 2 + Math.random() * 4;
 
-            for (let l = 0; l < lanes; l++) {
-                laneRoutes.push([]); // Init route for this lane
+            ctx.beginPath();
+            ctx.moveTo(x, y);
 
-                let lPhi = gridPhi;
-                let lTheta = gridTheta;
-                
-                if (dir === 'H') { lPhi += l; } else { lTheta += l; }
-                
-                if (gridMap.has(`${lPhi},${lTheta}`)) {
-                    laneCollided = true;
-                }
-                gridMap.add(`${lPhi},${lTheta}`); // Mark occupied
-
-                const phiVal = lPhi * phiStepSize;
-                const thetaVal = lTheta * thetaStepSize;
-                
-                laneHeads.push({ phi: phiVal, theta: thetaVal, gridPhi: lPhi, gridTheta: lTheta });
-
-                const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
-                const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
-                pad.material.transparent = true;
-                pad.material.opacity = 0.1; // VISIBLE BASE STATE
-                pad.position.copy(pos);
-                pad.lookAt(new THREE.Vector3(0,0,0));
-                
-                this.centralSphere.add(pad);
-                
-                const padObj = { mesh: pad, intensity: 0 };
-                currentBusPads.push(padObj); 
-                laneLastPads.push(padObj);
+            // Draw "Chip" at start
+            if (Math.random() > 0.7) {
+                const chipSize = 10 + Math.random() * 20;
+                ctx.fillRect(x - chipSize/2, y - chipSize/2, chipSize, chipSize);
             }
 
-            if (laneCollided) {
-                // Cleanup initial pads if collided at start
-                currentBusPads.forEach(p => this.centralSphere.remove(p.mesh));
-                continue; 
-            }
-
-            for (let s = 0; s < busSteps; s++) {
-                // Shorter segments
-                let stepLen = 2 + Math.floor(Math.random() * 4); 
-                
-                let dPhi = 0;
-                let dTheta = 0;
-                
-                if (dir === 'H') { 
-                    dTheta = stepLen * (Math.random() > 0.5 ? 1 : -1);
-                } else { 
-                    dPhi = stepLen * (Math.random() > 0.5 ? 1 : -1);
+            for (let j = 0; j < steps; j++) {
+                // Move in Manhatten Grid (90 degree angles)
+                const dist = 50 + Math.random() * 100;
+                if (Math.random() > 0.5) {
+                    x += (Math.random() > 0.5 ? 1 : -1) * dist;
+                } else {
+                    y += (Math.random() > 0.5 ? 1 : -1) * dist;
                 }
                 
-                let stepValid = true;
-                const nextHeads = [];
-                for(let l = 0; l < lanes; l++) {
-                    const head = laneHeads[l];
-                    let targetGridPhi = head.gridPhi + dPhi;
-                    let targetGridTheta = head.gridTheta + dTheta; 
-                    targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
-                    
-                    if (gridMap.has(`${targetGridPhi},${targetGridTheta}`)) {
-                        stepValid = false;
-                    }
-                    nextHeads.push({gridPhi: targetGridPhi, gridTheta: targetGridTheta});
-                }
+                // Keep inside canvas logic
+                if(x < 0) x = 0; if(x > size) x = size;
+                if(y < 0) y = 0; if(y > size) y = size;
 
-                if (!stepValid) break;
-
-                for(let l = 0; l < lanes; l++) {
-                    const head = laneHeads[l];
-                    const next = nextHeads[l];
-
-                    gridMap.add(`${next.gridPhi},${next.gridTheta}`);
-                    
-                    const targetPhi = next.gridPhi * phiStepSize;
-                    const targetTheta = next.gridTheta * thetaStepSize;
-                    
-                    if (Math.abs(targetPhi - head.phi) < 0.001 && Math.abs(targetTheta - head.theta) < 0.001) continue;
-
-                    const segmentPoints = [];
-                    const divisions = 8; 
-                    
-                    for(let k=0; k<=divisions; k++) {
-                        const t = k/divisions;
-                        const tmpPhi = head.phi + (targetPhi - head.phi) * t;
-                        const tmpTheta = head.theta + (targetTheta - head.theta) * t;
-                        const vec = this.getPos(tmpPhi, tmpTheta, surfaceRadius);
-                        segmentPoints.push(vec.x, vec.y, vec.z);
-                    }
-
-                    const geometry = new LineGeometry();
-                    geometry.setPositions(segmentPoints);
-
-                    const mat = new LineMaterial({
-                        color: baseColorHex, 
-                        linewidth: 2.5, 
-                        worldUnits: false,
-                        dashed: false,
-                        alphaToCoverage: false,
-                        transparent: true,
-                        opacity: 0.1, // VISIBLE BASE STATE
-                        depthWrite: false, 
-                        depthTest: true
-                    });
-                    
-                    mat.resolution.set(this.width, this.height);
-
-                    const line = new Line2(geometry, mat);
-                    line.computeLineDistances();
-                    line.userData = { intensity: 0 }; 
-
-                    this.centralSphere.add(line);
-                    currentBusMeshes.push(line);
-                    currentBusFatLines.push(mat);
-
-                    // END PAD for this segment
-                    const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
-                    const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
-                    pad.material.opacity = 0.1; // VISIBLE BASE STATE
-                    pad.material.transparent = true;
-                    pad.position.copy(padPos);
-                    pad.lookAt(new THREE.Vector3(0,0,0));
-                    this.centralSphere.add(pad);
-                    
-                    const endPadObj = { mesh: pad, intensity: 0 };
-                    currentBusPads.push(endPadObj);
-
-                    const pathObj = {
-                         phiStart: head.phi, thetaStart: head.theta,
-                         phiEnd: targetPhi, thetaEnd: targetTheta,
-                         radius: surfaceRadius,
-                         mesh: line,
-                         startPad: laneLastPads[l], // Link previous pad
-                         endPad: endPadObj          // Link new pad
-                    };
-
-                    currentBusPaths.push(pathObj);
-                    laneRoutes[l].push(pathObj); // Add to route structure
-
-                    head.phi = targetPhi;
-                    head.theta = targetTheta;
-                    head.gridPhi = next.gridPhi;
-                    head.gridTheta = next.gridTheta;
-                    
-                    laneLastPads[l] = endPadObj;
-                }
+                ctx.lineTo(x, y);
                 
-                dir = (dir === 'H') ? 'V' : 'H';
+                // "Transistor" Node along the path
+                if (Math.random() > 0.9) {
+                   ctx.fillRect(x - 6, y - 6, 12, 12);
+                }
             }
-
-            // FILTER: If bus is too short, discard everything
-            const minSegments = 10;
-            // Check length of first lane (all lanes move in lockstep so check one is enough)
-            if (laneRoutes[0].length < minSegments) {
-                // Discard
-                currentBusMeshes.forEach(m => {
-                    this.centralSphere.remove(m);
-                    m.geometry.dispose();
-                    m.material.dispose();
-                });
-                currentBusPads.forEach(p => {
-                    this.centralSphere.remove(p.mesh);
-                    p.mesh.geometry.dispose();
-                    p.mesh.material.dispose();
-                });
-                // No need to clear gridMap - let's treat used spots as used, or clear them?
-                // Ideally clear them, but gridMap structure doesn't track per-bus easily without extra array.
-                // Keeping them occupied acts as "dead zones" which is fine.
-            } else {
-                // Commit to scene
-                this.circuitMeshes.push(...currentBusMeshes);
-                this.pads.push(...currentBusPads);
-                this.fatLines.push(...currentBusFatLines);
-                this.paths.push(...currentBusPaths);
-                
-                // Save connected routes
-                laneRoutes.forEach(route => {
-                    if (route.length > 0) this.routes.push(route);
-                });
-            }
+            ctx.stroke();
+            
+            // Terminal Circle
+            ctx.beginPath();
+            ctx.arc(x, y, 4 + Math.random() * 4, 0, Math.PI * 2);
+            ctx.fill();
         }
 
-        const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
-        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
         
-        const glowTexture = this.createGlowTexture();
+        // Repeat texture so it tiles nicely around the sphere
+        texture.repeat.set(2, 1); 
         
-        // Electrons keep the standard blue glow
-        const electronGlowMat = new THREE.SpriteMaterial({ 
-            map: glowTexture, 
-            color: 0x00aaff, // Manual blue tint since texture is now white
-            transparent: true, 
-            opacity: 1.0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-        });
-
-        const numElectrons = 120; 
-        for(let i=0; i<numElectrons; i++) {
-            const electron = new THREE.Mesh(electronGeometry, electronMaterial);
-            
-            const sprite = new THREE.Sprite(electronGlowMat);
-            sprite.scale.set(0.06, 0.06, 0.06);
-            electron.add(sprite);
-
-            electron.visible = false; 
-            this.centralSphere.add(electron);
-            
-            this.electrons.push({
-                mesh: electron,
-                routeIndex: Math.floor(Math.random() * this.routes.length), 
-                segmentIndex: 0,
-                t: 0, 
-                speed: 0,
-                active: false,
-                delay: Math.random() * 60 
-            });
-        }
-    }
-
-    randomSpherePoint(radius) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = 2 * Math.PI * u;
-        const phi = Math.acos(2 * v - 1);
-        return this.getPos(phi, theta, radius);
+        return texture;
     }
 
     addNodes(geometry) {
         const positionAttribute = geometry.getAttribute('position');
         const vertex = new THREE.Vector3();
         
+        // Storage for animation
         this.nodes = [];
         
+        // Glow Texture (Shared)
+        const glowTexture = this.createGlowTexture();
+        const glowMaterial = new THREE.SpriteMaterial({ 
+            map: glowTexture, 
+            color: 0xffaa55, // Copper/Amber tint
+            transparent: true, 
+            opacity: 0,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        // Deduplicate vertices efficiently
         const uniquePoints = [];
         const threshold = 0.001;
-
-        const glowTexture = this.createGlowTexture(); // Reuse white glow
 
         for (let i = 0; i < positionAttribute.count; i++) {
             vertex.fromBufferAttribute(positionAttribute, i);
@@ -408,47 +238,28 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Random RGB Color for this node
-                // Use HSL for vibrant colors (Saturation ~0.9, Lightness ~0.6)
-                const hue = Math.random();
-                const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.6);
-
-                // Nodes are small bulbs
-                const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
-                
-                const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: nodeColor.clone().multiplyScalar(0.2), // Darker base so it can light up
-                    emissive: 0x000000,   
-                    emissiveIntensity: 0, 
-                    roughness: 0.2,
-                    metalness: 0.5
+                // Create Node: 3D Sphere with Physical Material for shading/glow
+                // Base: Copper, Reduced Size (50%)
+                const nodeGeometry = new THREE.SphereGeometry(0.03, 32, 32); 
+                const nodeMaterial = new THREE.MeshPhysicalMaterial({ 
+                    color: 0xb87333,    // Copper base
+                    emissive: 0xff8855, // Amber heat
+                    emissiveIntensity: 0,
+                    roughness: 0.3,     // Metallic rough
+                    metalness: 0.8,     // Metallic
+                    transmission: 0,    // Solid metal
+                    clearcoat: 1.0,     // Shiny coat
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                 node.position.copy(vertex);
                 
-                // --- Subtle RGB Halo ---
-                const spriteMat = new THREE.SpriteMaterial({ 
-                    map: glowTexture, 
-                    color: nodeColor,    // Tint halo with node color
-                    transparent: true, 
-                    opacity: 0,          // Controlled by animation
-                    blending: THREE.AdditiveBlending,
-                    depthWrite: false
-                });
-                const sprite = new THREE.Sprite(spriteMat);
-                // Tiny halo: 0.12 scale is about 4x node diameter
-                sprite.scale.set(0.12, 0.12, 0.12); 
-                node.add(sprite);
-
-                // LED Firing State
-                node.userData = {
-                    firingState: 0, 
-                    fireCooldown: Math.random() * 100, 
-                    baseScale: 1.0,
-                    baseColor: nodeColor, // Store assigned color
-                    halo: sprite          // Reference to halo
-                };
+                // Add Glow Sprite (Halo)
+                const sprite = new THREE.Sprite(glowMaterial.clone());
+                sprite.scale.set(0.6, 0.6, 0.6); // Start size
+                sprite.visible = false; // Hidden by default
+                node.add(sprite); // Attach to node
+                node.userData.sprite = sprite; // Reference for animation
 
                 this.group.add(node);
                 this.nodes.push(node);
@@ -457,16 +268,16 @@ export class IcosahedronScene {
     }
 
     createGlowTexture() {
-        // Changed to Neutral White for tinting
         const canvas = document.createElement('canvas');
         canvas.width = 64;
         canvas.height = 64;
         const context = canvas.getContext('2d');
         
+        // Radial Gradient: Amber/White center -> Transparent edge
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
-        gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.4)'); 
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
+        gradient.addColorStop(0, 'rgba(255, 220, 180, 1)'); // Hot White/Amber center
+        gradient.addColorStop(0.4, 'rgba(255, 100, 50, 0.4)'); // Copper Orange mid
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade out
 
         context.fillStyle = gradient;
         context.fillRect(0, 0, 64, 64);
@@ -481,14 +292,7 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
-        
-        // Fix for "1000% Magnification" / Disappearing
-        // Prevent camera from clipping inside the central sphere (radius 0.86)
-        // Lattice is at 1.5. Minimum distance keeps context visible.
-        this.controls.minDistance = 2.0; 
-        this.controls.maxDistance = 40.0;
-        
-        this.controls.autoRotate = false; 
+        this.controls.autoRotate = false; // User controls rotation
     }
 
     handleResize() {
@@ -502,210 +306,128 @@ export class IcosahedronScene {
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
-            
-            if (this.fatLines) {
-                 this.fatLines.forEach(mat => {
-                     mat.resolution.set(this.width, this.height);
-                 });
-            }
         });
-    }
-
-    toggleLights() {
-        this.lightsActive = !this.lightsActive;
-        return this.lightsActive;
     }
 
     animate() {
         requestAnimationFrame(this.animate.bind(this));
         
+        // Update controls for damping
         this.controls.update();
 
+        // Calculate Node Glow based on viewport center proximity
         if (this.nodes) {
             const tempV = new THREE.Vector3();
+            // Threshold for "center radius"
             const maxDist = 0.35; 
 
+            // 1. Identify "Active" Candidates (Near Center)
             const candidates = [];
 
             this.nodes.forEach(node => {
+                // Get world position
                 node.getWorldPosition(tempV);
+                
+                // Project to Screen Coordinates (NDC: -1 to 1)
                 tempV.project(this.camera);
+
+                // Calculate radial distance from center (0,0) in X/Y plane only
                 const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
+                
+                // Check if in "hot zone"
                 if (dist < maxDist) {
-                    candidates.push({ node: node, dist: dist, z: tempV.z });
+                    candidates.push({
+                        node: node,
+                        dist: dist,
+                        z: tempV.z // Depth (NDC)
+                    });
                 }
             });
 
+            // 2. Select the ONE best candidate (closest to camera = smallest Z in NDC)
             let bestNode = null;
-            let sphereActiveFactor = 0; 
+            let sphereActiveFactor = 0; // 0 to 1
+
             if (candidates.length > 0) {
+                // Sort by Z (ascending) to find front-most
                 candidates.sort((a, b) => a.z - b.z);
-                bestNode = candidates[0].node;
-                sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
-            }
-
-            const activityLevel = this.lightsActive ? sphereActiveFactor : 0; 
-
-            // Circuitry
-            if (this.paths && this.electrons) {
-                if (this.circuitMeshes) {
-                    const baseR = 0.012; 
-                    const baseG = 0.072; 
-                    const baseB = 0.116;
-
-                    this.circuitMeshes.forEach(mesh => {
-                        if (mesh.userData.intensity > 0.01) {
-                            if (this.lightsActive) {
-                                mesh.userData.intensity *= 0.82; 
-                            } else {
-                                mesh.userData.intensity = 0; 
-                            }
-                            const intensity = mesh.userData.intensity;
-                            const r = baseR + (0.0 - baseR) * intensity;   
-                            const g = baseG + (0.6 - baseG) * intensity;   
-                            const b = baseB + (1.0 - baseB) * intensity;   
-                            mesh.material.color.setRGB(r, g, b);
-                            
-                            // Map 0..1 intensity to 0.1..1.0 opacity
-                            mesh.material.opacity = 0.1 + (0.9 * intensity);
-                        } else if (mesh.userData.intensity > 0) {
-                            mesh.userData.intensity = 0;
-                            mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
-                        }
-                    });
-
-                    // Animate pads similarly
-                    if (this.pads) {
-                        this.pads.forEach(data => {
-                            if (data.intensity > 0.01) {
-                                if (this.lightsActive) {
-                                    data.intensity *= 0.82;
-                                } else {
-                                    data.intensity = 0;
-                                }
-                                data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
-                            } else if (data.intensity > 0) {
-                                data.intensity = 0;
-                                data.mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
-                            }
-                        });
-                    }
-                }
-                this.electrons.forEach(e => {
-                    if (!this.lightsActive) {
-                         e.active = false; 
-                         e.mesh.visible = false;
-                    } else {
-                        if (!e.active) {
-                            if (e.delay > 0) e.delay--;
-                            // Electron firing chance reduced significantly
-                            else if (Math.random() < (0.0064 + activityLevel * 0.05)) {
-                                 e.active = true;
-                                 e.routeIndex = Math.floor(Math.random() * this.routes.length);
-                                 e.segmentIndex = 0;
-                                 e.t = 0; 
-                                 // Slightly faster base speed to compensate for shorter segments
-                                 e.speed = 0.02 + Math.random() * 0.03 + (activityLevel * 0.02); 
-                                 e.mesh.visible = true;
-                            }
-                        }
-                        if (e.active) {
-                            const currentRoute = this.routes[e.routeIndex];
-                            
-                            if (currentRoute && currentRoute[e.segmentIndex]) {
-                                // Sync Illumination: Keep current segment lit while traversing
-                                const currentSegment = currentRoute[e.segmentIndex];
-                                if (currentSegment.mesh) {
-                                    currentSegment.mesh.userData.intensity = 1.0;
-                                }
-
-                                // Linked Pads Illumination
-                                if (currentSegment.startPad) currentSegment.startPad.intensity = 1.0;
-                                if (currentSegment.endPad) currentSegment.endPad.intensity = 1.0;
-
-                                e.t += e.speed;
-                                
-                                if (e.t >= 1.0) { 
-                                    // Move to next segment in the chain
-                                    e.segmentIndex++;
-                                    e.t = 0;
-                                    
-                                    // If end of chain, reset
-                                    if (e.segmentIndex >= currentRoute.length) {
-                                        e.active = false; 
-                                        e.mesh.visible = false; 
-                                        e.delay = Math.random() * 30; 
-                                    }
-                                } else {
-                                    const path = currentRoute[e.segmentIndex];
-                                    const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
-                                    const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
-                                    const pos = this.getPos(currentPhi, currentTheta, path.radius);
-                                    e.mesh.position.copy(pos);
-                                }
-                            } else {
-                                // Safety catch
-                                e.active = false;
-                                e.mesh.visible = false;
-                            }
-                        }
-                    }
-                });
-            }
-
-            // --- LED NODE LOGIC (Random RGB Colors) ---
-            const dark = new THREE.Color(0x000000);
-
-            this.nodes.forEach(node => {
-                const data = node.userData;
-
-                if (!this.lightsActive) {
-                    data.firingState = 0; 
-                } else if (data.firingState <= 0) {
-                    if (data.fireCooldown > 0) {
-                        data.fireCooldown -= 2; 
-                    } else {
-                        // Reduced firing chance (0.02 -> 0.005) and much longer cooldown
-                        if (Math.random() < 0.005) {
-                            data.firingState = 1.0; 
-                            data.fireCooldown = 60 + Math.random() * 120; 
-                        }
-                    }
-                } else {
-                    data.firingState *= 0.85; // Slower fade out (was 0.75)
-                    if (data.firingState < 0.01) data.firingState = 0;
-                }
-
-                let proximityIntensity = 0; 
-                let proximityScale = 0;
                 
-                if (this.lightsActive && node === bestNode) {
-                    node.getWorldPosition(tempV);
+                // The front-most candidate in the hot zone is the winner
+                bestNode = candidates[0].node;
+            }
+
+            // Central Sphere Electrification
+            if (this.centralSphere) {
+                let targetSphereIntensity = 0.1; // Base
+
+                if (bestNode) {
+                    // Recalculate dist
+                    bestNode.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
                     const factor = 1 - (dist / maxDist);
-                    proximityIntensity = Math.pow(factor, 2) * 2.0; 
-                    proximityScale = factor * 0.4;
-                }
-                
-                // If lights inactive, both are 0
-                const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
-                
-                // Use the stored RANDOM color for this node
-                node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
-                node.material.emissiveIntensity = combinedIntensity;
+                    sphereActiveFactor = factor;
 
-                // Update Halo Opacity - Subtle "Tiny" Effect
-                if (data.halo) {
-                    // Only visible when lit, max opacity 0.4 for subtlety
-                    data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
+                    // Wave / Electrification Effect
+                    // High frequency flicker (Electricity) + Pulse
+                    const time = Date.now() * 0.01;
+                    const electricNoise = (Math.sin(time * 10) + Math.cos(time * 23)) * 0.3; 
+                    
+                    targetSphereIntensity = 0.1 + (factor * 1.5) + (factor * electricNoise * 0.5);
+                    
+                    // Texture Scroll Wave
+                    if (this.centralSphere.material.emissiveMap) {
+                        // Move texture vertically to simulate flowing energy
+                         this.centralSphere.material.emissiveMap.offset.y -= 0.005 * factor;
+                    }
                 }
 
+                // Lerp Sphere Intensity
+                 const curr = this.centralSphere.material.emissiveIntensity;
+                 this.centralSphere.material.emissiveIntensity += (targetSphereIntensity - curr) * 0.1;
+            }
+
+            // 3. Apply States
+            this.nodes.forEach(node => {
+                let targetIntensity = 0;
+                let targetScale = 1.0;
+                let targetGlowOpacity = 0;
+
+                // Is this the chosen one?
+                if (node === bestNode) {
+                    // Recalculate dist for intensity ramp
+                    node.getWorldPosition(tempV);
+                    tempV.project(this.camera);
+                    const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
+
+                    const factor = 1 - (dist / maxDist);
+                    // Power curve for bright snap
+                    targetIntensity = Math.pow(factor, 2) * 5.0; 
+                    targetScale = 1 + (factor * 0.4);
+                    targetGlowOpacity = Math.pow(factor, 3);
+                }
+
+                // Apply
+                const sprite = node.userData.sprite;
+                
+                // Lerp for smoothness (cleaner transition)
+                node.material.emissiveIntensity += (targetIntensity - node.material.emissiveIntensity) * 0.1;
+                
                 const currentScale = node.scale.x;
-                const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 
-                const newScale = currentScale + (targetScale - currentScale) * 0.4; 
+                const newScale = currentScale + (targetScale - currentScale) * 0.1;
                 node.scale.setScalar(newScale);
+
+                // Halo
+                if (targetGlowOpacity > 0.05) {
+                    sprite.visible = true;
+                    // Flash opacity
+                    sprite.material.opacity = targetGlowOpacity;
+                    // Stable size (No flicker)
+                    sprite.scale.setScalar(0.8 * newScale); 
+                } else {
+                    sprite.visible = false;
+                    sprite.material.opacity = 0;
+                }
             });
         }
 
