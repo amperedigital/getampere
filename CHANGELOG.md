@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.993 - 2026-01-21
+- **Zoom Calibration**: Drastically reduced the `zoomSpeed` of the `OrbitControls` to `0.3` (from default 1.0). This prevents the "0 to 100" jumpiness and restores the smooth, incremental zoom behavior users expect when scrolling.
+
 ## v1.992 - 2026-01-21
 - **Visual Refinement**: Restored the "Node Animations" (blinking halos) while keeping the static "Pin Dots" invisible (`opacity: 0`). This satisfies the request to remove the distracting dots while fixing the unintended loss of animation.
 - **Zoom Fix**: Widened the zoom constraints (`minDistance: 2.0`, `maxDistance: 20.0`) to fix the "disappearing" bug while restoring a freer, smoother zoom feel that users were accustomed to.

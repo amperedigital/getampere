@@ -646,6 +646,7 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
+        this.controls.zoomSpeed = 0.3; // Much reduced speed for fine, smooth increments
         this.controls.autoRotate = false;
         
         // Prevent "disappearing" issue (Widened Range v1.992)
