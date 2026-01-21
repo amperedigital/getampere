@@ -111,14 +111,15 @@ export class IcosahedronScene {
         const padGeometry = new THREE.CircleGeometry(0.0126, 8); // Increased size by 50%
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        // REDUCED DENSITY (v1.951 settings)
-        const PHI_STEPS = 45;   
-        const THETA_STEPS = 60; 
+        // INCREASED DENSITY & WRAP-AROUND (v1.980 settings)
+        // Doubled resolution to allow finer, denser paths
+        const PHI_STEPS = 90;   
+        const THETA_STEPS = 120; 
         
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        const numBuses = 50; // Slightly fewer buses since they are longer now
+        const numBuses = 200; // Increased significantly for density
         const gridMap = new Set(); // To track occupied grid points and prevent overlap
 
         // Darker Base color (v1.960 settings)
@@ -139,15 +140,21 @@ export class IcosahedronScene {
             let gridTheta = startGridTheta;
             
             const lanes = 1 + Math.floor(Math.random() * 3); 
-            // Much longer buses loop count, but shorter steps
-            const busSteps = 30 + Math.floor(Math.random() * 40); 
+            // Much longer lifetime to allow full sphere wrapping
+            const busSteps = 100 + Math.floor(Math.random() * 100); 
             
             let dir = Math.random() > 0.5 ? 'H' : 'V'; 
             
             let laneHeads = [];
-            let laneRoutes = []; // Array of arrays to store segments per lane
-            let laneCollided = false; // Flag to stop lane generation if collision occurs
+            let laneRoutes = []; 
+            let laneCollided = false; 
             let laneLastPads = []; // Track chain
+            
+            // Temporary buffer for this bus (meshing only)
+            let currentBusMeshes = [];
+            let currentBusPads = [];
+            let currentBusPaths = [];
+            let currentBusFatLines = [];
 
             for (let l = 0; l < lanes; l++) {
                 laneRoutes.push([]); // Init route for this lane
@@ -173,14 +180,19 @@ export class IcosahedronScene {
                 pad.material.opacity = 0; // INVISIBLE START STATE
                 pad.position.copy(pos);
                 pad.lookAt(new THREE.Vector3(0,0,0));
+                
                 this.centralSphere.add(pad);
                 
                 const padObj = { mesh: pad, intensity: 0 };
-                this.pads.push(padObj); 
+                currentBusPads.push(padObj); 
                 laneLastPads.push(padObj);
             }
 
-            if (laneCollided) continue; 
+            if (laneCollided) {
+                // Cleanup initial pads if collided at start
+                currentBusPads.forEach(p => this.centralSphere.remove(p.mesh));
+                continue; 
+            }
 
             for (let s = 0; s < busSteps; s++) {
                 // Shorter segments
@@ -255,8 +267,8 @@ export class IcosahedronScene {
                     line.userData = { intensity: 0 }; 
 
                     this.centralSphere.add(line);
-                    this.circuitMeshes.push(line);
-                    this.fatLines.push(mat);
+                    currentBusMeshes.push(line);
+                    currentBusFatLines.push(mat);
 
                     // END PAD for this segment
                     const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
@@ -268,7 +280,7 @@ export class IcosahedronScene {
                     this.centralSphere.add(pad);
                     
                     const endPadObj = { mesh: pad, intensity: 0 };
-                    this.pads.push(endPadObj);
+                    currentBusPads.push(endPadObj);
 
                     const pathObj = {
                          phiStart: head.phi, thetaStart: head.theta,
@@ -279,8 +291,8 @@ export class IcosahedronScene {
                          endPad: endPadObj          // Link new pad
                     };
 
-                    this.paths.push(pathObj);
-                    laneRoutes[l].push(pathObj);
+                    currentBusPaths.push(pathObj);
+                    laneRoutes[l].push(pathObj); // Add to route structure
 
                     head.phi = targetPhi;
                     head.theta = targetTheta;
@@ -293,10 +305,36 @@ export class IcosahedronScene {
                 dir = (dir === 'H') ? 'V' : 'H';
             }
 
-            // Save connected routes
-            laneRoutes.forEach(route => {
-                if (route.length > 0) this.routes.push(route);
-            });
+            // FILTER: If bus is too short, discard everything
+            const minSegments = 10;
+            // Check length of first lane (all lanes move in lockstep so check one is enough)
+            if (laneRoutes[0].length < minSegments) {
+                // Discard
+                currentBusMeshes.forEach(m => {
+                    this.centralSphere.remove(m);
+                    m.geometry.dispose();
+                    m.material.dispose();
+                });
+                currentBusPads.forEach(p => {
+                    this.centralSphere.remove(p.mesh);
+                    p.mesh.geometry.dispose();
+                    p.mesh.material.dispose();
+                });
+                // No need to clear gridMap - let's treat used spots as used, or clear them?
+                // Ideally clear them, but gridMap structure doesn't track per-bus easily without extra array.
+                // Keeping them occupied acts as "dead zones" which is fine.
+            } else {
+                // Commit to scene
+                this.circuitMeshes.push(...currentBusMeshes);
+                this.pads.push(...currentBusPads);
+                this.fatLines.push(...currentBusFatLines);
+                this.paths.push(...currentBusPaths);
+                
+                // Save connected routes
+                laneRoutes.forEach(route => {
+                    if (route.length > 0) this.routes.push(route);
+                });
+            }
         }
 
         const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 

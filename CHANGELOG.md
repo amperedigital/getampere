@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.980 - 2026-01-21
+- **Design Two Visuals (Hyper-Dense Wrapping)**:
+  - **Resolution Scaling**: Doubled the underlying circuitry grid from `45x60` to `90x120`. This allows for much finer, more intricate routing without collisions.
+  - **Density Boost**: Quadrupled the number of circuit buses (`50` -> `200`) and massively extended their lifetimes (`30-70` steps -> `100-200` steps) to ensure traces wrap completely around the sphere ("End-to-End" look).
+  - **Stub Filtering**: Implemented a "failed start" filter that discards any circuit trace shorter than 10 segments, ensuring only long, deliberate paths appear.
+  - **Result**: A dense, complex network of long, continuous lines that fully encircle the sphere, with no unsightly "broken" or "floating" fragments.
+
 ## v1.975 - 2026-01-21
 - **Design Two Visuals (Connected Illumination)**:
   - **Pad Linking**: Refactored the circuit generation logic to link pad meshes to their corresponding wire segments.
