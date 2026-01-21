@@ -1,3 +1,7 @@
+## v2.026 - 2026-01-21
+- **Animation Tune**: Delayed the onset of the "Breathing" effect during the transition to Standby.
+    - **Logic**: Applied a non-linear mixing curve (squared dampening) to the pulse amplitude for both the Central Orb and Nodes.
+    - **Effect**: The system now fades down to a steady low-light state *before* the deep breathing oscillation becomes visible, matching the desired "Power Down -> Sleep" sequence.
 ## v2.025 - 2026-01-21
 - **Rendering Fix**: Synchronized the Core Light (Orb) and Ambient Light transitions with the Node simulation. 
     - **Fix**: Removed the secondary interpolation lag ("double smoothing") where lighting was chasing a moving target.

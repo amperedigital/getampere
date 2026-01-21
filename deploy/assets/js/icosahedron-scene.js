@@ -797,8 +797,13 @@ export class IcosahedronScene {
 
             // Core: Active(0.4) -> Standby(Pulse) -> OFF(0.0)
             const activeCore = 0.4;
-            // Pulse: 0.05 base + up to 0.35 sine wave = 0.4 max (Matches Active peak)
-            const standbyPulseVal = 0.05 + (pulse * 0.35); 
+            
+            // Pulse Logic:
+            // We dampen the AC component (the breathing) using the square of the mix factor.
+            // This ensures the light fades down to a steady state FIRST, and then the breathing
+            // ramps up gently at the end of the transition, rather than wiggling actively during the fade.
+            const pulseAC = 0.35 * (this.standbyMix * this.standbyMix); // Non-linear ramp for breathing
+            const standbyPulseVal = 0.05 + (pulse * pulseAC); 
             
             const currentCore = (this.simIntensity * activeCore) + (this.standbyMix * standbyPulseVal);
 
@@ -903,7 +908,12 @@ export class IcosahedronScene {
             if (this.standbyMix > 0.001) {
                 // Low floor (0.05) to High (0.4) - Deep breathing
                 // Re-use 'pulse' calculated at top of animate()
-                standbyIntensity = 0.05 + (pulse * 0.35); 
+                
+                // Match Core Light Logic: Square dampening on the AC component
+                // Fades down to steady -> then breathes
+                const pulseAC = 0.35 * (this.standbyMix * this.standbyMix);
+                
+                standbyIntensity = 0.05 + (pulse * pulseAC); 
                 // We multiply by standbyMix so it fades in/out
                 standbyIntensity *= this.standbyMix;
             }
