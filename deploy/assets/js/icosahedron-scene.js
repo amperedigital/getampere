@@ -84,8 +84,8 @@ export class IcosahedronScene {
 
     setSystemState(newState) {
         // Determine transition speed based on target state
-        // ACTIVE = Slow (Gradual power on), OTHERS = Fast
-        this.lerpSpeed = (newState === 'ACTIVE') ? 0.005 : 0.05;
+        // Constant slow speed (0.005) for smooth on AND off ramps
+        this.lerpSpeed = 0.005;
 
         this.systemState = newState;
 
@@ -110,17 +110,12 @@ export class IcosahedronScene {
             // Dim but visible (No Spot), core will pulse
             this.lightTargets = { ambient: 0.05, core: 0.2 };
             this.targetSimIntensity = 0.0; // Ramp down simulation (Keep pulsing separate)
-            // Clear electrons
-            this.clearElectrons();
+            // Do NOT clear electrons immediately - let them fade via simIntensity
         } else {
             // OFF
             this.lightTargets = { ambient: 0, core: 0 };
             this.targetSimIntensity = 0.0;
-            this.clearElectrons();
-            
-            // Ensure Nodes are dark in OFF state immediately? 
-            // Or let animation loop handle it (pulse logic needs to stop).
-            // We handle node brightness in animate loop.
+            // Do NOT clear electrons immediately - let them fade via simIntensity
         }
     }
 

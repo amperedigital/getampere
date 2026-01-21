@@ -1,3 +1,7 @@
+## v2.016 - 2026-01-21
+- **Gradual Off-Ramp**: Applied the slow transition effect to powering OFF/STANDBY as well.
+    - **Change**: `lerpSpeed` is now constantly `0.005` in all directions.
+    - **Behavior**: Electrons now fade out gradually instead of vanishing instantly when switching away from Active mode.
 ## v2.015 - 2026-01-21
 - **Composition Update**: Tilted the entire 3D object by 10 degrees (X-axis) for a better default viewing angle.
 - **Power On Logic**: Implemented a true `simIntensity` variable that smoothly ramps simulation activity (electron generation, node firing intensity) from 0 to 1 over several seconds, fixing the "instant on" feeling.
