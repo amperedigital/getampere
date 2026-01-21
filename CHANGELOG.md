@@ -1,3 +1,16 @@
+## v2.006 - 2026-01-21
+- **Design Update (Obsidian Orb)**: Updated `icosahedron-scene.js` to the new "Black Glass" aesthetic.
+    - **Sphere**: Changed to `MeshPhysicalMaterial` (Pitch Black, Roughness 0.15, Clearcoat 1.0).
+    - **Cage**: Reduced wireframe opacity to 10%.
+    - **Traces**: Stealth mode (5% inactive) to Flashing.
+
+## v2.006 - 2026-01-21
+- **Design Update (Obsidian Orb)**: Updated `icosahedron-scene.js` to the new "Black Glass" aesthetic.
+    - **Sphere**: Changed to `MeshPhysicalMaterial` (Pitch Black, Roughness 0.15, Clearcoat 1.0) for a reflective obsidian look.
+    - **Cage**: Reduced wireframe opacity to 10% (Subtle).
+    - **Traces**: Stealth mode (5% opacity inactive) -> Flashing (0.05 to 1.0 alpha on electron pass).
+    - **Lighting**: Maintained previous lighting for specular reflection on the dark surface.
+
 # Changelog
 
 ## v2.005 - 2026-01-21
