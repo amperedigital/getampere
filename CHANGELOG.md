@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.992 - 2026-01-21
+- **Visual Refinement**: Restored the "Node Animations" (blinking halos) while keeping the static "Pin Dots" invisible (`opacity: 0`). This satisfies the request to remove the distracting dots while fixing the unintended loss of animation.
+- **Zoom Fix**: Widened the zoom constraints (`minDistance: 2.0`, `maxDistance: 20.0`) to fix the "disappearing" bug while restoring a freer, smoother zoom feel that users were accustomed to.
+
 ## v1.991 - 2026-01-21
 - **Visual Cleanup**: Removed the "light pin dots" (LED nodes) from the icosahedron vertexes to reduce visual clutter and focus on the central sphere.
 - **UX Fix**: Constrained the `OrbitControls` zoom to a safe range (`minDistance: 2.5`, `maxDistance: 10.0`). This prevents the user from zooming "through" the object or losing it in the void (the "disappearing" bug).

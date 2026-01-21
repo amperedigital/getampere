@@ -78,10 +78,8 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes - DISABLED as per request (removed light pin dots)
-        // this.addNodes(geometry);
-        this.nodes = []; // Empty array to prevent crash in animate loop
-
+        // 2. Nodes (Restored: Invisible Geometry, Visible Halos)
+        this.addNodes(geometry);
 
         // 3. Central Sphere
         this.addCentralSphere();
@@ -582,11 +580,13 @@ export class IcosahedronScene {
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
                 
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: nodeColor.clone().multiplyScalar(0.2), // Darker base so it can light up
+                    color: nodeColor.clone().multiplyScalar(0.2), 
                     emissive: 0x000000,   
                     emissiveIntensity: 0, 
                     roughness: 0.2,
-                    metalness: 0.5
+                    metalness: 0.5,
+                    transparent: true,
+                    opacity: 0 // Invisible base (Static "light pin dots" removed)
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -648,9 +648,9 @@ export class IcosahedronScene {
         this.controls.enableZoom = true;
         this.controls.autoRotate = false;
         
-        // Prevent "disappearing" issue
-        this.controls.minDistance = 2.5;  // Don't clip inside sphere
-        this.controls.maxDistance = 10.0; // Don't lose it in void
+        // Prevent "disappearing" issue (Widened Range v1.992)
+        this.controls.minDistance = 2.0;  // Closer approach allowed
+        this.controls.maxDistance = 20.0; // Further zoom allowed
     }
 
     handleResize() {
