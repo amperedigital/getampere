@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.937 - 2026-01-21
+- **Design Two Optimization (Flat + Fat)**:
+  - **Performance**: Replaced 3D `TubeGeometry` (high poly) with `LineSegments2` (Fat Lines) which are billboarded flat lines with width.
+  - **Density**: Reduced `numChips` from 150 to 60 to significantly lower draw calls and server load.
+  - **Visuals**: Used `linewidth` of 2.5 to maintain the "dense" feel despite fewer actual lines.
+  - **Circuitry**: Updated animation loop to handle `LineMaterial` opacity/color pulses instead of Mesh properties.
+
 ## v1.936 - 2026-01-21
 - **Design Two Tweak**:
   - **Electrons**: Changed electron shape from squares (`BoxGeometry`) to pulse dots (`SphereGeometry`).

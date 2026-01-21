@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 
 export class IcosahedronScene {
     constructor(container) {
@@ -7,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.1");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.2");
 
         this.initScene();
         this.initLights();
@@ -20,7 +23,7 @@ export class IcosahedronScene {
     initScene() {
         // Scene setup
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x05060f); // Dark background matching project theme
+        this.scene.background = new THREE.Color(0x05060f); 
 
         // Camera setup
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
@@ -34,16 +37,13 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Ambient Light (Cool Blue)
         const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
         this.scene.add(ambientLight);
 
-        // Single Main Soft Spotlight (Cool White)
-        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); // Brighter spot for contrast
-
+        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
         spotLight.position.set(-10, 10, 10);
-        spotLight.angle = Math.PI / 3; // Wide angle (60 deg)
-        spotLight.penumbra = 1.0; // Max softness/diffusion
+        spotLight.angle = Math.PI / 3; 
+        spotLight.penumbra = 1.0;
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
@@ -53,15 +53,14 @@ export class IcosahedronScene {
         this.group = new THREE.Group();
         this.scene.add(this.group);
 
-        // Low-density Polygon Sphere (Icosahedron Detail 1: 42 vertices, 80 faces)
         const radius = 1.5;
-        const detail = 1; // 1 = "Sphere with dimples" / Low-poly sphere
+        const detail = 1; 
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
 
-        // 1. Lattice (Wireframe) - Silver Blue
+        // 1. Lattice 
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0x88b0d1, // Silver Blue
+            color: 0x88b0d1, 
             linewidth: 1,
             opacity: 1,
             transparent: false
@@ -70,51 +69,42 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh Texture Approach (Fine Grid)
-        // Using a highly repeated grid texture to simulate a fine mesh screen
+        // 1b. Mesh Texture Approach
         const canvas = document.createElement('canvas');
         canvas.width = 64; 
         canvas.height = 64;
         const ctx = canvas.getContext('2d');
         
-        // Transparent BG
         ctx.clearRect(0, 0, 64, 64);
-        
-        // Very thin, sharp mesh lines
         ctx.strokeStyle = '#ffffff'; 
-        ctx.lineWidth = 1; // Thinnest possible line
+        ctx.lineWidth = 1; 
         ctx.beginPath();
         
-        // Draw cross-hatch
-        // Horizontal
         ctx.moveTo(0, 32); ctx.lineTo(64, 32);
-        // Vertical
         ctx.moveTo(32, 0); ctx.lineTo(32, 64);
         ctx.stroke();
 
         const meshTexture = new THREE.CanvasTexture(canvas);
         meshTexture.wrapS = THREE.RepeatWrapping;
         meshTexture.wrapT = THREE.RepeatWrapping;
-        // Adjusted density for smaller faces (Detail 1 faces are 1/4 size of Detail 0)
         meshTexture.repeat.set(15, 15); 
         meshTexture.anisotropy = 16;
         
         const meshMaterial = new THREE.MeshBasicMaterial({
             map: meshTexture,
-            color: 0x88b0d1,      // Silver Blue to match wireframe
+            color: 0x88b0d1,      
             transparent: true,
-            opacity: 0.5,         // Increased from 0.15 for better visibility
+            opacity: 0.5,         
             side: THREE.DoubleSide,
-            depthWrite: false,    // No occlusion
+            depthWrite: false,    
             blending: THREE.AdditiveBlending
         });
 
-        // Use same geometry (detail: 1) so it's perfectly flat against the faces
         const meshShell = new THREE.Mesh(geometry, meshMaterial);
-        meshShell.scale.setScalar(0.99); // Just barely inside the wires
+        meshShell.scale.setScalar(0.99); 
         this.group.add(meshShell);
 
-        // 2. Nodes (Vertices)
+        // 2. Nodes
         this.addNodes(geometry);
 
         // 3. Central Sphere
@@ -124,42 +114,29 @@ export class IcosahedronScene {
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
-        // Material: Dark Blue Metal
         const material = new THREE.MeshLambertMaterial({
-            color: 0x051a24,     // Dark Blue Metal
+            color: 0x051a24,     
             emissive: 0x000000,
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
         this.group.add(this.centralSphere);
         
-        // Add Procedural "Path" Circuitry
         this.initCircuitryPaths();
 
-        // Add an internal light to make the glass "active" - Blue
-        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8); // Electric Blue core light
+        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
         this.centralSphere.add(coreLight);
     }
 
     initCircuitryPaths() {
         this.circuitCurves = [];
-        this.circuitMeshes = []; // Store meshes to animate color
+        this.circuitMeshes = []; 
         this.electrons = [];
+        this.fatLines = []; // Keep track to update resolution
         
         const sphereRadius = 0.6;
         const surfaceRadius = sphereRadius + 0.005; 
         
-        // 1. Materials
-        // Tube Material for thicker traces
-        const traceMaterial = new THREE.MeshStandardMaterial({
-            color: 0x0a2a47, // Dark Base Color
-            emissive: 0x0a2a47, 
-            roughness: 0.4,
-            metalness: 0.8,
-            transparent: true,
-            opacity: 0.8,
-        });
-
         const getPos = (phi, theta, r) => {
             const x = r * Math.sin(phi) * Math.cos(theta);
             const y = r * Math.sin(phi) * Math.sin(theta);
@@ -167,18 +144,19 @@ export class IcosahedronScene {
             return new THREE.Vector3(x, y, z);
         };
 
-        // 2. PCB Logic - Higher Density
-        let numChips = 150; // Increased from 90 to 150 for density
+        // REDUCED DENSITY (Performance)
+        // Previous: 150 chips. New: 60 chips.
+        let numChips = 60; 
         
+        const baseColor = new THREE.Color(0x0a2a47);
+
         for(let i=0; i<numChips; i++) {
             let phi, theta;
 
-            if (i < 12) {
-                // North Pole
+            if (i < 6) { // Reduced polar caps
                 phi = Math.random() * 0.35; 
                 theta = Math.random() * Math.PI * 2;
-            } else if (i < 24) {
-                // South Pole
+            } else if (i < 12) {
                 phi = Math.PI - (Math.random() * 0.35);
                 theta = Math.random() * Math.PI * 2;
             } else {
@@ -186,16 +164,15 @@ export class IcosahedronScene {
                 theta = Math.random() * Math.PI * 2;
             }
             
-            // Increased traces per cluster
-            const tracesPerChip = 4 + Math.floor(Math.random() * 3); 
+            // Reduced traces: 2-4 instead of 4-7
+            const tracesPerChip = 2 + Math.floor(Math.random() * 3); 
             
             for (let t=0; t<tracesPerChip; t++) {
                 let currentPhi = phi + (Math.random() * 0.08 - 0.04);
                 let currentTheta = theta + (Math.random() * 0.08 - 0.04);
 
-                const numSegs = 5 + Math.floor(Math.random() * 6); 
+                const numSegs = 3 + Math.floor(Math.random() * 4); // Shorter paths
                 
-                // Trace Path Generation
                 for(let s=0; s<numSegs; s++) {
                     const isVertical = s % 2 === 0;
                     
@@ -221,23 +198,43 @@ export class IcosahedronScene {
                         currentTheta = nextTheta;
                     }
                     
-                    // Build Geometry - Tube for Width
                     const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
                     this.circuitCurves.push(curve);
 
-                    // TubeGeometry for physical width
-                    // path, tubularSegments, radius (width), radialSegments, closed
-                    const tubeGeo = new THREE.TubeGeometry(curve, 4, 0.003, 4, false); // Radius 0.003 gives thickness
+                    // Switch to FAT LINES (Line2)
+                    // We need a series of points for LineGeometry
+                    const points = curve.getPoints(10); // 10 points per segment
+                    const positions = [];
+                    points.forEach(p => positions.push(p.x, p.y, p.z));
+
+                    const geometry = new LineGeometry();
+                    geometry.setPositions(positions);
+
+                    const mat = new LineMaterial({
+                        color: 0x0a2a47,
+                        linewidth: 2.5, // Thicker = Density
+                        worldUnits: false, // Use screen space pixels for consistent visibility at distance? 
+                                           // User said "really can't see it unless close up". 
+                                           // Screen space ensures they are visible from far away! 
+                                           // But user said "keep thickness to keep density". 
+                                           // Let's try worldUnits: false (pixels) first, maybe 3px.
+                        dashed: false,
+                        alphaToCoverage: true,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+
+                    // Set resolution for LineMaterial
+                    mat.resolution.set(this.width, this.height);
+
+                    const line = new Line2(geometry, mat);
+                    line.computeLineDistances();
                     
-                    // Material clone for individual animation (or use instance colors if perf needed, but cloning material is easier for now with < 1000 objects)
-                    const mat = traceMaterial.clone(); 
-                    const trace = new THREE.Mesh(tubeGeo, mat);
+                    line.userData = { intensity: 0 }; 
                     
-                    // Store intensity data
-                    trace.userData = { intensity: 0 }; 
-                    
-                    this.centralSphere.add(trace);
-                    this.circuitMeshes.push(trace);
+                    this.centralSphere.add(line);
+                    this.circuitMeshes.push(line);
+                    this.fatLines.push(mat); 
                 }
             }
         }
@@ -256,7 +253,8 @@ export class IcosahedronScene {
             depthWrite: false
         });
 
-        const numElectrons = 150; 
+        // Reduced electrons slightly too to match simpler network
+        const numElectrons = 80; 
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             
@@ -386,6 +384,13 @@ export class IcosahedronScene {
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
+            
+            // Update Fat Lines resolution
+            if (this.fatLines) {
+                 this.fatLines.forEach(mat => {
+                     mat.resolution.set(this.width, this.height);
+                 });
+            }
         });
     }
 
@@ -424,6 +429,7 @@ export class IcosahedronScene {
                 sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
 
+            // Circuitry Animation
             if (this.circuitCurves && this.electrons) {
                 const activityLevel = sphereActiveFactor; 
 
@@ -437,20 +443,20 @@ export class IcosahedronScene {
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
                             
-                            // Emissive approach for MeshStandardMaterial
+                            // Color interpolation for LineMaterial (no emissive)
                             const intensity = mesh.userData.intensity;
                             const r = baseR + (0.0 - baseR) * intensity;   // -> 0 (Cyan R base)
-                            const g = baseG + (0.5 - baseG) * intensity;   // -> 0.5 (Cyan G mid)
+                            const g = baseG + (0.6 - baseG) * intensity;   // -> 0.6 (Cyan G mid)
                             const b = baseB + (1.0 - baseB) * intensity;   // -> 1.0 (Cyan B max)
                             
-                            // Update Emissive Color
-                            mesh.material.emissive.setRGB(r, g, b);
-                            // Also bump brightness via color slightly
-                            mesh.material.color.setRGB(r*0.5, g*0.5, b*0.5);
+                            mesh.material.color.setRGB(r, g, b);
+                            // Also adjust opacity for better flash
+                            mesh.material.opacity = 0.8 + (0.2 * intensity);
 
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
-                            mesh.material.emissive.setRGB(baseR, baseG, baseB);
+                            mesh.material.color.setRGB(baseR, baseG, baseB);
+                            mesh.material.opacity = 0.8;
                         }
                     });
                 }
@@ -460,7 +466,8 @@ export class IcosahedronScene {
                         if (e.delay > 0) {
                             e.delay--;
                         } else {
-                             if (Math.random() < (0.01 + activityLevel * 0.2)) {
+                             // Lower probability due to fewer circuits, but scale with load
+                             if (Math.random() < (0.02 + activityLevel * 0.1)) {
                                  e.active = true;
                                  e.curveIndex = Math.floor(Math.random() * this.circuitCurves.length);
                                  e.t = 0;
@@ -479,15 +486,13 @@ export class IcosahedronScene {
                         if (e.t >= 1.0) {
                             e.active = false;
                             e.mesh.visible = false;
-                            e.delay = Math.random() * 20;
+                            e.delay = Math.random() * 30;
                         } else {
                             const curve = this.circuitCurves[e.curveIndex];
                             if (curve) {
                                 const pos = curve.getPoint(e.t);
                                 e.mesh.position.copy(pos);
-                                
-                                const tangent = curve.getTangent(e.t).normalize();
-                                e.mesh.lookAt(pos.clone().add(tangent));
+                                // Electrons are spheres now, rotation not needed strictly but good practice
                             }
                         }
                     }
