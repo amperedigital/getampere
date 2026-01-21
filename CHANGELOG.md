@@ -1,3 +1,8 @@
+## v2.013 - 2026-01-21
+- **UI Update**: Inactive buttons are now lighter/visible (#cccccc) based on user feedback.
+- **Standby Mode Refined**: All static nodes now pulse in unison with a breathing/heartbeat animation.
+- **Power On Sequence**: Added gradual transition (lerp) for power-on state (slower ramp-up).
+- **Cleanup**: Removed the SpotLight (distracting dot) as requested.
 ## v2.012 - 2026-01-21
 - **UI Update**: Repositioned System Control to Bottom Center (Above Title).
 - **Feature (Standby Mode)**: Added "Standby" state.

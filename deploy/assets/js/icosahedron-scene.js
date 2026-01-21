@@ -53,7 +53,9 @@ export class IcosahedronScene {
             btn.style.background = 'transparent';
             btn.style.border = 'none';
             btn.style.borderRight = '1px solid #333';
-            btn.style.color = '#555';
+            // Default color for inactive state - brighter per user request
+            btn.style.color = '#cccccc'; 
+            
             btn.style.padding = '6px 12px';
             btn.style.fontFamily = 'monospace';
             btn.style.fontSize = '11px';
@@ -71,10 +73,15 @@ export class IcosahedronScene {
         this.container.appendChild(container);
         
         // Initialize UI state
+        // Start OFF or STANDBY? Let's stick to ACTIVE on load, but we can set default.
         this.setSystemState('ACTIVE');
     }
 
     setSystemState(newState) {
+        // Determine transition speed based on target state
+        // ACTIVE = Slow (Gradual power on), OTHERS = Fast
+        this.lerpSpeed = (newState === 'ACTIVE') ? 0.005 : 0.05;
+
         this.systemState = newState;
 
         // Update UI
@@ -82,24 +89,30 @@ export class IcosahedronScene {
             const btn = this.uiButtons[key];
             if (key === newState) {
                 btn.style.background = 'rgba(0, 170, 255, 0.2)';
-                btn.style.color = '#00aaff';
+                btn.style.color = '#ffffff'; // Active Text White
+                btn.style.textShadow = '0 0 5px #00aaff';
             } else {
                 btn.style.background = 'transparent';
-                btn.style.color = '#555';
+                btn.style.color = '#888888'; // Inactive Text Gray (slightly dimmed)
+                btn.style.textShadow = 'none';
             }
         });
 
         if (newState === 'ACTIVE') {
-            this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 };
+            this.lightTargets = { ambient: 0.2, core: 0.4 };
         } else if (newState === 'STANDBY') {
-            // Dim but visible, core will pulse
-            this.lightTargets = { ambient: 0.05, spot: 2.0, core: 0.2 };
+            // Dim but visible (No Spot), core will pulse
+            this.lightTargets = { ambient: 0.05, core: 0.2 };
             // Clear electrons
             this.clearElectrons();
         } else {
             // OFF
-            this.lightTargets = { ambient: 0, spot: 0, core: 0 };
+            this.lightTargets = { ambient: 0, core: 0 };
             this.clearElectrons();
+            
+            // Ensure Nodes are dark in OFF state immediately? 
+            // Or let animation loop handle it (pulse logic needs to stop).
+            // We handle node brightness in animate loop.
         }
     }
 
@@ -136,13 +149,7 @@ export class IcosahedronScene {
         this.ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
         this.scene.add(this.ambientLight);
 
-        this.spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
-        this.spotLight.position.set(-10, 10, 10);
-        this.spotLight.angle = Math.PI / 3; 
-        this.spotLight.penumbra = 1.0;
-        this.spotLight.decay = 2;
-        this.spotLight.distance = 50;
-        this.scene.add(this.spotLight);
+        // SpotLight Removed per user feedback ("Distracting dot")
     }
 
     initGeometry() {
@@ -608,26 +615,24 @@ export class IcosahedronScene {
         
         this.controls.update();
 
+        const lerpFactor = this.lerpSpeed || 0.05;
+
         // --- Light & State Logic ---
         if (this.lightTargets) {
             // Lerp Ambient
-            this.ambientLight.intensity += (this.lightTargets.ambient - this.ambientLight.intensity) * 0.05;
-            // Lerp Spot
-            this.spotLight.intensity += (this.lightTargets.spot - this.spotLight.intensity) * 0.05;
+            this.ambientLight.intensity += (this.lightTargets.ambient - this.ambientLight.intensity) * lerpFactor;
+            // No Spot Light anymore
             
             // Core Logic
             let targetCore = this.lightTargets.core;
             if (this.systemState === 'STANDBY') {
-                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.04;
-                // Heartbeat Pulse: Base 0.2, sine wave +/- 0.1
-                const pulse = Math.sin(this.standbyPulseTimer) * 0.5 + 0.5; // 0 to 1
-                // We want a "beat-beat-pause" or just a slow breathe? 
-                // "Heartbeat" usually implies double beat. 
-                // Let's go with slow breather for "Standby" to be calm. 
-                // Sine wave range [0.1, 0.4]
+                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.03; // Slower beat
+                // Heartbeat Pulse for Core (and now Nodes)
+                // Use a "lub-dub" double pulse or just smooth limit?
+                // Let's do smooth sine [0.1 to 0.4]
                 targetCore = 0.15 + (Math.sin(this.standbyPulseTimer) * 0.15);
             }
-            this.coreLight.intensity += (targetCore - this.coreLight.intensity) * 0.05;
+            this.coreLight.intensity += (targetCore - this.coreLight.intensity) * lerpFactor;
         }
 
         if (this.nodes) {
@@ -708,53 +713,82 @@ export class IcosahedronScene {
             // --- NEURAL ACTIVITY (Node Flashing) ---
             const dark = new THREE.Color(0x000000);
 
+            // STANDBY PULSE CALCULATION (Global for all nodes)
+            let standbyIntensity = 0;
+            if (this.systemState === 'STANDBY') {
+                // Same pulse as Core Light: [0.2 to 0.8] intensity?
+                // Scale range [0 to 1]
+                const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
+                standbyIntensity = 0.2 + (pulse * 0.4); // Min 0.2, Max 0.6
+            }
+
             this.nodes.forEach(node => {
                 const data = node.userData;
 
-                if (data.firingState <= 0) {
-                    if (data.fireCooldown > 0) {
-                        data.fireCooldown -= 1; // Slower cooldown (was 2)
-                    } else {
-                        // Reduced firing chance (was 0.06)
-                        if (this.systemState === 'ACTIVE' && Math.random() < 0.02) {
-                            data.firingState = 1.0; 
-                            data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
+                // ACTIVE LOGIC
+                if (this.systemState === 'ACTIVE') {
+                    if (data.firingState <= 0) {
+                        if (data.fireCooldown > 0) {
+                            data.fireCooldown -= 1; // Slower cooldown (was 2)
+                        } else {
+                            // Reduced firing chance (was 0.06)
+                            if (Math.random() < 0.02) {
+                                data.firingState = 1.0; 
+                                data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
+                            }
                         }
+                    } else {
+                        // Slower decay for a "slower" flash (was 0.75)
+                        data.firingState *= 0.92; 
+                        if (data.firingState < 0.01) data.firingState = 0;
                     }
+
+                    let proximityIntensity = 0; 
+                    let proximityScale = 0;
+                    
+                    if (node === bestNode) {
+                        node.getWorldPosition(tempV);
+                        tempV.project(this.camera);
+                        const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
+                        const factor = 1 - (dist / maxDist);
+                        proximityIntensity = Math.pow(factor, 2) * 2.0; 
+                        proximityScale = factor * 0.4;
+                    }
+
+                    const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
+                    
+                    // Use the stored RANDOM color for this node
+                    node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
+                    node.material.emissiveIntensity = combinedIntensity;
+
+                    // Update Halo Opacity - Subtle "Tiny" Effect
+                    if (data.halo) {
+                        // Only visible when lit, max opacity 0.4 for subtlety
+                        data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
+                    }
+
+                    const currentScale = node.scale.x;
+                    const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 
+                    const newScale = currentScale + (targetScale - currentScale) * 0.4; 
+                    node.scale.setScalar(newScale);
+
+                } else if (this.systemState === 'STANDBY') {
+                    // STANDBY LOGIC: All nodes pulse together
+                    // Use baseColor but dim
+                    node.material.emissive.lerpColors(dark, data.baseColor, 0.5); // 50% saturation
+                    node.material.emissiveIntensity = standbyIntensity;
+                    
+                    if (data.halo) {
+                        data.halo.material.opacity = standbyIntensity * 0.3; 
+                    }
+                    node.scale.setScalar(1.0); // Reset scale
+
                 } else {
-                    // Slower decay for a "slower" flash (was 0.75)
-                    data.firingState *= 0.92; 
-                    if (data.firingState < 0.01) data.firingState = 0;
+                    // OFF LOGIC
+                    node.material.emissiveIntensity = 0;
+                    if (data.halo) data.halo.material.opacity = 0;
+                    node.scale.setScalar(1.0);
                 }
-
-                let proximityIntensity = 0; 
-                let proximityScale = 0;
-                
-                if (this.systemState === 'ACTIVE' && node === bestNode) {
-                    node.getWorldPosition(tempV);
-                    tempV.project(this.camera);
-                    const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
-                    const factor = 1 - (dist / maxDist);
-                    proximityIntensity = Math.pow(factor, 2) * 2.0; 
-                    proximityScale = factor * 0.4;
-                }
-
-                const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
-                
-                // Use the stored RANDOM color for this node
-                node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
-                node.material.emissiveIntensity = combinedIntensity;
-
-                // Update Halo Opacity - Subtle "Tiny" Effect
-                if (data.halo) {
-                    // Only visible when lit, max opacity 0.4 for subtlety
-                    data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
-                }
-
-                const currentScale = node.scale.x;
-                const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 
-                const newScale = currentScale + (targetScale - currentScale) * 0.4; 
-                node.scale.setScalar(newScale);
             });
         }
 
