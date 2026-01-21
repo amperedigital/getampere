@@ -1,4 +1,8 @@
 ## v2.009 - 2026-01-21
+- **Cleanup**: Removed duplicate file `deploy/Icosahedron.html`.
+    - **Consolidation**: `deploy/icosahedron.html` (lowercase) is the canonical source.
+
+## v2.009 - 2026-01-21
 - **Cleanup**: Removed legacy/redundant files (`icosahedron-blue-silver.html` and `icosahedron-scene-blue-silver.js`).
     - **Why**: Maintaining a Single Source of Truth for the 3D scene.
 
