@@ -937,3 +937,9 @@
 ## [v1.948] - 2026-01-21
 - **Visuals**: Implemented "Neuron Firing" animation on vertices. Nodes rest at a pale white state and randomly pulse effectively to a bright yellow-white (`0xffffaa`).
 - **Logic**: Vertex pulsation is independent but blends with the existing viewport-proximity highlight system.
+
+## [v1.949] - 2026-01-21
+### Changed
+- **Visuals**: Removed atmospheric glow shell (`meshShell`) from Icosahedron scene for a cleaner, "naked bulb" look.
+- **Lighting**: Changed node firing color from warm yellow-white to cool LED white-blue (`0xaaddff`).
+- **Animation**: Made node firing decay faster (0.9 factor) and removed sprite glows to simulate snappy LED behavior.

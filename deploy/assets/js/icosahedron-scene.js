@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.6 (Neuron Nodes)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.7 (LED Neurons)");
 
         this.initScene();
         this.initLights();
@@ -66,7 +66,7 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh Texture Approach (Subtle background grid)
+        // 1b. Mesh Texture Approach
         const canvas = document.createElement('canvas');
         canvas.width = 128; 
         canvas.height = 128;
@@ -274,6 +274,9 @@ export class IcosahedronScene {
         const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
+        // Use simple small scale for electrons, no sprites? 
+        // User asked to remove GLOW from nodes, not electrons. 
+        // But let's keep electrons as is for now, they are small.
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
@@ -320,16 +323,8 @@ export class IcosahedronScene {
         
         this.nodes = [];
         
-        const glowTexture = this.createGlowTexture();
-        const glowMaterial = new THREE.SpriteMaterial({ 
-            map: glowTexture, 
-            color: 0xffffaa, // Yellow-white glow
-            transparent: true, 
-            opacity: 0,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
-        });
-
+        // NO sprites/glows for nodes anymore.
+        
         const uniquePoints = [];
         const threshold = 0.001;
 
@@ -347,12 +342,12 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
+                // Nodes are small bulbs
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
                 
-                // NEURON STYLING: Start "White-ish" but inactive
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0xddeeff,      // Base pale white/blue
-                    emissive: 0x000000,   // Starts dark (no glow)
+                    color: 0xddeeff,      
+                    emissive: 0x000000,   
                     emissiveIntensity: 0, 
                     roughness: 0.2,
                     metalness: 0.5
@@ -361,15 +356,11 @@ export class IcosahedronScene {
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                 node.position.copy(vertex);
                 
-                const sprite = new THREE.Sprite(glowMaterial.clone());
-                sprite.scale.set(0.6, 0.6, 0.6); 
-                sprite.visible = false; 
-                node.add(sprite); 
+                // NO SPRITE ADDED
 
-                // Neuron Firing State
+                // LED Firing State
                 node.userData = {
-                    sprite: sprite,
-                    firingState: 0, // 0 = inactive, >0 = firing amplitude
+                    firingState: 0, 
                     fireCooldown: Math.random() * 300, 
                     baseScale: 1.0
                 };
@@ -380,6 +371,7 @@ export class IcosahedronScene {
         }
     }
 
+    // Still need this for electrons
     createGlowTexture() {
         const canvas = document.createElement('canvas');
         canvas.width = 64;
@@ -387,8 +379,8 @@ export class IcosahedronScene {
         const context = canvas.getContext('2d');
         
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(255, 255, 200, 1)'); 
-        gradient.addColorStop(0.4, 'rgba(255, 200, 50, 0.4)'); 
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
+        gradient.addColorStop(0.4, 'rgba(100, 200, 255, 0.4)'); 
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
 
         context.fillStyle = gradient;
@@ -450,10 +442,7 @@ export class IcosahedronScene {
             let bestNode = null;
             let sphereActiveFactor = 0; 
             if (candidates.length > 0) {
-                candidates.sort((a, b) => a.z - b.z); // Z sort? Actually closer z is smaller? In camera space z is negative?
-                // Actually closest to camera in screen space is just low dist magnitude, 
-                // but if we want front-facing, we check Z. 
-                // Let's stick to user's "viewport" logic which was working.
+                candidates.sort((a, b) => a.z - b.z);
                 bestNode = candidates[0].node;
                 sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
@@ -462,7 +451,6 @@ export class IcosahedronScene {
 
             // Circuitry
             if (this.paths && this.electrons) {
-                // ... (existing electron logic) ...
                 if (this.circuitMeshes) {
                     const baseR = 0.04; const baseG = 0.23; const baseB = 0.37;
                     this.circuitMeshes.forEach(mesh => {
@@ -508,14 +496,14 @@ export class IcosahedronScene {
                 });
             }
 
-            // --- NEURON NODE LOGIC ---
-            const yellow = new THREE.Color(0xffffaa);
+            // --- LED NODE LOGIC ---
+            // White-Blue cool light
+            const ledColor = new THREE.Color(0xaaddff); 
             const dark = new THREE.Color(0x000000);
 
             this.nodes.forEach(node => {
                 const data = node.userData;
 
-                // 1. Calculate random firing
                 if (data.firingState <= 0) {
                     if (data.fireCooldown > 0) {
                         data.fireCooldown--;
@@ -523,16 +511,15 @@ export class IcosahedronScene {
                         // FIRE!
                         if (Math.random() < 0.02) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 60 + Math.random() * 300; // Random interval
+                            data.fireCooldown = 60 + Math.random() * 300; 
                         }
                     }
                 } else {
-                    // Decay firing
-                    data.firingState *= 0.94; // Fast pulse check
+                    // Decay firing - LED style defaults slightly faster
+                    data.firingState *= 0.9; 
                     if (data.firingState < 0.01) data.firingState = 0;
                 }
 
-                // 2. Base Viewport Highlight (Logic from before)
                 let proximityIntensity = 0; 
                 let proximityScale = 0;
                 
@@ -545,34 +532,18 @@ export class IcosahedronScene {
                     proximityScale = factor * 0.4;
                 }
 
-                // 3. Combine Forces
-                // The "Firing" overrides the "Passive Proximity" if it's stronger
-                const combinedIntensity = Math.max(proximityIntensity, data.firingState * 3.0);
+                // Increase intensity multiplier for that "bright light bulb" look
+                const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
                 
-                // Color Logic: Mix Dark -> Yellow based on intensity
-                // Emissive is additive.
-                // If firing, we want bright yellow/white.
-                
-                node.material.emissive.lerpColors(dark, yellow, Math.min(1.0, combinedIntensity));
+                node.material.emissive.lerpColors(dark, ledColor, Math.min(1.0, combinedIntensity));
                 node.material.emissiveIntensity = combinedIntensity;
 
-                // Scale Logic
                 const currentScale = node.scale.x;
-                const targetScale = 1.0 + proximityScale + (data.firingState * 0.5);
-                const newScale = currentScale + (targetScale - currentScale) * 0.1;
+                const targetScale = 1.0 + proximityScale + (data.firingState * 0.3); // Less scale popping for LEDs
+                const newScale = currentScale + (targetScale - currentScale) * 0.2; // Snappier scale
                 node.scale.setScalar(newScale);
 
-                // Sprite/Glow Logic
-                const sprite = data.sprite;
-                const glowOpacity = Math.max(proximityIntensity * 0.5, data.firingState);
-                
-                if (glowOpacity > 0.05) {
-                    sprite.visible = true;
-                    sprite.material.opacity = glowOpacity;
-                    sprite.scale.setScalar(0.8 * newScale); 
-                } else {
-                    sprite.visible = false;
-                }
+                // NO SPRITE UPDATE because it was removed
             });
         }
 
