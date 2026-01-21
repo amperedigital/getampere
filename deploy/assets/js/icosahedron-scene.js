@@ -130,8 +130,8 @@ export class IcosahedronScene {
             let gridTheta = startGridTheta;
             
             const lanes = 1 + Math.floor(Math.random() * 3); 
-            // Much longer buses for 360-degree feel (15-40 steps)
-            const busSteps = 15 + Math.floor(Math.random() * 25); 
+            // Much longer buses loop count, but shorter steps
+            const busSteps = 30 + Math.floor(Math.random() * 40); 
             
             let dir = Math.random() > 0.5 ? 'H' : 'V'; 
             
@@ -163,7 +163,8 @@ export class IcosahedronScene {
             }
 
             for (let s = 0; s < busSteps; s++) {
-                let stepLen = 4 + Math.floor(Math.random() * 10); 
+                // Shorter segments for finer animation sync (2-5 units)
+                let stepLen = 2 + Math.floor(Math.random() * 4); 
                 
                 let dPhi = 0;
                 let dTheta = 0;
@@ -478,7 +479,7 @@ export class IcosahedronScene {
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             if (this.lightsActive) {
-                                mesh.userData.intensity *= 0.96; // Slower cool-down (was 0.92)
+                                mesh.userData.intensity *= 0.82; // Faster cool-down for shorter trails
                             } else {
                                 mesh.userData.intensity = 0; // Force off quickly
                             }
@@ -508,7 +509,8 @@ export class IcosahedronScene {
                                  e.routeIndex = Math.floor(Math.random() * this.routes.length);
                                  e.segmentIndex = 0;
                                  e.t = 0; 
-                                 e.speed = 0.005 + Math.random() * 0.015 + (activityLevel * 0.01); 
+                                 // Slightly faster base speed to compensate for shorter segments
+                                 e.speed = 0.02 + Math.random() * 0.03 + (activityLevel * 0.02); 
                                  e.mesh.visible = true;
                             }
                         }

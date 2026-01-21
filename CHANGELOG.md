@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.973 - 2026-01-21
+- **Design Two Animation (Precise Sync)**:
+  - **Segmentation**: Drastically reduced the length of individual circuit segments (`4-14` -> `2-5` grid units).
+  - **Effect**: Shorter segments mean the "lit" portion of the wire is much closer to the actual position of the electron pulse, solving the "light running ahead" desync issue.
+  - **Trail Handling**: Increased the cooling rate (`0.96` -> `0.82`) so trails fade out quickly behind the electron, preventing the "always lit" look.
+  - **Pulse Speed**: Adjusted electron speed to match the new shorter segment lengths for smooth traversal.
+  - **Bus Length**: Increased the number of steps per bus (`15-40` -> `30-70`) so that even with shorter segments, the overall visual path remains long and continuous across the sphere.
+
 ## v1.972 - 2026-01-21
 - **Design Two Visuals (Pads)**:
   - **Pad Size**: Increased circuit intersection pads by 50% (`0.0084` -> `0.0126`). This improves the visual connection between segments and hides joints.
