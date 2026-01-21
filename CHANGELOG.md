@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.975 - 2026-01-21
+- **Design Two Visuals (Connected Illumination)**:
+  - **Pad Linking**: Refactored the circuit generation logic to link pad meshes to their corresponding wire segments.
+  - **Seamless Traces**: Pads now light up in perfect synchronization with their connected wire segments, ensuring a continuous, unbroken beam of light as the electron travels. No more "dark corners" between lit segments.
+  - **Cleanup**: Removed redundant pad generation loops, resulting in optimized geometry count.
+
 ## v1.974 - 2026-01-21
 - **Design Two Visuals (Invisible Start State)**:
   - **Trace Visibility**: Changed the initial state of all circuit traces and pads to be **completely invisible** (opacity 0). They now only appear when energized by an electron pulse.

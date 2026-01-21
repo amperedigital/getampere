@@ -147,6 +147,7 @@ export class IcosahedronScene {
             let laneHeads = [];
             let laneRoutes = []; // Array of arrays to store segments per lane
             let laneCollided = false; // Flag to stop lane generation if collision occurs
+            let laneLastPads = []; // Track chain
 
             for (let l = 0; l < lanes; l++) {
                 laneRoutes.push([]); // Init route for this lane
@@ -154,17 +155,10 @@ export class IcosahedronScene {
                 let lPhi = gridPhi;
                 let lTheta = gridTheta;
                 
-                if (dir === 'H') {
-                    lPhi += l; 
-                } else {
-                    lTheta += l; 
-                }
+                if (dir === 'H') { lPhi += l; } else { lTheta += l; }
                 
-                // Reserve start points
                 if (gridMap.has(`${lPhi},${lTheta}`)) {
                     laneCollided = true;
-                    // If a parallel lane collides at start, we might skip the whole bus or just this lane
-                    // For simplicity, let's mark it collided and not generate
                 }
                 gridMap.add(`${lPhi},${lTheta}`); // Mark occupied
 
@@ -174,60 +168,53 @@ export class IcosahedronScene {
                 laneHeads.push({ phi: phiVal, theta: thetaVal, gridPhi: lPhi, gridTheta: lTheta });
 
                 const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
-                const pad = new THREE.Mesh(padGeometry, padMaterial);
+                const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
+                pad.material.transparent = true;
+                pad.material.opacity = 0; // INVISIBLE START STATE
                 pad.position.copy(pos);
                 pad.lookAt(new THREE.Vector3(0,0,0));
                 this.centralSphere.add(pad);
-                this.pads.push({ mesh: pad, intensity: 0 }); // Track for animation
+                
+                const padObj = { mesh: pad, intensity: 0 };
+                this.pads.push(padObj); 
+                laneLastPads.push(padObj);
             }
 
             if (laneCollided) continue; 
 
             for (let s = 0; s < busSteps; s++) {
-                // Shorter segments for finer animation sync (2-5 units)
+                // Shorter segments
                 let stepLen = 2 + Math.floor(Math.random() * 4); 
                 
                 let dPhi = 0;
                 let dTheta = 0;
                 
                 if (dir === 'H') { 
-                    let sign = Math.random() > 0.5 ? 1 : -1;
-                    dTheta = stepLen * sign;
+                    dTheta = stepLen * (Math.random() > 0.5 ? 1 : -1);
                 } else { 
-                    let sign = Math.random() > 0.5 ? 1 : -1;
-                    dPhi = stepLen * sign;
+                    dPhi = stepLen * (Math.random() > 0.5 ? 1 : -1);
                 }
                 
-                // Check all lanes for impending collision before drawing
                 let stepValid = true;
-                
-                // Copy heads to simulate step
                 const nextHeads = [];
                 for(let l = 0; l < lanes; l++) {
                     const head = laneHeads[l];
-                    // Calculate target
                     let targetGridPhi = head.gridPhi + dPhi;
                     let targetGridTheta = head.gridTheta + dTheta; 
                     targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
                     
-                    // Simple collision check: just check the destination point
-                    // A rigorous check would trace the whole line, but grid points are dense enough
                     if (gridMap.has(`${targetGridPhi},${targetGridTheta}`)) {
                         stepValid = false;
                     }
                     nextHeads.push({gridPhi: targetGridPhi, gridTheta: targetGridTheta});
                 }
 
-                if (!stepValid) {
-                    // Stop this bus if we hit something
-                    break;
-                }
+                if (!stepValid) break;
 
                 for(let l = 0; l < lanes; l++) {
                     const head = laneHeads[l];
                     const next = nextHeads[l];
 
-                    // Mark new point as occupied
                     gridMap.add(`${next.gridPhi},${next.gridTheta}`);
                     
                     const targetPhi = next.gridPhi * phiStepSize;
@@ -256,8 +243,8 @@ export class IcosahedronScene {
                         dashed: false,
                         alphaToCoverage: false,
                         transparent: true,
-                        opacity: 0.0, // INVISIBLE START STATE
-                        depthWrite: false, // Fix for dashed/stippled artifact
+                        opacity: 0.0, 
+                        depthWrite: false, 
                         depthTest: true
                     });
                     
@@ -271,11 +258,25 @@ export class IcosahedronScene {
                     this.circuitMeshes.push(line);
                     this.fatLines.push(mat);
 
+                    // END PAD for this segment
+                    const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
+                    const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
+                    pad.material.opacity = 0; 
+                    pad.material.transparent = true;
+                    pad.position.copy(padPos);
+                    pad.lookAt(new THREE.Vector3(0,0,0));
+                    this.centralSphere.add(pad);
+                    
+                    const endPadObj = { mesh: pad, intensity: 0 };
+                    this.pads.push(endPadObj);
+
                     const pathObj = {
                          phiStart: head.phi, thetaStart: head.theta,
                          phiEnd: targetPhi, thetaEnd: targetTheta,
                          radius: surfaceRadius,
-                         mesh: line 
+                         mesh: line,
+                         startPad: laneLastPads[l], // Link previous pad
+                         endPad: endPadObj          // Link new pad
                     };
 
                     this.paths.push(pathObj);
@@ -285,17 +286,8 @@ export class IcosahedronScene {
                     head.theta = targetTheta;
                     head.gridPhi = next.gridPhi;
                     head.gridTheta = next.gridTheta;
-
-                    // Add intermediate pad at every turn/step
-                    const padPos = this.getPos(head.phi, head.theta, surfaceRadius);
-                    const pad = new THREE.Mesh(padGeometry, padMaterial);
-                    pad.position.copy(padPos);
-                    pad.lookAt(new THREE.Vector3(0,0,0));
-                    pad.material = padMaterial.clone(); // Clone for individual fading
-                    pad.material.opacity = 0; // INVISIBLE START STATE
-                    pad.material.transparent = true;
-                    this.centralSphere.add(pad);
-                    this.pads.push({ mesh: pad, intensity: 0 });
+                    
+                    laneLastPads[l] = endPadObj;
                 }
                 
                 dir = (dir === 'H') ? 'V' : 'H';
@@ -305,19 +297,6 @@ export class IcosahedronScene {
             laneRoutes.forEach(route => {
                 if (route.length > 0) this.routes.push(route);
             });
-
-            for(let l=0; l<lanes; l++) {
-                 const head = laneHeads[l];
-                 const pos = this.getPos(head.phi, head.theta, surfaceRadius);
-                 const pad = new THREE.Mesh(padGeometry, padMaterial);
-                 pad.position.copy(pos);
-                 pad.lookAt(new THREE.Vector3(0,0,0));
-                 pad.material = padMaterial.clone(); 
-                 pad.material.opacity = 0; // INVISIBLE START STATE
-                 pad.material.transparent = true;
-                 this.centralSphere.add(pad);
-                 this.pads.push({ mesh: pad, intensity: 0 });
-            }
         }
 
         const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
@@ -595,21 +574,9 @@ export class IcosahedronScene {
                                     currentSegment.mesh.userData.intensity = 1.0;
                                 }
 
-                                // Iterate over pads near this segment to light them up
-                                // Since we don't have direct linkage, we can find pads by position or index if we stored it
-                                // Simplified approach: Since pads are added sequentially in generation, 
-                                // we could try to link them. For now, let's skip pad lighting or add it later if needed.
-                                
-                                // Better: In generation, link pads to pathObj or route.
-                                // Quick fix: Pulse pads are tricky without refactor. 
-                                // Let's leave pads dark or random pulse? 
-                                // Actually, let's skip pad pulsing for now or they will remain invisible.
-                                // Wait, user wants "line illumination". If pads are invisible, it might look odd at corners.
-                                // Let's assume pads should light up if lines do.
-                                
-                                // Refined approach: In generation, I added pads to this.pads but didn't link them to route.
-                                // Optimization: Next version should link pads to segments.
-
+                                // Linked Pads Illumination
+                                if (currentSegment.startPad) currentSegment.startPad.intensity = 1.0;
+                                if (currentSegment.endPad) currentSegment.endPad.intensity = 1.0;
 
                                 e.t += e.speed;
                                 
