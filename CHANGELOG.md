@@ -1,3 +1,8 @@
+## v2.027 - 2026-01-21
+- **UI Update**: Renamed "OFF" state to "POWER DOWN" on the toggle switch to better reflect the slow shutdown behavior.
+- **Animation Refinement**: Implemented sequential transition logic for Standby mode.
+    - **Logic**: The system now checks if the simulation intensity is still active (> 5%) before allowing the Standby pulse to fade in.
+    - **Effect**: Active -> (Fades to near zero) -> Standby Breathing fades in. This prevents the "breathing" from overlapping with the power-down fade.
 ## v2.026 - 2026-01-21
 - **Animation Tune**: Delayed the onset of the "Breathing" effect during the transition to Standby.
     - **Logic**: Applied a non-linear mixing curve (squared dampening) to the pulse amplitude for both the Central Orb and Nodes.

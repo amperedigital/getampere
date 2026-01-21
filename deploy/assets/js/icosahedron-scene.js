@@ -92,7 +92,7 @@ export class IcosahedronScene {
         const labelsData = [
             { id: 'STANDBY', label: 'STANDBY' },
             { id: 'ACTIVE', label: 'ON' },
-            { id: 'OFF', label: 'OFF' }
+            { id: 'OFF', label: 'POWER DOWN' }
         ];
         
         this.statePositions = { 'STANDBY': 0, 'ACTIVE': 1, 'OFF': 2 };
@@ -783,11 +783,19 @@ export class IcosahedronScene {
             }
 
             // Lerp Standby Mix
-            if (this.targetStandbyMix !== undefined) {
-                 this.standbyMix += (this.targetStandbyMix - this.standbyMix) * lerpFactor;
-            } else {
-                 this.standbyMix = (this.systemState === 'STANDBY') ? 1.0 : 0.0;
+            let targetDiff = (this.targetStandbyMix || 0) - this.standbyMix;
+            
+            // SEQUENTIAL TRANSITION LOGIC:
+            // If targetting STANDBY (target=1.0) and currently ACTIVE (simIntensity > 0.1),
+            // we FORCE the standbyMix target to 0.0 until the simulation has faded out.
+            // This guarantees: Active -> Power Down (Fade Out) -> Standby (Fade In Breathing)
+            if (this.targetStandbyMix > 0.5 && this.simIntensity > 0.05) {
+                 // Hold Mix at 0 while fading out chaos
+                 const holdTarget = 0.0;
+                 targetDiff = holdTarget - this.standbyMix;
             }
+
+            this.standbyMix += targetDiff * lerpFactor;
 
             // 2. Derive Lighting Directly (No Lag)
             // Ambient: Active(0.2) -> Standby(0.05) -> OFF(0.0)
@@ -798,12 +806,10 @@ export class IcosahedronScene {
             // Core: Active(0.4) -> Standby(Pulse) -> OFF(0.0)
             const activeCore = 0.4;
             
-            // Pulse Logic:
-            // We dampen the AC component (the breathing) using the square of the mix factor.
-            // This ensures the light fades down to a steady state FIRST, and then the breathing
-            // ramps up gently at the end of the transition, rather than wiggling actively during the fade.
-            const pulseAC = 0.35 * (this.standbyMix * this.standbyMix); // Non-linear ramp for breathing
-            const standbyPulseVal = 0.05 + (pulse * pulseAC); 
+            // Pulse: Standard mix logic now that we have sequential timing
+            // We can remove the squared dampening since the timing is now handled by the state machine above.
+            // Or keep it for extra smoothness. Let's keep it simple first.
+            const standbyPulseVal = 0.05 + (pulse * 0.35); 
             
             const currentCore = (this.simIntensity * activeCore) + (this.standbyMix * standbyPulseVal);
 
@@ -908,12 +914,7 @@ export class IcosahedronScene {
             if (this.standbyMix > 0.001) {
                 // Low floor (0.05) to High (0.4) - Deep breathing
                 // Re-use 'pulse' calculated at top of animate()
-                
-                // Match Core Light Logic: Square dampening on the AC component
-                // Fades down to steady -> then breathes
-                const pulseAC = 0.35 * (this.standbyMix * this.standbyMix);
-                
-                standbyIntensity = 0.05 + (pulse * pulseAC); 
+                standbyIntensity = 0.05 + (pulse * 0.35); 
                 // We multiply by standbyMix so it fades in/out
                 standbyIntensity *= this.standbyMix;
             }
