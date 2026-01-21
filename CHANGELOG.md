@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.970 - 2026-01-21
+- **Design Two Visuals (Rendering Clean-up)**:
+  - **Trace Fix**: Disabled `alphaToCoverage` on the circuit line material. This prevents the "dashed" artifacting seen when lines fade out or vary in opacity.
+- **Design Two Tuning (Node Timing)**:
+  - **Flash Interval**: Drastically increased the time between node flashes.
+    - Probability: `0.02` -> `0.005` (75% reduction).
+    - Cooldown: `15-65` frames -> `60-180` frames (Triple the pause duration).
+  - **Goal**: Make individual node events much rarer and spaced out.
+
 ## v1.969 - 2026-01-21
 - **Design Two Tuning (Speed Reduction)**:
   - **Electron Speed**: Halved the travel speed of electrons along the paths (Base `0.005`, Max `0.02`).

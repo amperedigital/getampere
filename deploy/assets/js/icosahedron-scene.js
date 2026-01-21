@@ -202,7 +202,7 @@ export class IcosahedronScene {
                         linewidth: 2.5, 
                         worldUnits: false,
                         dashed: false,
-                        alphaToCoverage: true,
+                        alphaToCoverage: false,
                         transparent: true,
                         opacity: 0.9
                     });
@@ -517,10 +517,10 @@ export class IcosahedronScene {
                     if (data.fireCooldown > 0) {
                         data.fireCooldown -= 2; 
                     } else {
-                        // Reduced firing chance (0.038 -> 0.02)
-                        if (Math.random() < 0.02) {
+                        // Reduced firing chance (0.02 -> 0.005) and much longer cooldown
+                        if (Math.random() < 0.005) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 15 + Math.random() * 50; 
+                            data.fireCooldown = 60 + Math.random() * 120; 
                         }
                     }
                 } else {
