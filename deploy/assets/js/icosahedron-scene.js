@@ -674,10 +674,14 @@ export class IcosahedronScene {
                         }
 
                         if (data.intensity > 0.01) {
-                            data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
+                            if (data.mesh) {
+                                data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
+                            }
                         } else {
                             data.intensity = 0;
-                            data.mesh.material.opacity = 0.1;
+                            if (data.mesh) {
+                                data.mesh.material.opacity = 0.1;
+                            }
                             this.activePads.delete(data);
                         }
                     });

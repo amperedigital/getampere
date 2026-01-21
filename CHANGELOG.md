@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.984 - 2026-01-21
+- **Bug Fix (Animation Crash)**:
+  - **Null Safety**: Fixed a critical `TypeError` in the new optimized animation loop. The generated "start ports" for circuit traces (invisible logical nodes) were being added to the render loop, causing a crash when the renderer tried to access their non-existent geometry. Added a safety check to ensure only visible pads are processed.
+
 ## v1.983 - 2026-01-21
 - **Design Two Visuals (Chip Clusters & Performance)**:
   - **Component Layouts**: Moved away from pure random traces to a "Component-based" layout. The generator now first places 40 "Chips" (dense grids of pads) on the sphere surface.
