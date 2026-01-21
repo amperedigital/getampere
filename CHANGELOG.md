@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.999 - 2026-01-21
+- **Zoom Crash Fix (Post-Revert)**: Although v1.981 was fully restored, the "broken zoom" issue persists because the v1.981 code lacks collision constraints. Code analysis shows that without `minDistance`, users can zoom inside the opaque central sphere (radius 0.86), causing the "disappearing / 1000% black screen" effect.
+- **Correction**: Added `minDistance: 2.0` to the v1.981 codebase. This forces the camera to stay outside the lattice, mimicking the "safe" viewing distance of the Blue Steel demo (which didn't have a solid core to clip into). This should permanently solve the "extreme magnification" disorientation.
+
 ## v1.998 - 2026-01-21
 - **Rollback**: Restored the entire `deploy/` directory to the state of **v1.981** (from 2026-01-21).
 - **Reason**: User requested a full revert ("restore everything back to version 1.981") to return to the preferred visual and control state, undoing recent experiments with textures, materials, and zoom constraints.
