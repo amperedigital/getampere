@@ -1,3 +1,5 @@
+## v2.015 - 2026-01-21
+- **Composition Update**: Tilted the entire 3D object (Icosahedron + Sphere) by 10 degrees on the vertical axis for a better default viewing angle.
 ## v2.014 - 2026-01-21
 - **UX Update**: Set default load state to **STANDBY** (was ACTIVE).
 - **Refinement**: Slowed down the "Standby Heartbeat" animation (50% slower) to create more "space" between breaths.

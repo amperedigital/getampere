@@ -154,6 +154,8 @@ export class IcosahedronScene {
 
     initGeometry() {
         this.group = new THREE.Group();
+        // 10-degree vertical tilt (X-axis) for the whole object per user request
+        this.group.rotation.x = 10 * (Math.PI / 180); 
         this.scene.add(this.group);
 
         const radius = 1.5;
