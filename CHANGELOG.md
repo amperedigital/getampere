@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.003 - 2026-01-21
+- **Rollback to Pre-Light-Toggle (v1.960)**: Reverted `deploy/` to **v1.960**.
+- **Reason**: User suspects the zoom functionality broke when the light toggle feature was added (v1.961). Testing the immediately preceding version to isolate the issue.
+
 ## v2.002 - 2026-01-21
 - **Zoom Fix Rollback**: Restored `deploy/` directory to **v1.961**.
 - **Reason**: User identified that the zoom scroll behavior in later versions (v1.98x - v1.99x) was broken ("either way far away or super close"). Rolling back to v1.961 to restore the correct incremental zoom functionality.

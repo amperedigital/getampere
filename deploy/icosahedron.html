@@ -43,50 +43,19 @@
             pointer-events: none;
             user-select: none;
         }
-        .amp-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-family: monospace;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-        }
-        .amp-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-        .amp-btn.off {
-            color: rgba(255, 255, 255, 0.5);
-            background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
     </style>
 </head>
 <body>
 
     <div id="canvas-container"></div>
-    <div class="controls-container" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-        <button id="toggle-lights" class="amp-btn">Lights: ON</button>
-    </div>
     <div class="instruction-overlay">Drag to Rotate • Scroll to Zoom</div>
 
     <script type="module">
-        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=22';
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=21';
         
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('canvas-container');
-            const scene = new IcosahedronScene(container);
-
-            document.getElementById('toggle-lights').addEventListener('click', (e) => {
-                const isActive = scene.toggleLights();
-                e.target.textContent = isActive ? "Lights: ON" : "Lights: OFF";
-                e.target.classList.toggle('off', !isActive);
-            });
+            new IcosahedronScene(container);
         });
     </script>
 </body>
