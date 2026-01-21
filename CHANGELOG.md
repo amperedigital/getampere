@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.955 - 2026-01-21
+- **Design Two Visuals (Contrast)**:
+  - **Darker Traces**: Reduced base circuit line color by ~50% (`0x082e4b` -> `0x041725`) to make them nearly invisible when not illuminated, enhancing the "firing" contrast.
+  - **Larger Pads**: Increased `padGeometry` radius by 20% (0.007 -> 0.0084) for better visibility of connection points.
+
 ## v1.954 - 2026-01-21
 - **Design Two Geometry**:
   - **Core Scale**: Increased `centralSphere` diameter by 20% (Radius 0.6 -> 0.72).

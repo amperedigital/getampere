@@ -104,7 +104,7 @@ export class IcosahedronScene {
         this.pads = []; 
 
         const surfaceRadius = 0.725; 
-        const padGeometry = new THREE.CircleGeometry(0.007, 8);  
+        const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
         // REDUCED DENSITY (v1.951 settings)
@@ -116,9 +116,8 @@ export class IcosahedronScene {
         
         const numBuses = 65; 
         
-        // Darker Base color (v1.951 settings)
-        const baseColorHex = 0x082e4b;
-
+        // Darker Base color (v1.955 settings)
+        const baseColorHex = 0x041725;
         for (let b = 0; b < numBuses; b++) {
             const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
             const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
@@ -440,9 +439,9 @@ export class IcosahedronScene {
             // Circuitry
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
-                    const baseR = 0.032; 
-                    const baseG = 0.184; 
-                    const baseB = 0.296;
+                    const baseR = 0.015; 
+                    const baseG = 0.090; 
+                    const baseB = 0.145;
 
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
