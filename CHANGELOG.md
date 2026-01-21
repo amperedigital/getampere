@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.954 - 2026-01-21
+- **Design Two Geometry**:
+  - **Core Scale**: Increased `centralSphere` diameter by 20% (Radius 0.6 -> 0.72).
+  - **Circuitry**: Adjusted `surfaceRadius` (0.605 -> 0.725) to map circuit lines correctly to the expanded sphere surface.
+
 ## v1.953 - 2026-01-21
 - **Design Two Experiment**:
   - **Node Density**: Increased `IcosahedronGeometry` detail from 1 to 2.
