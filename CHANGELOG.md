@@ -1,4 +1,11 @@
 ## v2.008 - 2026-01-21
+- **Mobile Controls Fix**: Enabled Touch Interactions.
+    - **Resolution**: Implemented custom "Pinch-to-Zoom" logic.
+    - **Fix**: Forced `touch-action: none` to prevent page scrolling during interaction.
+    - **Rotation**: Enabled native OrbitControls touch rotation.
+- **Visual Polish**: Rotated the Central Orb by 90 degrees on the X-axis.
+
+## v2.008 - 2026-01-21
 - **Visual Polish**: Rotated the Central Orb by 90 degrees on the X-axis.
     - **Why**: Hides the "Pole/Eye" of the sphere circuitry mapping from facing the camera directly.
 

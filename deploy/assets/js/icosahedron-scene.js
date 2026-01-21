@@ -391,11 +391,17 @@ export class IcosahedronScene {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
-        this.controls.enableZoom = false; // Disable native zoom to handle "Comet" browser sensitivity
+        this.controls.enableZoom = false; // Disable native zoom to prevent Desktop Scroll bugs
         this.controls.rotateSpeed = 0.5;
-        this.controls.autoRotate = false; 
+        this.controls.autoRotate = false;
+        
+        // Ensure Touch Actions are allowed by OrbitControls (even if we manually handle zoom)
+        this.controls.enableRotate = true; 
+        
+        // FORCE CSS to allow touch handling
+        this.renderer.domElement.style.touchAction = 'none';
 
-        // Custom "Stepped" Zoom for handling hyper-sensitive scroll inputs
+        // --- 1. Custom Mouse Wheel Zoom (Desktop) ---
         const handleZoom = (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -404,26 +410,78 @@ export class IcosahedronScene {
 
             const minD = 1.2;
             const maxD = 60.0;
-            const zoomFactor = 0.05; // 5% change per tick
+            const zoomFactor = 0.05; 
 
             const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
             const dist = dir.length();
             dir.normalize();
 
             let newDist = dist;
-            if (e.deltaY > 0) {
-                // Scroll Down -> Zoom Out
-                newDist = Math.min(dist * (1 + zoomFactor), maxD);
-            } else {
-                // Scroll Up -> Zoom In
-                newDist = Math.max(dist * (1 - zoomFactor), minD);
-            }
+            if (e.deltaY > 0) newDist = Math.min(dist * (1 + zoomFactor), maxD);
+            else newDist = Math.max(dist * (1 - zoomFactor), minD);
 
-            // Apply new position
             this.camera.position.copy(this.controls.target).addScaledVector(dir, newDist);
         };
-
         this.renderer.domElement.addEventListener('wheel', handleZoom, { passive: false });
+
+        // --- 2. Custom Pinch-to-Zoom (Mobile) ---
+        let initialPinchDist = 0;
+        
+        const handleTouchStart = (e) => {
+            if (e.touches.length === 2) {
+                const dx = e.touches[0].pageX - e.touches[1].pageX;
+                const dy = e.touches[0].pageY - e.touches[1].pageY;
+                initialPinchDist = Math.sqrt(dx * dx + dy * dy);
+            }
+        };
+
+        const handleTouchMove = (e) => {
+            if (e.touches.length === 2) {
+                // Prevent default page zooming/panning
+                e.preventDefault(); 
+                e.stopPropagation();
+
+                const dx = e.touches[0].pageX - e.touches[1].pageX;
+                const dy = e.touches[0].pageY - e.touches[1].pageY;
+                const currentDist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (initialPinchDist > 0) {
+                    const delta = currentDist - initialPinchDist;
+                    
+                    // Sensitivity factor for touch
+                    const touchZoomSpeed = 0.02; 
+
+                    const minD = 1.2;
+                    const maxD = 60.0;
+                    
+                    const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
+                    const dist = dir.length();
+                    dir.normalize();
+
+                    // Spread (Positive Delta) = Zoom In (Decrease Dist)
+                    // Pinch (Negative Delta) = Zoom Out (Increase Dist)
+                    // We invert the delta to match camera distance logic
+                    let newDist = dist - (delta * touchZoomSpeed);
+                    
+                    // Clamp
+                    newDist = Math.max(minD, Math.min(maxD, newDist));
+                    
+                    this.camera.position.copy(this.controls.target).addScaledVector(dir, newDist);
+
+                    // Update initial for next frame to keep it smooth/relative
+                    initialPinchDist = currentDist;
+                }
+            }
+        };
+
+        const handleTouchEnd = () => {
+             initialPinchDist = 0;
+        };
+
+        // Add Touch Listeners (Non-Passive to allow preventDefault)
+        this.renderer.domElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+        this.renderer.domElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+        this.renderer.domElement.addEventListener('touchend', handleTouchEnd, { passive: false });
     }
 
     handleResize() {
