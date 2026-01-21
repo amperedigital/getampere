@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.995 - 2026-01-21
+- **Zoom Restoration**: Reverted `zoomSpeed` and `dampingFactor` to their default values (1.0 and 0.05). This restores the original behavior that the user described as "smooth in increments".
+- **Boundaries**: Adjusted `minDistance` to `1.2` (prevent clipping) and `maxDistance` to `100.0` (prevent feeling boxed in). The goal is to provide the standard navigation feel while invisible walls prevent the specific bug of "disappearing" inside the model.
+
 ## v1.994 - 2026-01-21
 - **Zoom Precision**: Set `zoomSpeed` to `0.05` and increased `dampingFactor` to `0.1`.
 - **Range Adjustment**: Widened the zoom range (`1.3` to `50.0`).
