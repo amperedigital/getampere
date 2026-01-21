@@ -646,7 +646,15 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
+        this.controls.zoomSpeed = 0.6; // Slightly reduced from 1.0 for better control
         this.controls.autoRotate = false;
+        
+        // CRITICAL FIX: The "Disappearing" bug is caused by conflicting geometry.
+        // "Blue Steel" has no central sphere, so you can zoom through it.
+        // This scene has a solid metal sphere (r=0.86). Zooming inside it makes the screen black.
+        // We MUST constrain minDistance to stay outside the geometry.
+        this.controls.minDistance = 1.8; // Stick to the lattice surface (r=1.5)
+        this.controls.maxDistance = 50.0;
     }
 
     handleResize() {

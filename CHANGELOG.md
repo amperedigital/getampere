@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.997 - 2026-01-21
+- **Zoom Crash Fix**: Identified the root cause of the "disappearing" behavior. Unlike the "Blue Steel" demo (which is hollow), this scene contains a solid opaque metal sphere. When the user zooms in past the surface, the camera clips inside the sphere, rendering a black void.
+- **Constraints**: Re-applied `minDistance: 1.8` to mechanically prevent the camera from entering the solid sphere. This ensures the object always remains visible.
+- **Speed Tuning**: Set `zoomSpeed: 0.6` to provide a balanced scroll feel—control without the jumpiness of 1.0 or the crawl of 0.05.
+
 ## v1.996 - 2026-01-21
 - **Controls Rollback**: Completely removed all custom zoom constraints (`minDistance`, `maxDistance`, `zoomSpeed`). The control scheme is now code-identical to the "Blue Steel" demo (`icosahedron-blue-silver.html`), which serves as the reference for correct behavior. This invalidates any "sticky" or "jumpy" zoom issues introduced by recent boundary attempts.
 
