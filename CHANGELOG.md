@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.934 - 2026-01-21
+- **Design Two Initialization (Low-Poly Sphere) - Retry**:
+  - Re-deployment of v1.933 changes due to interruption.
+  - **Geometry**: Updated `icosahedron-scene.js` to use `IcosahedronGeometry(radius, 1)` (80 faces).
+
 ## v1.933 - 2026-01-21
 - **Design Two Initialization (Low-Poly Sphere)**:
   - **Geometry**: Updated `icosahedron-scene.js` to use `IcosahedronGeometry(radius, 1)` (80 faces) instead of `detail: 0` (20 faces).
