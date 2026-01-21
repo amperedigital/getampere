@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.986 - 2026-01-21
+- **Design Two Visuals (Metal Orb)**:
+  - **Material Update**: Switched the central sphere material from plain Lambert to **Standard Metal** (`metalness: 0.9`, `roughness: 0.3`). This gives the orb a sleek, high-tech metallic finish that catches the scene's lighting.
+  - **Light Intensity**: Reduced the internal core light intensity to **20%** (0.2), creating a moodier, more sophisticated look where the circuitry glow pops against the darker, metallic surface.
+
 ## v1.985 - 2026-01-21
 - **Design Two Visuals (Dark Opacity Boost)**:
   - **Trace Visibility**: Increased the base opacity of all unlit circuit traces and pads from **10%** to **50%**. This significantly increases the visual weight and contrast of the "dark" circuitry against the background, making the complex network grid clearly visible at all times, not just when lit.

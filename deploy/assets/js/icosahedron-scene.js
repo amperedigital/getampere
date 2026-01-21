@@ -78,8 +78,11 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.864, 64, 64);
-        const material = new THREE.MeshLambertMaterial({
+        // Metal Material with moderate roughness for sheen
+        const material = new THREE.MeshStandardMaterial({
             color: 0x020a12,     
+            metalness: 0.9,
+            roughness: 0.3, 
             emissive: 0x000000,
         });
 
@@ -88,7 +91,8 @@ export class IcosahedronScene {
         
         this.initCircuitryPaths();
 
-        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
+        // 20% Light Intensity as requested
+        const coreLight = new THREE.PointLight(0x0088ff, 0.2, 8);
         this.centralSphere.add(coreLight);
     }
 
