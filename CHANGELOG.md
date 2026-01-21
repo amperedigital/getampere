@@ -1,3 +1,5 @@
+## v2.028 - 2026-01-21
+- **UI Update**: Renamed "ON" state to "POWER UP" on the toggle switch to match "POWER DOWN".
 ## v2.027 - 2026-01-21
 - **UI Update**: Renamed "OFF" state to "POWER DOWN" on the toggle switch to better reflect the slow shutdown behavior.
 - **Animation Refinement**: Implemented sequential transition logic for Standby mode.

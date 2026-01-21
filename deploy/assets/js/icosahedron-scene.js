@@ -91,7 +91,7 @@ export class IcosahedronScene {
         // Labels (Reordered: STANDBY | ON | OFF)
         const labelsData = [
             { id: 'STANDBY', label: 'STANDBY' },
-            { id: 'ACTIVE', label: 'ON' },
+            { id: 'ACTIVE', label: 'POWER UP' },
             { id: 'OFF', label: 'POWER DOWN' }
         ];
         
