@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.2");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.3 (Parallel Circuitry)");
 
         this.initScene();
         this.initLights();
@@ -21,15 +21,12 @@ export class IcosahedronScene {
     }
 
     initScene() {
-        // Scene setup
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x05060f); 
 
-        // Camera setup
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         this.camera.position.z = 5;
 
-        // Renderer setup
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -128,120 +125,163 @@ export class IcosahedronScene {
         this.centralSphere.add(coreLight);
     }
 
+    getPos(phi, theta, r) {
+        const x = r * Math.sin(phi) * Math.cos(theta);
+        const y = r * Math.sin(phi) * Math.sin(theta);
+        const z = r * Math.cos(phi);
+        return new THREE.Vector3(x, y, z);
+    }
+
     initCircuitryPaths() {
-        this.circuitCurves = [];
         this.circuitMeshes = []; 
         this.electrons = [];
-        this.fatLines = []; // Keep track to update resolution
-        
-        const sphereRadius = 0.6;
-        const surfaceRadius = sphereRadius + 0.005; 
-        
-        const getPos = (phi, theta, r) => {
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.sin(phi) * Math.sin(theta);
-            const z = r * Math.cos(phi);
-            return new THREE.Vector3(x, y, z);
-        };
+        this.fatLines = []; 
+        this.paths = []; // Logical paths for electrons to follow
 
-        // REDUCED DENSITY (Performance)
-        // Previous: 150 chips. New: 60 chips.
-        let numChips = 60; 
+        const surfaceRadius = 0.605; 
         
-        const baseColor = new THREE.Color(0x0a2a47);
+        // --- BUS GENERATION PARAMETERS ---
+        const numBuses = 25; // Number of "ribbon cables"
+        const spacing = 0.02; // Gap between parallel lines in a bus
+        
+        // Iterate to create buses
+        for (let b = 0; b < numBuses; b++) {
+            // Random start point (avoid poles for cleanliness)
+            let currentPhi = Math.PI * 0.2 + Math.random() * (Math.PI * 0.6); 
+            let currentTheta = Math.random() * Math.PI * 2;
+            
+            // Random attributes for this bus
+            const lanes = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4 parallel lines
+            const steps = 2 + Math.floor(Math.random() * 4); // Number of 90-degree turns
+            
+            // Initial direction (0: Latitudinal/Horizontal, 1: Longitudinal/Vertical)
+            let isVertical = Math.random() > 0.5;
 
-        for(let i=0; i<numChips; i++) {
-            let phi, theta;
+            // Generate geometry for each lane in the bus
+            for (let l = 0; l < lanes; l++) {
+                // Determine offset for this lane
+                // If moving Vertical, parallel neighbors are offset by Theta
+                // If moving Horizontal, parallel neighbors are offset by Phi (roughly)
+                // We calculate offsets per segment to handle turns correctly
+                
+                let cursorPhi = currentPhi;
+                let cursorTheta = currentTheta;
+                let cursorIsVert = isVertical;
 
-            if (i < 6) { // Reduced polar caps
-                phi = Math.random() * 0.35; 
-                theta = Math.random() * Math.PI * 2;
-            } else if (i < 12) {
-                phi = Math.PI - (Math.random() * 0.35);
-                theta = Math.random() * Math.PI * 2;
-            } else {
-                phi = Math.acos(2 * Math.random() - 1);
-                theta = Math.random() * Math.PI * 2;
+                // For the "Path" logic (electrons), we only track the center lane (l=0) or random lane
+                // Or better: store every single line segment as a path for electrons
+                
+                const points = [];
+                points.push(this.getPos(cursorPhi, cursorTheta, surfaceRadius)); // Start point (will fix offsets in loop)
+                
+                // We need to build a single polyline for this lane across all steps
+                // or built separate segments. Separate segments is easier for drawing 90deg corners cleanly.
             }
             
-            // Reduced traces: 2-4 instead of 4-7
-            const tracesPerChip = 2 + Math.floor(Math.random() * 3); 
+            // Simpler approach: Process the BUS Step-by-Step, and draw all lanes for that step.
             
-            for (let t=0; t<tracesPerChip; t++) {
-                let currentPhi = phi + (Math.random() * 0.08 - 0.04);
-                let currentTheta = theta + (Math.random() * 0.08 - 0.04);
+            for (let s = 0; s < steps; s++) {
+                // Determine step length
+                const length = 0.2 + Math.random() * 0.4; // Radians to travel
+                const dir = Math.random() > 0.5 ? 1 : -1;
 
-                const numSegs = 3 + Math.floor(Math.random() * 4); // Shorter paths
+                let startPhi = currentPhi;
+                let startTheta = currentTheta;
                 
-                for(let s=0; s<numSegs; s++) {
-                    const isVertical = s % 2 === 0;
-                    
-                    const len = 0.12 + Math.random() * 0.18; 
-                    
-                    let startP = getPos(currentPhi, currentTheta, surfaceRadius);
-                    let endP, midP;
+                let endPhi = startPhi;
+                let endTheta = startTheta;
+
+                if (isVertical) {
+                     endPhi = startPhi + (length * dir);
+                     // Clamp phi
+                     endPhi = Math.max(0.1, Math.min(Math.PI - 0.1, endPhi));
+                } else {
+                     endTheta = startTheta + (length * dir);
+                }
+
+                // Draw Lanes for this segment
+                for(let l=0; l<lanes; l++) {
+                    // Calculate parallel offset
+                    // Offset needs to be perpendicular to travel direction
+                    let pPhi1 = startPhi;
+                    let pTheta1 = startTheta;
+                    let pPhi2 = endPhi;
+                    let pTheta2 = endTheta;
+
+                    // Offset logic
+                    const laneOffset = (l - (lanes-1)/2) * spacing; 
                     
                     if (isVertical) {
-                        const dir = Math.random() > 0.5 ? 1 : -1;
-                        let nextPhi = currentPhi + (len * dir);
-                        nextPhi = Math.max(0.01, Math.min(Math.PI - 0.01, nextPhi));
-
-                        endP = getPos(nextPhi, currentTheta, surfaceRadius);
-                        midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-                        currentPhi = nextPhi;
+                        // Moving in Phi, offset in Theta
+                        // Need to adjust theta offset based on latitude to keep constant physical width?
+                        // For simplicity, just add to theta. 
+                        pTheta1 += laneOffset;
+                        pTheta2 += laneOffset;
                     } else {
-                        const dir = Math.random() > 0.5 ? 1 : -1;
-                        let nextTheta = currentTheta + (len * dir);
-
-                        endP = getPos(currentPhi, nextTheta, surfaceRadius);
-                        midP = startP.clone().add(endP).multiplyScalar(0.5).normalize().multiplyScalar(surfaceRadius);
-                        currentTheta = nextTheta;
+                        // Moving in Theta, offset in Phi
+                        pPhi1 += laneOffset;
+                        pPhi2 += laneOffset;
                     }
+
+                    // Generate Points for LineGeometry
+                    const segmentPoints = [];
+                    const divisions = 8; // Smoothness of the arc on the sphere
                     
-                    const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
-                    this.circuitCurves.push(curve);
+                    for(let k=0; k<=divisions; k++) {
+                        const t = k/divisions;
+                        const tmpPhi = pPhi1 + (pPhi2 - pPhi1) * t;
+                        const tmpTheta = pTheta1 + (pTheta2 - pTheta1) * t;
+                        
+                        const vec = this.getPos(tmpPhi, tmpTheta, surfaceRadius);
+                        segmentPoints.push(vec.x, vec.y, vec.z);
+                    }
 
-                    // Switch to FAT LINES (Line2)
-                    // We need a series of points for LineGeometry
-                    const points = curve.getPoints(10); // 10 points per segment
-                    const positions = [];
-                    points.forEach(p => positions.push(p.x, p.y, p.z));
-
+                    // Create Fat Line
                     const geometry = new LineGeometry();
-                    geometry.setPositions(positions);
+                    geometry.setPositions(segmentPoints);
 
                     const mat = new LineMaterial({
                         color: 0x0a2a47,
-                        linewidth: 2.5, // Thicker = Density
-                        worldUnits: false, // Use screen space pixels for consistent visibility at distance? 
-                                           // User said "really can't see it unless close up". 
-                                           // Screen space ensures they are visible from far away! 
-                                           // But user said "keep thickness to keep density". 
-                                           // Let's try worldUnits: false (pixels) first, maybe 3px.
+                        linewidth: 2.5, 
+                        worldUnits: false, // Pixels
                         dashed: false,
                         alphaToCoverage: true,
                         transparent: true,
                         opacity: 0.8
                     });
-
-                    // Set resolution for LineMaterial
+                    
                     mat.resolution.set(this.width, this.height);
 
                     const line = new Line2(geometry, mat);
                     line.computeLineDistances();
-                    
                     line.userData = { intensity: 0 }; 
-                    
+
                     this.centralSphere.add(line);
                     this.circuitMeshes.push(line);
-                    this.fatLines.push(mat); 
+                    this.fatLines.push(mat);
+
+                    // Add to electron paths
+                    // We store the math definition to animate electrons mathematically along the arc
+                    this.paths.push({
+                         phiStart: pPhi1, thetaStart: pTheta1,
+                         phiEnd: pPhi2, thetaEnd: pTheta2,
+                         radius: surfaceRadius,
+                         mesh: line 
+                    });
                 }
+
+                // Update cursor for next step (center of bus)
+                currentPhi = endPhi;
+                currentTheta = endTheta;
+                
+                // Flip direction for Manhattan turn
+                isVertical = !isVertical;
             }
         }
 
         // 2. Initialize Electrons
         const electronGeometry = new THREE.SphereGeometry(0.008, 8, 8); 
-        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // Cyan
+        const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
@@ -253,7 +293,6 @@ export class IcosahedronScene {
             depthWrite: false
         });
 
-        // Reduced electrons slightly too to match simpler network
         const numElectrons = 80; 
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
@@ -267,7 +306,7 @@ export class IcosahedronScene {
             
             this.electrons.push({
                 mesh: electron,
-                curveIndex: Math.floor(Math.random() * this.circuitCurves.length), 
+                pathIndex: Math.floor(Math.random() * this.paths.length), 
                 t: Math.random(), 
                 speed: 0,
                 active: false,
@@ -277,16 +316,12 @@ export class IcosahedronScene {
     }
 
     randomSpherePoint(radius) {
+        // Redundant but kept for safety if used elsewhere
         const u = Math.random();
         const v = Math.random();
         const theta = 2 * Math.PI * u;
         const phi = Math.acos(2 * v - 1);
-        
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
-        
-        return new THREE.Vector3(x, y, z);
+        return this.getPos(phi, theta, radius);
     }
 
     addNodes(geometry) {
@@ -385,7 +420,6 @@ export class IcosahedronScene {
 
             this.renderer.setSize(this.width, this.height);
             
-            // Update Fat Lines resolution
             if (this.fatLines) {
                  this.fatLines.forEach(mat => {
                      mat.resolution.set(this.width, this.height);
@@ -430,7 +464,7 @@ export class IcosahedronScene {
             }
 
             // Circuitry Animation
-            if (this.circuitCurves && this.electrons) {
+            if (this.paths && this.electrons) {
                 const activityLevel = sphereActiveFactor; 
 
                 // Decay Mesh Intensity
@@ -443,14 +477,12 @@ export class IcosahedronScene {
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
                             
-                            // Color interpolation for LineMaterial (no emissive)
                             const intensity = mesh.userData.intensity;
-                            const r = baseR + (0.0 - baseR) * intensity;   // -> 0 (Cyan R base)
-                            const g = baseG + (0.6 - baseG) * intensity;   // -> 0.6 (Cyan G mid)
-                            const b = baseB + (1.0 - baseB) * intensity;   // -> 1.0 (Cyan B max)
+                            const r = baseR + (0.0 - baseR) * intensity;   
+                            const g = baseG + (0.6 - baseG) * intensity;   
+                            const b = baseB + (1.0 - baseB) * intensity;   
                             
                             mesh.material.color.setRGB(r, g, b);
-                            // Also adjust opacity for better flash
                             mesh.material.opacity = 0.8 + (0.2 * intensity);
 
                         } else if (mesh.userData.intensity > 0) {
@@ -466,20 +498,20 @@ export class IcosahedronScene {
                         if (e.delay > 0) {
                             e.delay--;
                         } else {
-                             // Lower probability due to fewer circuits, but scale with load
                              if (Math.random() < (0.02 + activityLevel * 0.1)) {
                                  e.active = true;
-                                 e.curveIndex = Math.floor(Math.random() * this.circuitCurves.length);
+                                 e.pathIndex = Math.floor(Math.random() * this.paths.length);
                                  e.t = 0;
-                                 e.speed = 0.01 + Math.random() * 0.02 + (activityLevel * 0.03); 
+                                 e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); 
                                  e.mesh.visible = true;
                              }
                         }
                     }
 
                     if (e.active) {
-                        if (this.circuitMeshes && this.circuitMeshes[e.curveIndex]) {
-                            this.circuitMeshes[e.curveIndex].userData.intensity = 1.0;
+                        const pathId = e.pathIndex;
+                        if (this.circuitMeshes && this.circuitMeshes[pathId]) {
+                            this.circuitMeshes[pathId].userData.intensity = 1.0;
                         }
 
                         e.t += e.speed;
@@ -488,11 +520,14 @@ export class IcosahedronScene {
                             e.mesh.visible = false;
                             e.delay = Math.random() * 30;
                         } else {
-                            const curve = this.circuitCurves[e.curveIndex];
-                            if (curve) {
-                                const pos = curve.getPoint(e.t);
+                            const path = this.paths[pathId];
+                            if (path) {
+                                // Interpolate position on the sphere arc
+                                const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
+                                const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
+                                const pos = this.getPos(currentPhi, currentTheta, path.radius);
+                                
                                 e.mesh.position.copy(pos);
-                                // Electrons are spheres now, rotation not needed strictly but good practice
                             }
                         }
                     }

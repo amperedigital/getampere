@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.938 - 2026-01-21
+- **Design Two Logic (Parallel Buses)**:
+  - **Circuitry**: Completely rewrote `initCircuitryPaths` to generate "Buses" of parallel lines instead of random curves.
+  - **Architecture**: Implemented "Manhattan on Sphere" logic where lines travel strictly along latitudes or longitudes, making 90-degree turns.
+  - **Visuals**: Maintains the optimized `Line2` (Fat Line) rendering but with organized, clean geometry.
+
 ## v1.937 - 2026-01-21
 - **Design Two Optimization (Flat + Fat)**:
   - **Performance**: Replaced 3D `TubeGeometry` (high poly) with `LineSegments2` (Fat Lines) which are billboarded flat lines with width.
