@@ -1,3 +1,8 @@
+## v2.007 - 2026-01-21
+- **Refinement (Neural Activity)**: Slowed down the flashing rhythm of the nodes.
+    - **Frequency**: Reduced firing probability from 6% to 2% per tick.
+    - **Duration**: Increased flash decay time (0.75 -> 0.92 multiplier) for a calmer pulse.
+
 ## v2.006 - 2026-01-21
 - **Design Update (Obsidian Orb)**: Updated `icosahedron-scene.js` to the new "Black Glass" aesthetic.
     - **Sphere**: Changed to `MeshPhysicalMaterial` (Pitch Black, Roughness 0.15, Clearcoat 1.0).

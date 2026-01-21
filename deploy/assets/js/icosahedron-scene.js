@@ -522,7 +522,7 @@ export class IcosahedronScene {
                 });
             }
 
-            // --- LED NODE LOGIC (Random RGB Colors) ---
+            // --- NEURAL ACTIVITY (Node Flashing) ---
             const dark = new THREE.Color(0x000000);
 
             this.nodes.forEach(node => {
@@ -530,15 +530,17 @@ export class IcosahedronScene {
 
                 if (data.firingState <= 0) {
                     if (data.fireCooldown > 0) {
-                        data.fireCooldown -= 2; 
+                        data.fireCooldown -= 1; // Slower cooldown (was 2)
                     } else {
-                        if (Math.random() < 0.06) {
+                        // Reduced firing chance (was 0.06)
+                        if (Math.random() < 0.02) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 10 + Math.random() * 40; 
+                            data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
                         }
                     }
                 } else {
-                    data.firingState *= 0.75; 
+                    // Slower decay for a "slower" flash (was 0.75)
+                    data.firingState *= 0.92; 
                     if (data.firingState < 0.01) data.firingState = 0;
                 }
 
