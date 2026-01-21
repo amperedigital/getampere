@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.9 (Spaced Traces & Darker Base)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
 
         this.initScene();
         this.initLights();
@@ -107,17 +107,16 @@ export class IcosahedronScene {
         const padGeometry = new THREE.CircleGeometry(0.007, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        // REDUCED DENSITY for more physical separation of traces
-        const PHI_STEPS = 45;   // Was 60
-        const THETA_STEPS = 60; // Was 80
+        // REDUCED DENSITY (v1.951 settings)
+        const PHI_STEPS = 45;   
+        const THETA_STEPS = 60; 
         
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        const numBuses = 65; // Reduced from 90 to separate groups
+        const numBuses = 65; 
         
-        // Darker Base color (approx 20% reduced from 0x0a3a5e)
-        // 0x0a -> 0x08, 0x3a -> 0x2e, 0x5e -> 0x4b ==> 0x082e4b
+        // Darker Base color (v1.951 settings)
         const baseColorHex = 0x082e4b;
 
         for (let b = 0; b < numBuses; b++) {
@@ -127,7 +126,7 @@ export class IcosahedronScene {
             let gridPhi = startGridPhi;
             let gridTheta = startGridTheta;
             
-            const lanes = 1 + Math.floor(Math.random() * 3); // Reduced max lanes from 4 -> 3
+            const lanes = 1 + Math.floor(Math.random() * 3); 
             const busSteps = 5 + Math.floor(Math.random() * 15); 
             
             let dir = Math.random() > 0.5 ? 'H' : 'V'; 
@@ -246,9 +245,11 @@ export class IcosahedronScene {
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
         const glowTexture = this.createGlowTexture();
+        
+        // Electrons keep the standard blue glow
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x00aaff,
+            color: 0x00aaff, // Manual blue tint since texture is now white
             transparent: true, 
             opacity: 1.0,
             blending: THREE.AdditiveBlending,
@@ -294,6 +295,8 @@ export class IcosahedronScene {
         const uniquePoints = [];
         const threshold = 0.001;
 
+        const glowTexture = this.createGlowTexture(); // Reuse white glow
+
         for (let i = 0; i < positionAttribute.count; i++) {
             vertex.fromBufferAttribute(positionAttribute, i);
             
@@ -308,11 +311,16 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
+                // Random RGB Color for this node
+                // Use HSL for vibrant colors (Saturation ~0.9, Lightness ~0.6)
+                const hue = Math.random();
+                const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.6);
+
                 // Nodes are small bulbs
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
                 
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0xddeeff,      
+                    color: nodeColor.clone().multiplyScalar(0.2), // Darker base so it can light up
                     emissive: 0x000000,   
                     emissiveIntensity: 0, 
                     roughness: 0.2,
@@ -322,11 +330,27 @@ export class IcosahedronScene {
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                 node.position.copy(vertex);
                 
+                // --- Subtle RGB Halo ---
+                const spriteMat = new THREE.SpriteMaterial({ 
+                    map: glowTexture, 
+                    color: nodeColor,    // Tint halo with node color
+                    transparent: true, 
+                    opacity: 0,          // Controlled by animation
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                const sprite = new THREE.Sprite(spriteMat);
+                // Tiny halo: 0.12 scale is about 4x node diameter
+                sprite.scale.set(0.12, 0.12, 0.12); 
+                node.add(sprite);
+
                 // LED Firing State
                 node.userData = {
                     firingState: 0, 
                     fireCooldown: Math.random() * 100, 
-                    baseScale: 1.0
+                    baseScale: 1.0,
+                    baseColor: nodeColor, // Store assigned color
+                    halo: sprite          // Reference to halo
                 };
 
                 this.group.add(node);
@@ -336,6 +360,7 @@ export class IcosahedronScene {
     }
 
     createGlowTexture() {
+        // Changed to Neutral White for tinting
         const canvas = document.createElement('canvas');
         canvas.width = 64;
         canvas.height = 64;
@@ -343,7 +368,7 @@ export class IcosahedronScene {
         
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
-        gradient.addColorStop(0.4, 'rgba(100, 200, 255, 0.4)'); 
+        gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.4)'); 
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
 
         context.fillStyle = gradient;
@@ -412,11 +437,9 @@ export class IcosahedronScene {
 
             const activityLevel = sphereActiveFactor; 
 
-            // Circuitry with DARKER BASE COLORS
+            // Circuitry
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
-                    // Previous: 0.04, 0.23, 0.37
-                    // New (~0.8x): 0.032, 0.184, 0.296
                     const baseR = 0.032; 
                     const baseG = 0.184; 
                     const baseB = 0.296;
@@ -464,8 +487,7 @@ export class IcosahedronScene {
                 });
             }
 
-            // --- LED NODE LOGIC ---
-            const ledColor = new THREE.Color(0xaaddff); 
+            // --- LED NODE LOGIC (Random RGB Colors) ---
             const dark = new THREE.Color(0x000000);
 
             this.nodes.forEach(node => {
@@ -499,8 +521,15 @@ export class IcosahedronScene {
 
                 const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
                 
-                node.material.emissive.lerpColors(dark, ledColor, Math.min(1.0, combinedIntensity));
+                // Use the stored RANDOM color for this node
+                node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
                 node.material.emissiveIntensity = combinedIntensity;
+
+                // Update Halo Opacity - Subtle "Tiny" Effect
+                if (data.halo) {
+                    // Only visible when lit, max opacity 0.4 for subtlety
+                    data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
+                }
 
                 const currentScale = node.scale.x;
                 const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 

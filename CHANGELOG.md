@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.952 - 2026-01-21
+- **Design Two Visuals (RGB Nodes)**:
+  - **Colors**: Updated `addNodes` to assign random vivid RGB colors (HSL) to each node sphere instead of uniform white-blue.
+  - **Halo**: Re-introduced a "tiny tiny" sprite halo to each node that tints with the node's random color.
+  - **Animation**: Node emissive flash now uses the unique node color; halo opacity pulses subtly with firing state.
+  - **Texture**: Updated `createGlowTexture` to be neutral white to support accurate color tinting.
+
 ## v1.938 - 2026-01-21
 - **Design Two Logic (Parallel Buses)**:
   - **Circuitry**: Completely rewrote `initCircuitryPaths` to generate "Buses" of parallel lines instead of random curves.
