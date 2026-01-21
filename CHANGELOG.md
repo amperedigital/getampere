@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.962 - 2026-01-21
+- **UI & Controls (Enhanced Toggle)**:
+  - **Switch UI**: Replaced the simple button with a modern "Slide Toggle" switch for lighting control.
+  - **Styling**: Added custom CSS for a glassmorphism toggle switch with smooth animations.
+
 ## v1.961 - 2026-01-21
 - **UI & Controls (Interactive Toggle)**:
   - **Light Switch**: Added a "Lights: ON/OFF" button to the demo viewer (`icosahedron.html`).
