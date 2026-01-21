@@ -1,4 +1,8 @@
 ## v2.015 - 2026-01-21
+- **Composition Update**: Tilted the entire 3D object by 10 degrees (X-axis) for a better default viewing angle.
+- **Power On Logic**: Implemented a true `simIntensity` variable that smoothly ramps simulation activity (electron generation, node firing intensity) from 0 to 1 over several seconds, fixing the "instant on" feeling.
+- **Standby Refinement**: Lowered the minimum intensity of the heartbeat pulse to near zero (0.05), increasing the dynamic range and making the "breath" more visible.
+## v2.015 - 2026-01-21
 - **Composition Update**: Tilted the entire 3D object (Icosahedron + Sphere) by 10 degrees on the vertical axis for a better default viewing angle.
 ## v2.014 - 2026-01-21
 - **UX Update**: Set default load state to **STANDBY** (was ACTIVE).

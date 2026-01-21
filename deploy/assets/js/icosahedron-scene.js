@@ -15,6 +15,11 @@ export class IcosahedronScene {
         this.systemState = 'ACTIVE'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
         this.standbyPulseTimer = 0;
+        
+        // Simulation Ramp Factor (0.0 to 1.0)
+        // Controls intensity of electrons and flashes
+        this.simIntensity = 0; 
+        this.targetSimIntensity = 0;
 
         this.initScene();
         this.initLights();
@@ -100,14 +105,17 @@ export class IcosahedronScene {
 
         if (newState === 'ACTIVE') {
             this.lightTargets = { ambient: 0.2, core: 0.4 };
+            this.targetSimIntensity = 1.0; // Ramp up simulation
         } else if (newState === 'STANDBY') {
             // Dim but visible (No Spot), core will pulse
             this.lightTargets = { ambient: 0.05, core: 0.2 };
+            this.targetSimIntensity = 0.0; // Ramp down simulation (Keep pulsing separate)
             // Clear electrons
             this.clearElectrons();
         } else {
             // OFF
             this.lightTargets = { ambient: 0, core: 0 };
+            this.targetSimIntensity = 0.0;
             this.clearElectrons();
             
             // Ensure Nodes are dark in OFF state immediately? 
@@ -623,16 +631,22 @@ export class IcosahedronScene {
         if (this.lightTargets) {
             // Lerp Ambient
             this.ambientLight.intensity += (this.lightTargets.ambient - this.ambientLight.intensity) * lerpFactor;
-            // No Spot Light anymore
             
+            // Lerp Simulation Intensity
+            if (this.targetSimIntensity !== undefined) {
+                 this.simIntensity += (this.targetSimIntensity - this.simIntensity) * lerpFactor;
+            } else {
+                 this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
+            }
+
             // Core Logic
             let targetCore = this.lightTargets.core;
             if (this.systemState === 'STANDBY') {
-                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; // Slower beat (User requested "space between breathing")
-                // Heartbeat Pulse for Core (and now Nodes)
-                // Use a "lub-dub" double pulse or just smooth limit?
-                // Let's do smooth sine [0.1 to 0.4]
-                targetCore = 0.15 + (Math.sin(this.standbyPulseTimer) * 0.15);
+                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
+                // Heartbeat Pulse for Core
+                // Low floor (0.05) to High (0.35)
+                const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5);
+                targetCore = 0.05 + (pulse * 0.3);
             }
             this.coreLight.intensity += (targetCore - this.coreLight.intensity) * lerpFactor;
         }
@@ -672,7 +686,7 @@ export class IcosahedronScene {
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
-                            const intensity = mesh.userData.intensity;
+                            const intensity = mesh.userData.intensity * this.simIntensity; // Apply Fade
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
@@ -688,10 +702,12 @@ export class IcosahedronScene {
                 this.electrons.forEach(e => {
                     if (!e.active) {
                         if (e.delay > 0) e.delay--;
-                        else if (this.systemState === 'ACTIVE' && Math.random() < (0.01 + activityLevel * 0.1)) {
+                        // Only spawn if simIntensity is high enough (>10%) and ACTIVE
+                        else if (this.systemState === 'ACTIVE' && this.simIntensity > 0.1 && Math.random() < (0.01 + activityLevel * 0.1) * this.simIntensity) {
                              e.active = true;
                              e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                             e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
+                             e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); 
+                             e.mesh.visible = true;
                         }
                     }
                     if (e.active) {
@@ -706,6 +722,8 @@ export class IcosahedronScene {
                                 const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
                                 const pos = this.getPos(currentPhi, currentTheta, path.radius);
                                 e.mesh.position.copy(pos);
+                                // Fade electron trail based on SimIntensity
+                                e.mesh.material.opacity = this.simIntensity; 
                             }
                         }
                     }
@@ -718,10 +736,9 @@ export class IcosahedronScene {
             // STANDBY PULSE CALCULATION (Global for all nodes)
             let standbyIntensity = 0;
             if (this.systemState === 'STANDBY') {
-                // Same pulse as Core Light: [0.2 to 0.8] intensity?
-                // Scale range [0 to 1]
+                // Low floor (0.05) to High (0.4) - Deep breathing
                 const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
-                standbyIntensity = 0.2 + (pulse * 0.4); // Min 0.2, Max 0.6
+                standbyIntensity = 0.05 + (pulse * 0.35); 
             }
 
             this.nodes.forEach(node => {
@@ -731,16 +748,15 @@ export class IcosahedronScene {
                 if (this.systemState === 'ACTIVE') {
                     if (data.firingState <= 0) {
                         if (data.fireCooldown > 0) {
-                            data.fireCooldown -= 1; // Slower cooldown (was 2)
+                            data.fireCooldown -= 1; 
                         } else {
-                            // Reduced firing chance (was 0.06)
-                            if (Math.random() < 0.02) {
+                            // Scale chance by simIntensity
+                            if (Math.random() < 0.02 * this.simIntensity) {
                                 data.firingState = 1.0; 
-                                data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
+                                data.fireCooldown = 20 + Math.random() * 60; 
                             }
                         }
                     } else {
-                        // Slower decay for a "slower" flash (was 0.75)
                         data.firingState *= 0.92; 
                         if (data.firingState < 0.01) data.firingState = 0;
                     }
@@ -757,20 +773,21 @@ export class IcosahedronScene {
                         proximityScale = factor * 0.4;
                     }
 
-                    const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
+                    let combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
+                    // Fade In Logic
+                    combinedIntensity *= this.simIntensity;
                     
                     // Use the stored RANDOM color for this node
                     node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
                     node.material.emissiveIntensity = combinedIntensity;
 
-                    // Update Halo Opacity - Subtle "Tiny" Effect
+                    // Update Halo Opacity 
                     if (data.halo) {
-                        // Only visible when lit, max opacity 0.4 for subtlety
                         data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
                     }
 
                     const currentScale = node.scale.x;
-                    const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 
+                    const targetScale = 1.0 + (proximityScale + (data.firingState * 0.4)) * this.simIntensity; 
                     const newScale = currentScale + (targetScale - currentScale) * 0.4; 
                     node.scale.setScalar(newScale);
 
