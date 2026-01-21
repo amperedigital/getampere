@@ -1,3 +1,9 @@
+## v2.012 - 2026-01-21
+- **UI Update**: Repositioned System Control to Bottom Center (Above Title).
+- **Feature (Standby Mode)**: Added "Standby" state.
+    - **Logic**: OFF (Dark) -> STANDBY (Dim + Heartbeat Pulse) -> ACTIVE (Full).
+    - **Visuals**: Standby mode features a subtle breathing animation on the core light.
+    - **Control**: Segmented 3-state control bar.
 ## v2.011 - 2026-01-21
 - **Feature (System Toggle)**: Restored the "SYSTEM ACTIVE" toggle button.
     - **Function**: Allows users to power down all lighting and neural activity for a stealth look.

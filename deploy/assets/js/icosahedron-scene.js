@@ -12,7 +12,9 @@ export class IcosahedronScene {
 
         console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
         
-        this.systemActive = true; // State for On/Off Toggle
+        this.systemState = 'ACTIVE'; // ACTIVE, STANDBY, OFF
+        this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
+        this.standbyPulseTimer = 0;
 
         this.initScene();
         this.initLights();
@@ -24,82 +26,96 @@ export class IcosahedronScene {
     }
 
     initUI() {
-        // Create Toggle Button
-        const btn = document.createElement('button');
-        btn.innerText = "SYSTEM ACTIVE";
-        btn.style.position = 'absolute';
-        btn.style.bottom = '40px';
-        btn.style.left = '50%';
-        btn.style.transform = 'translateX(-50%)';
-        btn.style.padding = '8px 16px';
-        btn.style.background = 'rgba(5, 6, 15, 0.8)';
-        btn.style.border = '1px solid #00aaff';
-        btn.style.color = '#00aaff';
-        btn.style.fontFamily = 'monospace';
-        btn.style.fontSize = '12px';
-        btn.style.cursor = 'pointer';
-        btn.style.zIndex = '1000';
-        btn.style.borderRadius = '4px';
-        btn.style.transition = 'all 0.3s ease';
-        btn.style.letterSpacing = '1px';
+        // Create Segmented Control Container
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.bottom = '85px'; // Above the title
+        container.style.left = '50%';
+        container.style.transform = 'translateX(-50%)';
+        container.style.display = 'flex';
+        container.style.border = '1px solid #333';
+        container.style.borderRadius = '4px';
+        container.style.background = 'rgba(5, 6, 15, 0.9)';
+        container.style.zIndex = '1000';
+        container.style.overflow = 'hidden';
 
-        btn.addEventListener('mouseover', () => {
-            btn.style.background = 'rgba(0, 170, 255, 0.1)';
-            btn.style.boxShadow = '0 0 10px rgba(0, 170, 255, 0.3)';
-        });
-        btn.addEventListener('mouseout', () => {
-            btn.style.background = 'rgba(5, 6, 15, 0.8)';
-            btn.style.boxShadow = 'none';
+        const states = [
+            { id: 'OFF', label: 'OFF' },
+            { id: 'STANDBY', label: 'STANDBY' },
+            { id: 'ACTIVE', label: 'ON' }
+        ];
+
+        this.uiButtons = {};
+
+        states.forEach(state => {
+            const btn = document.createElement('button');
+            btn.innerText = state.label;
+            btn.style.background = 'transparent';
+            btn.style.border = 'none';
+            btn.style.borderRight = '1px solid #333';
+            btn.style.color = '#555';
+            btn.style.padding = '6px 12px';
+            btn.style.fontFamily = 'monospace';
+            btn.style.fontSize = '11px';
+            btn.style.cursor = 'pointer';
+            btn.style.transition = 'all 0.3s ease';
+            
+            if (state.id === 'ACTIVE') btn.style.borderRight = 'none'; // Last one
+
+            btn.addEventListener('click', () => this.setSystemState(state.id));
+            
+            this.uiButtons[state.id] = btn;
+            container.appendChild(btn);
         });
 
-        btn.addEventListener('click', () => {
-             this.toggleSystem(btn);
-        });
-
-        this.container.appendChild(btn);
+        this.container.appendChild(container);
+        
+        // Initialize UI state
+        this.setSystemState('ACTIVE');
     }
 
-    toggleSystem(btn) {
-        this.systemActive = !this.systemActive;
-        
-        if (this.systemActive) {
-            // TURN ON
-            btn.innerText = "SYSTEM ACTIVE";
-            btn.style.borderColor = '#00aaff';
-            btn.style.color = '#00aaff';
-            
-            // Restore Lights
-            this.ambientLight.intensity = 0.2;
-            this.spotLight.intensity = 8;
-            this.coreLight.intensity = 0.4;
-            
-        } else {
-            // TURN OFF
-            btn.innerText = "SYSTEM OFFLINE";
-            btn.style.borderColor = '#333';
-            btn.style.color = '#555';
-            
-            // Dim Lights
-            this.ambientLight.intensity = 0;
-            this.spotLight.intensity = 0;
-            this.coreLight.intensity = 0;
+    setSystemState(newState) {
+        this.systemState = newState;
 
-            // Clear active electrons immediately
-            if (this.electrons) {
-                this.electrons.forEach(e => {
-                    e.active = false;
-                    e.mesh.visible = false;
-                });
+        // Update UI
+        Object.keys(this.uiButtons).forEach(key => {
+            const btn = this.uiButtons[key];
+            if (key === newState) {
+                btn.style.background = 'rgba(0, 170, 255, 0.2)';
+                btn.style.color = '#00aaff';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.color = '#555';
             }
-            // Dim all traces
-            if (this.circuitMeshes) {
-                this.circuitMeshes.forEach(mesh => {
-                     mesh.userData.intensity = 0;
-                     mesh.material.opacity = 0.05;
-                     mesh.material.color.setHex(0x041725);
-                });
-            }
-        
+        });
+
+        if (newState === 'ACTIVE') {
+            this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 };
+        } else if (newState === 'STANDBY') {
+            // Dim but visible, core will pulse
+            this.lightTargets = { ambient: 0.05, spot: 2.0, core: 0.2 };
+            // Clear electrons
+            this.clearElectrons();
+        } else {
+            // OFF
+            this.lightTargets = { ambient: 0, spot: 0, core: 0 };
+            this.clearElectrons();
+        }
+    }
+
+    clearElectrons() {
+        if (this.electrons) {
+            this.electrons.forEach(e => {
+                e.active = false;
+                e.mesh.visible = false;
+            });
+        }
+        if (this.circuitMeshes) {
+            this.circuitMeshes.forEach(mesh => {
+                 mesh.userData.intensity = 0;
+                 mesh.material.opacity = 0.05;
+                 mesh.material.color.setHex(0x041725);
+            });
         }
     }
 
@@ -592,6 +608,28 @@ export class IcosahedronScene {
         
         this.controls.update();
 
+        // --- Light & State Logic ---
+        if (this.lightTargets) {
+            // Lerp Ambient
+            this.ambientLight.intensity += (this.lightTargets.ambient - this.ambientLight.intensity) * 0.05;
+            // Lerp Spot
+            this.spotLight.intensity += (this.lightTargets.spot - this.spotLight.intensity) * 0.05;
+            
+            // Core Logic
+            let targetCore = this.lightTargets.core;
+            if (this.systemState === 'STANDBY') {
+                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.04;
+                // Heartbeat Pulse: Base 0.2, sine wave +/- 0.1
+                const pulse = Math.sin(this.standbyPulseTimer) * 0.5 + 0.5; // 0 to 1
+                // We want a "beat-beat-pause" or just a slow breathe? 
+                // "Heartbeat" usually implies double beat. 
+                // Let's go with slow breather for "Standby" to be calm. 
+                // Sine wave range [0.1, 0.4]
+                targetCore = 0.15 + (Math.sin(this.standbyPulseTimer) * 0.15);
+            }
+            this.coreLight.intensity += (targetCore - this.coreLight.intensity) * 0.05;
+        }
+
         if (this.nodes) {
             const tempV = new THREE.Vector3();
             const maxDist = 0.35; 
@@ -643,7 +681,7 @@ export class IcosahedronScene {
                 this.electrons.forEach(e => {
                     if (!e.active) {
                         if (e.delay > 0) e.delay--;
-                        else if (this.systemActive && Math.random() < (0.01 + activityLevel * 0.1)) {
+                        else if (this.systemState === 'ACTIVE' && Math.random() < (0.01 + activityLevel * 0.1)) {
                              e.active = true;
                              e.pathIndex = Math.floor(Math.random() * this.paths.length);
                              e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
@@ -678,7 +716,7 @@ export class IcosahedronScene {
                         data.fireCooldown -= 1; // Slower cooldown (was 2)
                     } else {
                         // Reduced firing chance (was 0.06)
-                        if (this.systemActive && Math.random() < 0.02) {
+                        if (this.systemState === 'ACTIVE' && Math.random() < 0.02) {
                             data.firingState = 1.0; 
                             data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
                         }
@@ -692,7 +730,7 @@ export class IcosahedronScene {
                 let proximityIntensity = 0; 
                 let proximityScale = 0;
                 
-                if (this.systemActive && node === bestNode) {
+                if (this.systemState === 'ACTIVE' && node === bestNode) {
                     node.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
