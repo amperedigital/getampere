@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.957 - 2026-01-21
+- **Design Two Visuals (Lattice)**:
+  - **Wireframe Color**: Further reduced brightness by another 20% (`0x7a9ebc` -> `0x627e96`) to deepen the cage contrast against the bright nodes.
+
 ## v1.956 - 2026-01-21
 - **Design Two Visuals (Lattice)**:
   - **Wireframe Color**: Reduced brightness by 10% (`0x88b0d1` -> `0x7a9ebc`) to make the outer cage slightly less dominant compared to the illuminated core circuitry.
