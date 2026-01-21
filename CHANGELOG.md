@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.959 - 2026-01-21
+- **Design Two Geometry (Core Scale)**:
+  - **Sphere Size**: Increased `centralSphere` diameter by another 20% (Radius 0.72 -> 0.864).
+  - **Circuitry**: Adjusted `surfaceRadius` (0.725 -> 0.87) to match the larger core sphere.
+  - **Effect**: The core brain now fills more of the icosahedron cage volume.
+
 ## v1.958 - 2026-01-21
 - **Design Two Visuals (Lattice Focus)**:
   - **Wireframe Dimming**: Reduced wireframe brightness by another ~20% (`0x627e96` -> `0x4e6578`).

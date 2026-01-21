@@ -74,7 +74,7 @@ export class IcosahedronScene {
     }
 
     addCentralSphere() {
-        const geometry = new THREE.SphereGeometry(0.72, 64, 64);
+        const geometry = new THREE.SphereGeometry(0.864, 64, 64);
         const material = new THREE.MeshLambertMaterial({
             color: 0x020a12,     
             emissive: 0x000000,
@@ -103,8 +103,8 @@ export class IcosahedronScene {
         this.paths = []; 
         this.pads = []; 
 
-        const surfaceRadius = 0.725; 
-        const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
+        const surfaceRadius = 0.87; 
+        const padGeometry = new THREE.CircleGeometry(0.0084, 8);  
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
         // REDUCED DENSITY (v1.951 settings)
