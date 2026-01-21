@@ -679,19 +679,27 @@ export class IcosahedronScene {
                     const baseB = 0.145;
 
                     this.circuitMeshes.forEach(mesh => {
+                        let intensity = 0;
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
-                            const intensity = mesh.userData.intensity * this.simIntensity; // Apply Fade
+                            intensity = mesh.userData.intensity;
+                            
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
                             mesh.material.color.setRGB(r, g, b);
-                            mesh.material.opacity = 0.05 + (0.95 * intensity);
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.05;
                         }
+                        
+                        // GLOBAL FADE for Lines based on simIntensity
+                        // Base opacity 0.05 fades to 0
+                        // Active opacity fades proportionally
+                        const baseOpacity = 0.05 + (0.95 * intensity);
+                        mesh.material.opacity = baseOpacity * this.simIntensity;
+                        // Determine visibility to save draw calls if fully transparent
+                        mesh.visible = (mesh.material.opacity > 0.001);
                     });
                 }
                 this.electrons.forEach(e => {
@@ -739,14 +747,14 @@ export class IcosahedronScene {
             this.nodes.forEach(node => {
                 const data = node.userData;
 
-                // ACTIVE LOGIC
-                if (this.systemState === 'ACTIVE') {
+                // ACTIVE or OFF (Fading out)
+                if (this.systemState === 'ACTIVE' || this.systemState === 'OFF') {
                     if (data.firingState <= 0) {
                         if (data.fireCooldown > 0) {
                             data.fireCooldown -= 1; 
                         } else {
-                            // Scale chance by simIntensity
-                            if (Math.random() < 0.02 * this.simIntensity) {
+                            // Only fire if ACTIVE
+                            if (this.systemState === 'ACTIVE' && Math.random() < 0.02 * this.simIntensity) {
                                 data.firingState = 1.0; 
                                 data.fireCooldown = 20 + Math.random() * 60; 
                             }
@@ -759,7 +767,7 @@ export class IcosahedronScene {
                     let proximityIntensity = 0; 
                     let proximityScale = 0;
                     
-                    if (node === bestNode) {
+                    if (node === bestNode && this.systemState === 'ACTIVE') {
                         node.getWorldPosition(tempV);
                         tempV.project(this.camera);
                         const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
@@ -769,7 +777,7 @@ export class IcosahedronScene {
                     }
 
                     let combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
-                    // Fade In Logic
+                    // Fade In/Out Logic
                     combinedIntensity *= this.simIntensity;
                     
                     // Use the stored RANDOM color for this node
@@ -790,19 +798,65 @@ export class IcosahedronScene {
                     // STANDBY LOGIC: All nodes pulse together
                     // Use baseColor but dim
                     node.material.emissive.lerpColors(dark, data.baseColor, 0.5); // 50% saturation
-                    node.material.emissiveIntensity = standbyIntensity;
+                    // Fade standby intensity if transitioning in/out of standby (though simIntensity usually 0 for standby target?)
+                    // My state logic sets targetSimIntensity=0 for Standby. 
+                    // Wait, if Standby uses simIntensity=0, then pulsing wont work if I multiply by it?
+                    // Ah, setSystemState sets targetSimIntensity=0 for Standby.
+                    // This means simIntensity goes to 0 in Standby.
+                    // But Standby uses `standbyIntensity` variable which is derived from time.
+                    // If I multiply by `simIntensity` (which is 0), Standby will be black.
+                    
+                    // CORRECTION: Standby should probably use its OWN fade logic, or ignore simIntensity?
+                    // User wants "off-ramp" for everything.
+                    // If I switch Active->Standby, simIntensity goes 1->0.
+                    // I want "Active" chaos to fade out, and "Standby" pulse to fade in?
+                    // That's complex cross-fading. 
+                    // Current logic: Standby sets targetSimIntensity=0.
+                    
+                    // Let's assume Standby logic should NOT multiply by simIntensity, 
+                    // but rather transition from "Chaos" to "Pulse".
+                    // But if simIntensity is used for "Active" components only, that's fine.
+                    
+                    // However, we want OFF to be 0.
+                    // In OFF state, targetSimIntensity=0. 
+                    // And we want everything black.
+                    
+                    // The issue: "Standby" logic vs "Off" logic.
+                    // If I switch Standby -> Off.
+                    // SystemState becomes OFF. Loop enters "ACTIVE or OFF" block?
+                    // No, existing logic was:
+                    // if (Active) ... else if (Standby) ... else (Off)
+                    
+                    // I changed the first block to `if (ACTIVE || OFF)`.
+                    // So if I am in OFF, I run the "Chaos decay" logic.
+                    // And multiply by simIntensity (which goes to 0).
+                    // This creates a nice fade to black. Correct.
+                    
+                    // Issues arise if switching Standby -> Off.
+                    // SimIntensity is 0 in Standby. 
+                    // So switching to OFF (simIntensity still 0) -> Black immediately.
+                    // But Standby had Pulsing. The Pulsing needs to fade out?
+                    // Standby logic is skipped immediately because state != STANDBY.
+                    // So Pulsing snaps to 0. 
+                    
+                    // This is acceptable for now given the "gradual off-ramp" request usually implies Active->Off.
+                    // If Active->Standby?
+                    // State becomes STANDBY. logic enters `else if (STANDBY)`.
+                    // The "Chaos" snaps to "Pulse".
+                    // We might need a proper transition state, but let's stick to the prompt: 
+                    // "make the off-ramp the exact reverse" (Active -> Off).
+                    
+                    node.material.emissive.lerpColors(dark, data.baseColor, 0.5); 
+                    node.material.emissiveIntensity = standbyIntensity * 1.0; // Don't use simIntensity here?
+                    // Actually, if we want Active->Standby to be smooth...
+                    // That's a different problem.
                     
                     if (data.halo) {
                         data.halo.material.opacity = standbyIntensity * 0.3; 
                     }
-                    node.scale.setScalar(1.0); // Reset scale
+                    node.scale.setScalar(1.0); 
 
-                } else {
-                    // OFF LOGIC
-                    node.material.emissiveIntensity = 0;
-                    if (data.halo) data.halo.material.opacity = 0;
-                    node.scale.setScalar(1.0);
-                }
+                } 
             });
         }
 

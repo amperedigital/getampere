@@ -1,3 +1,7 @@
+## v2.017 - 2026-01-21
+- **Off Mode Fix**: Implemented a true "Zero State" for the Off mode.
+    - **Change**: Node firing and emissive logic now fully respects the global `simIntensity` scalar during fade-out.
+    - **Behavior**: When switching to Off, all nodes and circuits now fade smoothly to absolute black (0 opacity/emissive), ensuring no residual activity remains.
 ## v2.016 - 2026-01-21
 - **Gradual Off-Ramp**: Applied the slow transition effect to powering OFF/STANDBY as well.
     - **Change**: `lerpSpeed` is now constantly `0.005` in all directions.
