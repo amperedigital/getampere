@@ -243,7 +243,7 @@ export class IcosahedronScene {
         }
 
         // 2. Initialize Electrons
-        const electronGeometry = new THREE.BoxGeometry(0.012, 0.012, 0.012); 
+        const electronGeometry = new THREE.SphereGeometry(0.008, 8, 8); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // Cyan
         
         const glowTexture = this.createGlowTexture();

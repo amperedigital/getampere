@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.936 - 2026-01-21
+- **Design Two Tweak**:
+  - **Electrons**: Changed electron shape from squares (`BoxGeometry`) to pulse dots (`SphereGeometry`).
+
 ## v1.935 - 2026-01-21
 - **Design Two Iteration (Circuitry)**:
   - **Circuitry**: Completely refactored `initCircuitryPaths` in `icosahedron-scene.js`.
