@@ -478,8 +478,8 @@ export class IcosahedronScene {
                     } else {
                         if (!e.active) {
                             if (e.delay > 0) e.delay--;
-                            // Electron firing chance reduced (0.01 base -> 0.008)
-                            else if (Math.random() < (0.008 + activityLevel * 0.1)) {
+                            // Electron firing chance reduced (0.008 -> 0.0064)
+                            else if (Math.random() < (0.0064 + activityLevel * 0.1)) {
                                  e.active = true;
                                  e.pathIndex = Math.floor(Math.random() * this.paths.length);
                                  e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
@@ -516,8 +516,8 @@ export class IcosahedronScene {
                     if (data.fireCooldown > 0) {
                         data.fireCooldown -= 2; 
                     } else {
-                        // Reduced firing chance (0.06 -> 0.048 - 20% reduction)
-                        if (Math.random() < 0.048) {
+                        // Reduced firing chance (0.048 -> 0.038 - another 20% reduction)
+                        if (Math.random() < 0.038) {
                             data.firingState = 1.0; 
                             data.fireCooldown = 10 + Math.random() * 40; 
                         }

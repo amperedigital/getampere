@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.967 - 2026-01-21
+- **Design Two Tuning**:
+  - **Activity**: Further reduced firing probability for nodes (0.048 -> 0.038) and electrons (0.008 -> 0.0064) by another ~20%.
+  - **Goal**: Create a more "idling" brain state rather than a hyperactive one.
+
 ## v1.966 - 2026-01-21
 - **Design Two Tuning**:
   - **Activity**: Reduced firing probability for both LED nodes (0.06 -> 0.048) and electron pulses (base 0.01 -> 0.008) by 20% to calm the scene.
