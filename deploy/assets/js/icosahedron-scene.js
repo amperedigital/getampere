@@ -38,8 +38,9 @@ export class IcosahedronScene {
     initUI() {
         // Toggle Switch Configuration
         const width = 320; 
-        const height = 48; // ~20% larger than typical button
-        const thumbWidth = (width - 4) / 3; 
+        const height = 48; 
+        const padding = 6; // Increased padding for "pill" look
+        const thumbWidth = (width - (padding * 2)) / 3; 
 
         // Container (Track)
         const container = document.createElement('div');
@@ -58,24 +59,25 @@ export class IcosahedronScene {
         container.style.display = 'flex';
         container.style.alignItems = 'center';
         container.style.justifyContent = 'space-between';
-        container.style.padding = '2px';
+        container.style.padding = padding + 'px';
         container.style.zIndex = '1000';
         container.style.userSelect = 'none';
+        container.style.touchAction = 'none'; // Prevent scrolling
         container.style.cursor = 'pointer';
 
         // Thumb (The Draggable Pill)
         const thumb = document.createElement('div');
         this.uiThumb = thumb;
         thumb.style.position = 'absolute';
-        thumb.style.top = '2px';
-        thumb.style.left = '2px';
+        thumb.style.top = padding + 'px';
+        thumb.style.left = padding + 'px';
         thumb.style.width = thumbWidth + 'px';
-        thumb.style.height = (height - 4) + 'px';
+        thumb.style.height = (height - (padding * 2)) + 'px';
         thumb.style.background = 'linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9))';
         thumb.style.border = '1px solid rgba(255, 255, 255, 0.15)';
         thumb.style.borderRadius = '999px';
         thumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
-        thumb.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)'; // Smooth throw
+        thumb.style.transition = 'left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)'; // Smooth Snap
         thumb.style.zIndex = '1';
 
         // Active Highlight in Thumb (Glow)
@@ -86,15 +88,15 @@ export class IcosahedronScene {
         thumbGlow.style.background = 'radial-gradient(circle at center, rgba(0, 170, 255, 0.15), transparent 70%)';
         thumb.appendChild(thumbGlow);
         
-        // Labels
+        // Labels (Reordered: STANDBY | ON | OFF)
         const labelsData = [
-            { id: 'OFF', label: 'OFF' },
             { id: 'STANDBY', label: 'STANDBY' },
-            { id: 'ACTIVE', label: 'ON' }
+            { id: 'ACTIVE', label: 'ON' },
+            { id: 'OFF', label: 'OFF' }
         ];
         
-        this.statePositions = { 'OFF': 0, 'STANDBY': 1, 'ACTIVE': 2 };
-        this.positionToState = ['OFF', 'STANDBY', 'ACTIVE'];
+        this.statePositions = { 'STANDBY': 0, 'ACTIVE': 1, 'OFF': 2 };
+        this.positionToState = ['STANDBY', 'ACTIVE', 'OFF'];
 
         labelsData.forEach((item, i) => {
             const label = document.createElement('div');
@@ -107,7 +109,7 @@ export class IcosahedronScene {
             label.style.color = '#666';
             label.style.zIndex = '2';
             label.style.fontWeight = '600';
-            label.style.pointerEvents = 'none'; // Clicks pass to container
+            label.style.pointerEvents = 'none'; 
             label.style.transition = 'color 0.3s ease, text-shadow 0.3s ease';
             label.setAttribute('data-id', item.id);
             container.appendChild(label);
@@ -118,14 +120,16 @@ export class IcosahedronScene {
 
         // --- Interaction Logic (Drag & Throw) ---
         let isDragging = false;
+        let dragOffset = 0;
 
-        const setThumbPosition = (x) => {
+        const setThumbPosition = (clientX) => {
             const rect = container.getBoundingClientRect();
-            let relativeX = x - rect.left - (thumbWidth / 2);
+            let relativeX = clientX - rect.left - dragOffset;
             
             // Constrain
-            const maxLeft = width - thumbWidth - 4; // -4 for padding
-            relativeX = Math.max(2, Math.min(relativeX, maxLeft)); 
+            const maxLeft = width - thumbWidth - padding; 
+            const minLeft = padding;
+            relativeX = Math.max(minLeft, Math.min(relativeX, maxLeft)); 
             
             thumb.style.transition = 'none'; // Instant movement
             thumb.style.left = relativeX + 'px';
@@ -133,38 +137,37 @@ export class IcosahedronScene {
 
         const snapToNearest = () => {
             const currentLeft = parseFloat(thumb.style.left);
-            const effectiveWidth = width - 4;
-            const sectionWidth = effectiveWidth / 3;
-            
-            // Find center of thumb relative to track content
-            // thumb starts at 2px. 
-            // Normalized center = (currentLeft - 2) + sectionWidth/2 ? 
-            // Simpler: Center of thumb
-            const thumbCenter = currentLeft + (thumbWidth/2);
-            
-            let index = Math.floor( thumbCenter / sectionWidth );
+            const distFromStart = currentLeft - padding;
+            // Simple rounding works because thumbWidth is exact section width
+            let index = Math.round(distFromStart / thumbWidth);
             index = Math.max(0, Math.min(index, 2));
             
             const state = this.positionToState[index];
             
             // Restore transition for the snap
-            thumb.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)';
+            thumb.style.transition = 'left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
             this.setSystemState(state);
         };
 
         const onPointerDown = (e) => {
-            isDragging = true;
-            // If clicking the thumb, we just grab it.
-            // If clicking the track, standard UI is "Jump to here".
-            // But we want "Drag and Throw". 
-            // Let's allow immediate drag from jump point IF clicking track.
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             
-            // Check target
-            if (e.target !== thumb && !thumb.contains(e.target)) {
-                 // Jump thumb immediately, then drag
-                 setThumbPosition(e.clientX || e.touches[0].clientX);
+            // Calculate Drag Offset
+            if (e.target === thumb || thumb.contains(e.target)) {
+                 const thumbRect = thumb.getBoundingClientRect();
+                 dragOffset = clientX - thumbRect.left;
+            } else {
+                 // Clicking track: Center thumb on pointer
+                 dragOffset = thumbWidth / 2;
             }
-            // Add global listeners
+
+            isDragging = true;
+            
+            // Jump if clicking track
+            if (e.target !== thumb && !thumb.contains(e.target)) {
+                 setThumbPosition(clientX);
+            }
+            // Global listeners
             document.addEventListener('mousemove', onPointerMove);
             document.addEventListener('mouseup', onPointerUp);
             document.addEventListener('touchmove', onPointerMove, {passive: false});
@@ -207,10 +210,11 @@ export class IcosahedronScene {
             const labels = this.uiContainer.querySelectorAll('div[data-id]');
             const index = this.statePositions[newState];
             const width = 320; 
-            const thumbWidth = (width - 4) / 3;
+            const padding = 6;
+            const thumbWidth = (width - (padding * 2)) / 3;
             
             // Calculate Position
-            const targetLeft = 2 + (index * thumbWidth);
+            const targetLeft = padding + (index * thumbWidth);
             this.uiThumb.style.left = targetLeft + 'px';
             
             // Update Thumb Styling (Optional: Change color based on state?)

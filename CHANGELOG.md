@@ -1,3 +1,9 @@
+## v2.024 - 2026-01-21
+- **UI Refinement**: Polished the "Pill Toggle Switch" interaction and layout.
+    - **Visuals**: Increased track padding for a better "pill-in-track" aesthetic.
+    - **Interaction**: Implemented custom drag offset logic to prevent the thumb from jumping under the finger when clicked.
+    - **Snapping**: Tuned easing curves for a satisfying "mechanical" snap feel.
+    - **Layout**: Reordered states to STANDBY (Left) -> ON (Center) -> OFF (Right) per user request.
 ## v2.023 - 2026-01-21
 - **UI Upgrade**: Replaced standard buttons with a large, interactive "Pill Toggle Switch".
     - **Interaction**: Supports "Drag and Throw" mechanism - users can drag the slider thumb or click the track to jump.
