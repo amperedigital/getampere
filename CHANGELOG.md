@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.004 - 2026-01-21
+- **Deep Rollback (v1.955)**: Reverted `deploy/` to **v1.955**.
+- **Reason**: v1.960 also exhibited the broken scroll zoom. User requested a deeper rollback to v1.955 to find the stable state for controls.
+
 ## v2.003 - 2026-01-21
 - **Rollback to Pre-Light-Toggle (v1.960)**: Reverted `deploy/` to **v1.960**.
 - **Reason**: User suspects the zoom functionality broke when the light toggle feature was added (v1.961). Testing the immediately preceding version to isolate the issue.

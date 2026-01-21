@@ -57,7 +57,7 @@ export class IcosahedronScene {
         // 1. Lattice 
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0x4e6578, 
+            color: 0x88b0d1, 
             linewidth: 1,
             opacity: 1,
             transparent: false
@@ -74,7 +74,7 @@ export class IcosahedronScene {
     }
 
     addCentralSphere() {
-        const geometry = new THREE.SphereGeometry(0.864, 64, 64);
+        const geometry = new THREE.SphereGeometry(0.72, 64, 64);
         const material = new THREE.MeshLambertMaterial({
             color: 0x020a12,     
             emissive: 0x000000,
@@ -103,8 +103,8 @@ export class IcosahedronScene {
         this.paths = []; 
         this.pads = []; 
 
-        const surfaceRadius = 0.87; 
-        const padGeometry = new THREE.CircleGeometry(0.0084, 8);  
+        const surfaceRadius = 0.725; 
+        const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
         // REDUCED DENSITY (v1.951 settings)
@@ -116,8 +116,8 @@ export class IcosahedronScene {
         
         const numBuses = 65; 
         
-        // Darker Base color (v1.960 settings)
-        const baseColorHex = 0x03121d;
+        // Darker Base color (v1.955 settings)
+        const baseColorHex = 0x041725;
         for (let b = 0; b < numBuses; b++) {
             const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
             const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
@@ -439,9 +439,9 @@ export class IcosahedronScene {
             // Circuitry
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
-                    const baseR = 0.012; 
-                    const baseG = 0.072; 
-                    const baseB = 0.116;
+                    const baseR = 0.015; 
+                    const baseG = 0.090; 
+                    const baseB = 0.145;
 
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
