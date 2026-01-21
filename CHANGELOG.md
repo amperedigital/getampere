@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.001 - 2026-01-21
+- **Correction Rollback**: The previous rollback to v1.900 was incorrect (user error).
+- **Target**: Restored `deploy/` to **v1.990**.
+- **State**: This returns to the "Brushed Metal" texture version with the Toggle Switch present, undoing the accidental regression to the primitive v1.900 state.
+
 ## v2.000 - 2026-01-21
 - **Hard Rollback**: Restored the entire `deploy/` directory to **v1.900** as requested.
 - **Reason**: Persistent dissatisfaction with recent zoom/scroll mechanics in v1.98x/v1.99x series. The user specifically identified "incremental zoom" issues.
