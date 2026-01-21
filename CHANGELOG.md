@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.932 - 2026-01-21
+- **Design Freeze (Design One)**:
+  - **Action**: Saved the "Bluey Silver" design state to `icosahedron-blue-silver.html` and `assets/js/icosahedron-scene-blue-silver.js`.
+  - **Purpose**: "Locking down" the first approved design concept before iterating on new concepts in the main file.
+  - **Live URL**: `/icosahedron-blue-silver.html` will now host this specific version permanently.
+
 ## v1.931 - 2026-01-20
 - **Fix**: Renamed `Icosahedron.html` to `icosahedron.html` (lowercase) to fix URL accessibility issues.
 
