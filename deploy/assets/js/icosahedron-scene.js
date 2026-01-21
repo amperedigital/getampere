@@ -11,13 +11,96 @@ export class IcosahedronScene {
         this.height = container.clientHeight;
 
         console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
+        
+        this.systemActive = true; // State for On/Off Toggle
 
         this.initScene();
         this.initLights();
         this.initGeometry();
         this.initControls();
+        this.initUI(); // Add UI Controls
         this.handleResize();
         this.animate();
+    }
+
+    initUI() {
+        // Create Toggle Button
+        const btn = document.createElement('button');
+        btn.innerText = "SYSTEM ACTIVE";
+        btn.style.position = 'absolute';
+        btn.style.bottom = '40px';
+        btn.style.left = '50%';
+        btn.style.transform = 'translateX(-50%)';
+        btn.style.padding = '8px 16px';
+        btn.style.background = 'rgba(5, 6, 15, 0.8)';
+        btn.style.border = '1px solid #00aaff';
+        btn.style.color = '#00aaff';
+        btn.style.fontFamily = 'monospace';
+        btn.style.fontSize = '12px';
+        btn.style.cursor = 'pointer';
+        btn.style.zIndex = '1000';
+        btn.style.borderRadius = '4px';
+        btn.style.transition = 'all 0.3s ease';
+        btn.style.letterSpacing = '1px';
+
+        btn.addEventListener('mouseover', () => {
+            btn.style.background = 'rgba(0, 170, 255, 0.1)';
+            btn.style.boxShadow = '0 0 10px rgba(0, 170, 255, 0.3)';
+        });
+        btn.addEventListener('mouseout', () => {
+            btn.style.background = 'rgba(5, 6, 15, 0.8)';
+            btn.style.boxShadow = 'none';
+        });
+
+        btn.addEventListener('click', () => {
+             this.toggleSystem(btn);
+        });
+
+        this.container.appendChild(btn);
+    }
+
+    toggleSystem(btn) {
+        this.systemActive = !this.systemActive;
+        
+        if (this.systemActive) {
+            // TURN ON
+            btn.innerText = "SYSTEM ACTIVE";
+            btn.style.borderColor = '#00aaff';
+            btn.style.color = '#00aaff';
+            
+            // Restore Lights
+            this.ambientLight.intensity = 0.2;
+            this.spotLight.intensity = 8;
+            this.coreLight.intensity = 0.4;
+            
+        } else {
+            // TURN OFF
+            btn.innerText = "SYSTEM OFFLINE";
+            btn.style.borderColor = '#333';
+            btn.style.color = '#555';
+            
+            // Dim Lights
+            this.ambientLight.intensity = 0;
+            this.spotLight.intensity = 0;
+            this.coreLight.intensity = 0;
+
+            // Clear active electrons immediately
+            if (this.electrons) {
+                this.electrons.forEach(e => {
+                    e.active = false;
+                    e.mesh.visible = false;
+                });
+            }
+            // Dim all traces
+            if (this.circuitMeshes) {
+                this.circuitMeshes.forEach(mesh => {
+                     mesh.userData.intensity = 0;
+                     mesh.material.opacity = 0.05;
+                     mesh.material.color.setHex(0x041725);
+                });
+            }
+        
+        }
     }
 
     initScene() {
@@ -34,16 +117,16 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
-        this.scene.add(ambientLight);
+        this.ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
+        this.scene.add(this.ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
-        spotLight.position.set(-10, 10, 10);
-        spotLight.angle = Math.PI / 3; 
-        spotLight.penumbra = 1.0;
-        spotLight.decay = 2;
-        spotLight.distance = 50;
-        this.scene.add(spotLight);
+        this.spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
+        this.spotLight.position.set(-10, 10, 10);
+        this.spotLight.angle = Math.PI / 3; 
+        this.spotLight.penumbra = 1.0;
+        this.spotLight.decay = 2;
+        this.spotLight.distance = 50;
+        this.scene.add(this.spotLight);
     }
 
     initGeometry() {
@@ -94,8 +177,8 @@ export class IcosahedronScene {
         
         this.initCircuitryPaths();
 
-        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
-        this.centralSphere.add(coreLight);
+        this.coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
+        this.centralSphere.add(this.coreLight);
     }
 
     getPos(phi, theta, r) {
@@ -560,7 +643,7 @@ export class IcosahedronScene {
                 this.electrons.forEach(e => {
                     if (!e.active) {
                         if (e.delay > 0) e.delay--;
-                        else if (Math.random() < (0.01 + activityLevel * 0.1)) {
+                        else if (this.systemActive && Math.random() < (0.01 + activityLevel * 0.1)) {
                              e.active = true;
                              e.pathIndex = Math.floor(Math.random() * this.paths.length);
                              e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
@@ -595,7 +678,7 @@ export class IcosahedronScene {
                         data.fireCooldown -= 1; // Slower cooldown (was 2)
                     } else {
                         // Reduced firing chance (was 0.06)
-                        if (Math.random() < 0.02) {
+                        if (this.systemActive && Math.random() < 0.02) {
                             data.firingState = 1.0; 
                             data.fireCooldown = 20 + Math.random() * 60; // Longer cooldown
                         }
@@ -609,7 +692,7 @@ export class IcosahedronScene {
                 let proximityIntensity = 0; 
                 let proximityScale = 0;
                 
-                if (node === bestNode) {
+                if (this.systemActive && node === bestNode) {
                     node.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);

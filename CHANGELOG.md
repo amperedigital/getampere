@@ -1,3 +1,10 @@
+## v2.011 - 2026-01-21
+- **Feature (System Toggle)**: Restored the "SYSTEM ACTIVE" toggle button.
+    - **Function**: Allows users to power down all lighting and neural activity for a stealth look.
+    - **Behavior**: 
+      - **Off**: Dims all scene lights, stops electron flow, disables node firing.
+      - **On**: Restores full illumination and simulation logic.
+
 ## v2.010 - 2026-01-21
 - **Restoration**: Restored 'Blue Silver' variants (html and js files).
     - **Note**: These files are preserved as legacy/backup variants.
