@@ -796,7 +796,7 @@ export class IcosahedronScene {
             let standbyIntensity = 0;
             if (this.standbyMix > 0.001) {
                 // Low floor (0.05) to High (0.4) - Deep breathing
-                const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
+                // Re-use 'pulse' calculated at top of animate()
                 standbyIntensity = 0.05 + (pulse * 0.35); 
                 // We multiply by standbyMix so it fades in/out
                 standbyIntensity *= this.standbyMix;

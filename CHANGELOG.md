@@ -1,3 +1,5 @@
+## v2.019 - 2026-01-21
+- **Bugfix**: Fixed `SyntaxError` due to duplicate variable declaration (`pulse`) in the animation loop.
 ## v2.018 - 2026-01-21
 - **Transitions Update**: Completely rewrote the rendering loop to support additive state mixing.
     - **Behavior**: Switching between Active, Standby, and Off is now fully seamless.
