@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.988 - 2026-01-21
+- **Design Two Visuals (Lighting & Visibility Overhaul)**:
+  - **Lighting Setup**: Significantly boosted scene lighting to ensure the metal orb is visible.
+    - **Ambient**: Increased from 0.2 to **0.5**.
+    - **Key Light**: Increased intensity from 8 to **12**.
+    - **Rim Light**: Added a new Blue Rim Light (`0x0088ff`, intensity 10) on the right side to define the edge of the sphere against the void.
+  - **Material Tune**:
+    - **Color**: Lightened the base metal color to **Silver/Light Steel** (`0x8899aa`) so it reflects light more effectively.
+    - **Emissive Lift**: Added a subtle dark blue emissive glow (`0x001122`, 0.2) to the sphere surface itself. This prevents the "shadow side" from crushing to pure black, simulating complex light bounce.
+
 ## v1.987 - 2026-01-21
 - **Design Two Visuals (Metal Visibilty Fix)**:
   - **Material Tune**: Fixed the issue where the metal orb appeared black. Adjusted the material physics to compensate for the scene's lighting (Standard lighting vs Environment Map).

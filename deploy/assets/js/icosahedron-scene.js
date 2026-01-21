@@ -36,16 +36,25 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
+        // Boosted Ambient for visibility
+        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.5); 
         this.scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
+        // Main Key Light
+        const spotLight = new THREE.SpotLight(0xe6f3ff, 12); 
         spotLight.position.set(-10, 10, 10);
         spotLight.angle = Math.PI / 3; 
         spotLight.penumbra = 1.0;
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
+
+        // Rim Light (Blue) for definition on the dark side
+        const rimLight = new THREE.SpotLight(0x0088ff, 10);
+        rimLight.position.set(10, 0, 5);
+        rimLight.lookAt(0, 0, 0);
+        rimLight.penumbra = 1;
+        this.scene.add(rimLight);
     }
 
     initGeometry() {
@@ -78,13 +87,13 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.864, 64, 64);
-        // Metal Material Fix: Lower metalness and lighter color to prevent "black hole" effect
-        // when no environment map is present.
+        // Metal Material Fix: Much lighter base color and adjusted light response
         const material = new THREE.MeshStandardMaterial({
-            color: 0x3a4b5c,     // Steel Blue (Brighter base)
-            metalness: 0.5,      // Reduced from 0.9 to allow diffuse lighting to show
-            roughness: 0.2,      // Glossy finish
-            emissive: 0x000000,
+            color: 0x8899aa,     // Light Steel / Silver
+            metalness: 0.6,      // 60% Metal
+            roughness: 0.25,     // Polished but diffusing slightly
+            emissive: 0x001122,  // Slight blue emission to prevent crushed blacks
+            emissiveIntensity: 0.2
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
