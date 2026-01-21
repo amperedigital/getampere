@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.958 - 2026-01-21
+- **Design Two Visuals (Lattice Focus)**:
+  - **Wireframe Dimming**: Reduced wireframe brightness by another ~20% (`0x627e96` -> `0x4e6578`).
+  - **Goal**: Make the "brain activity lights" (nodes and circuitry) significantly more prominent by receding the outer cage into the background.
+
 ## v1.957 - 2026-01-21
 - **Design Two Visuals (Lattice)**:
   - **Wireframe Color**: Further reduced brightness by another 20% (`0x7a9ebc` -> `0x627e96`) to deepen the cage contrast against the bright nodes.
