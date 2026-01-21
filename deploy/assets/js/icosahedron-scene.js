@@ -204,7 +204,9 @@ export class IcosahedronScene {
                         dashed: false,
                         alphaToCoverage: false,
                         transparent: true,
-                        opacity: 0.9
+                        opacity: 0.9,
+                        depthWrite: false, // Fix for dashed/stippled artifact
+                        depthTest: true
                     });
                     
                     mat.resolution.set(this.width, this.height);
@@ -228,6 +230,13 @@ export class IcosahedronScene {
                     head.theta = targetTheta;
                     head.gridPhi = targetGridPhi;
                     head.gridTheta = targetGridTheta;
+
+                    // Add intermediate pad at every turn/step
+                    const padPos = this.getPos(head.phi, head.theta, surfaceRadius);
+                    const pad = new THREE.Mesh(padGeometry, padMaterial);
+                    pad.position.copy(padPos);
+                    pad.lookAt(new THREE.Vector3(0,0,0));
+                    this.centralSphere.add(pad);
                 }
                 
                 dir = (dir === 'H') ? 'V' : 'H';

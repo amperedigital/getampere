@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.971 - 2026-01-21
+- **Design Two Visuals (Pads & Lines)**:
+  - **Trace Quality**: Disabled `depthWrite` on circuit lines to fix the "dashed" artifact caused by self-occlusion in the depth buffer.
+  - **Pad Density**: Added logic to spawn a trace pad (circle) at *every* intersection point of the circuitry path, not just the start and end. This significantly increases the technical detail and "connectedness" of the grid.
+
 ## v1.970 - 2026-01-21
 - **Design Two Visuals (Rendering Clean-up)**:
   - **Trace Fix**: Disabled `alphaToCoverage` on the circuit line material. This prevents the "dashed" artifacting seen when lines fade out or vary in opacity.
