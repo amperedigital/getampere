@@ -90,15 +90,15 @@ export class IcosahedronScene {
         
         const metalTexture = this.createMetalTexture();
         
-        // Metal Material Fix: Much lighter base color and adjusted light response
+        // Metal Material Fix: "Brushed Steel" Look
         const material = new THREE.MeshStandardMaterial({
-            color: 0x8899aa,     // Light Steel / Silver
-            metalness: 0.6,      // 60% Metal
-            roughness: 0.4,      // Increased base roughness slightly so the map can vary it
-            roughnessMap: metalTexture, // Texture varies surface smoothness
-            bumpMap: metalTexture,      // Subtle physical detail
-            bumpScale: 0.002,           // Very subtle bumps
-            emissive: 0x001122,  // Slight blue emission to prevent crushed blacks
+            color: 0xffffff,            // White base allows full range of metallic reflection
+            metalness: 0.75,            // Higher metalness for realization
+            roughness: 0.45,            // Base roughness
+            roughnessMap: metalTexture, // Grain directly affects shininess
+            bumpMap: metalTexture,      // Grain affects surface normals
+            bumpScale: 0.008,           // Stronger bumps to make grain visible
+            emissive: 0x001122,  
             emissiveIntensity: 0.2
         });
 
@@ -113,17 +113,17 @@ export class IcosahedronScene {
     }
 
     createMetalTexture() {
-        const size = 512;
+        const size = 1024; // Increased resolution
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext('2d');
 
-        // Fill background
-        ctx.fillStyle = '#808080';
+        // Base Grey
+        ctx.fillStyle = '#8899aa'; // Slightly blueish grey base
         ctx.fillRect(0, 0, size, size);
 
-        // Add Noise
+        // 1. Underlying Noise
         const imageData = ctx.getImageData(0, 0, size, size);
         const data = imageData.data;
         
@@ -133,30 +133,35 @@ export class IcosahedronScene {
             data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
             data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
         }
-        
         ctx.putImageData(imageData, 0, 0);
 
-        // Scratches
-        const drawScratch = (count, color, alpha) => {
-            ctx.strokeStyle = color;
-            ctx.globalAlpha = alpha;
-            ctx.lineWidth = 1;
+        // 2. Brushed "Grain" Effect (Horizontal Streaks)
+        ctx.globalCompositeOperation = 'overlay'; 
+        
+        const drawStreaks = (count, minWidth, opacity) => {
             for(let i=0; i<count; i++) {
-                 ctx.beginPath();
-                 const x = Math.random() * size;
-                 const y = Math.random() * size;
-                 const len = 10 + Math.random() * 40;
-                 const angle = Math.random() * Math.PI * 2;
-                 ctx.moveTo(x, y);
-                 ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
-                 ctx.stroke();
+                const y = Math.random() * size;
+                const width = Math.random() * size * 0.8 + minWidth;
+                const x = Math.random() * size - (Math.random() * 100); 
+                
+                const shade = Math.random() > 0.5 ? 255 : 0; // White or Black streaks
+                const alpha = Math.random() * opacity + 0.01;
+                
+                ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, ${alpha})`;
+                ctx.fillRect(x, y, width, 1 + Math.random() * 1.5); 
             }
         };
 
-        drawScratch(200, '#ffffff', 0.05); // Highlights
-        drawScratch(200, '#000000', 0.05); // Shadows
+        drawStreaks(4000, 100, 0.08); // Fine grain
+        drawStreaks(500, 300, 0.12);  // Heavy imperfections
+
+        // Return to normal
+        ctx.globalCompositeOperation = 'source-over';
 
         const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(3, 2); // Repeat to scale down the grain
         return texture;
     }
 

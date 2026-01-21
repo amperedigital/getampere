@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.990 - 2026-01-21
+- **Texture Upgrade (Brushed Metal)**:
+  - **Procedural Grain**: Rewrote `createMetalTexture` to generate a directional "brushed steel" effect using thousands of randomized horizontal streaks instead of generic noise.
+  - **High Definition**: Increased texture resolution to 1024x1024.
+  - **Material Physics**: Tuned the `MeshStandardMaterial` to `0.75` metalness and `0.008` bump scale, allowing the new grain texture to catch light realistically and define the surface curvature.
+
 ## v1.989 - 2026-01-21
 - **Design Two Visuals (Metal Texture)**:
   - **Procedural Texture**: Implemented a dynamic Javascript canvas texture generator (`createMetalTexture`) to create a bespoke "scratched metal" surface map.
