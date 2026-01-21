@@ -43,67 +43,27 @@
             pointer-events: none;
             user-select: none;
         }
-        /* Toggle Switch */
-        .switch-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 20px;
-        }
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: .4s;
-            border-radius: 24px;
+        .amp-btn {
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 2px;
-            bottom: 2px;
-            background-color: rgba(255, 255, 255, 0.5);
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-            background-color: #fff;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-        }
-        .control-label {
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
             font-family: monospace;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 11px;
-            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .amp-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .amp-btn.off {
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -111,13 +71,7 @@
 
     <div id="canvas-container"></div>
     <div class="controls-container" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-        <div class="switch-container">
-            <span class="control-label" id="status-label">ON</span>
-            <label class="switch">
-                <input type="checkbox" id="toggle-lights" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
+        <button id="toggle-lights" class="amp-btn">Lights: ON</button>
     </div>
     <div class="instruction-overlay">Drag to Rotate • Scroll to Zoom</div>
 
@@ -128,9 +82,10 @@
             const container = document.getElementById('canvas-container');
             const scene = new IcosahedronScene(container);
 
-            document.getElementById('toggle-lights').addEventListener('change', (e) => {
-                scene.toggleLights();
-                document.getElementById('status-label').textContent = e.target.checked ? "ON" : "OFF";
+            document.getElementById('toggle-lights').addEventListener('click', (e) => {
+                const isActive = scene.toggleLights();
+                e.target.textContent = isActive ? "Lights: ON" : "Lights: OFF";
+                e.target.classList.toggle('off', !isActive);
             });
         });
     </script>

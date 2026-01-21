@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.002 - 2026-01-21
+- **Zoom Fix Rollback**: Restored `deploy/` directory to **v1.961**.
+- **Reason**: User identified that the zoom scroll behavior in later versions (v1.98x - v1.99x) was broken ("either way far away or super close"). Rolling back to v1.961 to restore the correct incremental zoom functionality.
+
 ## v2.001 - 2026-01-21
 - **Correction Rollback**: The previous rollback to v1.900 was incorrect (user error).
 - **Target**: Restored `deploy/` to **v1.990**.
