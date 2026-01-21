@@ -59,8 +59,8 @@ export class IcosahedronScene {
         const material = new THREE.LineBasicMaterial({
             color: 0x88b0d1, 
             linewidth: 1,
-            opacity: 1,
-            transparent: false
+            opacity: 0.1, // Reduced to 10%
+            transparent: true
         });
 
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
@@ -74,10 +74,15 @@ export class IcosahedronScene {
     }
 
     addCentralSphere() {
+        // Obsidian Black Glass Orb
         const geometry = new THREE.SphereGeometry(0.72, 64, 64);
-        const material = new THREE.MeshLambertMaterial({
-            color: 0x020a12,     
-            emissive: 0x000000,
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x000000,
+            roughness: 0.15,
+            metalness: 0.5,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            emissive: 0x000000
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
@@ -201,7 +206,7 @@ export class IcosahedronScene {
                         dashed: false,
                         alphaToCoverage: true,
                         transparent: true,
-                        opacity: 0.9
+                        opacity: 0.05
                     });
                     
                     mat.resolution.set(this.width, this.height);
@@ -482,11 +487,11 @@ export class IcosahedronScene {
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
                             mesh.material.color.setRGB(r, g, b);
-                            mesh.material.opacity = 0.9 + (0.1 * intensity);
+                            mesh.material.opacity = 0.05 + (0.95 * intensity);
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.9;
+                            mesh.material.opacity = 0.05;
                         }
                     });
                 }
