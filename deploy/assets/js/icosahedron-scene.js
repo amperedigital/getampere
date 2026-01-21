@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.7 (LED Neurons)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.8 (Hyper-Active LEDs)");
 
         this.initScene();
         this.initLights();
@@ -66,39 +66,7 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh Texture Approach
-        const canvas = document.createElement('canvas');
-        canvas.width = 128; 
-        canvas.height = 128;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-        ctx.fillRect(0,0,128,128);
-        ctx.strokeStyle = 'rgba(100, 200, 255, 0.1)'; 
-        ctx.lineWidth = 2; 
-        ctx.strokeRect(0,0,128,128);
-        
-        ctx.fillStyle = 'rgba(100, 200, 255, 0.05)';
-        ctx.fillRect(10, 50, 40, 10);
-        ctx.fillRect(80, 20, 10, 60);
-
-        const meshTexture = new THREE.CanvasTexture(canvas);
-        meshTexture.wrapS = THREE.RepeatWrapping;
-        meshTexture.wrapT = THREE.RepeatWrapping;
-        meshTexture.repeat.set(8, 4); 
-        
-        const meshMaterial = new THREE.MeshBasicMaterial({
-            map: meshTexture,
-            color: 0x051525,      
-            transparent: true,
-            opacity: 0.8,         
-            side: THREE.DoubleSide,
-            depthWrite: false,    
-        });
-
-        const meshShell = new THREE.Mesh(geometry, meshMaterial);
-        meshShell.scale.setScalar(0.99); 
-        this.group.add(meshShell);
+        // 1b. Mesh Texture - REMOVED per previous request (keeping code clean)
 
         // 2. Nodes
         this.addNodes(geometry);
@@ -323,8 +291,6 @@ export class IcosahedronScene {
         
         this.nodes = [];
         
-        // NO sprites/glows for nodes anymore.
-        
         const uniquePoints = [];
         const threshold = 0.001;
 
@@ -356,12 +322,10 @@ export class IcosahedronScene {
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                 node.position.copy(vertex);
                 
-                // NO SPRITE ADDED
-
                 // LED Firing State
                 node.userData = {
                     firingState: 0, 
-                    fireCooldown: Math.random() * 300, 
+                    fireCooldown: Math.random() * 100, // Reduced initial delay
                     baseScale: 1.0
                 };
 
@@ -496,7 +460,7 @@ export class IcosahedronScene {
                 });
             }
 
-            // --- LED NODE LOGIC ---
+            // --- LED NODE LOGIC (UPDATED SPEED) ---
             // White-Blue cool light
             const ledColor = new THREE.Color(0xaaddff); 
             const dark = new THREE.Color(0x000000);
@@ -506,17 +470,19 @@ export class IcosahedronScene {
 
                 if (data.firingState <= 0) {
                     if (data.fireCooldown > 0) {
-                        data.fireCooldown--;
+                        data.fireCooldown -= 2; // Decay cooldown 2x faster
                     } else {
                         // FIRE!
-                        if (Math.random() < 0.02) {
+                        // Increased probability from 0.02 to 0.06 (3x more often)
+                        if (Math.random() < 0.06) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 60 + Math.random() * 300; 
+                            // Reduced cooldown range significantly (was 60-360, now 10-50)
+                            data.fireCooldown = 10 + Math.random() * 40; 
                         }
                     }
                 } else {
-                    // Decay firing - LED style defaults slightly faster
-                    data.firingState *= 0.9; 
+                    // Decay firing state much faster (was 0.9, now 0.75 for super snappy blink)
+                    data.firingState *= 0.75; 
                     if (data.firingState < 0.01) data.firingState = 0;
                 }
 
@@ -539,11 +505,9 @@ export class IcosahedronScene {
                 node.material.emissiveIntensity = combinedIntensity;
 
                 const currentScale = node.scale.x;
-                const targetScale = 1.0 + proximityScale + (data.firingState * 0.3); // Less scale popping for LEDs
-                const newScale = currentScale + (targetScale - currentScale) * 0.2; // Snappier scale
+                const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); // slightly more pop
+                const newScale = currentScale + (targetScale - currentScale) * 0.4; // Snappier scale response
                 node.scale.setScalar(newScale);
-
-                // NO SPRITE UPDATE because it was removed
             });
         }
 

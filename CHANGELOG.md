@@ -943,3 +943,9 @@
 - **Visuals**: Removed atmospheric glow shell (`meshShell`) from Icosahedron scene for a cleaner, "naked bulb" look.
 - **Lighting**: Changed node firing color from warm yellow-white to cool LED white-blue (`0xaaddff`).
 - **Animation**: Made node firing decay faster (0.9 factor) and removed sprite glows to simulate snappy LED behavior.
+
+## [v1.950] - 2026-01-21
+### Changed
+- **Animation**: Tripled LED firing frequency (probability 0.02 -> 0.06).
+- **Speed**: Doubled cooldown decay rate and shortened cooldown window (10-50 frames).
+- **Snappiness**: Increased firing decay rate (0.75) for sharper on/off transitions.
