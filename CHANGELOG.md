@@ -923,3 +923,8 @@
   - **Defer Iconify**: Added `defer` attribute to `iconify-icon.min.js`.
     - *Action*: Unblocks the HTML parser during initial page load.
     - *Result*: Faster First Contentful Paint (FCP) as icon upgrades happen asynchronously.
+
+## [v1.940] - 2026-01-21
+- **Aesthetic**: Added PCB-style "Terminal Pads" (Circles) to the start and end of every parallel circuit trace.
+- **Circuitry**: Increased bus density and tightened spacing for a "chip-like" appearance.
+- **Refinement**: Aligned with reference images showing nodes at trace endpoints.

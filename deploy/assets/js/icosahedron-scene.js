@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.3 (Parallel Circuitry)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.4 (PCB Terminals)");
 
         this.initScene();
         this.initLights();
@@ -136,114 +136,113 @@ export class IcosahedronScene {
         this.circuitMeshes = []; 
         this.electrons = [];
         this.fatLines = []; 
-        this.paths = []; // Logical paths for electrons to follow
+        this.paths = []; 
+        this.pads = []; // Store terminal pads
 
         const surfaceRadius = 0.605; 
         
+        // Use a merged geometry approach for static pads to save draw calls?
+        // Actually, let's stick to simple meshes for now, but optimize if needed.
+        // We'll use a single geometry/material for all pads.
+        const padGeometry = new THREE.CircleGeometry(0.006, 8); // Flat pads like PCB vias
+        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0a4a6e, side: THREE.DoubleSide }); 
+
         // --- BUS GENERATION PARAMETERS ---
-        const numBuses = 25; // Number of "ribbon cables"
-        const spacing = 0.02; // Gap between parallel lines in a bus
+        const numBuses = 35; // Increased slightly for better coverage
+        const spacing = 0.018; // Tighter parallel lines
         
-        // Iterate to create buses
         for (let b = 0; b < numBuses; b++) {
-            // Random start point (avoid poles for cleanliness)
-            let currentPhi = Math.PI * 0.2 + Math.random() * (Math.PI * 0.6); 
+            let currentPhi = Math.PI * 0.15 + Math.random() * (Math.PI * 0.7); 
             let currentTheta = Math.random() * Math.PI * 2;
             
-            // Random attributes for this bus
-            const lanes = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4 parallel lines
-            const steps = 2 + Math.floor(Math.random() * 4); // Number of 90-degree turns
+            const lanes = 2 + Math.floor(Math.random() * 3); 
+            const steps = 2 + Math.floor(Math.random() * 5); // Longer paths
             
-            // Initial direction (0: Latitudinal/Horizontal, 1: Longitudinal/Vertical)
             let isVertical = Math.random() > 0.5;
 
-            // Generate geometry for each lane in the bus
-            for (let l = 0; l < lanes; l++) {
-                // Determine offset for this lane
-                // If moving Vertical, parallel neighbors are offset by Theta
-                // If moving Horizontal, parallel neighbors are offset by Phi (roughly)
-                // We calculate offsets per segment to handle turns correctly
-                
-                let cursorPhi = currentPhi;
-                let cursorTheta = currentTheta;
-                let cursorIsVert = isVertical;
-
-                // For the "Path" logic (electrons), we only track the center lane (l=0) or random lane
-                // Or better: store every single line segment as a path for electrons
-                
-                const points = [];
-                points.push(this.getPos(cursorPhi, cursorTheta, surfaceRadius)); // Start point (will fix offsets in loop)
-                
-                // We need to build a single polyline for this lane across all steps
-                // or built separate segments. Separate segments is easier for drawing 90deg corners cleanly.
+            // Track start points of lanes to place pads
+            // We need to place pads at the very START of a bus and the very END of a bus
+            // But segments are drawn step-by-step.
+            
+            // Let's store the current "head" position of each lane
+            let laneHeads = [];
+            for(let l=0; l<lanes; l++) {
+                 // Calculate initial lane positions
+                 const laneOffset = (l - (lanes-1)/2) * spacing;
+                 let startPhi = currentPhi;
+                 let startTheta = currentTheta;
+                 
+                 // Initial adjustment based on PERPENDICULAR to travel direction?
+                 // If we start vertical, offset is Theta.
+                 if (isVertical) {
+                     startTheta += laneOffset;
+                 } else {
+                     startPhi += laneOffset;
+                 }
+                 
+                 laneHeads.push({ phi: startPhi, theta: startTheta });
+                 
+                 // Place START PAD
+                 const pos = this.getPos(startPhi, startTheta, surfaceRadius);
+                 const pad = new THREE.Mesh(padGeometry, padMaterial);
+                 pad.position.copy(pos);
+                 pad.lookAt(new THREE.Vector3(0,0,0)); // Look at center (flat on surface)
+                 this.centralSphere.add(pad);
             }
-            
-            // Simpler approach: Process the BUS Step-by-Step, and draw all lanes for that step.
-            
+
             for (let s = 0; s < steps; s++) {
-                // Determine step length
-                const length = 0.2 + Math.random() * 0.4; // Radians to travel
+                const length = 0.15 + Math.random() * 0.35; 
                 const dir = Math.random() > 0.5 ? 1 : -1;
 
-                let startPhi = currentPhi;
-                let startTheta = currentTheta;
-                
-                let endPhi = startPhi;
-                let endTheta = startTheta;
+                // Move the "cursor" (center of bus)
+                let endPhi = currentPhi;
+                let endTheta = currentTheta;
 
                 if (isVertical) {
-                     endPhi = startPhi + (length * dir);
-                     // Clamp phi
+                     endPhi += (length * dir);
                      endPhi = Math.max(0.1, Math.min(Math.PI - 0.1, endPhi));
                 } else {
-                     endTheta = startTheta + (length * dir);
+                     endTheta += (length * dir);
                 }
 
-                // Draw Lanes for this segment
+                // Draw segments for each lane connecting prevHead to newHead
                 for(let l=0; l<lanes; l++) {
-                    // Calculate parallel offset
-                    // Offset needs to be perpendicular to travel direction
-                    let pPhi1 = startPhi;
-                    let pTheta1 = startTheta;
-                    let pPhi2 = endPhi;
-                    let pTheta2 = endTheta;
-
-                    // Offset logic
-                    const laneOffset = (l - (lanes-1)/2) * spacing; 
+                    const head = laneHeads[l];
+                    
+                    // Destination calculation is tricky because we turn. 
+                    // But in Manhattan steps, we move straight.
+                    // The offset is constant relative to the center line.
+                    
+                    let targetPhi = endPhi;
+                    let targetTheta = endTheta;
+                    
+                    const laneOffset = (l - (lanes-1)/2) * spacing;
                     
                     if (isVertical) {
-                        // Moving in Phi, offset in Theta
-                        // Need to adjust theta offset based on latitude to keep constant physical width?
-                        // For simplicity, just add to theta. 
-                        pTheta1 += laneOffset;
-                        pTheta2 += laneOffset;
+                        targetTheta += laneOffset;
                     } else {
-                        // Moving in Theta, offset in Phi
-                        pPhi1 += laneOffset;
-                        pPhi2 += laneOffset;
+                        targetPhi += laneOffset;
                     }
 
-                    // Generate Points for LineGeometry
+                    // Geometry generation (Arc)
                     const segmentPoints = [];
-                    const divisions = 8; // Smoothness of the arc on the sphere
+                    const divisions = 6;
                     
                     for(let k=0; k<=divisions; k++) {
                         const t = k/divisions;
-                        const tmpPhi = pPhi1 + (pPhi2 - pPhi1) * t;
-                        const tmpTheta = pTheta1 + (pTheta2 - pTheta1) * t;
-                        
+                        const tmpPhi = head.phi + (targetPhi - head.phi) * t;
+                        const tmpTheta = head.theta + (targetTheta - head.theta) * t;
                         const vec = this.getPos(tmpPhi, tmpTheta, surfaceRadius);
                         segmentPoints.push(vec.x, vec.y, vec.z);
                     }
 
-                    // Create Fat Line
                     const geometry = new LineGeometry();
                     geometry.setPositions(segmentPoints);
 
                     const mat = new LineMaterial({
                         color: 0x0a2a47,
                         linewidth: 2.5, 
-                        worldUnits: false, // Pixels
+                        worldUnits: false,
                         dashed: false,
                         alphaToCoverage: true,
                         transparent: true,
@@ -260,22 +259,31 @@ export class IcosahedronScene {
                     this.circuitMeshes.push(line);
                     this.fatLines.push(mat);
 
-                    // Add to electron paths
-                    // We store the math definition to animate electrons mathematically along the arc
                     this.paths.push({
-                         phiStart: pPhi1, thetaStart: pTheta1,
-                         phiEnd: pPhi2, thetaEnd: pTheta2,
+                         phiStart: head.phi, thetaStart: head.theta,
+                         phiEnd: targetPhi, thetaEnd: targetTheta,
                          radius: surfaceRadius,
                          mesh: line 
                     });
+
+                    // Update head
+                    head.phi = targetPhi;
+                    head.theta = targetTheta;
                 }
 
-                // Update cursor for next step (center of bus)
                 currentPhi = endPhi;
                 currentTheta = endTheta;
-                
-                // Flip direction for Manhattan turn
                 isVertical = !isVertical;
+            }
+
+            // Place END PADS
+            for(let l=0; l<lanes; l++) {
+                 const head = laneHeads[l];
+                 const pos = this.getPos(head.phi, head.theta, surfaceRadius);
+                 const pad = new THREE.Mesh(padGeometry, padMaterial);
+                 pad.position.copy(pos);
+                 pad.lookAt(new THREE.Vector3(0,0,0));
+                 this.centralSphere.add(pad);
             }
         }
 
@@ -316,7 +324,6 @@ export class IcosahedronScene {
     }
 
     randomSpherePoint(radius) {
-        // Redundant but kept for safety if used elsewhere
         const u = Math.random();
         const v = Math.random();
         const theta = 2 * Math.PI * u;
