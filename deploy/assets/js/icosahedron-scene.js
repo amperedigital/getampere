@@ -36,55 +36,163 @@ export class IcosahedronScene {
     }
 
     initUI() {
-        // Create Segmented Control Container
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.bottom = '85px'; // Above the title
-        container.style.left = '50%';
-        container.style.transform = 'translateX(-50%)';
-        container.style.display = 'flex';
-        container.style.border = '1px solid #333';
-        container.style.borderRadius = '4px';
-        container.style.background = 'rgba(5, 6, 15, 0.9)';
-        container.style.zIndex = '1000';
-        container.style.overflow = 'hidden';
+        // Toggle Switch Configuration
+        const width = 320; 
+        const height = 48; // ~20% larger than typical button
+        const thumbWidth = (width - 4) / 3; 
 
-        const states = [
+        // Container (Track)
+        const container = document.createElement('div');
+        this.uiContainer = container;
+        container.style.position = 'absolute';
+        container.style.bottom = '85px'; 
+        container.style.left = '50%';
+        container.style.transform = 'translate(-50%, 0)';
+        container.style.width = width + 'px';
+        container.style.height = height + 'px';
+        container.style.background = 'rgba(5, 6, 10, 0.85)'; // Deep dark
+        container.style.backdropFilter = 'blur(12px)';
+        container.style.borderRadius = '999px'; // Pill
+        container.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+        container.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6)';
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '2px';
+        container.style.zIndex = '1000';
+        container.style.userSelect = 'none';
+        container.style.cursor = 'pointer';
+
+        // Thumb (The Draggable Pill)
+        const thumb = document.createElement('div');
+        this.uiThumb = thumb;
+        thumb.style.position = 'absolute';
+        thumb.style.top = '2px';
+        thumb.style.left = '2px';
+        thumb.style.width = thumbWidth + 'px';
+        thumb.style.height = (height - 4) + 'px';
+        thumb.style.background = 'linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9))';
+        thumb.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+        thumb.style.borderRadius = '999px';
+        thumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
+        thumb.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)'; // Smooth throw
+        thumb.style.zIndex = '1';
+
+        // Active Highlight in Thumb (Glow)
+        const thumbGlow = document.createElement('div');
+        thumbGlow.style.position = 'absolute';
+        thumbGlow.style.inset = '0';
+        thumbGlow.style.borderRadius = '999px';
+        thumbGlow.style.background = 'radial-gradient(circle at center, rgba(0, 170, 255, 0.15), transparent 70%)';
+        thumb.appendChild(thumbGlow);
+        
+        // Labels
+        const labelsData = [
             { id: 'OFF', label: 'OFF' },
             { id: 'STANDBY', label: 'STANDBY' },
             { id: 'ACTIVE', label: 'ON' }
         ];
+        
+        this.statePositions = { 'OFF': 0, 'STANDBY': 1, 'ACTIVE': 2 };
+        this.positionToState = ['OFF', 'STANDBY', 'ACTIVE'];
 
-        this.uiButtons = {};
-
-        states.forEach(state => {
-            const btn = document.createElement('button');
-            btn.innerText = state.label;
-            btn.style.background = 'transparent';
-            btn.style.border = 'none';
-            btn.style.borderRight = '1px solid #333';
-            // Default color for inactive state - brighter per user request
-            btn.style.color = '#cccccc'; 
-            
-            btn.style.padding = '6px 12px';
-            btn.style.fontFamily = 'monospace';
-            btn.style.fontSize = '11px';
-            btn.style.cursor = 'pointer';
-            btn.style.transition = 'all 0.3s ease';
-            
-            if (state.id === 'ACTIVE') btn.style.borderRight = 'none'; // Last one
-
-            btn.addEventListener('click', () => this.setSystemState(state.id));
-            
-            this.uiButtons[state.id] = btn;
-            container.appendChild(btn);
+        labelsData.forEach((item, i) => {
+            const label = document.createElement('div');
+            label.innerText = item.label;
+            label.style.flex = '1';
+            label.style.textAlign = 'center';
+            label.style.fontFamily = 'monospace';
+            label.style.fontSize = '12px';
+            label.style.letterSpacing = '1px';
+            label.style.color = '#666';
+            label.style.zIndex = '2';
+            label.style.fontWeight = '600';
+            label.style.pointerEvents = 'none'; // Clicks pass to container
+            label.style.transition = 'color 0.3s ease, text-shadow 0.3s ease';
+            label.setAttribute('data-id', item.id);
+            container.appendChild(label);
         });
 
+        container.insertBefore(thumb, container.firstChild);
         this.container.appendChild(container);
-        
+
+        // --- Interaction Logic (Drag & Throw) ---
+        let isDragging = false;
+
+        const setThumbPosition = (x) => {
+            const rect = container.getBoundingClientRect();
+            let relativeX = x - rect.left - (thumbWidth / 2);
+            
+            // Constrain
+            const maxLeft = width - thumbWidth - 4; // -4 for padding
+            relativeX = Math.max(2, Math.min(relativeX, maxLeft)); 
+            
+            thumb.style.transition = 'none'; // Instant movement
+            thumb.style.left = relativeX + 'px';
+        };
+
+        const snapToNearest = () => {
+            const currentLeft = parseFloat(thumb.style.left);
+            const effectiveWidth = width - 4;
+            const sectionWidth = effectiveWidth / 3;
+            
+            // Find center of thumb relative to track content
+            // thumb starts at 2px. 
+            // Normalized center = (currentLeft - 2) + sectionWidth/2 ? 
+            // Simpler: Center of thumb
+            const thumbCenter = currentLeft + (thumbWidth/2);
+            
+            let index = Math.floor( thumbCenter / sectionWidth );
+            index = Math.max(0, Math.min(index, 2));
+            
+            const state = this.positionToState[index];
+            
+            // Restore transition for the snap
+            thumb.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)';
+            this.setSystemState(state);
+        };
+
+        const onPointerDown = (e) => {
+            isDragging = true;
+            // If clicking the thumb, we just grab it.
+            // If clicking the track, standard UI is "Jump to here".
+            // But we want "Drag and Throw". 
+            // Let's allow immediate drag from jump point IF clicking track.
+            
+            // Check target
+            if (e.target !== thumb && !thumb.contains(e.target)) {
+                 // Jump thumb immediately, then drag
+                 setThumbPosition(e.clientX || e.touches[0].clientX);
+            }
+            // Add global listeners
+            document.addEventListener('mousemove', onPointerMove);
+            document.addEventListener('mouseup', onPointerUp);
+            document.addEventListener('touchmove', onPointerMove, {passive: false});
+            document.addEventListener('touchend', onPointerUp);
+        };
+
+        const onPointerMove = (e) => {
+            if (!isDragging) return;
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            setThumbPosition(clientX);
+        };
+
+        const onPointerUp = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            snapToNearest();
+            
+            document.removeEventListener('mousemove', onPointerMove);
+            document.removeEventListener('mouseup', onPointerUp);
+            document.removeEventListener('touchmove', onPointerMove);
+            document.removeEventListener('touchend', onPointerUp);
+        };
+
+        container.addEventListener('mousedown', onPointerDown);
+        container.addEventListener('touchstart', onPointerDown, {passive: false});
+
         // Initialize UI state
-        // Start OFF or STANDBY? Let's stick to ACTIVE on load, but we can set default.
-        this.setSystemState('STANDBY');
+        setTimeout(() => this.setSystemState('STANDBY'), 0);
     }
 
     setSystemState(newState) {
@@ -94,20 +202,46 @@ export class IcosahedronScene {
 
         this.systemState = newState;
 
-        // Update UI
-        Object.keys(this.uiButtons).forEach(key => {
-            const btn = this.uiButtons[key];
-            if (key === newState) {
-                btn.style.background = 'rgba(0, 170, 255, 0.2)';
-                btn.style.color = '#ffffff'; // Active Text White
-                btn.style.textShadow = '0 0 5px #00aaff';
+        // Update Toggle Switch UI
+        if (this.uiThumb && this.uiContainer) {
+            const labels = this.uiContainer.querySelectorAll('div[data-id]');
+            const index = this.statePositions[newState];
+            const width = 320; 
+            const thumbWidth = (width - 4) / 3;
+            
+            // Calculate Position
+            const targetLeft = 2 + (index * thumbWidth);
+            this.uiThumb.style.left = targetLeft + 'px';
+            
+            // Update Thumb Styling (Optional: Change color based on state?)
+            if (newState === 'ACTIVE') {
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(0, 80, 150, 0.9), rgba(0, 60, 120, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(0, 170, 255, 0.3)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(0, 170, 255, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)';
+            } else if (newState === 'STANDBY') {
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+                 this.uiThumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
             } else {
-                btn.style.background = 'transparent';
-                btn.style.color = '#888888'; // Inactive Text Gray (slightly dimmed)
-                btn.style.textShadow = 'none';
+                 // OFF
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(20, 20, 25, 0.9), rgba(10, 10, 15, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(255, 255, 255, 0.05)';
+                 this.uiThumb.style.boxShadow = 'none';
             }
-        });
 
+            // Update Labels
+            labels.forEach(l => {
+                if (l.getAttribute('data-id') === newState) {
+                    l.style.color = '#ffffff'; 
+                    l.style.textShadow = '0 0 8px rgba(0, 170, 255, 0.6)';
+                } else {
+                    l.style.color = '#555'; // Dim others
+                    l.style.textShadow = 'none';
+                }
+            });
+        } 
+        
+        // Logic continues...
         if (newState === 'ACTIVE') {
             this.lightTargets = { ambient: 0.2, core: 0.4 };
             this.targetSimIntensity = 1.0; // Ramp up simulation

@@ -1,3 +1,9 @@
+## v2.023 - 2026-01-21
+- **UI Upgrade**: Replaced standard buttons with a large, interactive "Pill Toggle Switch".
+    - **Interaction**: Supports "Drag and Throw" mechanism - users can drag the slider thumb or click the track to jump.
+    - **Visuals**: Modern, glass-morphism style with a glowing thumb and dynamic text highlighting.
+    - **States**: seamless 3-way toggle (OFF | STANDBY | ON).
+    - **Sizing**: Increased overall control size by ~20% for better usability.
 ## v2.022 - 2026-01-21
 - **Bugfix**: Fixed `ReferenceError: pulse is not defined` by promoting the pulse timer variable to the top of the `animate()` function scope, ensuring it is accessible to both the lighting and node loops.
 ## v2.021 - 2026-01-21
