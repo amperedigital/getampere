@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.960 - 2026-01-21
+- **Design Two Visuals (Contrast)**:
+  - **Trace Visibility**: Reduced base intensity of unlit sphere traces by another 20% (`0x041725` -> `0x03121d`). 
+  - **Effect**: Traces are now extremely subtle when inactive, making the active firing sequences pop with maximum contrast.
+
 ## v1.959 - 2026-01-21
 - **Design Two Geometry (Core Scale)**:
   - **Sphere Size**: Increased `centralSphere` diameter by another 20% (Radius 0.72 -> 0.864).

@@ -116,8 +116,8 @@ export class IcosahedronScene {
         
         const numBuses = 65; 
         
-        // Darker Base color (v1.955 settings)
-        const baseColorHex = 0x041725;
+        // Darker Base color (v1.960 settings)
+        const baseColorHex = 0x03121d;
         for (let b = 0; b < numBuses; b++) {
             const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
             const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
@@ -439,9 +439,9 @@ export class IcosahedronScene {
             // Circuitry
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
-                    const baseR = 0.015; 
-                    const baseG = 0.090; 
-                    const baseB = 0.145;
+                    const baseR = 0.012; 
+                    const baseG = 0.072; 
+                    const baseB = 0.116;
 
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
