@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.961 - 2026-01-21
+- **UI & Controls (Interactive Toggle)**:
+  - **Light Switch**: Added a "Lights: ON/OFF" button to the demo viewer (`icosahedron.html`).
+  - **Logic**: Implemented `toggleLights()` in `IcosahedronScene` class.
+    - **OFF State**: Forces circuit traces to black (0 intensity), disables electron pulses, sets node emissive intensity to 0, and hides halos.
+    - **ON State**: Resumes normal random firing logic and activity.
+
 ## v1.960 - 2026-01-21
 - **Design Two Visuals (Contrast)**:
   - **Trace Visibility**: Reduced base intensity of unlit sphere traces by another 20% (`0x041725` -> `0x03121d`). 

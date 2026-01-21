@@ -12,6 +12,8 @@ export class IcosahedronScene {
 
         console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
 
+        this.lightsActive = true; 
+
         this.initScene();
         this.initLights();
         this.initGeometry();
@@ -406,6 +408,11 @@ export class IcosahedronScene {
         });
     }
 
+    toggleLights() {
+        this.lightsActive = !this.lightsActive;
+        return this.lightsActive;
+    }
+
     animate() {
         requestAnimationFrame(this.animate.bind(this));
         
@@ -434,7 +441,7 @@ export class IcosahedronScene {
                 sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
 
-            const activityLevel = sphereActiveFactor; 
+            const activityLevel = this.lightsActive ? sphereActiveFactor : 0; 
 
             // Circuitry
             if (this.paths && this.electrons) {
@@ -445,7 +452,11 @@ export class IcosahedronScene {
 
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
-                            mesh.userData.intensity *= 0.92;
+                            if (this.lightsActive) {
+                                mesh.userData.intensity *= 0.92;
+                            } else {
+                                mesh.userData.intensity = 0; // Force off quickly
+                            }
                             const intensity = mesh.userData.intensity;
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
@@ -460,26 +471,31 @@ export class IcosahedronScene {
                     });
                 }
                 this.electrons.forEach(e => {
-                    if (!e.active) {
-                        if (e.delay > 0) e.delay--;
-                        else if (Math.random() < (0.01 + activityLevel * 0.1)) {
-                             e.active = true;
-                             e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                             e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
+                    if (!this.lightsActive) {
+                         e.active = false; 
+                         e.mesh.visible = false;
+                    } else {
+                        if (!e.active) {
+                            if (e.delay > 0) e.delay--;
+                            else if (Math.random() < (0.01 + activityLevel * 0.1)) {
+                                 e.active = true;
+                                 e.pathIndex = Math.floor(Math.random() * this.paths.length);
+                                 e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
+                            }
                         }
-                    }
-                    if (e.active) {
-                        const pathId = e.pathIndex;
-                        if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
-                        e.t += e.speed;
-                        if (e.t >= 1.0) { e.active = false; e.mesh.visible = false; e.delay = Math.random() * 30; }
-                        else {
-                            const path = this.paths[pathId];
-                            if (path) {
-                                const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
-                                const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
-                                const pos = this.getPos(currentPhi, currentTheta, path.radius);
-                                e.mesh.position.copy(pos);
+                        if (e.active) {
+                            const pathId = e.pathIndex;
+                            if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
+                            e.t += e.speed;
+                            if (e.t >= 1.0) { e.active = false; e.mesh.visible = false; e.delay = Math.random() * 30; }
+                            else {
+                                const path = this.paths[pathId];
+                                if (path) {
+                                    const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
+                                    const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
+                                    const pos = this.getPos(currentPhi, currentTheta, path.radius);
+                                    e.mesh.position.copy(pos);
+                                }
                             }
                         }
                     }
@@ -492,7 +508,9 @@ export class IcosahedronScene {
             this.nodes.forEach(node => {
                 const data = node.userData;
 
-                if (data.firingState <= 0) {
+                if (!this.lightsActive) {
+                    data.firingState = 0; 
+                } else if (data.firingState <= 0) {
                     if (data.fireCooldown > 0) {
                         data.fireCooldown -= 2; 
                     } else {
@@ -509,7 +527,7 @@ export class IcosahedronScene {
                 let proximityIntensity = 0; 
                 let proximityScale = 0;
                 
-                if (node === bestNode) {
+                if (this.lightsActive && node === bestNode) {
                     node.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
@@ -517,7 +535,8 @@ export class IcosahedronScene {
                     proximityIntensity = Math.pow(factor, 2) * 2.0; 
                     proximityScale = factor * 0.4;
                 }
-
+                
+                // If lights inactive, both are 0
                 const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
                 
                 // Use the stored RANDOM color for this node
