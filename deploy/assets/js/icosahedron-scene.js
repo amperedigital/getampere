@@ -149,7 +149,7 @@ export class IcosahedronScene {
                      const pos = this.getPos(phi, theta, surfaceRadius);
                      const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
                      pad.material.transparent = true; // Fix Material transparency
-                     pad.material.opacity = 0.15; // Slightly distinct base chips
+                     pad.material.opacity = 0.55; // Darker traces request (0.5+ base)
                      pad.position.copy(pos);
                      pad.lookAt(new THREE.Vector3(0,0,0));
                      this.centralSphere.add(pad);
@@ -359,7 +359,7 @@ export class IcosahedronScene {
                     dashed: false,
                     alphaToCoverage: false,
                     transparent: true,
-                    opacity: 0.1, 
+                    opacity: 0.5, 
                     depthWrite: false, 
                     depthTest: true
                 });
@@ -376,7 +376,7 @@ export class IcosahedronScene {
                 // End Pad
                 const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
                 const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
-                pad.material.opacity = 0.1; 
+                pad.material.opacity = 0.5; 
                 pad.material.transparent = true;
                 pad.position.copy(padPos);
                 pad.lookAt(new THREE.Vector3(0,0,0));
@@ -655,12 +655,12 @@ export class IcosahedronScene {
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
                             mesh.material.color.setRGB(r, g, b);
-                            mesh.material.opacity = 0.1 + (0.9 * intensity);
+                            mesh.material.opacity = 0.5 + (0.5 * intensity);
                         } else {
                             // Reset and Remove
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.1; 
+                            mesh.material.opacity = 0.5; 
                             this.activeMeshes.delete(mesh);
                         }
                     });
@@ -675,12 +675,12 @@ export class IcosahedronScene {
 
                         if (data.intensity > 0.01) {
                             if (data.mesh) {
-                                data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
+                                data.mesh.material.opacity = 0.5 + (0.5 * data.intensity);
                             }
                         } else {
                             data.intensity = 0;
                             if (data.mesh) {
-                                data.mesh.material.opacity = 0.1;
+                                data.mesh.material.opacity = 0.5;
                             }
                             this.activePads.delete(data);
                         }

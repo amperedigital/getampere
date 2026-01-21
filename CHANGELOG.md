@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.985 - 2026-01-21
+- **Design Two Visuals (Dark Opacity Boost)**:
+  - **Trace Visibility**: Increased the base opacity of all unlit circuit traces and pads from **10%** to **50%**. This significantly increases the visual weight and contrast of the "dark" circuitry against the background, making the complex network grid clearly visible at all times, not just when lit.
+  - **Chip Clusters**: Validated that the component chip clusters also respect this new higher opacity (0.55), ensuring they stand out slightly more than the traces.
+
 ## v1.984 - 2026-01-21
 - **Bug Fix (Animation Crash)**:
   - **Null Safety**: Fixed a critical `TypeError` in the new optimized animation loop. The generated "start ports" for circuit traces (invisible logical nodes) were being added to the render loop, causing a crash when the renderer tried to access their non-existent geometry. Added a safety check to ensure only visible pads are processed.
