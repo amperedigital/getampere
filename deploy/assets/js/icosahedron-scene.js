@@ -78,11 +78,12 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.864, 64, 64);
-        // Metal Material with moderate roughness for sheen
+        // Metal Material Fix: Lower metalness and lighter color to prevent "black hole" effect
+        // when no environment map is present.
         const material = new THREE.MeshStandardMaterial({
-            color: 0x020a12,     
-            metalness: 0.9,
-            roughness: 0.3, 
+            color: 0x3a4b5c,     // Steel Blue (Brighter base)
+            metalness: 0.5,      // Reduced from 0.9 to allow diffuse lighting to show
+            roughness: 0.2,      // Glossy finish
             emissive: 0x000000,
         });
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.987 - 2026-01-21
+- **Design Two Visuals (Metal Visibilty Fix)**:
+  - **Material Tune**: Fixed the issue where the metal orb appeared black. Adjusted the material physics to compensate for the scene's lighting (Standard lighting vs Environment Map).
+  - **Settings**: Increased base color brightness (`0x3a4b5c` Steel Blue) and reduced metalness to `0.5`. This creates a polished, glossy "Steel" look that properly reflects the scene lights without turning pitch black.
+
 ## v1.986 - 2026-01-21
 - **Design Two Visuals (Metal Orb)**:
   - **Material Update**: Switched the central sphere material from plain Lambert to **Standard Metal** (`metalness: 0.9`, `roughness: 0.3`). This gives the orb a sleek, high-tech metallic finish that catches the scene's lighting.
