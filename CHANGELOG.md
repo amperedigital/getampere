@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.983 - 2026-01-21
+- **Design Two Visuals (Chip Clusters & Performance)**:
+  - **Component Layouts**: Moved away from pure random traces to a "Component-based" layout. The generator now first places 40 "Chips" (dense grids of pads) on the sphere surface.
+  - **Connection Logic**: Circuit traces now specifically spawn from the edge ports of these chips, mimicking real PCB routing where lines connect components. This solves the "floating lines with no start/end" visual issue.
+  - **Infinite Wrapping**: Fixed a coordinate wrapping bug in the walker algorithm. Traces can now loop around the sphere's longitude (360 degrees) indefinitely without hitting invisible seams.
+- **Performance Optimization**:
+  - **Active Set Rendering**: Refactored the animation loop to track only "active" (illuminated) segments in a separate Set. This reduces the per-frame iteration count from ~10,000 meshes to ~50, drastically improving framerate and pulse speed.
+  - **Speed Boost**: Doubled the travel speed of electron pulses for a more energetic look.
+
 ## v1.982 - 2026-01-21
 - **Design Two Visuals (Smart Routing & End-to-End Traces)**:
   - **Smart Walker**: Replaced the random path generation with a "Smart Walker" algorithm that checks forward/backward lookahead directions and prioritizes maintaining inertia. This creates long, deliberate straight connections instead of random erratic zig-zags.
