@@ -1,3 +1,5 @@
+## v2.022 - 2026-01-21
+- **Bugfix**: Fixed `ReferenceError: pulse is not defined` by promoting the pulse timer variable to the top of the `animate()` function scope, ensuring it is accessible to both the lighting and node loops.
 ## v2.021 - 2026-01-21
 - **Favicon Update**: Removed explicit SVG icon reference as the provided PNG is the source of truth. Relying on `favicon.ico` and PNG variants.
 ## v2.020 - 2026-01-21

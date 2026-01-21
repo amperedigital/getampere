@@ -627,6 +627,10 @@ export class IcosahedronScene {
         this.controls.update();
 
         const lerpFactor = this.lerpSpeed || 0.05;
+        
+        // Pulse Timer (Global)
+        this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
+        const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
 
         // --- Light & State Logic ---
         if (this.lightTargets) {
@@ -649,11 +653,7 @@ export class IcosahedronScene {
 
             // Core Logic
             let targetCore = this.lightTargets.core;
-            let standbyCorePulse = 0;
             
-            // Always calculate pulse timer for seamless transition
-            this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
-            const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
             // Standby Pulse Intensity (0.05 to 0.5)
             const standbyPulseIntensity = 0.05 + pulse * 0.45;
             
@@ -662,6 +662,7 @@ export class IcosahedronScene {
             // But we already lerp atomic 'lightTargets.core'.
             // lightTargets.core is 0.4 (Active), 0.2 (Standby), 0 (Off).
             // We can add pulse on top if StandbyMix > 0.
+
             
             if (this.standbyMix > 0.01) {
                 // If In Standby, base core is 0.2
