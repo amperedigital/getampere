@@ -1,3 +1,7 @@
+## v2.009 - 2026-01-21
+- **Cleanup**: Removed legacy/redundant files (`icosahedron-blue-silver.html` and `icosahedron-scene-blue-silver.js`).
+    - **Why**: Maintaining a Single Source of Truth for the 3D scene.
+
 ## v2.008 - 2026-01-21
 - **Mobile Controls Fix**: Enabled Touch Interactions.
     - **Resolution**: Implemented custom "Pinch-to-Zoom" logic.
