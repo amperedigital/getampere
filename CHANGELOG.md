@@ -933,3 +933,7 @@
 - **Circuitry Overhaul**: Implemented a "Grid Snapping" system for circuit traces. Lines now align perfectly to a 60x80 conceptual grid on the sphere.
 - **Density**: Increased max buses to 90 and electron count to 120 for a high-density, complex look.
 - **Aesthetic**: Traces are strictly parallel and form organized "data highways" rather than random wandering paths.
+
+## [v1.948] - 2026-01-21
+- **Visuals**: Implemented "Neuron Firing" animation on vertices. Nodes rest at a pale white state and randomly pulse effectively to a bright yellow-white (`0xffffaa`).
+- **Logic**: Vertex pulsation is independent but blends with the existing viewport-proximity highlight system.

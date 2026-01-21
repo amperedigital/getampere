@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.5 (Dense PCB Grid)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.6 (Neuron Nodes)");
 
         this.initScene();
         this.initLights();
@@ -78,7 +78,6 @@ export class IcosahedronScene {
         ctx.lineWidth = 2; 
         ctx.strokeRect(0,0,128,128);
         
-        // Add some techy details to the texture
         ctx.fillStyle = 'rgba(100, 200, 255, 0.05)';
         ctx.fillRect(10, 50, 40, 10);
         ctx.fillRect(80, 20, 10, 60);
@@ -142,50 +141,35 @@ export class IcosahedronScene {
         const padGeometry = new THREE.CircleGeometry(0.007, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        // --- GRID BASED GENERATION ---
-        
-        // We define a conceptual grid to snap coordinates to.
-        // This ensures parallelism and "lanes".
-        const PHI_STEPS = 60; // Latitude bands
-        const THETA_STEPS = 80; // Longitude bands
+        const PHI_STEPS = 60; 
+        const THETA_STEPS = 80; 
         
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        // Bus configuration
-        const numBuses = 90; // Very dense
+        const numBuses = 90; 
         
         for (let b = 0; b < numBuses; b++) {
-            
-            // Pick a random grid start point
-            const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; // Avoid poles
+            const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
             const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
             
             let gridPhi = startGridPhi;
             let gridTheta = startGridTheta;
             
-            const lanes = 1 + Math.floor(Math.random() * 4); // 1-4 parallel lanes
-            const busSteps = 5 + Math.floor(Math.random() * 15); // Long paths
+            const lanes = 1 + Math.floor(Math.random() * 4); 
+            const busSteps = 5 + Math.floor(Math.random() * 15); 
             
-            // Valid direction?
-            let dir = Math.random() > 0.5 ? 'H' : 'V'; // Horizontal or Vertical
-            
-            // LANE OFFSET CALCULATION
-            // We want lanes to be TIGHTLY packed, effectively 1 grid unit apart.
+            let dir = Math.random() > 0.5 ? 'H' : 'V'; 
             
             let laneHeads = [];
             for (let l = 0; l < lanes; l++) {
-                // Where is this lane relative to the bus center/origin?
-                // If moving Horizontally, lanes stack Vertically (Phi change)
-                // If moving Vertically, lanes stack Horizontally (Theta change)
-                
                 let lPhi = gridPhi;
                 let lTheta = gridTheta;
                 
                 if (dir === 'H') {
-                    lPhi += l; // Stack in Phi
+                    lPhi += l; 
                 } else {
-                    lTheta += l; // Stack in Theta
+                    lTheta += l; 
                 }
                 
                 const phiVal = lPhi * phiStepSize;
@@ -193,7 +177,6 @@ export class IcosahedronScene {
                 
                 laneHeads.push({ phi: phiVal, theta: thetaVal, gridPhi: lPhi, gridTheta: lTheta });
 
-                // Start Pad
                 const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
                 const pad = new THREE.Mesh(padGeometry, padMaterial);
                 pad.position.copy(pos);
@@ -202,44 +185,34 @@ export class IcosahedronScene {
             }
 
             for (let s = 0; s < busSteps; s++) {
-                // Determine length of this segment in GRID UNITS
                 let stepLen = 4 + Math.floor(Math.random() * 10); 
                 
-                // Movement
                 let dPhi = 0;
                 let dTheta = 0;
                 
-                if (dir === 'H') { // Moving along Theta
+                if (dir === 'H') { 
                     let sign = Math.random() > 0.5 ? 1 : -1;
                     dTheta = stepLen * sign;
-                } else { // Moving along Phi
+                } else { 
                     let sign = Math.random() > 0.5 ? 1 : -1;
                     dPhi = stepLen * sign;
                 }
                 
-                // Check bounds (basic)
-                // If we go too close to poles with Phi, clamp or reverse? 
-                // For simplicity, let's just calc targets and render arcs.
-
                 for(let l = 0; l < lanes; l++) {
                     const head = laneHeads[l];
                     
-                    // Calc discrete target
                     let targetGridPhi = head.gridPhi + dPhi;
-                    let targetGridTheta = head.gridTheta + dTheta; // Wrap around handles naturally in trig
+                    let targetGridTheta = head.gridTheta + dTheta; 
                     
-                    // Clamp Phi to avoid crossing poles weirdly
                     targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
                     
                     const targetPhi = targetGridPhi * phiStepSize;
                     const targetTheta = targetGridTheta * thetaStepSize;
                     
-                    // Verify we actually moved
                     if (Math.abs(targetPhi - head.phi) < 0.001 && Math.abs(targetTheta - head.theta) < 0.001) continue;
 
-                    // Geometry generation (Arc)
                     const segmentPoints = [];
-                    const divisions = 8; // Smooth arcs
+                    const divisions = 8; 
                     
                     for(let k=0; k<=divisions; k++) {
                         const t = k/divisions;
@@ -253,7 +226,7 @@ export class IcosahedronScene {
                     geometry.setPositions(segmentPoints);
 
                     const mat = new LineMaterial({
-                        color: 0x0a3a5e, // Darker PCB blueish
+                        color: 0x0a3a5e, 
                         linewidth: 2.5, 
                         worldUnits: false,
                         dashed: false,
@@ -279,18 +252,15 @@ export class IcosahedronScene {
                          mesh: line 
                     });
 
-                    // Update head
                     head.phi = targetPhi;
                     head.theta = targetTheta;
                     head.gridPhi = targetGridPhi;
                     head.gridTheta = targetGridTheta;
                 }
                 
-                // FLIP direction for next segment (orthogonal turns)
                 dir = (dir === 'H') ? 'V' : 'H';
             }
 
-            // Place END PADS
             for(let l=0; l<lanes; l++) {
                  const head = laneHeads[l];
                  const pos = this.getPos(head.phi, head.theta, surfaceRadius);
@@ -301,7 +271,6 @@ export class IcosahedronScene {
             }
         }
 
-        // 2. Initialize Electrons
         const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
@@ -315,7 +284,7 @@ export class IcosahedronScene {
             depthWrite: false
         });
 
-        const numElectrons = 120; // More activity for denser board
+        const numElectrons = 120; 
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             
@@ -354,7 +323,7 @@ export class IcosahedronScene {
         const glowTexture = this.createGlowTexture();
         const glowMaterial = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x00ccff, 
+            color: 0xffffaa, // Yellow-white glow
             transparent: true, 
             opacity: 0,
             blending: THREE.AdditiveBlending,
@@ -379,12 +348,14 @@ export class IcosahedronScene {
                 uniquePoints.push(vertex.clone());
 
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
+                
+                // NEURON STYLING: Start "White-ish" but inactive
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0x446688,
-                    emissive: 0x0044aa, 
-                    emissiveIntensity: 0.2, 
-                    roughness: 0.3,
-                    metalness: 0.8
+                    color: 0xddeeff,      // Base pale white/blue
+                    emissive: 0x000000,   // Starts dark (no glow)
+                    emissiveIntensity: 0, 
+                    roughness: 0.2,
+                    metalness: 0.5
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -394,7 +365,14 @@ export class IcosahedronScene {
                 sprite.scale.set(0.6, 0.6, 0.6); 
                 sprite.visible = false; 
                 node.add(sprite); 
-                node.userData.sprite = sprite; 
+
+                // Neuron Firing State
+                node.userData = {
+                    sprite: sprite,
+                    firingState: 0, // 0 = inactive, >0 = firing amplitude
+                    fireCooldown: Math.random() * 300, 
+                    baseScale: 1.0
+                };
 
                 this.group.add(node);
                 this.nodes.push(node);
@@ -409,8 +387,8 @@ export class IcosahedronScene {
         const context = canvas.getContext('2d');
         
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(200, 240, 255, 1)'); 
-        gradient.addColorStop(0.4, 'rgba(0, 120, 255, 0.4)'); 
+        gradient.addColorStop(0, 'rgba(255, 255, 200, 1)'); 
+        gradient.addColorStop(0.4, 'rgba(255, 200, 50, 0.4)'); 
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
 
         context.fillStyle = gradient;
@@ -463,49 +441,39 @@ export class IcosahedronScene {
             this.nodes.forEach(node => {
                 node.getWorldPosition(tempV);
                 tempV.project(this.camera);
-
                 const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
-                
                 if (dist < maxDist) {
-                    candidates.push({
-                        node: node,
-                        dist: dist,
-                        z: tempV.z 
-                    });
+                    candidates.push({ node: node, dist: dist, z: tempV.z });
                 }
             });
 
             let bestNode = null;
             let sphereActiveFactor = 0; 
-
             if (candidates.length > 0) {
-                candidates.sort((a, b) => a.z - b.z);
+                candidates.sort((a, b) => a.z - b.z); // Z sort? Actually closer z is smaller? In camera space z is negative?
+                // Actually closest to camera in screen space is just low dist magnitude, 
+                // but if we want front-facing, we check Z. 
+                // Let's stick to user's "viewport" logic which was working.
                 bestNode = candidates[0].node;
                 sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
 
-            // Circuitry Animation
-            if (this.paths && this.electrons) {
-                const activityLevel = sphereActiveFactor; 
+            const activityLevel = sphereActiveFactor; 
 
-                // Decay Mesh Intensity
+            // Circuitry
+            if (this.paths && this.electrons) {
+                // ... (existing electron logic) ...
                 if (this.circuitMeshes) {
-                    const baseR = 0.04; 
-                    const baseG = 0.23; // Brighter default state
-                    const baseB = 0.37; 
-                    
+                    const baseR = 0.04; const baseG = 0.23; const baseB = 0.37;
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
-                            
                             const intensity = mesh.userData.intensity;
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
-                            
                             mesh.material.color.setRGB(r, g, b);
                             mesh.material.opacity = 0.9 + (0.1 * intensity);
-
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
@@ -513,41 +481,26 @@ export class IcosahedronScene {
                         }
                     });
                 }
-
                 this.electrons.forEach(e => {
                     if (!e.active) {
-                        if (e.delay > 0) {
-                            e.delay--;
-                        } else {
-                             if (Math.random() < (0.01 + activityLevel * 0.1)) {
-                                 e.active = true;
-                                 e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                                 e.t = 0;
-                                 e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); 
-                                 e.mesh.visible = true;
-                             }
+                        if (e.delay > 0) e.delay--;
+                        else if (Math.random() < (0.01 + activityLevel * 0.1)) {
+                             e.active = true;
+                             e.pathIndex = Math.floor(Math.random() * this.paths.length);
+                             e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
                         }
                     }
-
                     if (e.active) {
                         const pathId = e.pathIndex;
-                        if (this.circuitMeshes && this.circuitMeshes[pathId]) {
-                            this.circuitMeshes[pathId].userData.intensity = 1.0;
-                        }
-
+                        if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
                         e.t += e.speed;
-                        if (e.t >= 1.0) {
-                            e.active = false;
-                            e.mesh.visible = false;
-                            e.delay = Math.random() * 30;
-                        } else {
+                        if (e.t >= 1.0) { e.active = false; e.mesh.visible = false; e.delay = Math.random() * 30; }
+                        else {
                             const path = this.paths[pathId];
                             if (path) {
-                                // Interpolate position on the sphere arc
                                 const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
                                 const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
                                 const pos = this.getPos(currentPhi, currentTheta, path.radius);
-                                
                                 e.mesh.position.copy(pos);
                             }
                         }
@@ -555,37 +508,70 @@ export class IcosahedronScene {
                 });
             }
 
-            this.nodes.forEach(node => {
-                let targetIntensity = 0.2; 
-                let targetScale = 1.0;
-                let targetGlowOpacity = 0;
+            // --- NEURON NODE LOGIC ---
+            const yellow = new THREE.Color(0xffffaa);
+            const dark = new THREE.Color(0x000000);
 
+            this.nodes.forEach(node => {
+                const data = node.userData;
+
+                // 1. Calculate random firing
+                if (data.firingState <= 0) {
+                    if (data.fireCooldown > 0) {
+                        data.fireCooldown--;
+                    } else {
+                        // FIRE!
+                        if (Math.random() < 0.02) {
+                            data.firingState = 1.0; 
+                            data.fireCooldown = 60 + Math.random() * 300; // Random interval
+                        }
+                    }
+                } else {
+                    // Decay firing
+                    data.firingState *= 0.94; // Fast pulse check
+                    if (data.firingState < 0.01) data.firingState = 0;
+                }
+
+                // 2. Base Viewport Highlight (Logic from before)
+                let proximityIntensity = 0; 
+                let proximityScale = 0;
+                
                 if (node === bestNode) {
                     node.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
-
                     const factor = 1 - (dist / maxDist);
-                    targetIntensity = 0.2 + Math.pow(factor, 2) * 5.0; 
-                    targetScale = 1 + (factor * 0.4);
-                    targetGlowOpacity = Math.pow(factor, 3);
+                    proximityIntensity = Math.pow(factor, 2) * 2.0; 
+                    proximityScale = factor * 0.4;
                 }
 
-                const sprite = node.userData.sprite;
+                // 3. Combine Forces
+                // The "Firing" overrides the "Passive Proximity" if it's stronger
+                const combinedIntensity = Math.max(proximityIntensity, data.firingState * 3.0);
                 
-                node.material.emissiveIntensity += (targetIntensity - node.material.emissiveIntensity) * 0.1;
+                // Color Logic: Mix Dark -> Yellow based on intensity
+                // Emissive is additive.
+                // If firing, we want bright yellow/white.
                 
+                node.material.emissive.lerpColors(dark, yellow, Math.min(1.0, combinedIntensity));
+                node.material.emissiveIntensity = combinedIntensity;
+
+                // Scale Logic
                 const currentScale = node.scale.x;
+                const targetScale = 1.0 + proximityScale + (data.firingState * 0.5);
                 const newScale = currentScale + (targetScale - currentScale) * 0.1;
                 node.scale.setScalar(newScale);
 
-                if (targetGlowOpacity > 0.05) {
+                // Sprite/Glow Logic
+                const sprite = data.sprite;
+                const glowOpacity = Math.max(proximityIntensity * 0.5, data.firingState);
+                
+                if (glowOpacity > 0.05) {
                     sprite.visible = true;
-                    sprite.material.opacity = targetGlowOpacity;
+                    sprite.material.opacity = glowOpacity;
                     sprite.scale.setScalar(0.8 * newScale); 
                 } else {
                     sprite.visible = false;
-                    sprite.material.opacity = 0;
                 }
             });
         }
