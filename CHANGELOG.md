@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.996 - 2026-01-21
+- **Controls Rollback**: Completely removed all custom zoom constraints (`minDistance`, `maxDistance`, `zoomSpeed`). The control scheme is now code-identical to the "Blue Steel" demo (`icosahedron-blue-silver.html`), which serves as the reference for correct behavior. This invalidates any "sticky" or "jumpy" zoom issues introduced by recent boundary attempts.
+
 ## v1.995 - 2026-01-21
 - **Zoom Restoration**: Reverted `zoomSpeed` and `dampingFactor` to their default values (1.0 and 0.05). This restores the original behavior that the user described as "smooth in increments".
 - **Boundaries**: Adjusted `minDistance` to `1.2` (prevent clipping) and `maxDistance` to `100.0` (prevent feeling boxed in). The goal is to provide the standard navigation feel while invisible walls prevent the specific bug of "disappearing" inside the model.
