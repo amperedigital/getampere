@@ -55,9 +55,9 @@ export class IcosahedronScene {
         this.group = new THREE.Group();
         this.scene.add(this.group);
 
-        // Icosahedron: 12 vertices, 20 faces, 30 edges
+        // Low-density Polygon Sphere (Icosahedron Detail 1: 42 vertices, 80 faces)
         const radius = 1.5;
-        const detail = 0; // 0 = standard icosahedron
+        const detail = 1; // 1 = "Sphere with dimples" / Low-poly sphere
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
 
         // 1. Lattice (Wireframe) - Silver Blue
@@ -97,8 +97,8 @@ export class IcosahedronScene {
         const meshTexture = new THREE.CanvasTexture(canvas);
         meshTexture.wrapS = THREE.RepeatWrapping;
         meshTexture.wrapT = THREE.RepeatWrapping;
-        // High repeat to create density (make it look like a screen, not big bars)
-        meshTexture.repeat.set(30, 30); 
+        // Adjusted density for smaller faces (Detail 1 faces are 1/4 size of Detail 0)
+        meshTexture.repeat.set(15, 15); 
         meshTexture.anisotropy = 16;
         
         const meshMaterial = new THREE.MeshBasicMaterial({

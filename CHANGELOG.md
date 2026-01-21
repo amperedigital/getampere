@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.933 - 2026-01-21
+- **Design Two Initialization (Low-Poly Sphere)**:
+  - **Geometry**: Updated `icosahedron-scene.js` to use `IcosahedronGeometry(radius, 1)` (80 faces) instead of `detail: 0` (20 faces).
+  - **Visual**: Creates a "dimpled sphere" or geodesic dome structure.
+  - **Mesh Adjustment**: Reduced texture density from 30x to 15x to accommodate the smaller faces of the subdivided geometry.
+
 ## v1.932 - 2026-01-21
 - **Design Freeze (Design One)**:
   - **Action**: Saved the "Bluey Silver" design state to `icosahedron-blue-silver.html` and `assets/js/icosahedron-scene-blue-silver.js`.
