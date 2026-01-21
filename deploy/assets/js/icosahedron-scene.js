@@ -454,7 +454,7 @@ export class IcosahedronScene {
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             if (this.lightsActive) {
-                                mesh.userData.intensity *= 0.92;
+                                mesh.userData.intensity *= 0.96; // Slower cool-down (was 0.92)
                             } else {
                                 mesh.userData.intensity = 0; // Force off quickly
                             }
@@ -482,7 +482,8 @@ export class IcosahedronScene {
                             else if (Math.random() < (0.0064 + activityLevel * 0.05)) {
                                  e.active = true;
                                  e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                                 e.t = 0; e.speed = 0.01 + Math.random() * 0.03 + (activityLevel * 0.02); e.mesh.visible = true;
+                                 // Slower speed: Base 0.01->0.005, Ran 0.03->0.015
+                                 e.t = 0; e.speed = 0.005 + Math.random() * 0.015 + (activityLevel * 0.01); e.mesh.visible = true;
                             }
                         }
                         if (e.active) {
@@ -523,7 +524,7 @@ export class IcosahedronScene {
                         }
                     }
                 } else {
-                    data.firingState *= 0.75; 
+                    data.firingState *= 0.85; // Slower fade out (was 0.75)
                     if (data.firingState < 0.01) data.firingState = 0;
                 }
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.969 - 2026-01-21
+- **Design Two Tuning (Speed Reduction)**:
+  - **Electron Speed**: Halved the travel speed of electrons along the paths (Base `0.005`, Max `0.02`).
+  - **Node Decay**: Slowed the fade-out rate of firing nodes (Decay factor `0.75` -> `0.85`), creating a softer, longer pulse instead of a quick blink.
+  - **Trace Cooling**: Slowed the rate at which lit paths fade back to black (`0.92` -> `0.96`), matching the slower electron speed.
+  - **Goal**: Address user feedback that despite previous probability reductions, the *speed* of the animation remained too frantic.
+
 ## v1.968 - 2026-01-21
 - **Design Two Tuning (Aggressive Reductions)**:
   - **Node Firing**: Reduced probability from `0.038` to `0.02` (~47% reduction). Increased cooldown variance.
