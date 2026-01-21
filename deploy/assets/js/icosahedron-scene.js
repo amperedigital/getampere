@@ -177,7 +177,7 @@ export class IcosahedronScene {
                 const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
                 const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
                 pad.material.transparent = true;
-                pad.material.opacity = 0; // INVISIBLE START STATE
+                pad.material.opacity = 0.1; // VISIBLE BASE STATE
                 pad.position.copy(pos);
                 pad.lookAt(new THREE.Vector3(0,0,0));
                 
@@ -255,7 +255,7 @@ export class IcosahedronScene {
                         dashed: false,
                         alphaToCoverage: false,
                         transparent: true,
-                        opacity: 0.0, 
+                        opacity: 0.1, // VISIBLE BASE STATE
                         depthWrite: false, 
                         depthTest: true
                     });
@@ -273,7 +273,7 @@ export class IcosahedronScene {
                     // END PAD for this segment
                     const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
                     const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
-                    pad.material.opacity = 0; 
+                    pad.material.opacity = 0.1; // VISIBLE BASE STATE
                     pad.material.transparent = true;
                     pad.position.copy(padPos);
                     pad.lookAt(new THREE.Vector3(0,0,0));
@@ -549,21 +549,22 @@ export class IcosahedronScene {
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             if (this.lightsActive) {
-                                mesh.userData.intensity *= 0.82; // Faster cool-down for shorter trails
+                                mesh.userData.intensity *= 0.82; 
                             } else {
-                                mesh.userData.intensity = 0; // Force off quickly
+                                mesh.userData.intensity = 0; 
                             }
                             const intensity = mesh.userData.intensity;
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
                             mesh.material.color.setRGB(r, g, b);
-                            // Opacity matches intensity (fades to invisible)
-                            mesh.material.opacity = intensity;
+                            
+                            // Map 0..1 intensity to 0.1..1.0 opacity
+                            mesh.material.opacity = 0.1 + (0.9 * intensity);
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0; // INVISIBLE when not lit
+                            mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
                         }
                     });
 
@@ -576,10 +577,10 @@ export class IcosahedronScene {
                                 } else {
                                     data.intensity = 0;
                                 }
-                                data.mesh.material.opacity = data.intensity;
+                                data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
                             } else if (data.intensity > 0) {
                                 data.intensity = 0;
-                                data.mesh.material.opacity = 0;
+                                data.mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
                             }
                         });
                     }

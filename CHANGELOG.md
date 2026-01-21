@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.981 - 2026-01-21
+- **Design Two Visuals (Visible Base State)**:
+  - **Trace Visibility**: Increased the base opacity of all circuit traces and pads from **0%** (invisible) to **10%** (faintly visible). This provides better context and density, ensuring the viewer can see the complex network structure even when it's not actively carrying a pulse.
+  - **Animation Logic**: Updated the illumination decay curve to map 0-100% intensity to 10-100% opacity, ensuring smooth transitions between the "faint idle" and "bright active" states.
+
 ## v1.980 - 2026-01-21
 - **Design Two Visuals (Hyper-Dense Wrapping)**:
   - **Resolution Scaling**: Doubled the underlying circuitry grid from `45x60` to `90x120`. This allows for much finer, more intricate routing without collisions.
