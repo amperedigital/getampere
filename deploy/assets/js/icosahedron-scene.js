@@ -680,25 +680,22 @@ export class IcosahedronScene {
             }
 
             // Update Point Light based on mix
-            // We use 'intensity' property of pointLight.
-            // Wait, we don't have this.pointLight logic visible here.
-            // Let's assume standard lerp logic handles the base level, and we modulate for pulse.
-            
             if (this.pointLight) {
-                 let effectiveIntensity = this.ambientLight.intensity * 2.5; // Heuristic
-                 // Better: use the lerped core value? 
-                 // We don't seem to have a specific variable for current Core intensity aside from... 
-                 // Ah, we only see `this.lightTargets.core` above. 
-                 // We need to see where pointLight is updated. 
-                 // Just scrolling down I see: 
-                 // this.pointLight.intensity = this.lightTargets.core; (Maybe? Need to check context)
+                 // unused currently
             }
-                // Heartbeat Pulse for Core
-                // Low floor (0.05) to High (0.35)
-                const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5);
-                targetCore = 0.05 + (pulse * 0.3);
+            
+            // Apply Pulse to Core Light
+            if (this.standbyMix > 0.001) {
+                 // Pulse modulates targetCore
+                 // Base (0.2) -> Pulse (0.05 to 0.4)
+                 const pulseVal = 0.05 + (pulse * 0.35);
+                 // Blend based on mix
+                 targetCore = targetCore * (1 - this.standbyMix) + pulseVal * this.standbyMix;
             }
-            this.coreLight.intensity += (targetCore - this.coreLight.intensity) * lerpFactor;
+
+            if (this.coreLight) {
+                 this.coreLight.intensity += (targetCore - this.coreLight.intensity) * lerpFactor;
+            }
         }
 
         if (this.nodes) {

@@ -1,3 +1,6 @@
+## v2.020 - 2026-01-21
+- **Bugfix**: Fixed `SyntaxError` due to duplicate variable declaration (`pulse`) in `icosahedron-scene.js` that was missed in v2.019.
+- **Assets**: Added `favicon.ico` (sourced from Slack icon) and updated all HTML pages to include the favicon link.
 ## v2.019 - 2026-01-21
 - **Bugfix**: Fixed `SyntaxError` due to duplicate variable declaration (`pulse`) in the animation loop.
 ## v2.018 - 2026-01-21
