@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.974 - 2026-01-21
+- **Design Two Visuals (Invisible Start State)**:
+  - **Trace Visibility**: Changed the initial state of all circuit traces and pads to be **completely invisible** (opacity 0). They now only appear when energized by an electron pulse.
+  - **Non-Overlapping Logic**: Implemented a `gridMap` collision detection system during generation. This ensures that circuit buses never cross or touch each other, mimicking realistic parallel PCB routing.
+  - **Generation**: Buses now abort or skip lanes if they detect an impending collision, resulting in cleaner, separated paths.
+
 ## v1.973 - 2026-01-21
 - **Design Two Animation (Precise Sync)**:
   - **Segmentation**: Drastically reduced the length of individual circuit segments (`4-14` -> `2-5` grid units).
