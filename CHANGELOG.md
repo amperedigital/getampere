@@ -1,3 +1,7 @@
+## v2.025 - 2026-01-21
+- **Rendering Fix**: Synchronized the Core Light (Orb) and Ambient Light transitions with the Node simulation. 
+    - **Fix**: Removed the secondary interpolation lag ("double smoothing") where lighting was chasing a moving target.
+    - **Result**: The central orb now powers down and pulses in perfect unison with the nodes, eliminating the 1-2 second lag perceived during state switches.
 ## v2.024 - 2026-01-21
 - **UI Refinement**: Polished the "Pill Toggle Switch" interaction and layout.
     - **Visuals**: Increased track padding for a better "pill-in-track" aesthetic.

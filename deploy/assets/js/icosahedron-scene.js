@@ -772,8 +772,8 @@ export class IcosahedronScene {
 
         // --- Light & State Logic ---
         if (this.lightTargets) {
-            // Lerp Ambient
-            this.ambientLight.intensity += (this.lightTargets.ambient - this.ambientLight.intensity) * lerpFactor;
+            // 1. Synced State Updates
+            // Update the drivers (simIntensity, standbyMix) first so lights follow exactly
             
             // Lerp Simulation Intensity
             if (this.targetSimIntensity !== undefined) {
@@ -789,51 +789,21 @@ export class IcosahedronScene {
                  this.standbyMix = (this.systemState === 'STANDBY') ? 1.0 : 0.0;
             }
 
-            // Core Logic
-            let targetCore = this.lightTargets.core;
-            
-            // Standby Pulse Intensity (0.05 to 0.5)
-            const standbyPulseIntensity = 0.05 + pulse * 0.45;
-            
-            // Mix Core Intensity
-            // Active Core (0.4) vs Standby Core (Pulse) vs Off (0)
-            // But we already lerp atomic 'lightTargets.core'.
-            // lightTargets.core is 0.4 (Active), 0.2 (Standby), 0 (Off).
-            // We can add pulse on top if StandbyMix > 0.
+            // 2. Derive Lighting Directly (No Lag)
+            // Ambient: Active(0.2) -> Standby(0.05) -> OFF(0.0)
+            const activeAmbient = 0.2;
+            const standbyAmbient = 0.05;
+            this.ambientLight.intensity = (this.simIntensity * activeAmbient) + (this.standbyMix * standbyAmbient);
 
+            // Core: Active(0.4) -> Standby(Pulse) -> OFF(0.0)
+            const activeCore = 0.4;
+            // Pulse: 0.05 base + up to 0.35 sine wave = 0.4 max (Matches Active peak)
+            const standbyPulseVal = 0.05 + (pulse * 0.35); 
             
-            if (this.standbyMix > 0.01) {
-                // If In Standby, base core is 0.2
-                // We want to oscillate.
-                // Let's just modulate the current light intensity by the pulse?
-                // Or simply add pulse?
-                // Let's use the explicit pulse variable for nodes, and for core:
-                // If Standby, core intensity should pulse 0.1 to 0.4?
-                // lightTargets.core is 0.2. 
-                // Let's modulate it:
-                const pulseMod = 0.5 + pulse; // 0.5 to 1.5
-                // Blend: (Base Core) * (1-Mix) + (Base Core * PulseMod) * Mix
-                // Simplify: just apply modulation scaled by Mix
-                // But safer to just update the pointLight directly below based on State?
-                // Actually, the `this.pointLight.intensity` assignment logic below this block needs checking.
-            }
-
-            // Update Point Light based on mix
-            if (this.pointLight) {
-                 // unused currently
-            }
-            
-            // Apply Pulse to Core Light
-            if (this.standbyMix > 0.001) {
-                 // Pulse modulates targetCore
-                 // Base (0.2) -> Pulse (0.05 to 0.4)
-                 const pulseVal = 0.05 + (pulse * 0.35);
-                 // Blend based on mix
-                 targetCore = targetCore * (1 - this.standbyMix) + pulseVal * this.standbyMix;
-            }
+            const currentCore = (this.simIntensity * activeCore) + (this.standbyMix * standbyPulseVal);
 
             if (this.coreLight) {
-                 this.coreLight.intensity += (targetCore - this.coreLight.intensity) * lerpFactor;
+                 this.coreLight.intensity = currentCore;
             }
         }
 
