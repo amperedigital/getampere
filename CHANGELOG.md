@@ -1,3 +1,7 @@
+## v2.008 - 2026-01-21
+- **Visual Polish**: Rotated the Central Orb by 90 degrees on the X-axis.
+    - **Why**: Hides the "Pole/Eye" of the sphere circuitry mapping from facing the camera directly.
+
 ## v2.007 - 2026-01-21
 - **Refinement (Neural Activity)**: Slowed down the flashing rhythm of the nodes.
     - **Frequency**: Reduced firing probability from 6% to 2% per tick.

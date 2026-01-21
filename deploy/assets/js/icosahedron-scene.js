@@ -86,6 +86,10 @@ export class IcosahedronScene {
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
+        
+        // FIX: Rotate 90 degrees to hide the "eye" (pole) from direct camera view
+        this.centralSphere.rotation.x = Math.PI / 2; 
+
         this.group.add(this.centralSphere);
         
         this.initCircuitryPaths();
