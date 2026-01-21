@@ -51,7 +51,7 @@ export class IcosahedronScene {
         this.scene.add(this.group);
 
         const radius = 1.5;
-        const detail = 1; 
+        const detail = 2; 
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
 
         // 1. Lattice 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.953 - 2026-01-21
+- **Design Two Experiment**:
+  - **Node Density**: Increased `IcosahedronGeometry` detail from 1 to 2.
+  - **Effect**: Increases node count from 42 to 162, creating a much denser "neural" network of nodes and lattice lines.
+
 ## v1.952 - 2026-01-21
 - **Design Two Visuals (RGB Nodes)**:
   - **Colors**: Updated `addNodes` to assign random vivid RGB colors (HSL) to each node sphere instead of uniform white-blue.
