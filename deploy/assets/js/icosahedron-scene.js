@@ -820,16 +820,17 @@ export class IcosahedronScene {
 
         // --- ROTATION LOGIC ---
         if (this.centralSphere) {
-             // Target Speed: 1 Rev Per Second (approx 0.1 rad/frame at 60fps)
-             // Driven by simIntensity (0.0 to 1.0) so it ramps up/down with Power state
-             const baseSpeed = (Math.PI * 2) / 60; // Full speed
+             // Target Speed: 0.5 Rev Per Second (Power-Up State)
+             // Reduced from 1.0 per user request for a more "gentle curve".
+             const baseSpeed = (Math.PI * 2) / 120; // 60fps * 2s = 120 frames per rev
              const currentSpeed = baseSpeed * this.simIntensity;
              
-             // Rotation Axis: Local Y
-             // Since the Sphere is tilted 90deg (X=90), Local Y points at the camera (technically World Z).
-             // This creates a "Clockwise/Counter-Clockwise" spin effect for the viewer while hiding the pole.
+             // Rotation Axis: World Y (Vertical Spin)
+             // The Sphere has rotation.x = 90deg (PI/2).
+             // This maps local Z axis to World -Y axis (pointing down).
+             // To spin like a top (around World Y), we rotate around Local Z.
              if (currentSpeed > 0.0001) {
-                 this.centralSphere.rotateY(currentSpeed);
+                 this.centralSphere.rotateZ(currentSpeed);
              }
         }
 

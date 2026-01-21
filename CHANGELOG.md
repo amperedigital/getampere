@@ -1,3 +1,7 @@
+## v2.031 - 2026-01-21
+- **Rotation Tune**: Adjusted central orb rotation dynamics.
+    - **Axis**: Changed from "Clock Face" (Camera Z-axis) to "Spinning Top" (World Y-axis). This creates a lateral latitudinal spin.
+    - **Speed**: Reduced max speed by 50% (from 60 RPM to 30 RPM) for a more deliberate, heavy machinery feel.
 ## v2.030 - 2026-01-21
 - **Feature Checkpoint**: `v2.029` saved as stable backup.
 - **Animation Update**: Added rotation to the central orb.
