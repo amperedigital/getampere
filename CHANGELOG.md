@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.982 - 2026-01-21
+- **Design Two Visuals (Smart Routing & End-to-End Traces)**:
+  - **Smart Walker**: Replaced the random path generation with a "Smart Walker" algorithm that checks forward/backward lookahead directions and prioritizes maintaining inertia. This creates long, deliberate straight connections instead of random erratic zig-zags.
+  - **Backtracking & Cleanup**: Implemented a strict validation system that completely discards any circuit path shorter than **40 segments** (previously 10). If a path fails this check, its reserved grid points are now properly released (deleted from `gridMap`), preventing invisible "dead zones" from blocking future valid paths.
+  - **Guaranteed Wrapping**: Changed the main loop to a `while` loop that forces the generator to keep retrying until the specific target of valid long buses is met. This guarantees the sphere is fully wrapped in end-to-end circuitry.
+
 ## v1.981 - 2026-01-21
 - **Design Two Visuals (Visible Base State)**:
   - **Trace Visibility**: Increased the base opacity of all circuit traces and pads from **0%** (invisible) to **10%** (faintly visible). This provides better context and density, ensuring the viewer can see the complex network structure even when it's not actively carrying a pulse.

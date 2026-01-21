@@ -119,12 +119,18 @@ export class IcosahedronScene {
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        const numBuses = 200; // Increased significantly for density
+        const numBusesTarget = 70; // Fewer but longer
         const gridMap = new Set(); // To track occupied grid points and prevent overlap
+
+        let busesCreated = 0;
+        let totalAttempts = 0;
+        const BUS_LIMIT = 5000;
 
         // Darker Base color (v1.960 settings)
         const baseColorHex = 0x03121d;
-        for (let b = 0; b < numBuses; b++) {
+        
+        while (busesCreated < numBusesTarget && totalAttempts < BUS_LIMIT) {
+            totalAttempts++;
             let startGridPhi, startGridTheta;
             let attempts = 0;
             // Find a valid start point
@@ -155,6 +161,7 @@ export class IcosahedronScene {
             let currentBusPads = [];
             let currentBusPaths = [];
             let currentBusFatLines = [];
+            let currentBusGridPoints = []; // Track used points for this bus so we can revert if needed
 
             for (let l = 0; l < lanes; l++) {
                 laneRoutes.push([]); // Init route for this lane
@@ -167,8 +174,8 @@ export class IcosahedronScene {
                 if (gridMap.has(`${lPhi},${lTheta}`)) {
                     laneCollided = true;
                 }
-                gridMap.add(`${lPhi},${lTheta}`); // Mark occupied
-
+                // Don't add to gridMap yet to avoid pollution if aborted
+                
                 const phiVal = lPhi * phiStepSize;
                 const thetaVal = lTheta * thetaStepSize;
                 
@@ -186,6 +193,8 @@ export class IcosahedronScene {
                 const padObj = { mesh: pad, intensity: 0 };
                 currentBusPads.push(padObj); 
                 laneLastPads.push(padObj);
+
+                currentBusGridPoints.push(`${lPhi},${lTheta}`);
             }
 
             if (laneCollided) {
@@ -194,40 +203,77 @@ export class IcosahedronScene {
                 continue; 
             }
 
+            // Immediately mark START points as tentatively occupied
+            currentBusGridPoints.forEach(p => gridMap.add(p));
+
             for (let s = 0; s < busSteps; s++) {
                 // Shorter segments
                 let stepLen = 2 + Math.floor(Math.random() * 4); 
                 
-                let dPhi = 0;
-                let dTheta = 0;
-                
-                if (dir === 'H') { 
-                    dTheta = stepLen * (Math.random() > 0.5 ? 1 : -1);
-                } else { 
-                    dPhi = stepLen * (Math.random() > 0.5 ? 1 : -1);
+                let possibleMoves = [];
+
+                // Option 1: Continue Current Direction
+                if (dir === 'H') {
+                    possibleMoves.push({ dPhi: 0, dTheta: stepLen, newDir: 'V' }); // Try Forward-ish (Right)
+                    possibleMoves.push({ dPhi: 0, dTheta: -stepLen, newDir: 'V' }); // Try Backward-ish (Left)
+                } else {
+                    possibleMoves.push({ dPhi: stepLen, dTheta: 0, newDir: 'H' }); // Down
+                    possibleMoves.push({ dPhi: -stepLen, dTheta: 0, newDir: 'H' }); // Up
                 }
                 
-                let stepValid = true;
-                const nextHeads = [];
-                for(let l = 0; l < lanes; l++) {
-                    const head = laneHeads[l];
-                    let targetGridPhi = head.gridPhi + dPhi;
-                    let targetGridTheta = head.gridTheta + dTheta; 
-                    targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
+                // Shuffle logic: Try to maintain inertia? The old logic was random sign.
+                // Let's bias towards the "random sign" picked first, but fallback to the other.
+                let primarySign = Math.random() > 0.5 ? 1 : -1;
+                if (primarySign === -1) {
+                    possibleMoves.reverse(); // Flip check order
+                }
+
+                // If both fail, try switching axis early? (Maybe too complex/messy). 
+                // Let's stick to checking both directions on current axis first.
+
+                let bestMove = null;
+                let bestNextHeads = null;
+
+                for (let m = 0; m < possibleMoves.length; m++) {
+                    const move = possibleMoves[m];
+                    const dPhi = move.dPhi;
+                    const dTheta = move.dTheta;
                     
-                    if (gridMap.has(`${targetGridPhi},${targetGridTheta}`)) {
-                        stepValid = false;
+                    let moveValid = true;
+                    const checkHeads = [];
+                    for(let l = 0; l < lanes; l++) {
+                        const head = laneHeads[l];
+                        let targetGridPhi = head.gridPhi + dPhi;
+                        let targetGridTheta = head.gridTheta + dTheta; 
+                        targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
+                        
+                        if (gridMap.has(`${targetGridPhi},${targetGridTheta}`)) {
+                            moveValid = false;
+                        }
+                        checkHeads.push({gridPhi: targetGridPhi, gridTheta: targetGridTheta});
                     }
-                    nextHeads.push({gridPhi: targetGridPhi, gridTheta: targetGridTheta});
+                    
+                    if (moveValid) {
+                        bestMove = move;
+                        bestNextHeads = checkHeads;
+                        break; // Found a valid way
+                    }
                 }
 
-                if (!stepValid) break;
+                if (!bestMove) {
+                    break; // Stuck
+                }
 
+                // Execute Best Move
+                const nextHeads = bestNextHeads;
+                
                 for(let l = 0; l < lanes; l++) {
                     const head = laneHeads[l];
                     const next = nextHeads[l];
 
+                    // Mark new point as occupied and track it
                     gridMap.add(`${next.gridPhi},${next.gridTheta}`);
+                    currentBusGridPoints.push(`${next.gridPhi},${next.gridTheta}`);
                     
                     const targetPhi = next.gridPhi * phiStepSize;
                     const targetTheta = next.gridTheta * thetaStepSize;
@@ -302,14 +348,17 @@ export class IcosahedronScene {
                     laneLastPads[l] = endPadObj;
                 }
                 
-                dir = (dir === 'H') ? 'V' : 'H';
+                dir = bestMove.newDir;
             }
 
             // FILTER: If bus is too short, discard everything
-            const minSegments = 10;
+            // User requested "End-to-End" wrapping, so we need significantly longer paths.
+            // Minimum segment length to be considered a valid circuit.
+            const minSegments = 40; 
+
             // Check length of first lane (all lanes move in lockstep so check one is enough)
             if (laneRoutes[0].length < minSegments) {
-                // Discard
+                // Discard (Backtrack)
                 currentBusMeshes.forEach(m => {
                     this.centralSphere.remove(m);
                     m.geometry.dispose();
@@ -320,10 +369,12 @@ export class IcosahedronScene {
                     p.mesh.geometry.dispose();
                     p.mesh.material.dispose();
                 });
-                // No need to clear gridMap - let's treat used spots as used, or clear them?
-                // Ideally clear them, but gridMap structure doesn't track per-bus easily without extra array.
-                // Keeping them occupied acts as "dead zones" which is fine.
+                
+                // IMPORTANT: Free up the grid points so other buses can try to use this space
+                currentBusGridPoints.forEach(key => gridMap.delete(key));
+                
             } else {
+                busesCreated++; // Only count valid long buses
                 // Commit to scene
                 this.circuitMeshes.push(...currentBusMeshes);
                 this.pads.push(...currentBusPads);
