@@ -74,7 +74,7 @@ export class IcosahedronScene {
         
         // Initialize UI state
         // Start OFF or STANDBY? Let's stick to ACTIVE on load, but we can set default.
-        this.setSystemState('ACTIVE');
+        this.setSystemState('STANDBY');
     }
 
     setSystemState(newState) {
@@ -626,7 +626,7 @@ export class IcosahedronScene {
             // Core Logic
             let targetCore = this.lightTargets.core;
             if (this.systemState === 'STANDBY') {
-                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.03; // Slower beat
+                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; // Slower beat (User requested "space between breathing")
                 // Heartbeat Pulse for Core (and now Nodes)
                 // Use a "lub-dub" double pulse or just smooth limit?
                 // Let's do smooth sine [0.1 to 0.4]

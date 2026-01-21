@@ -1,3 +1,6 @@
+## v2.014 - 2026-01-21
+- **UX Update**: Set default load state to **STANDBY** (was ACTIVE).
+- **Refinement**: Slowed down the "Standby Heartbeat" animation (50% slower) to create more "space" between breaths.
 ## v2.013 - 2026-01-21
 - **UI Update**: Inactive buttons are now lighter/visible (#cccccc) based on user feedback.
 - **Standby Mode Refined**: All static nodes now pulse in unison with a breathing/heartbeat animation.
