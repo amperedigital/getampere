@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.998 - 2026-01-21
+- **Rollback**: Restored the entire `deploy/` directory to the state of **v1.981** (from 2026-01-21).
+- **Reason**: User requested a full revert ("restore everything back to version 1.981") to return to the preferred visual and control state, undoing recent experiments with textures, materials, and zoom constraints.
+
 ## v1.997 - 2026-01-21
 - **Zoom Crash Fix**: Identified the root cause of the "disappearing" behavior. Unlike the "Blue Steel" demo (which is hollow), this scene contains a solid opaque metal sphere. When the user zooms in past the surface, the camera clips inside the sphere, rendering a black void.
 - **Constraints**: Re-applied `minDistance: 1.8` to mechanically prevent the camera from entering the solid sphere. This ensures the object always remains visible.

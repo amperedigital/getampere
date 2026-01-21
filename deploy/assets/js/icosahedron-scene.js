@@ -36,25 +36,16 @@ export class IcosahedronScene {
     }
 
     initLights() {
-        // Boosted Ambient for visibility
-        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.5); 
+        const ambientLight = new THREE.AmbientLight(0xaaccff, 0.2); 
         this.scene.add(ambientLight);
 
-        // Main Key Light
-        const spotLight = new THREE.SpotLight(0xe6f3ff, 12); 
+        const spotLight = new THREE.SpotLight(0xe6f3ff, 8); 
         spotLight.position.set(-10, 10, 10);
         spotLight.angle = Math.PI / 3; 
         spotLight.penumbra = 1.0;
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
-
-        // Rim Light (Blue) for definition on the dark side
-        const rimLight = new THREE.SpotLight(0x0088ff, 10);
-        rimLight.position.set(10, 0, 5);
-        rimLight.lookAt(0, 0, 0);
-        rimLight.penumbra = 1;
-        this.scene.add(rimLight);
     }
 
     initGeometry() {
@@ -78,7 +69,7 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 2. Nodes (Restored: Invisible Geometry, Visible Halos)
+        // 2. Nodes
         this.addNodes(geometry);
 
         // 3. Central Sphere
@@ -87,19 +78,9 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.864, 64, 64);
-        
-        const metalTexture = this.createMetalTexture();
-        
-        // Metal Material Fix: "Brushed Steel" Look
-        const material = new THREE.MeshStandardMaterial({
-            color: 0xffffff,            // White base allows full range of metallic reflection
-            metalness: 0.75,            // Higher metalness for realization
-            roughness: 0.45,            // Base roughness
-            roughnessMap: metalTexture, // Grain directly affects shininess
-            bumpMap: metalTexture,      // Grain affects surface normals
-            bumpScale: 0.008,           // Stronger bumps to make grain visible
-            emissive: 0x001122,  
-            emissiveIntensity: 0.2
+        const material = new THREE.MeshLambertMaterial({
+            color: 0x020a12,     
+            emissive: 0x000000,
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
@@ -107,62 +88,8 @@ export class IcosahedronScene {
         
         this.initCircuitryPaths();
 
-        // 20% Light Intensity as requested
-        const coreLight = new THREE.PointLight(0x0088ff, 0.2, 8);
+        const coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
         this.centralSphere.add(coreLight);
-    }
-
-    createMetalTexture() {
-        const size = 1024; // Increased resolution
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-
-        // Base Grey
-        ctx.fillStyle = '#8899aa'; // Slightly blueish grey base
-        ctx.fillRect(0, 0, size, size);
-
-        // 1. Underlying Noise
-        const imageData = ctx.getImageData(0, 0, size, size);
-        const data = imageData.data;
-        
-        for (let i = 0; i < data.length; i += 4) {
-            const noise = (Math.random() - 0.5) * 40; 
-            data[i] = Math.max(0, Math.min(255, data[i] + noise));
-            data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
-            data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
-        }
-        ctx.putImageData(imageData, 0, 0);
-
-        // 2. Brushed "Grain" Effect (Horizontal Streaks)
-        ctx.globalCompositeOperation = 'overlay'; 
-        
-        const drawStreaks = (count, minWidth, opacity) => {
-            for(let i=0; i<count; i++) {
-                const y = Math.random() * size;
-                const width = Math.random() * size * 0.8 + minWidth;
-                const x = Math.random() * size - (Math.random() * 100); 
-                
-                const shade = Math.random() > 0.5 ? 255 : 0; // White or Black streaks
-                const alpha = Math.random() * opacity + 0.01;
-                
-                ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, ${alpha})`;
-                ctx.fillRect(x, y, width, 1 + Math.random() * 1.5); 
-            }
-        };
-
-        drawStreaks(4000, 100, 0.08); // Fine grain
-        drawStreaks(500, 300, 0.12);  // Heavy imperfections
-
-        // Return to normal
-        ctx.globalCompositeOperation = 'source-over';
-
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(3, 2); // Repeat to scale down the grain
-        return texture;
     }
 
     getPos(phi, theta, r) {
@@ -177,311 +104,212 @@ export class IcosahedronScene {
         this.electrons = [];
         this.fatLines = []; 
         this.paths = []; 
-        this.routes = []; 
+        this.routes = []; // Store connected paths as routes
         this.pads = []; 
 
         const surfaceRadius = 0.87; 
-        const padGeometry = new THREE.CircleGeometry(0.0126, 8); 
+        const padGeometry = new THREE.CircleGeometry(0.0126, 8); // Increased size by 50%
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        // v1.982: High Density for Wrapping
+        // INCREASED DENSITY & WRAP-AROUND (v1.980 settings)
+        // Doubled resolution to allow finer, denser paths
         const PHI_STEPS = 90;   
         const THETA_STEPS = 120; 
         
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        // v1.983: "Chips & Traces" Design
-        const gridMap = new Set(); 
-        const chipPorts = []; // Start points for traces
-        
-        // Helper: Place a "Chip" (Grid of pads)
-        const createChip = (cPhi, cTheta, w, h) => {
-             // Center valid?
-             if(cPhi - h < 2 || cPhi + h > PHI_STEPS - 2) return;
-             
-             // Check collisions
-             for(let i = 0; i < w; i++) {
-                 for(let j = 0; j < h; j++) {
-                     let p = cPhi + j;
-                     let t = (cTheta + i + THETA_STEPS * 10) % THETA_STEPS;
-                     if(gridMap.has(`${p},${t}`)) return;
-                 }
-             }
+        const numBuses = 200; // Increased significantly for density
+        const gridMap = new Set(); // To track occupied grid points and prevent overlap
 
-             // Place Chip
-             for(let i = 0; i < w; i++) {
-                 for(let j = 0; j < h; j++) {
-                     let p = cPhi + j;
-                     let t = (cTheta + i + THETA_STEPS * 10) % THETA_STEPS;
-                     gridMap.add(`${p},${t}`);
-                     
-                     // Visual Pad
-                     const phi = p * phiStepSize;
-                     const theta = t * thetaStepSize;
-                     const pos = this.getPos(phi, theta, surfaceRadius);
-                     const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
-                     pad.material.transparent = true; // Fix Material transparency
-                     pad.material.opacity = 0.55; // Darker traces request (0.5+ base)
-                     pad.position.copy(pos);
-                     pad.lookAt(new THREE.Vector3(0,0,0));
-                     this.centralSphere.add(pad);
-                     this.pads.push({ mesh: pad, intensity: 0 });
-
-                     // Add to ports if edge
-                     if(i===0 || i===w-1 || j===0 || j===h-1) {
-                         chipPorts.push({ gridPhi: p, gridTheta: t });
-                     }
-                 }
-             }
-        };
-
-        // 1. Scatter Chips
-        const numChips = 40;
-        for(let c=0; c<numChips; c++) {
-            let cp = Math.floor(Math.random() * (PHI_STEPS - 10)) + 5;
-            let ct = Math.floor(Math.random() * THETA_STEPS);
-            let w = 3 + Math.floor(Math.random() * 3); // 3-5 width
-            let h = 3 + Math.floor(Math.random() * 3); // 3-5 height
-            createChip(cp, ct, w, h);
-        }
-
-        // 2. Route Traces from Ports
-        // Shuffle ports
-        chipPorts.sort(() => Math.random() - 0.5);
-
-        let busesCreated = 0;
-        const numBusesTarget = 150; 
+        // Darker Base color (v1.960 settings)
         const baseColorHex = 0x03121d;
-        
-        // We iterate through available ports to start traces
-        // If we run out of ports, we stop or pick random points (fallback disabled for clean look)
-        
-        let portIndex = 0;
-        
-        while (busesCreated < numBusesTarget && portIndex < chipPorts.length) {
-            const startPort = chipPorts[portIndex++];
-            
-            // Check if still valid (maybe used by another trace coming in?)
-            // Actually gridMap check handles this if we move 1 step.
-            
-            let gridPhi = startPort.gridPhi;
-            let gridTheta = startPort.gridTheta;
-            
-            // Try to step OUT of the chip
-            // Check neighbors. If neighbor is empty, that's our direction.
-            let dir = null;
-            const neighbors = [
-                { dPhi: 1, dTheta: 0, d: 'H' }, // Down
-                { dPhi: -1, dTheta: 0, d: 'H' }, // Up
-                { dPhi: 0, dTheta: 1, d: 'V' }, // Right
-                { dPhi: 0, dTheta: -1, d: 'V' } // Left
-            ];
-            
-            // Find valid exit
-            for(let n of neighbors) {
-                let checkPhi = gridPhi + n.dPhi;
-                let checkTheta = (gridTheta + n.dTheta + THETA_STEPS * 10) % THETA_STEPS;
-                if(!gridMap.has(`${checkPhi},${checkTheta}`)) {
-                    dir = n.d; // We found an empty spot
-                    // Determine initial direction logic for the walker
-                    break;
-                }
-            }
-            
-            if(!dir) continue; // Trapped port
+        for (let b = 0; b < numBuses; b++) {
+            let startGridPhi, startGridTheta;
+            let attempts = 0;
+            // Find a valid start point
+            do {
+                startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
+                startGridTheta = Math.floor(Math.random() * THETA_STEPS);
+                attempts++;
+            } while (gridMap.has(`${startGridPhi},${startGridTheta}`) && attempts < 50);
 
-            // Start Logic
-            const lanes = 1; // Single lanes from chips look better
-            const busSteps = 80 + Math.floor(Math.random() * 120); // Long paths
+            if (attempts >= 50) continue; // Skip if no spot found
+
+            let gridPhi = startGridPhi;
+            let gridTheta = startGridTheta;
+            
+            const lanes = 1 + Math.floor(Math.random() * 3); 
+            // Much longer lifetime to allow full sphere wrapping
+            const busSteps = 100 + Math.floor(Math.random() * 100); 
+            
+            let dir = Math.random() > 0.5 ? 'H' : 'V'; 
             
             let laneHeads = [];
-            let laneRoutes = [];
-            let laneLastPads = [];
+            let laneRoutes = []; 
+            let laneCollided = false; 
+            let laneLastPads = []; // Track chain
             
-            // Buffers
+            // Temporary buffer for this bus (meshing only)
             let currentBusMeshes = [];
             let currentBusPads = [];
             let currentBusPaths = [];
             let currentBusFatLines = [];
-            let currentBusGridPoints = [];
 
-            // Setup Start Head (The Port itself is already occupied, we start FROM it)
-            // Actually, we need to create the first segment FROM the port.
-            // So Head = Port.
-            
-            const startPhiVal = gridPhi * phiStepSize;
-            const startThetaVal = gridTheta * thetaStepSize;
-            
-            laneHeads.push({ 
-                phi: startPhiVal, 
-                theta: startThetaVal, 
-                gridPhi: gridPhi, 
-                gridTheta: gridTheta 
-            });
-            laneRoutes.push([]);
-            
-            // Find the pad mesh corresponding to this port? simpler to just make a new invisible start node
-            // purely for linkage. 
-            // Or reuse the chip pad. But accessing it is hard.
-            // Let's just create a dummy "startPad" object.
-            const dummyPad = { intensity: 0 }; 
-            laneLastPads.push(dummyPad);
+            for (let l = 0; l < lanes; l++) {
+                laneRoutes.push([]); // Init route for this lane
 
-            let successful = false;
-
-            for (let s = 0; s < busSteps; s++) {
-                let stepLen = 2 + Math.floor(Math.random() * 4); 
+                let lPhi = gridPhi;
+                let lTheta = gridTheta;
                 
-                let possibleMoves = [];
-
-                 if (dir === 'H') {
-                    possibleMoves.push({ dPhi: 0, dTheta: stepLen, newDir: 'V' }); 
-                    possibleMoves.push({ dPhi: 0, dTheta: -stepLen, newDir: 'V' }); 
-                } else {
-                    possibleMoves.push({ dPhi: stepLen, dTheta: 0, newDir: 'H' }); 
-                    possibleMoves.push({ dPhi: -stepLen, dTheta: 0, newDir: 'H' }); 
-                }
+                if (dir === 'H') { lPhi += l; } else { lTheta += l; }
                 
-                // Bias inertia
-                possibleMoves.sort(() => Math.random() - 0.5);
-
-                let bestMove = null;
-                let bestNextHead = null;
-
-                for (let m = 0; m < possibleMoves.length; m++) {
-                    const move = possibleMoves[m];
-                    const dPhi = move.dPhi;
-                    const dTheta = move.dTheta;
-                    
-                    const head = laneHeads[0];
-                    let targetGridPhi = head.gridPhi + dPhi;
-                    let targetGridTheta = head.gridTheta + dTheta; 
-                    
-                    // Clamp Phi
-                    targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
-                    // Wrap Theta (Fix v1.983)
-                    targetGridTheta = (targetGridTheta + THETA_STEPS * 10) % THETA_STEPS;
-
-                    // Range Check (Trace Line)
-                    // We must verify every point along the line for collision, not just destination
-                    let collision = false;
-                    const steps = Math.max(Math.abs(dPhi), Math.abs(dTheta));
-                    const incPhi = dPhi / steps;
-                    const incTheta = dTheta / steps;
-                    
-                    for(let k=1; k<=steps; k++) {
-                        let cp = Math.round(head.gridPhi + incPhi * k);
-                        let ct = Math.round(head.gridTheta + incTheta * k);
-                        ct = (ct + THETA_STEPS * 10) % THETA_STEPS;
-                        if(gridMap.has(`${cp},${ct}`)) {
-                            collision = true; 
-                            break;
-                        }
-                    }
-
-                    if (!collision) {
-                        bestMove = move;
-                        bestNextHead = { gridPhi: targetGridPhi, gridTheta: targetGridTheta };
-                        break;
-                    }
+                if (gridMap.has(`${lPhi},${lTheta}`)) {
+                    laneCollided = true;
                 }
+                gridMap.add(`${lPhi},${lTheta}`); // Mark occupied
 
-                if (!bestMove) break; // Stuck
-
-                // Execute
-                const next = bestNextHead;
-                const head = laneHeads[0];
+                const phiVal = lPhi * phiStepSize;
+                const thetaVal = lTheta * thetaStepSize;
                 
-                // Mark Grid
-                // Only mark the endpoints? No, mark the whole line to prevent crossing
-                // Recalculate steps to mark
-                const steps = Math.max(Math.abs(bestMove.dPhi), Math.abs(bestMove.dTheta));
-                const incPhi = bestMove.dPhi / steps;
-                const incTheta = bestMove.dTheta / steps;
-                for(let k=1; k<=steps; k++) {
-                    let cp = Math.round(head.gridPhi + incPhi * k);
-                    let ct = Math.round(head.gridTheta + incTheta * k);
-                    ct = (ct + THETA_STEPS * 10) % THETA_STEPS;
-                    gridMap.add(`${cp},${ct}`);
-                    currentBusGridPoints.push(`${cp},${ct}`);
-                }
+                laneHeads.push({ phi: phiVal, theta: thetaVal, gridPhi: lPhi, gridTheta: lTheta });
 
-                // Geometry
-                const targetPhi = next.gridPhi * phiStepSize;
-                const targetTheta = next.gridTheta * thetaStepSize;
-                
-                // Interpolate 3D Points for Curve
-                const segmentPoints = [];
-                const divisions = 8; 
-                for(let k=0; k<=divisions; k++) {
-                    const t = k/divisions;
-                    const tmpPhi = head.phi + (targetPhi - head.phi) * t;
-                    const tmpTheta = head.theta + (targetTheta - head.theta) * t;
-                    const vec = this.getPos(tmpPhi, tmpTheta, surfaceRadius);
-                    segmentPoints.push(vec.x, vec.y, vec.z);
-                }
-
-                const geometry = new LineGeometry();
-                geometry.setPositions(segmentPoints);
-
-                const mat = new LineMaterial({
-                    color: baseColorHex, 
-                    linewidth: 2.5, 
-                    worldUnits: false,
-                    dashed: false,
-                    alphaToCoverage: false,
-                    transparent: true,
-                    opacity: 0.5, 
-                    depthWrite: false, 
-                    depthTest: true
-                });
-                mat.resolution.set(this.width, this.height);
-
-                const line = new Line2(geometry, mat);
-                line.computeLineDistances();
-                line.userData = { intensity: 0 }; 
-
-                this.centralSphere.add(line);
-                currentBusMeshes.push(line);
-                currentBusFatLines.push(mat);
-
-                // End Pad
-                const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
-                const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
-                pad.material.opacity = 0.5; 
+                const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
+                const pad = new THREE.Mesh(padGeometry, padMaterial.clone());
                 pad.material.transparent = true;
-                pad.position.copy(padPos);
+                pad.material.opacity = 0.1; // VISIBLE BASE STATE
+                pad.position.copy(pos);
                 pad.lookAt(new THREE.Vector3(0,0,0));
+                
                 this.centralSphere.add(pad);
                 
-                const endPadObj = { mesh: pad, intensity: 0 };
-                currentBusPads.push(endPadObj);
-
-                const pathObj = {
-                     phiStart: head.phi, thetaStart: head.theta,
-                     phiEnd: targetPhi, thetaEnd: targetTheta,
-                     radius: surfaceRadius,
-                     mesh: line,
-                     startPad: laneLastPads[0], 
-                     endPad: endPadObj          
-                };
-
-                currentBusPaths.push(pathObj);
-                laneRoutes[0].push(pathObj); 
-
-                head.phi = targetPhi;
-                head.theta = targetTheta;
-                head.gridPhi = next.gridPhi;
-                head.gridTheta = next.gridTheta;
-                
-                laneLastPads[0] = endPadObj;
-                dir = bestMove.newDir;
+                const padObj = { mesh: pad, intensity: 0 };
+                currentBusPads.push(padObj); 
+                laneLastPads.push(padObj);
             }
 
-            // Min Length Filter
-            if (laneRoutes[0].length < 20) { // Slightly lower min since we want connections
-                // Backtrack
+            if (laneCollided) {
+                // Cleanup initial pads if collided at start
+                currentBusPads.forEach(p => this.centralSphere.remove(p.mesh));
+                continue; 
+            }
+
+            for (let s = 0; s < busSteps; s++) {
+                // Shorter segments
+                let stepLen = 2 + Math.floor(Math.random() * 4); 
+                
+                let dPhi = 0;
+                let dTheta = 0;
+                
+                if (dir === 'H') { 
+                    dTheta = stepLen * (Math.random() > 0.5 ? 1 : -1);
+                } else { 
+                    dPhi = stepLen * (Math.random() > 0.5 ? 1 : -1);
+                }
+                
+                let stepValid = true;
+                const nextHeads = [];
+                for(let l = 0; l < lanes; l++) {
+                    const head = laneHeads[l];
+                    let targetGridPhi = head.gridPhi + dPhi;
+                    let targetGridTheta = head.gridTheta + dTheta; 
+                    targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
+                    
+                    if (gridMap.has(`${targetGridPhi},${targetGridTheta}`)) {
+                        stepValid = false;
+                    }
+                    nextHeads.push({gridPhi: targetGridPhi, gridTheta: targetGridTheta});
+                }
+
+                if (!stepValid) break;
+
+                for(let l = 0; l < lanes; l++) {
+                    const head = laneHeads[l];
+                    const next = nextHeads[l];
+
+                    gridMap.add(`${next.gridPhi},${next.gridTheta}`);
+                    
+                    const targetPhi = next.gridPhi * phiStepSize;
+                    const targetTheta = next.gridTheta * thetaStepSize;
+                    
+                    if (Math.abs(targetPhi - head.phi) < 0.001 && Math.abs(targetTheta - head.theta) < 0.001) continue;
+
+                    const segmentPoints = [];
+                    const divisions = 8; 
+                    
+                    for(let k=0; k<=divisions; k++) {
+                        const t = k/divisions;
+                        const tmpPhi = head.phi + (targetPhi - head.phi) * t;
+                        const tmpTheta = head.theta + (targetTheta - head.theta) * t;
+                        const vec = this.getPos(tmpPhi, tmpTheta, surfaceRadius);
+                        segmentPoints.push(vec.x, vec.y, vec.z);
+                    }
+
+                    const geometry = new LineGeometry();
+                    geometry.setPositions(segmentPoints);
+
+                    const mat = new LineMaterial({
+                        color: baseColorHex, 
+                        linewidth: 2.5, 
+                        worldUnits: false,
+                        dashed: false,
+                        alphaToCoverage: false,
+                        transparent: true,
+                        opacity: 0.1, // VISIBLE BASE STATE
+                        depthWrite: false, 
+                        depthTest: true
+                    });
+                    
+                    mat.resolution.set(this.width, this.height);
+
+                    const line = new Line2(geometry, mat);
+                    line.computeLineDistances();
+                    line.userData = { intensity: 0 }; 
+
+                    this.centralSphere.add(line);
+                    currentBusMeshes.push(line);
+                    currentBusFatLines.push(mat);
+
+                    // END PAD for this segment
+                    const padPos = this.getPos(targetPhi, targetTheta, surfaceRadius);
+                    const pad = new THREE.Mesh(padGeometry, padMaterial.clone()); 
+                    pad.material.opacity = 0.1; // VISIBLE BASE STATE
+                    pad.material.transparent = true;
+                    pad.position.copy(padPos);
+                    pad.lookAt(new THREE.Vector3(0,0,0));
+                    this.centralSphere.add(pad);
+                    
+                    const endPadObj = { mesh: pad, intensity: 0 };
+                    currentBusPads.push(endPadObj);
+
+                    const pathObj = {
+                         phiStart: head.phi, thetaStart: head.theta,
+                         phiEnd: targetPhi, thetaEnd: targetTheta,
+                         radius: surfaceRadius,
+                         mesh: line,
+                         startPad: laneLastPads[l], // Link previous pad
+                         endPad: endPadObj          // Link new pad
+                    };
+
+                    currentBusPaths.push(pathObj);
+                    laneRoutes[l].push(pathObj); // Add to route structure
+
+                    head.phi = targetPhi;
+                    head.theta = targetTheta;
+                    head.gridPhi = next.gridPhi;
+                    head.gridTheta = next.gridTheta;
+                    
+                    laneLastPads[l] = endPadObj;
+                }
+                
+                dir = (dir === 'H') ? 'V' : 'H';
+            }
+
+            // FILTER: If bus is too short, discard everything
+            const minSegments = 10;
+            // Check length of first lane (all lanes move in lockstep so check one is enough)
+            if (laneRoutes[0].length < minSegments) {
+                // Discard
                 currentBusMeshes.forEach(m => {
                     this.centralSphere.remove(m);
                     m.geometry.dispose();
@@ -492,14 +320,20 @@ export class IcosahedronScene {
                     p.mesh.geometry.dispose();
                     p.mesh.material.dispose();
                 });
-                currentBusGridPoints.forEach(key => gridMap.delete(key));
+                // No need to clear gridMap - let's treat used spots as used, or clear them?
+                // Ideally clear them, but gridMap structure doesn't track per-bus easily without extra array.
+                // Keeping them occupied acts as "dead zones" which is fine.
             } else {
-                busesCreated++;
+                // Commit to scene
                 this.circuitMeshes.push(...currentBusMeshes);
                 this.pads.push(...currentBusPads);
                 this.fatLines.push(...currentBusFatLines);
                 this.paths.push(...currentBusPaths);
-                this.routes.push(laneRoutes[0]);
+                
+                // Save connected routes
+                laneRoutes.forEach(route => {
+                    if (route.length > 0) this.routes.push(route);
+                });
             }
         }
 
@@ -507,18 +341,21 @@ export class IcosahedronScene {
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
         const glowTexture = this.createGlowTexture();
+        
+        // Electrons keep the standard blue glow
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x00aaff, 
+            color: 0x00aaff, // Manual blue tint since texture is now white
             transparent: true, 
             opacity: 1.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
 
-        const numElectrons = 100; 
+        const numElectrons = 120; 
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
+            
             const sprite = new THREE.Sprite(electronGlowMat);
             sprite.scale.set(0.06, 0.06, 0.06);
             electron.add(sprite);
@@ -580,13 +417,11 @@ export class IcosahedronScene {
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
                 
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: nodeColor.clone().multiplyScalar(0.2), 
+                    color: nodeColor.clone().multiplyScalar(0.2), // Darker base so it can light up
                     emissive: 0x000000,   
                     emissiveIntensity: 0, 
                     roughness: 0.2,
-                    metalness: 0.5,
-                    transparent: true,
-                    opacity: 0 // Invisible base (Static "light pin dots" removed)
+                    metalness: 0.5
                 });
                 
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -646,15 +481,7 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
-        this.controls.zoomSpeed = 0.6; // Slightly reduced from 1.0 for better control
-        this.controls.autoRotate = false;
-        
-        // CRITICAL FIX: The "Disappearing" bug is caused by conflicting geometry.
-        // "Blue Steel" has no central sphere, so you can zoom through it.
-        // This scene has a solid metal sphere (r=0.86). Zooming inside it makes the screen black.
-        // We MUST constrain minDistance to stay outside the geometry.
-        this.controls.minDistance = 1.8; // Stick to the lattice surface (r=1.5)
-        this.controls.maxDistance = 50.0;
+        this.controls.autoRotate = false; 
     }
 
     handleResize() {
@@ -687,10 +514,6 @@ export class IcosahedronScene {
         
         this.controls.update();
 
-        // Lazy Init Active Sets (Performance Optimization v1.983)
-        if (!this.activeMeshes) this.activeMeshes = new Set();
-        if (!this.activePads) this.activePads = new Set();
-
         if (this.nodes) {
             const tempV = new THREE.Vector3();
             const maxDist = 0.35; 
@@ -716,60 +539,52 @@ export class IcosahedronScene {
 
             const activityLevel = this.lightsActive ? sphereActiveFactor : 0; 
 
-            // Circuitry Animation
+            // Circuitry
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
                     const baseR = 0.012; 
                     const baseG = 0.072; 
                     const baseB = 0.116;
 
-                    // OPTIMIZED: Only iterate active meshes
-                    this.activeMeshes.forEach(mesh => {
-                        if (this.lightsActive) {
-                            mesh.userData.intensity *= 0.88; // Slightly slower decay (0.82->0.88) for smoother trails
-                        } else {
-                            mesh.userData.intensity = 0; 
-                        }
-
-                        const intensity = mesh.userData.intensity;
-                        
-                        if (intensity > 0.01) {
+                    this.circuitMeshes.forEach(mesh => {
+                        if (mesh.userData.intensity > 0.01) {
+                            if (this.lightsActive) {
+                                mesh.userData.intensity *= 0.82; 
+                            } else {
+                                mesh.userData.intensity = 0; 
+                            }
+                            const intensity = mesh.userData.intensity;
                             const r = baseR + (0.0 - baseR) * intensity;   
                             const g = baseG + (0.6 - baseG) * intensity;   
                             const b = baseB + (1.0 - baseB) * intensity;   
                             mesh.material.color.setRGB(r, g, b);
-                            mesh.material.opacity = 0.5 + (0.5 * intensity);
-                        } else {
-                            // Reset and Remove
+                            
+                            // Map 0..1 intensity to 0.1..1.0 opacity
+                            mesh.material.opacity = 0.1 + (0.9 * intensity);
+                        } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.5; 
-                            this.activeMeshes.delete(mesh);
+                            mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
                         }
                     });
 
-                    // Optimized Pads
-                    this.activePads.forEach(data => {
-                        if (this.lightsActive) {
-                            data.intensity *= 0.88;
-                        } else {
-                            data.intensity = 0;
-                        }
-
-                        if (data.intensity > 0.01) {
-                            if (data.mesh) {
-                                data.mesh.material.opacity = 0.5 + (0.5 * data.intensity);
+                    // Animate pads similarly
+                    if (this.pads) {
+                        this.pads.forEach(data => {
+                            if (data.intensity > 0.01) {
+                                if (this.lightsActive) {
+                                    data.intensity *= 0.82;
+                                } else {
+                                    data.intensity = 0;
+                                }
+                                data.mesh.material.opacity = 0.1 + (0.9 * data.intensity);
+                            } else if (data.intensity > 0) {
+                                data.intensity = 0;
+                                data.mesh.material.opacity = 0.1; // Reset to BASE VISIBILITY
                             }
-                        } else {
-                            data.intensity = 0;
-                            if (data.mesh) {
-                                data.mesh.material.opacity = 0.5;
-                            }
-                            this.activePads.delete(data);
-                        }
-                    });
+                        });
+                    }
                 }
-                
                 this.electrons.forEach(e => {
                     if (!this.lightsActive) {
                          e.active = false; 
@@ -777,14 +592,14 @@ export class IcosahedronScene {
                     } else {
                         if (!e.active) {
                             if (e.delay > 0) e.delay--;
-                            // Higher firing rate for busy look
-                            else if (Math.random() < (0.01 + activityLevel * 0.05)) {
+                            // Electron firing chance reduced significantly
+                            else if (Math.random() < (0.0064 + activityLevel * 0.05)) {
                                  e.active = true;
                                  e.routeIndex = Math.floor(Math.random() * this.routes.length);
                                  e.segmentIndex = 0;
                                  e.t = 0; 
-                                 // FASTER SPEED (Double previous)
-                                 e.speed = 0.05 + Math.random() * 0.04 + (activityLevel * 0.03); 
+                                 // Slightly faster base speed to compensate for shorter segments
+                                 e.speed = 0.02 + Math.random() * 0.03 + (activityLevel * 0.02); 
                                  e.mesh.visible = true;
                             }
                         }
@@ -792,29 +607,20 @@ export class IcosahedronScene {
                             const currentRoute = this.routes[e.routeIndex];
                             
                             if (currentRoute && currentRoute[e.segmentIndex]) {
-                                // Sync Illumination
+                                // Sync Illumination: Keep current segment lit while traversing
                                 const currentSegment = currentRoute[e.segmentIndex];
                                 if (currentSegment.mesh) {
                                     currentSegment.mesh.userData.intensity = 1.0;
-                                    this.activeMeshes.add(currentSegment.mesh);
                                 }
 
                                 // Linked Pads Illumination
-                                if (currentSegment.startPad) {
-                                    currentSegment.startPad.intensity = 1.0;
-                                    this.activePads.add(currentSegment.startPad);
-                                }
-                                if (currentSegment.endPad) {
-                                    currentSegment.endPad.intensity = 1.0;
-                                    this.activePads.add(currentSegment.endPad);
-                                }
+                                if (currentSegment.startPad) currentSegment.startPad.intensity = 1.0;
+                                if (currentSegment.endPad) currentSegment.endPad.intensity = 1.0;
 
                                 e.t += e.speed;
                                 
                                 if (e.t >= 1.0) { 
-                                    // Move to next segment using remaining t
-                                    // e.t -= 1.0; // Smooth transition? 
-                                    // Simpler: Just reset t=0, small overlap loss is fine for speed
+                                    // Move to next segment in the chain
                                     e.segmentIndex++;
                                     e.t = 0;
                                     
@@ -822,7 +628,7 @@ export class IcosahedronScene {
                                     if (e.segmentIndex >= currentRoute.length) {
                                         e.active = false; 
                                         e.mesh.visible = false; 
-                                        e.delay = Math.random() * 20; 
+                                        e.delay = Math.random() * 30; 
                                     }
                                 } else {
                                     const path = currentRoute[e.segmentIndex];
@@ -832,6 +638,7 @@ export class IcosahedronScene {
                                     e.mesh.position.copy(pos);
                                 }
                             } else {
+                                // Safety catch
                                 e.active = false;
                                 e.mesh.visible = false;
                             }
