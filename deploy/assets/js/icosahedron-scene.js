@@ -478,11 +478,11 @@ export class IcosahedronScene {
                     } else {
                         if (!e.active) {
                             if (e.delay > 0) e.delay--;
-                            // Electron firing chance reduced (0.008 -> 0.0064)
-                            else if (Math.random() < (0.0064 + activityLevel * 0.1)) {
+                            // Electron firing chance reduced significantly (Base 0.0064, Activity Multiplier 0.1 -> 0.05)
+                            else if (Math.random() < (0.0064 + activityLevel * 0.05)) {
                                  e.active = true;
                                  e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                                 e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); e.mesh.visible = true;
+                                 e.t = 0; e.speed = 0.01 + Math.random() * 0.03 + (activityLevel * 0.02); e.mesh.visible = true;
                             }
                         }
                         if (e.active) {
@@ -516,10 +516,10 @@ export class IcosahedronScene {
                     if (data.fireCooldown > 0) {
                         data.fireCooldown -= 2; 
                     } else {
-                        // Reduced firing chance (0.048 -> 0.038 - another 20% reduction)
-                        if (Math.random() < 0.038) {
+                        // Reduced firing chance (0.038 -> 0.02)
+                        if (Math.random() < 0.02) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 10 + Math.random() * 40; 
+                            data.fireCooldown = 15 + Math.random() * 50; 
                         }
                     }
                 } else {

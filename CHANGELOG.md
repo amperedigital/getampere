@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.968 - 2026-01-21
+- **Design Two Tuning (Aggressive Reductions)**:
+  - **Node Firing**: Reduced probability from `0.038` to `0.02` (~47% reduction). Increased cooldown variance.
+  - **Electron Swarm**: Halved the influence of "Activity Level" (proximity) on electron generation (`0.1` -> `0.05`).
+  - **Electron Speed**: Slightly reduced top speed variance (`0.04` -> `0.03`).
+  - **Reason**: User reported previous 20% tweaks were imperceptible. Adjusted parameters more aggressively to ensure a visible "calming" effect.
+
 ## v1.967 - 2026-01-21
 - **Design Two Tuning**:
   - **Activity**: Further reduced firing probability for nodes (0.048 -> 0.038) and electrons (0.008 -> 0.0064) by another ~20%.
