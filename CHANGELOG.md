@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.005 - 2026-01-21
+- **Critical Fix (Browser Compatibility)**: Replaced standard `OrbitControls` zoom with a custom "Discrete Step Zoom" mechanism.
+- **Why**: Fixes the "disappearing scene" issue in sensitive browsers (like Comet) where high-delta scroll events caused the camera to zoom to infinity instantly.
+- **Details**:
+    - Disabled native `enableZoom`.
+    - Added custom wheel listener.
+    - Captures scroll direction only (ignoring magnitude).
+    - Applies a fixed 5% zoom step per tick.
+    - Force-clamps distance between 1.2 and 60.0.
+    - Reduced `rotateSpeed` to 0.5 for smoother handling.
+
 ## v2.004 - 2026-01-21
 - **Deep Rollback (v1.955)**: Reverted `deploy/` to **v1.955**.
 - **Reason**: v1.960 also exhibited the broken scroll zoom. User requested a deeper rollback to v1.955 to find the stable state for controls.

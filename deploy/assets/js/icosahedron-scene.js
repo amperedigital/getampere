@@ -382,8 +382,39 @@ export class IcosahedronScene {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
-        this.controls.enableZoom = true;
+        this.controls.enableZoom = false; // Disable native zoom to handle "Comet" browser sensitivity
+        this.controls.rotateSpeed = 0.5;
         this.controls.autoRotate = false; 
+
+        // Custom "Stepped" Zoom for handling hyper-sensitive scroll inputs
+        const handleZoom = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY === 0) return;
+
+            const minD = 1.2;
+            const maxD = 60.0;
+            const zoomFactor = 0.05; // 5% change per tick
+
+            const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
+            const dist = dir.length();
+            dir.normalize();
+
+            let newDist = dist;
+            if (e.deltaY > 0) {
+                // Scroll Down -> Zoom Out
+                newDist = Math.min(dist * (1 + zoomFactor), maxD);
+            } else {
+                // Scroll Up -> Zoom In
+                newDist = Math.max(dist * (1 - zoomFactor), minD);
+            }
+
+            // Apply new position
+            this.camera.position.copy(this.controls.target).addScaledVector(dir, newDist);
+        };
+
+        this.renderer.domElement.addEventListener('wheel', handleZoom, { passive: false });
     }
 
     handleResize() {
