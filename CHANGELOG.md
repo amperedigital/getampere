@@ -1,3 +1,8 @@
+## v2.033 - 2026-01-21
+- **Animation Update**: Upgraded outer shell rotation to full Biaxial motion.
+    - **Mechanism**: Added a secondary rotation vector on the X-axis (Pitch) to combine with the existing Y-axis (Yaw) spin.
+    - **Effect**: The outer lattice now "tumbles" gyroscopically around the steady central core, rather than just spinning flatly.
+    - **Speed Ratios**: Core (100%) : Shell Yaw (-50%) : Shell Pitch (20%).
 ## v2.032 - 2026-01-21
 - **Animation Update**: Implemented contra-rotation for the outer lattice structure.
     - **Logic**: The outer shell (wireframe + nodes) now rotates in the opposite direction to the central orb.

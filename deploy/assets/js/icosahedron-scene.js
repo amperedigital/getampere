@@ -842,12 +842,16 @@ export class IcosahedronScene {
              if (currentSpeed > 0.0001) {
                  this.centralSphere.rotateZ(currentSpeed);
                  
-                 // --- OUTER SHELL ROTATION (Contra-Rotation) ---
+                 // --- OUTER SHELL ROTATION (Contra-Rotation + Biaxial) ---
                  // Rotate the lattice structure in the opposite direction
                  // Speed: 50% of the core speed for a parallax effect
                  if (this.outerShell) {
-                     this.outerShell.rotateY(-currentSpeed * 0.5); 
-                     // Note: outerShell is aligned normally (except for 10deg tilt), so rotateY is correct for vertical spin.
+                     // 1. Primary Axis: Lateral Spin (Contra)
+                     this.outerShell.rotateY(-currentSpeed * 0.50); 
+                     
+                     // 2. Secondary Axis: Tumble (Biaxial)
+                     // Adding X-axis rotation creates a complex gyroscopic tumble ("Gimbal" feel)
+                     this.outerShell.rotateX(currentSpeed * 0.20); 
                  }
              }
         }
