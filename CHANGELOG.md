@@ -1,3 +1,8 @@
+## v2.032 - 2026-01-21
+- **Animation Update**: Implemented contra-rotation for the outer lattice structure.
+    - **Logic**: The outer shell (wireframe + nodes) now rotates in the opposite direction to the central orb.
+    - **Speed**: The shell rotates at 50% of the orb's speed, creating a rich parallax depth effect.
+    - **Axis**: Aligned with the central orb's vertical axis (tilted 10 degrees).
 ## v2.031 - 2026-01-21
 - **Rotation Tune**: Adjusted central orb rotation dynamics.
     - **Axis**: Changed from "Clock Face" (Camera Z-axis) to "Spinning Top" (World Y-axis). This creates a lateral latitudinal spin.

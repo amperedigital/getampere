@@ -305,6 +305,11 @@ export class IcosahedronScene {
         this.group.rotation.x = 10 * (Math.PI / 180); 
         this.scene.add(this.group);
 
+        // OUTER SHELL GROUP (Lattice + Nodes)
+        // Separate group to allow independent rotation from the central sphere
+        this.outerShell = new THREE.Group();
+        this.group.add(this.outerShell);
+
         const radius = 1.5;
         const detail = 2; 
         const geometry = new THREE.IcosahedronGeometry(radius, detail);
@@ -319,7 +324,7 @@ export class IcosahedronScene {
         });
 
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
-        this.group.add(this.icosahedron);
+        this.outerShell.add(this.icosahedron); // Add to outer shell
 
         // 2. Nodes
         this.addNodes(geometry);
@@ -616,7 +621,12 @@ export class IcosahedronScene {
                     halo: sprite          // Reference to halo
                 };
 
-                this.group.add(node);
+                // Add to outer shell so it rotates with the lattice
+                if (this.outerShell) {
+                    this.outerShell.add(node);
+                } else {
+                    this.group.add(node);
+                }
                 this.nodes.push(node);
             }
         }
@@ -831,6 +841,14 @@ export class IcosahedronScene {
              // To spin like a top (around World Y), we rotate around Local Z.
              if (currentSpeed > 0.0001) {
                  this.centralSphere.rotateZ(currentSpeed);
+                 
+                 // --- OUTER SHELL ROTATION (Contra-Rotation) ---
+                 // Rotate the lattice structure in the opposite direction
+                 // Speed: 50% of the core speed for a parallax effect
+                 if (this.outerShell) {
+                     this.outerShell.rotateY(-currentSpeed * 0.5); 
+                     // Note: outerShell is aligned normally (except for 10deg tilt), so rotateY is correct for vertical spin.
+                 }
              }
         }
 
