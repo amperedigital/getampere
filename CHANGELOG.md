@@ -928,3 +928,8 @@
 - **Aesthetic**: Added PCB-style "Terminal Pads" (Circles) to the start and end of every parallel circuit trace.
 - **Circuitry**: Increased bus density and tightened spacing for a "chip-like" appearance.
 - **Refinement**: Aligned with reference images showing nodes at trace endpoints.
+
+## [v1.944] - 2026-01-21
+- **Circuitry Overhaul**: Implemented a "Grid Snapping" system for circuit traces. Lines now align perfectly to a 60x80 conceptual grid on the sphere.
+- **Density**: Increased max buses to 90 and electron count to 120 for a high-density, complex look.
+- **Aesthetic**: Traces are strictly parallel and form organized "data highways" rather than random wandering paths.

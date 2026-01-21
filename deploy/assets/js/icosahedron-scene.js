@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.4 (PCB Terminals)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.5 (Dense PCB Grid)");
 
         this.initScene();
         this.initLights();
@@ -66,35 +66,35 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh Texture Approach
+        // 1b. Mesh Texture Approach (Subtle background grid)
         const canvas = document.createElement('canvas');
-        canvas.width = 64; 
-        canvas.height = 64;
+        canvas.width = 128; 
+        canvas.height = 128;
         const ctx = canvas.getContext('2d');
         
-        ctx.clearRect(0, 0, 64, 64);
-        ctx.strokeStyle = '#ffffff'; 
-        ctx.lineWidth = 1; 
-        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0,0,0,0)';
+        ctx.fillRect(0,0,128,128);
+        ctx.strokeStyle = 'rgba(100, 200, 255, 0.1)'; 
+        ctx.lineWidth = 2; 
+        ctx.strokeRect(0,0,128,128);
         
-        ctx.moveTo(0, 32); ctx.lineTo(64, 32);
-        ctx.moveTo(32, 0); ctx.lineTo(32, 64);
-        ctx.stroke();
+        // Add some techy details to the texture
+        ctx.fillStyle = 'rgba(100, 200, 255, 0.05)';
+        ctx.fillRect(10, 50, 40, 10);
+        ctx.fillRect(80, 20, 10, 60);
 
         const meshTexture = new THREE.CanvasTexture(canvas);
         meshTexture.wrapS = THREE.RepeatWrapping;
         meshTexture.wrapT = THREE.RepeatWrapping;
-        meshTexture.repeat.set(15, 15); 
-        meshTexture.anisotropy = 16;
+        meshTexture.repeat.set(8, 4); 
         
         const meshMaterial = new THREE.MeshBasicMaterial({
             map: meshTexture,
-            color: 0x88b0d1,      
+            color: 0x051525,      
             transparent: true,
-            opacity: 0.5,         
+            opacity: 0.8,         
             side: THREE.DoubleSide,
             depthWrite: false,    
-            blending: THREE.AdditiveBlending
         });
 
         const meshShell = new THREE.Mesh(geometry, meshMaterial);
@@ -110,9 +110,8 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
-        
         const material = new THREE.MeshLambertMaterial({
-            color: 0x051a24,     
+            color: 0x020a12,     
             emissive: 0x000000,
         });
 
@@ -137,96 +136,110 @@ export class IcosahedronScene {
         this.electrons = [];
         this.fatLines = []; 
         this.paths = []; 
-        this.pads = []; // Store terminal pads
+        this.pads = []; 
 
         const surfaceRadius = 0.605; 
-        
-        // Use a merged geometry approach for static pads to save draw calls?
-        // Actually, let's stick to simple meshes for now, but optimize if needed.
-        // We'll use a single geometry/material for all pads.
-        const padGeometry = new THREE.CircleGeometry(0.006, 8); // Flat pads like PCB vias
-        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0a4a6e, side: THREE.DoubleSide }); 
+        const padGeometry = new THREE.CircleGeometry(0.007, 8); 
+        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        // --- BUS GENERATION PARAMETERS ---
-        const numBuses = 35; // Increased slightly for better coverage
-        const spacing = 0.018; // Tighter parallel lines
+        // --- GRID BASED GENERATION ---
+        
+        // We define a conceptual grid to snap coordinates to.
+        // This ensures parallelism and "lanes".
+        const PHI_STEPS = 60; // Latitude bands
+        const THETA_STEPS = 80; // Longitude bands
+        
+        const phiStepSize = Math.PI / PHI_STEPS;
+        const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
+        
+        // Bus configuration
+        const numBuses = 90; // Very dense
         
         for (let b = 0; b < numBuses; b++) {
-            let currentPhi = Math.PI * 0.15 + Math.random() * (Math.PI * 0.7); 
-            let currentTheta = Math.random() * Math.PI * 2;
             
-            const lanes = 2 + Math.floor(Math.random() * 3); 
-            const steps = 2 + Math.floor(Math.random() * 5); // Longer paths
+            // Pick a random grid start point
+            const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; // Avoid poles
+            const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
             
-            let isVertical = Math.random() > 0.5;
-
-            // Track start points of lanes to place pads
-            // We need to place pads at the very START of a bus and the very END of a bus
-            // But segments are drawn step-by-step.
+            let gridPhi = startGridPhi;
+            let gridTheta = startGridTheta;
             
-            // Let's store the current "head" position of each lane
+            const lanes = 1 + Math.floor(Math.random() * 4); // 1-4 parallel lanes
+            const busSteps = 5 + Math.floor(Math.random() * 15); // Long paths
+            
+            // Valid direction?
+            let dir = Math.random() > 0.5 ? 'H' : 'V'; // Horizontal or Vertical
+            
+            // LANE OFFSET CALCULATION
+            // We want lanes to be TIGHTLY packed, effectively 1 grid unit apart.
+            
             let laneHeads = [];
-            for(let l=0; l<lanes; l++) {
-                 // Calculate initial lane positions
-                 const laneOffset = (l - (lanes-1)/2) * spacing;
-                 let startPhi = currentPhi;
-                 let startTheta = currentTheta;
-                 
-                 // Initial adjustment based on PERPENDICULAR to travel direction?
-                 // If we start vertical, offset is Theta.
-                 if (isVertical) {
-                     startTheta += laneOffset;
-                 } else {
-                     startPhi += laneOffset;
-                 }
-                 
-                 laneHeads.push({ phi: startPhi, theta: startTheta });
-                 
-                 // Place START PAD
-                 const pos = this.getPos(startPhi, startTheta, surfaceRadius);
-                 const pad = new THREE.Mesh(padGeometry, padMaterial);
-                 pad.position.copy(pos);
-                 pad.lookAt(new THREE.Vector3(0,0,0)); // Look at center (flat on surface)
-                 this.centralSphere.add(pad);
+            for (let l = 0; l < lanes; l++) {
+                // Where is this lane relative to the bus center/origin?
+                // If moving Horizontally, lanes stack Vertically (Phi change)
+                // If moving Vertically, lanes stack Horizontally (Theta change)
+                
+                let lPhi = gridPhi;
+                let lTheta = gridTheta;
+                
+                if (dir === 'H') {
+                    lPhi += l; // Stack in Phi
+                } else {
+                    lTheta += l; // Stack in Theta
+                }
+                
+                const phiVal = lPhi * phiStepSize;
+                const thetaVal = lTheta * thetaStepSize;
+                
+                laneHeads.push({ phi: phiVal, theta: thetaVal, gridPhi: lPhi, gridTheta: lTheta });
+
+                // Start Pad
+                const pos = this.getPos(phiVal, thetaVal, surfaceRadius);
+                const pad = new THREE.Mesh(padGeometry, padMaterial);
+                pad.position.copy(pos);
+                pad.lookAt(new THREE.Vector3(0,0,0));
+                this.centralSphere.add(pad);
             }
 
-            for (let s = 0; s < steps; s++) {
-                const length = 0.15 + Math.random() * 0.35; 
-                const dir = Math.random() > 0.5 ? 1 : -1;
-
-                // Move the "cursor" (center of bus)
-                let endPhi = currentPhi;
-                let endTheta = currentTheta;
-
-                if (isVertical) {
-                     endPhi += (length * dir);
-                     endPhi = Math.max(0.1, Math.min(Math.PI - 0.1, endPhi));
-                } else {
-                     endTheta += (length * dir);
+            for (let s = 0; s < busSteps; s++) {
+                // Determine length of this segment in GRID UNITS
+                let stepLen = 4 + Math.floor(Math.random() * 10); 
+                
+                // Movement
+                let dPhi = 0;
+                let dTheta = 0;
+                
+                if (dir === 'H') { // Moving along Theta
+                    let sign = Math.random() > 0.5 ? 1 : -1;
+                    dTheta = stepLen * sign;
+                } else { // Moving along Phi
+                    let sign = Math.random() > 0.5 ? 1 : -1;
+                    dPhi = stepLen * sign;
                 }
+                
+                // Check bounds (basic)
+                // If we go too close to poles with Phi, clamp or reverse? 
+                // For simplicity, let's just calc targets and render arcs.
 
-                // Draw segments for each lane connecting prevHead to newHead
-                for(let l=0; l<lanes; l++) {
+                for(let l = 0; l < lanes; l++) {
                     const head = laneHeads[l];
                     
-                    // Destination calculation is tricky because we turn. 
-                    // But in Manhattan steps, we move straight.
-                    // The offset is constant relative to the center line.
+                    // Calc discrete target
+                    let targetGridPhi = head.gridPhi + dPhi;
+                    let targetGridTheta = head.gridTheta + dTheta; // Wrap around handles naturally in trig
                     
-                    let targetPhi = endPhi;
-                    let targetTheta = endTheta;
+                    // Clamp Phi to avoid crossing poles weirdly
+                    targetGridPhi = Math.max(2, Math.min(PHI_STEPS-2, targetGridPhi));
                     
-                    const laneOffset = (l - (lanes-1)/2) * spacing;
+                    const targetPhi = targetGridPhi * phiStepSize;
+                    const targetTheta = targetGridTheta * thetaStepSize;
                     
-                    if (isVertical) {
-                        targetTheta += laneOffset;
-                    } else {
-                        targetPhi += laneOffset;
-                    }
+                    // Verify we actually moved
+                    if (Math.abs(targetPhi - head.phi) < 0.001 && Math.abs(targetTheta - head.theta) < 0.001) continue;
 
                     // Geometry generation (Arc)
                     const segmentPoints = [];
-                    const divisions = 6;
+                    const divisions = 8; // Smooth arcs
                     
                     for(let k=0; k<=divisions; k++) {
                         const t = k/divisions;
@@ -240,13 +253,13 @@ export class IcosahedronScene {
                     geometry.setPositions(segmentPoints);
 
                     const mat = new LineMaterial({
-                        color: 0x0a2a47,
+                        color: 0x0a3a5e, // Darker PCB blueish
                         linewidth: 2.5, 
                         worldUnits: false,
                         dashed: false,
                         alphaToCoverage: true,
                         transparent: true,
-                        opacity: 0.8
+                        opacity: 0.9
                     });
                     
                     mat.resolution.set(this.width, this.height);
@@ -269,11 +282,12 @@ export class IcosahedronScene {
                     // Update head
                     head.phi = targetPhi;
                     head.theta = targetTheta;
+                    head.gridPhi = targetGridPhi;
+                    head.gridTheta = targetGridTheta;
                 }
-
-                currentPhi = endPhi;
-                currentTheta = endTheta;
-                isVertical = !isVertical;
+                
+                // FLIP direction for next segment (orthogonal turns)
+                dir = (dir === 'H') ? 'V' : 'H';
             }
 
             // Place END PADS
@@ -288,20 +302,20 @@ export class IcosahedronScene {
         }
 
         // 2. Initialize Electrons
-        const electronGeometry = new THREE.SphereGeometry(0.008, 8, 8); 
+        const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x0088ff,
+            color: 0x00aaff,
             transparent: true, 
             opacity: 1.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
 
-        const numElectrons = 80; 
+        const numElectrons = 120; // More activity for denser board
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             
@@ -318,7 +332,7 @@ export class IcosahedronScene {
                 t: Math.random(), 
                 speed: 0,
                 active: false,
-                delay: Math.random() * 100 
+                delay: Math.random() * 60 
             });
         }
     }
@@ -477,8 +491,8 @@ export class IcosahedronScene {
                 // Decay Mesh Intensity
                 if (this.circuitMeshes) {
                     const baseR = 0.04; 
-                    const baseG = 0.16; 
-                    const baseB = 0.28; 
+                    const baseG = 0.23; // Brighter default state
+                    const baseB = 0.37; 
                     
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
@@ -490,12 +504,12 @@ export class IcosahedronScene {
                             const b = baseB + (1.0 - baseB) * intensity;   
                             
                             mesh.material.color.setRGB(r, g, b);
-                            mesh.material.opacity = 0.8 + (0.2 * intensity);
+                            mesh.material.opacity = 0.9 + (0.1 * intensity);
 
                         } else if (mesh.userData.intensity > 0) {
                             mesh.userData.intensity = 0;
                             mesh.material.color.setRGB(baseR, baseG, baseB);
-                            mesh.material.opacity = 0.8;
+                            mesh.material.opacity = 0.9;
                         }
                     });
                 }
@@ -505,7 +519,7 @@ export class IcosahedronScene {
                         if (e.delay > 0) {
                             e.delay--;
                         } else {
-                             if (Math.random() < (0.02 + activityLevel * 0.1)) {
+                             if (Math.random() < (0.01 + activityLevel * 0.1)) {
                                  e.active = true;
                                  e.pathIndex = Math.floor(Math.random() * this.paths.length);
                                  e.t = 0;
