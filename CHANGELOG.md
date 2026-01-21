@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.956 - 2026-01-21
+- **Design Two Visuals (Lattice)**:
+  - **Wireframe Color**: Reduced brightness by 10% (`0x88b0d1` -> `0x7a9ebc`) to make the outer cage slightly less dominant compared to the illuminated core circuitry.
+
 ## v1.955 - 2026-01-21
 - **Design Two Visuals (Contrast)**:
   - **Darker Traces**: Reduced base circuit line color by ~50% (`0x082e4b` -> `0x041725`) to make them nearly invisible when not illuminated, enhancing the "firing" contrast.

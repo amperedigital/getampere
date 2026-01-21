@@ -57,7 +57,7 @@ export class IcosahedronScene {
         // 1. Lattice 
         const wireframeGeometry = new THREE.WireframeGeometry(geometry);
         const material = new THREE.LineBasicMaterial({
-            color: 0x88b0d1, 
+            color: 0x7a9ebc, 
             linewidth: 1,
             opacity: 1,
             transparent: false
