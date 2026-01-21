@@ -818,6 +818,21 @@ export class IcosahedronScene {
             }
         }
 
+        // --- ROTATION LOGIC ---
+        if (this.centralSphere) {
+             // Target Speed: 1 Rev Per Second (approx 0.1 rad/frame at 60fps)
+             // Driven by simIntensity (0.0 to 1.0) so it ramps up/down with Power state
+             const baseSpeed = (Math.PI * 2) / 60; // Full speed
+             const currentSpeed = baseSpeed * this.simIntensity;
+             
+             // Rotation Axis: Local Y
+             // Since the Sphere is tilted 90deg (X=90), Local Y points at the camera (technically World Z).
+             // This creates a "Clockwise/Counter-Clockwise" spin effect for the viewer while hiding the pole.
+             if (currentSpeed > 0.0001) {
+                 this.centralSphere.rotateY(currentSpeed);
+             }
+        }
+
         if (this.nodes) {
             const tempV = new THREE.Vector3();
             const maxDist = 0.35; 

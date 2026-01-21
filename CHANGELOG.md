@@ -1,3 +1,9 @@
+## v2.030 - 2026-01-21
+- **Feature Checkpoint**: `v2.029` saved as stable backup.
+- **Animation Update**: Added rotation to the central orb.
+    - **Behavior**: The orb spins on its axis during the "POWER UP" state, creating a dynamic churning effect.
+    - **Speed**: Ramps up to ~1 revolution per second (60 RPM).
+    - **Smoothing**: Rotation speed is coupled to the simulation intensity, ensuring a gentle acceleration on power-up and a smooth deceleration on power-down/standby.
 ## v2.029 - 2026-01-21
 - **Animation Fix**: Smoothed the electron trace "Power Down" sequence.
     - **Logic**: Removed the strict state check for electron spawning. Spawning logic is now purely driven by `simIntensity`.
