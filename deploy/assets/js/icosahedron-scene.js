@@ -10,7 +10,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.8 (Hyper-Active LEDs)");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.9 (Spaced Traces & Darker Base)");
 
         this.initScene();
         this.initLights();
@@ -66,8 +66,6 @@ export class IcosahedronScene {
         this.icosahedron = new THREE.LineSegments(wireframeGeometry, material);
         this.group.add(this.icosahedron);
 
-        // 1b. Mesh Texture - REMOVED per previous request (keeping code clean)
-
         // 2. Nodes
         this.addNodes(geometry);
 
@@ -109,14 +107,19 @@ export class IcosahedronScene {
         const padGeometry = new THREE.CircleGeometry(0.007, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
-        const PHI_STEPS = 60; 
-        const THETA_STEPS = 80; 
+        // REDUCED DENSITY for more physical separation of traces
+        const PHI_STEPS = 45;   // Was 60
+        const THETA_STEPS = 60; // Was 80
         
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        const numBuses = 90; 
+        const numBuses = 65; // Reduced from 90 to separate groups
         
+        // Darker Base color (approx 20% reduced from 0x0a3a5e)
+        // 0x0a -> 0x08, 0x3a -> 0x2e, 0x5e -> 0x4b ==> 0x082e4b
+        const baseColorHex = 0x082e4b;
+
         for (let b = 0; b < numBuses; b++) {
             const startGridPhi = Math.floor(Math.random() * (PHI_STEPS - 4)) + 2; 
             const startGridTheta = Math.floor(Math.random() * THETA_STEPS);
@@ -124,7 +127,7 @@ export class IcosahedronScene {
             let gridPhi = startGridPhi;
             let gridTheta = startGridTheta;
             
-            const lanes = 1 + Math.floor(Math.random() * 4); 
+            const lanes = 1 + Math.floor(Math.random() * 3); // Reduced max lanes from 4 -> 3
             const busSteps = 5 + Math.floor(Math.random() * 15); 
             
             let dir = Math.random() > 0.5 ? 'H' : 'V'; 
@@ -194,7 +197,7 @@ export class IcosahedronScene {
                     geometry.setPositions(segmentPoints);
 
                     const mat = new LineMaterial({
-                        color: 0x0a3a5e, 
+                        color: baseColorHex, 
                         linewidth: 2.5, 
                         worldUnits: false,
                         dashed: false,
@@ -242,9 +245,6 @@ export class IcosahedronScene {
         const electronGeometry = new THREE.SphereGeometry(0.009, 8, 8); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); 
         
-        // Use simple small scale for electrons, no sprites? 
-        // User asked to remove GLOW from nodes, not electrons. 
-        // But let's keep electrons as is for now, they are small.
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
@@ -325,7 +325,7 @@ export class IcosahedronScene {
                 // LED Firing State
                 node.userData = {
                     firingState: 0, 
-                    fireCooldown: Math.random() * 100, // Reduced initial delay
+                    fireCooldown: Math.random() * 100, 
                     baseScale: 1.0
                 };
 
@@ -335,7 +335,6 @@ export class IcosahedronScene {
         }
     }
 
-    // Still need this for electrons
     createGlowTexture() {
         const canvas = document.createElement('canvas');
         canvas.width = 64;
@@ -413,10 +412,15 @@ export class IcosahedronScene {
 
             const activityLevel = sphereActiveFactor; 
 
-            // Circuitry
+            // Circuitry with DARKER BASE COLORS
             if (this.paths && this.electrons) {
                 if (this.circuitMeshes) {
-                    const baseR = 0.04; const baseG = 0.23; const baseB = 0.37;
+                    // Previous: 0.04, 0.23, 0.37
+                    // New (~0.8x): 0.032, 0.184, 0.296
+                    const baseR = 0.032; 
+                    const baseG = 0.184; 
+                    const baseB = 0.296;
+
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
                             mesh.userData.intensity *= 0.92;
@@ -460,8 +464,7 @@ export class IcosahedronScene {
                 });
             }
 
-            // --- LED NODE LOGIC (UPDATED SPEED) ---
-            // White-Blue cool light
+            // --- LED NODE LOGIC ---
             const ledColor = new THREE.Color(0xaaddff); 
             const dark = new THREE.Color(0x000000);
 
@@ -470,18 +473,14 @@ export class IcosahedronScene {
 
                 if (data.firingState <= 0) {
                     if (data.fireCooldown > 0) {
-                        data.fireCooldown -= 2; // Decay cooldown 2x faster
+                        data.fireCooldown -= 2; 
                     } else {
-                        // FIRE!
-                        // Increased probability from 0.02 to 0.06 (3x more often)
                         if (Math.random() < 0.06) {
                             data.firingState = 1.0; 
-                            // Reduced cooldown range significantly (was 60-360, now 10-50)
                             data.fireCooldown = 10 + Math.random() * 40; 
                         }
                     }
                 } else {
-                    // Decay firing state much faster (was 0.9, now 0.75 for super snappy blink)
                     data.firingState *= 0.75; 
                     if (data.firingState < 0.01) data.firingState = 0;
                 }
@@ -498,15 +497,14 @@ export class IcosahedronScene {
                     proximityScale = factor * 0.4;
                 }
 
-                // Increase intensity multiplier for that "bright light bulb" look
                 const combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
                 
                 node.material.emissive.lerpColors(dark, ledColor, Math.min(1.0, combinedIntensity));
                 node.material.emissiveIntensity = combinedIntensity;
 
                 const currentScale = node.scale.x;
-                const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); // slightly more pop
-                const newScale = currentScale + (targetScale - currentScale) * 0.4; // Snappier scale response
+                const targetScale = 1.0 + proximityScale + (data.firingState * 0.4); 
+                const newScale = currentScale + (targetScale - currentScale) * 0.4; 
                 node.scale.setScalar(newScale);
             });
         }

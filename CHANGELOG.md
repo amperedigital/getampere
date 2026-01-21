@@ -949,3 +949,9 @@
 - **Animation**: Tripled LED firing frequency (probability 0.02 -> 0.06).
 - **Speed**: Doubled cooldown decay rate and shortened cooldown window (10-50 frames).
 - **Snappiness**: Increased firing decay rate (0.75) for sharper on/off transitions.
+
+## [v1.951] - 2026-01-21
+### Changed
+- **Visuals**: Reduced circuit grid density (PHI:60->45, THETA:80->60) to prevent trace clutter at small scales.
+- **Trace Lines**: Darkened initial line color by 20% (`0x082e4b`) to improve contrast and reduce visual noise.
+- **Complexity**: Reduced number of buses (90->65) and max lanes (4->3) for a cleaner, defined look.
