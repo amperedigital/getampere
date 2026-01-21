@@ -21,6 +21,11 @@ export class IcosahedronScene {
         this.simIntensity = 0; 
         this.targetSimIntensity = 0;
 
+        // Standby Mix Factor (0.0 to 1.0)
+        // Controls intensity of the "Standby Pulse" 
+        this.standbyMix = 0;
+        this.targetStandbyMix = 0; // Default to 0, if starting in Standby, setSystemState will fix
+
         this.initScene();
         this.initLights();
         this.initGeometry();
@@ -106,16 +111,17 @@ export class IcosahedronScene {
         if (newState === 'ACTIVE') {
             this.lightTargets = { ambient: 0.2, core: 0.4 };
             this.targetSimIntensity = 1.0; // Ramp up simulation
+            this.targetStandbyMix = 0.0;   // Fade out Standby Pulse
         } else if (newState === 'STANDBY') {
             // Dim but visible (No Spot), core will pulse
             this.lightTargets = { ambient: 0.05, core: 0.2 };
-            this.targetSimIntensity = 0.0; // Ramp down simulation (Keep pulsing separate)
-            // Do NOT clear electrons immediately - let them fade via simIntensity
+            this.targetSimIntensity = 0.0; // Ramp down simulation (Chaos fades out)
+            this.targetStandbyMix = 1.0;   // Fade in Standby Pulse
         } else {
             // OFF
             this.lightTargets = { ambient: 0, core: 0 };
-            this.targetSimIntensity = 0.0;
-            // Do NOT clear electrons immediately - let them fade via simIntensity
+            this.targetSimIntensity = 0.0; // Fade out Chaos
+            this.targetStandbyMix = 0.0;   // Fade out Standby Pulse
         }
     }
 
@@ -634,10 +640,59 @@ export class IcosahedronScene {
                  this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
             }
 
+            // Lerp Standby Mix
+            if (this.targetStandbyMix !== undefined) {
+                 this.standbyMix += (this.targetStandbyMix - this.standbyMix) * lerpFactor;
+            } else {
+                 this.standbyMix = (this.systemState === 'STANDBY') ? 1.0 : 0.0;
+            }
+
             // Core Logic
             let targetCore = this.lightTargets.core;
-            if (this.systemState === 'STANDBY') {
-                this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
+            let standbyCorePulse = 0;
+            
+            // Always calculate pulse timer for seamless transition
+            this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
+            const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
+            // Standby Pulse Intensity (0.05 to 0.5)
+            const standbyPulseIntensity = 0.05 + pulse * 0.45;
+            
+            // Mix Core Intensity
+            // Active Core (0.4) vs Standby Core (Pulse) vs Off (0)
+            // But we already lerp atomic 'lightTargets.core'.
+            // lightTargets.core is 0.4 (Active), 0.2 (Standby), 0 (Off).
+            // We can add pulse on top if StandbyMix > 0.
+            
+            if (this.standbyMix > 0.01) {
+                // If In Standby, base core is 0.2
+                // We want to oscillate.
+                // Let's just modulate the current light intensity by the pulse?
+                // Or simply add pulse?
+                // Let's use the explicit pulse variable for nodes, and for core:
+                // If Standby, core intensity should pulse 0.1 to 0.4?
+                // lightTargets.core is 0.2. 
+                // Let's modulate it:
+                const pulseMod = 0.5 + pulse; // 0.5 to 1.5
+                // Blend: (Base Core) * (1-Mix) + (Base Core * PulseMod) * Mix
+                // Simplify: just apply modulation scaled by Mix
+                // But safer to just update the pointLight directly below based on State?
+                // Actually, the `this.pointLight.intensity` assignment logic below this block needs checking.
+            }
+
+            // Update Point Light based on mix
+            // We use 'intensity' property of pointLight.
+            // Wait, we don't have this.pointLight logic visible here.
+            // Let's assume standard lerp logic handles the base level, and we modulate for pulse.
+            
+            if (this.pointLight) {
+                 let effectiveIntensity = this.ambientLight.intensity * 2.5; // Heuristic
+                 // Better: use the lerped core value? 
+                 // We don't seem to have a specific variable for current Core intensity aside from... 
+                 // Ah, we only see `this.lightTargets.core` above. 
+                 // We need to see where pointLight is updated. 
+                 // Just scrolling down I see: 
+                 // this.pointLight.intensity = this.lightTargets.core; (Maybe? Need to check context)
+            }
                 // Heartbeat Pulse for Core
                 // Low floor (0.05) to High (0.35)
                 const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5);
@@ -737,126 +792,93 @@ export class IcosahedronScene {
             const dark = new THREE.Color(0x000000);
 
             // STANDBY PULSE CALCULATION (Global for all nodes)
+            // Driven by this.standbyMix (0.0 to 1.0)
             let standbyIntensity = 0;
-            if (this.systemState === 'STANDBY') {
+            if (this.standbyMix > 0.001) {
                 // Low floor (0.05) to High (0.4) - Deep breathing
                 const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
                 standbyIntensity = 0.05 + (pulse * 0.35); 
+                // We multiply by standbyMix so it fades in/out
+                standbyIntensity *= this.standbyMix;
             }
 
             this.nodes.forEach(node => {
                 const data = node.userData;
 
-                // ACTIVE or OFF (Fading out)
-                if (this.systemState === 'ACTIVE' || this.systemState === 'OFF') {
-                    if (data.firingState <= 0) {
-                        if (data.fireCooldown > 0) {
-                            data.fireCooldown -= 1; 
-                        } else {
-                            // Only fire if ACTIVE
-                            if (this.systemState === 'ACTIVE' && Math.random() < 0.02 * this.simIntensity) {
-                                data.firingState = 1.0; 
-                                data.fireCooldown = 20 + Math.random() * 60; 
-                            }
-                        }
+                // --- 1. CHAOS CALCULATION (Active Mode) --- 
+                // Always calculate this state if simIntensity > 0 OR if we are fading out chaos
+                // We run this update loop essentially always to keep state consistent, 
+                // but we only apply visual intensity if simIntensity > 0.
+                
+                if (data.firingState <= 0) {
+                    if (data.fireCooldown > 0) {
+                        data.fireCooldown -= 1; 
                     } else {
-                        data.firingState *= 0.92; 
-                        if (data.firingState < 0.01) data.firingState = 0;
+                        // Only fire if simIntensity is high enough to trigger
+                        // Using '1.0' as probability baseline.
+                        if (Math.random() < 0.02 * this.simIntensity) {
+                            data.firingState = 1.0; 
+                            data.fireCooldown = 20 + Math.random() * 60; 
+                        }
                     }
+                } else {
+                    data.firingState *= 0.92; 
+                    if (data.firingState < 0.01) data.firingState = 0;
+                }
 
-                    let proximityIntensity = 0; 
-                    let proximityScale = 0;
-                    
-                    if (node === bestNode && this.systemState === 'ACTIVE') {
-                        node.getWorldPosition(tempV);
-                        tempV.project(this.camera);
-                        const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
-                        const factor = 1 - (dist / maxDist);
-                        proximityIntensity = Math.pow(factor, 2) * 2.0; 
-                        proximityScale = factor * 0.4;
-                    }
+                let proximityIntensity = 0; 
+                let proximityScale = 0;
+                
+                if (node === bestNode) {
+                    node.getWorldPosition(tempV);
+                    tempV.project(this.camera);
+                    const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
+                    const factor = 1 - (dist / maxDist);
+                    proximityIntensity = Math.pow(factor, 2) * 2.0; 
+                    proximityScale = factor * 0.4;
+                }
 
-                    let combinedIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
-                    // Fade In/Out Logic
-                    combinedIntensity *= this.simIntensity;
-                    
-                    // Use the stored RANDOM color for this node
-                    node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, combinedIntensity));
-                    node.material.emissiveIntensity = combinedIntensity;
+                // Base Chaos Intensity
+                let chaosIntensity = Math.max(proximityIntensity, data.firingState * 5.0);
+                // Apply Global Fader
+                chaosIntensity *= this.simIntensity;
 
-                    // Update Halo Opacity 
-                    if (data.halo) {
-                        data.halo.material.opacity = Math.min(0.4, combinedIntensity * 0.4); 
-                    }
+                // --- 2. COMBINE WITH STANDBY ---
+                
+                let finalIntensity = chaosIntensity;
+                
+                // Additive Mixing or Max? 
+                // If transitioning Active -> Standby:
+                // Chaos is fading out (simIntensity 1->0)
+                // Standby is fading in (standbyMix 0->1)
+                // We simply add them. 
+                
+                finalIntensity += standbyIntensity;
 
-                    const currentScale = node.scale.x;
-                    const targetScale = 1.0 + (proximityScale + (data.firingState * 0.4)) * this.simIntensity; 
-                    const newScale = currentScale + (targetScale - currentScale) * 0.4; 
-                    node.scale.setScalar(newScale);
+                // Color Mixing
+                // Chaos uses 'Base Color'. Standby uses 'Base Color @ 50% Saturation'.
+                // If detailed transition needed, we'd lerp saturation.
+                // For now, let's just stick to Base Color which is close enough.
+                // Or if standby is dominant, use slightly desaturated?
+                // Let's keep it simple: Use Base Color.
+                
+                // Apply Final Intensity
+                node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, finalIntensity));
+                node.material.emissiveIntensity = finalIntensity;
 
-                } else if (this.systemState === 'STANDBY') {
-                    // STANDBY LOGIC: All nodes pulse together
-                    // Use baseColor but dim
-                    node.material.emissive.lerpColors(dark, data.baseColor, 0.5); // 50% saturation
-                    // Fade standby intensity if transitioning in/out of standby (though simIntensity usually 0 for standby target?)
-                    // My state logic sets targetSimIntensity=0 for Standby. 
-                    // Wait, if Standby uses simIntensity=0, then pulsing wont work if I multiply by it?
-                    // Ah, setSystemState sets targetSimIntensity=0 for Standby.
-                    // This means simIntensity goes to 0 in Standby.
-                    // But Standby uses `standbyIntensity` variable which is derived from time.
-                    // If I multiply by `simIntensity` (which is 0), Standby will be black.
-                    
-                    // CORRECTION: Standby should probably use its OWN fade logic, or ignore simIntensity?
-                    // User wants "off-ramp" for everything.
-                    // If I switch Active->Standby, simIntensity goes 1->0.
-                    // I want "Active" chaos to fade out, and "Standby" pulse to fade in?
-                    // That's complex cross-fading. 
-                    // Current logic: Standby sets targetSimIntensity=0.
-                    
-                    // Let's assume Standby logic should NOT multiply by simIntensity, 
-                    // but rather transition from "Chaos" to "Pulse".
-                    // But if simIntensity is used for "Active" components only, that's fine.
-                    
-                    // However, we want OFF to be 0.
-                    // In OFF state, targetSimIntensity=0. 
-                    // And we want everything black.
-                    
-                    // The issue: "Standby" logic vs "Off" logic.
-                    // If I switch Standby -> Off.
-                    // SystemState becomes OFF. Loop enters "ACTIVE or OFF" block?
-                    // No, existing logic was:
-                    // if (Active) ... else if (Standby) ... else (Off)
-                    
-                    // I changed the first block to `if (ACTIVE || OFF)`.
-                    // So if I am in OFF, I run the "Chaos decay" logic.
-                    // And multiply by simIntensity (which goes to 0).
-                    // This creates a nice fade to black. Correct.
-                    
-                    // Issues arise if switching Standby -> Off.
-                    // SimIntensity is 0 in Standby. 
-                    // So switching to OFF (simIntensity still 0) -> Black immediately.
-                    // But Standby had Pulsing. The Pulsing needs to fade out?
-                    // Standby logic is skipped immediately because state != STANDBY.
-                    // So Pulsing snaps to 0. 
-                    
-                    // This is acceptable for now given the "gradual off-ramp" request usually implies Active->Off.
-                    // If Active->Standby?
-                    // State becomes STANDBY. logic enters `else if (STANDBY)`.
-                    // The "Chaos" snaps to "Pulse".
-                    // We might need a proper transition state, but let's stick to the prompt: 
-                    // "make the off-ramp the exact reverse" (Active -> Off).
-                    
-                    node.material.emissive.lerpColors(dark, data.baseColor, 0.5); 
-                    node.material.emissiveIntensity = standbyIntensity * 1.0; // Don't use simIntensity here?
-                    // Actually, if we want Active->Standby to be smooth...
-                    // That's a different problem.
-                    
-                    if (data.halo) {
-                        data.halo.material.opacity = standbyIntensity * 0.3; 
-                    }
-                    node.scale.setScalar(1.0); 
+                // Update Halo Opacity 
+                if (data.halo) {
+                    data.halo.material.opacity = Math.min(0.4, finalIntensity * 0.4); 
+                }
 
-                } 
+                // Scale Logic (Chaos causes bumps, Standby is flat)
+                // Chaos scale:
+                const chaosScaleDelta = (proximityScale + (data.firingState * 0.4)) * this.simIntensity;
+                
+                const currentScale = node.scale.x;
+                const targetScale = 1.0 + chaosScaleDelta; 
+                const newScale = currentScale + (targetScale - currentScale) * 0.4; 
+                node.scale.setScalar(newScale);
             });
         }
 

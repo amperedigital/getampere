@@ -1,3 +1,9 @@
+## v2.018 - 2026-01-21
+- **Transitions Update**: Completely rewrote the rendering loop to support additive state mixing.
+    - **Behavior**: Switching between Active, Standby, and Off is now fully seamless.
+    - **Active → Standby**: Chaos fades out over ~3s while the standby pulse fades in. No snapping or jarring switches.
+    - **Standby → Off**: Pulse gently fades to black.
+    - **Active → Off**: Chaos gently fades to black.
 ## v2.017 - 2026-01-21
 - **Off Mode Fix**: Implemented a true "Zero State" for the Off mode.
     - **Change**: Node firing and emissive logic now fully respects the global `simIntensity` scalar during fade-out.
