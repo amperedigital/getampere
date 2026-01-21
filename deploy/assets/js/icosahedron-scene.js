@@ -644,14 +644,14 @@ export class IcosahedronScene {
     initControls() {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
+        this.controls.dampingFactor = 0.1;    // Increased friction (was 0.05) to stop "sliding" to limits
         this.controls.enableZoom = true;
-        this.controls.zoomSpeed = 0.3; // Much reduced speed for fine, smooth increments
+        this.controls.zoomSpeed = 0.05;       // Ultra-fine sensitivity (was 0.3, default 1.0)
         this.controls.autoRotate = false;
         
-        // Prevent "disappearing" issue (Widened Range v1.992)
-        this.controls.minDistance = 2.0;  // Closer approach allowed
-        this.controls.maxDistance = 20.0; // Further zoom allowed
+        // Prevent "disappearing" issue (Widened Range v1.994)
+        this.controls.minDistance = 1.3;  // Allow getting closer (edge of lattice)
+        this.controls.maxDistance = 50.0; // Allow much further distance
     }
 
     handleResize() {

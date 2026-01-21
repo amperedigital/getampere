@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.994 - 2026-01-21
+- **Zoom Precision**: Set `zoomSpeed` to `0.05` and increased `dampingFactor` to `0.1`.
+- **Range Adjustment**: Widened the zoom range (`1.3` to `50.0`).
+- **Goal**: Address the "0 to 100" complaint by making the zoom extremely granular and increasing friction, preventing the camera from sliding instantly to the minimum/maximum limits.
+
 ## v1.993 - 2026-01-21
 - **Zoom Calibration**: Drastically reduced the `zoomSpeed` of the `OrbitControls` to `0.3` (from default 1.0). This prevents the "0 to 100" jumpiness and restores the smooth, incremental zoom behavior users expect when scrolling.
 
