@@ -7,7 +7,7 @@ export class IcosahedronScene {
         this.width = container.clientWidth;
         this.height = container.clientHeight;
 
-        console.log("Icosahedron Scene Initialized");
+        console.log("Icosahedron Scene Initialized - vDesignTwo.1");
 
         this.initScene();
         this.initLights();
@@ -47,8 +47,6 @@ export class IcosahedronScene {
         spotLight.decay = 2;
         spotLight.distance = 50;
         this.scene.add(spotLight);
-        
-        // Removed specific Rim/Fill lights to focus on single diffused source
     }
 
     initGeometry() {
@@ -111,7 +109,7 @@ export class IcosahedronScene {
             blending: THREE.AdditiveBlending
         });
 
-        // Use same geometry (detail: 0) so it's perfectly flat against the faces
+        // Use same geometry (detail: 1) so it's perfectly flat against the faces
         const meshShell = new THREE.Mesh(geometry, meshMaterial);
         meshShell.scale.setScalar(0.99); // Just barely inside the wires
         this.group.add(meshShell);
@@ -124,12 +122,9 @@ export class IcosahedronScene {
     }
 
     addCentralSphere() {
-        // Create a perfectly round sphere in the center
-        // Radius reduced by 25% (0.8 -> 0.6)
         const geometry = new THREE.SphereGeometry(0.6, 64, 64);
         
         // Material: Dark Blue Metal
-        // Switched to MeshLambertMaterial to completely remove specular highlights (White Ring)
         const material = new THREE.MeshLambertMaterial({
             color: 0x051a24,     // Dark Blue Metal
             emissive: 0x000000,
@@ -155,30 +150,16 @@ export class IcosahedronScene {
         const surfaceRadius = sphereRadius + 0.005; 
         
         // 1. Materials
-        // Trace Material: VertexColors = true to allow individual animation
-        const traceMaterial = new THREE.LineBasicMaterial({
-            vertexColors: true,  // Important: allow per-vertex color
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending // Glowier look
-        });
-
-        // Chip Materials (Motherboard Elements)
-        // Various sizes for random "components"
-        const chipGeoSmall = new THREE.BoxGeometry(0.04, 0.04, 0.015);
-        const chipGeoWide = new THREE.BoxGeometry(0.08, 0.03, 0.015);
-        const chipGeoLong = new THREE.BoxGeometry(0.02, 0.08, 0.015);
-        
-        const chipMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x050505, // Dark silicon/plastic
+        // Tube Material for thicker traces
+        const traceMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a2a47, // Dark Base Color
+            emissive: 0x0a2a47, 
             roughness: 0.4,
             metalness: 0.8,
-            clearcoat: 1.0,
-            emissive: 0x000000
+            transparent: true,
+            opacity: 0.8,
         });
-        const padMaterial = new THREE.MeshBasicMaterial({ color: 0x00aaff }); // Cyan/Blue contacts
 
-        // Helper: Spherical to Cartesian
         const getPos = (phi, theta, r) => {
             const x = r * Math.sin(phi) * Math.cos(theta);
             const y = r * Math.sin(phi) * Math.sin(theta);
@@ -186,47 +167,39 @@ export class IcosahedronScene {
             return new THREE.Vector3(x, y, z);
         };
 
-        // 2. PCB Logic - "Manhattan Sphere"
-        // Cleanup: Increased count to 90 to close "huge gaps", traces kept sparse for separation
-        let numChips = 90; 
+        // 2. PCB Logic - Higher Density
+        let numChips = 150; // Increased from 90 to 150 for density
         
         for(let i=0; i<numChips; i++) {
-            // A. Place Motherboard Component (Chip)
             let phi, theta;
 
-            // Force coverage at poles for first 16 chips
-            if (i < 8) {
-                // North Pole area - Tighter cluster
+            if (i < 12) {
+                // North Pole
                 phi = Math.random() * 0.35; 
                 theta = Math.random() * Math.PI * 2;
-            } else if (i < 16) {
-                // South Pole area - Tighter cluster
+            } else if (i < 24) {
+                // South Pole
                 phi = Math.PI - (Math.random() * 0.35);
                 theta = Math.random() * Math.PI * 2;
             } else {
-                // Random Sphere distribution
                 phi = Math.acos(2 * Math.random() - 1);
                 theta = Math.random() * Math.PI * 2;
             }
             
-            // Chips Removed (v1.910) - Pure Circuitry traces only
-            // b. Route Parallel Traces from this Cluster Origin
-            // Reduced trace count for separation (Circuit vs Mesh)
-            const tracesPerChip = 3 + Math.floor(Math.random() * 4); // 3-6 traces (was 5-10)
+            // Increased traces per cluster
+            const tracesPerChip = 4 + Math.floor(Math.random() * 3); 
             
             for (let t=0; t<tracesPerChip; t++) {
-                // Determine Start Point (near chip)
                 let currentPhi = phi + (Math.random() * 0.08 - 0.04);
                 let currentTheta = theta + (Math.random() * 0.08 - 0.04);
 
-                // Longer, more distinct paths
-                const numSegs = 6 + Math.floor(Math.random() * 8); 
+                const numSegs = 5 + Math.floor(Math.random() * 6); 
                 
                 // Trace Path Generation
                 for(let s=0; s<numSegs; s++) {
-                    const isVertical = s % 2 === 0; // Alternate Vertical/Horizontal
+                    const isVertical = s % 2 === 0;
                     
-                    const len = 0.15 + Math.random() * 0.2; // Slightly longer segments
+                    const len = 0.12 + Math.random() * 0.18; 
                     
                     let startP = getPos(currentPhi, currentTheta, surfaceRadius);
                     let endP, midP;
@@ -234,7 +207,6 @@ export class IcosahedronScene {
                     if (isVertical) {
                         const dir = Math.random() > 0.5 ? 1 : -1;
                         let nextPhi = currentPhi + (len * dir);
-                        // Relaxed clamping to allow Pole coverage
                         nextPhi = Math.max(0.01, Math.min(Math.PI - 0.01, nextPhi));
 
                         endP = getPos(nextPhi, currentTheta, surfaceRadius);
@@ -249,24 +221,19 @@ export class IcosahedronScene {
                         currentTheta = nextTheta;
                     }
                     
-                    // Build Geometry
+                    // Build Geometry - Tube for Width
                     const curve = new THREE.QuadraticBezierCurve3(startP, midP, endP);
                     this.circuitCurves.push(curve);
 
-                    // Draw Trace with Color Attribute
-                    const points = curve.getPoints(8);
-                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                    // TubeGeometry for physical width
+                    // path, tubularSegments, radius (width), radialSegments, closed
+                    const tubeGeo = new THREE.TubeGeometry(curve, 4, 0.003, 4, false); // Radius 0.003 gives thickness
                     
-                    // Initialize Vertex Colors (Dark Blue Trace default)
-                    const colors = [];
-                    const baseColor = new THREE.Color(0x0a2a47); // Dark Blue
-                    for(let k=0; k<=8; k++) { // 8 segments = 9 points
-                        colors.push(baseColor.r, baseColor.g, baseColor.b);
-                    }
-                    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-                    const trace = new THREE.Line(geometry, traceMaterial);
-                    // Store intensity data for animation
+                    // Material clone for individual animation (or use instance colors if perf needed, but cloning material is easier for now with < 1000 objects)
+                    const mat = traceMaterial.clone(); 
+                    const trace = new THREE.Mesh(tubeGeo, mat);
+                    
+                    // Store intensity data
                     trace.userData = { intensity: 0 }; 
                     
                     this.centralSphere.add(trace);
@@ -275,29 +242,26 @@ export class IcosahedronScene {
             }
         }
 
-        // 2. Initialize Electrons (The "Glow")
-        // We use a small geometry + Sprite for "Glowing Dot" effect
+        // 2. Initialize Electrons
         const electronGeometry = new THREE.BoxGeometry(0.012, 0.012, 0.012); 
         const electronMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff }); // Cyan
         
-        // Create Glow Sprite for Electrons
         const glowTexture = this.createGlowTexture();
         const electronGlowMat = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x0088ff, // Electric Blue
+            color: 0x0088ff,
             transparent: true, 
             opacity: 1.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
 
-        const numElectrons = 150; // High density pulses (150 active)
+        const numElectrons = 150; 
         for(let i=0; i<numElectrons; i++) {
             const electron = new THREE.Mesh(electronGeometry, electronMaterial);
             
-            // Attach Glow Sprite
             const sprite = new THREE.Sprite(electronGlowMat);
-            sprite.scale.set(0.06, 0.06, 0.06); // Halo size
+            sprite.scale.set(0.06, 0.06, 0.06);
             electron.add(sprite);
 
             electron.visible = false; 
@@ -331,21 +295,18 @@ export class IcosahedronScene {
         const positionAttribute = geometry.getAttribute('position');
         const vertex = new THREE.Vector3();
         
-        // Storage for animation
         this.nodes = [];
         
-        // Glow Texture (Shared)
         const glowTexture = this.createGlowTexture();
         const glowMaterial = new THREE.SpriteMaterial({ 
             map: glowTexture, 
-            color: 0x00ccff, // Cyan tint
+            color: 0x00ccff, 
             transparent: true, 
             opacity: 0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
 
-        // Deduplicate vertices efficiently
         const uniquePoints = [];
         const threshold = 0.001;
 
@@ -363,12 +324,11 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Create Node: Visible Base State (Blue Steel)
-                const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); // Slightly larger base size
+                const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
                 const nodeMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0x446688, // Blue Steel
-                    emissive: 0x0044aa, // Deep Blue Glow
-                    emissiveIntensity: 0.2, // Faint glow
+                    color: 0x446688,
+                    emissive: 0x0044aa, 
+                    emissiveIntensity: 0.2, 
                     roughness: 0.3,
                     metalness: 0.8
                 });
@@ -376,12 +336,11 @@ export class IcosahedronScene {
                 const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                 node.position.copy(vertex);
                 
-                // Add Glow Sprite (Halo)
                 const sprite = new THREE.Sprite(glowMaterial.clone());
-                sprite.scale.set(0.6, 0.6, 0.6); // Start size
-                sprite.visible = false; // Hidden by default
-                node.add(sprite); // Attach to node
-                node.userData.sprite = sprite; // Reference for animation
+                sprite.scale.set(0.6, 0.6, 0.6); 
+                sprite.visible = false; 
+                node.add(sprite); 
+                node.userData.sprite = sprite; 
 
                 this.group.add(node);
                 this.nodes.push(node);
@@ -395,11 +354,10 @@ export class IcosahedronScene {
         canvas.height = 64;
         const context = canvas.getContext('2d');
         
-        // Radial Gradient: Blue/White center -> Transparent edge
         const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-        gradient.addColorStop(0, 'rgba(200, 240, 255, 1)'); // Blue-White center
-        gradient.addColorStop(0.4, 'rgba(0, 120, 255, 0.4)'); // Electric Blue mid
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade out
+        gradient.addColorStop(0, 'rgba(200, 240, 255, 1)'); 
+        gradient.addColorStop(0.4, 'rgba(0, 120, 255, 0.4)'); 
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
 
         context.fillStyle = gradient;
         context.fillRect(0, 0, 64, 64);
@@ -414,7 +372,7 @@ export class IcosahedronScene {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
-        this.controls.autoRotate = false; // User controls rotation
+        this.controls.autoRotate = false; 
     }
 
     handleResize() {
@@ -434,131 +392,100 @@ export class IcosahedronScene {
     animate() {
         requestAnimationFrame(this.animate.bind(this));
         
-        // Update controls for damping
         this.controls.update();
 
-        // Calculate Node Glow based on viewport center proximity
         if (this.nodes) {
             const tempV = new THREE.Vector3();
-            // Threshold for "center radius"
             const maxDist = 0.35; 
 
-            // 1. Identify "Active" Candidates (Near Center)
             const candidates = [];
 
             this.nodes.forEach(node => {
-                // Get world position
                 node.getWorldPosition(tempV);
-                
-                // Project to Screen Coordinates (NDC: -1 to 1)
                 tempV.project(this.camera);
 
-                // Calculate radial distance from center (0,0) in X/Y plane only
                 const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
                 
-                // Check if in "hot zone"
                 if (dist < maxDist) {
                     candidates.push({
                         node: node,
                         dist: dist,
-                        z: tempV.z // Depth (NDC)
+                        z: tempV.z 
                     });
                 }
             });
 
-            // 2. Select the ONE best candidate (closest to camera = smallest Z in NDC)
             let bestNode = null;
-            let sphereActiveFactor = 0; // 0 to 1
+            let sphereActiveFactor = 0; 
 
             if (candidates.length > 0) {
-                // Sort by Z (ascending) to find front-most
                 candidates.sort((a, b) => a.z - b.z);
-                
-                // The front-most candidate in the hot zone is the winner
                 bestNode = candidates[0].node;
-                
-                // Calculate Activity Factor for Global Effects (0.0 to 1.0)
                 sphereActiveFactor = Math.max(0, 1.0 - (candidates[0].dist / maxDist));
             }
 
-            // Central Sphere Electrification & Path Animation
             if (this.circuitCurves && this.electrons) {
-                // How "active" is the system?
-                const activityLevel = sphereActiveFactor; // 0 to 1 based on interaction
+                const activityLevel = sphereActiveFactor; 
 
-                // 1. Decay Trace Intensity (Fade out)
+                // Decay Mesh Intensity
                 if (this.circuitMeshes) {
-                    const baseR = 0.04; // Dark Blue R
-                    const baseG = 0.16; // Dark Blue G
-                    const baseB = 0.28; // Dark Blue B
+                    const baseR = 0.04; 
+                    const baseG = 0.16; 
+                    const baseB = 0.28; 
                     
                     this.circuitMeshes.forEach(mesh => {
                         if (mesh.userData.intensity > 0.01) {
-                            mesh.userData.intensity *= 0.92; // Fast decay
+                            mesh.userData.intensity *= 0.92;
                             
-                            // Apply Color
+                            // Emissive approach for MeshStandardMaterial
                             const intensity = mesh.userData.intensity;
-                            const r = baseR + (0.6 - baseR) * intensity; // -> 0.6 (Cyan R)
-                            const g = baseG + (0.9 - baseG) * intensity; // -> 0.9 (Cyan G)
-                            const b = baseB + (1.0 - baseB) * intensity; // -> 1.0 (Cyan B)
+                            const r = baseR + (0.0 - baseR) * intensity;   // -> 0 (Cyan R base)
+                            const g = baseG + (0.5 - baseG) * intensity;   // -> 0.5 (Cyan G mid)
+                            const b = baseB + (1.0 - baseB) * intensity;   // -> 1.0 (Cyan B max)
                             
-                            const colors = mesh.geometry.attributes.color;
-                            for (let i = 0; i < colors.count; i++) {
-                                colors.setXYZ(i, r, g, b);
-                            }
-                            colors.needsUpdate = true;
+                            // Update Emissive Color
+                            mesh.material.emissive.setRGB(r, g, b);
+                            // Also bump brightness via color slightly
+                            mesh.material.color.setRGB(r*0.5, g*0.5, b*0.5);
+
                         } else if (mesh.userData.intensity > 0) {
-                            // Reset to exact base if near zero
                             mesh.userData.intensity = 0;
-                            const colors = mesh.geometry.attributes.color;
-                            for (let i = 0; i < colors.count; i++) {
-                                colors.setXYZ(i, baseR, baseG, baseB);
-                            }
-                            colors.needsUpdate = true;
+                            mesh.material.emissive.setRGB(baseR, baseG, baseB);
                         }
                     });
                 }
 
                 this.electrons.forEach(e => {
-                    // 1. Activate logic
                     if (!e.active) {
                         if (e.delay > 0) {
                             e.delay--;
                         } else {
-                             // Probability to spawn based on activity
-                             // Always some low background activity (0.01)
-                             // High activity when scanning (up to 0.5)
                              if (Math.random() < (0.01 + activityLevel * 0.2)) {
                                  e.active = true;
                                  e.curveIndex = Math.floor(Math.random() * this.circuitCurves.length);
                                  e.t = 0;
-                                 e.speed = 0.01 + Math.random() * 0.02 + (activityLevel * 0.03); // Faster when active
+                                 e.speed = 0.01 + Math.random() * 0.02 + (activityLevel * 0.03); 
                                  e.mesh.visible = true;
                              }
                         }
                     }
 
-                    // 2. Update Position
                     if (e.active) {
-                        // Illuminate the trace we are on
                         if (this.circuitMeshes && this.circuitMeshes[e.curveIndex]) {
                             this.circuitMeshes[e.curveIndex].userData.intensity = 1.0;
                         }
 
                         e.t += e.speed;
                         if (e.t >= 1.0) {
-                            // Reset
                             e.active = false;
                             e.mesh.visible = false;
                             e.delay = Math.random() * 20;
                         } else {
-                            // Move along curve
                             const curve = this.circuitCurves[e.curveIndex];
                             if (curve) {
                                 const pos = curve.getPoint(e.t);
                                 e.mesh.position.copy(pos);
                                 
-                                // Orient Beam along path tangent
                                 const tangent = curve.getTangent(e.t).normalize();
                                 e.mesh.lookAt(pos.clone().add(tangent));
                             }
@@ -567,42 +494,33 @@ export class IcosahedronScene {
                 });
             }
 
-            // 3. Apply States
             this.nodes.forEach(node => {
-                let targetIntensity = 0.2; // Base intensity (not 0)
+                let targetIntensity = 0.2; 
                 let targetScale = 1.0;
                 let targetGlowOpacity = 0;
 
-                // Is this the chosen one?
                 if (node === bestNode) {
-                    // Recalculate dist for intensity ramp
                     node.getWorldPosition(tempV);
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
 
                     const factor = 1 - (dist / maxDist);
-                    // Power curve for bright snap
                     targetIntensity = 0.2 + Math.pow(factor, 2) * 5.0; 
                     targetScale = 1 + (factor * 0.4);
                     targetGlowOpacity = Math.pow(factor, 3);
                 }
 
-                // Apply
                 const sprite = node.userData.sprite;
                 
-                // Lerp for smoothness (cleaner transition)
                 node.material.emissiveIntensity += (targetIntensity - node.material.emissiveIntensity) * 0.1;
                 
                 const currentScale = node.scale.x;
                 const newScale = currentScale + (targetScale - currentScale) * 0.1;
                 node.scale.setScalar(newScale);
 
-                // Halo
                 if (targetGlowOpacity > 0.05) {
                     sprite.visible = true;
-                    // Flash opacity
                     sprite.material.opacity = targetGlowOpacity;
-                    // Stable size (No flicker)
                     sprite.scale.setScalar(0.8 * newScale); 
                 } else {
                     sprite.visible = false;

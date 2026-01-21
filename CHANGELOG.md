@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.935 - 2026-01-21
+- **Design Two Iteration (Circuitry)**:
+  - **Circuitry**: Completely refactored `initCircuitryPaths` in `icosahedron-scene.js`.
+  - **Visual**: Replaced thin lines with `TubeGeometry` (radius 0.003) for physical width.
+  - **Density**: Increased `numChips` from 90 to 150 for denser connections.
+  - **Animation**: Updated material animation to handle `MeshStandardMaterial` emissive pulses instead of basic line colors.
+
 ## v1.934 - 2026-01-21
 - **Design Two Initialization (Low-Poly Sphere) - Retry**:
   - Re-deployment of v1.933 changes due to interruption.
