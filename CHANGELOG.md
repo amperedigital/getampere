@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.972 - 2026-01-21
+- **Design Two Visuals (Pads)**:
+  - **Pad Size**: Increased circuit intersection pads by 50% (`0.0084` -> `0.0126`). This improves the visual connection between segments and hides joints.
+- **Design Two Animation (Continuous Beams)**:
+  - **Logic Overhaul**: Rewrote the electron pulse logic. Instead of jumping to random single wire segments, electrons now lock onto a continuous "Bus Route" (a chain of connected wire segments).
+  - **Traversal**: Electrons travel the full length of a bus (from start to finish, potentially 40+ steps) before fading out.
+  - **360 Movement**: Increased the generated bus length by 200-300% to create long, winding paths that can wrap around the sphere.
+  - **Sync**: Line illumination is now strictly synchronized with the electron's position in the chain. As soon as an electron enters a segment, that specific segment lights up and stays lit until the electron leaves it.
+
 ## v1.971 - 2026-01-21
 - **Design Two Visuals (Pads & Lines)**:
   - **Trace Quality**: Disabled `depthWrite` on circuit lines to fix the "dashed" artifact caused by self-occlusion in the depth buffer.

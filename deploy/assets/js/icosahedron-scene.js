@@ -104,10 +104,11 @@ export class IcosahedronScene {
         this.electrons = [];
         this.fatLines = []; 
         this.paths = []; 
+        this.routes = []; // Store connected paths as routes
         this.pads = []; 
 
         const surfaceRadius = 0.87; 
-        const padGeometry = new THREE.CircleGeometry(0.0084, 8);  
+        const padGeometry = new THREE.CircleGeometry(0.0126, 8); // Increased size by 50%
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
         // REDUCED DENSITY (v1.951 settings)
@@ -117,7 +118,7 @@ export class IcosahedronScene {
         const phiStepSize = Math.PI / PHI_STEPS;
         const thetaStepSize = (Math.PI * 2) / THETA_STEPS;
         
-        const numBuses = 65; 
+        const numBuses = 50; // Slightly fewer buses since they are longer now
         
         // Darker Base color (v1.960 settings)
         const baseColorHex = 0x03121d;
@@ -129,12 +130,17 @@ export class IcosahedronScene {
             let gridTheta = startGridTheta;
             
             const lanes = 1 + Math.floor(Math.random() * 3); 
-            const busSteps = 5 + Math.floor(Math.random() * 15); 
+            // Much longer buses for 360-degree feel (15-40 steps)
+            const busSteps = 15 + Math.floor(Math.random() * 25); 
             
             let dir = Math.random() > 0.5 ? 'H' : 'V'; 
             
             let laneHeads = [];
+            let laneRoutes = []; // Array of arrays to store segments per lane
+
             for (let l = 0; l < lanes; l++) {
+                laneRoutes.push([]); // Init route for this lane
+
                 let lPhi = gridPhi;
                 let lTheta = gridTheta;
                 
@@ -219,12 +225,15 @@ export class IcosahedronScene {
                     this.circuitMeshes.push(line);
                     this.fatLines.push(mat);
 
-                    this.paths.push({
+                    const pathObj = {
                          phiStart: head.phi, thetaStart: head.theta,
                          phiEnd: targetPhi, thetaEnd: targetTheta,
                          radius: surfaceRadius,
                          mesh: line 
-                    });
+                    };
+
+                    this.paths.push(pathObj);
+                    laneRoutes[l].push(pathObj);
 
                     head.phi = targetPhi;
                     head.theta = targetTheta;
@@ -241,6 +250,11 @@ export class IcosahedronScene {
                 
                 dir = (dir === 'H') ? 'V' : 'H';
             }
+
+            // Save connected routes
+            laneRoutes.forEach(route => {
+                if (route.length > 0) this.routes.push(route);
+            });
 
             for(let l=0; l<lanes; l++) {
                  const head = laneHeads[l];
@@ -280,8 +294,9 @@ export class IcosahedronScene {
             
             this.electrons.push({
                 mesh: electron,
-                pathIndex: Math.floor(Math.random() * this.paths.length), 
-                t: Math.random(), 
+                routeIndex: Math.floor(Math.random() * this.routes.length), 
+                segmentIndex: 0,
+                t: 0, 
                 speed: 0,
                 active: false,
                 delay: Math.random() * 60 
@@ -487,27 +502,50 @@ export class IcosahedronScene {
                     } else {
                         if (!e.active) {
                             if (e.delay > 0) e.delay--;
-                            // Electron firing chance reduced significantly (Base 0.0064, Activity Multiplier 0.1 -> 0.05)
+                            // Electron firing chance reduced significantly
                             else if (Math.random() < (0.0064 + activityLevel * 0.05)) {
                                  e.active = true;
-                                 e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                                 // Slower speed: Base 0.01->0.005, Ran 0.03->0.015
-                                 e.t = 0; e.speed = 0.005 + Math.random() * 0.015 + (activityLevel * 0.01); e.mesh.visible = true;
+                                 e.routeIndex = Math.floor(Math.random() * this.routes.length);
+                                 e.segmentIndex = 0;
+                                 e.t = 0; 
+                                 e.speed = 0.005 + Math.random() * 0.015 + (activityLevel * 0.01); 
+                                 e.mesh.visible = true;
                             }
                         }
                         if (e.active) {
-                            const pathId = e.pathIndex;
-                            if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
-                            e.t += e.speed;
-                            if (e.t >= 1.0) { e.active = false; e.mesh.visible = false; e.delay = Math.random() * 30; }
-                            else {
-                                const path = this.paths[pathId];
-                                if (path) {
+                            const currentRoute = this.routes[e.routeIndex];
+                            
+                            if (currentRoute && currentRoute[e.segmentIndex]) {
+                                // Sync Illumination: Keep current segment lit while traversing
+                                const currentSegment = currentRoute[e.segmentIndex];
+                                if (currentSegment.mesh) {
+                                    currentSegment.mesh.userData.intensity = 1.0;
+                                }
+
+                                e.t += e.speed;
+                                
+                                if (e.t >= 1.0) { 
+                                    // Move to next segment in the chain
+                                    e.segmentIndex++;
+                                    e.t = 0;
+                                    
+                                    // If end of chain, reset
+                                    if (e.segmentIndex >= currentRoute.length) {
+                                        e.active = false; 
+                                        e.mesh.visible = false; 
+                                        e.delay = Math.random() * 30; 
+                                    }
+                                } else {
+                                    const path = currentRoute[e.segmentIndex];
                                     const currentPhi = path.phiStart + (path.phiEnd - path.phiStart) * e.t;
                                     const currentTheta = path.thetaStart + (path.thetaEnd - path.thetaStart) * e.t;
                                     const pos = this.getPos(currentPhi, currentTheta, path.radius);
                                     e.mesh.position.copy(pos);
                                 }
+                            } else {
+                                // Safety catch
+                                e.active = false;
+                                e.mesh.visible = false;
                             }
                         }
                     }
