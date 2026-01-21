@@ -87,11 +87,17 @@ export class IcosahedronScene {
 
     addCentralSphere() {
         const geometry = new THREE.SphereGeometry(0.864, 64, 64);
+        
+        const metalTexture = this.createMetalTexture();
+        
         // Metal Material Fix: Much lighter base color and adjusted light response
         const material = new THREE.MeshStandardMaterial({
             color: 0x8899aa,     // Light Steel / Silver
             metalness: 0.6,      // 60% Metal
-            roughness: 0.25,     // Polished but diffusing slightly
+            roughness: 0.4,      // Increased base roughness slightly so the map can vary it
+            roughnessMap: metalTexture, // Texture varies surface smoothness
+            bumpMap: metalTexture,      // Subtle physical detail
+            bumpScale: 0.002,           // Very subtle bumps
             emissive: 0x001122,  // Slight blue emission to prevent crushed blacks
             emissiveIntensity: 0.2
         });
@@ -104,6 +110,54 @@ export class IcosahedronScene {
         // 20% Light Intensity as requested
         const coreLight = new THREE.PointLight(0x0088ff, 0.2, 8);
         this.centralSphere.add(coreLight);
+    }
+
+    createMetalTexture() {
+        const size = 512;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // Fill background
+        ctx.fillStyle = '#808080';
+        ctx.fillRect(0, 0, size, size);
+
+        // Add Noise
+        const imageData = ctx.getImageData(0, 0, size, size);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const noise = (Math.random() - 0.5) * 40; 
+            data[i] = Math.max(0, Math.min(255, data[i] + noise));
+            data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
+            data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+
+        // Scratches
+        const drawScratch = (count, color, alpha) => {
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.lineWidth = 1;
+            for(let i=0; i<count; i++) {
+                 ctx.beginPath();
+                 const x = Math.random() * size;
+                 const y = Math.random() * size;
+                 const len = 10 + Math.random() * 40;
+                 const angle = Math.random() * Math.PI * 2;
+                 ctx.moveTo(x, y);
+                 ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+                 ctx.stroke();
+            }
+        };
+
+        drawScratch(200, '#ffffff', 0.05); // Highlights
+        drawScratch(200, '#000000', 0.05); // Shadows
+
+        const texture = new THREE.CanvasTexture(canvas);
+        return texture;
     }
 
     getPos(phi, theta, r) {

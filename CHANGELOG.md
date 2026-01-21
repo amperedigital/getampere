@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.989 - 2026-01-21
+- **Design Two Visuals (Metal Texture)**:
+  - **Procedural Texture**: Implemented a dynamic Javascript canvas texture generator (`createMetalTexture`) to create a bespoke "scratched metal" surface map.
+  - **Surface Detail**: Applied this new texture to both the `roughnessMap` (creating variation in how shiny different parts of the sphere are) and the `bumpMap` (adding subtle physical imperfections). This transforms the sphere from a smooth plastic-like ball into a realistic machined steel component with scratches, noise, and tactile detail.
+
 ## v1.988 - 2026-01-21
 - **Design Two Visuals (Lighting & Visibility Overhaul)**:
   - **Lighting Setup**: Significantly boosted scene lighting to ensure the metal orb is visible.
