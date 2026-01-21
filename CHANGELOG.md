@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.964 - 2026-01-21
+- **Design Two Geometry (Orientation)**:
+  - **Start Rotation**: Rotated the entire icosahedron group 90 degrees on the X-axis (`Math.PI / 2`).
+  - **Purpose**: Moves the spherical "pole" (where lines converge) away from the camera view, presenting the "flat" side of the lattice and circuitry for a less eye-like, more architectural initial appearance.
+
 ## v1.963 - 2026-01-21
 - **UI Refinement**:
   - **Toggle Label**: Changed static "Lights" label to dynamic "ON / OFF" status text that updates with the switch state.

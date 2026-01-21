@@ -50,6 +50,7 @@ export class IcosahedronScene {
 
     initGeometry() {
         this.group = new THREE.Group();
+        this.group.rotation.x = Math.PI / 2; 
         this.scene.add(this.group);
 
         const radius = 1.5;
