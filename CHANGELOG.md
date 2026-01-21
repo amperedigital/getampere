@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.966 - 2026-01-21
+- **Design Two Tuning**:
+  - **Activity**: Reduced firing probability for both LED nodes (0.06 -> 0.048) and electron pulses (base 0.01 -> 0.008) by 20% to calm the scene.
+  - **Wireframe**: Increased opacity slightly (0.5 -> 0.6) for better structural definition while maintaining transparency.
+
 ## v1.965 - 2026-01-21
 - **Design Two Visuals (Wireframe)**:
   - **Opacity**: Reduced outer lattice wireframe opacity to 50% (`0.5`) and enabled transparency.
