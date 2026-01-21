@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.963 - 2026-01-21
+- **UI Refinement**:
+  - **Toggle Label**: Changed static "Lights" label to dynamic "ON / OFF" status text that updates with the switch state.
+
 ## v1.962 - 2026-01-21
 - **UI & Controls (Enhanced Toggle)**:
   - **Switch UI**: Replaced the simple button with a modern "Slide Toggle" switch for lighting control.

@@ -112,7 +112,7 @@
     <div id="canvas-container"></div>
     <div class="controls-container" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
         <div class="switch-container">
-            <span class="control-label">Lights</span>
+            <span class="control-label" id="status-label">ON</span>
             <label class="switch">
                 <input type="checkbox" id="toggle-lights" checked>
                 <span class="slider"></span>
@@ -130,6 +130,7 @@
 
             document.getElementById('toggle-lights').addEventListener('change', (e) => {
                 scene.toggleLights();
+                document.getElementById('status-label').textContent = e.target.checked ? "ON" : "OFF";
             });
         });
     </script>
