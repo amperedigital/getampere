@@ -1,3 +1,10 @@
+## v2.146
+- **Responsive Design**: Major responsiveness overhaul for Mobile First ("Breathing Room").
+  - **Left Column**: Increased height to `h-[65vh]` (from `50vh`) to provide more vertical canvas.
+  - **Insets**: Doubled mobile container inset to `inset-8` (32px) for maximum breathing room.
+  - **Typography**: Increased padding `p-10 pt-20` to push content well inside the frame. Restored `text-4xl` as spacing now permits.
+  - **Pill**: Repositioned to `top-2 right-10` to correctly straddle the new 32px border margin.
+
 ## v2.145
 - **Responsive Design**: Optimized `tech-demo.html` for mobile devices.
   - Adjusted title sizing (`text-3xl`) and padding (`p-6`) to prevent overlap on small screens.
