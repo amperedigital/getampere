@@ -208,6 +208,7 @@ export class IcosahedronScene {
         };
 
         const onPointerDown = (e) => {
+            this.lastInteractionTime = Date.now(); // Fix: Reset standby timer on UI interaction
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             
             const rect = container.getBoundingClientRect();
@@ -243,6 +244,7 @@ export class IcosahedronScene {
         };
 
         const onPointerUp = () => {
+            this.lastInteractionTime = Date.now();
             if (!isDragging) return;
             isDragging = false;
             snapToNearest();

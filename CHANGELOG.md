@@ -1,3 +1,6 @@
+## v2.108
+- **Fix**: UI button interactions now correctly reset the auto-standby timer (preventing immediate standby after Power Up).
+
 ## v2.107 - 2026-01-21
 - **Mobile UI**:
   - **Restored Controls**: Re-enabled the "Standby | Power Up | Power Down" toggle switch on mobile devices.
