@@ -1,3 +1,8 @@
+## v2.145
+- **Responsive Design**: Optimized `tech-demo.html` for mobile devices.
+  - Adjusted title sizing (`text-3xl`) and padding (`p-6`) to prevent overlap on small screens.
+  - Relocated "Live Demo" pill (`right-6`) on mobile to improve spacing and prevent edge crowding.
+
 ## v2.144
 - **UI Consistency**: Updated both "Live Demo" (`tech-demo.html`) and "System Operational" (`index.html`) pills to use `rounded-full` (standard pill radius) instead of `rounded-xl`, maintaining `p-4` spacing.
 
