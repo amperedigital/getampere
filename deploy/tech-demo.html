@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" type="image/x-icon">
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>Tech Demo | Ampere AI</title>
+    
+    <!-- Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <!-- Tailwind via CDN for quick proto if css not built, but we have styles.css -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#151b2e' }
+                    },
+                    fontFamily: {
+                        mono: ['Geist Mono', 'monospace'],
+                        sans: ['Geist', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#05060f] text-white overflow-hidden">
+
+    <div class="flex flex-col lg:flex-row h-screen w-full relative">
+        
+        <!-- Left Column: 3D Scene -->
+        <div class="relative w-full lg:w-1/2 h-[50vh] lg:h-full bg-black/20 border-b lg:border-b-0 lg:border-r border-white/10">
+            <!-- Scene Container -->
+            <!-- Note: overflow-hidden is crucial for canvas containment -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div id="tech-demo-scene" 
+                     class="w-full h-full"
+                     data-standby-timeout="120"
+                     data-standby-warning="30"
+                     data-auto-recenter="2.5"
+                     data-lerp-speed="0.015"
+                     data-min-velocity="0.0025"
+                     data-rotation-rpm="0.17"></div>
+            </div>
+                 
+             <!-- Overlay Hint -->
+             <div class="absolute bottom-6 left-0 w-full text-center pointer-events-none z-10 text-[10px] font-mono tracking-[0.2em] text-blue-200/40 uppercase">
+                 Interactive Visualization v2.130
+             </div>
+        </div>
+
+        <!-- Right Column: Content -->
+        <div class="relative w-full lg:w-1/2 h-[50vh] lg:h-full flex items-center justify-center bg-[#05060f] z-10">
+            
+            <div class="w-full max-w-lg p-8 lg:p-16 flex flex-col justify-center h-full">
+                <!-- Header -->
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono mb-6">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                        LIVE DEMO
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4">
+                        Neural <span class="block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
+                    </h1>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-md">
+                        Explore the autonomous decision-making core of Ampere AI. Touch to interact, observe power states, and monitor real-time node activation.
+                    </p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-8">
+                    <div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Status</div>
+                        <div class="text-xl font-mono text-white">ONLINE</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Nodes</div>
+                        <div class="text-xl font-mono text-white">ACTIVE</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">RPM</div>
+                        <div class="text-xl font-mono text-white">0.17</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Latency</div>
+                        <div class="text-xl font-mono text-green-400">12ms</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <!-- Init Script -->
+    <script type="module">
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.130';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tech-demo-scene');
+            if(container) {
+                // Initialize Scene
+                console.log('Initializing Tech Demo...');
+                const scene = new IcosahedronScene(container);
+                
+                // Optional: Expose to window for debugging
+                window.demoScene = scene;
+            }
+        });
+    </script>
+</body>
+</html>
