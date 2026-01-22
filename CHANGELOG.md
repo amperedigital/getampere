@@ -1,4 +1,4 @@
-## v2.125
+## v2.126
 - **Physics**: Implemented "Minimum Velocity" logic for system state transitions. The animation now switches from exponential easing to linear movement at the tail end, ensuring the "Power Up" sequence maintains momentum past 80% and hits 100% cleanly without stalling.
 - **Physics**: Increased base animation transition speed (`lerpSpeed` 0.005 -> 0.015).
 
