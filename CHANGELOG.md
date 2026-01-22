@@ -1,3 +1,9 @@
+## v2.105 - 2026-01-21
+- **Mobile UI Overhaul**:
+  - **Removed Button UI**: Hidden the "Standby | Power Up | Power Down" toggle switch on mobile devices (<600px) to maximize screen real estate for the 3D model.
+  - **Enhanced Instructions**: Updated the overlay text on mobile to explicitly explain the new gesture controls: `Single Tap: Power Up • Double Tap: Power Down`.
+  - **Layout**: Adjusted mobile instruction font sizing and line-height to accommodate the multi-line explanation cleanly.
+
 ## v2.104 - 2026-01-21
 - **Mobile Gestures & Power Management**:
   - **Tap Controls**: Implemented touch gestures for state control on mobile devices.

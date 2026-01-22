@@ -63,8 +63,10 @@
         @media (max-width: 600px) {
             .instruction-overlay {
                 bottom: 30px;
-                font-size: 10px;
+                font-size: 9px;
                 letter-spacing: 1px;
+                white-space: normal;
+                line-height: 1.6;
             }
         }
         
@@ -82,7 +84,7 @@
     <div id="canvas-container"></div>
     <div class="instruction-overlay">
         <span class="desktop-text">Drag to Rotate • Scroll to Zoom</span>
-        <span class="mobile-text">Drag to Rotate • Pinch to Zoom</span>
+        <span class="mobile-text">Drag to Rotate • Pinch to Zoom<br>Single Tap: Power Up • Double Tap: Power Down</span>
     </div>
 
     <script type="module">

@@ -94,9 +94,7 @@ export class IcosahedronScene {
                 /* Mobile Overrides */
                 @media (max-width: 600px) {
                     #ampere-ui-track {
-                        bottom: 90px;
-                        width: calc(100% - 48px); /* 24px margins */
-                        max-width: 360px;
+                        display: none !important;
                     }
                     .ampere-ui-label {
                         font-size: 10px;
