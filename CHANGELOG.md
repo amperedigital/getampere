@@ -1,3 +1,6 @@
+## v2.128
+- **UI Text**: Updated the power-down status text from "POWER OFF XX%" to "POWER XX%" to be more semantically consistent with a draining percentage.
+
 ## v2.127
 - **UI Mobile**: Fixed layout issue where the "AI ONLINE" status gauge and "Power Up" graphics were obscured by the control buttons. Moved the gauge position up (`bottom: 155px`) to ensure clear separation and visibility above the UI track.
 

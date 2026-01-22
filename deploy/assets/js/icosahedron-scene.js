@@ -1197,7 +1197,7 @@ export class IcosahedronScene {
                              }
                          } else {
                              // Powering Down / Standby Transition
-                             this.uiStatusText.innerText = `POWER OFF ${pct}%`;
+                             this.uiStatusText.innerText = `POWER ${pct}%`;
                              this.uiStatusText.style.textShadow = 'none';
                          }
                      }
