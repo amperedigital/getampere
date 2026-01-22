@@ -1,3 +1,9 @@
+## v2.107 - 2026-01-21
+- **Mobile UI**:
+  - **Restored Controls**: Re-enabled the "Standby | Power Up | Power Down" toggle switch on mobile devices.
+  - **Choice Architecture**: Users can now choose to interact via the tactile UI buttons OR the invisible gesture controls (Single/Double Tap).
+  - **Layout**: Positioned the controls (`bottom: 90px`) to float cleanly above the updated instruction text.
+
 ## v2.106 - 2026-01-21
 - **Mobile Centering Fix**:
   - **View Offset**: Implemented `camera.setViewOffset()` on mobile devices to shift the viewport rendering downwards by 12%. This visually raises the 3D Orb towards the top of the screen (clearing the bottom area) **without** moving the camera pivot or rotation center.
