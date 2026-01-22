@@ -1,3 +1,7 @@
+## v2.125
+- **Physics**: Increased animation transition speed (`lerpSpeed` 0.005 -> 0.015) to eliminate the "slow tail" or perceived stutter at the end of power-up.
+- **Physics**: Added snap-to-target logic in the main animation loop to strictly finish transitions when within 1% of target, preventing asymptotic stalling.
+
 ## v2.124
 - **UI Status Gauge**: Implemented "Power Down" visualization. Gague now remains visible during shutdown, tracking power from 100% to 0% ("POWER OFF XX%").
 - **Logic**: Decoupled gauge visibility from system state, allowing it to display during any intense activity (startup or shutdown).

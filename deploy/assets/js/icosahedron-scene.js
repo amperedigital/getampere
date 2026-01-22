@@ -407,8 +407,8 @@ export class IcosahedronScene {
 
     setSystemState(newState) {
         // Determine transition speed based on target state
-        // Constant slow speed (0.005) for smooth on AND off ramps
-        this.lerpSpeed = 0.005;
+        // Improved speed (0.015) to prevent "stuttering end" feeling
+        this.lerpSpeed = 0.015;
 
         this.systemState = newState;
 
@@ -1220,7 +1220,13 @@ export class IcosahedronScene {
             
             // Lerp Simulation Intensity
             if (this.targetSimIntensity !== undefined) {
-                 this.simIntensity += (this.targetSimIntensity - this.simIntensity) * lerpFactor;
+                 const diff = this.targetSimIntensity - this.simIntensity;
+                 // Snap if close to target to avoid infinite tail
+                 if (Math.abs(diff) < 0.01) {
+                     this.simIntensity = this.targetSimIntensity;
+                 } else {
+                     this.simIntensity += diff * lerpFactor;
+                 }
             } else {
                  this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
             }
