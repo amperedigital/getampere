@@ -1,3 +1,6 @@
+## v2.133
+- **Assets**: Refreshed the actual favicon image files in `deploy/favicon/` with updated versions provided by the user.
+
 ## v2.132
 - **Assets**: Updated favicon links across all deployment pages (`index.html`, `tech-demo.html`, `icosahedron.html`, etc.) to point to the new `/favicon/` directory structure, ensuring consistent icons across devices (SVG, PNG 96x96, Apple Touch Icon).
 
