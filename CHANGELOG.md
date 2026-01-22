@@ -1,3 +1,7 @@
+## v2.159
+- **UI Refinement**:
+  - **Breadcrumb Visibility**: Changed the breadcrumb slash separators (`/`) from Slate-700 to **Blue-400** to match the "V-Amp 2.0" label and improve visibility against the dark background.
+
 ## v2.158
 - **UI Refinement**:
   - **Breadcrumb Formatting**: Added a leading slash to the breadcrumb navigation (`/ Visualization / V-Amp 2.0`) as per user request.
