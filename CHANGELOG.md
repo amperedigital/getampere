@@ -1,3 +1,6 @@
+## v2.113
+- **Physics**: Reduced maximum rotation speed by 50% for a smoother, more deliberate motion.
+
 ## v2.112
 - **UI Colors**: Updated Control Bar themes to match state:
   - **Power Up**: Green (#00ff88) text and indicator.

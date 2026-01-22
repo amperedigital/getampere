@@ -1103,9 +1103,9 @@ export class IcosahedronScene {
 
         // --- ROTATION LOGIC ---
         if (this.centralSphere) {
-             // Target Speed: 0.5 Rev Per Second (Power-Up State)
-             // Reduced from 1.0 per user request for a more "gentle curve".
-             const baseSpeed = (Math.PI * 2) / 120; // 60fps * 2s = 120 frames per rev
+             // Target Speed: 0.25 Rev Per Second (Power-Up State)
+             // Reduced to half speed per user request (v2.113)
+             const baseSpeed = (Math.PI * 2) / 240; // 60fps * 4s = 240 frames per rev
              const currentSpeed = baseSpeed * this.simIntensity;
              
              // Rotation Axis: World Y (Vertical Spin)
