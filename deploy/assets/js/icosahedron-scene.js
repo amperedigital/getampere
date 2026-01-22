@@ -195,7 +195,7 @@ export class IcosahedronScene {
                 }
                 @media (max-width: 600px) {
                     #ampere-system-status {
-                         bottom: 75px; 
+                         bottom: 155px; /* Moved above track (90px + 48px height + gap) */
                     }
                 }
                 @media (min-width: 601px) {
