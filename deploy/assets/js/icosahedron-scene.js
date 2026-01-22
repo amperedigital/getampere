@@ -724,7 +724,8 @@ export class IcosahedronScene {
         this.controls.autoRotate = false;
         
         // Ensure Touch Actions are allowed by OrbitControls (even if we manually handle zoom)
-        this.controls.enableRotate = true; 
+        this.controls.enableRotate = true;
+        this.controls.enablePan = false; // Disable Panning (Right Click / 2-Finger Drag) to keep object centered
         
         // FORCE CSS to allow touch handling
         this.renderer.domElement.style.touchAction = 'none';
@@ -882,11 +883,6 @@ export class IcosahedronScene {
              let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
 
              if (this.isMobile) {
-                 // Mobile: Shift center DOWN so object appears HIGHER (clearing the UI)
-                 const mobileShiftY = -0.8; 
-                 targetLookAt.set(0, mobileShiftY, 0);
-                 targetCamPos.y += mobileShiftY; 
-                 
                  // Adjust Z based on aspect ratio to prevent side clipping
                  // As width gets narrower relative to height, we must move back.
                  // Base aspect is approx 1.7 (16:9 landscape). Mobile is 0.5 (9:16 portrait).

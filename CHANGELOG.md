@@ -1,3 +1,8 @@
+## v2.103 - 2026-01-21
+- **Mobile Experience Corrective**:
+  - **Fixed Stationary Position**: Removed the experimental "Vertical Offset" (-0.8Y) on mobile. While this was intended to clear the UI, it caused the object to "swing" during vertical rotation because the pivot point was offset from the object center. The object now rotates perfectly around its own axis (0,0,0) and stays visually stationary.
+  - **Disabled Panning**: Explicitly set `controls.enablePan = false`. This prevents 2-finger drag or sloppy inputs from accidentally shifting the object off-screen.
+
 ## v2.102 - 2026-01-21
 - **Mobile Experience Tune**:
   - **Disable Mobile Scroll Zoom**: Explicitly disabled the `wheel` event listener on mobile devices. This prevents browser momentum scrolling (or single-finger drag interactions mapped to scroll) from triggering the camera zoom.
