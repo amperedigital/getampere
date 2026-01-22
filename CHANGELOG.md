@@ -1,6 +1,10 @@
+## v2.157
+- **Deployment Sync**: Forced redeploy to ensure breadcrumb visualization (`Visualization / V-Amp 2.0`) is propagated to all edges.
+- **Reference**: Confirmed single slash separator `/` preference for breadcrumb standard.
+
 ## v2.156
 - **UI Polish**:
-  - **Breadcrumb Added**: Replaced the "Interactive Visualization" footer text with a structured breadcrumb in the header (`Visualization / V-Amp 2.0`).
+  - **Breadcrumb Added**: Replaced the "Interactive Visualization" footer text with a structure breadcrumb in the header (`Visualization / V-Amp 2.0`).
   - **Versioning**: Updated version label to "V-Amp 2.0" (Blue/Glow) to match the new branding.
   - **Cleanup**: Removed the old centered footer label from the desktop view.
 
