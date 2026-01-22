@@ -1,3 +1,9 @@
+## v2.150
+- **Mobile Layout Optimization**:
+  - Reduced horizontal container padding to `1rem` (was `2rem`) to maximize screen real estate (`left-4`, `right-4`, `p-4`).
+  - Refined "Live Demo" pill padding to be skinnier (`px-4 py-2`).
+- **Design Principles**: Applied "Maximize Utility" rule for mobile contexts.
+
 ## v2.149
 - **Responsive Design**: Mobile layout optimization.
   - **Copy**: Removed hyphen from "decision making" in the tech demo blurb.
