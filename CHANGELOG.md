@@ -1,3 +1,6 @@
+## v2.144
+- **UI Consistency**: Updated both "Live Demo" (`tech-demo.html`) and "System Operational" (`index.html`) pills to use `rounded-full` (standard pill radius) instead of `rounded-xl`, maintaining `p-4` spacing.
+
 ## v2.143
 - **Tech Demo Layout**: Adjusted "Live Demo" pill right alignment (`lg:right-20`, `right-12`) to align with flattened border sections, avoiding corner radius curvature.
 
