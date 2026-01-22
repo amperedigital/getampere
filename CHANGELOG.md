@@ -1,3 +1,11 @@
+## v2.147
+- **Responsive Design**: Continued refinement of `tech-demo.html` based on design directives.
+  - **Vertical Canvas**: Increased mobile scene height to `h-[80vh]` for maximum screen real estate.
+  - **Bezel Layout**: Adjusted mobile container inset (`bottom-24`) to create a black "bezel" area at the bottom.
+  - **Typography**: Moved "Interactive Visualization" text to `bottom-10`, placing it cleanly in the bezel area, outside the rounded scene container (no overlap).
+  - **Neural Net Spacing**: Increased `data-camera-distance` to `9.5` to provide substantial lateral breathing room for the sphere.
+  - **Controls**: Pushed "Standby/Power" buttons down (`bottom: 40px`) via injected CSS update in `icosahedron-scene.js`.
+
 ## v2.146
 - **Responsive Design**: Major responsiveness overhaul for Mobile First ("Breathing Room").
   - **Left Column**: Increased height to `h-[65vh]` (from `50vh`) to provide more vertical canvas.

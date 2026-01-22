@@ -164,12 +164,12 @@ export class IcosahedronScene {
                 /* Mobile Overrides */
                 @media (max-width: 600px) {
                     #ampere-ui-track {
-                        bottom: 90px;
+                        bottom: 40px; /* Pushed down for better spacing */
                         width: calc(100% - 48px); /* 24px margins */
                         max-width: 360px;
                     }
                     #ampere-standby-warning {
-                        bottom: 65px; /* Adjust for mobile layout */
+                        bottom: 15px; /* Adjust for lower track */
                     }
                     .ampere-ui-label {
                         font-size: 10px;
@@ -226,7 +226,7 @@ export class IcosahedronScene {
                 }
                 @media (max-width: 600px) {
                     #ampere-system-status {
-                         bottom: 155px; /* Moved above track (90px + 48px height + gap) */
+                         bottom: 105px; /* Moved above track (40px + 48px height + gap) */
                     }
                 }
                 @media (min-width: 601px) {
