@@ -535,7 +535,7 @@ export class IcosahedronScene {
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         
         // Mobile Override: Zoom out for containment
-        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.5 : this.config.cameraDistance;
+        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
@@ -1083,6 +1083,8 @@ export class IcosahedronScene {
             this.isMobile = (this.width <= 600);
 
             this.camera.aspect = this.width / this.height;
+            // Update Camera Z on Resize (Responsive Zoom)
+            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);

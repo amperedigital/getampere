@@ -1,3 +1,10 @@
+## v2.153
+- **Responsive Design Fixes**:
+  - **Desktop 3D Scaling**: Reduced base `data-camera-distance` to `6.0` (was 9.5) to "maximize" the neural net size on desktop (closer camera).
+  - **Mobile 3D Scaling**: Updated `icosahedron-scene.js` with a higher zoom multiplier (1.6x) for mobile to compensate for the closer base distance (Net effective distance: 9.6).
+  - **Desktop Pill Alignment**: Adjusted "Live Demo" pill desktop position to `lg:right-12` (was `lg:right-20`) to perfectly align with the content container's `lg:inset-12` right edge.
+  - **Responsive Logic**: Added `camera.position.z` recalculation to `onWindowResize` event to handle live resizing correctly.
+
 ## v2.152
 - **Typography Fix**: Removed `text-transform: uppercase` from the standby warning CSS inject.
   - Ensures the unit "s" (seconds) appears as lowercase (e.g., "STANDBY IN 30s") instead of "30S".
