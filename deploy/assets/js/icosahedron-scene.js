@@ -1221,11 +1221,28 @@ export class IcosahedronScene {
             // Lerp Simulation Intensity
             if (this.targetSimIntensity !== undefined) {
                  const diff = this.targetSimIntensity - this.simIntensity;
-                 // Snap if close to target to avoid infinite tail
-                 if (Math.abs(diff) < 0.01) {
+                 
+                 // Snap if very close
+                 if (Math.abs(diff) < 0.005) {
                      this.simIntensity = this.targetSimIntensity;
                  } else {
-                     this.simIntensity += diff * lerpFactor;
+                     let step = diff * lerpFactor;
+                     
+                     // Minimum Velocity Enforcement
+                     // Prevents "stalling" or "losing steam" at the tail of the curve (80%+)
+                     // Ensure we move at least 0.0025 per frame (approx 15% per second)
+                     const minStep = 0.0025;
+                     if (Math.abs(step) < minStep) {
+                         step = (diff > 0) ? minStep : -minStep;
+                     }
+                     
+                     this.simIntensity += step;
+                     
+                     // Clamp to prevent overshoot due to minStep
+                     if ((step > 0 && this.simIntensity > this.targetSimIntensity) ||
+                         (step < 0 && this.simIntensity < this.targetSimIntensity)) {
+                         this.simIntensity = this.targetSimIntensity;
+                     }
                  }
             } else {
                  this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
