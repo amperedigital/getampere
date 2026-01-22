@@ -1,3 +1,8 @@
+## v2.148
+- **Mobile Responsiveness**: Implemented dynamic camera zoom logic in `icosahedron-scene.js`.
+  - Automatically multiplies `cameraDistance` by 1.5x on mobile devices (`width <= 600px`).
+  - Ensures the neural network sphere is fully contained within the padded area, preventing overlap with UI elements.
+
 ## v2.147
 - **Responsive Design**: Continued refinement of `tech-demo.html` based on design directives.
   - **Vertical Canvas**: Increased mobile scene height to `h-[80vh]` for maximum screen real estate.

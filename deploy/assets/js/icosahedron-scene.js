@@ -533,7 +533,9 @@ export class IcosahedronScene {
         this.scene.background = new THREE.Color(0x05060f); 
 
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
-        this.camera.position.z = this.config.cameraDistance;
+        
+        // Mobile Override: Zoom out for containment
+        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.5 : this.config.cameraDistance;
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
