@@ -5,7 +5,15 @@
 - **Mandatory Workaround**: You **MUST** use terminal commands (`cat`, `sed`, `rm`, `echo`, heredocs) to read or write to `deploy/assets/js/tab-flipper.js`.
   - **Reading**: Use `cat deploy/assets/js/tab-flipper.js`.
   - **Writing**: Use `cat << 'EOF' > deploy/assets/js/tab-flipper.js` (ensure you `rm` the file first if overwriting completely to be safe).
+  - **Formatting**: When using `cat << 'EOF'`, do **NOT** escape backticks or template literals (`${}`) in the content. The single quotes around 'EOF' prevent shell expansion. Unnecessary escaping will break the code.
   - **Do NOT** use the standard edit tools for this file.
+- **Safe Editing Tools**:
+  - **Structure/Blocks**: Use `python3 scripts/safe_replace_html.py "file" "target_id" "content"` when replacing entire HTML elements with IDs. This guarantees tag balance.
+  - **Surgical/Text**: Use `python3 scripts/smart_replace.py "file" "old.txt" "new.txt"` for edits without IDs. This prevents accidental mass deletion (safety tripwire > 15 lines).
+  - **Standard**: Use `replace_string_in_file` ONLY for small, unique changes < 5 lines.
+
+- **Tool Priorities**:
+  - **Searching**: Always prefer the `grep_search` tool over running `grep` manually in the terminal. The tool provides better structured output and is less prone to shell escaping errors.
 
 ## Deployment Workflow (Strict)
 - **Source of Truth**: The `deploy/` folder is the only source for deployment.
@@ -21,3 +29,18 @@
 ## General Rules
 - **MANDATORY**: You MUST read the file `context.md` at the very beginning of every session to understand the project architecture and rules. Do not proceed without reading it.
 - **NO TOUCHING**: Never modify or retag files that you have not explicitly edited.
+- **CONTENT PRESERVATION**: NEVER change content (text, copy, headings) given by the user unless explicitly requested. If you are refactoring code, you MUST preserve the original text exactly.
+
+## Code Quality & Architecture (Strict)
+- **NO INLINE SCRIPTS**: Do NOT add `<script>...</script>` blocks with logic to HTML files. All logic must reside in `global.js` or dedicated module files (e.g., `hero-slider.js`).
+- **DRY PRINCIPLE**: Before adding new listeners (IntersectionObserver, Scroll, Click), check `global.js`. Extend existing observers rather than creating duplicates.
+- **NO SHOTGUN APPROACH**: Do not "guess" or add redundant fixes. Analyze the existing `global.js` or component logic first. If a feature exists globally, use it.
+- **MODULARITY**: Features should be modular. If you are creating a new component, it should likely be a new ES module in `deploy/assets/js/` that is imported or lazy-loaded, not dumped into `index.html`.
+
+## Design Guidelines (Directive)
+- **Room to Breathe**: All UI layouts (especially headers, hero sections, and cards) MUST have substantial internal padding. Never "jam" content against container edges. Elements should frame the content, not suffocate it.
+- **Responsive Insets**:
+  - **Mobile**: Use meaningful insets (e.g., `inset-8` or `p-8`) to distinguish content from the device bezel.
+  - **Desktop**: Scale up proportionally (e.g., `inset-12`).
+  - **Avoid**: Small padding values like `p-2` or `p-4` for major layout containers.
+- **Pill Alignment**: Status pills/badges must consciously align with their parent container's geometry (e.g., straddling a border) or have clear, intentional white space. Avoid ambiguous placement.
