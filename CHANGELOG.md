@@ -1,3 +1,9 @@
+## v2.151
+- **Mobile Layout Polish**:
+  - Restored internal text padding to `p-8` (was reduced to `p-4` in v2.150) to fix "jammed text" issue while keeping the 1rem outer container margin.
+  - Ensures text has "room to breathe" (approx 1rem visual padding inside the scene border).
+  - Maintained skinnier "Live Demo" pill (`py-2`).
+
 ## v2.150
 - **Mobile Layout Optimization**:
   - Reduced horizontal container padding to `1rem` (was `2rem`) to maximize screen real estate (`left-4`, `right-4`, `p-4`).
