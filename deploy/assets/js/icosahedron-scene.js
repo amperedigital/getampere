@@ -331,31 +331,42 @@ export class IcosahedronScene {
             
             // Update Thumb Styling (Optional: Change color based on state?)
             if (newState === 'ACTIVE') {
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(0, 80, 150, 0.9), rgba(0, 60, 120, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(0, 170, 255, 0.3)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(0, 170, 255, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)';
+                 // Green Theme
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(0, 100, 60, 0.9), rgba(0, 80, 40, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(0, 255, 136, 0.3)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)';
             } else if (newState === 'STANDBY') {
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(255, 255, 255, 0.15)';
-                 this.uiThumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
+                 // Yellow Theme
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(100, 80, 0, 0.9), rgba(80, 60, 0, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(255, 204, 0, 0.3)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(255, 204, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.15)';
             } else {
-                 // OFF
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(20, 20, 25, 0.9), rgba(10, 10, 15, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(255, 255, 255, 0.05)';
-                 this.uiThumb.style.boxShadow = 'none';
+                 // Red Theme (OFF)
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(80, 20, 20, 0.9), rgba(60, 10, 10, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(255, 68, 68, 0.3)';
+                 this.uiThumb.style.boxShadow = '0 0 12px rgba(255, 68, 68, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)';
             }
 
             // Update Labels
             labels.forEach(l => {
-                if (l.getAttribute('data-id') === newState) {
-                    l.style.color = '#ffffff'; 
-                    l.style.textShadow = '0 0 8px rgba(0, 170, 255, 0.6)';
+                const id = l.getAttribute('data-id');
+                if (id === newState) {
+                    if (id === 'ACTIVE') {
+                        l.style.color = '#00ff88'; // Green
+                        l.style.textShadow = '0 0 8px rgba(0, 255, 136, 0.6)';
+                    } else if (id === 'STANDBY') {
+                         l.style.color = '#ffcc00'; // Yellow
+                         l.style.textShadow = '0 0 8px rgba(255, 204, 0, 0.6)';
+                    } else {
+                         l.style.color = '#ff4444'; // Red
+                         l.style.textShadow = '0 0 8px rgba(255, 68, 68, 0.6)';
+                    }
                 } else {
-                    l.style.color = '#555'; // Dim others
+                    l.style.color = '#666'; // Dim others (Light Gray)
                     l.style.textShadow = 'none';
                 }
             });
-        } 
+        }  
         
         // Logic continues...
         if (newState === 'ACTIVE') {

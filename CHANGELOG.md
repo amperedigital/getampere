@@ -1,3 +1,10 @@
+## v2.112
+- **UI Colors**: Updated Control Bar themes to match state:
+  - **Power Up**: Green (#00ff88) text and indicator.
+  - **Power Down**: Red (#ff4444) text and indicator.
+  - **Standby**: Yellow (#ffcc00) text and indicator.
+- **UI**: Inactive states are now Light Gray.
+
 ## v2.111
 - **UI**: Added "Digital Dot" indicators next to UI labels to improve visual balance.
 - **UI**: Reduced Standby Warning to simple text (no pill background) and positioned it unobtrusively above instructions.
