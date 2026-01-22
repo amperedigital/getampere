@@ -1,3 +1,8 @@
+## v2.109
+- **Feature**: Increased Auto-Standby timer to 2 minutes (120s).
+- **Feature**: Added visual "STANDBY IN Xs" countdown warning during the last 10 seconds of inactivity.
+- **Fix**: Standby countdown is aborted immediately on user interaction or state change.
+
 ## v2.108
 - **Fix**: UI button interactions now correctly reset the auto-standby timer (preventing immediate standby after Power Up).
 

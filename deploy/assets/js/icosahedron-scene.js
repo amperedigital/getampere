@@ -103,6 +103,30 @@ export class IcosahedronScene {
                         letter-spacing: 0px;
                     }
                 }
+                
+                #ampere-standby-warning {
+                    position: absolute;
+                    bottom: 140px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 8px 16px;
+                    background: rgba(10, 5, 0, 0.85);
+                    border: 1px solid rgba(255, 100, 50, 0.4);
+                    border-radius: 20px;
+                    color: #ffaa80;
+                    font-family: monospace;
+                    font-size: 13px;
+                    font-weight: 600;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 0.5s ease;
+                    z-index: 999;
+                    white-space: nowrap;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                    text-shadow: 0 0 10px rgba(255, 60, 0, 0.3);
+                }
             `;
             document.head.appendChild(style);
         }
@@ -150,6 +174,13 @@ export class IcosahedronScene {
 
         container.insertBefore(thumb, container.firstChild);
         this.container.appendChild(container);
+
+        // --- Standby Warning UI ---
+        const warning = document.createElement('div');
+        this.standbyWarning = warning;
+        warning.id = 'ampere-standby-warning';
+        warning.innerText = 'STANDBY IN 10s';
+        this.container.appendChild(warning);
 
         // --- Helper: Update Thumb Size ---
         const updateThumbSize = () => {
@@ -960,10 +991,31 @@ export class IcosahedronScene {
                  this.controls.target.lerp(targetLookAt, lerpSpeed);
             }
             
-            // 2. Auto-Standby Mode (10s)
-            // If currently ACTIVE and idle for 10s, drift to STANDBY
-            if (this.systemState === 'ACTIVE' && timeSinceInteraction > 10000) {
-                 this.setSystemState('STANDBY');
+            // 2. Auto-Standby Mode (2 Minutes = 120s)
+            // If currently ACTIVE and idle for 120s, drift to STANDBY
+            // Warn at 110s (10s countdown)
+            
+            const standbyTimeout = 120000;
+            const warningStart = standbyTimeout - 10000; 
+
+            if (this.systemState === 'ACTIVE') {
+                 if (timeSinceInteraction > standbyTimeout) {
+                     this.setSystemState('STANDBY');
+                     if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
+                 } else if (timeSinceInteraction > warningStart) {
+                     // Show Warning Countdown
+                     const remaining = Math.ceil((standbyTimeout - timeSinceInteraction) / 1000);
+                     if (this.standbyWarning) {
+                         this.standbyWarning.style.opacity = '1';
+                         this.standbyWarning.innerText = `STANDBY IN ${remaining}s`;
+                     }
+                 } else {
+                     // Clear Warning
+                     if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
+                 }
+            } else {
+                 // Not Active (OFF or already STANDBY) - Hide Warning
+                 if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
             }
         }
 
