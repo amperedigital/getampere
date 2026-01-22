@@ -67,7 +67,12 @@ export class IcosahedronScene {
                 }
                 .ampere-ui-label {
                     flex: 1;
-                    text-align: center;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
                     font-family: monospace;
                     font-size: 12px;
                     letter-spacing: 1px;

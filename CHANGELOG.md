@@ -1,3 +1,6 @@
+## v2.110
+- **UI Polish**: Switched UI label centering to Flexbox to fix slight horizontal misalignment on mobile.
+
 ## v2.109
 - **Feature**: Increased Auto-Standby timer to 2 minutes (120s).
 - **Feature**: Added visual "STANDBY IN Xs" countdown warning during the last 10 seconds of inactivity.
