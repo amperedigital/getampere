@@ -472,6 +472,10 @@ python3 scripts/smart_replace.py "deploy/index.html" "old_snippet.txt" "new_snip
 - **Implementation**: When refactoring a jammed UI, **double** the current padding first, then adjust.
 
 ### Pill & Badge Placement
-- **Straddle**: If a pill sits on a border, it should mathematically center on that line (e.g., `top-0` relative to a pushed-down padding).
-- **Tab**: If acting as a tab, it flush-aligns with the border but respects corner radii.
+- **Responsive Straddle Pattern (Canonical)**:
+  - **Mobile**: Center strictly (`left-1/2 -translate-x-1/2` top `4`).
+  - **Desktop**: Align to the container "frame" but **bisect the border**.
+    - If container is `inset-12` (top 3rem), the pill MUST be `top-12 -translate-y-1/2`.
+    - **Horizontal**: Do NOT flush align. Inset it further (e.g., `right-20` if container is `right-12`) to create visual depth.
+- **Styling**: `rounded-full`, `px-4 py-2` (Standard Skinny), `backdrop-blur`.
 - **Shape**: Use `rounded-full` for pills unless explicitly designing a square-tech aesthetic. Maintain `tracking-widest` for system labels.

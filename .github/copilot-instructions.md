@@ -43,4 +43,8 @@
   - **Mobile**: Use meaningful insets (e.g., `inset-8` or `p-8`) to distinguish content from the device bezel.
   - **Desktop**: Scale up proportionally (e.g., `inset-12`).
   - **Avoid**: Small padding values like `p-2` or `p-4` for major layout containers.
-- **Pill Alignment**: Status pills/badges must consciously align with their parent container's geometry (e.g., straddling a border) or have clear, intentional white space. Avoid ambiguous placement.
+- **Pill Alignment (Strict)**:
+  - **Mobile**: Center horizontally (`left-1/2 -translate-x-1/2`).
+  - **Desktop**: "Straddle" the container border.
+    - Vertical: EXACT center on line (`top-[inset] -translate-y-1/2`).
+    - Horizontal: Inset from edge (`right-[inset + 2rem]`). NEVER flush align.
