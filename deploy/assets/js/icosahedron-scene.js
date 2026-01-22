@@ -285,17 +285,6 @@ export class IcosahedronScene {
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             
             const rect = container.getBoundingClientRect();
-                if (targetId) {
-                    // Restore transition for smooth slide
-                    thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-                    this.setSystemState(targetId);
-                    return; // Skip drag logic
-                }
-            }
-
-            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            
-            const rect = container.getBoundingClientRect();
             const trackWidth = rect.width;
             const thumbW = (trackWidth - (padding * 2)) / 3;
 

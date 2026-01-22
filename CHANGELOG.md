@@ -1,3 +1,7 @@
+## v2.117
+- **Critical Fix**: Resolved syntax error ('Unexpected identifier') in `onPointerDown` caused by corrupted merge in v2.116.
+- **UI Interaction**: Ensured label click logic is clean and duplication-free.
+
 ## v2.116
 - **Physics**: Reversed Outer Sphere rotation direction and reduced speed to 30% of core speed.
 - **Layout (Desktop)**: Applied vertical camera offset (8% height) to lift the object up, increasing visual gap between object and UI buttons.
