@@ -1,3 +1,8 @@
+## v2.102 - 2026-01-21
+- **Mobile Experience Tune**:
+  - **Disable Mobile Scroll Zoom**: Explicitly disabled the `wheel` event listener on mobile devices. This prevents browser momentum scrolling (or single-finger drag interactions mapped to scroll) from triggering the camera zoom.
+  - **Strict Pinch Logic**: Hardened the pinch-to-zoom logic to strictly require exactly 2 touches, resetting immediately if the touch count changes, to prevent accidental zooms during rotation.
+
 ## v2.101 - 2026-01-21
 - **Deep Mobile Optimization**:
   - **Dynamic Viewport Scaling**: Implemented intelligent aspect-ratio detection logic to dynamically adjust the camera distance (Z-axis). This ensures the subject maintains consistent "safe margins" horizontally, preventing side-clipping on narrow mobile screens (portrait mode) regardless of their resolution (e.g., iPhone Max).

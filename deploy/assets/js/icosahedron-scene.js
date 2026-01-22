@@ -747,6 +747,9 @@ export class IcosahedronScene {
 
         // --- 1. Custom Mouse Wheel Zoom (Desktop) ---
         const handleZoom = (e) => {
+            // Strictly disable wheel zoom on mobile
+            if (this.isMobile) return; 
+
             updateInteraction();
             e.preventDefault();
             e.stopPropagation();
@@ -777,10 +780,14 @@ export class IcosahedronScene {
             // Prevent scroll initiations
             if (e.cancelable) e.preventDefault();
             
+            // STRICTLY require exactly 2 touches for pinch
             if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
                 const dy = e.touches[0].pageY - e.touches[1].pageY;
                 initialPinchDist = Math.sqrt(dx * dx + dy * dy);
+            } else {
+                 // Reset if not 2 fingers
+                 initialPinchDist = 0;
             }
         };
 
@@ -790,6 +797,7 @@ export class IcosahedronScene {
             if (e.cancelable) e.preventDefault();
             e.stopPropagation();
 
+            // STRICTLY require exactly 2 touches for pinch
             if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
                 const dy = e.touches[0].pageY - e.touches[1].pageY;
