@@ -1,3 +1,6 @@
+## v2.130
+- **Configuration**: Explicitly added the new data attributes to the `icosahedron.html` and `icosahedron-blue-silver.html` markup so they are visible and editable.
+
 ## v2.129
 - **Configuration**: Exposed key physics and timing variables via data attributes on the container element for easier tuning without code changes.
   - `data-standby-timeout`: Auto-standby delay (default 120s).
