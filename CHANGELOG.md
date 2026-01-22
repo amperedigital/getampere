@@ -1,3 +1,8 @@
+## v2.123
+- **Features**: Added "AI ONLINE" status gauge with 20-dot progress bar that ramps up with system power.
+- **UI**: Display placed above buttons (Desktop) or slightly above track (Mobile) to avoid clutter.
+- **Interaction**: Gauge automatically hides when the "STANDBY IN..." warning appears.
+
 ## v2.122
 - **UI Standby**: Increased warning countdown duration from 15s to 30s to ensure user visibility before timeout.
 

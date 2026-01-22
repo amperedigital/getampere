@@ -156,6 +156,53 @@ export class IcosahedronScene {
                          /* Opacity controlled by JS */
                     }
                 }
+                
+                #ampere-system-status {
+                    position: absolute;
+                    bottom: 55px; /* Mobile: Slightly above track */
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 6px;
+                    z-index: 998;
+                    pointer-events: none;
+                    transition: opacity 0.5s ease;
+                    opacity: 0;
+                }
+                .ampere-dot-row {
+                    display: flex;
+                    gap: 4px;
+                }
+                .ampere-dot {
+                    width: 3px;
+                    height: 3px;
+                    border-radius: 50%;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    transition: background-color 0.1s, box-shadow 0.1s;
+                }
+                .ampere-status-text {
+                    font-family: monospace;
+                    font-size: 10px;
+                    letter-spacing: 2px;
+                    color: #77ccff;
+                    text-transform: uppercase;
+                    text-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+                    min-height: 12px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+                @media (max-width: 600px) {
+                    #ampere-system-status {
+                         bottom: 75px; 
+                    }
+                }
+                @media (min-width: 601px) {
+                    #ampere-system-status {
+                        bottom: 180px; /* Above the track on desktop */
+                    }
+                }
             `;
             document.head.appendChild(style);
         }
@@ -204,11 +251,35 @@ export class IcosahedronScene {
         container.insertBefore(thumb, container.firstChild);
         this.container.appendChild(container);
 
+        // --- Multi-Function Display (Gauge + Status) ---
+        const statusContainer = document.createElement('div');
+        this.uiStatusContainer = statusContainer;
+        statusContainer.id = 'ampere-system-status';
+        
+        const dotRow = document.createElement('div');
+        dotRow.className = 'ampere-dot-row';
+        this.uiDots = [];
+        for (let i = 0; i < 20; i++) {
+             const dot = document.createElement('div');
+             dot.className = 'ampere-dot';
+             dotRow.appendChild(dot);
+             this.uiDots.push(dot);
+        }
+        statusContainer.appendChild(dotRow);
+        
+        const statusText = document.createElement('div');
+        this.uiStatusText = statusText;
+        statusText.className = 'ampere-status-text';
+        statusText.innerText = 'INITIALIZING...';
+        statusContainer.appendChild(statusText);
+        
+        this.container.appendChild(statusContainer);
+
         // --- Standby Warning UI ---
         const warning = document.createElement('div');
         this.standbyWarning = warning;
         warning.id = 'ampere-standby-warning';
-        warning.innerText = 'STANDBY IN 10s';
+        warning.innerText = 'STANDBY IN 30s';
         this.container.appendChild(warning);
 
         // --- Helper: Update Thumb Size ---
@@ -1078,10 +1149,60 @@ export class IcosahedronScene {
                         this.standbyWarning.style.opacity = '0';
                      }
                  }
+                 
+                 // --- STATUS GAUGE LOGIC ---
+                 if (this.uiStatusContainer) {
+                     // Check if Standby Warning is active. If so, hide this.
+                     let warningActive = false;
+                     if (this.standbyWarning && this.standbyWarning.style.opacity === '1') {
+                         warningActive = true;
+                     }
+                     
+                     if (warningActive) {
+                         this.uiStatusContainer.style.opacity = '0';
+                     } else {
+                         // Power Up / Active mode
+                         this.uiStatusContainer.style.opacity = '1';
+                         
+                         // Determine ramp progress based on simIntensity (0 to 1)
+                         // 20 Dots total
+                         const totalDots = 20;
+                         const activeCount = Math.floor(this.simIntensity * totalDots);
+                         
+                         if (this.uiDots) {
+                             this.uiDots.forEach((dot, i) => {
+                                 if (i < activeCount) {
+                                     dot.style.backgroundColor = '#00ccff';
+                                     dot.style.boxShadow = '0 0 4px #00ccff';
+                                 } else {
+                                     dot.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                                     dot.style.boxShadow = 'none';
+                                 }
+                             });
+                         }
+                         
+                         // Text
+                         if (this.uiStatusText) {
+                             if (this.simIntensity > 0.96) {
+                                 this.uiStatusText.innerText = 'AI ONLINE';
+                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(0, 200, 255, 0.5)';
+                             } else {
+                                 const pct = Math.floor(this.simIntensity * 100);
+                                 this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
+                                 this.uiStatusText.style.textShadow = 'none';
+                             }
+                         }
+                     }
+                 }
+
             } else {
                  // Not Active (OFF or already STANDBY) - Hide Warning
                  if (this.standbyWarning && this.standbyWarning.style.opacity !== '0') {
                     this.standbyWarning.style.opacity = '0';
+                 }
+                 // Hide Status Gauge
+                 if (this.uiStatusContainer) {
+                    this.uiStatusContainer.style.opacity = '0';
                  }
             }
         }
