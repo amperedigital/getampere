@@ -116,7 +116,7 @@ export class IcosahedronScene {
                     bottom: 45px; /* Between track and instructions */
                     left: 50%;
                     transform: translateX(-50%);
-                    color: rgba(255, 120, 80, 0.9);
+                    color: rgba(200, 220, 255, 0.9);
                     font-family: monospace;
                     font-size: 11px;
                     font-weight: 500;
@@ -127,7 +127,7 @@ export class IcosahedronScene {
                     transition: opacity 0.5s ease;
                     z-index: 999;
                     white-space: nowrap;
-                    text-shadow: 0 0 10px rgba(255, 60, 0, 0.3);
+                    text-shadow: 0 0 10px rgba(100, 150, 255, 0.4);
                 }
                 
                 /* Mobile Overrides */
@@ -354,22 +354,22 @@ export class IcosahedronScene {
             const targetLeft = padding + (index * thumbWidth);
             this.uiThumb.style.left = targetLeft + 'px';
             
-            // Update Thumb Styling (Optional: Change color based on state?)
+            // Update Thumb Styling (Monotone Blue/Silver Theme)
             if (newState === 'ACTIVE') {
-                 // Green Theme
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(0, 100, 60, 0.9), rgba(0, 80, 40, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(0, 255, 136, 0.3)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)';
+                 // Active Blue
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(0, 110, 200, 0.9), rgba(0, 80, 160, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(100, 200, 255, 0.4)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(0, 150, 255, 0.5), inset 0 1px 0 rgba(255,255,255,0.2)';
             } else if (newState === 'STANDBY') {
-                 // Yellow Theme
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(100, 80, 0, 0.9), rgba(80, 60, 0, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(255, 204, 0, 0.3)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(255, 204, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.15)';
+                 // Standby White/Silver
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(140, 150, 160, 0.9), rgba(100, 110, 120, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(200, 220, 255, 0.4)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(200, 220, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.2)';
             } else {
-                 // Red Theme (OFF)
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(80, 20, 20, 0.9), rgba(60, 10, 10, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(255, 68, 68, 0.3)';
-                 this.uiThumb.style.boxShadow = '0 0 12px rgba(255, 68, 68, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)';
+                 // Off Dark Blue/Grey
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(50, 60, 70, 0.9), rgba(30, 40, 50, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(120, 140, 160, 0.3)';
+                 this.uiThumb.style.boxShadow = '0 0 12px rgba(120, 140, 160, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)';
             }
 
             // Update Labels
@@ -377,17 +377,17 @@ export class IcosahedronScene {
                 const id = l.getAttribute('data-id');
                 if (id === newState) {
                     if (id === 'ACTIVE') {
-                        l.style.color = '#00ff88'; // Green
-                        l.style.textShadow = '0 0 8px rgba(0, 255, 136, 0.6)';
+                        l.style.color = '#77ccff'; // Bright Blue
+                        l.style.textShadow = '0 0 12px rgba(0, 180, 255, 0.8)';
                     } else if (id === 'STANDBY') {
-                         l.style.color = '#ffcc00'; // Yellow
-                         l.style.textShadow = '0 0 8px rgba(255, 204, 0, 0.6)';
+                         l.style.color = '#ddeeff'; // White/Blue
+                         l.style.textShadow = '0 0 8px rgba(200, 220, 255, 0.6)';
                     } else {
-                         l.style.color = '#ff4444'; // Red
-                         l.style.textShadow = '0 0 8px rgba(255, 68, 68, 0.6)';
+                         l.style.color = '#aabbcc'; // Grey Blue
+                         l.style.textShadow = '0 0 8px rgba(120, 140, 160, 0.5)';
                     }
                 } else {
-                    l.style.color = '#666'; // Dim others (Light Gray)
+                    l.style.color = '#556677'; // Dim Blue-Grey
                     l.style.textShadow = 'none';
                 }
             });
@@ -728,10 +728,10 @@ export class IcosahedronScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Random RGB Color for this node
-                // Use HSL for vibrant colors (Saturation ~0.9, Lightness ~0.6)
-                const hue = Math.random();
-                const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.6);
+                // Monotone Blue/Cyan Scheme (No Christmas Vibe)
+                // Restrict hue to Cyan-Blue range (approx 0.55 - 0.65)
+                const hue = 0.55 + (Math.random() * 0.1); 
+                const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.7);
 
                 // Nodes are small bulbs
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 

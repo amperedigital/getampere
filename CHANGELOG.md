@@ -1,3 +1,8 @@
+## v2.118
+- **UI Colors**: Switched from RGB (Green/Red/Yellow) to Monotone (Cyan/Blue/Silver) to align with brand identity and remove "Christmas vibe".
+- **Visuals**: Updated 3D Nodes to strictly emit Cyan/Blue hues (0.55-0.65 HSL) instead of random RGB colors.
+- **Standby Warning**: Changed warning text color from Orange to Ice Blue/White.
+
 ## v2.117
 - **Critical Fix**: Resolved syntax error ('Unexpected identifier') in `onPointerDown` caused by corrupted merge in v2.116.
 - **UI Interaction**: Ensured label click logic is clean and duplication-free.
