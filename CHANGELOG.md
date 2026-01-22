@@ -1,3 +1,9 @@
+## v2.156
+- **UI Polish**:
+  - **Breadcrumb Added**: Replaced the "Interactive Visualization" footer text with a structured breadcrumb in the header (`Visualization / V-Amp 2.0`).
+  - **Versioning**: Updated version label to "V-Amp 2.0" (Blue/Glow) to match the new branding.
+  - **Cleanup**: Removed the old centered footer label from the desktop view.
+
 ## v2.155
 - **Layout Precision**:
   - **Desktop Pill Horizontal Alignment**: Increased right margin to `lg:right-20` (was `lg:right-12`) to ensure the pill is visually "inset" from the container edge, rather than flush with it.
