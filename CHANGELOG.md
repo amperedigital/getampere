@@ -1,3 +1,7 @@
+## v2.135
+- **UI**: Added version branding ("V - AMP 2.0") to the "AI ONLINE" status text in the 3D scene animation.
+- **Cache**: Bumped script version references in `tech-demo.html` and `icosahedron.html` to force asset reload.
+
 ## v2.134
 - **Branding**: Updated website title from "Ampere AI" to "Get Ampere AI" across all accessible pages (`index.html`, `tech-demo.html`, `icosahedron.html`, `3d_key_demo.html`) including page titles, SVG titles, and ARIA labels.
 

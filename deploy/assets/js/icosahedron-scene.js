@@ -1218,7 +1218,7 @@ export class IcosahedronScene {
                          
                          if (this.systemState === 'ACTIVE') {
                              if (this.simIntensity > 0.96) {
-                                 this.uiStatusText.innerText = 'AI ONLINE';
+                                 this.uiStatusText.innerText = 'AI ONLINE | V - AMP 2.0';
                                  this.uiStatusText.style.textShadow = '0 0 8px rgba(0, 200, 255, 0.5)';
                              } else {
                                  this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
