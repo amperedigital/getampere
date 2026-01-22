@@ -1,3 +1,9 @@
+## v2.136
+- **Layout**: Major redesign of `tech-demo.html`.
+  - Moved title section to the left column, overlaying the 3D scene in the top-left corner.
+  - Added padding (`inset-12` on desktop) to the 3D scene container to provide "breathing room" and a framed aesthetic.
+  - Reserved the right column for future interactive control panel elements.
+
 ## v2.135
 - **UI**: Added version branding ("V - AMP 2.0") to the "AI ONLINE" status text in the 3D scene animation.
 - **Cache**: Bumped script version references in `tech-demo.html` and `icosahedron.html` to force asset reload.

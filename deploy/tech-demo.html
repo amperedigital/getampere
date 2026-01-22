@@ -45,9 +45,26 @@
         
         <!-- Left Column: 3D Scene -->
         <div class="relative w-full lg:w-1/2 h-[50vh] lg:h-full bg-black/20 border-b lg:border-b-0 lg:border-r border-white/10">
-            <!-- Scene Container -->
-            <!-- Note: overflow-hidden is crucial for canvas containment -->
-            <div class="absolute inset-0 overflow-hidden">
+            
+            <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
+            <div class="absolute top-0 left-0 w-full p-8 lg:p-12 z-20 pointer-events-none">
+                <div class="max-w-md">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono mb-6 backdrop-blur-md">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                        LIVE DEMO
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
+                        Neural <span class="block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
+                    </h1>
+                    <p class="text-lg text-slate-300 leading-relaxed drop-shadow-lg">
+                        Explore the autonomous decision-making core of Ampere AI.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Scene Container with "Breathing Room" Packaging -->
+            <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
+            <div class="absolute inset-4 lg:inset-12 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0">
                 <div id="tech-demo-scene" 
                      class="w-full h-full"
                      data-standby-timeout="120"
@@ -64,26 +81,13 @@
              </div>
         </div>
 
-        <!-- Right Column: Content -->
+        <!-- Right Column: Interactive Elements / Stats -->
         <div class="relative w-full lg:w-1/2 h-[50vh] lg:h-full flex items-center justify-center bg-[#05060f] z-10">
             
             <div class="w-full max-w-lg p-8 lg:p-16 flex flex-col justify-center h-full">
-                <!-- Header -->
-                <div class="mb-12">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono mb-6">
-                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-                        LIVE DEMO
-                    </div>
-                    <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4">
-                        Neural <span class="block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
-                    </h1>
-                    <p class="text-lg text-slate-400 leading-relaxed max-w-md">
-                        Explore the autonomous decision-making core of Ampere AI. Touch to interact, observe power states, and monitor real-time node activation.
-                    </p>
-                </div>
-
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-8">
+                
+                <!-- Reserved Area for Interactive Elements (Placeholder Stats) -->
+                <div class="grid grid-cols-2 gap-8 border border-white/5 p-8 rounded-2xl bg-white/5">
                     <div>
                         <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Status</div>
                         <div class="text-xl font-mono text-white">ONLINE</div>
@@ -100,6 +104,10 @@
                         <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Latency</div>
                         <div class="text-xl font-mono text-green-400">12ms</div>
                     </div>
+                </div>
+
+                <div class="mt-8 text-center text-sm text-slate-500 font-mono">
+                    // Interactive Control Panel
                 </div>
             </div>
             
