@@ -70,6 +70,24 @@
 - **Context**: Use for live status, system operational badges, or active indicators (e.g., "Services", "All Systems Normal").
 - **Colors**: `bg-green-500` (Operational), `bg-blue-500` (Active/Info), `bg-red-500` (Offline).
 
+### Animated Status Pill Component (v2.154+)
+- **Usage**: Used for live indicators or status badges on tech demos/visualizations.
+- **Canonical Markup**:
+  ```html
+  <div class="absolute z-30 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl
+              left-1/2 -translate-x-1/2 top-4 
+              lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12">
+      <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+      <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
+  </div>
+  ```
+- **Placement Rules (Responsive)**:
+  - **Mobile**: Center strictly (`left-1/2 -translate-x-1/2` top `4`).
+  - **Desktop**: Align to the container frame but **bisect the border**.
+    - **Vertical**: `top-[inset] -translate-y-1/2` (straddles the line).
+    - **Horizontal**: `right-[inset + 2rem]` (visually inset, never flush).
+- **Styling**: `rounded-full` (Standard Skinny), `backdrop-blur`.
+
 ## 6. Major Components
 
 ### Scroll Flipper (v1.565+)
@@ -470,21 +488,3 @@ python3 scripts/smart_replace.py "deploy/index.html" "old_snippet.txt" "new_snip
   - **Desktop Insets**: Scale up to `48px`+ (`p-12`+).
 - **Anti-Pattern**: Content touching the viewport edge or container border without a specific bleeding-edge design intent.
 - **Implementation**: When refactoring a jammed UI, **double** the current padding first, then adjust.
-
-### Animated Status Pill Component
-- **Usage**: Used for live indicators or status badges on tech demos/visualizations.
-- **Canonical Markup**:
-  ```html
-  <div class="absolute z-30 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl
-              left-1/2 -translate-x-1/2 top-4 
-              lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12">
-      <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
-      <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
-  </div>
-  ```
-- **Placement Rules (Responsive)**:
-  - **Mobile**: Center strictly (`left-1/2 -translate-x-1/2` top `4`).
-  - **Desktop**: Align to the container frame but **bisect the border**.
-    - **Vertical**: `top-[inset] -translate-y-1/2` (straddles the line).
-    - **Horizontal**: `right-[inset + 2rem]` (visually inset, never flush).
-- **Styling**: `rounded-full` (Standard Skinny), `backdrop-blur`.

@@ -28,6 +28,9 @@
 
 ## General Rules
 - **MANDATORY**: You MUST read the file `context.md` at the very beginning of every session to understand the project architecture and rules. Do not proceed without reading it.
+- **Context Maintenance**: When updating `context.md` with new rules or components:
+  - **Identify Location**: Do NOT blindly append to the end of the file. Place new content in its relevant section (e.g., Components in Section 5/6, Design Rules in Section 7).
+  - **Maintain Structure**: Preserve numbering and formatting.
 - **NO TOUCHING**: Never modify or retag files that you have not explicitly edited.
 - **CONTENT PRESERVATION**: NEVER change content (text, copy, headings) given by the user unless explicitly requested. If you are refactoring code, you MUST preserve the original text exactly.
 
