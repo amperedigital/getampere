@@ -1,3 +1,9 @@
+## v2.101 - 2026-01-21
+- **Deep Mobile Optimization**:
+  - **Dynamic Viewport Scaling**: Implemented intelligent aspect-ratio detection logic to dynamically adjust the camera distance (Z-axis). This ensures the subject maintains consistent "safe margins" horizontally, preventing side-clipping on narrow mobile screens (portrait mode) regardless of their resolution (e.g., iPhone Max).
+  - **Responsive Layout**: Updated the "Instruction Overlay" text to display "Pinch to Zoom" on touch devices (Tablet/Mobile) instead of "Scroll to Zoom".
+  - **Fluid UI Sizing**: The toggle switch track now uses fluid width calculations (`width: calc(100% - 48px)`) with a strict max-width cap, ensuring it fits perfectly on small screens while remaining usable.
+
 ## v2.100 - 2026-01-21
 - **Mobile Experience Overhaul**:
   - **Scroll Locking**: Implemented aggressive `touch-action` and `preventDefault()` logic to strictly keep the page from scrolling while interacting with the 3D model.

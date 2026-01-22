@@ -67,12 +67,23 @@
                 letter-spacing: 1px;
             }
         }
+        
+        /* Mobile vs Desktop Text Toggling */
+        .mobile-text { display: none; }
+        
+        @media (max-width: 768px) {
+            .desktop-text { display: none; }
+            .mobile-text { display: inline; }
+        }
     </style>
 </head>
 <body>
 
     <div id="canvas-container"></div>
-    <div class="instruction-overlay">Drag to Rotate • Scroll to Zoom</div>
+    <div class="instruction-overlay">
+        <span class="desktop-text">Drag to Rotate • Scroll to Zoom</span>
+        <span class="mobile-text">Drag to Rotate • Pinch to Zoom</span>
+    </div>
 
     <script type="module">
         import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.100';

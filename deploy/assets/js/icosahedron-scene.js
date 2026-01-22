@@ -94,9 +94,9 @@ export class IcosahedronScene {
                 /* Mobile Overrides */
                 @media (max-width: 600px) {
                     #ampere-ui-track {
-                        bottom: 120px; /* Shift up to avoid crowding thumb zone */
-                        width: 90%;
-                        max-width: 320px;
+                        bottom: 90px;
+                        width: calc(100% - 48px); /* 24px margins */
+                        max-width: 360px;
                     }
                     .ampere-ui-label {
                         font-size: 10px;
@@ -846,6 +846,9 @@ export class IcosahedronScene {
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
+
+            // On Mobile Resize (Orientation Change), force check camera distance soon
+            // We don't snap immediately to avoid jarring, auto-recenter handles it.
             
             if (this.fatLines) {
                  this.fatLines.forEach(mat => {
@@ -867,14 +870,22 @@ export class IcosahedronScene {
              
              // Determine Targets based on Device
              let targetLookAt = new THREE.Vector3(0,0,0);
-             let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,5);
+             const baseZ = 5;
+             let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
 
              if (this.isMobile) {
                  // Mobile: Shift center DOWN so object appears HIGHER (clearing the UI)
                  const mobileShiftY = -0.8; 
                  targetLookAt.set(0, mobileShiftY, 0);
                  targetCamPos.y += mobileShiftY; 
-                 targetCamPos.z += 1.0; // Slightly further out to fit screen width
+                 
+                 // Adjust Z based on aspect ratio to prevent side clipping
+                 // As width gets narrower relative to height, we must move back.
+                 // Base aspect is approx 1.7 (16:9 landscape). Mobile is 0.5 (9:16 portrait).
+                 const aspect = this.width / this.height;
+                 const targetZ = Math.max(baseZ, baseZ + (2.5 / Math.max(aspect, 0.4)) - 3.0); 
+                 
+                 targetCamPos.z = targetZ;
              }
 
              // Reset Camera Position
