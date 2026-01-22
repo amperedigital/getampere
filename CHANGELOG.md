@@ -1,3 +1,8 @@
+## v2.155
+- **Layout Precision**:
+  - **Desktop Pill Horizontal Alignment**: Increased right margin to `lg:right-20` (was `lg:right-12`) to ensure the pill is visually "inset" from the container edge, rather than flush with it.
+  - Maintains the `lg:top-12 -translate-y-1/2` vertical straddle alignment.
+
 ## v2.154
 - **Precision Layout**:
   - **Pill Alignment (Desktop)**: Moved "Live Demo" pill specific to desktop to strictly straddle the container border.
