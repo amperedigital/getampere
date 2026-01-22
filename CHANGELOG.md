@@ -1,3 +1,8 @@
+## v2.142
+- **Tech Demo Layout**: 
+  - Updated "Live Demo" pill styling to match site-wide "System Operational" badge (Rounded-XL, P-4, Tracking-Widest).
+  - Adjusted vertical positioning (`lg:top-6`, `-top-2`) to perfectly straddle the visualization container border.
+
 ## v2.141
 - **Tech Demo Layout**: Fine-tuned "Live Demo" pill alignment (`top-8` desktop, `top-1` mobile) to precisely bisect the visualization container border.
 
