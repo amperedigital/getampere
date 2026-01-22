@@ -1,3 +1,12 @@
+## v2.129
+- **Configuration**: Exposed key physics and timing variables via data attributes on the container element for easier tuning without code changes.
+  - `data-standby-timeout`: Auto-standby delay (default 120s).
+  - `data-standby-warning`: Countdown duration (default 30s).
+  - `data-auto-recenter`: Camera reset delay (default 2.5s).
+  - `data-lerp-speed`: Animation smoothing factor (default 0.015).
+  - `data-min-velocity`: Snap-to-finish threshold (default 0.0025).
+  - `data-rotation-rpm`: Rotation speed in Revs Per Second (default 0.17).
+
 ## v2.128
 - **UI Text**: Updated the power-down status text from "POWER OFF XX%" to "POWER XX%" to be more semantically consistent with a draining percentage.
 

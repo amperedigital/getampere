@@ -27,6 +27,17 @@ export class IcosahedronScene {
         this.standbyMix = 0;
         this.targetStandbyMix = 0; // Default to 0, if starting in Standby, setSystemState will fix
 
+        // --- Configuration (Data Attributes) ---
+        this.config = {
+            standbyTimeout: 120,    // Seconds before auto-standby (data-standby-timeout)
+            standbyWarning: 30,     // Seconds for warning countdown (data-standby-warning)
+            autoRecenter: 2.5,      // Seconds before camera recenter (data-auto-recenter)
+            lerpSpeed: 0.015,       // Transition speed factor (data-lerp-speed)
+            minVelocity: 0.0025,    // Min transition step per frame (data-min-velocity)
+            rotationRPM: 0.17       // Revs per second (approx) (data-rotation-rpm)
+        };
+        this.parseConfig();
+
         this.initScene();
         this.initLights();
         this.initGeometry();
@@ -34,6 +45,24 @@ export class IcosahedronScene {
         this.initUI(); // Add UI Controls
         this.handleResize();
         this.animate();
+    }
+
+    parseConfig() {
+        if (!this.container) return;
+        
+        const getFloat = (attr, def) => {
+            const val = this.container.getAttribute(attr);
+            return val ? parseFloat(val) : def;
+        };
+
+        this.config.standbyTimeout = getFloat('data-standby-timeout', 120);
+        this.config.standbyWarning = getFloat('data-standby-warning', 30);
+        this.config.autoRecenter = getFloat('data-auto-recenter', 2.5);
+        this.config.lerpSpeed = getFloat('data-lerp-speed', 0.015);
+        this.config.minVelocity = getFloat('data-min-velocity', 0.0025);
+        this.config.rotationRPM = getFloat('data-rotation-rpm', 0.17);
+        
+        console.log("Icosahedron Config Loaded:", this.config);
     }
 
     initUI() {
@@ -407,8 +436,8 @@ export class IcosahedronScene {
 
     setSystemState(newState) {
         // Determine transition speed based on target state
-        // Improved speed (0.015) to prevent "stuttering end" feeling
-        this.lerpSpeed = 0.015;
+        // Uses configured lerp speed
+        this.lerpSpeed = this.config.lerpSpeed;
 
         this.systemState = newState;
 
@@ -1093,13 +1122,13 @@ export class IcosahedronScene {
         this.controls.update();
 
         // --- Auto-Recenter Logic ---
-        // If not interacting and idle for > 2.5 seconds
+        // If not interacting and idle for > X seconds
         if (!this.isInteracting && this.lastInteractionTime) {
             const now = Date.now();
             const timeSinceInteraction = now - this.lastInteractionTime;
             
-            // 1. Camera Recenter (2.5s)
-            if (timeSinceInteraction > 2500) {
+            // 1. Camera Recenter
+            if (timeSinceInteraction > (this.config.autoRecenter * 1000)) {
                  const lerpSpeed = 0.03;
                  
                  // Determine Targets based on Device
@@ -1119,12 +1148,12 @@ export class IcosahedronScene {
                  this.controls.target.lerp(targetLookAt, lerpSpeed);
             }
             
-            // 2. Auto-Standby Mode (2 Minutes = 120s)
-            // If currently ACTIVE and idle for 120s, drift to STANDBY
-            // Warn at 90s (30s countdown)
+            // 2. Auto-Standby Mode (Configured Timeout)
+            // If currently ACTIVE and idle for X, drift to STANDBY
             
-            const standbyTimeout = 120000;
-            const warningStart = standbyTimeout - 30000; // Increased to 30s warning
+            const standbyTimeout = this.config.standbyTimeout * 1000;
+            const warningDuration = this.config.standbyWarning * 1000;
+            const warningStart = standbyTimeout - warningDuration; 
 
             if (this.systemState === 'ACTIVE') {
                  if (timeSinceInteraction > standbyTimeout) {
@@ -1207,7 +1236,7 @@ export class IcosahedronScene {
             }
         }
 
-        const lerpFactor = this.lerpSpeed || 0.05;
+        const lerpFactor = this.lerpSpeed || this.config.lerpSpeed;
         
         // Pulse Timer (Global)
         this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
@@ -1230,8 +1259,7 @@ export class IcosahedronScene {
                      
                      // Minimum Velocity Enforcement
                      // Prevents "stalling" or "losing steam" at the tail of the curve (80%+)
-                     // Ensure we move at least 0.0025 per frame (approx 15% per second)
-                     const minStep = 0.0025;
+                     const minStep = this.config.minVelocity;
                      if (Math.abs(step) < minStep) {
                          step = (diff > 0) ? minStep : -minStep;
                      }
@@ -1286,9 +1314,8 @@ export class IcosahedronScene {
 
         // --- ROTATION LOGIC ---
         if (this.centralSphere) {
-             // Target Speed: ~0.17 Rev Per Second (Power-Up State)
-             // Reduced additionally by 15% (v2.119) from 300 -> 353
-             const baseSpeed = (Math.PI * 2) / 353; 
+             // Target Speed based on Config RPM
+             const baseSpeed = (Math.PI * 2 * this.config.rotationRPM) / 60; // Rads per frame assuming 60fps
              const currentSpeed = baseSpeed * this.simIntensity;
              
              // Rotation Axis: World Y (Vertical Spin)
