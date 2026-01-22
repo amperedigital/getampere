@@ -773,14 +773,29 @@ export class IcosahedronScene {
         };
         this.renderer.domElement.addEventListener('wheel', handleZoom, { passive: false });
 
-        // --- 2. Custom Pinch-to-Zoom (Mobile) ---
+        // --- 2. Custom Pinch-to-Zoom & Tap Logic (Mobile) ---
         let initialPinchDist = 0;
+        
+        // Tap Variables
+        let touchStartTime = 0;
+        let lastTapTime = 0;
+        let touchStartPos = {x:0, y:0};
+        let tapTimeout = null;
         
         const handleTouchStart = (e) => {
             updateInteraction();
             // Prevent scroll initiations
             if (e.cancelable) e.preventDefault();
             
+            // Tap Detection Init
+            if (e.touches.length === 1) {
+                touchStartTime = Date.now();
+                touchStartPos.x = e.touches[0].pageX;
+                touchStartPos.y = e.touches[0].pageY;
+            } else {
+                touchStartTime = 0; // Cancel tap if multiple fingers
+            }
+
             // STRICTLY require exactly 2 touches for pinch
             if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
@@ -833,8 +848,35 @@ export class IcosahedronScene {
             }
         };
 
-        const handleTouchEnd = () => {
+        const handleTouchEnd = (e) => {
              initialPinchDist = 0;
+             
+             // Tap Logic (Must be Single Finger Lift)
+             if (e.changedTouches.length === 1 && touchStartTime > 0) {
+                 const duration = Date.now() - touchStartTime;
+                 const dx = e.changedTouches[0].pageX - touchStartPos.x;
+                 const dy = e.changedTouches[0].pageY - touchStartPos.y;
+                 const dist = Math.sqrt(dx*dx + dy*dy);
+                 
+                 // Thresholds: Short duration (<250ms), minimal movement (<10px) (No Drag)
+                 if (duration < 250 && dist < 10 && this.isMobile) {
+                     const now = Date.now();
+                     
+                     if (now - lastTapTime < 300) {
+                         // --- DOUBLE TAP: Power Down (OFF) ---
+                         if (tapTimeout) clearTimeout(tapTimeout);
+                         this.setSystemState('OFF');
+                     } else {
+                         // --- SINGLE TAP: Power Up (ACTIVE) ---
+                         // Debounce to wait for potential double tap
+                         tapTimeout = setTimeout(() => {
+                             this.setSystemState('ACTIVE');
+                         }, 300);
+                     }
+                     lastTapTime = now;
+                 }
+             }
+             touchStartTime = 0;
         };
 
         // Add Touch Listeners (Non-Passive to allow preventDefault)
@@ -874,29 +916,36 @@ export class IcosahedronScene {
 
         // --- Auto-Recenter Logic ---
         // If not interacting and idle for > 2.5 seconds
-        if (!this.isInteracting && this.lastInteractionTime && (Date.now() - this.lastInteractionTime > 2500)) {
-             const lerpSpeed = 0.03;
-             
-             // Determine Targets based on Device
-             let targetLookAt = new THREE.Vector3(0,0,0);
-             const baseZ = 5;
-             let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
-
-             if (this.isMobile) {
-                 // Adjust Z based on aspect ratio to prevent side clipping
-                 // As width gets narrower relative to height, we must move back.
-                 // Base aspect is approx 1.7 (16:9 landscape). Mobile is 0.5 (9:16 portrait).
-                 const aspect = this.width / this.height;
-                 const targetZ = Math.max(baseZ, baseZ + (2.5 / Math.max(aspect, 0.4)) - 3.0); 
+        if (!this.isInteracting && this.lastInteractionTime) {
+            const now = Date.now();
+            const timeSinceInteraction = now - this.lastInteractionTime;
+            
+            // 1. Camera Recenter (2.5s)
+            if (timeSinceInteraction > 2500) {
+                 const lerpSpeed = 0.03;
                  
-                 targetCamPos.z = targetZ;
-             }
-
-             // Reset Camera Position
-             this.camera.position.lerp(targetCamPos, lerpSpeed);
-             
-             // Reset Target
-             this.controls.target.lerp(targetLookAt, lerpSpeed);
+                 // Determine Targets based on Device
+                 let targetLookAt = new THREE.Vector3(0,0,0);
+                 const baseZ = 5;
+                 let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
+    
+                 if (this.isMobile) {
+                     // Adjust Z based on aspect ratio to prevent side clipping
+                     const aspect = this.width / this.height;
+                     const targetZ = Math.max(baseZ, baseZ + (2.5 / Math.max(aspect, 0.4)) - 3.0); 
+                     
+                     targetCamPos.z = targetZ;
+                 }
+    
+                 this.camera.position.lerp(targetCamPos, lerpSpeed);
+                 this.controls.target.lerp(targetLookAt, lerpSpeed);
+            }
+            
+            // 2. Auto-Standby Mode (10s)
+            // If currently ACTIVE and idle for 10s, drift to STANDBY
+            if (this.systemState === 'ACTIVE' && timeSinceInteraction > 10000) {
+                 this.setSystemState('STANDBY');
+            }
         }
 
         const lerpFactor = this.lerpSpeed || 0.05;

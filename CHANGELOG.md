@@ -1,3 +1,11 @@
+## v2.104 - 2026-01-21
+- **Mobile Gestures & Power Management**:
+  - **Tap Controls**: Implemented touch gestures for state control on mobile devices.
+    - **Single Tap**: Power Up (`ACTIVE`). Debounced by 300ms.
+    - **Double Tap**: Power Down (`OFF`).
+  - **Auto-Standby**: Added an inactivity timer. If the system is in `ACTIVE` mode and no user interaction (touch/drag) is detected for 10 seconds, it automatically transitions to `STANDBY` (breathing mode).
+  - **Interaction Wake**: Touching or dragging the model resets the inactivity timer, keeping the system active while being manipulated.
+
 ## v2.103 - 2026-01-21
 - **Mobile Experience Corrective**:
   - **Fixed Stationary Position**: Removed the experimental "Vertical Offset" (-0.8Y) on mobile. While this was intended to clear the UI, it caused the object to "swing" during vertical rotation because the pivot point was offset from the object center. The object now rotates perfectly around its own axis (0,0,0) and stays visually stationary.
