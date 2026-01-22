@@ -1,3 +1,6 @@
+## v2.134
+- **Branding**: Updated website title from "Ampere AI" to "Get Ampere AI" across all accessible pages (`index.html`, `tech-demo.html`, `icosahedron.html`, `3d_key_demo.html`) including page titles, SVG titles, and ARIA labels.
+
 ## v2.133
 - **Assets**: Refreshed the actual favicon image files in `deploy/favicon/` with updated versions provided by the user.
 
