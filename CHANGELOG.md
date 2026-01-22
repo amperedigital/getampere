@@ -1,3 +1,6 @@
+## v2.139
+- **Tech Demo Layout**: Adjusted "Live Demo" pill position to sit on the container border ("tab" style) for better visual integration.
+
 ## v2.138
 - **Layout**: Refined `tech-demo.html` header layout.
   - Increased header padding to `p-20` on desktop to give typography more breathing room from the edge.
