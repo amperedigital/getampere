@@ -1,3 +1,6 @@
+## v2.141
+- **Tech Demo Layout**: Fine-tuned "Live Demo" pill alignment (`top-8` desktop, `top-1` mobile) to precisely bisect the visualization container border.
+
 ## v2.140
 - **Tech Demo Layout**: Adjusted "Live Demo" pill vertical alignment (`top-10`) to correctly straddle the container border for a connected "tab" aesthetic.
 
