@@ -1,3 +1,6 @@
+## v2.143
+- **Tech Demo Layout**: Adjusted "Live Demo" pill right alignment (`lg:right-20`, `right-12`) to align with flattened border sections, avoiding corner radius curvature.
+
 ## v2.142
 - **Tech Demo Layout**: 
   - Updated "Live Demo" pill styling to match site-wide "System Operational" badge (Rounded-XL, P-4, Tracking-Widest).
