@@ -1,3 +1,7 @@
+## v2.124
+- **UI Status Gauge**: Implemented "Power Down" visualization. Gague now remains visible during shutdown, tracking power from 100% to 0% ("POWER OFF XX%").
+- **Logic**: Decoupled gauge visibility from system state, allowing it to display during any intense activity (startup or shutdown).
+
 ## v2.123
 - **Features**: Added "AI ONLINE" status gauge with 20-dot progress bar that ramps up with system power.
 - **UI**: Display placed above buttons (Desktop) or slightly above track (Mobile) to avoid clutter.

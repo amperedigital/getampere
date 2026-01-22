@@ -1149,60 +1149,60 @@ export class IcosahedronScene {
                         this.standbyWarning.style.opacity = '0';
                      }
                  }
-                 
-                 // --- STATUS GAUGE LOGIC ---
-                 if (this.uiStatusContainer) {
-                     // Check if Standby Warning is active. If so, hide this.
-                     let warningActive = false;
-                     if (this.standbyWarning && this.standbyWarning.style.opacity === '1') {
-                         warningActive = true;
-                     }
-                     
-                     if (warningActive) {
-                         this.uiStatusContainer.style.opacity = '0';
-                     } else {
-                         // Power Up / Active mode
-                         this.uiStatusContainer.style.opacity = '1';
-                         
-                         // Determine ramp progress based on simIntensity (0 to 1)
-                         // 20 Dots total
-                         const totalDots = 20;
-                         const activeCount = Math.floor(this.simIntensity * totalDots);
-                         
-                         if (this.uiDots) {
-                             this.uiDots.forEach((dot, i) => {
-                                 if (i < activeCount) {
-                                     dot.style.backgroundColor = '#00ccff';
-                                     dot.style.boxShadow = '0 0 4px #00ccff';
-                                 } else {
-                                     dot.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                                     dot.style.boxShadow = 'none';
-                                 }
-                             });
-                         }
-                         
-                         // Text
-                         if (this.uiStatusText) {
-                             if (this.simIntensity > 0.96) {
-                                 this.uiStatusText.innerText = 'AI ONLINE';
-                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(0, 200, 255, 0.5)';
-                             } else {
-                                 const pct = Math.floor(this.simIntensity * 100);
-                                 this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
-                                 this.uiStatusText.style.textShadow = 'none';
-                             }
-                         }
-                     }
-                 }
-
             } else {
                  // Not Active (OFF or already STANDBY) - Hide Warning
                  if (this.standbyWarning && this.standbyWarning.style.opacity !== '0') {
                     this.standbyWarning.style.opacity = '0';
                  }
-                 // Hide Status Gauge
-                 if (this.uiStatusContainer) {
-                    this.uiStatusContainer.style.opacity = '0';
+            }
+            
+            // --- STATUS GAUGE LOGIC (Global State) ---
+            if (this.uiStatusContainer) {
+                 // 1. Is standby warning covering us?
+                 let warningActive = (this.standbyWarning && this.standbyWarning.style.opacity === '1');
+                 
+                 // 2. Are we active OR fading out?
+                 // Show gauge if Active, OR if simIntensity > 0 (during shutdown/standby fade)
+                 let showGauge = !warningActive && (this.systemState === 'ACTIVE' || this.simIntensity > 0.02);
+                 
+                 if (showGauge) {
+                     this.uiStatusContainer.style.opacity = '1';
+                     
+                     // Helper for updating Visuals
+                     const totalDots = 20;
+                     const activeCount = Math.floor(this.simIntensity * totalDots);
+                     
+                     if (this.uiDots) {
+                         this.uiDots.forEach((dot, i) => {
+                             if (i < activeCount) {
+                                 dot.style.backgroundColor = '#00ccff';
+                                 dot.style.boxShadow = '0 0 4px #00ccff';
+                             } else {
+                                 dot.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                                 dot.style.boxShadow = 'none';
+                             }
+                         });
+                     }
+                     
+                     if (this.uiStatusText) {
+                         const pct = Math.floor(this.simIntensity * 100);
+                         
+                         if (this.systemState === 'ACTIVE') {
+                             if (this.simIntensity > 0.96) {
+                                 this.uiStatusText.innerText = 'AI ONLINE';
+                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(0, 200, 255, 0.5)';
+                             } else {
+                                 this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
+                                 this.uiStatusText.style.textShadow = 'none';
+                             }
+                         } else {
+                             // Powering Down / Standby Transition
+                             this.uiStatusText.innerText = `POWER OFF ${pct}%`;
+                             this.uiStatusText.style.textShadow = 'none';
+                         }
+                     }
+                 } else {
+                     this.uiStatusContainer.style.opacity = '0';
                  }
             }
         }
