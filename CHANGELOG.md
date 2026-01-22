@@ -1,3 +1,6 @@
+## v2.119
+- **Physics**: Reduced rotation speed by an additional 15% for both inner sphere and outer shell (353 frames/rev).
+
 ## v2.118
 - **UI Colors**: Switched from RGB (Green/Red/Yellow) to Monotone (Cyan/Blue/Silver) to align with brand identity and remove "Christmas vibe".
 - **Visuals**: Updated 3D Nodes to strictly emit Cyan/Blue hues (0.55-0.65 HSL) instead of random RGB colors.
