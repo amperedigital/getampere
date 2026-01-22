@@ -1,3 +1,8 @@
+## v2.149
+- **Responsive Design**: Mobile layout optimization.
+  - **Copy**: Removed hyphen from "decision making" in the tech demo blurb.
+  - **UI**: Hidden "Interactive Visualization" label on mobile (`hidden lg:block`) to conserve vertical space and reduce visual clutter for future content additions.
+
 ## v2.148
 - **Mobile Responsiveness**: Implemented dynamic camera zoom logic in `icosahedron-scene.js`.
   - Automatically multiplies `cameraDistance` by 1.5x on mobile devices (`width <= 600px`).
