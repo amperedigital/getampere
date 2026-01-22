@@ -1,3 +1,8 @@
+## v2.034 - 2026-01-21
+- **Visual Tune**: Increased base vertical tilt (pitch) from 10° to 20° to reveal more of the sphere's top crown.
+- **UX Enhancement**: Added Auto-Recenter logic.
+    - **Behavior**: If the user manipulates the camera (orbit/pan/zoom) and then stops interacting for 2.5 seconds, the camera smoothly drifts back to its starting position `(0, 0, 5)`.
+    - **Triggers**: Detects Mouse Down/Up, Wheel Zoom, and Touch Zoom interactions.
 ## v2.033 - 2026-01-21
 - **Animation Update**: Upgraded outer shell rotation to full Biaxial motion.
     - **Mechanism**: Added a secondary rotation vector on the X-axis (Pitch) to combine with the existing Y-axis (Yaw) spin.

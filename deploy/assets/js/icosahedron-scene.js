@@ -301,8 +301,9 @@ export class IcosahedronScene {
 
     initGeometry() {
         this.group = new THREE.Group();
-        // 10-degree vertical tilt (X-axis) for the whole object per user request
-        this.group.rotation.x = 10 * (Math.PI / 180); 
+        // 20-degree vertical tilt (X-axis) for the whole object per user request
+        // Increased from 10 to 20 to reveal more of the "Top Crown".
+        this.group.rotation.x = 20 * (Math.PI / 180); 
         this.scene.add(this.group);
 
         // OUTER SHELL GROUP (Lattice + Nodes)
@@ -666,8 +667,25 @@ export class IcosahedronScene {
         // FORCE CSS to allow touch handling
         this.renderer.domElement.style.touchAction = 'none';
 
+        // --- Interaction Tracking (Auto-Recenter) ---
+        this.lastInteractionTime = Date.now();
+        this.initialCameraPos = this.camera.position.clone(); // {x:0, y:0, z:5} usually
+        
+        this.controls.addEventListener('start', () => {
+             this.isInteracting = true;
+             this.lastInteractionTime = Date.now();
+        });
+        this.controls.addEventListener('end', () => {
+             this.isInteracting = false;
+             this.lastInteractionTime = Date.now();
+        });
+        
+        // Also update timestamp on wheel/touch zoom (handled outside controls)
+        const updateInteraction = () => { this.lastInteractionTime = Date.now(); };
+
         // --- 1. Custom Mouse Wheel Zoom (Desktop) ---
         const handleZoom = (e) => {
+            updateInteraction();
             e.preventDefault();
             e.stopPropagation();
 
@@ -693,6 +711,7 @@ export class IcosahedronScene {
         let initialPinchDist = 0;
         
         const handleTouchStart = (e) => {
+            updateInteraction();
             if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
                 const dy = e.touches[0].pageY - e.touches[1].pageY;
@@ -701,9 +720,10 @@ export class IcosahedronScene {
         };
 
         const handleTouchMove = (e) => {
+            updateInteraction();
             if (e.touches.length === 2) {
                 // Prevent default page zooming/panning
-                e.preventDefault(); 
+                e.preventDefault();  
                 e.stopPropagation();
 
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
@@ -773,6 +793,18 @@ export class IcosahedronScene {
         requestAnimationFrame(this.animate.bind(this));
         
         this.controls.update();
+
+        // --- Auto-Recenter Logic ---
+        // If not interacting and idle for > 2.5 seconds
+        if (!this.isInteracting && this.lastInteractionTime && (Date.now() - this.lastInteractionTime > 2500)) {
+             const lerpSpeed = 0.03;
+             // Reset Camera Position to initial (0,0,5)
+             if (this.initialCameraPos) {
+                 this.camera.position.lerp(this.initialCameraPos, lerpSpeed);
+             }
+             // Reset Target to Origin (0,0,0)
+             this.controls.target.lerp(new THREE.Vector3(0,0,0), lerpSpeed);
+        }
 
         const lerpFactor = this.lerpSpeed || 0.05;
         
