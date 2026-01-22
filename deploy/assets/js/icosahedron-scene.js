@@ -9,6 +9,7 @@ export class IcosahedronScene {
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
+        this.isMobile = (this.width <= 600);
 
         console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
         
@@ -36,50 +37,91 @@ export class IcosahedronScene {
     }
 
     initUI() {
-        // Toggle Switch Configuration
-        const width = 320; 
-        const height = 48; 
-        const padding = 6; // Increased padding for "pill" look
-        const thumbWidth = (width - (padding * 2)) / 3; 
+        // Inject Styles for Responsive UI
+        if (!document.getElementById('ampere-ui-styles')) {
+            const style = document.createElement('style');
+            style.id = 'ampere-ui-styles';
+            style.textContent = `
+                #ampere-ui-track {
+                    position: absolute;
+                    bottom: 85px;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    width: 320px;
+                    height: 48px;
+                    background: rgba(5, 6, 10, 0.85);
+                    backdrop-filter: blur(12px);
+                    border-radius: 999px;
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 6px;
+                    z-index: 1000;
+                    user-select: none; /* Prevent text selection */
+                    -webkit-user-select: none;
+                    touch-action: none; /* Prevent scrolling on the track */
+                    cursor: pointer;
+                    box-sizing: border-box;
+                }
+                .ampere-ui-label {
+                    flex: 1;
+                    text-align: center;
+                    font-family: monospace;
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                    color: #666;
+                    z-index: 2;
+                    font-weight: 600;
+                    pointer-events: none;
+                    transition: color 0.3s ease, text-shadow 0.3s ease;
+                }
+                #ampere-ui-thumb {
+                    position: absolute;
+                    top: 6px;
+                    left: 6px;
+                    height: 36px; /* 48 - 12 */
+                    background: linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9));
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    border-radius: 999px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+                    transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+                    z-index: 1;
+                    box-sizing: border-box;
+                }
+                
+                /* Mobile Overrides */
+                @media (max-width: 600px) {
+                    #ampere-ui-track {
+                        bottom: 120px; /* Shift up to avoid crowding thumb zone */
+                        width: 90%;
+                        max-width: 320px;
+                    }
+                    .ampere-ui-label {
+                        font-size: 10px;
+                        letter-spacing: 0px;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        const padding = 6; 
 
         // Container (Track)
         const container = document.createElement('div');
         this.uiContainer = container;
-        container.style.position = 'absolute';
-        container.style.bottom = '85px'; 
-        container.style.left = '50%';
-        container.style.transform = 'translate(-50%, 0)';
-        container.style.width = width + 'px';
-        container.style.height = height + 'px';
-        container.style.background = 'rgba(5, 6, 10, 0.85)'; // Deep dark
-        container.style.backdropFilter = 'blur(12px)';
-        container.style.borderRadius = '999px'; // Pill
-        container.style.border = '1px solid rgba(255, 255, 255, 0.08)';
-        container.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6)';
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'space-between';
-        container.style.padding = padding + 'px';
-        container.style.zIndex = '1000';
-        container.style.userSelect = 'none';
-        container.style.touchAction = 'none'; // Prevent scrolling
-        container.style.cursor = 'pointer';
-
+        container.id = 'ampere-ui-track';
+        
         // Thumb (The Draggable Pill)
         const thumb = document.createElement('div');
         this.uiThumb = thumb;
-        thumb.style.position = 'absolute';
-        thumb.style.top = padding + 'px';
-        thumb.style.left = padding + 'px';
-        thumb.style.width = thumbWidth + 'px';
-        thumb.style.height = (height - (padding * 2)) + 'px';
-        thumb.style.background = 'linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9))';
-        thumb.style.border = '1px solid rgba(255, 255, 255, 0.15)';
-        thumb.style.borderRadius = '999px';
-        thumb.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)';
-        thumb.style.transition = 'left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)'; // Smooth Snap
-        thumb.style.zIndex = '1';
-
+        thumb.id = 'ampere-ui-thumb';
+        
+        // In JS we set the initial width, but resizing handles the rest
+        // We will update logic to read clientWidth.
+        
         // Active Highlight in Thumb (Glow)
         const thumbGlow = document.createElement('div');
         thumbGlow.style.position = 'absolute';
@@ -92,7 +134,7 @@ export class IcosahedronScene {
         const labelsData = [
             { id: 'STANDBY', label: 'STANDBY' },
             { id: 'ACTIVE', label: 'POWER UP' },
-            { id: 'OFF', label: 'POWER DOWN' }
+            { id: 'OFF', label: 'POWER DOWN' } // Shortened for mobile fit? Keep for now.
         ];
         
         this.statePositions = { 'STANDBY': 0, 'ACTIVE': 1, 'OFF': 2 };
@@ -100,17 +142,8 @@ export class IcosahedronScene {
 
         labelsData.forEach((item, i) => {
             const label = document.createElement('div');
+            label.className = 'ampere-ui-label';
             label.innerText = item.label;
-            label.style.flex = '1';
-            label.style.textAlign = 'center';
-            label.style.fontFamily = 'monospace';
-            label.style.fontSize = '12px';
-            label.style.letterSpacing = '1px';
-            label.style.color = '#666';
-            label.style.zIndex = '2';
-            label.style.fontWeight = '600';
-            label.style.pointerEvents = 'none'; 
-            label.style.transition = 'color 0.3s ease, text-shadow 0.3s ease';
             label.setAttribute('data-id', item.id);
             container.appendChild(label);
         });
@@ -118,16 +151,36 @@ export class IcosahedronScene {
         container.insertBefore(thumb, container.firstChild);
         this.container.appendChild(container);
 
+        // --- Helper: Update Thumb Size ---
+        const updateThumbSize = () => {
+             const trackWidth = container.clientWidth;
+             const thumbW = (trackWidth - (padding * 2)) / 3;
+             thumb.style.width = thumbW + 'px';
+             
+             // Also force re-position based on current state
+             if (this.systemState) this.setSystemState(this.systemState);
+        };
+        
+        // Observer for Resize
+        const resizeObserver = new ResizeObserver(() => {
+             updateThumbSize();
+        });
+        resizeObserver.observe(container);
+
         // --- Interaction Logic (Drag & Throw) ---
         let isDragging = false;
         let dragOffset = 0;
 
         const setThumbPosition = (clientX) => {
             const rect = container.getBoundingClientRect();
+            // Recalculate Widths dynamically
+             const trackWidth = rect.width;
+             const thumbW = (trackWidth - (padding * 2)) / 3;
+
             let relativeX = clientX - rect.left - dragOffset;
             
             // Constrain
-            const maxLeft = width - thumbWidth - padding; 
+            const maxLeft = trackWidth - thumbW - padding; 
             const minLeft = padding;
             relativeX = Math.max(minLeft, Math.min(relativeX, maxLeft)); 
             
@@ -138,8 +191,13 @@ export class IcosahedronScene {
         const snapToNearest = () => {
             const currentLeft = parseFloat(thumb.style.left);
             const distFromStart = currentLeft - padding;
-            // Simple rounding works because thumbWidth is exact section width
-            let index = Math.round(distFromStart / thumbWidth);
+            
+            const rect = container.getBoundingClientRect();
+            const trackWidth = rect.width;
+            const thumbW = (trackWidth - (padding * 2)) / 3;
+
+            // Simple rounding
+            let index = Math.round(distFromStart / thumbW);
             index = Math.max(0, Math.min(index, 2));
             
             const state = this.positionToState[index];
@@ -152,13 +210,17 @@ export class IcosahedronScene {
         const onPointerDown = (e) => {
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             
+            const rect = container.getBoundingClientRect();
+            const trackWidth = rect.width;
+            const thumbW = (trackWidth - (padding * 2)) / 3;
+
             // Calculate Drag Offset
             if (e.target === thumb || thumb.contains(e.target)) {
                  const thumbRect = thumb.getBoundingClientRect();
                  dragOffset = clientX - thumbRect.left;
             } else {
                  // Clicking track: Center thumb on pointer
-                 dragOffset = thumbWidth / 2;
+                 dragOffset = thumbW / 2;
             }
 
             isDragging = true;
@@ -692,7 +754,7 @@ export class IcosahedronScene {
             if (e.deltaY === 0) return;
 
             const minD = 1.2;
-            const maxD = 60.0;
+            const maxD = 10.0; // Reduced from 60.0 to prevent disappearing
             const zoomFactor = 0.05; 
 
             const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
@@ -712,6 +774,9 @@ export class IcosahedronScene {
         
         const handleTouchStart = (e) => {
             updateInteraction();
+            // Prevent scroll initiations
+            if (e.cancelable) e.preventDefault();
+            
             if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
                 const dy = e.touches[0].pageY - e.touches[1].pageY;
@@ -721,11 +786,11 @@ export class IcosahedronScene {
 
         const handleTouchMove = (e) => {
             updateInteraction();
-            if (e.touches.length === 2) {
-                // Prevent default page zooming/panning
-                e.preventDefault();  
-                e.stopPropagation();
+            // Prevent default page zooming/panning/scrolling for ALL touches on canvas
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
 
+            if (e.touches.length === 2) {
                 const dx = e.touches[0].pageX - e.touches[1].pageX;
                 const dy = e.touches[0].pageY - e.touches[1].pageY;
                 const currentDist = Math.sqrt(dx * dx + dy * dy);
@@ -737,7 +802,7 @@ export class IcosahedronScene {
                     const touchZoomSpeed = 0.02; 
 
                     const minD = 1.2;
-                    const maxD = 60.0;
+                    const maxD = 10.0; // Reduced to 10.0
                     
                     const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
                     const dist = dir.length();
@@ -775,6 +840,7 @@ export class IcosahedronScene {
             
             this.width = this.container.clientWidth;
             this.height = this.container.clientHeight;
+            this.isMobile = (this.width <= 600);
 
             this.camera.aspect = this.width / this.height;
             this.camera.updateProjectionMatrix();
@@ -798,12 +864,24 @@ export class IcosahedronScene {
         // If not interacting and idle for > 2.5 seconds
         if (!this.isInteracting && this.lastInteractionTime && (Date.now() - this.lastInteractionTime > 2500)) {
              const lerpSpeed = 0.03;
-             // Reset Camera Position to initial (0,0,5)
-             if (this.initialCameraPos) {
-                 this.camera.position.lerp(this.initialCameraPos, lerpSpeed);
+             
+             // Determine Targets based on Device
+             let targetLookAt = new THREE.Vector3(0,0,0);
+             let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,5);
+
+             if (this.isMobile) {
+                 // Mobile: Shift center DOWN so object appears HIGHER (clearing the UI)
+                 const mobileShiftY = -0.8; 
+                 targetLookAt.set(0, mobileShiftY, 0);
+                 targetCamPos.y += mobileShiftY; 
+                 targetCamPos.z += 1.0; // Slightly further out to fit screen width
              }
-             // Reset Target to Origin (0,0,0)
-             this.controls.target.lerp(new THREE.Vector3(0,0,0), lerpSpeed);
+
+             // Reset Camera Position
+             this.camera.position.lerp(targetCamPos, lerpSpeed);
+             
+             // Reset Target
+             this.controls.target.lerp(targetLookAt, lerpSpeed);
         }
 
         const lerpFactor = this.lerpSpeed || 0.05;

@@ -55,6 +55,17 @@
             letter-spacing: 2px;
             pointer-events: none;
             user-select: none;
+            white-space: nowrap; /* Keep on one line */
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .instruction-overlay {
+                bottom: 30px;
+                font-size: 10px;
+                letter-spacing: 1px;
+            }
         }
     </style>
 </head>
@@ -64,7 +75,7 @@
     <div class="instruction-overlay">Drag to Rotate • Scroll to Zoom</div>
 
     <script type="module">
-        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.005';
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.100';
         
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('canvas-container');

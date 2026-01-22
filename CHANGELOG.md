@@ -1,3 +1,9 @@
+## v2.100 - 2026-01-21
+- **Mobile Experience Overhaul**:
+  - **Scroll Locking**: Implemented aggressive `touch-action` and `preventDefault()` logic to strictly keep the page from scrolling while interacting with the 3D model.
+  - **Zoom Constraints**: Capped the maximum zoom-out distance (`maxD = 10.0`) to prevent the model from becoming lost.
+  - **Viewport Optimization**: Added logic to shift the orbital center DOWN on mobile devices, effectively rendering the active model HIGHER in the viewport to clear bottom-aligned UI.
+
 ## v2.034 - 2026-01-21
 - **Visual Tune**: Increased base vertical tilt (pitch) from 10° to 20° to reveal more of the sphere's top crown.
 - **UX Enhancement**: Added Auto-Recenter logic.
