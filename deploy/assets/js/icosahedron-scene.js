@@ -34,7 +34,8 @@ export class IcosahedronScene {
             autoRecenter: 2.5,      // Seconds before camera recenter (data-auto-recenter)
             lerpSpeed: 0.015,       // Transition speed factor (data-lerp-speed)
             minVelocity: 0.0025,    // Min transition step per frame (data-min-velocity)
-            rotationRPM: 0.17       // Revs per second (approx) (data-rotation-rpm)
+            rotationRPM: 0.17,      // Revs per second (approx) (data-rotation-rpm)
+            cameraDistance: 5.0     // Z-Distance (Zoom) (data-camera-distance)
         };
         this.parseConfig();
 
@@ -61,6 +62,7 @@ export class IcosahedronScene {
         this.config.lerpSpeed = getFloat('data-lerp-speed', 0.015);
         this.config.minVelocity = getFloat('data-min-velocity', 0.0025);
         this.config.rotationRPM = getFloat('data-rotation-rpm', 0.17);
+        this.config.cameraDistance = getFloat('data-camera-distance', 5.0);
         
         console.log("Icosahedron Config Loaded:", this.config);
     }
@@ -531,7 +533,7 @@ export class IcosahedronScene {
         this.scene.background = new THREE.Color(0x05060f); 
 
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
-        this.camera.position.z = 5;
+        this.camera.position.z = this.config.cameraDistance;
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);

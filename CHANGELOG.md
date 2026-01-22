@@ -1,3 +1,7 @@
+## v2.137
+- **Scene**: Implemented `data-camera-distance` attribute to control the initial zoom level of the Icosahedron scene.
+- **Visuals**: Adjusted the neural network scale in `tech-demo.html` (Camera Z: 5.0 -> 7.5) to provide significant breathing room within its container.
+
 ## v2.136
 - **Layout**: Major redesign of `tech-demo.html`.
   - Moved title section to the left column, overlaying the 3D scene in the top-left corner.
