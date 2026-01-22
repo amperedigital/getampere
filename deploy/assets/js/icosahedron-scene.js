@@ -153,8 +153,7 @@ export class IcosahedronScene {
                     }
                     #ampere-standby-warning {
                          bottom: 85px; /* Higher on desktop to clear footer instructions */
-                         opacity: 0; /* Let JS handle opacity logic, but ensure layout is correct */
-                         /* However, we need to ensure JS can toggle it. */
+                         /* Opacity controlled by JS */
                     }
                 }
             `;

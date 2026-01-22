@@ -1,3 +1,7 @@
+## v2.120
+- **UI Standby**: Fixed Desktop visibility of the Standby Countdown warning by removing restrictive CSS opacity rule.
+- **Physics**: Reduced rotation speed by an additional 15% for both inner sphere and outer shell (353 frames/rev).
+
 ## v2.119
 - **Physics**: Reduced rotation speed by an additional 15% for both inner sphere and outer shell (353 frames/rev).
 
