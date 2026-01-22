@@ -1,3 +1,6 @@
+## v2.131
+- **New Page**: Added `tech-demo.html`, a split-screen technical demonstration page showcasing the 3D Icosahedron scene alongside real-time metrics and a responsive Tailwind layout.
+
 ## v2.130
 - **Configuration**: Explicitly added the new data attributes to the `icosahedron.html` and `icosahedron-blue-silver.html` markup so they are visible and editable.
 
