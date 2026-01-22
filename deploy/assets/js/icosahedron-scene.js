@@ -153,7 +153,8 @@ export class IcosahedronScene {
                     }
                     #ampere-standby-warning {
                          bottom: 85px; /* Higher on desktop to clear footer instructions */
-                         opacity: 1; /* Ensure visible */
+                         opacity: 0; /* Let JS handle opacity logic, but ensure layout is correct */
+                         /* However, we need to ensure JS can toggle it. */
                     }
                 }
             `;
@@ -268,7 +269,30 @@ export class IcosahedronScene {
         };
 
         const onPointerDown = (e) => {
-            this.lastInteractionTime = Date.now(); // Fix: Reset standby timer on UI interaction
+            this.lastInteractionTime = Date.now(); 
+
+            // Direct Click on Label?
+            if (e.target.classList && e.target.classList.contains('ampere-ui-label')) {
+                const targetId = e.target.getAttribute('data-id');
+                if (targetId) {
+                     // Force smooth transition instead of drag-jump
+                     thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                     this.setSystemState(targetId);
+                     return;
+                }
+            }
+
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            
+            const rect = container.getBoundingClientRect();
+                if (targetId) {
+                    // Restore transition for smooth slide
+                    thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                    this.setSystemState(targetId);
+                    return; // Skip drag logic
+                }
+            }
+
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             
             const rect = container.getBoundingClientRect();
@@ -280,13 +304,13 @@ export class IcosahedronScene {
                  const thumbRect = thumb.getBoundingClientRect();
                  dragOffset = clientX - thumbRect.left;
             } else {
-                 // Clicking track: Center thumb on pointer
+                 // Clicking track background: Center thumb on pointer
                  dragOffset = thumbW / 2;
             }
 
             isDragging = true;
             
-            // Jump if clicking track
+            // Initial Jump (Only if clicking track background, NOT labels)
             if (e.target !== thumb && !thumb.contains(e.target)) {
                  setThumbPosition(clientX);
             }
@@ -981,20 +1005,25 @@ export class IcosahedronScene {
             }
 
             // --- VIEW OFFSET FIX (Centering) ---
-            // On Mobile, shift the effective viewport DOWN slightly so the object appears HIGHER.
-            // This is safer than moving the object pivot (swapping target)
+            // On Mobile, shift viewport DOWN (Object UP).
             if (this.isMobile) {
-                // Shift Down by 12% of height -> Object appears UP by 12%
                 const offset = this.height * 0.12; 
                 this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
             } else {
-                this.camera.clearViewOffset();
+                // On Desktop, shift viewport DOWN slightly too (Object UP)
+                // to provide breathing room for the UI buttons
+                const offset = this.height * 0.08; 
+                this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
             }
         });
         
         // Trigger once to set init state
         if (this.isMobile) {
              const offset = this.height * 0.12; 
+             this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
+        } else {
+             // Init desktop offset
+             const offset = this.height * 0.08; 
              this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
         }
     }
@@ -1129,14 +1158,20 @@ export class IcosahedronScene {
                  
                  // --- OUTER SHELL ROTATION (Contra-Rotation + Biaxial) ---
                  // Rotate the lattice structure in the opposite direction
-                 // Speed: 50% of the core speed for a parallax effect
+                 // Speed: 30% of the core speed (v2.116)
                  if (this.outerShell) {
-                     // 1. Primary Axis: Lateral Spin (Contra)
-                     this.outerShell.rotateY(-currentSpeed * 0.50); 
+                     // 1. Primary Axis: Lateral Spin (REVERSED vs Center + Slower)
+                     // Center rotates around local Z (World Y).
+                     // We want outer shell to rotate the OTHER way.
+                     // Center uses positive rotation. So we use negative? 
+                     // Wait, previous code was -0.5. 
+                     // User asked to "Reverse the outer sphere's axial rotation".
+                     // So we change sign from - to +.
+                     this.outerShell.rotateY(currentSpeed * 0.30); 
                      
                      // 2. Secondary Axis: Tumble (Biaxial)
                      // Adding X-axis rotation creates a complex gyroscopic tumble ("Gimbal" feel)
-                     this.outerShell.rotateX(currentSpeed * 0.20); 
+                     this.outerShell.rotateX(currentSpeed * 0.15); 
                  }
              }
         }

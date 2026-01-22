@@ -1,3 +1,9 @@
+## v2.116
+- **Physics**: Reversed Outer Sphere rotation direction and reduced speed to 30% of core speed.
+- **Layout (Desktop)**: Applied vertical camera offset (8% height) to lift the object up, increasing visual gap between object and UI buttons.
+- **UI Interaction**: Fixed "Jump Glitch" on button clicks by disabling drag logic when clicking directly on labels.
+- **UI Standby**: Fixed Desktop Standby Warning visibility (CSS opacity logic corrected).
+
 ## v2.115
 - **Physics**: Reduced rotation speed by an additional 10% (300 frames/rev).
 - **Layout (Desktop)**: Lifted UI controls up by 25px (bottom: 110px) to provide more breathing room above instructions.
