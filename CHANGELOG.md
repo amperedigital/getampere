@@ -1,3 +1,8 @@
+## v2.111
+- **UI**: Added "Digital Dot" indicators next to UI labels to improve visual balance.
+- **UI**: Reduced Standby Warning to simple text (no pill background) and positioned it unobtrusively above instructions.
+- **Fix**: Removed duplicate CSS definitions for standby warning.
+
 ## v2.110
 - **UI Polish**: Switched UI label centering to Flexbox to fix slight horizontal misalignment on mobile.
 

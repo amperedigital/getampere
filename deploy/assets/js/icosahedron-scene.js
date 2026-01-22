@@ -82,6 +82,20 @@ export class IcosahedronScene {
                     pointer-events: none;
                     transition: color 0.3s ease, text-shadow 0.3s ease;
                 }
+
+                /* Digital Dot for Labels */
+                .ampere-ui-label::before {
+                    content: '';
+                    display: block;
+                    width: 4px;
+                    height: 4px;
+                    background-color: currentColor; 
+                    border-radius: 50%;
+                    margin-right: 6px;
+                    opacity: 0.8;
+                    box-shadow: 0 0 5px currentColor;
+                }
+
                 #ampere-ui-thumb {
                     position: absolute;
                     top: 6px;
@@ -96,32 +110,15 @@ export class IcosahedronScene {
                     box-sizing: border-box;
                 }
                 
-                /* Mobile Overrides */
-                @media (max-width: 600px) {
-                    #ampere-ui-track {
-                        bottom: 90px;
-                        width: calc(100% - 48px); /* 24px margins */
-                        max-width: 360px;
-                    }
-                    .ampere-ui-label {
-                        font-size: 10px;
-                        letter-spacing: 0px;
-                    }
-                }
-                
                 #ampere-standby-warning {
                     position: absolute;
-                    bottom: 140px;
+                    bottom: 45px; /* Between track and instructions */
                     left: 50%;
                     transform: translateX(-50%);
-                    padding: 8px 16px;
-                    background: rgba(10, 5, 0, 0.85);
-                    border: 1px solid rgba(255, 100, 50, 0.4);
-                    border-radius: 20px;
-                    color: #ffaa80;
+                    color: rgba(255, 120, 80, 0.9);
                     font-family: monospace;
-                    font-size: 13px;
-                    font-weight: 600;
+                    font-size: 11px;
+                    font-weight: 500;
                     letter-spacing: 1.5px;
                     text-transform: uppercase;
                     pointer-events: none;
@@ -129,8 +126,23 @@ export class IcosahedronScene {
                     transition: opacity 0.5s ease;
                     z-index: 999;
                     white-space: nowrap;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
                     text-shadow: 0 0 10px rgba(255, 60, 0, 0.3);
+                }
+                
+                /* Mobile Overrides */
+                @media (max-width: 600px) {
+                    #ampere-ui-track {
+                        bottom: 90px;
+                        width: calc(100% - 48px); /* 24px margins */
+                        max-width: 360px;
+                    }
+                    #ampere-standby-warning {
+                        bottom: 65px; /* Adjust for mobile layout */
+                    }
+                    .ampere-ui-label {
+                        font-size: 10px;
+                        letter-spacing: 0px;
+                    }
                 }
             `;
             document.head.appendChild(style);
