@@ -1,3 +1,6 @@
+## v2.132
+- **Assets**: Updated favicon links across all deployment pages (`index.html`, `tech-demo.html`, `icosahedron.html`, etc.) to point to the new `/favicon/` directory structure, ensuring consistent icons across devices (SVG, PNG 96x96, Apple Touch Icon).
+
 ## v2.131
 - **New Page**: Added `tech-demo.html`, a split-screen technical demonstration page showcasing the 3D Icosahedron scene alongside real-time metrics and a responsive Tailwind layout.
 
