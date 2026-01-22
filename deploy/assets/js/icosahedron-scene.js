@@ -105,7 +105,8 @@ export class IcosahedronScene {
                     border: 1px solid rgba(255, 255, 255, 0.15);
                     border-radius: 999px;
                     box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-                    transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+                    /* Smoother easing (easeOutQuint) */
+                    transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
                     z-index: 1;
                     box-sizing: border-box;
                 }
@@ -142,6 +143,17 @@ export class IcosahedronScene {
                     .ampere-ui-label {
                         font-size: 10px;
                         letter-spacing: 0px;
+                    }
+                }
+                
+                /* Desktop Override for Standby Warning Position */
+                @media (min-width: 601px) {
+                    #ampere-ui-track {
+                        bottom: 110px; /* Lifted up for breathing room */
+                    }
+                    #ampere-standby-warning {
+                         bottom: 85px; /* Higher on desktop to clear footer instructions */
+                         opacity: 1; /* Ensure visible */
                     }
                 }
             `;
@@ -250,8 +262,8 @@ export class IcosahedronScene {
             
             const state = this.positionToState[index];
             
-            // Restore transition for the snap
-            thumb.style.transition = 'left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            // Restore transition for the snap with smoother curve
+            thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             this.setSystemState(state);
         };
 
@@ -321,7 +333,7 @@ export class IcosahedronScene {
         if (this.uiThumb && this.uiContainer) {
             const labels = this.uiContainer.querySelectorAll('div[data-id]');
             const index = this.statePositions[newState];
-            const width = 320; 
+            const width = this.uiContainer.clientWidth || 320; 
             const padding = 6;
             const thumbWidth = (width - (padding * 2)) / 3;
             
@@ -818,9 +830,9 @@ export class IcosahedronScene {
 
             if (e.deltaY === 0) return;
 
-            const minD = 1.2;
+            const minD = 2.0; // Increased min zoom to prevent crowding UI
             const maxD = 10.0; // Reduced from 60.0 to prevent disappearing
-            const zoomFactor = 0.05; 
+            const zoomFactor = 0.05;  
 
             const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
             const dist = dir.length();
@@ -886,7 +898,7 @@ export class IcosahedronScene {
                     // Sensitivity factor for touch
                     const touchZoomSpeed = 0.02; 
 
-                    const minD = 1.2;
+                    const minD = 2.0; // Increased min zoom to prevent crowding UI
                     const maxD = 10.0; // Reduced to 10.0
                     
                     const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
@@ -1103,9 +1115,9 @@ export class IcosahedronScene {
 
         // --- ROTATION LOGIC ---
         if (this.centralSphere) {
-             // Target Speed: ~0.22 Rev Per Second (Power-Up State)
-             // Reduced additionally by 10% (v2.114)
-             const baseSpeed = (Math.PI * 2) / 265; 
+             // Target Speed: ~0.20 Rev Per Second (Power-Up State)
+             // Reduced additionally by 10% (v2.115)
+             const baseSpeed = (Math.PI * 2) / 300; 
              const currentSpeed = baseSpeed * this.simIntensity;
              
              // Rotation Axis: World Y (Vertical Spin)

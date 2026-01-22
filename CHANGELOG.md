@@ -1,3 +1,9 @@
+## v2.115
+- **Physics**: Reduced rotation speed by an additional 10% (300 frames/rev).
+- **Layout (Desktop)**: Lifted UI controls up by 25px (bottom: 110px) to provide more breathing room above instructions.
+- **Layout (Desktop)**: Increased minimum zoom distance (2.0) to prevent the object from overlapping the UI when fully zoomed in.
+- **Fix**: Corrected UI "slide" calculation to use dynamic container width, resolving button misalignment errors.
+
 ## v2.114
 - **Physics**: Reduced rotation speed by an additional 10% to accommodate future voice interaction.
 
