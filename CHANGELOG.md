@@ -1,3 +1,6 @@
+## v2.114
+- **Physics**: Reduced rotation speed by an additional 10% to accommodate future voice interaction.
+
 ## v2.113
 - **Physics**: Reduced maximum rotation speed by 50% for a smoother, more deliberate motion.
 
