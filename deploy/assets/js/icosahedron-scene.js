@@ -152,7 +152,7 @@ export class IcosahedronScene {
                         bottom: 110px; /* Lifted up for breathing room */
                     }
                     #ampere-standby-warning {
-                         bottom: 85px; /* Higher on desktop to clear footer instructions */
+                         bottom: 170px; /* Shifted ABOVE the track on desktop to ensure visibility */
                          /* Opacity controlled by JS */
                     }
                 }
@@ -1053,7 +1053,7 @@ export class IcosahedronScene {
             // Warn at 110s (10s countdown)
             
             const standbyTimeout = 120000;
-            const warningStart = standbyTimeout - 10000; 
+            const warningStart = standbyTimeout - 15000; // Increased to 15s warning
 
             if (this.systemState === 'ACTIVE') {
                  if (timeSinceInteraction > standbyTimeout) {
@@ -1063,16 +1063,26 @@ export class IcosahedronScene {
                      // Show Warning Countdown
                      const remaining = Math.ceil((standbyTimeout - timeSinceInteraction) / 1000);
                      if (this.standbyWarning) {
-                         this.standbyWarning.style.opacity = '1';
-                         this.standbyWarning.innerText = `STANDBY IN ${remaining}s`;
+                         // Only force opacity if not already 1 to avoid thrashing
+                         if (this.standbyWarning.style.opacity !== '1') {
+                            this.standbyWarning.style.opacity = '1';
+                         }
+                         const msg = `STANDBY IN ${remaining}s`;
+                         if (this.standbyWarning.innerText !== msg) {
+                             this.standbyWarning.innerText = msg;
+                         }
                      }
                  } else {
                      // Clear Warning
-                     if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
+                     if (this.standbyWarning && this.standbyWarning.style.opacity !== '0') {
+                        this.standbyWarning.style.opacity = '0';
+                     }
                  }
             } else {
                  // Not Active (OFF or already STANDBY) - Hide Warning
-                 if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
+                 if (this.standbyWarning && this.standbyWarning.style.opacity !== '0') {
+                    this.standbyWarning.style.opacity = '0';
+                 }
             }
         }
 

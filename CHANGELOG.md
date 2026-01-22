@@ -1,3 +1,7 @@
+## v2.121
+- **UI Standby**: Moved Desktop Standby Warning above the control track (`bottom: 170px`) to prevent footer overlap and ensure visibility.
+- **UI Standby**: Extended warning countdown to 15 seconds (from 10s) and optimized DOM updates to prevent flickering.
+
 ## v2.120
 - **UI Standby**: Fixed Desktop visibility of the Standby Countdown warning by removing restrictive CSS opacity rule.
 - **Physics**: Reduced rotation speed by an additional 15% for both inner sphere and outer shell (353 frames/rev).
