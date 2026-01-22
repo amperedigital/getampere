@@ -1,3 +1,7 @@
+## v2.158
+- **UI Refinement**:
+  - **Breadcrumb Formatting**: Added a leading slash to the breadcrumb navigation (`/ Visualization / V-Amp 2.0`) as per user request.
+
 ## v2.157
 - **Deployment Sync**: Forced redeploy to ensure breadcrumb visualization (`Visualization / V-Amp 2.0`) is propagated to all edges.
 - **Reference**: Confirmed single slash separator `/` preference for breadcrumb standard.
