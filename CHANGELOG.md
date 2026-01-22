@@ -1,3 +1,11 @@
+## v2.106 - 2026-01-21
+- **Mobile Centering Fix**:
+  - **View Offset**: Implemented `camera.setViewOffset()` on mobile devices to shift the viewport rendering downwards by 12%. This visually raises the 3D Orb towards the top of the screen (clearing the bottom area) **without** moving the camera pivot or rotation center.
+  - **Result**: The object spins perfectly on its axis but sits comfortably high in the frame, maintaining the correct perspective.
+- **Mobile UI**:
+  - Hid the toggle buttons on mobile as requested (v2.105 logic confirmed).
+  - Updated instructions to explain Tap gestures.
+
 ## v2.105 - 2026-01-21
 - **Mobile UI Overhaul**:
   - **Removed Button UI**: Hidden the "Standby | Power Up | Power Down" toggle switch on mobile devices (<600px) to maximize screen real estate for the 3D model.

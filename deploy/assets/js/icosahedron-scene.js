@@ -904,7 +904,24 @@ export class IcosahedronScene {
                      mat.resolution.set(this.width, this.height);
                  });
             }
+
+            // --- VIEW OFFSET FIX (Centering) ---
+            // On Mobile, shift the effective viewport DOWN slightly so the object appears HIGHER.
+            // This is safer than moving the object pivot (swapping target)
+            if (this.isMobile) {
+                // Shift Down by 12% of height -> Object appears UP by 12%
+                const offset = this.height * 0.12; 
+                this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
+            } else {
+                this.camera.clearViewOffset();
+            }
         });
+        
+        // Trigger once to set init state
+        if (this.isMobile) {
+             const offset = this.height * 0.12; 
+             this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
+        }
     }
 
     animate() {
