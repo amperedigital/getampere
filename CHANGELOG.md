@@ -1,3 +1,8 @@
+## v2.138
+- **Layout**: Refined `tech-demo.html` header layout.
+  - Increased header padding to `p-20` on desktop to give typography more breathing room from the edge.
+  - Moved the "LIVE DEMO" status pill to the top-right corner of the left visualization column, creating a balanced split header.
+
 ## v2.137
 - **Scene**: Implemented `data-camera-distance` attribute to control the initial zoom level of the Icosahedron scene.
 - **Visuals**: Adjusted the neural network scale in `tech-demo.html` (Camera Z: 5.0 -> 7.5) to provide significant breathing room within its container.
