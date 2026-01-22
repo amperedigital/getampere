@@ -1,3 +1,6 @@
+## v2.122
+- **UI Standby**: Increased warning countdown duration from 15s to 30s to ensure user visibility before timeout.
+
 ## v2.121
 - **UI Standby**: Moved Desktop Standby Warning above the control track (`bottom: 170px`) to prevent footer overlap and ensure visibility.
 - **UI Standby**: Extended warning countdown to 15 seconds (from 10s) and optimized DOM updates to prevent flickering.

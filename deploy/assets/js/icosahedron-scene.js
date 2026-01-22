@@ -1050,10 +1050,10 @@ export class IcosahedronScene {
             
             // 2. Auto-Standby Mode (2 Minutes = 120s)
             // If currently ACTIVE and idle for 120s, drift to STANDBY
-            // Warn at 110s (10s countdown)
+            // Warn at 90s (30s countdown)
             
             const standbyTimeout = 120000;
-            const warningStart = standbyTimeout - 15000; // Increased to 15s warning
+            const warningStart = standbyTimeout - 30000; // Increased to 30s warning
 
             if (this.systemState === 'ACTIVE') {
                  if (timeSinceInteraction > standbyTimeout) {
