@@ -1,3 +1,7 @@
+## v2.152
+- **Typography Fix**: Removed `text-transform: uppercase` from the standby warning CSS inject.
+  - Ensures the unit "s" (seconds) appears as lowercase (e.g., "STANDBY IN 30s") instead of "30S".
+
 ## v2.151
 - **Mobile Layout Polish**:
   - Restored internal text padding to `p-8` (was reduced to `p-4` in v2.150) to fix "jammed text" issue while keeping the 1rem outer container margin.

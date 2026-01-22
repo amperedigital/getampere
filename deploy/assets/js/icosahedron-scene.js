@@ -152,7 +152,7 @@ export class IcosahedronScene {
                     font-size: 11px;
                     font-weight: 500;
                     letter-spacing: 1.5px;
-                    text-transform: uppercase;
+                    /* text-transform: uppercase; Removed to allow lowercase 's' */
                     pointer-events: none;
                     opacity: 0;
                     transition: opacity 0.5s ease;
