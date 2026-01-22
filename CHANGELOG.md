@@ -1,3 +1,9 @@
+## v2.154
+- **Precision Layout**:
+  - **Pill Alignment (Desktop)**: Moved "Live Demo" pill specific to desktop to strictly straddle the container border.
+    - Updated position to `lg:top-12` (matching container's `lg:inset-12`).
+    - Added `lg:-translate-y-1/2` to vertically center the pill (and its dot) exactly on the border line.
+
 ## v2.153
 - **Responsive Design Fixes**:
   - **Desktop 3D Scaling**: Reduced base `data-camera-distance` to `6.0` (was 9.5) to "maximize" the neural net size on desktop (closer camera).
