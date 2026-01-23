@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.254] - 2026-01-23
+### Changed
+- **Mobile Layout Fine-Tuning**:
+    -   **Vertical Positioning**: Adjusted the 3D scene container margin to `-mt-4` and height to `440px`.
+        -   *Goal 1*: Fix the overlap where the ring was cutting into the "Architecture" heading.
+        -   *Goal 2*: Pull the bottom card grid up closer to the ring to reduce the "dead space" void.
+    -   **Neuronet Sizing**: Increased `mobileBoost` scaling from 1.6 to 1.9. This significantly enlarges the central AI sphere/icosahedron relative to the Halo Ring, filling the inner void for a more "powerful" look.
+
 ## [v2.253] - 2026-01-23
 ### Changed
 - **Mobile Interaction Fixes**:
