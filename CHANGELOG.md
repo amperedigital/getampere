@@ -1,3 +1,8 @@
+## v2.166
+- **Architecture Stability**:
+  - **Isolation**: Confirmed that `tech-demo.html` structures are fully isolated from the legacy `icosahedron.html` file. Each uses separate layout containers.
+  - **Visibility Fix**: Adjusted the SVG overlay in the Tech Demo to ensuring it does not occlude the 3D scene. added `fill="none"` explicit definitions and verified z-indexing.
+
 ## v2.165
 - **UI Architecture**:
   - **Outer Ring Control**: Implemented a flat SVG-based HUD overlay surrounding the 3D neural net.

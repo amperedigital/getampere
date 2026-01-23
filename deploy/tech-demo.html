@@ -95,8 +95,8 @@
                     <svg class="w-[140%] h-[140%] lg:w-[95%] lg:h-[95%] opacity-60 animate-[spin_60s_linear_infinite]" viewBox="0 0 800 800" style="will-change: transform;">
                         <defs>
                             <!-- Defined path for text to follow (Clockwise circle) -->
-                            <!-- Radius 300 centered at 400,400 -->
-                            <path id="text-ring-path" d="M 400, 100 A 300,300 0 0,1 400, 700 A 300,300 0 0,1 400, 100" />
+                            <!-- Radius 300 centered at 400,400. Added fill="none" to prevent occlusion. -->
+                            <path id="text-ring-path" fill="none" d="M 400, 100 A 300,300 0 0,1 400, 700 A 300,300 0 0,1 400, 100" />
                         </defs>
 
                         <!-- Outer Decorative Rings -->
