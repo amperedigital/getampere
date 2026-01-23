@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.209] - 2026-01-17
+### Changed
+- **Neuronet Size Adjustment**: Slightly increased camera distance to `6.9` (was 6.8) to further reduce the visual size of the central neuronet, ensuring better clearance from the inner ring.
+
 ## [v2.208] - 2026-01-17
 ### Fixed
 - **Power State Logic**: Restored "Halo Dimming" functionality for OFF/STANDBY states. `HaloRotator` now explicitly toggles the `.halo-dimmed` class on the SVG root.
