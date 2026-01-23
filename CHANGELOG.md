@@ -1,3 +1,8 @@
+## v2.184
+- **Tech Demo**:
+    - **Initialization**: Fixed a layout bug where the 3D scene would load slightly off-center and only correct itself after a window resize.
+    - **Padding**: Tuned `data-camera-distance` to `5.2` (from `6.0`) to achieve the requested ~3rem internal padding between the Neural Net and the Ring.
+
 ## v2.183
 - **Tech Demo**:
     - **Stability**: Fixed a JavaScript crash (`Uncaught TypeError: reading 'target'`) caused by uninitialized controls in the auto-recenter logic.

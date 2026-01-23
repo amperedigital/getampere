@@ -1105,7 +1105,7 @@ export class TechDemoScene {
     }
 
     handleResize() {
-        window.addEventListener('resize', () => {
+        const onResize = () => {
             if (!this.container) return;
             
             this.width = this.container.clientWidth;
@@ -1119,43 +1119,22 @@ export class TechDemoScene {
 
             this.renderer.setSize(this.width, this.height);
 
-            // On Mobile Resize (Orientation Change), force check camera distance soon
-            // We don't snap immediately to avoid jarring, auto-recenter handles it.
-            
             if (this.fatLines) {
                  this.fatLines.forEach(mat => {
                      mat.resolution.set(this.width, this.height);
                  });
             }
 
-            // --- STRICT CENTERING (v2.180) ---
+            // --- STRICT CENTERING (v2.183) ---
             // Removed View offsets to guarantee mathematical center alignment with the ring.
+            // This now applies on INIT as well as RESIZE.
             this.camera.clearViewOffset();
+        };
 
-            // Mobile Z adjustment remains for framing
-            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
-            
-            /* Legacy Offset Code Removed
-            if (this.isMobile) {
-                const offset = this.height * 0.12; 
-                this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
-            } else {
-                const offset = this.height * 0.08; 
-                this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
-            }
-            */
-
-        });
+        window.addEventListener('resize', onResize);
         
         // Trigger once to set init state
-        if (this.isMobile) {
-             const offset = this.height * 0.12; 
-             this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
-        } else {
-             // Init desktop offset
-             const offset = this.height * 0.08; 
-             this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
-        }
+        onResize();
     }
 
     animate() {
