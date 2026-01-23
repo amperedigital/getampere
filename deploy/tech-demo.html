@@ -213,11 +213,14 @@
         <!-- Right Column: Interactive Grid -->
         <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
         <!-- Responsive Fix: Enabled h-full for the grid container to allow cards to stretch -->
+        <!-- Fix v2.243: Changed overflow-y-auto so we ALWAYS have a scrollbar if content (cards) >> screen height. -->
+        <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
         <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-6 w-full h-auto lg:h-full">
+            <!-- Fix v2.243: Added min-h-[700px] to ensure the grid never squashes the cards beyond readability. -->
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-6 w-full h-auto lg:h-full lg:min-h-[700px]">
                 
                 <!-- Card 1: Front Door Agent -->
                 <!-- Added h-full to flex container -->

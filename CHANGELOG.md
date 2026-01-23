@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.243] - 2026-01-23
+### Fixed
+- **Grid Clipping**: Added a `min-h-[700px]` constraint to the desktop Grid container.
+    - **Logic**: Previously, the `h-full` + `grid-rows-3` directive forced the cards to shrink indefinitely on short screens (< 800px height), causing content clipping.
+    - **Fix**: The grid now respects the viewport height *until* it hits 700px. Below that, it refuses to shrink further and enables the parent container's scrollbar (`overflow-y-auto`), ensuring cards remain readable even on short landscape windows.
+
 ## [v2.242] - 2026-01-23
 ### Added
 - **Conversation AI**: integrated ElevenLabs Convai widget (`agent_4501ka281xkpe6e8jzbspgy9qh4d`) to the tech demo page.
