@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.228] - 2026-01-23
+### Changed
+- **Ring Visualization**: Increased the curvature of the ring labels by ~7-8% to better align with the circular tracks.
+    - **Outer Ring**: Reduced path radius from `275` to `255`, offset text `dy` from `-12` to `-32` to maintain visual position while increasing text curvature.
+    - **Inner Ring**: Reduced path radius from `205` to `190`, offset text `dy` from `-12` to `-27`.
+
 ## [v2.227] - 2026-01-23
 ### Fixed
 - **Standby Logic**: Fixed an issue where the Standby Timer would continue counting down even while the user was interacting with the canvas/scene. Added global event listeners (`mousemove`, `click`, `touch`, `scroll`) to the entire document to ensure `lastInteractionTime` is correctly updated on any activity.
