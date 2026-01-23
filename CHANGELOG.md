@@ -1,10 +1,15 @@
 # Changelog
 
-## [v2.225] - 2026-01-23
+## [v2.226] - 2026-01-23
 ### Refactored
 - **Tailwind Cleanup**: Enforced strict utility-first CSS by replacing legacy custom classes (`.ring-text-*`) with inline Tailwind classes for the SVG Ring Visualization.
 - **Code Hygiene**: Removed obsolete `<style>` blocks associated with the old ring typography.
+- **Code Hygiene**: Removed redundant in-browser Tailwind CDN scripts (production build utilizes `styles.css`).
 - **Code Hygiene**: Updated `tech-demo-scene.js` and `halo-rotator.js` to utilize full Tailwind string injection instead of partial class composition.
+
+## [v2.225] - 2026-01-23
+### Skipped
+- Internal build tag.
 
 ## [v2.224] - 2026-01-23
 ### Changed
