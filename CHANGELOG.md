@@ -1,3 +1,7 @@
+## v2.174
+- **Critical Control Fix**:
+  - **Null Safety**: Wrapped `this.controls.update()` in a conditional check within the main render loop. This prevents the "Cannot read properties of undefined" error caused by disabling `OrbitControls` in the previous version.
+
 ## v2.173
 - **Tech Demo Cleanup**:
   - **Controls Disabled**: Removed `OrbitControls` (Zoom/Pan/Rotate) from `tech-demo-scene.js`. The 3D view is now locked to a standard perspective, eliminating alignment issues between the 2D overlay and the 3D object.

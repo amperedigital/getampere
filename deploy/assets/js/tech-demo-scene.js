@@ -1146,7 +1146,7 @@ export class TechDemoScene {
     animate() {
         requestAnimationFrame(this.animate.bind(this));
         
-        this.controls.update();
+        if (this.controls) this.controls.update();
 
         // --- Auto-Recenter Logic ---
         // If not interacting and idle for > X seconds
