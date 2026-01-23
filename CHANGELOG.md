@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.219] - 2026-01-23
+### Changed
+- **Agent Grid Typography**: Refined the Dense Metrics UI cards based on design review.
+    - **Titles**: Removed bold weight for a cleaner look (`font-normal`).
+    - **Subtitles**: Increased font size for better readability (`text-[10px]` -> `text-xs`).
+
 ## [v2.218] - 2026-01-17
 ### Added
 - **Dense Metrics UI**: Completely redesigned the Agent Grid cards to serve as dense data dashboards.
