@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.210] - 2026-01-17
+### Changed
+- **Neuronet Size Adjustment**: Increased camera distance from `6.9` to `7.2` to ensure the central neuronet fits comfortably inside the inner ring without overlap.
+
 ## [v2.209] - 2026-01-17
 ### Changed
 - **Neuronet Size Adjustment**: Slightly increased camera distance to `6.9` (was 6.8) to further reduce the visual size of the central neuronet, ensuring better clearance from the inner ring.
