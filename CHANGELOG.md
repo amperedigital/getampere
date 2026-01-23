@@ -1,3 +1,8 @@
+## v2.168
+- **Critical Visibility Fix**:
+  - **CSS Conflict Resolution**: Removed the generic `relative` class from the scene container which was overriding `absolute inset-0`, causing the container to collapse to 0 height.
+  - **Initialization Stability**: Added a 50ms `setTimeout` delay to the 3D scene initialization to ensure the DOM layout engine has fully computed the container dimensions before the WebGL renderer attaches.
+
 ## v2.167
 - **Scene Recovery**:
   - **Layout Fix**: Replaced `w-full h-full relative` with `absolute inset-0` for the `#tech-demo-scene` container.

@@ -77,7 +77,7 @@
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 relative group/scene">
+            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 group/scene">
                 <!-- 3D Scene Layer (Z-1) - Moved higher to ensure it's not buried -->
                 <div id="tech-demo-scene" 
                      class="absolute inset-0 z-0"
@@ -213,12 +213,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('tech-demo-scene');
             if(container) {
-                // Initialize Scene
-                console.log('Initializing Tech Demo...');
-                const scene = new IcosahedronScene(container);
-                
-                // Optional: Expose to window for debugging
-                window.demoScene = scene;
+                // Initialize Scene with a slight delay to ensure layout stability
+                // This prevents 0x0 canvas issues in the new grid layout
+                setTimeout(() => {
+                    console.log('Initializing Tech Demo...');
+                    const scene = new IcosahedronScene(container);
+                    
+                    // Optional: Expose to window for debugging
+                    window.demoScene = scene;
+                }, 50);
             }
         });
     </script>
