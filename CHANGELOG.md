@@ -1,3 +1,8 @@
+## v2.163
+- **Layout Precision**:
+  - **Gap Consistency**: Reduced the central gutter between the 3D scene and the grid to **2rem** (from 3rem) to match the internal grid spacing.
+  - **Grid Spacing**: Increased the internal grid gap from `gap-3` (0.75rem) to `gap-8` (**2rem**), creating a uniform rhythmic spacing across the entire right pane and the center division.
+
 ## v2.162
 - **Layout Precision**:
   - **Symmetrical Grids**: Adjusted desktop layout to ensure perfect symmetry between the Left (3D) and Right (Grid) columns.

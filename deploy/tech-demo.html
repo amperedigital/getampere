@@ -76,8 +76,8 @@
             <!-- Scene Container with "Breathing Room" Packaging -->
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
-            <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1.5rem (6) from center for even gutter. -->
-            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-6 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0">
+            <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
+            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0">
                 <div id="tech-demo-scene" 
                      class="w-full h-full"
                      data-standby-timeout="120"
@@ -94,11 +94,11 @@
         </div>
 
         <!-- Right Column: Interactive Grid -->
-        <!-- Desktop Padding: 3rem (12) vertical/right, 1.5rem (6) left to form uniform 3rem center gap. -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-6 overflow-y-auto lg:overflow-hidden">
+        <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto lg:overflow-hidden">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 grid-rows-3 gap-3 w-full h-full min-h-[600px] lg:min-h-0">
+            <div class="grid grid-cols-2 lg:grid-cols-2 grid-rows-3 gap-8 w-full h-full min-h-[600px] lg:min-h-0">
                 
                 <!-- Card 1: System Stats (Existing) -->
                 <div class="border border-white/5 p-6 rounded-2xl bg-white/5 flex flex-col justify-center gap-6 shadow-xl backdrop-blur-sm">
