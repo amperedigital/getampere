@@ -1,7 +1,12 @@
 # Changelog
 
-## [v2.246] - 2026-01-23
+## [v2.247] - 2026-01-23
 ### Changed
+- **Mobile Layout Overhaul**:
+    -   Converted Mobile Header from `absolute` (overlapping) to `relative` (block flow), pushing the 3D scene down.
+    -   Changed Main Wrapper to `min-h-screen` instead of `h-screen` on mobile to allow natural scrolling.
+    -   Restructured 3D Scene Container on mobile to be a fixed-height (`450px`) relative block instead of an absolute inset, preventing it from being squashed or covered by text.
+    -   Ensured Grid Cards flow naturally below the 3D scene.
 - **Debug Logging**: Added detailed console logging for `resizeObserver` and window dimensions to investigate layout thrashing loop.
 
 ## [v2.245] - 2026-01-23
