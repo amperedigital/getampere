@@ -31,8 +31,24 @@ export class HaloRotator {
         this.attachListeners();
         this.rafId = requestAnimationFrame(this.update);
         
-        // Initial Highlight
+        // Initial Highlights (Start in "Off" visual state, let Scene controller wake it up)
+        this.isActive = false; 
         this.updateHighlights(0);
+    }
+
+    setPowerState(state) {
+        this.isActive = (state === 'ACTIVE');
+        
+        // Toggle Dimmed Visuals
+        if (this.isActive) {
+            this.svg.classList.remove('halo-dimmed');
+            this.svg.classList.add('cursor-grab');
+            this.svg.style.pointerEvents = 'auto';
+        } else {
+            this.svg.classList.add('halo-dimmed');
+            this.svg.classList.remove('cursor-grab');
+            this.svg.style.pointerEvents = 'none'; // Optional: totally disable clicks
+        }
     }
 
     attachListeners() {
@@ -44,6 +60,8 @@ export class HaloRotator {
     }
 
     handlePointerDown(e) {
+        if (!this.isActive) return;
+
         // Only trigger if clicking on/near the ring? 
         // For now, entire SVG area works to be friendly
         this.isDragging = true;
@@ -78,6 +96,8 @@ export class HaloRotator {
     }
 
     handleWheel(e) {
+        if (!this.isActive) return;
+        
         e.preventDefault();
         // Wheel Down (positive) -> Rotate CW (positive angle)
         const sensitivity = 0.2;

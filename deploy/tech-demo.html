@@ -163,6 +163,60 @@
                                     .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: fill 0.3s, text-shadow 0.3s; }
                                     .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
                                     .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+
+                                    /* --- System Power State Transitions --- */
+                                    
+                                    /* 1. Main Title Dimming (Based on Body Attribute) */
+                                    [data-system-state="OFF"] h1,
+                                    [data-system-state="STANDBY"] h1 {
+                                        opacity: 0.3;
+                                        transition: opacity 1.5s ease;
+                                    }
+                                    [data-system-state="OFF"] h1 span,
+                                    [data-system-state="STANDBY"] h1 span {
+                                        color: #334155 !important; /* Slate-700 */
+                                        background: none !important;
+                                        -webkit-text-fill-color: #334155 !important;
+                                        text-shadow: none !important;
+                                        filter: none !important;
+                                        transition: all 1.5s ease;
+                                    }
+                                    /* Active State Restoration */
+                                    [data-system-state="ACTIVE"] h1,
+                                    [data-system-state="ACTIVE"] h1 span {
+                                        transition: all 1.0s cubic-bezier(0.4, 0, 0.2, 1);
+                                    }
+
+                                    /* 2. Ring/Halo Dimming (Controlled by .halo-dimmed class on SVG) */
+                                    /* Transition Base */
+                                    svg circle, svg path, svg text, svg .ring-text {
+                                        transition: all 1.5s ease;
+                                    }
+                                    
+                                    /* Dimmed State Overrides */
+                                    svg.halo-dimmed circle[fill^="#"], 
+                                    svg.halo-dimmed circle[class*="fill-"],
+                                    svg.halo-dimmed path[class*="fill-"] {
+                                        fill: #1e293b !important; /* Slate-800 */
+                                        filter: none !important;
+                                    }
+                                    
+                                    svg.halo-dimmed text,
+                                    svg.halo-dimmed .ring-text {
+                                        fill: #1e293b !important;
+                                        text-shadow: none !important;
+                                    }
+                                    
+                                    svg.halo-dimmed circle[fill="none"],
+                                    svg.halo-dimmed path[fill="none"] {
+                                        stroke: #1e293b !important;
+                                    }
+                                    
+                                    /* Hide Static Markers Glow */
+                                    svg.halo-dimmed .drop-shadow-\[0_0_8px_rgba\(96\,165\,250\,0\.6\)\] {
+                                        filter: none !important;
+                                        fill: #1e293b !important;
+                                    }
                                 </style>
 
                                 <!-- Text mapped to #ring-track (Reference: Start 15deg. 3oc=95.8%, 9oc=45.8%) -->

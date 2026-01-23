@@ -1,3 +1,10 @@
+## [v2.205] - 2026-01-23
+- **Tech Demo**:
+  - **Power Sequence Logic**: Linked the system state (OFF/STANDBY/ACTIVE) to the visual illumination of the interface.
+    - **OFF/STANDBY**: The Halo Ring (dots, text, lines) and the Main Title are now **dimmed** (light grey, no glow) and interaction is **locked**.
+    - **POWER UP**: Logic ramps up the illumination (Standard Colors + Glow) and **unlocks** the Halo Ring for interaction (scrolling/selection).
+  - **Visual Integration**: Added CSS transitions to smoothly ramp illumination up/down based on the `data-system-state` attribute and `.halo-dimmed` class.
+
 ## [v2.204] - 2026-01-23
 - **Tech Demo**:
   - **Centering Polish**: Refined the radial positioning of both text labels and selection dots to center them perfectly within the 60px ring band (r=270-330).

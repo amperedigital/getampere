@@ -486,6 +486,14 @@ export class TechDemoScene {
         this.lerpSpeed = this.config.lerpSpeed;
 
         this.systemState = newState;
+        
+        // Update Body Attribute for Global CSS Styling (Titles, etc.)
+        document.body.setAttribute('data-system-state', newState);
+
+        // Sync HaloRotator State
+        if (this.haloRotator) {
+            this.haloRotator.setPowerState(newState);
+        }
 
         // Update Toggle Switch UI
         if (this.uiThumb && this.uiContainer) {
