@@ -1,10 +1,11 @@
-## [v2.201] - 2026-01-23
+## [v2.202] - 2026-01-23
 - **Tech Demo**:
   - **Typography**: Updated the main title styling.
     - "AI" remains **Bold**.
     - "Neural" and "Architecture" are now both **Light**.
   - **Clipping Fix (v2.200 carried over)**: Rotated text track by 15 degrees to move the seam into a gap, preventing clipping of the "Diagnostics" label.
   - **Alignment (v2.200 carried over)**: Recalculated radial offsets for all 12 labels to align with the new track rotation.
+  - **Visual Cleanup**: Removed the static 6 o'clock marker to reduce visual clutter and emphasize the single top activation point.
 
 ## [v2.199] - 2026-01-23
 - **Tech Demo**:
