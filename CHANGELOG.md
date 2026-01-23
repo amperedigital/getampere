@@ -1,3 +1,8 @@
+## v2.167
+- **Scene Recovery**:
+  - **Layout Fix**: Replaced `w-full h-full relative` with `absolute inset-0` for the `#tech-demo-scene` container.
+  - **Reasoning**: The flex/relative behavior of the parent container was causing the canvas to collapse to 0 height. `absolute inset-0` forces it to fill the rounded frame regardless of the content flow.
+
 ## v2.166
 - **Architecture Stability**:
   - **Isolation**: Confirmed that `tech-demo.html` structures are fully isolated from the legacy `icosahedron.html` file. Each uses separate layout containers.

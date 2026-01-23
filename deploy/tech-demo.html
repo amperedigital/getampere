@@ -78,9 +78,9 @@
             <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
             <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 relative group/scene">
-                <!-- 3D Scene Layer (Z-0) -->
+                <!-- 3D Scene Layer (Z-1) - Moved higher to ensure it's not buried -->
                 <div id="tech-demo-scene" 
-                     class="w-full h-full relative z-0"
+                     class="absolute inset-0 z-0"
                      data-standby-timeout="120"
                      data-standby-warning="30"
                      data-auto-recenter="2.5"
