@@ -182,9 +182,10 @@ export class TechDemoScene {
                 }
                 
                 /* Mobile: Move UI higher to avoid edge of small container */
+                /* Adjusted v2.250: Moved to 40px to clear edge, considering overlaps */
                 @media (max-width: 600px) {
                     #ampere-ui-track {
-                        bottom: 20px !important;
+                        bottom: 40px !important;
                     }
                 }
 
@@ -318,7 +319,8 @@ export class TechDemoScene {
                 }
                 @media (max-width: 600px) {
                     #ampere-system-status {
-                         bottom: 105px; /* Moved above track (40px + 48px height + gap) */
+                         /* Mobile: Push higher to clear the track (Track@40px + 48px height + 12px gap) */
+                         bottom: 100px; 
                     }
                 }
                 @media (min-width: 601px) {
@@ -1265,7 +1267,13 @@ export class TechDemoScene {
                 // objectSize = (Visible Height * Aspect) * 0.45
                 // Visible Height = objectSize / (Aspect * 0.45)
                 const targetCoverage = ringToViewportRatio * fillPercentage;
-                targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage);
+                
+                // Increase size for Mobile (custom boost)
+                // If width is constrained, we can afford to let the object be visually larger relative to the "ring box"
+                // because the ring box on mobile occupies nearly 100% of the screen width.
+                const mobileBoost = (this.isMobile) ? 1.3 : 1.0; 
+                
+                targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage * mobileBoost);
             }
 
             // Calculate Required Distance

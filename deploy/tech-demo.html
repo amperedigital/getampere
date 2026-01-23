@@ -58,9 +58,9 @@
 
             <!-- Scene Container with "Breathing Room" Packaging -->
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
-            <!-- Mobile: Stacked relative block. Fixed height. -->
+            <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="relative w-[calc(100%-2rem)] mx-auto h-[450px] mb-8 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] z-0 group/scene flex items-center justify-center bg-white/5 border border-white/5">
+            <div class="relative w-full mx-auto h-[480px] mb-8 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
                 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
@@ -125,12 +125,12 @@
                                 <g transform="rotate(210)"><circle cx="312" cy="0" r="4" data-index="10" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
 
                                 <!-- Labels (Outer Track) -->
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
                             </g>
 
                             <!-- RING 2: INNER (Slate) - Odd Indices -->
@@ -150,12 +150,12 @@
                                 <g transform="rotate(210)"><circle cx="242" cy="0" r="4" data-index="11" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
 
                                 <!-- Labels (Inner Track - Aligned to Outer Track StartOffsets) -->
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="1"><textPath href="#ring-track-inner" startOffset="70.83%" text-anchor="middle">Front Door Agent</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="3"><textPath href="#ring-track-inner" startOffset="87.5%" text-anchor="middle">Demo Guide</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="5"><textPath href="#ring-track-inner" startOffset="4.17%" text-anchor="middle">Onboarding</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="7"><textPath href="#ring-track-inner" startOffset="20.83%" text-anchor="middle">Tech Specialist</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="9"><textPath href="#ring-track-inner" startOffset="37.5%" text-anchor="middle">Sales Advisor</textPath></text>
-                                <text class="font-mono text-xs font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="11"><textPath href="#ring-track-inner" startOffset="54.17%" text-anchor="middle">Booking Agent</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="1"><textPath href="#ring-track-inner" startOffset="70.83%" text-anchor="middle">Front Door Agent</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="3"><textPath href="#ring-track-inner" startOffset="87.5%" text-anchor="middle">Demo Guide</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="5"><textPath href="#ring-track-inner" startOffset="4.17%" text-anchor="middle">Onboarding</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="7"><textPath href="#ring-track-inner" startOffset="20.83%" text-anchor="middle">Tech Specialist</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="9"><textPath href="#ring-track-inner" startOffset="37.5%" text-anchor="middle">Sales Advisor</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="11"><textPath href="#ring-track-inner" startOffset="54.17%" text-anchor="middle">Booking Agent</textPath></text>
                             </g>
 
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
