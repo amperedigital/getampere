@@ -1,3 +1,9 @@
+## v2.162
+- **Layout Precision**:
+  - **Symmetrical Grids**: Adjusted desktop layout to ensure perfect symmetry between the Left (3D) and Right (Grid) columns.
+    - **Height Matching**: Both containers now use identical vertical insets (Top/Bottom 3rem), ensuring the 3D viewport and the Controls Grid are exactly the same height.
+    - **Center Gap**: Set internal margins to `1.5rem` from the center line on both sides, creating a uniform `3rem` gutter that matches the outer screen margins.
+
 ## v2.161
 - **Layout Overhaul**:
   - **Right Column Grid**: Converted the interactive panel into a 6-box grid (2 cols x 3 rows).
