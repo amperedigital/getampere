@@ -1,3 +1,6 @@
+## v2.175
+- **Tech Demo**: Added new HUD metrics at clock positions 4 and 5 ("Encryption", "Latency") to the SVG ring overlay.
+
 ## v2.174
 - **Critical Control Fix**:
   - **Null Safety**: Wrapped `this.controls.update()` in a conditional check within the main render loop. This prevents the "Cannot read properties of undefined" error caused by disabling `OrbitControls` in the previous version.
