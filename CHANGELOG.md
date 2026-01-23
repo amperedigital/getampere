@@ -1,3 +1,9 @@
+## v2.177
+- **Tech Demo**:
+    - **Visualization**: Refined the ring overlay to use tangential text rotation. Titles now wrap around the circle face.
+    - **Layout**: Markers moved to `r=350` (outside the main band, inside the border).
+    - **Typography**: Text is now oriented "Feet Inward" (rotates with the ring relative to center), improving readability at the 6 o'clock activation point.
+
 ## v2.176
 - **Tech Demo**:
     - **Visualization**: Reduced size of the neural network 3D object to create more negative space between it and the ring.
