@@ -1230,7 +1230,7 @@ export class TechDemoScene {
             const tanHalfFOV = Math.tan( (FOV * Math.PI / 180) / 2 );
             const objectSize = 3.0; // Radius 1.5 * 2
             const ringToViewportRatio = 400 / 800; // Inner Ring (400px) in Box (800px)
-            const fillPercentage = 0.90; // 90% of Inner Ring (slightly safer than 95%)
+            const fillPercentage = 0.95; // 95% of Inner Ring (User Request v2.239)
             
             let targetVisibleSize;
 
@@ -1270,12 +1270,15 @@ export class TechDemoScene {
             }
 
             // --- STRICT CENTERING (v2.183) ---
-            // Removed View offsets to guarantee mathematical center alignment with the ring.
-            // This now applies on INIT as well as RESIZE.
             this.camera.clearViewOffset();
         };
 
-        window.addEventListener('resize', onResize);
+        // Replace window.resize with ResizeObserver (v2.239)
+        // This handles container layout shifts that don't trigger window resize (e.g. flexbox adjustments)
+        this.resizeObserver = new ResizeObserver(() => {
+            onResize();
+        });
+        this.resizeObserver.observe(this.container);
         
         // Trigger once to set init state
         onResize();
