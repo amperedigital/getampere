@@ -72,12 +72,28 @@ export class TechDemoScene {
     initControls() {}
 
     initHaloRotator() {
-        // Initialize the Ring Rotator
+        // Initialize the Ring Rotators
         // SVG is a sibling of the container (#tech-demo-scene), so we look at the parent
         const svg = this.container.parentElement.querySelector('svg');
         if (svg) {
-            console.log('Initializing Halo Rotator...');
-            this.haloRotator = new HaloRotator(svg);
+            console.log('Initializing Halo Rotators (Dual Ring)...');
+            
+            // Outer Ring (#halo-ring-outer): Blue, r=270-330 approx
+            // Hit Area: > 265
+            this.rotatorOuter = new HaloRotator(svg, '#halo-ring-outer', {
+                hitMin: 265,
+                hitMax: 800, // Extend to edge
+                snapInterval: 60 // 6 items = 60 degrees
+            });
+
+            // Inner Ring (#halo-ring-inner): Purple, r=200-260 approx
+            // Hit Area: < 265
+            this.rotatorInner = new HaloRotator(svg, '#halo-ring-inner', {
+                hitMin: 0,
+                hitMax: 265,
+                snapInterval: 60 // 6 items = 60 degrees
+            });
+
         } else {
             console.warn('HaloRotator: SVG not found relative to container');
         }
@@ -490,10 +506,9 @@ export class TechDemoScene {
         // Update Body Attribute for Global CSS Styling (Titles, etc.)
         document.body.setAttribute('data-system-state', newState);
 
-        // Sync HaloRotator State
-        if (this.haloRotator) {
-            this.haloRotator.setPowerState(newState);
-        }
+        // Sync HaloRotator State (Both Rings)
+        if (this.rotatorOuter) this.rotatorOuter.setPowerState(newState);
+        if (this.rotatorInner) this.rotatorInner.setPowerState(newState);
 
         // Update Toggle Switch UI
         if (this.uiThumb && this.uiContainer) {

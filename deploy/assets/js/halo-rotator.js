@@ -1,12 +1,17 @@
 export class HaloRotator {
-    constructor(svgElement) {
+    constructor(svgElement, selector = '#halo-rotary-dial', options = {}) {
         this.svg = svgElement;
-        this.dialGroup = this.svg.querySelector('#halo-rotary-dial');
+        this.dialGroup = this.svg.querySelector(selector);
         
         if (!this.dialGroup) {
-            console.error('HaloRotator: #halo-rotary-dial not found');
+            console.warn(`HaloRotator: Group ${selector} not found`);
             return;
         }
+
+        // Configuration
+        this.hitMin = options.hitMin || 0;
+        this.hitMax = options.hitMax || 9999;
+        this.snapInterval = options.snapInterval || 30; // Degrees per slot (360/12=30, 360/6=60)
 
         // State
         this.rotation = 0;
@@ -14,7 +19,6 @@ export class HaloRotator {
         this.isDragging = false;
         this.lastPointerY = 0;
         this.velocity = 0;
-        this.snapInterval = 30; // Degrees per slot
         
         // Cache Elements
         this.dots = Array.from(this.dialGroup.querySelectorAll('circle[data-index]'));
@@ -29,9 +33,10 @@ export class HaloRotator {
 
         // Init
         this.attachListeners();
+        // Check for existing loop? No, each instance needs its own update loop for its layout.
         this.rafId = requestAnimationFrame(this.update);
         
-        // Initial Highlights (Start in "Off" visual state, let Scene controller wake it up)
+        // Initial Highlights
         this.isActive = false; 
         this.updateHighlights(0);
     }
@@ -39,15 +44,13 @@ export class HaloRotator {
     setPowerState(state) {
         this.isActive = (state === 'ACTIVE');
         
-        // Toggle Dimmed Visuals
+        // Toggle Dimmed Visuals logic handled by CSS classes on the SVG root/Body
+        // Here we just manage interaction flags.
+        
         if (this.isActive) {
-            this.svg.classList.remove('halo-dimmed');
-            this.svg.classList.add('cursor-grab');
-            this.svg.style.pointerEvents = 'auto';
+            // this.svg.style.pointerEvents = 'auto'; // SVG is shared, don't toggle this or it kills both
         } else {
-            this.svg.classList.add('halo-dimmed');
-            this.svg.classList.remove('cursor-grab');
-            this.svg.style.pointerEvents = 'none'; // Optional: totally disable clicks
+            // this.svg.style.pointerEvents = 'none';
         }
     }
 
@@ -62,12 +65,28 @@ export class HaloRotator {
     handlePointerDown(e) {
         if (!this.isActive) return;
 
-        // Only trigger if clicking on/near the ring? 
-        // For now, entire SVG area works to be friendly
+        // Hit Test using Radius from Center (400, 400 SVG coords)
+        const rect = this.svg.getBoundingClientRect();
+        // Assume SVG viewbox 0 0 800 800 is mapped to rect
+        // We need coordinates in 800x800 space
+        const scale = 800 / rect.width;
+        const x = (e.clientX - rect.left) * scale;
+        const y = (e.clientY - rect.top) * scale;
+        
+        // Center is 400,400
+        const dx = x - 400;
+        const dy = y - 400;
+        const radius = Math.sqrt(dx*dx + dy*dy);
+
+        // Check bounds
+        if (radius < this.hitMin || radius > this.hitMax) {
+            return; // Not this ring
+        }
+
         this.isDragging = true;
         this.lastPointerY = e.clientY;
         this.velocity = 0;
-        this.svg.classList.add('cursor-grabbing');
+        document.body.style.cursor = 'grabbing';
     }
 
     handlePointerMove(e) {
@@ -88,7 +107,7 @@ export class HaloRotator {
     handlePointerUp() {
         if (this.isDragging) {
             this.isDragging = false;
-            this.svg.classList.remove('cursor-grabbing');
+            document.body.style.cursor = '';
             
             // Snap Logic on Release
             this.snapToGrid();
@@ -98,6 +117,17 @@ export class HaloRotator {
     handleWheel(e) {
         if (!this.isActive) return;
         
+        // Hit test for wheel too? Strictness vs Usability.
+        // Let's check radius to allow independent scrolling
+        const rect = this.svg.getBoundingClientRect();
+        const scale = 800 / rect.width;
+        const x = (e.clientX - rect.left) * scale;
+        const y = (e.clientY - rect.top) * scale;
+        const dx = x - 400; const dy = y - 400;
+        const radius = Math.sqrt(dx*dx + dy*dy);
+        
+        if (radius < this.hitMin || radius > this.hitMax) return;
+
         e.preventDefault();
         // Wheel Down (positive) -> Rotate CW (positive angle)
         const sensitivity = 0.2;
