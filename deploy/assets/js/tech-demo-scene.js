@@ -239,10 +239,10 @@ export class TechDemoScene {
                 /* Desktop Override for Standby Warning Position */
                 @media (min-width: 601px) {
                     #ampere-ui-track {
-                        bottom: 50px; /* Lowered from 110px to fit in the 15% gap */
+                        bottom: 40px; /* Lowered further to 40px */
                     }
                     #ampere-standby-warning {
-                         bottom: 110px; /* Shifted down with track */
+                         bottom: 100px; /* Tighter stack above track */
                          /* Opacity controlled by JS */
                     }
                 }
@@ -290,7 +290,7 @@ export class TechDemoScene {
                 }
                 @media (min-width: 601px) {
                     #ampere-system-status {
-                        bottom: 120px; /* Lowered from 180px */
+                        bottom: 100px; /* Tighter stack, aligned with warning level */
                     }
                 }
             `;

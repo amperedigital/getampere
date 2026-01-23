@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.222] - 2026-01-23
+### Fixed
+- **Tech Demo UI**: Further refined UI positioning to prevent overlap with the 3D ring on all resolutions.
+    - **Vertical Shift**: The 3D Ring container is now translated upwards (`translate-y-[-12]`) on desktop, actively clearing the bottom of the screen.
+    - **Compact Stack**: Tightened the vertical spacing between the Power Graph, Standby Warning, and Control Slider (aligned at `bottom: 100px` and `bottom: 40px` respectively) to sit comfortably in the newly created vacant space.
+
 ## [v2.221] - 2026-01-23
 ### Fixed
 - **Tech Demo UI**: Resolved issue where UI controls (Power Up/Down buttons) were floating on top of the 3D ring visual.

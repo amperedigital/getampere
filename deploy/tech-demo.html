@@ -81,8 +81,9 @@
                 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
-                <!-- Responsive Update: lg:h-[85%] creates vertical breathing room so UI controls don't overlap -->
-                <div class="relative w-full lg:w-auto lg:h-[85%] max-w-[800px] aspect-square flex items-center justify-center mx-auto">
+                <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
+                <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
+                <div class="relative w-full lg:w-auto lg:h-[85%] lg:-translate-y-12 max-w-[800px] aspect-square flex items-center justify-center mx-auto">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
