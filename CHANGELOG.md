@@ -1,3 +1,7 @@
+## [v2.203] - 2026-01-23
+- **Tech Demo**:
+  - **Interaction Polish**: Adjusted the radial position of the selection dots (from radius 310 to 322). This resolves a visual layering issue where the dots were clipping on top of the text labels. The dots now sit cleanly outside of the text ring.
+
 ## [v2.202] - 2026-01-23
 - **Tech Demo**:
   - **Typography**: Updated the main title styling.
