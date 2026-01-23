@@ -77,6 +77,9 @@ export class HaloRotator {
     handlePointerDown(e) {
         if (!this.isActive) return;
 
+        // Mobile Guard: Disable manual drag on small screens to prioritize page scrolling.
+        if (window.innerWidth <= 1024) return;
+
         // Hit Test using Radius from Center (400, 400 SVG coords)
         const rect = this.svg.getBoundingClientRect();
         // Assume SVG viewbox 0 0 800 800 is mapped to rect
@@ -128,6 +131,10 @@ export class HaloRotator {
 
     handleWheel(e) {
         if (!this.isActive) return;
+
+        // Mobile/Tablet Guard: Allow native page scrolling.
+        // If screen width is small, assume user wants to scroll the page, not the ring.
+        if (window.innerWidth <= 1024) return;
         
         // Hit test for wheel too? Strictness vs Usability.
         // Let's check radius to allow independent scrolling

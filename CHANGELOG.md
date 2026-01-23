@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.249] - 2026-01-23
+### Changed
+- **Mobile Container Styles**:
+    -   Restored the "inset screen" aesthetic on mobile by adding `bg-white/5` and `border-white/5` to the 3D scene container.
+    -   Removed `overflow-hidden` from the `body` tag on mobile to allow correct vertical scrolling.
+    -   Adjusted `tech-demo-scene.js` to position the Standby/Power UI pill at `bottom: 20px` on mobile (up from implicit values) to ensure it sits safely inside the new 450px container.
+- **Scroll Interaction Fix**:
+    -   Updated `halo-rotator.js` to strictly disable `wheel` and `pointerdown` interactions on screens narrower than 1024px. This gives "Page Scroll" priority over "Ring Rotation" on mobile/tablet devices, fixing the "Scroll Locked" issue.
+- **Cleanup**: Commented out resize debug logs.
+
 ## [v2.247] - 2026-01-23
 ### Changed
 - **Mobile Layout Overhaul**:

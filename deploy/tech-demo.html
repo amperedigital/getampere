@@ -22,9 +22,9 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
-<body class="bg-[#05060f] text-white overflow-hidden">
+<body class="bg-[#05060f] text-white lg:overflow-hidden">
 
-    <div class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative overflow-y-auto lg:overflow-hidden">
+    <div class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
         <div class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
@@ -60,7 +60,7 @@
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Stacked relative block. Fixed height. -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="relative w-[calc(100%-2rem)] mx-auto h-[450px] mb-8 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] z-0 group/scene flex items-center justify-center">
+            <div class="relative w-[calc(100%-2rem)] mx-auto h-[450px] mb-8 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] z-0 group/scene flex items-center justify-center bg-white/5 border border-white/5">
                 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->

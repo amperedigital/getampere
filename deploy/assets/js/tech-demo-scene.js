@@ -180,6 +180,14 @@ export class TechDemoScene {
                     cursor: pointer;
                     box-sizing: border-box;
                 }
+                
+                /* Mobile: Move UI higher to avoid edge of small container */
+                @media (max-width: 600px) {
+                    #ampere-ui-track {
+                        bottom: 20px !important;
+                    }
+                }
+
                 .ampere-ui-label {
                     flex: 1;
                     display: flex;
@@ -1190,9 +1198,9 @@ export class TechDemoScene {
             this.height = this.container.clientHeight;
             this.isMobile = (this.width <= 600);
 
-            console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
-            console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
-            console.log(`[TechDemoScene] Container: ${this.width}x${this.height} (Was: ${prevWidth}x${prevHeight})`);
+            // console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
+            // console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
+            // console.log(`[TechDemoScene] Container: ${this.width}x${this.height} (Was: ${prevWidth}x${prevHeight})`);
 
             this.camera.aspect = this.width / this.height;
 
@@ -1291,10 +1299,12 @@ export class TechDemoScene {
         // Replace window.resize with ResizeObserver (v2.239)
         // This handles container layout shifts that don't trigger window resize (e.g. flexbox adjustments)
         this.resizeObserver = new ResizeObserver((entries) => {
+            /*
             for (let entry of entries) {
                  // Log entry dimensions vs clientWidth
                  console.log(`[ResizeObserver] Entry ContentRect: ${entry.contentRect.width.toFixed(2)}x${entry.contentRect.height.toFixed(2)}`);
             }
+            */
             onResize('ResizeObserver');
         });
         this.resizeObserver.observe(this.container);
