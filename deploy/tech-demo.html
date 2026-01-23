@@ -106,11 +106,11 @@
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
-                            <!-- Paths for Curved Text (Radius 320 - Center of Halo) -->
-                            <!-- Upper Semi-Circle: Extended Arc 8oc to 4oc (240deg span) to allow full centering of 9/3 labels -->
-                            <path id="ring-upper" d="M -277,160 A 320,320 0 1,1 277,160" />
+                            <!-- Paths for Curved Text (Radius 290 - Inner Track) -->
+                            <!-- Upper Semi-Circle: Extended Arc 8oc to 4oc (240deg span) -->
+                            <path id="ring-upper" d="M -251,145 A 290,290 0 1,1 251,145" />
                             <!-- Lower Semi-Circle (Counter-Clockwise: West -> South -> East) -->
-                            <path id="ring-lower" d="M -320,0 A 320,320 0 0,0 320,0" />
+                            <path id="ring-lower" d="M -290,0 A 290,290 0 0,0 290,0" />
                         </defs>
 
                         <!-- Base Ring Group (Centered) -->
@@ -135,32 +135,32 @@
                                 <!-- Inner Border (Move In to 260) -->
                                 <circle r="260" fill="none" class="stroke-blue-500/20" stroke-width="1" />
 
-                                <!-- MARKERS (Dots Moved Outside Halo: cx=350 to align with Selection Needles) -->
+                                <!-- MARKERS (Dots Moved Inside Halo: cx=330 to align with Outer Edge) -->
                                 
                                 <!-- 12 O'Clock -->
-                                <g transform="rotate(-90)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(-90)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 1 O'Clock -->
-                                <g transform="rotate(-60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(-60)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 2 O'Clock -->
-                                <g transform="rotate(-30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(-30)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 3 O'Clock -->
-                                <g transform="rotate(0)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(0)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 4 O'Clock -->
-                                <g transform="rotate(30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(30)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 5 O'Clock -->
-                                <g transform="rotate(60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(60)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 6 O'Clock (System Logs - ACTIVE) -->
-                                <g transform="rotate(90)"><circle cx="350" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(90)"><circle cx="330" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" /></g>
                                 <!-- 7 O'Clock -->
-                                <g transform="rotate(120)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(120)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 8 O'Clock -->
-                                <g transform="rotate(150)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(150)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 9 O'Clock -->
-                                <g transform="rotate(180)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(180)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 10 O'Clock -->
-                                <g transform="rotate(210)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(210)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
                                 <!-- 11 O'Clock -->
-                                <g transform="rotate(240)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <g transform="rotate(240)"><circle cx="330" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
 
                                 <!-- CURVED TEXT LABELS -->
                                 <style>

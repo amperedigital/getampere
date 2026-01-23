@@ -1,3 +1,10 @@
+## v2.193
+- **Tech Demo**:
+    - **Refined Halo Layout**: Adjusted detailed positioning for Rotary Interaction.
+        - **Markers**: Repositioned dots to `cx=330` (Outer Edge of Halo) to align visually with external selection needles while remaining strictly inside the blue ring.
+        - **Text**: Moved text tracks to `r=290` (Inner Track) to provide visual clearance from markers.
+        - **Clearance**: Established 40px radial separation between interactive dots and text labels.
+
 ## v2.192
 - **Tech Demo**:
     - **Visual Alignment**: Relocated the 12 rotary markers (dots) back to the outer perimeter (`r=350`) to align precisely with the static Selection Needles (`r=365`) and the Outer Dashed Ring (`r=360`).
