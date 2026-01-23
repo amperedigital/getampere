@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.227] - 2026-01-23
+### Fixed
+- **Standby Logic**: Fixed an issue where the Standby Timer would continue counting down even while the user was interacting with the canvas/scene. Added global event listeners (`mousemove`, `click`, `touch`, `scroll`) to the entire document to ensure `lastInteractionTime` is correctly updated on any activity.
+
 ## [v2.226] - 2026-01-23
 ### Refactored
 - **Tailwind Cleanup**: Enforced strict utility-first CSS by replacing legacy custom classes (`.ring-text-*`) with inline Tailwind classes for the SVG Ring Visualization.

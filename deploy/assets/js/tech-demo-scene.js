@@ -45,6 +45,7 @@ export class TechDemoScene {
         this.initGeometry();
         // this.initControls(); // Interaction disabled for Tech Demo (Static View)
         this.initUI(); // Add UI Controls
+        this.initGlobalInteraction(); // Global event listeners for standby timer
         this.initHaloRotator();
         this.handleResize();
         this.animate();
@@ -70,6 +71,25 @@ export class TechDemoScene {
     
     // Stub for initControls to prevent errors if called
     initControls() {}
+
+    initGlobalInteraction() {
+        // Initialize timestamp
+        this.lastInteractionTime = Date.now();
+        
+        const resetTimer = () => {
+             this.lastInteractionTime = Date.now();
+             
+             // Optional: If in STANDBY, wake up on click? 
+             // Current logic only enters standby if ACTIVE + timeout.
+             // If already in STANDBY, user must manually click "Power Up" or we could auto-wake.
+             // For now, ensuring the timer resets during ACTIVE state is the primary fix.
+        };
+
+        // Capture all relevant events on the document to ensure any interaction delays standby
+        ['mousedown', 'mousemove', 'keydown', 'touchstart', 'touchmove', 'wheel', 'click'].forEach(event => {
+            document.addEventListener(event, resetTimer, { passive: true });
+        });
+    }
 
     initHaloRotator() {
         // Initialize the Ring Rotators
