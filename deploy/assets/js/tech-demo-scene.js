@@ -566,6 +566,9 @@ export class TechDemoScene {
         
         // Mobile Override: Zoom out for containment
         this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
+        
+        // Store Initial Position for Auto-Recenter (v2.189 Fix)
+        this.initialCameraPos = this.camera.position.clone();
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
@@ -1114,8 +1117,8 @@ export class TechDemoScene {
 
             this.camera.aspect = this.width / this.height;
             // Update Camera Z on Resize (Responsive Zoom)
-            // DISABLED v2.188: Prevent auto-scaling/resetting Z if system state (Power Down/Standby) has altered it.
-            // this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
+            // Restored v2.189: Ensure we respect config on resize
+            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
@@ -1155,7 +1158,7 @@ export class TechDemoScene {
                  
                  // Determine Targets based on Device
                  let targetLookAt = new THREE.Vector3(0,0,0);
-                 const baseZ = 5;
+                 const baseZ = this.config.cameraDistance; // Use Configured Distance (v2.189 Fix: Was hardcoded 5)
                  let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
     
                  if (this.isMobile) {

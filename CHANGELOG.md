@@ -1,3 +1,9 @@
+## v2.189
+- **Tech Demo**:
+    - **Stability**: Fixed a critical bug in the "Auto-Recenter" logic where the camera would forcefully zoom into `z=5` (instead of the configured `z=6.4`) after interaction timeout or initialization, causing the model to "fill the ring" unexpectedly.
+    - **Logic**: Ensured `autoRecenter` uses the configured `cameraDistance` or the captured initial position.
+    - **Resize**: Restored responsive camera zoom logic with proper configuration safety.
+
 ## v2.188
 - **Tech Demo**:
     - **Alignment**: Fixed misalignment of 9 o'clock ("Diagnostics") and 3 o'clock ("Neural Config") labels by implementing an extended 240-degree SVG path to prevent clipping and anchor offset issues.
