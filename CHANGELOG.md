@@ -1,3 +1,8 @@
+## v2.164
+- **Card Styling**:
+  - **Centered Content**: Upgraded all grid cards to `border-2` (2px width) and strictly centered their content containers using `flex flex-col items-center justify-center`.
+  - **Stats Card**: Refactored the first stats card to center its inner grid (`max-w-[200px]`) and maintain standard card padding/borders consistent with the placeholder cards.
+
 ## v2.163
 - **Layout Precision**:
   - **Gap Consistency**: Reduced the central gutter between the 3D scene and the grid to **2rem** (from 3rem) to match the internal grid spacing.
