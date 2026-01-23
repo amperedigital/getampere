@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.224] - 2026-01-23
+### Changed
+- **Ring Typography**: Increased font size of the curved ring text for better legibility at a distance (`10px` -> `12px`).
+
 ## [v2.223] - 2026-01-23
 ### Changed
 - **Ring Visualization**: Updated the Inner Ring labels to match the new Agentic System Roles created in v2.217.
