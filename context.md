@@ -104,6 +104,10 @@
   - **Start**: Must begin with a leading `/`.
   - **Separators**: Always `text-blue-400`.
   - **Spacing**: Tightly packed (`gap-2`).
+- **Future Component Requirements**:
+  - **Semantics**: Must transition to `<nav aria-label="Breadcrumb">` with `<ol>`/`<li>` structure.
+  - **Schema**: Must implement `BreadcrumbList` schema (LD-JSON or Microdata).
+  - **Accessibility**: Active item requires `aria-current="page"`. Separators should be `aria-hidden="true"`.
 
 ## 6. Major Components
 
