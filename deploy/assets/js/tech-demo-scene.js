@@ -1178,17 +1178,21 @@ export class TechDemoScene {
     }
 
     handleResize() {
-        const onResize = () => {
+        const onResize = (source) => {
             if (!this.container) return;
             
+            const prevWidth = this.width;
+            const prevHeight = this.height;
+
             this.width = this.container.clientWidth;
             this.height = this.container.clientHeight;
             this.isMobile = (this.width <= 600);
 
+            console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
+            console.log(`[TechDemoScene] Dimensions: ${this.width}x${this.height} (Was: ${prevWidth}x${prevHeight})`);
+
             this.camera.aspect = this.width / this.height;
-            
-            this.camera.aspect = this.width / this.height;
-            
+
             // --- DYNAMIC ZOOM CALCULATION (v2.238) ---
             // Requirement: The Neural Net must maintain a VISUAL size that is ~95% of the Inner Ring's diameter.
             // 
@@ -1256,10 +1260,9 @@ export class TechDemoScene {
             // Calculate Required Distance
             // D = Size / (2 * tan(FOV/2))
             this.camera.position.z = targetVisibleSize / (2 * tanHalfFOV);
+            console.log(`[TechDemoScene] Aspect: ${this.camera.aspect.toFixed(3)}, TargetSize: ${targetVisibleSize.toFixed(3)}, Calculated Z: ${this.camera.position.z.toFixed(3)}`);
             
             this.camera.updateProjectionMatrix();
-
-            this.renderer.setSize(this.width, this.height);
 
             this.renderer.setSize(this.width, this.height);
 
@@ -1276,12 +1279,12 @@ export class TechDemoScene {
         // Replace window.resize with ResizeObserver (v2.239)
         // This handles container layout shifts that don't trigger window resize (e.g. flexbox adjustments)
         this.resizeObserver = new ResizeObserver(() => {
-            onResize();
+            onResize('ResizeObserver');
         });
         this.resizeObserver.observe(this.container);
         
         // Trigger once to set init state
-        onResize();
+        onResize('Init');
     }
 
     animate() {
