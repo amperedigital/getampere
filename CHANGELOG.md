@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.217] - 2026-01-17
+### Added
+- **UI Agents Grid**: Replaced the right-hand stats grid with a 6-card grid representing the Agentic System Roles:
+    - **Front Door Agent**: Reception/Routing
+    - **Demo Guide**: Feature Walkthrough
+    - **Onboarding Coach**: Setup Assistance
+    - **Technical Specialist**: Troubleshooting
+    - **Sales Advisor**: Pricing/Enterprise
+    - **Booking Agent**: Scheduling
+    - *Each card features a unique colored icon and role description.*
+
 ## [v2.216] - 2026-01-17
 ### Added
 - **Activation Feedback**: The static top needle indicator now turns Green (Emerald) when both rings are aligned and stable ("Activated"), and Blue when adjusting ("Scanning"). This provides visual confirmation of the system state.
