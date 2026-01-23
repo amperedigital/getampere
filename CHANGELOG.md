@@ -1,3 +1,7 @@
+## v2.160
+- **UI Tweaks**:
+  - **Breadcrumb Spacing**: Reduced horizontal gap between breadcrumb elements (`gap-3` → `gap-2`) to tighten the layout. The previous spacing left the separators floating too far from the text labels.
+
 ## v2.159
 - **UI Refinement**:
   - **Breadcrumb Visibility**: Changed the breadcrumb slash separators (`/`) from Slate-700 to **Blue-400** to match the "V-Amp 2.0" label and improve visibility against the dark background.
