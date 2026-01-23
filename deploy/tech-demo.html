@@ -106,11 +106,11 @@
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
-                            <!-- Paths for Curved Text (Radius 325) -->
+                            <!-- Paths for Curved Text (Radius 320 - Center of Halo) -->
                             <!-- Upper Semi-Circle (Clockwise: West -> North -> East) -->
-                            <path id="ring-upper" d="M -325,0 A 325,325 0 1,1 325,0" />
+                            <path id="ring-upper" d="M -320,0 A 320,320 0 1,1 320,0" />
                             <!-- Lower Semi-Circle (Counter-Clockwise: West -> South -> East) -->
-                            <path id="ring-lower" d="M -325,0 A 325,325 0 0,0 325,0" />
+                            <path id="ring-lower" d="M -320,0 A 320,320 0 0,0 320,0" />
                         </defs>
 
                         <!-- Base Ring Group (Centered) -->
@@ -159,24 +159,22 @@
                             </style>
 
                             <!-- Upper Hemisphere (Clockwise) -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="0%" text-anchor="middle">Diagnostics</textPath></text>       <!-- 9 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="16.66%" text-anchor="middle">Reliability</textPath></text>   <!-- 10 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="33.33%" text-anchor="middle">Analysis</textPath></text>      <!-- 11 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 12 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="66.66%" text-anchor="middle">Optimization</textPath></text>  <!-- 1 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="83.33%" text-anchor="middle">Encryption</textPath></text>    <!-- 2 -->
-                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="100%" text-anchor="middle">Neural Config</textPath></text>   <!-- 3 -->
+                            <!-- Radius 320. dy="2" pushes text slightly inward/downward to center on halo band -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="0%" text-anchor="middle">Diagnostics</textPath></text>       <!-- 9 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="16.66%" text-anchor="middle">Reliability</textPath></text>   <!-- 10 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="33.33%" text-anchor="middle">Analysis</textPath></text>      <!-- 11 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 12 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="66.66%" text-anchor="middle">Optimization</textPath></text>  <!-- 1 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="83.33%" text-anchor="middle">Encryption</textPath></text>    <!-- 2 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="100%" text-anchor="middle">Neural Config</textPath></text>   <!-- 3 -->
 
                             <!-- Lower Hemisphere (Counter-Clockwise for Smile) -->
-                            <!-- Note: startOffset runs West -> South -> East -->
-                            <!-- Since we want "Feet Out/Down", text sits *below* the line if inside, or *above* if outside? -->
-                            <!-- CCW Path: RHR is Inside (Up). Text sits Up. dy must push it down? -->
-                            <!-- Let's try dy="18" to push it outside the line -->
-                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
-                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
-                            <text class="ring-text ring-text-green" dy="18"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 -->
-                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
-                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
+                            <!-- Radius 320. dy="2" pushes text slightly outward/downward to center on halo band -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
+                            <text class="ring-text ring-text-green" dy="2"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
 
 
                         </g>

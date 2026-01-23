@@ -1,3 +1,9 @@
+## v2.187
+- **Tech Demo**:
+    - **Alignment**: Modified SVG text paths to `r=320` to match the Halo graphic exactly.
+    - **Typography**: Adjusted vertical `dy=2` offset to center text labels within the ring band.
+    - **Visuals**: Ensured concentric alignment with outer Dot markers (r=350).
+
 ## v2.186
 - **Tech Demo**:
     - **Typography Engine**: Replaced static rotated labels with SVG `<textPath>` elements to achieve true curvature ("Smile" / "Frown" orientation) conforming to the ring radius.
@@ -1813,3 +1819,9 @@
 - **Controls Positioning**: Moved the "Standby / Power" control pill outside the aspect-constrained ring container. It now attaches to the main card (`.group/scene`), sitting at the bottom of the viewport/card window, ensuring it does not overlap the visualization.
 - **Visual Scale**: Adjusted 3D camera distance (8.5 -> 10.5) to compensate for the full-container expansion, maintaining the illusion that the sphere fits strictly inside the inner ring.
 
+
+## [2.187] - 2026-01-22
+### Fixed
+- **Ring Alignment**: Modified SVG text paths definitions to `r=320` used by the main Halo band (previously `r=325` was slightly off-center).
+- **Text Centering**: Adjusted vertical offset (`dy=2`) for all labels to center them precisely within the Halo band width.
+- **Visuals**: Aligned text ring to be concentric with the outer Dot markers (r=350) while residing inside the glow.
