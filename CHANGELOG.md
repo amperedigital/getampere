@@ -1,3 +1,9 @@
+## v2.186
+- **Tech Demo**:
+    - **Typography Engine**: Replaced static rotated labels with SVG `<textPath>` elements to achieve true curvature ("Smile" / "Frown" orientation) conforming to the ring radius.
+    - **Readability**: Implemented a dual-path system (Clockwise Upper, Counter-Clockwise Lower) to ensure all text is readable upright ("Feet Out/Down" for bottom hemisphere, "Feet In/Down" for upper).
+    - **Scaling**: Optimized `data-camera-distance` to `6.4` per user request for precise ring padding.
+
 ## v2.185
 - **Tech Demo**:
     - **Visualization**: Increased `data-camera-distance` substantially to `6.8` (from `5.2`) to create proper separation between the Neural Sphere and the Ring (avoiding the "tight fit" look).

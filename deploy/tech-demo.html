@@ -95,7 +95,7 @@
                          data-lerp-speed="0.015"
                          data-min-velocity="0.0025"
                          data-rotation-rpm="0.17"
-                         data-camera-distance="6.8"></div>
+                         data-camera-distance="6.4"></div>
 
                     <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
@@ -106,6 +106,11 @@
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
+                            <!-- Paths for Curved Text (Radius 325) -->
+                            <!-- Upper Semi-Circle (Clockwise: West -> North -> East) -->
+                            <path id="ring-upper" d="M -325,0 A 325,325 0 1,1 325,0" />
+                            <!-- Lower Semi-Circle (Counter-Clockwise: West -> South -> East) -->
+                            <path id="ring-lower" d="M -325,0 A 325,325 0 0,0 325,0" />
                         </defs>
 
                         <!-- Base Ring Group (Centered) -->
@@ -119,144 +124,60 @@
                             <circle r="340" fill="none" class="stroke-blue-500/20" stroke-width="1" />
                             <circle r="300" fill="none" class="stroke-blue-500/20" stroke-width="1" />
 
-                            <!-- MARKERS -->
-                            <!-- Logic: Dot at r=350 (Outer Ring Clearance) -->
-                            <!-- Text: Tangential (Feet Inwards / Aligned with Inner Angle) -->
-                            <!-- Rotation: rotate(90) relative to local group. -->
-                            <!-- Result: Text feet point towards center 0,0. -->
+                            <!-- MARKERS (Dots Only - Text Moved to Paths) -->
                             
-                            <!-- 12 O'Clock (Data Sources) -->
-                            <g transform="rotate(-90)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Data Sources
-                                </text>
-                            </g>
+                            <!-- 12 O'Clock -->
+                            <g transform="rotate(-90)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 1 O'Clock -->
+                            <g transform="rotate(-60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 2 O'Clock -->
+                            <g transform="rotate(-30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 3 O'Clock -->
+                            <g transform="rotate(0)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 4 O'Clock -->
+                            <g transform="rotate(30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 5 O'Clock -->
+                            <g transform="rotate(60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 6 O'Clock (System Logs - ACTIVE) -->
+                            <g transform="rotate(90)"><circle cx="350" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" /></g>
+                            <!-- 7 O'Clock -->
+                            <g transform="rotate(120)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 8 O'Clock -->
+                            <g transform="rotate(150)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 9 O'Clock -->
+                            <g transform="rotate(180)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 10 O'Clock -->
+                            <g transform="rotate(210)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 11 O'Clock -->
+                            <g transform="rotate(240)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
 
-                            <!-- 1 O'Clock (Optimization) -->
-                            <g transform="rotate(-60)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Optimization
-                                </text>
-                            </g>
+                            <!-- CURVED TEXT LABELS -->
+                            <style>
+                                .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+                                .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+                                .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+                            </style>
 
-                            <!-- 2 O'Clock (Encryption) -->
-                            <g transform="rotate(-30)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Encryption
-                                </text>
-                            </g>
-                            
-                            <!-- 3 O'Clock (Neural Config) -->
-                            <g transform="rotate(0)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Neural Config
-                                </text>
-                            </g>
+                            <!-- Upper Hemisphere (Clockwise) -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="0%" text-anchor="middle">Diagnostics</textPath></text>       <!-- 9 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="16.66%" text-anchor="middle">Reliability</textPath></text>   <!-- 10 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="33.33%" text-anchor="middle">Analysis</textPath></text>      <!-- 11 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 12 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="66.66%" text-anchor="middle">Optimization</textPath></text>  <!-- 1 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="83.33%" text-anchor="middle">Encryption</textPath></text>    <!-- 2 -->
+                            <text class="ring-text ring-text-blue" dy="-12"><textPath href="#ring-upper" startOffset="100%" text-anchor="middle">Neural Config</textPath></text>   <!-- 3 -->
 
-                            <!-- 4 O'Clock (Protocol) -->
-                            <g transform="rotate(30)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Protocol
-                                </text>
-                            </g>
+                            <!-- Lower Hemisphere (Counter-Clockwise for Smile) -->
+                            <!-- Note: startOffset runs West -> South -> East -->
+                            <!-- Since we want "Feet Out/Down", text sits *below* the line if inside, or *above* if outside? -->
+                            <!-- CCW Path: RHR is Inside (Up). Text sits Up. dy must push it down? -->
+                            <!-- Let's try dy="18" to push it outside the line -->
+                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
+                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
+                            <text class="ring-text ring-text-green" dy="18"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 -->
+                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
+                            <text class="ring-text ring-text-blue" dy="18"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
 
-                             <!-- 5 O'Clock (Latency) -->
-                            <g transform="rotate(60)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Latency
-                                </text>
-                            </g>
-
-                            <!-- 6 O'Clock (System Logs) - ACTIVE/GREEN -->
-                            <g transform="rotate(90)">
-                                <circle cx="350" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-emerald-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(16, 185, 129, 0.5)">
-
-                                    System Logs
-                                </text>
-                            </g>
-
-                            <!-- 7 O'Clock (Throughput) -->
-                            <g transform="rotate(120)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Throughput
-                                </text>
-                            </g>
-
-                            <!-- 8 O'Clock (Integrity) -->
-                            <g transform="rotate(150)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Integrity
-                                </text>
-                            </g>
-
-                            <!-- 9 O'Clock (Diagnostics) -->
-                            <g transform="rotate(180)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Diagnostics
-                                </text>
-                            </g>
-
-                            <!-- 10 O'Clock (Reliability) -->
-                            <g transform="rotate(210)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Reliability
-                                </text>
-                            </g>
-
-                            <!-- 11 O'Clock (Analysis) -->
-                            <g transform="rotate(240)">
-                                <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
-                                      class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
-                                      text-anchor="middle" dominant-baseline="middle"
-                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
-                                    Analysis
-                                </text>
-                            </g>
 
                         </g>
                     </svg>
