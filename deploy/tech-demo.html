@@ -72,8 +72,10 @@
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
                     <!-- Camera Distance Increased to 9.5 to fit visually inside the tightened inner ring (r=190). -->
+                    <!-- CLIP-PATH: Ensures the scene is strictly circular (closest-side) to prevent "pill" shape bleed on non-square aspect ratios -->
                     <div id="tech-demo-scene" 
                          class="absolute inset-0 z-0 rounded-full pointer-events-auto"
+                         style="clip-path: circle(closest-side at center);"
                          data-standby-timeout="120"
                          data-standby-warning="30"
                          data-auto-recenter="2.5"
