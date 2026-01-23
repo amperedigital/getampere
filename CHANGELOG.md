@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.229] - 2026-01-23
+### Changed
+- **Ring Visualization**: Updated Inner/Outer ring content mapping.
+    - **Outer Ring**: Updated labels to represent core technical capabilities:
+        1. Memory Function
+        2. Transfer
+        3. Agent Transfer
+        4. OTP Authorization
+        5. Identity & Handoff
+        6. Calendar Booking
+
 ## [v2.228] - 2026-01-23
 ### Changed
 - **Ring Visualization**: Increased the curvature of the ring labels by ~7-8% to better align with the circular tracks.
