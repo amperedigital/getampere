@@ -1,3 +1,8 @@
+## v2.185
+- **Tech Demo**:
+    - **Visualization**: Increased `data-camera-distance` substantially to `6.8` (from `5.2`) to create proper separation between the Neural Sphere and the Ring (avoiding the "tight fit" look).
+    - **Typography**: Inverted the "Concave" text rotation for all labels (from `rotate(90)` to `rotate(-90)`). This ensures "System Logs" (bottom) is readable upright while maintaining the tangential orientation.
+
 ## v2.184
 - **Tech Demo**:
     - **Initialization**: Fixed a layout bug where the 3D scene would load slightly off-center and only correct itself after a window resize.
