@@ -1,3 +1,10 @@
+## [v2.204] - 2026-01-23
+- **Tech Demo**:
+  - **Centering Polish**: Refined the radial positioning of both text labels and selection dots to center them perfectly within the 60px ring band (r=270-330).
+    - **Text**: Moved inwards from r=290 to r=275.
+    - **Dots**: Moved inwards from r=322 to r=312.
+    - This creates balanced padding from both the inner and outer edges of the ring container.
+
 ## [v2.203] - 2026-01-23
 - **Tech Demo**:
   - **Interaction Polish**: Adjusted the radial position of the selection dots (from radius 310 to 322). This resolves a visual layering issue where the dots were clipping on top of the text labels. The dots now sit cleanly outside of the text ring.
