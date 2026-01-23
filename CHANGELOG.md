@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.214] - 2026-01-17
+### Changed
+- **Neuronet Visuals**: Reduced the intensity and brightness of the firing node lights to be less distracting. 
+    - Lowered base color saturation and lightness.
+    - Reduced firing intensity multiplier (5.0 -> 2.0).
+    - Reduced proximity flare intensity.
+    - Lowered halo opacity cap.
+
 ## [v2.213] - 2026-01-17
 ### Changed
 - **Neuronet Size Adjustment**: Further increased camera distance to `7.6` to refine the spacing between the neuronet and the inner ring.
