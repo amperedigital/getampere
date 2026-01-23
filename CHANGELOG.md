@@ -1,8 +1,10 @@
-## [v2.200] - 2026-01-23
+## [v2.201] - 2026-01-23
 - **Tech Demo**:
-  - **Clipping Fix**: Rotated the text path `#ring-track` by 15 degrees to move the start/end seam away from the 9 o'clock position (Index 9 "Diagnostics"). The seam is now safely located in the gap between 3 and 4 o'clock.
-  - **Alignment Repair**: Recalculated all text offsets to align perfectly with the new path rotation. The text labels are now radially aligned with the 12 o'clock slot markers (`rotate(-90)` etc.), correcting the "dots out of alignment" issue caused by the previous coordinate mismatch.
-  - **Radius Restoration**: Reverted path radius to 290 (from temp 275) to maintain user-requested spacing.
+  - **Typography**: Updated the main title styling.
+    - "AI" remains **Bold**.
+    - "Neural" and "Architecture" are now both **Light**.
+  - **Clipping Fix (v2.200 carried over)**: Rotated text track by 15 degrees to move the seam into a gap, preventing clipping of the "Diagnostics" label.
+  - **Alignment (v2.200 carried over)**: Recalculated radial offsets for all 12 labels to align with the new track rotation.
 
 ## [v2.199] - 2026-01-23
 - **Tech Demo**:
