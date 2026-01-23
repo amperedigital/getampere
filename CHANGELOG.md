@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.213] - 2026-01-17
+### Changed
+- **Neuronet Size Adjustment**: Further increased camera distance to `7.6` to refine the spacing between the neuronet and the inner ring.
+
+
 ## [v2.212] - 2026-01-17
 ### Fixed
 - **Active State Highlighting**: Fixed logic in `HaloRotator` to correctly highlight the 12 o'clock item for rings with custom interval counts (like the 6-item inner ring). It now calculates steps based on `snapInterval` rather than a hardcoded 30 degrees.
