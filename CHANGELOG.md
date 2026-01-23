@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.223] - 2026-01-23
+### Changed
+- **Ring Visualization**: Updated the Inner Ring labels to match the new Agentic System Roles created in v2.217.
+    - `Optimization` -> `Front Door Agent`
+    - `Neural Config` -> `Demo Guide`
+    - `Latency` -> `Onboarding`
+    - `Throughput` -> `Tech Specialist`
+    - `Diagnostics` -> `Sales Advisor`
+    - `Analysis` -> `Booking Agent`
+
 ## [v2.222] - 2026-01-23
 ### Fixed
 - **Tech Demo UI**: Further refined UI positioning to prevent overlap with the 3D ring on all resolutions.
