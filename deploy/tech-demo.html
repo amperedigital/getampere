@@ -95,7 +95,7 @@
                          data-lerp-speed="0.015"
                          data-min-velocity="0.0025"
                          data-rotation-rpm="0.17"
-                         data-camera-distance="6.4"></div>
+                         data-camera-distance="6.8"></div>
 
                     <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
@@ -146,28 +146,29 @@
                                 <text class="ring-text ring-text-blue" dy="-12" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Reliability</textPath></text>
                             </g>
 
-                            <!-- RING 2: INNER (Purple) - Odd Indices -->
+                            <!-- RING 2: INNER (Slate) - Odd Indices -->
                             <g id="halo-ring-inner">
                                 <!-- Band: 200-260 (Width 60, Center 230) -->
-                                <circle r="230" fill="none" class="stroke-violet-500/10" stroke-width="60" />
-                                <circle r="260" fill="none" class="stroke-violet-500/20" stroke-width="1" />
-                                <circle r="200" fill="none" class="stroke-violet-500/20" stroke-width="1" />
+                                <circle r="230" fill="none" class="stroke-slate-500/10" stroke-width="60" />
+                                <circle r="260" fill="none" class="stroke-slate-500/20" stroke-width="1" />
+                                <circle r="200" fill="none" class="stroke-slate-500/20" stroke-width="1" />
 
                                 <!-- Markers (r=242 = 230+12) -->
-                                <g transform="rotate(-60)"><circle cx="242" cy="0" r="4" data-index="1" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 1oc -->
-                                <g transform="rotate(0)"><circle cx="242" cy="0" r="4" data-index="3" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 3oc -->
-                                <g transform="rotate(60)"><circle cx="242" cy="0" r="4" data-index="5" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 5oc -->
-                                <g transform="rotate(120)"><circle cx="242" cy="0" r="4" data-index="7" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 7oc -->
-                                <g transform="rotate(180)"><circle cx="242" cy="0" r="4" data-index="9" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 9oc -->
-                                <g transform="rotate(240)"><circle cx="242" cy="0" r="4" data-index="11" class="fill-violet-400 transition-colors duration-300" filter="url(#glow)" /></g><!-- 11oc -->
+                                <!-- Aligned with Outer Ring (30 deg steps starting at -90/12oc) -->
+                                <g transform="rotate(-90)"><circle cx="242" cy="0" r="4" data-index="1" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
+                                <g transform="rotate(-30)"><circle cx="242" cy="0" r="4" data-index="3" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 2oc -->
+                                <g transform="rotate(30)"><circle cx="242" cy="0" r="4" data-index="5" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 4oc -->
+                                <g transform="rotate(90)"><circle cx="242" cy="0" r="4" data-index="7" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 6oc -->
+                                <g transform="rotate(150)"><circle cx="242" cy="0" r="4" data-index="9" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 8oc -->
+                                <g transform="rotate(210)"><circle cx="242" cy="0" r="4" data-index="11" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
 
-                                <!-- Labels (Inner Track - Same startOffsets as positions correspond) -->
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="1"><textPath href="#ring-track-inner" startOffset="79.17%" text-anchor="middle">Optimization</textPath></text>
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="3"><textPath href="#ring-track-inner" startOffset="95.83%" text-anchor="middle">Neural Config</textPath></text>
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="5"><textPath href="#ring-track-inner" startOffset="12.5%" text-anchor="middle">Latency</textPath></text>
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="7"><textPath href="#ring-track-inner" startOffset="29.17%" text-anchor="middle">Throughput</textPath></text>
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="9"><textPath href="#ring-track-inner" startOffset="45.83%" text-anchor="middle">Diagnostics</textPath></text>
-                                <text class="ring-text ring-text-purple" dy="-12" data-index="11"><textPath href="#ring-track-inner" startOffset="62.5%" text-anchor="middle">Analysis</textPath></text>
+                                <!-- Labels (Inner Track - Aligned to Outer Track StartOffsets) -->
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="1"><textPath href="#ring-track-inner" startOffset="70.83%" text-anchor="middle">Optimization</textPath></text>
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="3"><textPath href="#ring-track-inner" startOffset="87.5%" text-anchor="middle">Neural Config</textPath></text>
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="5"><textPath href="#ring-track-inner" startOffset="4.17%" text-anchor="middle">Latency</textPath></text>
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="7"><textPath href="#ring-track-inner" startOffset="20.83%" text-anchor="middle">Throughput</textPath></text>
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="9"><textPath href="#ring-track-inner" startOffset="37.5%" text-anchor="middle">Diagnostics</textPath></text>
+                                <text class="ring-text ring-text-slate" dy="-12" data-index="11"><textPath href="#ring-track-inner" startOffset="54.17%" text-anchor="middle">Analysis</textPath></text>
                             </g>
 
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
@@ -176,6 +177,7 @@
                                     .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
                                     .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
                                     .ring-text-purple { fill: #a78bfa; text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+                                    .ring-text-slate { fill: #94a3b8; text-shadow: 0 0 10px rgba(148, 163, 184, 0.5); }
 
                                     /* --- System Power State Transitions --- */
                                     

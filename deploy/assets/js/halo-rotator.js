@@ -44,8 +44,14 @@ export class HaloRotator {
     setPowerState(state) {
         this.isActive = (state === 'ACTIVE');
         
-        // Toggle Dimmed Visuals logic handled by CSS classes on the SVG root/Body
-        // Here we just manage interaction flags.
+        // Toggle Dimmed Visuals logic handled by CSS classes on the SVG root
+        if (this.svg) {
+            if (state !== 'ACTIVE') {
+                this.svg.classList.add('halo-dimmed');
+            } else {
+                this.svg.classList.remove('halo-dimmed');
+            }
+        }
         
         if (this.isActive) {
             // this.svg.style.pointerEvents = 'auto'; // SVG is shared, don't toggle this or it kills both
