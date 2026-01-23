@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.255] - 2026-01-23
+### Changed
+- **Mobile Visual Balance**:
+    -   **Vertical Spacing**: Shifted the 3D scene container from `-mt-4` (pull up) to `mt-4` (push down). This moves the entire visualization lower into the available whitespace, further separating the Halo Ring from the header text.
+    -   **Container Sizing**: Slightly reduced height to `420px` to ensure the now-lower ring doesn't push the card grid off-screen.
+    -   **Neuronet Scaling**: Drastically increased `mobileBoost` to `2.4`. This forces the central 3D network to render significantly larger, addressing the "too small/resizing" issue where the object appeared to shrink after load.
+
 ## [v2.254] - 2026-01-23
 ### Changed
 - **Mobile Layout Fine-Tuning**:
