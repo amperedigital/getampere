@@ -1262,6 +1262,15 @@ export class TechDemoScene {
             this.camera.position.z = targetVisibleSize / (2 * tanHalfFOV);
             console.log(`[TechDemoScene] Aspect: ${this.camera.aspect.toFixed(3)}, TargetSize: ${targetVisibleSize.toFixed(3)}, Calculated Z: ${this.camera.position.z.toFixed(3)}`);
             
+            // --- SYNC AUTO-RECENTER TARGET (v2.241 Fix) ---
+            // Update the stored "Initial Position" so that the Auto-Recenter logic (idle timer)
+            // returns to this newly calculated Responsive Z, rather than the stale Config Z.
+            if (this.initialCameraPos) {
+                this.initialCameraPos.z = this.camera.position.z;
+            } else {
+                this.initialCameraPos = this.camera.position.clone();
+            }
+            
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
