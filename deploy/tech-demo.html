@@ -166,26 +166,8 @@
 
                                     /* --- System Power State Transitions --- */
                                     
-                                    /* 1. Main Title Dimming (Based on Body Attribute) */
-                                    [data-system-state="OFF"] h1,
-                                    [data-system-state="STANDBY"] h1 {
-                                        opacity: 0.3;
-                                        transition: opacity 1.5s ease;
-                                    }
-                                    [data-system-state="OFF"] h1 span,
-                                    [data-system-state="STANDBY"] h1 span {
-                                        color: #334155 !important; /* Slate-700 */
-                                        background: none !important;
-                                        -webkit-text-fill-color: #334155 !important;
-                                        text-shadow: none !important;
-                                        filter: none !important;
-                                        transition: all 1.5s ease;
-                                    }
-                                    /* Active State Restoration */
-                                    [data-system-state="ACTIVE"] h1,
-                                    [data-system-state="ACTIVE"] h1 span {
-                                        transition: all 1.0s cubic-bezier(0.4, 0, 0.2, 1);
-                                    }
+                                    /* 1. Main Title Dimming (REMOVED: User requested override/static state) */
+                                    /* Keeping transition logic for smoothness if needed later, but removing dimming rules */
 
                                     /* 2. Ring/Halo Dimming (Controlled by .halo-dimmed class on SVG) */
                                     /* Transition Base */
@@ -197,19 +179,23 @@
                                     svg.halo-dimmed circle[fill^="#"], 
                                     svg.halo-dimmed circle[class*="fill-"],
                                     svg.halo-dimmed path[class*="fill-"] {
-                                        fill: #1e293b !important; /* Slate-800 */
+                                        fill: #334155 !important; /* Slate-700 (Bumped up from Slate-800 for visibility) */
                                         filter: none !important;
+                                        opacity: 0.7; /* Slight transparency for layer depth */
                                     }
                                     
+                                    /* Text "Off" State - Visible but Dim */
                                     svg.halo-dimmed text,
                                     svg.halo-dimmed .ring-text {
-                                        fill: #1e293b !important;
+                                        fill: #475569 !important; /* Slate-600 (Lighter than dots for readability) */
                                         text-shadow: none !important;
+                                        opacity: 0.8;
                                     }
                                     
                                     svg.halo-dimmed circle[fill="none"],
                                     svg.halo-dimmed path[fill="none"] {
-                                        stroke: #1e293b !important;
+                                        stroke: #334155 !important;
+                                        opacity: 0.5;
                                     }
                                     
                                     /* Hide Static Markers Glow */

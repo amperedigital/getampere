@@ -1,3 +1,9 @@
+## [v2.206] - 2026-01-23
+- **Tech Demo**:
+  - **Power Sequence Refinement**:
+    - **Header Title**: Removed the dimming effect from the "AI Neural Architecture" title. It now remains fully illuminated regardless of power state, fixing a conflict where it was dimming unintentionally.
+    - **Halo Ring Visibility**: Increased the visibility of the "dimmed" state for the Ring Labels and Dots. They now use a lighter slate grey (Slate-600/700) instead of the near-black Slate-800. This ensures the UI is visible enough to appear "present but off", rather than completely hidden.
+
 ## [v2.205] - 2026-01-23
 - **Tech Demo**:
   - **Power Sequence Logic**: Linked the system state (OFF/STANDBY/ACTIVE) to the visual illumination of the interface.
