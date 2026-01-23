@@ -4,6 +4,12 @@
     - **Centering**: Removed all `setViewOffset` logic from the 3D engine (previously used to offset the subject). The scene is now mathematically centered to the ring by default.
     - **Architecture**: Implements the "Container inside a Ring" requirement strictly.
 
+## v2.180
+- **Tech Demo**:
+    - **Architecture**: Nested the 3D Scene container *inside* the Ring overlay container to guarantee strict parent-child centering.
+    - **Layout**: Scene now fits strictly within the ring bounds (`inset-10` clearance).
+    - **Markup**: Fixed potential unclosed tags and misaligned layers from previous iterations.
+
 ## v2.179
 - **Tech Demo**:
     - **Layout**: Introduced a strict Flexbox centering wrapper to ensure absolute alignment of the 3D Scene and SVG Ring.
