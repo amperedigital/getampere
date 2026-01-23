@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.242] - 2026-01-23
+### Added
+- **Conversation AI**: integrated ElevenLabs Convai widget (`agent_4501ka281xkpe6e8jzbspgy9qh4d`) to the tech demo page.
+
 ## [v2.241] - 2026-01-23
 ### Fixed
 - **Scroll/Resize Logic**: Fixed a regression where the "Auto-Recenter" idle timer would pull the camera back to its *initial* non-responsive position (Z=13.0) instead of the *current* responsive position (e.g., Z=9.0).
