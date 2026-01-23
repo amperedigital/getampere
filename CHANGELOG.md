@@ -1,3 +1,11 @@
+## v2.173
+- **Tech Demo Cleanup**:
+  - **Controls Disabled**: Removed `OrbitControls` (Zoom/Pan/Rotate) from `tech-demo-scene.js`. The 3D view is now locked to a standard perspective, eliminating alignment issues between the 2D overlay and the 3D object.
+  - **Ring Refinement**: 
+    - **Visual Weight**: Increased the ring band width to 40px (stroke-width) with low opacity, creating a distinct "track" rather than a thin line.
+    - **Text Placement**: Positioned label text radially inward (x=-15 relative to marker) to sit perfectly centered on the new 40px band width.
+    - **Layout Capability**: Prepared the SVG structure to easily accept new cardinal placeholders (9, 3, 4, 5) as requested in future updates.
+
 ## v2.172
 - **Ring System Refactor**:
   - **Revert to SVG**: Replaced the 3D-integrated ring with a pure HTML/SVG overlay to resolve visual artifacting and clipping issues ("the mess"). 

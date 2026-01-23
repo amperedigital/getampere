@@ -42,11 +42,32 @@ export class TechDemoScene {
         this.initScene();
         this.initLights();
         this.initGeometry();
-        this.initControls();
+        // this.initControls(); // Interaction disabled for Tech Demo (Static View)
         this.initUI(); // Add UI Controls
         this.handleResize();
         this.animate();
     }
+
+    /* 
+    initControls() {
+        if (!this.camera || !this.renderer) return;
+        
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.enableZoom = false; // Disabled Zoom
+        this.controls.enablePan = false;  // Disabled Pan
+        this.controls.autoRotate = false; // Manual Rotation only
+        this.controls.autoRotateSpeed = 4.0;
+        
+        // Limits
+        this.controls.minDistance = 2.0;
+        this.controls.maxDistance = 15.0;
+    } 
+    */
+    
+    // Stub for initControls to prevent errors if called
+    initControls() {}
 
     parseConfig() {
         if (!this.container) return;
