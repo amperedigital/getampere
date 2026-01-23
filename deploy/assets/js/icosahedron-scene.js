@@ -583,6 +583,9 @@ export class IcosahedronScene {
 
         // 3. Central Sphere
         this.addCentralSphere();
+        
+        // 4. Ring System
+        this.initRing();
     }
 
     addCentralSphere() {
@@ -608,6 +611,170 @@ export class IcosahedronScene {
 
         this.coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
         this.centralSphere.add(this.coreLight);
+    }
+
+    initRing() {
+        // --- 3D TECH RING (Replaces 2D SVG) ---
+        // Attached to this.group so it rotates/zooms with the scene, 
+        // but acts as a static surrounding interface.
+
+        const ringGroup = new THREE.Group();
+        // Counter-rotate slightly if we want it flatter? 
+        // No, keep it aligned with the neural net's "Equator" (this.group is tilted 20deg)
+        // Actually, for a HUD look that lives in 3D, usually it's aligned with the object.
+        this.group.add(ringGroup);
+
+        const ringRadius = 2.4; // 1.5 is the mesh radius, so 2.4 gives good clearance
+        const color = 0x3b82f6; // Tailwind Blue-500
+        const opacity = 0.4;
+
+        // 1. Main Circle (Thin solid line)
+        const curve = new THREE.EllipseCurve(
+            0, 0,            // ax, aY
+            ringRadius, ringRadius, // xRadius, yRadius
+            0, 2 * Math.PI,  // aStartAngle, aEndAngle
+            false, 0         // aClockwise, aRotation
+        );
+        const points = curve.getPoints(128); // Smooth
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({
+            color: color, 
+            opacity: opacity, 
+            transparent: true,
+            linewidth: 1
+        });
+        const ringLine = new THREE.LineLoop(geometry, material);
+        ringGroup.add(ringLine);
+
+        // 2. Outer Dashed Ring (Decorative)
+        const outerRadius = ringRadius * 1.08;
+        const outerCurve = new THREE.EllipseCurve(0, 0, outerRadius, outerRadius, 0, 2*Math.PI);
+        const outerPoints = outerCurve.getPoints(64); // Less dots
+        const outerGeo = new THREE.BufferGeometry().setFromPoints(outerPoints);
+        const outerMat = new THREE.LineDashedMaterial({
+            color: 0xffffff,
+            linewidth: 1,
+            scale: 1,
+            dashSize: 0.1,
+            gapSize: 0.2, // Creates the dashed look
+            opacity: 0.15,
+            transparent: true
+        });
+        const outerRing = new THREE.Line(outerGeo, outerMat);
+        outerRing.computeLineDistances(); // Required for dashed lines
+        ringGroup.add(outerRing);
+
+        // 3. Thick Band (Transparent Faint Blue)
+        const bandGeo = new THREE.RingGeometry(ringRadius * 0.92, ringRadius, 64);
+        const bandMat = new THREE.MeshBasicMaterial({
+            color: color, 
+            opacity: 0.05, 
+            transparent: true, 
+            side: THREE.DoubleSide
+        });
+        const band = new THREE.Mesh(bandGeo, bandMat);
+        ringGroup.add(band);
+
+        // 4. Cardinals (Dots + Text)
+        // "Title below the dot on the ring"
+        // Positions: 0 (Right), 90 (Top), 180 (Left), 270 (Bottom) in standard math? 
+        // EllipseCurve starts at 3 o'clock (0 rad).
+        // Let's map standard clock positions: 12, 3, 6, 9.
+
+        const labels = [
+            { text: "DATA SOURCES",  angle: Math.PI / 2 },  // Top (12)
+            { text: "NEURAL CONFIG", angle: 0 },            // Right (3)
+            { text: "SYSTEM LOGS",   angle: -Math.PI / 2 }, // Bottom (6)
+            { text: "DIAGNOSTICS",   angle: Math.PI }       // Left (9)
+        ];
+
+        labels.forEach(item => {
+            // -- Dot Marker --
+            // Position: On the main ring (Radius R)
+            // User: "Dot can be on top as the dial marker"
+            const dotX = Math.cos(item.angle) * ringRadius;
+            const dotY = Math.sin(item.angle) * ringRadius;
+            
+            const dotGeo = new THREE.CircleGeometry(0.04, 16);
+            const dotMat = new THREE.MeshBasicMaterial({ color: color });
+            const dot = new THREE.Mesh(dotGeo, dotMat);
+            dot.position.set(dotX, dotY, 0.01); // Slightly z-up
+            ringGroup.add(dot);
+
+            // -- Text Label --
+            // "Title [should be] below the dot"
+            // We need to construct a texture for text.
+            const sprite = this.createTextSprite(item.text);
+            
+            // Positioning Logic:
+            // If "Below the dot", we subtract Y. 
+            // The text should be upright.
+            // Distance from dot: 
+            const textOffset = 0.25; 
+            
+            // However, for Left/Right/Top/Bottom, "Below" might mean radially inward?
+            // "Below the dot on the ring" -> implying the text sits ON the band?
+            // If the band is from 0.92R to R...
+            // Let's place text radially inward from the dot.
+            
+            // Radial position for text center
+            const textRadius = ringRadius - 0.2; 
+            const textX = Math.cos(item.angle) * textRadius;
+            const textY = Math.sin(item.angle) * textRadius;
+
+            sprite.position.set(textX, textY, 0.01);
+            ringGroup.add(sprite);
+        });
+
+        this.ringGroup = ringGroup;
+    }
+
+    createTextSprite(message) {
+        const fontface = "monospace";
+        const fontsize = 48; // Canvas px resolution (high for crispness)
+        const borderThickness = 0;
+        
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        // Fit context to text
+        context.font = "Bold " + fontsize + "px " + fontface;
+        const metrics = context.measureText(message);
+        const textWidth = Math.ceil(metrics.width);
+        const textHeight = Math.ceil(fontsize * 1.2);
+
+        canvas.width = textWidth;
+        canvas.height = textHeight;
+
+        // Re-apply font after resize
+        context.font = "Bold " + fontsize + "px " + fontface;
+        context.fillStyle = "rgba(100, 180, 255, 1.0)";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        
+        context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter; // Better scaling
+
+        // Sprite approach fits best for 2D-in-3D text that faces camera?
+        // But user wants it "part of the ring". If ring tilts, text should tilt?
+        // If so, use PlaneGeometry, not Sprite.
+        
+        const material = new THREE.MeshBasicMaterial({ 
+            map: texture, 
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        
+        // World Scale matches canvas aspect
+        const scaleFactor = 0.0035; // Adjust for 3D world size
+        const geoWidth = textWidth * scaleFactor;
+        const geoHeight = textHeight * scaleFactor;
+        
+        const geometry = new THREE.PlaneGeometry(geoWidth, geoHeight);
+        const mesh = new THREE.Mesh(geometry, material);
+        
+        return mesh;
     }
 
     getPos(phi, theta, r) {

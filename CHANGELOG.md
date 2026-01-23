@@ -1,3 +1,13 @@
+## v2.169
+- **3D HUD Integration**:
+  - **Ring System Migration**: Moved the "Tech Ring" overlay from a 2D SVG into the 3D scene (Three.js). This ensures the ring zooms, tilts, and scales in perfext synchronization with the neural net.
+  - **Architecture**: The Ring is now a child of the `rotation` group, inheriting the 20-degree tilt of the Icosahedron, creating a true equatorial frame.
+  - **Components**:
+    - **Outer Dashed Ring**: `THREE.LineDashedMaterial` loop.
+    - **Inner HUD Line**: `THREE.LineLoop` (Blue-500).
+    - **Faint Band**: Double-sided `Mesh` with low alpha for depth.
+    - **High-Fidelity Labels**: Implemented a `CanvasTexture` generator to render crisp "DATA SOURCES", "NEURAL CONFIG", etc. as 3D Planes placed radially inward from the cardinal markers.
+
 ## v2.168
 - **Critical Visibility Fix**:
   - **CSS Conflict Resolution**: Removed the generic `relative` class from the scene container which was overriding `absolute inset-0`, causing the container to collapse to 0 height.
