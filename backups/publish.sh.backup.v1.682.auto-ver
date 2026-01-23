@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 vX.Y.Z"
+  exit 1
+fi
+
+NEW_TAG="$1"
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+INDEX_HTML="$ROOT_DIR/deploy/index.html"
+
+# Ensure we are in the root
+cd "$ROOT_DIR"
+
+echo "🚀 Starting release process for $NEW_TAG..."
+
+# 0. AUTOMATIC VERSION INJECTION
+# Automatically update the console log version in local source files before processing
+GLOBAL_JS="$ROOT_DIR/deploy/assets/js/global.js"
+if [ -f "$GLOBAL_JS" ]; then
+  echo "   🖊️  Injecting version $NEW_TAG into global.js..."
+  # Matches: [Ampere Global] v... Loaded
+  sed -i "s/\[Ampere Global\] v.* Loaded/[Ampere Global] $NEW_TAG Loaded/" "$GLOBAL_JS"
+fi
+
+# 1. Identify changed files in deploy/
+# Check for uncommitted changes (staged or unstaged)
+CHANGED_FILES=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
+
+# If no uncommitted changes, check the last commit
+if [ -z "$CHANGED_FILES" ]; then
+  echo "ℹ️  No uncommitted changes in deploy/. Checking last commit..."
+  CHANGED_FILES=$(git show --name-only --format="" HEAD | grep "^deploy/" | grep -v "index.html" || true)
+fi
+
+if [ -z "$CHANGED_FILES" ]; then
+  echo "⚠️  No changes detected in deploy/ (checked working tree and last commit)."
+  echo "   Proceeding with release, but no assets will be updated in index.html."
+else
+  echo "🔍 Detected changed files:"
+  echo "$CHANGED_FILES"
+fi
+
+# 2. Update CDN links in index.html for CHANGED ASSETS only
+for FILE in $CHANGED_FILES; do
+  # Check if file is inside deploy/assets/
+  if [[ "$FILE" == deploy/assets/* ]]; then
+    # The file path in the repo is deploy/assets/...
+    # The CDN URL should match the repo path: .../deploy/assets/...
+    # So we use the full FILE path as the relative path for replacement.
+    
+    REL_PATH="$FILE"
+    
+    # Check if this file is referenced in index.html with a version tag
+    # We look for the pattern: getampere@v.../deploy/assets/.../filename
+    if grep -q "getampere@v[0-9a-zA-Z.-]*/$REL_PATH" "$INDEX_HTML"; then
+      echo "   ↻ Updating version for $REL_PATH to $NEW_TAG"
+      
+      # Escape slashes for sed
+      ESCAPED_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
+      
+      # Perform replacement
+      # Matches: getampere@v<any-version>/deploy/assets/...
+      # Replaces with: getampere@<new-tag>/deploy/assets/...
+      sed -i "s/getampere@v[0-9a-zA-Z.-]*\/$ESCAPED_PATH/getampere@$NEW_TAG\/$ESCAPED_PATH/g" "$INDEX_HTML"
+    else
+      echo "   ℹ️  $REL_PATH changed but not found with version tag in index.html (skipping CDN update)"
+    fi
+  fi
+done
+
+# 3. Commit changes
+echo "📦 Committing changes..."
+git add deploy/
+git commit -m "chore(release): $NEW_TAG" || echo "   (Nothing to commit, proceeding...)"
+
+# 4. Tag
+if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+  echo "   ⚠️  Tag $NEW_TAG already exists."
+  # We don't auto-delete tags to be safe, just fail or warn.
+  # But for a helper script, failing is safer.
+  echo "   Error: Tag already exists. Please use a new version number."
+  exit 1
+else
+  echo "🏷️  Creating tag $NEW_TAG..."
+  git tag "$NEW_TAG"
+fi
+
+# 5. Push
+echo "⬆️  Pushing to origin..."
+git push origin master
+git push origin "$NEW_TAG"
+
+# 6. Deploy
+echo "☁️  Deploying to Cloudflare Workers..."
+npx wrangler deploy
+
+echo "✅ Release $NEW_TAG complete!"

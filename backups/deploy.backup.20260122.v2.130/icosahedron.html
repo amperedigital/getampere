@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" type="image/x-icon">
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>3D Icosahedron | Ampere AI</title>
+    <!-- Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none; /* Prevent swipe-to-nav */
+            background-color: #05060f; /* Match scene bg */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+            outline: none;
+            pointer-events: auto !important; /* Force events */
+            touch-action: none; /* Prevent browser scroll interference */
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .instruction-overlay {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap; /* Keep on one line */
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .instruction-overlay {
+                bottom: 30px;
+                font-size: 9px;
+                letter-spacing: 1px;
+                white-space: normal;
+                line-height: 1.6;
+            }
+        }
+        
+        /* Mobile vs Desktop Text Toggling */
+        .mobile-text { display: none; }
+        
+        @media (max-width: 768px) {
+            .desktop-text { display: none; }
+            .mobile-text { display: inline; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"
+         data-standby-timeout="120"
+         data-standby-warning="30"
+         data-auto-recenter="2.5"
+         data-lerp-speed="0.015"
+         data-min-velocity="0.0025"
+         data-rotation-rpm="0.17"></div>
+    <div class="instruction-overlay">
+        <span class="desktop-text">Drag to Rotate • Scroll to Zoom</span>
+        <span class="mobile-text">Drag to Rotate • Pinch to Zoom<br>Single Tap: Power Up • Double Tap: Power Down</span>
+    </div>
+
+    <script type="module">
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.100';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('canvas-container');
+            new IcosahedronScene(container);
+        });
+    </script>
+</body>
+</html>

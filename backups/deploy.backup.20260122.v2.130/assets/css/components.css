@@ -1,0 +1,344 @@
+/* 
+   GetAmpere Custom Components 
+   Separated from Tailwind build to avoid purge/specificity issues.
+*/
+
+/* --- Hamburger Menu --- */
+.amp-hamburger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.amp-hamburger:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
+.amp-hamburger-line {
+  position: absolute;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background-color: #0F172A;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.amp-hamburger-line:first-child { 
+  transform: translateY(-5px); 
+}
+
+.amp-hamburger-line:last-child { 
+  transform: translateY(5px); 
+}
+
+.amp-hamburger.is-open .amp-hamburger-line:first-child { 
+  transform: rotate(45deg); 
+}
+
+.amp-hamburger.is-open .amp-hamburger-line:last-child { 
+  transform: rotate(-45deg); 
+}
+
+.amp-hamburger.is-open .amp-hamburger-line { 
+  background-color: #0F172A; 
+}
+
+/* --- Hero Card Media Query Override --- */
+@media (min-width: 1440px) {
+  .amp-hero-card {
+    flex: 0 0 calc((100% - 1.9rem) / 3) !important;
+    max-width: calc((100% - 1.9rem) / 3) !important;
+  }
+}
+
+/* --- Animation Keyframes (HTML Scope) --- */
+@keyframes animationIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Nav Smart Transitions & Dark Mode Logic */
+
+/* 1. Shared Transitions (Enable smooth animations for ALL state changes) */
+nav,
+nav #amp-logo-segment,
+nav #amp-menu-segment,
+nav a,
+nav svg,
+nav path,
+nav .cls-1, nav .cls-2, nav .cls-3, nav .cls-4,
+nav .amp-hamburger, nav .amp-hamburger-line {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 2. Nav Wrapper - Always Transparent */
+nav.nav-inverted {
+    background-color: transparent !important; 
+}
+
+/* 3. Logo Segment - Always Transparent (per user request) */
+nav.nav-inverted #amp-logo-segment {
+    background-color: transparent !important; 
+}
+
+/* 4. Menu Segment - Turns Dark in Inverted Mode */
+nav.nav-inverted #amp-menu-segment {
+    background-color: #0F172A !important; /* Slate-900 */
+}
+
+/* 5. Menu Links - Turn White */
+nav.nav-inverted #amp-menu-segment a {
+    color: #ffffff !important;
+}
+
+/* Hover on Inactive Links: Dark/Glassy Background (To Fix White-on-White issue) */
+nav.nav-inverted #amp-menu-segment a:not(.shadow-sm):hover {
+    background-color: rgba(255, 255, 255, 0.15) !important; 
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* 6. Logo Colors - Custom Dark Mode Palette */
+nav.nav-inverted .cls-1, 
+nav.nav-inverted .cls-2 {
+    fill: #0F172A !important; /* Matches Menu BG */
+    stroke: none !important;
+}
+
+nav.nav-inverted .cls-3 {
+    fill: #00bee6 !important; /* Blue "get" */
+    stroke: none !important;
+}
+
+nav.nav-inverted .cls-4 {
+    fill: #ffffff !important; /* White "Ampere.ai" */
+    stroke: none !important;
+}
+
+/* Mobile Logo: Match Desktop Dark Mode */
+nav.nav-inverted .amp-logo-fill {
+    fill: #0F172A !important;
+    stroke: none !important;
+}
+
+/* 7. Hamburger Menu */
+nav.nav-inverted .amp-hamburger-line {
+    background-color: #ffffff !important;
+}
+nav.nav-inverted .amp-hamburger {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 8. Link Container (Pill) */
+nav.nav-inverted #amp-menu-segment .bg-\[\#F4F4F5\] {
+    background-color: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: white !important;
+}
+
+/* 9. Active Link State */
+nav.nav-inverted #amp-menu-segment .bg-white.shadow-sm {
+    background-color: #ffffff !important;
+    color: #0F172A !important;
+}
+
+/* 10. Request Demo Button - Inverted Mode */
+/* Fix: Hide the middle layer text blocker so animation shows */
+
+/* 2. Style the Content Layer (Layer 3) - The actual white pill */
+nav.nav-inverted #amp-menu-segment button.group span.flex.bg-gradient-to-b {
+    background: #ffffff !important;
+    color: #0F172A !important;
+    border-color: transparent !important; /* Clean edge */
+}
+
+/* 3. Icon Color */
+nav.nav-inverted #amp-menu-segment button.group svg {
+    stroke: #0F172A !important;
+}
+
+/* 4. Ensure Spinner (Layer 1) is visible on hover */
+/* The spinner uses 'bg-[conic-gradient...]' so it is NOT affected by the bg-gradient-to-b selectors above. */
+/* It sits behind Layer 3. Layer 3 is inside p-[2px]. So Spinner shows in the gap. */
+
+/* Optional: Add hover effect to the white pill itself */
+nav.nav-inverted #amp-menu-segment button.group:hover span.flex.bg-gradient-to-b {
+    background: #f4f4f5 !important;
+}
+
+/* 11. Request Demo Shiny Button - Navigation Override */
+/* Default State: Clean Black Button (Static) */
+.shiny-cta.nav-cta {
+    /* Height Balancing: 
+       Nav Container = 42px (32px content + 8px pad + 2px border)
+       Button Content = 16px (1rem line-height)
+       Button Border = 4px (2px top/bottom)
+       Remaining for Padding = 22px -> 11px per side (0.6875rem)
+    */
+    padding: 0.6875rem 1.5rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.2em !important;
+    font-weight: 600 !important;
+    gap: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    
+    /* Force White Text/Icon even in inverted nav */
+    color: #ffffff !important; 
+    
+    /* Static Appearance: Remove spin/gradient, use subtle border */
+    /* Use 2px border to match hover state prevents layout shift */
+    background: #000000 !important;
+    border: 2px solid rgba(255,255,255,0.12) !important; 
+    animation: none !important;
+    box-shadow: none !important;
+}
+
+/* Force SVG Icon White - with high specificity to override old inverted rules */
+.shiny-cta.nav-cta svg,
+nav.nav-inverted #amp-menu-segment button.shiny-cta svg {
+    stroke: #ffffff !important;
+    transition: transform 0.3s ease;
+}
+
+/* Hide Shimmer Trail by default */
+.shiny-cta.nav-cta::after {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+/* Hover State: Activate Shiny Effects */
+.shiny-cta.nav-cta:hover {
+    /* Restore the shiny gradient border */
+    background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box !important;
+    border: 2px solid transparent !important;
+    animation: border-spin 2.5s linear infinite !important;
+}
+
+/* Activate Shimmer on Hover */
+.shiny-cta.nav-cta:hover::after {
+    opacity: 0.6 !important;
+    animation: shimmer 4s linear infinite !important;
+}
+
+
+
+/* Scroll Animation Logic */
+.animate-on-scroll {
+    animation-play-state: paused !important;
+}
+
+.animate-on-scroll.animate {
+    animation-play-state: running !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        visibility: visible !important;
+    }
+}
+
+/* --- Logo Default Styles --- */
+/* Extracted from inline SVG defs */
+.cls-1 {
+    /* stroke: #fff; - Removed per original inline comment */
+}
+
+.cls-1,
+.cls-2 {
+    fill: #fff;
+}
+
+.cls-3 {
+    fill: #00bee6;
+}
+
+.cls-4 {
+    fill: #231f20;
+}
+
+@media (max-width: 767px) {
+    .logo-wordmark {
+        display: none;
+    }
+}
+
+/* Logo Fills */
+.amp-logo-fill {
+    fill: #fff;
+}
+
+/* Fixed Logo Container Sizing to prevent CLS */
+#amp-logo-container {
+    width: 5rem;
+}
+
+@media (min-width: 768px) {
+    #amp-logo-container {
+        width: 220px;
+        min-width: 220px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #amp-logo-container {
+        width: 300px;
+        min-width: 280px;
+    }
+}
+
+/* --- Hero Slider --- */
+#amp-hero-slider {
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+  cursor: grab;
+}
+
+#amp-hero-slider::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+#amp-hero-slider * {
+  cursor: inherit;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#amp-hero-slider.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+#amp-hero-slider.is-dragging * {
+  cursor: grabbing;
+}
+
+/* --- Scroll Animation Triggers --- */
+/* Pauses animations until the element enters the viewport (Global Observer adds .in-view) */
+.animate-on-scroll {
+    animation-play-state: paused !important;
+}
+.animate-on-scroll.in-view {
+    animation-play-state: running !important;
+}

@@ -1,0 +1,539 @@
+(() => {
+  const SELECTOR = "[data-hero-slider]";
+  const LOG_PREFIX = "[HeroSlider]";
+  const MOBILE_BREAKPOINT = 768; // px
+
+  const log = (...args) => console.log(LOG_PREFIX, ...args);
+
+  class HeroSlider {
+    constructor(el) {
+      this.slider = el;
+      this.dataset = el.dataset || {};
+      this.initialized = false;
+      
+      // Configuration
+      this.config = {
+        autoDelay: Number(this.dataset.autoDelay) || 5000,
+        autoDuration: Number(this.dataset.autoDuration) || 1800,
+        resumeDelay: Number(this.dataset.resumeDelay) || 5000,
+        retryDelay: Number(this.dataset.retryDelay) || 500,
+        momentumFriction: Math.min(Math.max(Number(this.dataset.momentumFriction) || 0.985, 0.8), 0.999),
+        momentumStep: Number(this.dataset.momentumStep) || 12
+      };
+
+      // State
+      this.state = {
+        pointerActive: false,
+        lastX: 0,
+        lastTime: 0,
+        velocity: 0,
+        isHover: false,
+        isVisible: true, // Optimistically true
+        autoTimer: null,
+        resumeTimer: null,
+        animFrame: null,
+        momentumFrame: null
+      };
+
+      // Bindings
+      this.handlePointerDown = this.handlePointerDown.bind(this);
+      this.handlePointerMove = this.handlePointerMove.bind(this);
+      this.handlePointerUp = this.handlePointerUp.bind(this);
+      this.handlePointerCancel = this.handlePointerCancel.bind(this);
+      this.handleMouseEnter = this.handleMouseEnter.bind(this);
+      this.handleMouseLeave = this.handleMouseLeave.bind(this);
+      this.handleVisibility = this.handleVisibility.bind(this);
+      this.handleIntersection = this.handleIntersection.bind(this);
+      this.handleBlur = this.handleBlur.bind(this);
+      this.handleFocus = this.handleFocus.bind(this);
+
+      // Animation Step Bindings
+      this.step = this.step.bind(this);
+    }
+
+    // --- Lifecycle ---
+
+    init() {
+      if (this.initialized) return;
+      
+      // Add Listeners
+      this.slider.addEventListener("pointerdown", this.handlePointerDown);
+      this.slider.addEventListener("pointermove", this.handlePointerMove);
+      this.slider.addEventListener("pointerup", this.handlePointerUp);
+      this.slider.addEventListener("pointercancel", this.handlePointerCancel);
+      this.slider.addEventListener("mouseenter", this.handleMouseEnter);
+      this.slider.addEventListener("mouseleave", this.handleMouseLeave);
+      document.addEventListener("visibilitychange", this.handleVisibility);
+      
+      // Intersection Observer to prevent running when out of viewport
+      if ('IntersectionObserver' in window) {
+        this.observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: 0.5 // Run only if 50% visible (prevents distraction when scrolling past)
+        });
+        this.observer.observe(this.slider);
+      }
+
+      // Disable blur/focus auto-pause to prevent issues during dev/preview
+      // window.addEventListener("blur", this.handleBlur, { passive: true });
+      // window.addEventListener("focus", this.handleFocus, { passive: true });
+
+      // Enforce touch-action for desktop dragging
+      this.slider.style.touchAction = "pan-y";
+      
+      // INFINITE SCROLL: Duplicate Slides
+      // We clone the existing slides to create a buffer for infinite scrolling
+      const originalCards = this.slider.querySelectorAll('.amp-hero-card');
+      if (originalCards.length > 0) {
+        // Clone twice to ensure we have enough buffer in both directions if needed, or just once for fwd loop
+        const fragment = document.createDocumentFragment();
+        originalCards.forEach(card => {
+           const clone = card.cloneNode(true);
+           clone.setAttribute('data-clone', 'true');
+           clone.id = ''; // clear ID to avoid duplicates
+           fragment.appendChild(clone);
+        });
+        
+        // Handle Spacer: Remove it to ensure seamless transition to clones
+        // We must check direct children to avoid grabbing overlays inside cards
+        const children = Array.from(this.slider.children);
+        const spacer = children.find(el => 
+            el.classList.contains('pointer-events-none') && 
+            el.getAttribute('aria-hidden') === 'true' &&
+            !el.classList.contains('absolute')
+        );
+        if (spacer) spacer.remove();
+
+        // Append clones effectively to the end
+        this.slider.appendChild(fragment);
+        
+        this.clonedCount = originalCards.length;
+      }
+
+      log("Initialized (Desktop Mode)", this.slider.id ? `#${this.slider.id}` : "");
+      this.scheduleAuto(this.config.autoDelay);
+      this.initialized = true;
+    }
+
+    destroy() {
+      if (!this.initialized) return;
+
+      // Clean up clones
+      const clones = this.slider.querySelectorAll('[data-clone="true"]');
+      clones.forEach(el => el.remove());
+
+      // Clean up timers & frames
+      this.stopAuto();
+      this.cancelMomentum();
+      if (this.state.resumeTimer) clearTimeout(this.state.resumeTimer);
+
+      // Remove Listeners
+      this.slider.removeEventListener("pointerdown", this.handlePointerDown);
+      this.slider.removeEventListener("pointermove", this.handlePointerMove);
+      this.slider.removeEventListener("pointerup", this.handlePointerUp);
+      this.slider.removeEventListener("pointercancel", this.handlePointerCancel);
+      this.slider.removeEventListener("mouseenter", this.handleMouseEnter);
+      this.slider.removeEventListener("mouseleave", this.handleMouseLeave);
+      document.removeEventListener("visibilitychange", this.handleVisibility);
+      window.removeEventListener("blur", this.handleBlur);
+      window.removeEventListener("focus", this.handleFocus);
+
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
+
+      // Clean up styles/classes if any were stuck
+      this.slider.classList.remove("is-dragging");
+      this.slider.style.touchAction = "";
+
+      log("Destroyed (Mobile Mode)", this.slider.id ? `#${this.slider.id}` : "");
+      this.initialized = false;
+    }
+
+    // --- Helpers ---
+    clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    getStepDistance() {
+      const children = this.slider.querySelectorAll('.amp-hero-card');
+      if (!children || children.length === 0) {
+        return this.slider.clientWidth || 0;
+      }
+      // Assuming cards are spaced evenly, find the diff between first and second
+      let referenceWidth = children[0].getBoundingClientRect().width;
+      let offsetDistance = 0;
+      for (let i = 1; i < children.length; i += 1) {
+        const delta = Math.abs(children[i].offsetLeft - children[0].offsetLeft) || 0;
+        if (delta > 0) {
+          offsetDistance = delta;
+          break;
+        }
+      }
+      return offsetDistance || referenceWidth || this.slider.clientWidth || 0;
+    }
+
+    getScrollPadding() {
+      const style = window.getComputedStyle(this.slider);
+      return parseInt(style.scrollPaddingLeft || "0", 10) || 0;
+    }
+
+    // --- Animation Logic ---
+
+    stopAuto() {
+      if (this.state.autoTimer) {
+        window.clearTimeout(this.state.autoTimer);
+        this.state.autoTimer = null;
+      }
+      if (this.state.animFrame) {
+        window.cancelAnimationFrame(this.state.animFrame);
+        this.state.animFrame = null;
+        
+        // Cleanup if stopped mid-animation
+        this.slider.style.scrollSnapType = '';
+        this.slider.classList.remove('is-animating');
+      }
+    }
+
+    scheduleAuto(delay = this.config.autoDelay) {
+      this.stopAuto();
+      // Don't auto-scroll if content fits within container
+      if (this.slider.scrollWidth <= this.slider.clientWidth + 4) {
+        return;
+      }
+      this.state.autoTimer = window.setTimeout(() => this.runAuto(), delay);
+    }
+
+    pauseAuto() {
+      this.stopAuto();
+      if (this.state.resumeTimer) {
+        window.clearTimeout(this.state.resumeTimer);
+        this.state.resumeTimer = null;
+      }
+    }
+
+    runAuto() {
+      if (this.state.pointerActive || this.state.isHover || !this.state.isVisible) {
+        // If invisible, retry slower. If obscured, we trust IntersectionObserver will resume us eventually.
+        if (!this.state.isVisible) {
+            // Do nothing, wait for observer
+            return;
+        }
+        this.scheduleAuto(this.config.retryDelay);
+        return;
+      }
+
+      // Robust Index Finding: Do not rely on fixed step size
+      const children = this.slider.querySelectorAll('.amp-hero-card');
+      if (children.length === 0) return;
+
+      const current = this.slider.scrollLeft;
+      const alignOffset = children[0].offsetLeft;
+      
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      
+      children.forEach((child, i) => {
+        const pos = child.offsetLeft - alignOffset;
+        const diff = Math.abs(current - pos);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestIndex = i;
+        }
+      });
+
+      let nextIndex = closestIndex + 1;
+      let target = 0;
+
+      if (nextIndex < children.length) {
+        target = children[nextIndex].offsetLeft - alignOffset;
+      } else {
+        // Fallback (should be caught by loop reset)
+        target = 0;
+      }
+      
+      this.animateScrollTo(target);
+    }
+
+    animateScrollTo(target) {
+      console.log('➡️ [HeroSlider] Auto-advancing...');
+      this.stopAuto();
+      
+      // Disable scroll snap strictly during animation to prevent fighting
+      this.slider.style.scrollSnapType = 'none';
+      this.slider.classList.add('is-animating');
+
+      const start = this.slider.scrollLeft;
+      const distance = target - start;
+      const duration = this.config.autoDuration;
+      let startTime = null;
+      
+      const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      this.animationContext = { start, distance, duration, startTime, ease, target };
+      this.state.animFrame = window.requestAnimationFrame(this.step);
+    }
+
+    step(timestamp) {
+      const ctx = this.animationContext;
+      if (!ctx) return;
+      
+      if (ctx.startTime === null) ctx.startTime = timestamp;
+      const elapsed = timestamp - ctx.startTime;
+      const progress = this.clamp(elapsed / ctx.duration, 0, 1);
+      
+      this.slider.scrollLeft = ctx.start + ctx.distance * ctx.ease(progress);
+
+      if (progress < 1) {
+        this.state.animFrame = window.requestAnimationFrame(this.step);
+      } else {
+        // Animation complete
+        this.slider.scrollLeft = ctx.target;
+        
+        // Restore Snap (unless we are about to jump)
+        // Check Infinite Loop logic FIRST
+        if (this.clonedCount) {
+             const children = this.slider.querySelectorAll('.amp-hero-card');
+             const alignOffset = children[0] ? children[0].offsetLeft : 0;
+             const current = this.slider.scrollLeft;
+             
+             // Confirm where we landed
+             let landedIndex = 0;
+             let minDiff = Infinity;
+             children.forEach((child, i) => {
+                const pos = child.offsetLeft - alignOffset;
+                const diff = Math.abs(current - pos);
+                if (diff < minDiff) { minDiff = diff; landedIndex = i; }
+             });
+             
+             if (landedIndex >= this.clonedCount) {
+                 const originalEquivalentIndex = landedIndex % this.clonedCount;
+                 if (children[originalEquivalentIndex]) {
+                     const newPos = children[originalEquivalentIndex].offsetLeft - alignOffset;
+                     this.slider.scrollLeft = newPos; // Instant Jump
+                     log('Silent Jump to', originalEquivalentIndex);
+                 }
+             }
+        }
+        
+        // Cleanup Styles
+        this.slider.style.scrollSnapType = '';
+        this.slider.classList.remove('is-animating');
+        
+        this.scheduleAuto(this.config.autoDelay);
+      }
+    }
+
+    alignToNearestStep() {
+      const stepDistance = this.getStepDistance();
+      if (!stepDistance) return false;
+
+      const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
+      const current = this.slider.scrollLeft;
+      const children = this.slider.querySelectorAll('.amp-hero-card');
+      const alignOffset = children[0] ? children[0].offsetLeft : 0;
+
+      // Find nearest logical index
+      const bestIndex = Math.round(current / stepDistance);
+
+      let target = 0;
+      if (children[bestIndex]) {
+         target = children[bestIndex].offsetLeft - alignOffset;
+      } else {
+         target = bestIndex * stepDistance;
+      }
+      
+      target = this.clamp(target, 0, maxScroll);
+
+      if (Math.abs(target - current) < 1) {
+        return false;
+      }
+      this.animateScrollTo(target);
+      return true;
+    }
+
+    resumeAutoDelayed(delay = this.config.resumeDelay) {
+      if (this.state.resumeTimer) {
+        window.clearTimeout(this.state.resumeTimer);
+      }
+      this.state.resumeTimer = window.setTimeout(() => {
+        if (!this.state.pointerActive && !this.state.isHover) {
+          const aligned = this.alignToNearestStep();
+          if (!aligned) {
+            this.scheduleAuto();
+          }
+        }
+      }, delay);
+    }
+
+    // --- Momentum ---
+
+    cancelMomentum() {
+      if (this.state.momentumFrame) {
+        window.cancelAnimationFrame(this.state.momentumFrame);
+        this.state.momentumFrame = null;
+      }
+    }
+
+    startMomentum() {
+      this.cancelMomentum();
+      const maxScroll = this.slider.scrollWidth - this.slider.clientWidth;
+      
+      if (!isFinite(this.state.velocity) || Math.abs(this.state.velocity) < 0.001) {
+        this.resumeAutoDelayed();
+        return;
+      }
+
+      // Convert px/ms to starting velocity per frame approx
+      let velocity = this.state.velocity * (1000 / 60) * this.config.momentumStep;
+
+      const loop = () => {
+        this.slider.scrollLeft = this.clamp(this.slider.scrollLeft - velocity, 0, maxScroll);
+        velocity *= this.config.momentumFriction;
+        
+        if (Math.abs(velocity) > 0.3) {
+          this.state.momentumFrame = window.requestAnimationFrame(loop);
+        } else {
+          this.cancelMomentum();
+          this.resumeAutoDelayed();
+        }
+      };
+
+      this.state.momentumFrame = window.requestAnimationFrame(loop);
+    }
+
+    // --- Events ---
+
+    handlePointerDown(event) {
+      if (!event.isPrimary) return;
+      this.state.pointerActive = true;
+      this.slider.classList.add("is-dragging");
+      this.slider.setPointerCapture(event.pointerId);
+      this.state.lastX = event.clientX;
+      this.state.lastTime = event.timeStamp;
+      this.state.velocity = 0;
+      this.pauseAuto();
+      this.cancelMomentum();
+    }
+
+    handlePointerMove(event) {
+      if (!this.state.pointerActive) return;
+      event.preventDefault();
+      const deltaX = event.clientX - this.state.lastX;
+      this.slider.scrollLeft -= deltaX;
+      const deltaTime = event.timeStamp - this.state.lastTime || 16;
+      this.state.velocity = deltaX / deltaTime;
+      this.state.lastX = event.clientX;
+      this.state.lastTime = event.timeStamp;
+    }
+
+    handlePointerUp(event) {
+      if (!this.state.pointerActive) return;
+      this.state.pointerActive = false;
+      this.slider.classList.remove("is-dragging");
+      this.slider.releasePointerCapture(event.pointerId);
+      this.startMomentum();
+    }
+
+    handlePointerCancel(event) {
+      if (!this.state.pointerActive) return;
+      this.state.pointerActive = false;
+      this.slider.classList.remove("is-dragging");
+      this.slider.releasePointerCapture(event.pointerId);
+      this.resumeAutoDelayed();
+    }
+
+    handleMouseEnter() {
+      this.state.isHover = true;
+      this.pauseAuto();
+    }
+
+    handleMouseLeave() {
+      this.state.isHover = false;
+      this.resumeAutoDelayed();
+    }
+
+    handleIntersection(entries) {
+      const entry = entries[0];
+      this.state.isVisible = entry.isIntersecting;
+      
+      if (entry.isIntersecting) {
+         console.log('✅ [HeroSlider] In viewport (>=50%). Resuming auto-scroll.');
+         this.resumeAutoDelayed(500);
+      } else {
+         console.log('🛑 [HeroSlider] Out of viewport (<50%). Pausing auto-scroll.');
+         this.pauseAuto();
+         // Also cancel momentum to save resources
+         this.cancelMomentum();
+      }
+    }
+
+    handleVisibility() {
+      if (document.hidden) {
+        this.pauseAuto();
+      } else {
+        this.resumeAutoDelayed(this.config.retryDelay);
+      }
+    }
+
+    handleBlur() {
+      this.pauseAuto();
+    }
+
+    handleFocus() {
+      this.resumeAutoDelayed(this.config.retryDelay);
+    }
+  }
+
+  // --- Global Initialization ---
+
+  const instances = [];
+
+  const checkResponsive = () => {
+    // If width < 768px, destroy (Mobile Guard)
+    // Else init
+    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+    instances.forEach(instance => {      // Update config with user overrides if needed
+      // Force a shorter resume delay for snappier feel
+      if (!instance.dataset.resumeDelay) {
+        instance.config.resumeDelay = 2500;
+      }
+            if (isMobile) {
+        instance.destroy();
+      } else {
+        instance.init();
+      }
+    });
+  };
+
+  const ready = (cb) => {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", cb, { once: true });
+    } else {
+      cb();
+    }
+  };
+
+  ready(() => {
+    const elements = document.querySelectorAll(SELECTOR);
+    if (!elements.length) {
+      log("No slider instances found.");
+      return;
+    }
+
+    elements.forEach(el => {
+      instances.push(new HeroSlider(el));
+    });
+
+    // Run initial check
+    checkResponsive();
+
+    // Resize Listener
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(checkResponsive, 250);
+    });
+  });
+
+})();

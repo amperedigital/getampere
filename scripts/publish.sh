@@ -31,22 +31,6 @@ fi
 echo "   🎨 Building Tailwind CSS..."
 npm run build:css
 
-# 0. AUTOMATIC VERSION INJECTION
-# Automatically update the console log version in local source files before processing
-GLOBAL_JS="$ROOT_DIR/deploy/assets/js/global.js"
-if [ -f "$GLOBAL_JS" ]; then
-  echo "   🖊️  Injecting version $NEW_TAG into global.js..."
-  # Matches: [Ampere Global] v... Loaded
-  sed -i "s/\[Ampere Global\] v.* Loaded/[Ampere Global] $NEW_TAG Loaded/" "$GLOBAL_JS"
-fi
-
-DISTORTION_JS="$ROOT_DIR/deploy/assets/js/distortion-grid.js"
-if [ -f "$DISTORTION_JS" ]; then
-  echo "   🖊️  Injecting version $NEW_TAG into distortion-grid.js..."
-  # Matches: [DistortionGrid] v... Loaded
-  sed -i "s/\[DistortionGrid\] v.* Loaded/[DistortionGrid] $NEW_TAG Loaded/" "$DISTORTION_JS"
-fi
-
 # 1. Identify changed files in deploy/
 # Check for uncommitted changes (staged or unstaged)
 CHANGED_FILES=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
@@ -65,10 +49,45 @@ else
   echo "$CHANGED_FILES"
 fi
 
+# 1.1 SMART DEPENDENCY LINKING (The "Loader" Fix)
+# If a child script changes, force its parent loader to also update in index.html,
+# ensuring the parent loads the child from the correct new version folder.
+if echo "$CHANGED_FILES" | grep -q -E "ampere-3d-key.js|distortion-grid.js"; then
+  if ! echo "$CHANGED_FILES" | grep -q "global.js"; then
+     echo "   🔗 Dependency detected: Dynamic imports changed (3D Key/Grid)."
+     echo "   ⬆️  Forcing update of global.js (Loader) to ensure dependency alignment..."
+     # Appending global.js to the list (newline-delimited)
+     CHANGED_FILES="${CHANGED_FILES}
+deploy/assets/js/global.js"
+  fi
+fi
+
+# 1.5. GENERIC VERSION INJECTION
+# Inject version number into ANY changed JS file that contains a console.log with a version string
+for FILE in $CHANGED_FILES; do
+  if [[ "$FILE" == *.js ]] && [ -f "$FILE" ]; then
+     # Check if the file actually has a potential version string to avoid touching files unnecessarily
+     # Looks for `console.log(... vX.Y ...)
+     if grep -q "console.log.*v[0-9]\+\.[0-9]\+" "$FILE"; then
+       echo "   🖊️  Injecting version $NEW_TAG into $FILE..."
+       # Replace vX.Y.Z or vX.Y with new tag on lines containing console.log
+       sed -i "/console.log/s/v[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?/$NEW_TAG/" "$FILE"
+     fi
+  fi
+done
+
 # 2. Update CDN links in index.html for CHANGED ASSETS only
 for FILE in $CHANGED_FILES; do
   # Check if file is inside deploy/assets/
   if [[ "$FILE" == deploy/assets/* ]]; then
+    
+    # EXCLUSION CHECK
+    # Check if file matches any excluded patterns (e.g. critical loaders to keep local)
+    if [[ "$FILE" == *"logo-loader.js" ]]; then
+       echo "   🛡️  Skipping CDN conversion for protected local asset: $FILE"
+       continue
+    fi
+
     # The file path in the repo is deploy/assets/...
     # The CDN URL should match the repo path: .../deploy/assets/...
     # So we use the full FILE path as the relative path for replacement.
@@ -88,7 +107,27 @@ for FILE in $CHANGED_FILES; do
       # Replaces with: getampere@<new-tag>/deploy/assets/...
       sed -i "s/getampere@v[0-9a-zA-Z.-]*\/$ESCAPED_PATH/getampere@$NEW_TAG\/$ESCAPED_PATH/g" "$INDEX_HTML"
     else
-      echo "   ℹ️  $REL_PATH changed but not found with version tag in index.html (skipping CDN update)"
+      # Check for local path usage to auto-convert to CDN
+      LOCAL_PATH="${REL_PATH#deploy/}"
+      # Escape for regex (looking for literal string in file)
+      ESCAPED_LOCAL_PATH=$(echo "$LOCAL_PATH" | sed 's/\//\\\//g')
+      
+      if grep -q "[\"']$LOCAL_PATH[\"']" "$INDEX_HTML"; then
+         echo "   ✨ Auto-converting local link for $LOCAL_PATH to CDN ($NEW_TAG)..."
+         # We need to use the FULL repo path for the CDN link (deploy/assets/...)
+         ESCAPED_FULL_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
+         CDN_BASE="https:\/\/cdn.jsdelivr.net\/gh\/amperedigital\/getampere@$NEW_TAG"
+         
+         # Replace "assets/..." or 'assets/...' with "https://cdn.../deploy/assets/..."
+         # We accept both ' and " quotes in the source, but normalize to " when replacing if we want standardizing,
+         # OR we just replace the content inside the quotes.
+         # Let's replace the content only to preserve quote style if possible, or just force double quotes.
+         # Simpler: Match quote, path, quote. Replace with quote, cdn_url, quote.
+         
+         sed -i "s/[\"']$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$INDEX_HTML"
+      else
+         echo "   ℹ️  $REL_PATH changed but not found with version tag or local path in index.html (skipping CDN update)"
+      fi
     fi
   fi
 done

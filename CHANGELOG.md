@@ -1,3 +1,7 @@
+## v2.170
+- **Release Retry**:
+  - Re-attempting deployment of v2.169 features (3D Ring) after Cloudflare API timeout.
+  
 ## v2.169
 - **3D HUD Integration**:
   - **Ring System Migration**: Moved the "Tech Ring" overlay from a 2D SVG into the 3D scene (Three.js). This ensures the ring zooms, tilts, and scales in perfext synchronization with the neural net.

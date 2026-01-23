@@ -1,0 +1,142 @@
+# Project Context & Instructions
+
+## 1. Critical Technical Constraints
+- **Content Preservation**: NEVER change content (text, copy, headings) given by the user unless explicitly requested. If you are refactoring code, you MUST preserve the original text exactly.
+- **Tailwind CSS Only**: All styling MUST use Tailwind CSS classes. No custom CSS classes or external stylesheets. Custom CSS is reserved only for complex keyframe animations or third-party integrations (Lenis, SMIL).
+- **Typography Standard**: Use Tailwind Typography (`prose` classes) for long-form content to ensure consistency.
+- **WSL File Sync Bug**: The workspace environment (WSL) has a bug where standard file editing tools fail on large files.
+  - **Mandatory Workaround**: You **MUST** use terminal commands (`cat`, `sed`, `rm`, `echo`) to read or write to `deploy/assets/js/scroll-flipper.js` or `deploy/assets/js/tab-flipper.js`.
+  - **Reading**: `cat deploy/assets/js/filename.js`
+  - **Writing**: `rm ...` then `cat << 'EOF' > ...`
+
+## 2. Project Overview
+- **Type**: Marketing website for Ampere AI (Multi-page architecture).
+- **Source**: `deploy/index.html` is the source of truth for the homepage.
+- **Stack**: TailwindCSS, Iconify icons, Vanilla JS (ES6 Modules), Supabase CDN.
+- **Assets**: Scripts in `deploy/assets/js/`, Images from Supabase/Unsplash.
+
+## 3. Deployment Workflow (Strict)
+- **Source of Truth**: The `deploy/` folder is the only source for deployment.
+- **CDN Usage**: Production HTML MUST use jsDelivr CDN links for all scripts.
+- **Process**:
+  1. Edit local files in `deploy/`. 
+  2. **Do NOT** manually commit/tag.
+  3. **EXECUTE**: `./scripts/publish.sh vX.Y.Z`
+  4. **VERIFY**: Check output.
+- **Safe HTML Usage**: Use `python3 scripts/safe_replace_html.py` for complex grid/layout updates to prevent breakage.
+
+## 4. Core Systems
+
+### Modal System (v1.0.111+)
+- **Usage**: `<section id="my-modal" data-amp-modal-content>`
+- **Trigger**: `<button data-modal-trigger="my-modal">`
+- **Features**: controlled by `modal.js`. Includes scroll locking (Lenis + Native), outside click close, and editor compatibility (Aura.build).
+
+### ScrollSpy System (v1.585+)
+- **Container**: `<nav data-scrollspy-nav>`
+- **Behavior**: Tracks active sections (`data-scrollspy-section`) and moves a visual indicator (`data-scrollspy-indicator`).
+- **Links**: `[data-spy-link]` auto-updates active class and handles smooth scrolling.
+- **Reference**: `assets/js/global.js` (Class `ScrollSpy`).
+
+### Anchor Scrolling (Lenis)
+- **Usage**: `<a data-scrollto="#target">`
+- **Behavior**: Global handler intercepts click, uses Lenis smooth scroll if available, falls back to native.
+
+## 5. Animation Library (Reusable Patterns)
+
+### Vertical Arrow (Pick up & Drop)
+- **Pattern**:
+  ```html
+  <div class="group">
+    <span class="hover-push-down-parent">
+      <svg class="hover-push-down">...</svg>
+    </span>
+  </div>
+  ```
+- **Physics**: Linear lift, cast-down, drop-from-top sequence on hover.
+
+### Section Reveal (Enter Animation)
+- **Container**: `<section data-scroll-reveal-section>`
+- **Content**: `<div data-reveal-group>` (Fades in + Translates Y).
+- **Borders**: `<div data-grid-anim data-grid-axis="x">` (Expands).
+
+### Animated Pulse Dot (Status Indicator)
+- **Usage**: `<div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>`
+- **Context**: Use for live status, system operational badges, or active indicators (e.g., "Services", "All Systems Normal").
+- **Colors**: `bg-green-500` (Operational), `bg-blue-500` (Active/Info), `bg-red-500` (Offline).
+
+## 6. Major Components
+
+### Scroll Flipper (v1.565+)
+**Description**: The primary 3D card stack interaction for "Use Cases".
+**File**: `deploy/assets/js/scroll-flipper.js`
+**Reconstruction Specs**:
+- **Structure**: `[data-scroll-track-container]` > `[data-sticky-cards]` > Cards.
+- **Logic**: Scroll-driven requestAnimationFrame loop. Calculates `delta` based on scroll position vs track top.
+- **Responsive**: 
+  - **Desktop**: Injects `!important` styles for 3D transforms (`rotateX`, `rotateY`, `translateY`).
+  - **Mobile**: MUST clean up (removeProperty) all injected styles to let Tailwind utilities take over.
+
+### Walkthrough / Feature ScrollSpy Component
+**Usage**: Complex feature lists with a sticky table of contents (e.g., "Platform Walkthrough").
+**Structure**:
+1. **Container**: Grid layout (`grid-cols-12`).
+2. **Left (Nav)**: Sticky Sidebar (`col-span-2`) with `[data-scrollspy-nav]`.
+3. **Center (Content)**: Main content (`col-span-7`) with `[data-scrollspy-section]` blocks.
+4. **Right (Metadata)**: Optional context column (`col-span-3`) with `[data-reveal-group]`.
+
+**Agent Reconstruction Prompt**:
+> "Rebuild the 'Walkthrough / ScrollSpy' component using the following specifications:
+>
+> 1. **HTML Structure**:
+>    - **Container**: `<section id='section-id' class='relative w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8'>`
+>    - **Nav**: `<nav class='sticky top-48' data-scrollspy-nav>` inside Left Col.
+>    - **Indicator**: `<div class='absolute left-[-1px] ...' data-scrollspy-indicator></div>`
+> 
+> 2. **Logic**:
+>    - Initialize `ScrollSpy` on the nav.
+>    - Cache links and targets.
+>    - On scroll, determine active target (top <= activeOffset).
+>    - Move indicator (`translateY`) to match active link position.
+> 
+> 3. **Animation**:
+>    - Wrap columns in `data-reveal-group` for staggered entry."
+
+### Ampere 3D Key (RenderJS)
+**Description**: High-fidelity 3D logo visualization using Three.js (internally referred to as RenderJS).
+**File**: `deploy/assets/js/ampere-3d-key.js`
+**Dependencies**: Three.js (v0.160.0+) via Import Map.
+**Specs**:
+- **Geometry**: Custom Extruded Shape (Rounded Square with bevels) to match the Ampere logo mark. Built programmatically via `THREE.Shape`.
+- **Theme Support (v1.738+)**:
+  - **Usage**: Add `data-key-theme="dark"` to the container element.
+  - **Light Mode (Default)**: Glossy White Body (Ceramic), Navy Ink (`#1e2a40`).
+  - **Dark Mode**: Matte Navy Body (`#1e2a40`), Navy Ink (`#1e2a40`). Unified solid look.
+  - **Material Physics**:
+    - *Light*: `Roughness: 0.2`, `Clearcoat: 1.0` (Glossy/Reflective).
+    - *Dark*: `Roughness: 0.6`, `Clearcoat: 0.0` (Matte/Flat) - prevents "black mirror" effect in dark voids.
+- **Texture**: Dynamic SVG-to-CanvasTexture generation.
+  - **Ink Color**: Standardized to **#1e2a40** (Medium-Dark Navy) for both themes to ensure consistency.
+  - **UV Mapping**: Asymmetric mapping to handle bevel distortion (-1.75 to 1.90 range).
+- **Choreography (`setProgress(0-1)`)**:
+  1. **Rotation**: Tilts up from flat face-down (-PI/2.1) to facing forward.
+  2. **Lighting**:
+     - *Ambient*: Dark (0.05) -> Bright (0.9).
+     - *Rim*: Starts bright (backlit) -> Dims as object faces camera.
+     - *Specular Sweep*: Point light physically moves across X axis (-6 to +8) to create a "shine" reflection across the face.
+- **Idle Animation**: Continuous `requestAnimationFrame` loop adds:
+  - Vertical bobbing (Sine wave).
+  - Subtle rotational drift (Y/Z axis wobble) to feel "alive" while floating.
+- **Usage**:
+  ```javascript
+  import { Ampere3DKey } from './assets/js/ampere-3d-key.js';
+  const key = new Ampere3DKey(document.getElementById('canvas-container'));
+  // Update on scroll
+  key.updateProgress(scrollyProgress); // 0.0 to 1.0
+  ```
+
+## 7. Known Issues & Fixes
+- **SMIL Ghost Pixel**: Static artifact at (0,0) before animation starts.
+  - **Fix**: Use `<g clip-path="url(#my-clip)">` to isolate the element until it moves.
+- **Editor Compatibility**: `global.js` and `modal.js` disable Lenis and complex wrapping when inside `aura.build` to allow inline editing.
+

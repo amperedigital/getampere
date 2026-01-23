@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico">
+    <title>Distortion Grid Experiment</title>
+    <!-- Tailwind CSS (via CDN for this experiment) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0a0b14', // Base background
+                            800: '#141621',
+                            700: '#1e202e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; overflow-x: hidden; background-color: #0a0b14; color: white; }
+        
+        /* Local Canvas for each card */
+        .distortion-canvas-local {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind content */
+            pointer-events: none; /* Let clicks pass through */
+            border-radius: inherit; /* Follow card radius if any */
+            opacity: 0.6; /* Slight fade for subtlety */
+        }
+
+        main {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        ._itemsContainer_ogirg_70 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px; /* Increased to make divider clearly visible */
+            background-color: rgba(255, 255, 255, 0.2); /* Brighter divider */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem;
+        }
+
+        ._keyCard_ogirg_83 {
+            background-color: #0a0b14; /* Match body */
+            padding: 2.5rem;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden; 
+        }
+
+        /* Gradient Overlay to soften dots */
+        ._keyCard_ogirg_83::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 5; /* Above canvas (0), below content (10) */
+            background: radial-gradient(circle at center, rgba(10, 11, 20, 0.2) 0%, rgba(10, 11, 20, 0.9) 100%);
+            pointer-events: none;
+        }
+        
+        /* Ensure content sits above canvas */
+        ._keyCard_ogirg_83 > *:not(canvas) {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Let mouse interact with card container */
+        }
+        
+        ._keyCard_ogirg_83._empty_ogirg_181 {
+            /* Empty card style */
+            background-color: #0a0b14; 
+        }
+
+        ._textContainer_ogirg_104 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        ._number_ogirg_224 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: white;
+            margin: 0;
+        }
+        
+        ._unit_ogirg_234 {
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        ._text_ogirg_104 {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        ._logo_ogirg_101 {
+            color: #334155;
+            align-self: flex-end;
+            margin-bottom: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            ._itemsContainer_ogirg_70 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <!-- User Provided Snippet Wrapped -->
+        <div class="_itemsContainer_ogirg_70">
+            <!-- Card 1 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">100</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">cumulative years of expertise</p>
+                </div>
+            </div>
+
+            <!-- Card 2 (Empty) -->
+            <div data-object="grid" class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
+
+            <!-- Card 3 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">16</p>
+                        <span class="_unit_ogirg_234">%</span>
+                    </div>
+                    <p class="_text_ogirg_104">organic growth</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">600</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">satisfied clients</p>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">1200</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">employees around the world</p>
+                </div>
+            </div>
+
+            <!-- Card 6 (Empty) -->
+            <div data-object="grid" class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
+            
+        </div>
+    </main>
+
+    <script type="module">
+        // INLINED JS wrapper for local Distortion
+        
+        class DistortionGrid {
+            constructor(parentElement, index) {
+                this.parent = parentElement;
+                this.index = index;
+                this.canvas = document.createElement('canvas');
+                this.canvas.className = 'distortion-canvas-local';
+                this.parent.appendChild(this.canvas);
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Define 3 variants based on index (RGB for dynamic lighting)
+                const variants = [
+                     // 0: Standard  (Blue-ish White)
+                    { r: 200, g: 230, b: 255, strength: 0.4, mode: 'magnify' },
+                     // 1: Strong Repel (Cyan-ish)
+                    { r: 180, g: 240, b: 255, strength: 0.6, mode: 'push' },
+                     // 2: Flow (Indigo-ish)
+                    { r: 200, g: 210, b: 255, strength: 0.3, mode: 'flow' },
+                     // 3: High Force (Violet-ish)
+                    { r: 220, g: 200, b: 255, strength: 0.5, mode: 'push' }, 
+                     // 4: Standard Repel 
+                    { r: 200, g: 255, b: 240, strength: 0.45, mode: 'magnify' },
+                     // 5: Empty Card Spl
+                    { r: 255, g: 255, b: 255, strength: 0.8, mode: 'magnify' } 
+                ];
+
+                const selectedVariant = variants[index % variants.length];
+
+                this.config = {
+                    gridSpacing: 8, 
+                    dotRadius: 0.8,
+                    // Very dim base state
+                    dotColor: 'rgba(255, 255, 255, 0.1)', 
+                    r: selectedVariant.r,
+                    g: selectedVariant.g,
+                    b: selectedVariant.b,
+                    mouseRadius: 200, 
+                    strength: selectedVariant.strength,
+                    mode: selectedVariant.mode
+                };
+
+                this.mouse = { x: -1000, y: -1000 };
+                this.dots = [];
+                
+                // Ensure parent position is relative so canvas absolute works
+                // (Already handled in CSS but good safety)
+                
+                this.init();
+                this.bindEvents();
+                this.animate();
+            }
+
+            init() {
+                this.time = 0; // Add time for wave animation
+                this.resize();
+                // Create dots is called by resize
+            }
+
+            bindEvents() {
+                // Resize observer for the specific element
+                this.resizeObserver = new ResizeObserver(() => {
+                    this.resize();
+                });
+                this.resizeObserver.observe(this.parent);
+
+                // Mouse events on the PARENT element to ensure hit testing works
+                this.parent.addEventListener('mousemove', (e) => {
+                    const rect = this.parent.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+
+                this.parent.addEventListener('mouseleave', () => {
+                    this.mouse.x = -1000;
+                    this.mouse.y = -1000;
+                });
+            }
+
+            resize() {
+                this.width = this.parent.offsetWidth;
+                this.height = this.parent.offsetHeight;
+                this.canvas.width = this.width;
+                this.canvas.height = this.height;
+                this.createDots();
+            }
+
+            createDots() {
+                this.dots = [];
+                const cols = Math.ceil(this.width / this.config.gridSpacing) + 1;
+                const rows = Math.ceil(this.height / this.config.gridSpacing) + 1;
+
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        this.dots.push({
+                            baseX: i * this.config.gridSpacing,
+                            baseY: j * this.config.gridSpacing,
+                            x: i * this.config.gridSpacing,
+                            y: j * this.config.gridSpacing
+                        });
+                    }
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                // Removed time increment - Wave depends on spatial positions only
+                
+                this.dots.forEach(dot => {
+                    const dx = this.mouse.x - dot.baseX;
+                    const dy = this.mouse.y - dot.baseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    let drawX = dot.baseX;
+                    let drawY = dot.baseY;
+                    let color = this.config.dotColor;
+
+                    if (dist < this.config.mouseRadius) {
+                        // 1. Calculate Local Envelope (The "Lens" effect area)
+                        const rawForce = (this.config.mouseRadius - dist) / this.config.mouseRadius; 
+                        // Smooth smoothstep-like curve for the envelope
+                        const envelope = (1 - Math.cos(rawForce * Math.PI)) / 2; 
+
+                        // 2. Spatial Wave Calculation (Concentric Ripples)
+                        // 'dist' drives the sine wave phase. Moving mouse = moving phase.
+                        const rippleFreq = 0.1; // Frequency of the rings
+                        const ripple = Math.sin(dist * rippleFreq); 
+
+                        // 3. Combine Envelope & Ripple
+                        // We push dots along the angle based on the ripple
+                        const angle = Math.atan2(dy, dx);
+                        const distortion = ripple * this.config.gridSpacing * this.config.strength * envelope * 4;
+
+                        drawX += Math.cos(angle) * distortion;
+                        drawY += Math.sin(angle) * distortion;
+                        
+                        // Light Shift: Glow based on Envelope intensity
+                        const alpha = 0.1 + (envelope * 0.9);
+                        color = `rgba(${this.config.r},${this.config.g},${this.config.b},${alpha})`;
+                    }
+
+                    this.drawDot(drawX, drawY, this.config.dotRadius, color);
+                });
+
+                requestAnimationFrame(this.animate.bind(this));
+            }
+
+            drawDot(x, y, r, c) {
+                // Square implementation
+                this.ctx.fillStyle = c;
+                // r is half-width/radius, so width is r*2
+                const size = r * 2;
+                this.ctx.fillRect(x - r, y - r, size, size);
+            }
+        }
+
+        // Helper
+        function Util_easeOutQuad(t) { return t * (2 - t); }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('._keyCard_ogirg_83');
+            cards.forEach((card, index) => {
+                new DistortionGrid(card, index);
+            });
+        });
+    </script>
+</body>
+</html>
