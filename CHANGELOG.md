@@ -1,3 +1,9 @@
+## v2.178
+- **Tech Demo**:
+    - **Visualization**: Added all 12 clock positions to the ring HUD with new metric titles.
+    - **Active State**: The 6 o'clock marker ("System Logs") is now illuminated in Green to signify activation.
+    - **Alignment**: Markers persist at `r=350`, with text maintained in tangential orientation for rotation readability.
+
 ## v2.177
 - **Tech Demo**:
     - **Visualization**: Refined the ring overlay to use tangential text rotation. Titles now wrap around the circle face.
