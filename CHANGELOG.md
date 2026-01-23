@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.244] - 2026-01-23
+### Fixed
+- **Grid Clipping (Safeguard)**: Increased the desktop Grid `min-h` constraint from `700px` to `850px`.
+    - **Issue**: Users reported card clipping on screens ~740px high, indicating that the 700px floor was too low to accommodate the content of 3 stacked rows.
+    - **Fix**: The new 850px floor guarantees ~283px per card row, ensuring content integrity. On screens shorter than 850px, the grid will now overflow properly and trigger the container's vertical scrollbar.
+
 ## [v2.243] - 2026-01-23
 ### Fixed
 - **Grid Clipping**: Added a `min-h-[700px]` constraint to the desktop Grid container.
