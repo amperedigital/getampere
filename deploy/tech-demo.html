@@ -77,9 +77,10 @@
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0">
+            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 relative group/scene">
+                <!-- 3D Scene Layer (Z-0) -->
                 <div id="tech-demo-scene" 
-                     class="w-full h-full"
+                     class="w-full h-full relative z-0"
                      data-standby-timeout="120"
                      data-standby-warning="30"
                      data-auto-recenter="2.5"
@@ -87,6 +88,44 @@
                      data-min-velocity="0.0025"
                      data-rotation-rpm="0.17"
                      data-camera-distance="6.0"></div>
+
+                <!-- 2D Overlay: Tech Dial Ring (Z-10) -->
+                <!-- Centered SVG Ring. Pointer events none allows click-through to 3D scene. -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 select-none overflow-hidden">
+                    <svg class="w-[140%] h-[140%] lg:w-[95%] lg:h-[95%] opacity-60 animate-[spin_60s_linear_infinite]" viewBox="0 0 800 800" style="will-change: transform;">
+                        <defs>
+                            <!-- Defined path for text to follow (Clockwise circle) -->
+                            <!-- Radius 300 centered at 400,400 -->
+                            <path id="text-ring-path" d="M 400, 100 A 300,300 0 0,1 400, 700 A 300,300 0 0,1 400, 100" />
+                        </defs>
+
+                        <!-- Outer Decorative Rings -->
+                        <circle cx="400" cy="400" r="390" fill="none" class="stroke-white/5" stroke-width="1" stroke-dasharray="8 8" />
+                        <circle cx="400" cy="400" r="350" fill="none" class="stroke-blue-500/10" stroke-width="50" />
+                        <circle cx="400" cy="400" r="325" fill="none" class="stroke-white/10" stroke-width="1" />
+                        <circle cx="400" cy="400" r="375" fill="none" class="stroke-white/10" stroke-width="1" />
+                        
+                        <!-- Text Labels on Path (4 Positions) -->
+                        <text class="text-[14px] font-mono uppercase tracking-[0.4em] fill-blue-300 font-semibold" dy="18">
+                            <!-- 0% (Top) -->
+                            <textPath href="#text-ring-path" startOffset="0%" text-anchor="middle">Data Sources</textPath>
+                            <!-- 25% (Right) -->
+                            <textPath href="#text-ring-path" startOffset="25%" text-anchor="middle">Neural Config</textPath>
+                            <!-- 50% (Bottom) -->
+                            <textPath href="#text-ring-path" startOffset="50%" text-anchor="middle">System Logs</textPath>
+                            <!-- 75% (Left) -->
+                            <textPath href="#text-ring-path" startOffset="75%" text-anchor="middle">Diagnostics</textPath>
+                        </text>
+
+                         <!-- Cardinal Markers -->
+                         <g class="fill-blue-500">
+                             <circle cx="400" cy="50" r="4" />
+                             <circle cx="750" cy="400" r="4" />
+                             <circle cx="400" cy="750" r="4" />
+                             <circle cx="50" cy="400" r="4" />
+                         </g>
+                    </svg>
+                </div>
             </div>
                  
              <!-- Overlay Hint (Positioned in the bezel area) -->

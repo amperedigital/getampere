@@ -1,3 +1,10 @@
+## v2.165
+- **UI Architecture**:
+  - **Outer Ring Control**: Implemented a flat SVG-based HUD overlay surrounding the 3D neural net.
+  - **Dial Visualization**: Added a concentric ring system with tech-styled dashed borders and 4 cardinal labels ("DATA SOURCES", "NEURAL CONFIG", "SYSTEM LOGS", "DIAGNOSTICS").
+  - **Layering**: Configured the ring as a `pointer-events-none` overlay (Z-10) to ensure the 3D scene below remains fully interactive.
+  - **Animation**: Applied a slow linear rotation (`animate-spin-slow`) to simulate an active system scan.
+
 ## v2.164
 - **Card Styling**:
   - **Centered Content**: Upgraded all grid cards to `border-2` (2px width) and strictly centered their content containers using `flex flex-col items-center justify-center`.
