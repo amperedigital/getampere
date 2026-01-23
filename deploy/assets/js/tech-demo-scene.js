@@ -1187,25 +1187,79 @@ export class TechDemoScene {
 
             this.camera.aspect = this.width / this.height;
             
-            // --- DYNAMIC ZOOM CALCULATION (v2.237) ---
-            // 1. Base Distance: 13.0 (Provides ~1.5rem breathing room on standard 1080p screens).
-            // 2. Aspect Correction (Portrait): Zooms out if width < height.
-            // 3. Height Correction (Short Screens): Zooms IN if height is small, to prevent the "Too Much Space" issue.
-            //    - Why? On very short screens (e.g., < 500px), fixed pixel gaps feel disproportionately large.
-            //      We scale the distance down slightly as height decreases below 800px.
+            this.camera.aspect = this.width / this.height;
             
-            const baseDist = this.config.cameraDistance;
-            const mobileMult = this.isMobile ? 1.4 : 1.0;
-            const aspectFactor = (this.camera.aspect < 1.0) ? (1.0 / this.camera.aspect) : 1.0;
+            // --- DYNAMIC ZOOM CALCULATION (v2.238) ---
+            // Requirement: The Neural Net must maintain a VISUAL size that is ~95% of the Inner Ring's diameter.
+            // 
+            // CONSTANTS:
+            // - Inner Ring Radius (SVG): 200px (Stroke @ 230px, Width 60px -> Inner Edge 200px)
+            // - SVG ViewBox Size: 800x800
+            // - Icosahedron Radius (ThreeJS): 1.5 units
+            //
+            // LOGIC:
+            // 1. Calculate the 'Visible Height/Width' of the 3D scene at Z=0.
+            //    Vertical FOV (radians) = fov * PI / 180
+            //    Visible Height = 2 * Distance * tan(FOV / 2)
+            //
+            // 2. We want the 3D Icosahedron (Height ~3.0 units) to equate to fraction 'F' of the Ring (Height 400px in 800px box).
+            //    Ratio = (3.0 units) / (Visible Height units) == (400px Ring) / (800px Box)
+            // 
+            // 3. However, the SVG scales with the container (object-fit: contain). 
+            //    The WebGL canvas fills the same container.
+            //    Therefore, we only need to lock the ratio of [3D Object Size] to [WebGL Viewport Size].
+            //
+            //    Target Fraction: Ring Inner Diameter (400px) / ViewBox (800px) = 0.5
+            //    Desired Net Size: 95% of Ring = 0.5 * 0.95 = 0.475 of Viewport Height.
+            //
+            //    So: 3.0 units (Object Height) should cover 47.5% of the Vertical Viewport.
+            //    Visible Height = 3.0 / 0.475 = 6.315 units.
+            //
+            // 4. Solve for Distance:
+            //    Distance = Visible Height / (2 * tan(FOV / 2))
+            //    FOV = 45 deg. tan(22.5) ~= 0.4142
+            //    Distance = 6.315 / (2 * 0.4142) ~= 7.62
+            //
+            // 5. ASPET RATIO CORRECTION (Crucial):
+            //    - If Aspect < 1 (Portrait), the WebGL viewport is Height-Dominant (Tall).
+            //    - The SVG uses `contain`, so the Ring shrinks to fit the WIDTH.
+            //    - The Ring's size becomes relative to WIDTH, not Height.
+            //    - We must switch the calculation to match the WIDTH fraction.
             
-            // Height Compensation: If height < 800px, reduce distance slightly (up to 20% closer at 0px).
-            // This tightens the visual on short laptops/wide windows.
-            const heightRef = 800;
-            const heightFactor = (this.height < heightRef) ? (0.8 + 0.2 * (this.height / heightRef)) : 1.0;
+            const FOV = 45; 
+            const tanHalfFOV = Math.tan( (FOV * Math.PI / 180) / 2 );
+            const objectSize = 3.0; // Radius 1.5 * 2
+            const ringToViewportRatio = 400 / 800; // Inner Ring (400px) in Box (800px)
+            const fillPercentage = 0.90; // 90% of Inner Ring (slightly safer than 95%)
             
-            this.camera.position.z = baseDist * mobileMult * aspectFactor * heightFactor;
+            let targetVisibleSize;
+
+            if (this.camera.aspect >= 1.0) {
+                // LANDSCAPE (Height Limited)
+                // Ring is 50% of screen HEIGHT.
+                // We want Object to be 90% of Ring.
+                // Target Object Coverage = 0.45 of Screen Height.
+                const targetCoverage = ringToViewportRatio * fillPercentage;
+                targetVisibleSize = objectSize / targetCoverage;
+            } else {
+                // PORTRAIT (Width Limited)
+                // Ring is 50% of screen WIDTH.
+                // WebGL FOV is vertical, but Aspect determines visible width.
+                // Visible Width = Visible Height * Aspect.
+                // We want Object to be (0.45 * Width).
+                // objectSize = (Visible Height * Aspect) * 0.45
+                // Visible Height = objectSize / (Aspect * 0.45)
+                const targetCoverage = ringToViewportRatio * fillPercentage;
+                targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage);
+            }
+
+            // Calculate Required Distance
+            // D = Size / (2 * tan(FOV/2))
+            this.camera.position.z = targetVisibleSize / (2 * tanHalfFOV);
             
             this.camera.updateProjectionMatrix();
+
+            this.renderer.setSize(this.width, this.height);
 
             this.renderer.setSize(this.width, this.height);
 
