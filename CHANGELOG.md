@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.216] - 2026-01-17
+### Added
+- **Activation Feedback**: The static top needle indicator now turns Green (Emerald) when both rings are aligned and stable ("Activated"), and Blue when adjusting ("Scanning"). This provides visual confirmation of the system state.
+
 ## [v2.215] - 2026-01-17
 ### Changed
 - **Neuronet Visuals**: Further reduced the brightness of the active "firing" nodes to minimize visual distraction.

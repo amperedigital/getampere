@@ -78,6 +78,9 @@ export class TechDemoScene {
         if (svg) {
             console.log('Initializing Halo Rotators (Dual Ring)...');
             
+            // Catch Static Needle for Status Updates
+            this.staticNeedle = svg.querySelector('#static-needle');
+
             // Outer Ring (#halo-ring-outer): Blue, r=270-330 approx
             // Hit Area: > 265
             this.rotatorOuter = new HaloRotator(svg, '#halo-ring-outer', {
@@ -1187,6 +1190,35 @@ export class TechDemoScene {
         requestAnimationFrame(this.animate.bind(this));
         
         if (this.controls) this.controls.update();
+
+        // --- Static Needle Logic (Alignment Lock) ---
+        if (this.staticNeedle && this.rotatorOuter && this.rotatorInner) {
+            // Check if both rings are stable ("Aligned")
+            const outerStable = !this.rotatorOuter.isDragging && Math.abs(this.rotatorOuter.velocity) < 0.005;
+            const innerStable = !this.rotatorInner.isDragging && Math.abs(this.rotatorInner.velocity) < 0.005;
+            
+            const isLocked = outerStable && innerStable;
+            
+            // Toggle Classes (Blue <-> Emerald)
+            // Initial: fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]
+            // Locked:  fill-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]
+            
+            if (isLocked) {
+                if (this.staticNeedle.classList.contains('fill-blue-400')) {
+                    this.staticNeedle.classList.replace('fill-blue-400', 'fill-emerald-400');
+                    // Note: Tailwind arbitrary value replacement can be tricky if exact string doesn't match.
+                    // We remove/add to be safe.
+                    this.staticNeedle.classList.remove('drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]');
+                    this.staticNeedle.classList.add('drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]');
+                }
+            } else {
+                 if (this.staticNeedle.classList.contains('fill-emerald-400')) {
+                    this.staticNeedle.classList.replace('fill-emerald-400', 'fill-blue-400');
+                    this.staticNeedle.classList.remove('drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]');
+                    this.staticNeedle.classList.add('drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]');
+                }
+            }
+        }
 
         // --- Auto-Recenter Logic ---
         // If not interacting and idle for > X seconds
