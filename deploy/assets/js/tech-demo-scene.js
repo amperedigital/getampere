@@ -1191,7 +1191,8 @@ export class TechDemoScene {
             this.isMobile = (this.width <= 600);
 
             console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
-            console.log(`[TechDemoScene] Dimensions: ${this.width}x${this.height} (Was: ${prevWidth}x${prevHeight})`);
+            console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
+            console.log(`[TechDemoScene] Container: ${this.width}x${this.height} (Was: ${prevWidth}x${prevHeight})`);
 
             this.camera.aspect = this.width / this.height;
 
@@ -1289,7 +1290,11 @@ export class TechDemoScene {
 
         // Replace window.resize with ResizeObserver (v2.239)
         // This handles container layout shifts that don't trigger window resize (e.g. flexbox adjustments)
-        this.resizeObserver = new ResizeObserver(() => {
+        this.resizeObserver = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                 // Log entry dimensions vs clientWidth
+                 console.log(`[ResizeObserver] Entry ContentRect: ${entry.contentRect.width.toFixed(2)}x${entry.contentRect.height.toFixed(2)}`);
+            }
             onResize('ResizeObserver');
         });
         this.resizeObserver.observe(this.container);
