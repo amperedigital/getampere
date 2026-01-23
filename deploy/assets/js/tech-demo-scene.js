@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { HaloRotator } from './halo-rotator.js';
 
 export class TechDemoScene {
     constructor(container) {
@@ -44,6 +45,7 @@ export class TechDemoScene {
         this.initGeometry();
         // this.initControls(); // Interaction disabled for Tech Demo (Static View)
         this.initUI(); // Add UI Controls
+        this.initHaloRotator();
         this.handleResize();
         this.animate();
     }
@@ -68,6 +70,15 @@ export class TechDemoScene {
     
     // Stub for initControls to prevent errors if called
     initControls() {}
+
+    initHaloRotator() {
+        // Initialize the Ring Rotator
+        const svg = this.container.querySelector('svg');
+        if (svg) {
+            console.log('Initializing Halo Rotator...');
+            this.haloRotator = new HaloRotator(svg);
+        }
+    }
 
     parseConfig() {
         if (!this.container) return;

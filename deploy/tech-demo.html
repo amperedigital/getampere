@@ -137,55 +137,55 @@
 
                                 <!-- MARKERS (Dots Moved Inside Halo: cx=310 to be closer to text) -->
                                 
-                                <!-- 12 O'Clock -->
-                                <g transform="rotate(-90)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 1 O'Clock -->
-                                <g transform="rotate(-60)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 2 O'Clock -->
-                                <g transform="rotate(-30)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 3 O'Clock -->
-                                <g transform="rotate(0)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 4 O'Clock -->
-                                <g transform="rotate(30)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 5 O'Clock -->
-                                <g transform="rotate(60)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 6 O'Clock (System Logs - ACTIVE) -->
-                                <g transform="rotate(90)"><circle cx="310" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" /></g>
-                                <!-- 7 O'Clock -->
-                                <g transform="rotate(120)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 8 O'Clock -->
-                                <g transform="rotate(150)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 9 O'Clock -->
-                                <g transform="rotate(180)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 10 O'Clock -->
-                                <g transform="rotate(210)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
-                                <!-- 11 O'Clock -->
-                                <g transform="rotate(240)"><circle cx="310" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                                <!-- 12 O'Clock: Data Sources -->
+                                <g transform="rotate(-90)"><circle cx="310" cy="0" r="4" data-index="0" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 1 O'Clock: Optimization -->
+                                <g transform="rotate(-60)"><circle cx="310" cy="0" r="4" data-index="1" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 2 O'Clock: Encryption -->
+                                <g transform="rotate(-30)"><circle cx="310" cy="0" r="4" data-index="2" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 3 O'Clock: Neural Config -->
+                                <g transform="rotate(0)"><circle cx="310" cy="0" r="4" data-index="3" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 4 O'Clock: Protocol -->
+                                <g transform="rotate(30)"><circle cx="310" cy="0" r="4" data-index="4" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 5 O'Clock: Latency -->
+                                <g transform="rotate(60)"><circle cx="310" cy="0" r="4" data-index="5" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 6 O'Clock: System Logs (Initially Active) -->
+                                <g transform="rotate(90)"><circle cx="310" cy="0" r="4" data-index="6" class="fill-emerald-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 7 O'Clock: Throughput -->
+                                <g transform="rotate(120)"><circle cx="310" cy="0" r="4" data-index="7" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 8 O'Clock: Integrity -->
+                                <g transform="rotate(150)"><circle cx="310" cy="0" r="4" data-index="8" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 9 O'Clock: Diagnostics -->
+                                <g transform="rotate(180)"><circle cx="310" cy="0" r="4" data-index="9" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 10 O'Clock: Reliability -->
+                                <g transform="rotate(210)"><circle cx="310" cy="0" r="4" data-index="10" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
+                                <!-- 11 O'Clock: Analysis -->
+                                <g transform="rotate(240)"><circle cx="310" cy="0" r="4" data-index="11" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
 
                                 <!-- CURVED TEXT LABELS -->
                                 <style>
-                                    .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+                                    .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: fill 0.3s, text-shadow 0.3s; }
                                     .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
                                     .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
                                 </style>
 
                                 <!-- Upper Hemisphere (Clockwise) -->
                                 <!-- Radius 320. offsets adjusted for 240deg arc (start 8oc) -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="12.5%" text-anchor="middle">Diagnostics</textPath></text>    <!-- 9 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="25%" text-anchor="middle">Reliability</textPath></text>      <!-- 10 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="37.5%" text-anchor="middle">Analysis</textPath></text>       <!-- 11 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 12 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="62.5%" text-anchor="middle">Optimization</textPath></text>   <!-- 1 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="75%" text-anchor="middle">Encryption</textPath></text>       <!-- 2 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="87.5%" text-anchor="middle">Neural Config</textPath></text>  <!-- 3 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="9"><textPath href="#ring-upper" startOffset="12.5%" text-anchor="middle">Diagnostics</textPath></text>    <!-- 9 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="10"><textPath href="#ring-upper" startOffset="25%" text-anchor="middle">Reliability</textPath></text>      <!-- 10 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="11"><textPath href="#ring-upper" startOffset="37.5%" text-anchor="middle">Analysis</textPath></text>       <!-- 11 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="0"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 0 (12oc) -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="1"><textPath href="#ring-upper" startOffset="62.5%" text-anchor="middle">Optimization</textPath></text>   <!-- 1 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="2"><textPath href="#ring-upper" startOffset="75%" text-anchor="middle">Encryption</textPath></text>       <!-- 2 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="3"><textPath href="#ring-upper" startOffset="87.5%" text-anchor="middle">Neural Config</textPath></text>  <!-- 3 -->
 
                                 <!-- Lower Hemisphere (Counter-Clockwise for Smile) -->
                                 <!-- Radius 320. dy="2" pushes text slightly outward/downward to center on halo band -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
-                                <text class="ring-text ring-text-green" dy="2"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
-                                <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="8"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="7"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
+                                <text class="ring-text ring-text-green" dy="2" data-index="6"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 (6oc) -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="5"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
+                                <text class="ring-text ring-text-blue" dy="2" data-index="4"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
                             </g>
 
                         </g>

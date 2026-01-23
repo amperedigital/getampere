@@ -1,4 +1,12 @@
-## v2.195
+## [v2.196] - 2026-01-23
+- **Tech Demo**:
+  - **Interaction Engine**: Implemented `HaloRotator` class (`assets/js/halo-rotator.js`) to handle physics-based rotation.
+    - **Mechanics**: Supports Mouse Drag (Y-axis) and Scroll Wheel to rotate the ring.
+    - **Snapping**: Automatically snaps to 30-degree increments (aligning with 12 slots) using a spring physics loop.
+    - **Illumination**: Active slots at 12 o'clock and 6 o'clock are dynamically illuminated (Green/Emerald).
+    - **Integration**: Mapped SVG elements to 0-11 indices for precise state tracking.
+
+## [v2.195] - 2026-01-23
 - **Tech Demo**:
     - **Refinement**: Uniformly reduced the Halo Ring width from 80px to 60px (`r=270` to `r=330`).
     - **Symmetry**: This creates equal 20px padding for both the text labels (at `r=290`) and the marker dots (at `cx=310`) relative to the ring's edges.
