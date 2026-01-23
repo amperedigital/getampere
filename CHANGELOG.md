@@ -4,7 +4,7 @@
     - **Centering**: Removed all `setViewOffset` logic from the 3D engine (previously used to offset the subject). The scene is now mathematically centered to the ring by default.
     - **Architecture**: Implements the "Container inside a Ring" requirement strictly.
 
-## v2.180
+## v2.181
 - **Tech Demo**:
     - **Architecture**: Nested the 3D Scene container *inside* the Ring overlay container to guarantee strict parent-child centering.
     - **Layout**: Scene now fits strictly within the ring bounds (`inset-10` clearance).
