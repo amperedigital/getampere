@@ -301,7 +301,16 @@ export class TechDemoScene {
         });
 
         container.insertBefore(thumb, container.firstChild);
-        this.container.appendChild(container);
+        
+        // Fix: Append UI to the main card container (group/scene) if available, 
+        // to keep controls outside the aspect-ratio restricted ring area.
+        const uiRoot = this.container.closest('.group\\/scene') || this.container;
+        // Make sure the root is positioned so absolute children work (it is usually relative or absolute already)
+        if (window.getComputedStyle(uiRoot).position === 'static') {
+            uiRoot.style.position = 'relative';
+        }
+
+        uiRoot.appendChild(container);
 
         // --- Multi-Function Display (Gauge + Status) ---
         const statusContainer = document.createElement('div');
@@ -325,14 +334,14 @@ export class TechDemoScene {
         statusText.innerText = 'INITIALIZING...';
         statusContainer.appendChild(statusText);
         
-        this.container.appendChild(statusContainer);
+        uiRoot.appendChild(statusContainer);
 
         // --- Standby Warning UI ---
         const warning = document.createElement('div');
         this.standbyWarning = warning;
         warning.id = 'ampere-standby-warning';
         warning.innerText = 'STANDBY IN 30s';
-        this.container.appendChild(warning);
+        uiRoot.appendChild(warning);
 
         // --- Helper: Update Thumb Size ---
         const updateThumbSize = () => {

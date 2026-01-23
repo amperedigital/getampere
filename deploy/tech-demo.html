@@ -82,9 +82,22 @@
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
                 <!-- The Canvas resides INSIDE this to share the exact same bounds. -->
-                <div class="relative w-full max-w-[800px] aspect-square">
+                <div class="relative w-full max-w-[800px] aspect-square flex items-center justify-center">
                     
-                    <!-- 1. The Ring Overlay (Z-20) -->
+                    <!-- 1. NESTED SCENE (Background Layer) -->
+                    <!-- Centered within the Ring's coordinate space. Full Size. -->
+                    <!-- Camera Distance Increased to 10.5 to fit visually inside the ring. -->
+                    <div id="tech-demo-scene" 
+                         class="absolute inset-0 z-0 rounded-full pointer-events-auto"
+                         data-standby-timeout="120"
+                         data-standby-warning="30"
+                         data-auto-recenter="2.5"
+                         data-lerp-speed="0.015"
+                         data-min-velocity="0.0025"
+                         data-rotation-rpm="0.17"
+                         data-camera-distance="10.5"></div>
+
+                    <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
                     <div class="absolute inset-0 pointer-events-none z-20 select-none">
                          <svg class="w-full h-full" viewBox="0 0 800 800" overflow="visible">
@@ -246,18 +259,6 @@
 
                         </g>
                     </svg>
-
-                        <!-- NESTED SCENE (Inside Ring Container) -->
-                        <!-- Centered within the Ring's coordinate space -->
-                        <div id="tech-demo-scene" 
-                             class="absolute inset-10 z-0 rounded-full pointer-events-auto"
-                             data-standby-timeout="120"
-                             data-standby-warning="30"
-                             data-auto-recenter="2.5"
-                             data-lerp-speed="0.015"
-                             data-min-velocity="0.0025"
-                             data-rotation-rpm="0.17"
-                             data-camera-distance="8.5"></div>
                     </div>
                          
                 </div><!-- End Master Container -->

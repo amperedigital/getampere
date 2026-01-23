@@ -1785,3 +1785,10 @@
 - **Visuals**: Reduced circuit grid density (PHI:60->45, THETA:80->60) to prevent trace clutter at small scales.
 - **Trace Lines**: Darkened initial line color by 20% (`0x082e4b`) to improve contrast and reduce visual noise.
 - **Complexity**: Reduced number of buses (90->65) and max lanes (4->3) for a cleaner, defined look.
+
+## [v2.182] - 2026-01-22
+### Fixed
+- **Ring Visibility**: Restored the 2D SVG Halos by restacking the DOM. The 3D Scene is now explicitly laid out *behind* the SVG overlay (z-0 vs z-20) instead of nested inside it.
+- **Controls Positioning**: Moved the "Standby / Power" control pill outside the aspect-constrained ring container. It now attaches to the main card (`.group/scene`), sitting at the bottom of the viewport/card window, ensuring it does not overlap the visualization.
+- **Visual Scale**: Adjusted 3D camera distance (8.5 -> 10.5) to compensate for the full-container expansion, maintaining the illusion that the sphere fits strictly inside the inner ring.
+
