@@ -1,3 +1,11 @@
+## v2.191
+- **Tech Demo**:
+    - **Visual Structure**: Restructured the SVG Overlay for rotary interaction.
+        - Created a dedicated `#halo-rotary-dial` group to house all dynamic elements (Ring Band, Dots, Text).
+        - Separated static elements (Outer Dashed Ring, Selection Needles) into the fixed parent layer.
+    - **Dimensions**: Widened the Blue Halo inwards to `r=260` (Inner Edge) to accommodate the markers, while maintaining the `r=340` Outer Edge.
+    - **Alignment**: Moved all 12 markers (dots) from the outer perimeter (`r=350`) to the new inner track (`r=280`) inside the widened halo.
+
 ## v2.190
 - **Tech Demo**:
     - **Interface**: Added static "Selection Needle" markers (Triangular Brackets) at 12 o'clock and 6 o'clock positions in the SVG overlay.
