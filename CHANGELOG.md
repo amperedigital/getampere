@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.218] - 2026-01-17
+### Added
+- **Dense Metrics UI**: Completely redesigned the Agent Grid cards to serve as dense data dashboards.
+    - **Header Update**: Title moved left, Icon moved top-right.
+    - **Data Grid**: Implemented a 3-column / 6-row metrics grid for each agent.
+    - **Visualization**: Added CSS-based sparklines/progress bars for each metric row.
+    - **Content**: Populated each agent with role-specific "live" data points (e.g., Conversion Rates for Sales, Ticket Resolution for Tech).
+
 ## [v2.217] - 2026-01-17
 ### Added
 - **UI Agents Grid**: Replaced the right-hand stats grid with a 6-card grid representing the Agentic System Roles:
