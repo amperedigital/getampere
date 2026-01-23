@@ -179,9 +179,12 @@
             if(container) {
                 // Initialize Scene with a slight delay to ensure layout stability
                 // This prevents 0x0 canvas issues in the new grid layout
-                setTimeout(() => {
+                setTimeout(async () => {
                     console.log('Initializing Tech Demo...');
-                    const scene = new IcosahedronScene(container);
+                    
+                    // Dynamic Import of the isolated Scene logic
+                    const { TechDemoScene } = await import('./assets/js/tech-demo-scene.js');
+                    const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
                     window.demoScene = scene;

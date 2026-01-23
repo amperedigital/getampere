@@ -4,14 +4,14 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 
-export class IcosahedronScene {
+export class TechDemoScene {
     constructor(container) {
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
         this.isMobile = (this.width <= 600);
 
-        console.log("Icosahedron Scene Initialized - vDesignTwo.10 (Random RGB & Subtle Halo)");
+        console.log("Tech Demo Scene Initialized - vDesignTwo.10 (Isolated Branch)");
         
         this.systemState = 'ACTIVE'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -583,6 +583,9 @@ export class IcosahedronScene {
 
         // 3. Central Sphere
         this.addCentralSphere();
+
+        // 4. Ring System (Tech Demo Exclusive)
+        this.initRing();
     }
 
     addCentralSphere() {
@@ -608,6 +611,135 @@ export class IcosahedronScene {
 
         this.coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
         this.centralSphere.add(this.coreLight);
+    }
+
+    initRing() {
+        // --- 3D TECH RING (Tech Demo Exclusive) ---
+        // Attached to this.group so it rotates/zooms with the scene, 
+        // but acts as a static surrounding interface.
+
+        const ringGroup = new THREE.Group();
+        this.group.add(ringGroup);
+
+        const ringRadius = 2.4; 
+        const color = 0x3b82f6; // Tailwind Blue-500
+        const opacity = 0.4;
+
+        // 1. Main Circle (Thin solid line)
+        const curve = new THREE.EllipseCurve(0, 0, ringRadius, ringRadius, 0, 2 * Math.PI, false, 0);
+        const points = curve.getPoints(128);
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({
+            color: color, 
+            opacity: opacity, 
+            transparent: true,
+            linewidth: 1
+        });
+        const ringLine = new THREE.LineLoop(geometry, material);
+        ringGroup.add(ringLine);
+
+        // 2. Outer Dashed Ring (Decorative)
+        const outerRadius = ringRadius * 1.08;
+        const outerCurve = new THREE.EllipseCurve(0, 0, outerRadius, outerRadius, 0, 2*Math.PI);
+        const outerPoints = outerCurve.getPoints(64); 
+        const outerGeo = new THREE.BufferGeometry().setFromPoints(outerPoints);
+        const outerMat = new THREE.LineDashedMaterial({
+            color: 0xffffff,
+            linewidth: 1,
+            scale: 1,
+            dashSize: 0.1,
+            gapSize: 0.2, // Creates the dashed look
+            opacity: 0.15,
+            transparent: true
+        });
+        const outerRing = new THREE.Line(outerGeo, outerMat);
+        outerRing.computeLineDistances(); 
+        ringGroup.add(outerRing);
+
+        // 3. Thick Band (Transparent Faint Blue)
+        const bandGeo = new THREE.RingGeometry(ringRadius * 0.92, ringRadius, 64);
+        const bandMat = new THREE.MeshBasicMaterial({
+            color: color, 
+            opacity: 0.05, 
+            transparent: true, 
+            side: THREE.DoubleSide
+        });
+        const band = new THREE.Mesh(bandGeo, bandMat);
+        ringGroup.add(band);
+
+        // 4. Cardinals (Dots + Text)
+        const labels = [
+            { text: "DATA SOURCES",  angle: Math.PI / 2 },  // Top (12)
+            { text: "NEURAL CONFIG", angle: 0 },            // Right (3)
+            { text: "SYSTEM LOGS",   angle: -Math.PI / 2 }, // Bottom (6)
+            { text: "DIAGNOSTICS",   angle: Math.PI }       // Left (9)
+        ];
+
+        labels.forEach(item => {
+            // -- Dot Marker --
+            const dotX = Math.cos(item.angle) * ringRadius;
+            const dotY = Math.sin(item.angle) * ringRadius;
+            
+            const dotGeo = new THREE.CircleGeometry(0.04, 16);
+            const dotMat = new THREE.MeshBasicMaterial({ color: color });
+            const dot = new THREE.Mesh(dotGeo, dotMat);
+            dot.position.set(dotX, dotY, 0.01); 
+            ringGroup.add(dot);
+
+            // -- Text Label --
+            const sprite = this.createTextSprite(item.text);
+            
+            // Positioning Logic: Radially inward from the dot
+            const textRadius = ringRadius - 0.2; 
+            const textX = Math.cos(item.angle) * textRadius;
+            const textY = Math.sin(item.angle) * textRadius;
+
+            sprite.position.set(textX, textY, 0.01);
+            ringGroup.add(sprite);
+        });
+
+        this.ringGroup = ringGroup;
+    }
+
+    createTextSprite(message) {
+        const fontface = "monospace";
+        const fontsize = 48; 
+        
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        context.font = "Bold " + fontsize + "px " + fontface;
+        const metrics = context.measureText(message);
+        const textWidth = Math.ceil(metrics.width);
+        const textHeight = Math.ceil(fontsize * 1.2);
+
+        canvas.width = textWidth;
+        canvas.height = textHeight;
+
+        context.font = "Bold " + fontsize + "px " + fontface;
+        context.fillStyle = "rgba(100, 180, 255, 1.0)";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        
+        // Correcting y-offset for better vertical centering
+        context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter; 
+        
+        const material = new THREE.MeshBasicMaterial({ 
+            map: texture, 
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        
+        const scaleFactor = 0.0035; 
+        const geoWidth = textWidth * scaleFactor;
+        const geoHeight = textHeight * scaleFactor;
+        
+        const geometry = new THREE.PlaneGeometry(geoWidth, geoHeight);
+        const mesh = new THREE.Mesh(geometry, material);
+        
+        return mesh;
     }
 
     getPos(phi, theta, r) {

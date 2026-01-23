@@ -1,3 +1,10 @@
+## v2.171
+- **Codebase Isolation**:
+  - **Forked Architecture**: Created `tech-demo-scene.js` as a dedicated branch of the visualizer logic specifically for the new Tech Demo layout. This successfully decouples the new 3D Ring features from the legacy `icosahedron.html` page, ensuring the original implementation remains untouched and production-stable.
+  - **Tech Demo Updates**:
+    - Updated `tech-demo.html` to dynamically import `TechDemoScene` from the new file.
+    - Re-applied the **3D Tech Ring** (Markers + Inward Labels) to the branched file.
+
 ## v2.170
 - **Release Retry**:
   - Re-attempting deployment of v2.169 features (3D Ring) after Cloudflare API timeout.
