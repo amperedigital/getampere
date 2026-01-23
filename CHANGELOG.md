@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.256] - 2026-01-23
+### Changed
+- **Mobile Header Refactor**:
+    -   **Breadcrumb Placement**: Moved the breadcrumb navigation ("Visualization / V-Amp 2.0") to its own dedicated row at the very top. This prevents it from overlapping or fighting with the top-right control cluster on narrow screens.
+    -   **Control Layout**: The control cluster now sits `justify-between` across from the Main Title only, ensuring proper alignment.
+- **Visual Sizing**:
+    -   **Neural Net**: Increased `mobileBoost` scaling to `3.2` (from 2.4). This forces the central icosahedron to render dramatically larger, counteracting the aggressive "fit-to-width" resize logic on mobile/portrait screens.
+
 ## [v2.255] - 2026-01-23
 ### Changed
 - **Mobile Visual Balance**:
