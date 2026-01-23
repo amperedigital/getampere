@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.215] - 2026-01-17
+### Changed
+- **Neuronet Visuals**: Further reduced the brightness of the active "firing" nodes to minimize visual distraction.
+    - Reduced firing intensity multiplier (1.5 -> 0.8).
+    - Lowered halo opacity cap (0.3 -> 0.25).
+
 ## [v2.214] - 2026-01-17
 ### Changed
 - **Neuronet Visuals**: Reduced the intensity and brightness of the firing node lights to be less distracting. 

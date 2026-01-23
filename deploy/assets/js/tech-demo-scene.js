@@ -909,8 +909,7 @@ export class TechDemoScene {
                 // Monotone Blue/Cyan Scheme (No Christmas Vibe)
                 // Restrict hue to Cyan-Blue range (approx 0.55 - 0.65)
                 const hue = 0.55 + (Math.random() * 0.1); 
-                // Reduced saturation/lightness (was 0.9, 0.7) to be less distracting
-                const nodeColor = new THREE.Color().setHSL(hue, 0.6, 0.5);
+                const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.7);
 
                 // Nodes are small bulbs
                 const nodeGeometry = new THREE.SphereGeometry(0.015, 8, 8); 
@@ -1553,8 +1552,8 @@ export class TechDemoScene {
                     proximityScale = factor * 0.4;
                 }
 
-                // Base Chaos Intensity (Reduced firing multiplier from 5.0 to 2.0)
-                let chaosIntensity = Math.max(proximityIntensity, data.firingState * 2.0);
+                // Base Chaos Intensity (Significantly reduced firing multiplier to 0.8)
+                let chaosIntensity = Math.max(proximityIntensity, data.firingState * 0.8);
                 // Apply Global Fader
                 chaosIntensity *= this.simIntensity;
 
@@ -1583,7 +1582,8 @@ export class TechDemoScene {
 
                 // Update Halo Opacity 
                 if (data.halo) {
-                    data.halo.material.opacity = Math.min(0.3, finalIntensity * 0.3); 
+                    // Capped halo opacity further to reduce glare
+                    data.halo.material.opacity = Math.min(0.25, finalIntensity * 0.25); 
                 }
 
                 // Scale Logic (Chaos causes bumps, Standby is flat)
