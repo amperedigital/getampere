@@ -1,3 +1,8 @@
+## [v2.198] - 2026-01-23
+- **Tech Demo**:
+  - **Interaction Fix (Critical)**: Updated `tech-demo-scene.js` to correctly locate the SVG overlay. Since the SVG is a sibling of the scene container, the selector was changed from `container.querySelector` to `container.parentElement.querySelector`. This restores drag and scroll events.
+  - **Visual Polish**: Removed all background, border, and shadow styles from the Left Column and Scene Container. The ring now floats freely without any "boxing" artifacts, blending seamlessly with the dark background.
+
 ## [v2.197] - 2026-01-23
 - **Tech Demo**:
   - **Interaction Fix**: Enabled pointer events on the SVG Overlay to allow `HaloRotator` to receive drag/scroll inputs. It was previously blocked by a parent layer.

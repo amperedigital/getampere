@@ -73,10 +73,13 @@ export class TechDemoScene {
 
     initHaloRotator() {
         // Initialize the Ring Rotator
-        const svg = this.container.querySelector('svg');
+        // SVG is a sibling of the container (#tech-demo-scene), so we look at the parent
+        const svg = this.container.parentElement.querySelector('svg');
         if (svg) {
             console.log('Initializing Halo Rotator...');
             this.haloRotator = new HaloRotator(svg);
+        } else {
+            console.warn('HaloRotator: SVG not found relative to container');
         }
     }
 
