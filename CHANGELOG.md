@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.231] - 2026-01-23
+### Changed
+- **Ring Content**: Updated Outer Ring label at Index 2 from `Transfer` to `Human Handoff` for clarity.
+
 ## [v2.230] - 2026-01-23
 ### Fixed
 - **Responsiveness**: Fixed an issue where the Neural Net visualization could overlap the inner ring container on short height screens.
