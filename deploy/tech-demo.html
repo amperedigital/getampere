@@ -89,6 +89,83 @@
                      data-rotation-rpm="0.17"
                      data-camera-distance="6.0"></div>
 
+                <!-- 2D Overlay: Tech Dial Ring (Z-10) -->
+                <!-- Static SVG overlay contained strictly within the aspect ratio -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 select-none overflow-hidden">
+                     <svg class="w-full h-full max-w-[800px] max-h-[800px] opacity-80" viewBox="0 0 800 800">
+                        <defs>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+
+                        <!-- Base Ring Group (Centered) -->
+                        <g transform="translate(400, 400)">
+                            
+                            <!-- 1. Outer Dashed Ring -->
+                            <circle r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
+                            
+                            <!-- 2. Main Thin Ring -->
+                            <circle r="320" fill="none" class="stroke-blue-500/30" stroke-width="1" />
+                            
+                            <!-- 3. Faint Band -->
+                            <path d="M 0,-310 A 310,310 0 1,1 0,310 A 310,310 0 1,1 0,-310" 
+                                  fill="none" stroke="#3b82f6" stroke-width="20" class="opacity-[0.03]" />
+
+                            <!-- CARDINAL MARKERS (0, 90, 180, 270) -->
+                            
+                            <!-- TOP (Data Sources) -->
+                            <g transform="rotate(-90) translate(320, 0)">
+                                <!-- Dial Marker on the ring -->
+                                <circle r="4" class="fill-blue-500" filter="url(#glow)" />
+                                <!-- Text Label (Radially Inward) -->
+                                <!-- Rotate text back 90 deg so it's upright -->
+                                <text x="-25" y="0" transform="rotate(90)" 
+                                      class="fill-blue-400 font-mono text-[12px] font-bold tracking-[0.2em] uppercase" 
+                                      text-anchor="middle" dominant-baseline="middle"
+                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
+                                    Data Sources
+                                </text>
+                            </g>
+                            
+                            <!-- RIGHT (Neural Config) -->
+                            <g transform="rotate(0) translate(320, 0)">
+                                <circle r="4" class="fill-blue-500" filter="url(#glow)" />
+                                <text x="-25" y="0" 
+                                      class="fill-blue-400 font-mono text-[12px] font-bold tracking-[0.2em] uppercase" 
+                                      text-anchor="end" dominant-baseline="middle"
+                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
+                                    Neural Config
+                                </text>
+                            </g>
+
+                            <!-- BOTTOM (System Logs) -->
+                            <g transform="rotate(90) translate(320, 0)">
+                                <circle r="4" class="fill-blue-500" filter="url(#glow)" />
+                                <text x="-25" y="0" transform="rotate(-90)" 
+                                      class="fill-blue-400 font-mono text-[12px] font-bold tracking-[0.2em] uppercase" 
+                                      text-anchor="middle" dominant-baseline="middle"
+                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
+                                    System Logs
+                                </text>
+                            </g>
+
+                            <!-- LEFT (Diagnostics) -->
+                            <g transform="rotate(180) translate(320, 0)">
+                                <circle r="4" class="fill-blue-500" filter="url(#glow)" />
+                                <text x="-25" y="0" transform="rotate(180)" 
+                                      class="fill-blue-400 font-mono text-[12px] font-bold tracking-[0.2em] uppercase" 
+                                      text-anchor="start" dominant-baseline="middle"
+                                      style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
+                                    Diagnostics
+                                </text>
+                            </g>
+
+                        </g>
+                    </svg>
+                </div>
+
                 <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
             </div>
                  

@@ -1,3 +1,12 @@
+## v2.172
+- **Ring System Refactor**:
+  - **Revert to SVG**: Replaced the 3D-integrated ring with a pure HTML/SVG overlay to resolve visual artifacting and clipping issues ("the mess"). 
+  - **Design Polish**:
+    - **Centering**: The SVG is now perfectly centered in the scene container using `flex items-center justify-center`.
+    - **Layout**: Implemented the "Dot on Ring, Text Inward" logic. The text labels (DATA SOURCES, SYSTEM LOGS, etc.) are positioned structurally inside the ring radius relative to their markers.
+    - **Stability**: Since zoom-sync is no longer a requirement, the 2D overlay provides sharper text rendering and consistent layout regardless of camera angle.
+  - **Code Cleanup**: Removed all 3D ring generation code from `tech-demo-scene.js` to keep the logic clean.
+
 ## v2.171
 - **Codebase Isolation**:
   - **Forked Architecture**: Created `tech-demo-scene.js` as a dedicated branch of the visualizer logic specifically for the new Tech Demo layout. This successfully decouples the new 3D Ring features from the legacy `icosahedron.html` page, ensuring the original implementation remains untouched and production-stable.
