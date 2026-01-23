@@ -1114,7 +1114,8 @@ export class TechDemoScene {
 
             this.camera.aspect = this.width / this.height;
             // Update Camera Z on Resize (Responsive Zoom)
-            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
+            // DISABLED v2.188: Prevent auto-scaling/resetting Z if system state (Power Down/Standby) has altered it.
+            // this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);

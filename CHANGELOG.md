@@ -1,3 +1,9 @@
+## v2.188
+- **Tech Demo**:
+    - **Alignment**: Fixed misalignment of 9 o'clock ("Diagnostics") and 3 o'clock ("Neural Config") labels by implementing an extended 240-degree SVG path to prevent clipping and anchor offset issues.
+    - **Stability**: Disabled auto-zoom reset on window resize to preserve the camera state during Power Down/Standby transitions so the model remains "contained".
+    - **Branding**: Updated main heading to "AI Neural Architecture" with emphasis styling.
+
 ## v2.187
 - **Tech Demo**:
     - **Alignment**: Modified SVG text paths to `r=320` to match the Halo graphic exactly.
