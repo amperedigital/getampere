@@ -1,3 +1,8 @@
+## [v2.197] - 2026-01-23
+- **Tech Demo**:
+  - **Interaction Fix**: Enabled pointer events on the SVG Overlay to allow `HaloRotator` to receive drag/scroll inputs. It was previously blocked by a parent layer.
+  - **Visual Cleanup**: Removed the `bg-slate-900/20` background from the main scene container, eliminating the visible "square box" artifact behind the ring.
+
 ## [v2.196] - 2026-01-23
 - **Tech Demo**:
   - **Interaction Engine**: Implemented `HaloRotator` class (`assets/js/halo-rotator.js`) to handle physics-based rotation.
