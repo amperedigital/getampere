@@ -1,3 +1,8 @@
+## v2.194
+- **Tech Demo**:
+    - **Fine Tuning**: Moved rotary markers (dots) inwards to `cx=310`.
+    - **Alignment**: Reduced gap between markers and text labels (`r=290`) to 20px, creating a tighter visual grouping within the halo band.
+
 ## v2.193
 - **Tech Demo**:
     - **Refined Halo Layout**: Adjusted detailed positioning for Rotary Interaction.
