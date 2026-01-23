@@ -1,3 +1,8 @@
+## v2.190
+- **Tech Demo**:
+    - **Interface**: Added static "Selection Needle" markers (Triangular Brackets) at 12 o'clock and 6 o'clock positions in the SVG overlay.
+    - **Visuals**: Markers are placed at `r=375` (approx) pointing inward to the ring, designated as the active selection zones for the upcoming rotary dial interaction.
+
 ## v2.189
 - **Tech Demo**:
     - **Stability**: Fixed a critical bug in the "Auto-Recenter" logic where the camera would forcefully zoom into `z=5` (instead of the configured `z=6.4`) after interaction timeout or initialization, causing the model to "fill the ring" unexpectedly.
