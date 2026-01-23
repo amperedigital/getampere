@@ -1,3 +1,9 @@
+## v2.179
+- **Tech Demo**:
+    - **Layout**: Introduced a strict Flexbox centering wrapper to ensure absolute alignment of the 3D Scene and SVG Ring.
+    - **Typography**: Inverted text rotation to align with the "inner angle" perspective.
+    - **UX**: "System Logs" (6 o'clock) remains the green active marker.
+
 ## v2.178
 - **Tech Demo**:
     - **Visualization**: Added all 12 clock positions to the ring HUD with new metric titles.

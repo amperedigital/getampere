@@ -78,21 +78,25 @@
             <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
             <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 group/scene">
-                <!-- 3D Scene Layer (Z-1) -->
-                <div id="tech-demo-scene" 
-                     class="absolute inset-0 z-0"
-                     data-standby-timeout="120"
-                     data-standby-warning="30"
-                     data-auto-recenter="2.5"
-                     data-lerp-speed="0.015"
-                     data-min-velocity="0.0025"
-                     data-rotation-rpm="0.17"
-                     data-camera-distance="8.5"></div>
+                <!-- Centering Wrapper - Strict Layout Control -->
+                <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+                    
+                    <!-- 3D Scene Layer (Z-0) -->
+                    <!-- Absolute inset-0 matches the parent wrapper dimensions perfectly -->
+                    <div id="tech-demo-scene" 
+                         class="absolute inset-0 w-full h-full z-0"
+                         data-standby-timeout="120"
+                         data-standby-warning="30"
+                         data-auto-recenter="2.5"
+                         data-lerp-speed="0.015"
+                         data-min-velocity="0.0025"
+                         data-rotation-rpm="0.17"
+                         data-camera-distance="8.5"></div>
 
-                <!-- 2D Overlay: Tech Dial Ring (Z-10) -->
-                <!-- Static SVG overlay contained strictly within the aspect ratio -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 select-none overflow-hidden">
-                     <svg class="w-full h-full max-w-[800px] max-h-[800px] opacity-80" viewBox="0 0 800 800">
+                    <!-- 2D Overlay: Tech Dial Ring (Z-10) -->
+                    <!-- Flex Centered Overlay -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 select-none overflow-hidden">
+                         <svg class="w-full h-full max-w-[800px] max-h-[800px] opacity-80" viewBox="0 0 800 800">
                         <defs>
                             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feGaussianBlur stdDeviation="2" result="blur" />
@@ -113,13 +117,14 @@
 
                             <!-- MARKERS -->
                             <!-- Logic: Dot at r=350 (Outer Ring Clearance) -->
-                            <!-- Text: Tangential (Feet Towards Center) -->
-                            <!-- Rotation Logic: Group R, Text -90. Result: Tangential. -->
+                            <!-- Text: Tangential (Feet Inwards / Aligned with Inner Angle) -->
+                            <!-- Rotation: rotate(90) relative to local group. -->
+                            <!-- Result: Text feet point towards center 0,0. -->
                             
                             <!-- 12 O'Clock (Data Sources) -->
                             <g transform="rotate(-90)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -130,7 +135,7 @@
                             <!-- 1 O'Clock (Optimization) -->
                             <g transform="rotate(-60)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -141,7 +146,7 @@
                             <!-- 2 O'Clock (Encryption) -->
                             <g transform="rotate(-30)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -152,7 +157,7 @@
                             <!-- 3 O'Clock (Neural Config) -->
                             <g transform="rotate(0)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -163,7 +168,7 @@
                             <!-- 4 O'Clock (Protocol) -->
                             <g transform="rotate(30)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -174,7 +179,7 @@
                              <!-- 5 O'Clock (Latency) -->
                             <g transform="rotate(60)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -185,7 +190,7 @@
                             <!-- 6 O'Clock (System Logs) - ACTIVE/GREEN -->
                             <g transform="rotate(90)">
                                 <circle cx="350" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-emerald-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(16, 185, 129, 0.5)">
@@ -196,7 +201,7 @@
                             <!-- 7 O'Clock (Throughput) -->
                             <g transform="rotate(120)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -207,7 +212,7 @@
                             <!-- 8 O'Clock (Integrity) -->
                             <g transform="rotate(150)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -218,7 +223,7 @@
                             <!-- 9 O'Clock (Diagnostics) -->
                             <g transform="rotate(180)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -229,7 +234,7 @@
                             <!-- 10 O'Clock (Reliability) -->
                             <g transform="rotate(210)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
@@ -240,7 +245,7 @@
                             <!-- 11 O'Clock (Analysis) -->
                             <g transform="rotate(240)">
                                 <circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" />
-                                <text x="325" y="0" transform="rotate(-90, 325, 0)" 
+                                <text x="325" y="0" transform="rotate(90, 325, 0)" 
                                       class="fill-blue-400 font-mono text-[10px] font-bold tracking-[0.15em] uppercase" 
                                       text-anchor="middle" dominant-baseline="middle"
                                       style="text-shadow: 0 0 10px rgba(59,130,246,0.5)">
