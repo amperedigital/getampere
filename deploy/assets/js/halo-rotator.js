@@ -77,8 +77,8 @@ export class HaloRotator {
     handlePointerDown(e) {
         if (!this.isActive) return;
 
-        // Mobile Guard: Disable manual drag on small screens to prioritize page scrolling.
-        if (window.innerWidth <= 1024) return;
+        // Mobile Guard: REMOVED v2.252 per user request ("Should be touch draggable")
+        // if (window.innerWidth <= 1024) return;
 
         // Hit Test using Radius from Center (400, 400 SVG coords)
         const rect = this.svg.getBoundingClientRect();

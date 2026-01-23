@@ -47,6 +47,50 @@
                         Explore the autonomous decision making core of Ampere AI.
                     </p>
                 </div>
+
+                <!-- Mobile Control Cluster (Top Right) -->
+                <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
+                <div class="lg:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
+                    
+                    <!-- Status Display -->
+                    <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
+                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                    </div>
+
+                    <!-- Compact Buttons (Dots/Toggles) -->
+                    <div class="flex items-center gap-2">
+                         <!-- ACTIVE (Play/Bolt) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('ACTIVE')" 
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-blue-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-active"
+                                 aria-label="Active Mode">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                         </button>
+
+                         <!-- STANDBY (Pause) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('STANDBY')"
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-standby"
+                                 aria-label="Standby Mode">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
+                            </svg>
+                         </button>
+
+                         <!-- OFF (Power) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('OFF')"
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-red-400 hover:bg-red-500/20 hover:border-red-500/30 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-off"
+                                 aria-label="Power Off">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                            </svg>
+                         </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
@@ -60,14 +104,14 @@
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="relative w-full mx-auto h-[420px] -mt-12 mb-4 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
+            <div class="relative w-full mx-auto h-[520px] -mt-12 mb-4 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
                 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
                 <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
                 <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
                 <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
-                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] aspect-square flex items-center justify-center mx-auto">
+                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
@@ -501,7 +545,45 @@
                     
                     // Optional: Expose to window for debugging
                     window.demoScene = scene;
+
+                    // --- Mobile UI State Observer ---
+                    const obs = new MutationObserver((mutations) => {
+                        for(const m of mutations) {
+                            if(m.type === 'attributes' && m.attributeName === 'data-system-state') {
+                                const state = document.body.getAttribute('data-system-state');
+                                updateMobileDisplay(state);
+                            }
+                        }
+                    });
+                    obs.observe(document.body, { attributes: true });
                 }, 50);
+
+                function updateMobileDisplay(state) {
+                    const dot = document.getElementById('mobile-status-dot');
+                    const text = document.getElementById('mobile-status-text');
+                    const container = document.getElementById('mobile-system-status');
+                    
+                    if(!dot || !text) return;
+                    
+                    if (state === 'ACTIVE') {
+                        text.innerText = "AI ONLINE";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)] transition-all duration-300';
+                        container.style.borderColor = 'rgba(255,255,255,0.1)';
+                    } 
+                    else if (state === 'STANDBY') {
+                        text.innerText = "STANDBY";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-blue-300 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.4)] transition-all duration-300'; // Steady Blue
+                        container.style.borderColor = 'rgba(255,255,255,0.1)';
+                    }
+                    else if (state === 'OFF') {
+                        text.innerText = "OFFLINE";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-red-400 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-red-500 shadow-none transition-all duration-300 opacity-50';
+                        container.style.borderColor = 'rgba(248,113,113,0.2)';
+                    }
+                }
             }
         });
     </script>

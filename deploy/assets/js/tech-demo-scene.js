@@ -181,11 +181,16 @@ export class TechDemoScene {
                     box-sizing: border-box;
                 }
                 
-                /* Mobile: Move UI higher to avoid edge of small container */
-                /* Adjusted v2.250: Moved to 40px to clear edge, considering overlaps */
+                /* Mobile: Hide legacy bottom track. Use Header Controls. */
                 @media (max-width: 600px) {
                     #ampere-ui-track {
-                        bottom: 40px !important;
+                        display: none !important;
+                    }
+                    #ampere-system-status {
+                        display: none !important; 
+                    }
+                    #ampere-standby-warning {
+                        bottom: 15% !important; /* Move warning up since track is gone */
                     }
                 }
 
@@ -1271,7 +1276,7 @@ export class TechDemoScene {
                 // Increase size for Mobile (custom boost)
                 // If width is constrained, we can afford to let the object be visually larger relative to the "ring box"
                 // because the ring box on mobile occupies nearly 100% of the screen width.
-                const mobileBoost = (this.isMobile) ? 1.5 : 1.0; 
+                const mobileBoost = (this.isMobile) ? 1.6 : 1.0; 
                 
                 targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage * mobileBoost);
             }

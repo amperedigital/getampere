@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.252] - 2026-01-23
+### Added
+- **Mobile-Specific Controls**: Introduced a specialized mobile header control cluster in the top-right corner.
+    -   **Compact Toggle Buttons**: Replaced the large bottom track slider with three distinct icon buttons (Play/Active, Pause/Standby, Power/Off) for easier thumb access.
+    -   **Integrated Status**: Added a "Status Pill" (e.g., "AI ONLINE") directly above the buttons to provide immediate system feedback in the same visual zone.
+### Changed
+- **Mobile Interaction**:
+    -   **Touch Drag Enabled**: Removed the mobile guard in `halo-rotator.js`, allowing users to drag the Halo Ring via touch on small screens.
+    -   **Legacy UI Hidden**: Set the bottom slider track and status text to `display: none` on mobile to declutter the 3D scene view. Reflowed the "Standby Warning" text to a safe zone (`bottom: 15%`).
+    -   **Visuals**: Reduced mobile button sizes and used backdrop-blur for a "floating glass" aesthetic.
+
 ## [v2.251] - 2026-01-23
 ### Changed
 - **Mobile Layout & Sizing**:
