@@ -1186,9 +1186,25 @@ export class TechDemoScene {
             this.isMobile = (this.width <= 600);
 
             this.camera.aspect = this.width / this.height;
-            // Update Camera Z on Resize (Responsive Zoom)
-            // Restored v2.189: Ensure we respect config on resize
-            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
+            
+            // --- DYNAMIC ZOOM CALCULATION (v2.235) ---
+            // Goal: Ensure the 3D object maintains a constant visual size relative to the 
+            // SMALLEST container dimension (matching the SVG Ring behavior).
+            // 
+            // 1. Base Distance: Configured value (e.g., 6.5)
+            // 2. Mobile Multiplier: Zoom out slightly for small screens (1.4x)
+            // 3. Aspect Correction: 
+            //    - IF Aspect >= 1 (Landscape/Square): Limit by Height. PerspectiveCamera does this natively. 
+            //      Use Base Distance.
+            //    - IF Aspect < 1 (Portrait): Limit by Width. PerspectiveCamera scales by Height.
+            //      We must ZOOM OUT (Increase D) by (1 / aspect) to counteract the height dominance.
+            
+            const baseDist = this.config.cameraDistance;
+            const mobileMult = this.isMobile ? 1.4 : 1.0;
+            const aspectFactor = (this.camera.aspect < 1.0) ? (1.0 / this.camera.aspect) : 1.0;
+            
+            this.camera.position.z = baseDist * mobileMult * aspectFactor;
+            
             this.camera.updateProjectionMatrix();
 
             this.renderer.setSize(this.width, this.height);
