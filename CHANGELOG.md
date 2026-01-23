@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.234] - 2026-01-23
+### Changed
+- **Visual Scaling**: Further increased `cameraDistance` from `9.5` to `12.0` to significantly shrink the 3D Neural Net visualization, ensuring it remains fully contained within the tighter Inner Ring diameter without visual clipping or overcrowding.
+
 ## [v2.233] - 2026-01-23
 ### Fixed
 - **Responsiveness**: Forced the Right Grid to expand vertically (`h-full` and `grid-rows-3`) on desktop screens, ensuring it matches the height of the left-side 3D Scene container.
