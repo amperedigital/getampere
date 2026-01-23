@@ -72,10 +72,10 @@
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
                     <!-- Camera Distance Increased to 9.5 to fit visually inside the tightened inner ring (r=190). -->
-                    <!-- CLIP-PATH: Ensures the scene is strictly circular (closest-side) to prevent "pill" shape bleed on non-square aspect ratios -->
+                    <!-- CLIP-PATH: Strictly clipped to Inner Ring radius (~47.5%) to prevent any rendering outside the central portal -->
                     <div id="tech-demo-scene" 
                          class="absolute inset-0 z-0 rounded-full pointer-events-auto"
-                         style="clip-path: circle(closest-side at center);"
+                         style="clip-path: circle(47.4% at center);"
                          data-standby-timeout="120"
                          data-standby-warning="30"
                          data-auto-recenter="2.5"
@@ -212,15 +212,16 @@
 
         <!-- Right Column: Interactive Grid -->
         <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
-        <!-- Responsive Fix: Changed lg:overflow-hidden to lg:overflow-y-auto to allow scrolling on short screens -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto lg:overflow-y-auto">
+        <!-- Responsive Fix: Enabled h-full for the grid container to allow cards to stretch -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
-            <!-- Responsive Fix: Removed grid-rows-3 and h-full constraint. grid-auto-rows allows natural expansion. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 gap-6 w-full h-auto">
+            <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-6 w-full h-auto lg:h-full">
                 
                 <!-- Card 1: Front Door Agent -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- Added h-full to flex container -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -270,7 +271,7 @@
                 </div>
 
                 <!-- Card 2: Demo Guide -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
@@ -311,7 +312,7 @@
                 </div>
 
                 <!-- Card 3: Onboarding Coach -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding</h3>
@@ -352,7 +353,7 @@
                 </div>
 
                 <!-- Card 4: Technical Specialist -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Tech Specialist</h3>
@@ -393,7 +394,7 @@
                 </div>
 
                 <!-- Card 5: Sales Advisor -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
@@ -434,7 +435,7 @@
                 </div>
 
                 <!-- Card 6: Booking Agent -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>

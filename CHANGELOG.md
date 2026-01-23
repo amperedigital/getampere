@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.233] - 2026-01-23
+### Fixed
+- **Responsiveness**: Forced the Right Grid to expand vertically (`h-full` and `grid-rows-3`) on desktop screens, ensuring it matches the height of the left-side 3D Scene container.
+- **Card Expansion**: Added `h-full` to all 6 Agent Card containers to ensure they stretch to fill their grid cells properly.
+
 ## [v2.232] - 2026-01-23
 ### Fixed
 - **Responsiveness**: Solved issue where the Neural Net visualization could "bleed" horizontally outside the ring on short-but-wide screens breakdown.
