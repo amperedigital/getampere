@@ -1,3 +1,10 @@
+## v2.161
+- **Layout Overhaul**:
+  - **Right Column Grid**: Converted the interactive panel into a 6-box grid (2 cols x 3 rows).
+  - **Border Removal**: Removed the vertical division border between the 3D scene and the control panel to create a seamless aesthetic.
+  - **Adaptive Grid**: Implemented responsive behavior where the grid stacks vertically on mobile (`min-h-[600px]`) and fills the viewport on desktop.
+  - **Placeholder Slots**: Added 5 placeholder cards for future interactive modules (Connect, Source, Config, Logs, More).
+
 ## v2.160
 - **UI Tweaks**:
   - **Breadcrumb Spacing**: Reduced horizontal gap between breadcrumb elements (`gap-3` → `gap-2`) to tighten the layout. The previous spacing left the separators floating too far from the text labels.
