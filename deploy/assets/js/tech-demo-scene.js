@@ -86,12 +86,17 @@ export class TechDemoScene {
                 snapInterval: 60 // 6 items = 60 degrees
             });
 
-            // Inner Ring (#halo-ring-inner): Purple, r=200-260 approx
+            // Inner Ring (#halo-ring-inner): Purple/Slate, r=200-260 approx
             // Hit Area: < 265
             this.rotatorInner = new HaloRotator(svg, '#halo-ring-inner', {
                 hitMin: 0,
                 hitMax: 265,
-                snapInterval: 60 // 6 items = 60 degrees
+                snapInterval: 60, // 6 items = 60 degrees
+                // Style Overrides for Slate Theme
+                markerClassInactive: 'fill-slate-400',
+                markerClassActive: 'fill-emerald-500', 
+                textClassInactive: 'ring-text-slate',
+                textClassActive: 'ring-text-green'
             });
 
         } else {

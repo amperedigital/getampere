@@ -12,6 +12,12 @@ export class HaloRotator {
         this.hitMin = options.hitMin || 0;
         this.hitMax = options.hitMax || 9999;
         this.snapInterval = options.snapInterval || 30; // Degrees per slot (360/12=30, 360/6=60)
+        
+        // Visual Style Configuration (Defaults to Legacy Blue/Green)
+        this.markerClassActive = options.markerClassActive || 'fill-emerald-500';
+        this.markerClassInactive = options.markerClassInactive || 'fill-blue-500';
+        this.textClassActive = options.textClassActive || 'ring-text-green';
+        this.textClassInactive = options.textClassInactive || 'ring-text-blue';
 
         // State
         this.rotation = 0;
@@ -182,52 +188,41 @@ export class HaloRotator {
     }
 
     updateHighlights(angle) {
-        // Calculate Top Index (12 o'clock)
-        // angle = -90 (Index 0 at 3oc) moves to 12oc?
-        // Wait, standard position: Index 0 is at -90 deg (12oc).
-        // So at Rotation 0, Index 0 is at 12oc.
-        // At Rotation 30 (CW), Index 11 (at -120 originally?) NO.
-        // HTML: Index 0 at -90. Index 11 at 240 (-120).
-        // If I rotate +30 deg (CW):
-        // Index 0 moves to -60 (1oc).
-        // Index 11 moves to -90 (12oc).
-        // So +Rotation means LOWER index? No, +30 makes Index 11 active.
-        // Index = (0 - round(rotation/30)) % 12?
-        // Rot=30 -> -1 -> 11. Correct.
-        // Rot=-30 -> 1. Correct.
+        // Calculate Active Slot based on Rotation and Snap Interval
+        // Logic: 
+        // - Initial State (Angle 0) -> Slot 0 is Top (-90deg).
+        // - Positive Step (CW Rotation) -> Previous Slot (-1 / N) becomes Top.
         
-        let normalizedStep = Math.round(angle / 30);
-        // JS Modulo operator allows negatives, need proper floored mod
+        const numSlots = Math.round(360 / this.snapInterval); // e.g. 12 or 6
+        let step = Math.round(angle / this.snapInterval);
+        
         const mod = (n, m) => ((n % m) + m) % m;
-        
-        const activeTopIndex = mod(-normalizedStep, 12);
-        // const activeBottomIndex = mod(activeTopIndex + 6, 12); // Removed per user request
+        const activeIndex = mod(-step, numSlots);
 
         // Update Dots
-        this.dots.forEach(dot => {
-            const idx = parseInt(dot.getAttribute('data-index'));
-            const isActive = (idx === activeTopIndex); // Only Top is active
+        // Assumes this.dots matches current DOM order (CW from Top/Start)
+        this.dots.forEach((dot, index) => {
+            const isActive = (index === activeIndex); 
             
             if (isActive) {
-                dot.classList.remove('fill-blue-500');
-                dot.classList.add('fill-emerald-500');
+                dot.classList.remove(this.markerClassInactive);
+                dot.classList.add(this.markerClassActive);
             } else {
-                dot.classList.remove('fill-emerald-500');
-                dot.classList.add('fill-blue-500');
+                dot.classList.remove(this.markerClassActive);
+                dot.classList.add(this.markerClassInactive);
             }
         });
 
         // Update Text
-        this.texts.forEach(text => {
-            const idx = parseInt(text.getAttribute('data-index'));
-            const isActive = (idx === activeTopIndex); // Only Top is active
+        this.texts.forEach((text, index) => {
+            const isActive = (index === activeIndex);
             
             if (isActive) {
-                text.classList.remove('ring-text-blue');
-                text.classList.add('ring-text-green');
+                text.classList.remove(this.textClassInactive);
+                text.classList.add(this.textClassActive);
             } else {
-                text.classList.remove('ring-text-green');
-                text.classList.add('ring-text-blue');
+                text.classList.remove(this.textClassActive);
+                text.classList.add(this.textClassInactive);
             }
         });
     }
