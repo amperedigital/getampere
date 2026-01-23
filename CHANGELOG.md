@@ -1,3 +1,9 @@
+## [v2.199] - 2026-01-23
+- **Tech Demo**:
+  - **Single Activation**: Modified logic to only activate the 12 o'clock slot. The 6 o'clock activation has been disabled to prevent "upside down" reading issues.
+  - **Unified Text Layout**: Migrated all 12 text labels to a single full-circle track (`#ring-track`) starting from 9 o'clock. This ensures all text rotates freely and becomes upright when reaching the 12 o'clock active position.
+  - **Alignment**: Recalculated spacing for all 12 items (30-degree intervals) to strictly align with the new circular path logic.
+
 ## [v2.198] - 2026-01-23
 - **Tech Demo**:
   - **Interaction Fix (Critical)**: Updated `tech-demo-scene.js` to correctly locate the SVG overlay. Since the SVG is a sibling of the scene container, the selector was changed from `container.querySelector` to `container.parentElement.querySelector`. This restores drag and scroll events.

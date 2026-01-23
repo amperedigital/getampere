@@ -106,11 +106,9 @@
                                 <feGaussianBlur stdDeviation="2" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
-                            <!-- Paths for Curved Text (Radius 290 - Inner Track) -->
-                            <!-- Upper Semi-Circle: Extended Arc 8oc to 4oc (240deg span) -->
-                            <path id="ring-upper" d="M -251,145 A 290,290 0 1,1 251,145" />
-                            <!-- Lower Semi-Circle (Counter-Clockwise: West -> South -> East) -->
-                            <path id="ring-lower" d="M -290,0 A 290,290 0 0,0 290,0" />
+                            <!-- Single Full-Circle Track (Radius 290) for Uniform Uniform Rotation -->
+                            <!-- Starts at 9 o'clock (West), goes Clockwise -->
+                            <path id="ring-track" d="M -290,0 A 290,290 0 1,1 290,0 A 290,290 0 1,1 -290,0" />
                         </defs>
 
                         <!-- Base Ring Group (Centered) -->
@@ -162,30 +160,26 @@
                                 <!-- 11 O'Clock: Analysis -->
                                 <g transform="rotate(240)"><circle cx="310" cy="0" r="4" data-index="11" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>
 
-                                <!-- CURVED TEXT LABELS -->
+                                <!-- CURVED TEXT LABELS (Unified Track) -->
                                 <style>
                                     .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: fill 0.3s, text-shadow 0.3s; }
                                     .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
                                     .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
                                 </style>
 
-                                <!-- Upper Hemisphere (Clockwise) -->
-                                <!-- Radius 320. offsets adjusted for 240deg arc (start 8oc) -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="9"><textPath href="#ring-upper" startOffset="12.5%" text-anchor="middle">Diagnostics</textPath></text>    <!-- 9 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="10"><textPath href="#ring-upper" startOffset="25%" text-anchor="middle">Reliability</textPath></text>      <!-- 10 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="11"><textPath href="#ring-upper" startOffset="37.5%" text-anchor="middle">Analysis</textPath></text>       <!-- 11 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="0"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 0 (12oc) -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="1"><textPath href="#ring-upper" startOffset="62.5%" text-anchor="middle">Optimization</textPath></text>   <!-- 1 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="2"><textPath href="#ring-upper" startOffset="75%" text-anchor="middle">Encryption</textPath></text>       <!-- 2 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="3"><textPath href="#ring-upper" startOffset="87.5%" text-anchor="middle">Neural Config</textPath></text>  <!-- 3 -->
-
-                                <!-- Lower Hemisphere (Counter-Clockwise for Smile) -->
-                                <!-- Radius 320. dy="2" pushes text slightly outward/downward to center on halo band -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="8"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="7"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
-                                <text class="ring-text ring-text-green" dy="2" data-index="6"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 (6oc) -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="5"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
-                                <text class="ring-text ring-text-blue" dy="2" data-index="4"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
+                                <!-- Text mapped to #ring-track (Reference: 9oc = 0%, 12oc = 25%) -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="9"><textPath href="#ring-track" startOffset="0%" text-anchor="middle">Diagnostics</textPath></text>       <!-- 9 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="10"><textPath href="#ring-track" startOffset="8.33%" text-anchor="middle">Reliability</textPath></text>    <!-- 10 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="11"><textPath href="#ring-track" startOffset="16.66%" text-anchor="middle">Analysis</textPath></text>      <!-- 11 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="0"><textPath href="#ring-track" startOffset="25%" text-anchor="middle">Data Sources</textPath></text>     <!-- 0 (12oc) -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="1"><textPath href="#ring-track" startOffset="33.33%" text-anchor="middle">Optimization</textPath></text>   <!-- 1 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="2"><textPath href="#ring-track" startOffset="41.66%" text-anchor="middle">Encryption</textPath></text>     <!-- 2 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="3"><textPath href="#ring-track" startOffset="50%" text-anchor="middle">Neural Config</textPath></text>    <!-- 3 (3oc) -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="4"><textPath href="#ring-track" startOffset="58.33%" text-anchor="middle">Protocol</textPath></text>       <!-- 4 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="5"><textPath href="#ring-track" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>        <!-- 5 -->
+                                <text class="ring-text ring-text-green" dy="-12" data-index="6"><textPath href="#ring-track" startOffset="75%" text-anchor="middle">System Logs</textPath></text>      <!-- 6 (6oc) -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="7"><textPath href="#ring-track" startOffset="83.33%" text-anchor="middle">Throughput</textPath></text>     <!-- 7 -->
+                                <text class="ring-text ring-text-blue" dy="-12" data-index="8"><textPath href="#ring-track" startOffset="91.66%" text-anchor="middle">Integrity</textPath></text>      <!-- 8 -->
                             </g>
 
                         </g>

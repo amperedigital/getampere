@@ -145,12 +145,12 @@ export class HaloRotator {
         const mod = (n, m) => ((n % m) + m) % m;
         
         const activeTopIndex = mod(-normalizedStep, 12);
-        const activeBottomIndex = mod(activeTopIndex + 6, 12);
+        // const activeBottomIndex = mod(activeTopIndex + 6, 12); // Removed per user request
 
         // Update Dots
         this.dots.forEach(dot => {
             const idx = parseInt(dot.getAttribute('data-index'));
-            const isActive = (idx === activeTopIndex || idx === activeBottomIndex);
+            const isActive = (idx === activeTopIndex); // Only Top is active
             
             if (isActive) {
                 dot.classList.remove('fill-blue-500');
@@ -164,7 +164,7 @@ export class HaloRotator {
         // Update Text
         this.texts.forEach(text => {
             const idx = parseInt(text.getAttribute('data-index'));
-            const isActive = (idx === activeTopIndex || idx === activeBottomIndex);
+            const isActive = (idx === activeTopIndex); // Only Top is active
             
             if (isActive) {
                 text.classList.remove('ring-text-blue');
