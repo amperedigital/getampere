@@ -641,7 +641,9 @@ export class TechDemoScene {
         this.initialCameraPos = this.camera.position.clone();
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(this.width, this.height);
+        this.renderer.setSize(this.width, this.height, false); // false = Do not update CSS style (prevent layout resizing loop)
+        this.renderer.domElement.style.width = '100%';
+        this.renderer.domElement.style.height = '100%';
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.container.appendChild(this.renderer.domElement);
     }
@@ -1273,7 +1275,7 @@ export class TechDemoScene {
             
             this.camera.updateProjectionMatrix();
 
-            this.renderer.setSize(this.width, this.height);
+            this.renderer.setSize(this.width, this.height, false);
 
             if (this.fatLines) {
                  this.fatLines.forEach(mat => {
