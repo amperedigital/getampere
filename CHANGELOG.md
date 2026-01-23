@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.220] - 2026-01-23
+### Fixed
+- **Tech Demo Responsiveness**: Fixed layout issues on shorter desktop screens.
+    - **Scene Container**: Updated the main 3D Ring container to use `h-full w-auto` on desktop, ensuring the circle scales down to fit the viewport height instead of getting clipped.
+    - **Right Grid**: Enabled `overflow-y-auto` on the right column for shorter screens to prevent content cutoff.
+    - **Mobile**: Enabled vertical scrolling on the main wrapper.
+
 ## [v2.219] - 2026-01-23
 ### Changed
 - **Agent Grid Typography**: Refined the Dense Metrics UI cards based on design review.
