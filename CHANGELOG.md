@@ -1,3 +1,8 @@
+## v2.195
+- **Tech Demo**:
+    - **Refinement**: Uniformly reduced the Halo Ring width from 80px to 60px (`r=270` to `r=330`).
+    - **Symmetry**: This creates equal 20px padding for both the text labels (at `r=290`) and the marker dots (at `cx=310`) relative to the ring's edges.
+
 ## v2.194
 - **Tech Demo**:
     - **Fine Tuning**: Moved rotary markers (dots) inwards to `cx=310`.
