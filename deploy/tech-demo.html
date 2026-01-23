@@ -95,7 +95,8 @@
 
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
-            <div class="absolute z-30 left-1/2 -translate-x-1/2 top-4 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <!-- v2.253: Hidden on mobile to reduce clutter -->
+            <div class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>
@@ -104,7 +105,8 @@
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
             <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
-            <div class="relative w-full mx-auto h-[520px] -mt-12 mb-4 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
+            <!-- v2.253 Update: Increased negative margin (-mt-24) to pull scene higher. Reduced height to 480px. -->
+            <div class="relative w-full mx-auto h-[480px] -mt-24 mb-4 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
                 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
@@ -130,8 +132,9 @@
 
                     <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
+                    <!-- v2.253: Added touch-action: pan-y to allow vertical page scrolling even if dragging -->
                     <div class="absolute inset-0 pointer-events-none z-20 select-none">
-                         <svg class="w-full h-full pointer-events-auto cursor-grab" viewBox="0 0 800 800" overflow="visible">
+                         <svg class="w-full h-full pointer-events-auto cursor-grab" style="touch-action: pan-y;" viewBox="0 0 800 800" overflow="visible">
                         <defs>
                             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feGaussianBlur stdDeviation="2" result="blur" />
@@ -259,7 +262,8 @@
         <!-- Responsive Fix: Enabled h-full for the grid container to allow cards to stretch -->
         <!-- Fix v2.243: Changed overflow-y-auto so we ALWAYS have a scrollbar if content (cards) >> screen height. -->
         <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
+        <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->

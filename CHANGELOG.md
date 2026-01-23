@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.253] - 2026-01-23
+### Changed
+- **Mobile Interaction Fixes**:
+    -   **Scroll Restoration**: Added `touch-action: pan-y` to the Halo Ring SVG. This forces the browser to allow vertical page scrolling even when the user touches the active ring area, fixing the "Scroll Locked" sensation.
+    -   **Live Demo Pill**: Hidden on mobile (`hidden lg:inline-flex`) to declutter the header area as requested.
+- **Layout Adjustments**:
+    -   **Vertical Spacing**: Increased scene negative margin to `-mt-24` and set height to `480px` to pull the 3D visualization even higher, reducing the black void between the header and the cards.
+    -   **Chat Widget Clearance**: Added `pb-40` (padding-bottom) to the card grid container on mobile. This ensures users can scroll the bottom cards into view without them being obstructed by the "Ready to chat?" widget.
+
 ## [v2.252] - 2026-01-23
 ### Added
 - **Mobile-Specific Controls**: Introduced a specialized mobile header control cluster in the top-right corner.
