@@ -88,6 +88,23 @@
     - **Horizontal**: `right-[inset + 2rem]` (visually inset, never flush).
 - **Styling**: `rounded-full` (Standard Skinny), `backdrop-blur`.
 
+### Breadcrumb Header (v2.160+)
+- **Usage**: Header navigation indicator for deep-link/tech-demo pages.
+- **Status**: Currently implemented as a static graphic (future: interactive component).
+- **Canonical Markup**:
+  ```html
+  <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-6">
+      <span class="text-blue-400">/</span>
+      <span class="text-slate-500">Parent</span>
+      <span class="text-blue-400">/</span>
+      <span class="text-blue-400 font-semibold drop-shadow-[0_0_10px_rgba(96,165,250,0.4)]">Current</span>
+  </div>
+  ```
+- **Rules**:
+  - **Start**: Must begin with a leading `/`.
+  - **Separators**: Always `text-blue-400`.
+  - **Spacing**: Tightly packed (`gap-2`).
+
 ## 6. Major Components
 
 ### Scroll Flipper (v1.565+)
