@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.225] - 2026-01-23
+### Refactored
+- **Tailwind Cleanup**: Enforced strict utility-first CSS by replacing legacy custom classes (`.ring-text-*`) with inline Tailwind classes for the SVG Ring Visualization.
+- **Code Hygiene**: Removed obsolete `<style>` blocks associated with the old ring typography.
+- **Code Hygiene**: Updated `tech-demo-scene.js` and `halo-rotator.js` to utilize full Tailwind string injection instead of partial class composition.
+
 ## [v2.224] - 2026-01-23
 ### Changed
 - **Ring Typography**: Increased font size of the curved ring text for better legibility at a distance (`10px` -> `12px`).

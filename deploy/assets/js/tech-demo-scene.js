@@ -86,7 +86,12 @@ export class TechDemoScene {
             this.rotatorOuter = new HaloRotator(svg, '#halo-ring-outer', {
                 hitMin: 265,
                 hitMax: 800, // Extend to edge
-                snapInterval: 60 // 6 items = 60 degrees
+                snapInterval: 60, // 6 items = 60 degrees
+                // Tailwind Class Overrides (Blue Theme)
+                markerClassInactive: 'fill-blue-500',
+                markerClassActive: 'fill-emerald-500',
+                textClassInactive: 'fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]',
+                textClassActive: 'fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]'
             });
 
             // Inner Ring (#halo-ring-inner): Purple/Slate, r=200-260 approx
@@ -95,11 +100,11 @@ export class TechDemoScene {
                 hitMin: 0,
                 hitMax: 265,
                 snapInterval: 60, // 6 items = 60 degrees
-                // Style Overrides for Slate Theme
+                // Tailwind Class Overrides (Slate Theme)
                 markerClassInactive: 'fill-slate-400',
                 markerClassActive: 'fill-emerald-500', 
-                textClassInactive: 'ring-text-slate',
-                textClassActive: 'ring-text-green'
+                textClassInactive: 'fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]',
+                textClassActive: 'fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]'
             });
 
         } else {

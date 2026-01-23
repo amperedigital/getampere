@@ -199,17 +199,20 @@ export class HaloRotator {
         const mod = (n, m) => ((n % m) + m) % m;
         const activeIndex = mod(-step, numSlots);
 
+        const updateClasses = (el, removeStr, addStr) => {
+            if (removeStr) removeStr.split(' ').filter(c => c).forEach(c => el.classList.remove(c));
+            if (addStr) addStr.split(' ').filter(c => c).forEach(c => el.classList.add(c));
+        };
+
         // Update Dots
         // Assumes this.dots matches current DOM order (CW from Top/Start)
         this.dots.forEach((dot, index) => {
             const isActive = (index === activeIndex); 
             
             if (isActive) {
-                dot.classList.remove(this.markerClassInactive);
-                dot.classList.add(this.markerClassActive);
+                updateClasses(dot, this.markerClassInactive, this.markerClassActive);
             } else {
-                dot.classList.remove(this.markerClassActive);
-                dot.classList.add(this.markerClassInactive);
+                updateClasses(dot, this.markerClassActive, this.markerClassInactive);
             }
         });
 
@@ -218,11 +221,9 @@ export class HaloRotator {
             const isActive = (index === activeIndex);
             
             if (isActive) {
-                text.classList.remove(this.textClassInactive);
-                text.classList.add(this.textClassActive);
+                updateClasses(text, this.textClassInactive, this.textClassActive);
             } else {
-                text.classList.remove(this.textClassActive);
-                text.classList.add(this.textClassInactive);
+                updateClasses(text, this.textClassActive, this.textClassInactive);
             }
         });
     }
