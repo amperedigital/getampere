@@ -1187,7 +1187,7 @@ export class TechDemoScene {
                  }
     
                  this.camera.position.lerp(targetCamPos, lerpSpeed);
-                 this.controls.target.lerp(targetLookAt, lerpSpeed);
+                 if (this.controls) this.controls.target.lerp(targetLookAt, lerpSpeed);
             }
             
             // 2. Auto-Standby Mode (Configured Timeout)

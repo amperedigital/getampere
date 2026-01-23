@@ -1,3 +1,8 @@
+## v2.183
+- **Tech Demo**:
+    - **Stability**: Fixed a JavaScript crash (`Uncaught TypeError: reading 'target'`) caused by uninitialized controls in the auto-recenter logic.
+    - **Visualization**: Optimized the Neural Net sizing. Reduced `data-camera-distance` to 6.0 to improve fill factor within the ring.
+
 ## v2.180
 - **Tech Demo**:
     - **Layout**: Fundamental restructuring. The 3D Scene Container is now nested *inside* the same layout bounds as the Ring (Master Container: 800x800 aspect square).
