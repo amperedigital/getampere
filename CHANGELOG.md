@@ -1,3 +1,9 @@
+## v2.180
+- **Tech Demo**:
+    - **Layout**: Fundamental restructuring. The 3D Scene Container is now nested *inside* the same layout bounds as the Ring (Master Container: 800x800 aspect square).
+    - **Centering**: Removed all `setViewOffset` logic from the 3D engine (previously used to offset the subject). The scene is now mathematically centered to the ring by default.
+    - **Architecture**: Implements the "Container inside a Ring" requirement strictly.
+
 ## v2.179
 - **Tech Demo**:
     - **Layout**: Introduced a strict Flexbox centering wrapper to ensure absolute alignment of the 3D Scene and SVG Ring.

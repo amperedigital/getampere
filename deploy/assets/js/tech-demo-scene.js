@@ -1119,17 +1119,23 @@ export class TechDemoScene {
                  });
             }
 
-            // --- VIEW OFFSET FIX (Centering) ---
-            // On Mobile, shift viewport DOWN (Object UP).
+            // --- STRICT CENTERING (v2.180) ---
+            // Removed View offsets to guarantee mathematical center alignment with the ring.
+            this.camera.clearViewOffset();
+
+            // Mobile Z adjustment remains for framing
+            this.camera.position.z = this.isMobile ? this.config.cameraDistance * 1.6 : this.config.cameraDistance;
+            
+            /* Legacy Offset Code Removed
             if (this.isMobile) {
                 const offset = this.height * 0.12; 
                 this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
             } else {
-                // On Desktop, shift viewport DOWN slightly too (Object UP)
-                // to provide breathing room for the UI buttons
                 const offset = this.height * 0.08; 
                 this.camera.setViewOffset(this.width, this.height, 0, offset, this.width, this.height);
             }
+            */
+
         });
         
         // Trigger once to set init state
