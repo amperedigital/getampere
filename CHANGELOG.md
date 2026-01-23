@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.230] - 2026-01-23
+### Fixed
+- **Responsiveness**: Fixed an issue where the Neural Net visualization could overlap the inner ring container on short height screens.
+    - **Camera Distance**: Increased `cameraDistance` from `7.6` to `9.5` (Zoom Out) to ensure the 3D Icosahedron fits comfortably inside the newly tightened inner ring diameter (v2.228).
+    - **Container Constraints**: Added `max-h-full` to the master aspect-square container to prevent it from exceeding the viewport height if `w-full` dominates on certain aspect ratios.
+
 ## [v2.229] - 2026-01-23
 ### Changed
 - **Ring Visualization**: Updated Inner/Outer ring content mapping.

@@ -66,11 +66,12 @@
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
                 <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
                 <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
-                <div class="relative w-full lg:w-auto lg:h-[85%] lg:-translate-y-12 max-w-[800px] aspect-square flex items-center justify-center mx-auto">
+                <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
+                <div class="relative w-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] aspect-square flex items-center justify-center mx-auto">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
-                    <!-- Camera Distance Increased to 10.5 to fit visually inside the ring. -->
+                    <!-- Camera Distance Increased to 9.5 to fit visually inside the tightened inner ring (r=190). -->
                     <div id="tech-demo-scene" 
                          class="absolute inset-0 z-0 rounded-full pointer-events-auto"
                          data-standby-timeout="120"
@@ -79,7 +80,7 @@
                          data-lerp-speed="0.015"
                          data-min-velocity="0.0025"
                          data-rotation-rpm="0.17"
-                         data-camera-distance="7.6"></div>
+                         data-camera-distance="9.5"></div>
 
                     <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
