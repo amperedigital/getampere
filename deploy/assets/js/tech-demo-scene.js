@@ -1187,23 +1187,23 @@ export class TechDemoScene {
 
             this.camera.aspect = this.width / this.height;
             
-            // --- DYNAMIC ZOOM CALCULATION (v2.235) ---
-            // Goal: Ensure the 3D object maintains a constant visual size relative to the 
-            // SMALLEST container dimension (matching the SVG Ring behavior).
-            // 
-            // 1. Base Distance: Configured value (e.g., 6.5)
-            // 2. Mobile Multiplier: Zoom out slightly for small screens (1.4x)
-            // 3. Aspect Correction: 
-            //    - IF Aspect >= 1 (Landscape/Square): Limit by Height. PerspectiveCamera does this natively. 
-            //      Use Base Distance.
-            //    - IF Aspect < 1 (Portrait): Limit by Width. PerspectiveCamera scales by Height.
-            //      We must ZOOM OUT (Increase D) by (1 / aspect) to counteract the height dominance.
+            // --- DYNAMIC ZOOM CALCULATION (v2.237) ---
+            // 1. Base Distance: 13.0 (Provides ~1.5rem breathing room on standard 1080p screens).
+            // 2. Aspect Correction (Portrait): Zooms out if width < height.
+            // 3. Height Correction (Short Screens): Zooms IN if height is small, to prevent the "Too Much Space" issue.
+            //    - Why? On very short screens (e.g., < 500px), fixed pixel gaps feel disproportionately large.
+            //      We scale the distance down slightly as height decreases below 800px.
             
             const baseDist = this.config.cameraDistance;
             const mobileMult = this.isMobile ? 1.4 : 1.0;
             const aspectFactor = (this.camera.aspect < 1.0) ? (1.0 / this.camera.aspect) : 1.0;
             
-            this.camera.position.z = baseDist * mobileMult * aspectFactor;
+            // Height Compensation: If height < 800px, reduce distance slightly (up to 20% closer at 0px).
+            // This tightens the visual on short laptops/wide windows.
+            const heightRef = 800;
+            const heightFactor = (this.height < heightRef) ? (0.8 + 0.2 * (this.height / heightRef)) : 1.0;
+            
+            this.camera.position.z = baseDist * mobileMult * aspectFactor * heightFactor;
             
             this.camera.updateProjectionMatrix();
 
