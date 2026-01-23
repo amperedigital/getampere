@@ -1,3 +1,9 @@
+## v2.176
+- **Tech Demo**:
+    - **Visualization**: Reduced size of the neural network 3D object to create more negative space between it and the ring.
+    - **HUD**: Updated ring markers to 8 positions (12, 2, 3, 5, 6, 7, 8, 9) with new titles ("Encryption", "Throughput", "Integrity").
+    - **Layout**: Moved marker dots to the inner edge of the ring (`r=290`) to avoid conflict with the border line.
+
 ## v2.175
 - **Tech Demo**: Added new HUD metrics at clock positions 4 and 5 ("Encryption", "Latency") to the SVG ring overlay.
 
