@@ -1,3 +1,8 @@
+## v2.192
+- **Tech Demo**:
+    - **Visual Alignment**: Relocated the 12 rotary markers (dots) back to the outer perimeter (`r=350`) to align precisely with the static Selection Needles (`r=365`) and the Outer Dashed Ring (`r=360`).
+    - **Structure**: The dots remain grouped within the `#halo-rotary-dial` to rotate with the text, while the Needles remain static.
+
 ## v2.191
 - **Tech Demo**:
     - **Visual Structure**: Restructured the SVG Overlay for rotary interaction.
