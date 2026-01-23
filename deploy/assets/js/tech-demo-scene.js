@@ -1271,7 +1271,7 @@ export class TechDemoScene {
                 // Increase size for Mobile (custom boost)
                 // If width is constrained, we can afford to let the object be visually larger relative to the "ring box"
                 // because the ring box on mobile occupies nearly 100% of the screen width.
-                const mobileBoost = (this.isMobile) ? 1.3 : 1.0; 
+                const mobileBoost = (this.isMobile) ? 1.5 : 1.0; 
                 
                 targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage * mobileBoost);
             }

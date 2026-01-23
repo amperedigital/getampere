@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.251] - 2026-01-23
+### Changed
+- **Mobile Layout & Sizing**:
+    -   **Vertical Compactness**: Reduced Mobile Scene container height from 480px to 420px and added `-mt-12` margin-top to pull it visually inside the header's whitespace.
+    -   **Header Padding**: Reduced bottom padding on mobile header to zero to minimize gap.
+    -   **Neural Net Sizing**: Increased `mobileBoost` scaling factor from 1.3 to 1.5, making the central AI visualization significantly clearer on small screens.
+    -   **Buttons**: The layout tightening naturally brings the buttons up; ensured they occupy the bottom zone of the now-tighter container.
+
 ## [v2.250] - 2026-01-23
 ### Changed
 - **Mobile UX Refinements**:
