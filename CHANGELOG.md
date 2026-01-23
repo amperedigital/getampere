@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.221] - 2026-01-23
+### Fixed
+- **Tech Demo UI**: Resolved issue where UI controls (Power Up/Down buttons) were floating on top of the 3D ring visual.
+    - **Layout**: Reduced Desktop Ring Container height to `85%` to create a dedicated gutter at the bottom of the screen.
+    - **Positioning**: Lowered the UI Controls (`#ampere-ui-track`) from `110px` to `50px` to sit comfortably in the new gutter, clearing the visual.
+
 ## [v2.220] - 2026-01-23
 ### Fixed
 - **Tech Demo Responsiveness**: Fixed layout issues on shorter desktop screens.
