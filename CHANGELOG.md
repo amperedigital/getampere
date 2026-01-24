@@ -1,6 +1,7 @@
 # Changelog
 
 ## [v2.259] - 2026-01-24
+- **v2.263**: Layout fix (switched pt-12 to mt-12 on ring container to correctly push it down from overlay buttons).
 - **v2.262**: Layout refinements (reduced grid gap to 0.5rem aka gap-2, added top padding to ring container on mobile).
 - **v2.261**: Maximize card width (reduced container right padding to 1rem).
 - **v2.260**: UI refinements (raised mobile controls to top-2, increased control spacing, reduced card grid gap to 1rem).

@@ -106,7 +106,8 @@
                 <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
                 <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
                 <!-- v2.262: Added pt-12 (padding-top) to push the ring down away from the top-right overlay buttons -->
-                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto pt-12 lg:pt-0">
+                <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
+                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto mt-12 lg:mt-0">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
