@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.278] - 2026-01-24
+- **v2.278**: Visual Polish & Repair (Fixed HTML corruption in Card 2, corrected its radius to `rounded-3xl` to match other cards).
+
 ## [v2.277] - 2026-01-24
 - **v2.277**: Visual Correction (Fixed HTML corruption in Card 1, updated all card radii to standard `rounded-3xl` per user request, and removed `bg-white/5` from scene container to restore dark navy appearance while keeping border).
 
