@@ -342,10 +342,10 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -370,7 +370,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -385,9 +386,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-blue-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-blue-500/10 -> bg-blue-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
 
@@ -425,7 +427,7 @@
                 <!-- Card: Demo Guide -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -450,7 +452,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -465,9 +468,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-emerald-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-emerald-500/10 -> bg-emerald-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
@@ -505,7 +509,7 @@
                 <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -530,7 +534,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -545,9 +550,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-purple-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-purple-500/10 -> bg-purple-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
@@ -585,7 +591,7 @@
                 <!-- Card: Technical Specialist -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -610,7 +616,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -625,9 +632,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-amber-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-amber-500/10 -> bg-amber-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
 
@@ -665,7 +673,7 @@
                 <!-- Card: Sales Advisor -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -690,7 +698,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -705,9 +714,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-rose-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-rose-500/10 -> bg-rose-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-rose-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
 
@@ -745,7 +755,7 @@
                 <!-- Card: Booking Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v13 (Big Button) -->
+                    <!-- SVG SHELL v14 (Seamless) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -770,7 +780,8 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g style="transform: translateX(100%)">
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" vector-effect="non-scaling-stroke" />
+                            <!-- Added linecap/join round to smooth transitions -->
+                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
@@ -785,9 +796,10 @@
                          );">
                     </div>
 
-                    <!-- Button (Increased Size) -->
-                    <!-- w-14 h-14 (56px) to strictly close gap while maintaining top-right alignment -->
-                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Button (Seamless - No Border) -->
+                    <!-- Removed: border border-cyan-500/30 -->
+                    <!-- Increased Bg Opacity slightly div: bg-cyan-500/10 -> bg-cyan-500/20 to hold shape -->
+                    <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-cyan-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
 

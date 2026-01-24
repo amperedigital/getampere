@@ -1,10 +1,11 @@
 # Changelog
 
-## [v2.298] - 2026-01-24
+## [v2.299] - 2026-01-24
 ### Design
-- **Tech Demo v13 (Unification)**
-    - INCREASED button size to 56px (`w-14 h-14`) while maintaining top-right alignment. This visually "closes the gap" between the button and the socket curve, creating a stronger connected feel.
-    - UNIFIED stroke definitions: Both the card border and the Bezier socket curve now use identical inline styles (`stroke: rgba(255,255,255,0.2)`) to ensure perfect visual continuity and eliminate "added on top" artifacts.
+- **Tech Demo v14 (Seamless Integration)**
+    - Removed the CSS border from the floating action button entirely. The button now relies on the SVG socket stroke for its definition, eliminating the "double border" and "shadow" artifacts.
+    - Added `stroke-linecap="round"` and `stroke-linejoin="round"` to the Bezier curve path, ensuring a smooth, continuous join where the socket meets the card body.
+    - Slightly adjusted button background opacity to maintain presence as a distinct "plug" element without needing a stroke.
 
 ## [v2.293] - 2026-01-24
 - **v2.293**: Design Perfection (Implemented "Half-Socket Tangency" (v9). Re-engineered the socket geometry to shift the button significantly closer to the edge (`right: 8px`) while maintaining the 8px internal padding halo. The socket curve now enters via a 16px fillet, wraps around the button (centered at 96,48), and exits vertically tangent to the right border. This creates a much tighter, deeper "bite" that effectively removes the long entrance tail and integrates the button fully into the corner silhouette).
