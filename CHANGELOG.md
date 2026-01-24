@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.300] - 2026-01-24
+### Design (Major Architecture Update)
+- **Tech Demo v15 (Single Continuous Path)**
+    - Replaced the failing "Mask + Path" architecture with a JavaScript-generated "Single Path" system.
+    - **No More Separate Entities**: The card border is now mathematically defined as one continuous loop that starts at the top-left, traces the top edge, seamlessly enters the "Cascading Socket" Bezier curve, and continues around the card.
+    - **Zero Artifacts**: This eliminates all "ghost lines", "shadow gaps", and anti-aliasing seams caused by masking. The stroke is now a single vector with uniform opacity and width.
+    - **Visual Perfection**: Achieved the requested "Clean Single Flowing Path" look.
+
 ## [v2.299] - 2026-01-24
 ### Design
 - **Tech Demo v14 (Seamless Integration)**

@@ -342,40 +342,30 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
-                <div class="relative group h-full"> 
+                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-0">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-0)" mask="url(#mask-card-0)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-0)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-0)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -386,9 +376,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-blue-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-blue-500/10 -> bg-blue-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
@@ -425,39 +413,29 @@
                     </div>
                 </div>
                 <!-- Card: Demo Guide -->
-                <div class="relative group h-full"> 
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-1">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-1)" mask="url(#mask-card-1)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-1)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-1)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -468,9 +446,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-emerald-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-emerald-500/10 -> bg-emerald-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
@@ -507,39 +483,29 @@
                     </div>
                 </div>
                 <!-- Card: Onboarding Coach -->
-                <div class="relative group h-full"> 
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-2">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-2)" mask="url(#mask-card-2)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-2)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-2)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -550,9 +516,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-purple-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-purple-500/10 -> bg-purple-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
@@ -589,39 +553,29 @@
                     </div>
                 </div>
                 <!-- Card: Technical Specialist -->
-                <div class="relative group h-full"> 
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-3">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-3)" mask="url(#mask-card-3)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-3)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-3)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -632,9 +586,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-amber-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-amber-500/10 -> bg-amber-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
@@ -671,39 +623,29 @@
                     </div>
                 </div>
                 <!-- Card: Sales Advisor -->
-                <div class="relative group h-full"> 
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-4">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-4)" mask="url(#mask-card-4)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-4)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-4)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -714,9 +656,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-rose-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-rose-500/10 -> bg-rose-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-rose-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
@@ -753,39 +693,29 @@
                     </div>
                 </div>
                 <!-- Card: Booking Agent -->
-                <div class="relative group h-full"> 
+                <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v14 (Seamless) -->
-                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
                                 <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
                                 <stop offset="100%" stop-color="transparent" />
                             </linearGradient>
-                            
-                            <mask id="mask-card-5">
-                                <rect width="100%" height="100%" fill="white" />
-                                <g style="transform: translateX(100%)">
-                                    <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
-                                </g>
-                            </mask>
                         </defs>
                         
-                        <!-- Background -->
-                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-5)" mask="url(#mask-card-5)" />
-                        
-                        <!-- Border -->
-                        <rect width="100%" height="100%" rx="2rem" fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" mask="url(#mask-card-5)" vector-effect="non-scaling-stroke"/>
-                        
-                        <!-- Socket Curve (Stroke) -->
-                        <g style="transform: translateX(100%)">
-                            <!-- Added linecap/join round to smooth transitions -->
-                            <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
-                        </g>
+                        <!-- The Single Path (Filled & Stroked) -->
+                        <!-- JS will set the 'd' attribute based on current width/height -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-5)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
                     </svg>
                     
-                    <!-- Backdrop Blur -->
+                    <!-- Backdrop Blur (Polygon Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -796,9 +726,7 @@
                          );">
                     </div>
 
-                    <!-- Button (Seamless - No Border) -->
-                    <!-- Removed: border border-cyan-500/30 -->
-                    <!-- Increased Bg Opacity slightly div: bg-cyan-500/10 -> bg-cyan-500/20 to hold shape -->
+                    <!-- Button (Seamless - No Border - 56px) -->
                     <div class="absolute top-0 right-0 w-14 h-14 rounded-full bg-cyan-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
@@ -839,6 +767,95 @@
 
     </div>
 </div>
+
+<script>
+    (function() {
+        // v15 Socket Logic
+        function updateSocketPaths() {
+            const containers = document.querySelectorAll('.socket-card-container');
+            const S = 0.5;
+            // Bezier delta constants (derived from reversal)
+            const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+            const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+            const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+            const l_short = 10.9 * S; // Length of short straight segments
+            
+            // Corner Radius (for standard corners)
+            const r = 32; // 2rem
+            
+            containers.forEach(container => {
+                const svg = container.querySelector('svg');
+                const path = container.querySelector('.socket-path');
+                if (!svg || !path) return;
+                
+                const w = container.clientWidth;
+                const h = container.clientHeight;
+                
+                // Construct d string (Clockwise)
+                // Start Top-Left (actually after top-left corner)
+                let d = `M ${r} 0`;
+                
+                // Top Edge Line to Socket Start
+                // Socket total width = 3 curves + 1 straight (horizontal)
+                // Width = (59.94*3 + 10.9) * S = (179.82 + 10.9) * 0.5 = 190.72 * 0.5 = 95.36
+                const socketW = 95.36;
+                const socketH = 95.36; // It's square-ish in total displacement
+                
+                // Line to start of socket
+                d += ` L ${w - socketW} 0`;
+                
+                // 1. Curve Down/Right (First Step - Top)
+                d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+                
+                // 2. Line Down
+                d += ` l 0 ${l_short}`;
+                
+                // 3. Curve Down/Right (Middle Step)
+                // Wait, middle step goes Right then Down?
+                // Original: C1(UpLeft), L1(Left), C2(UpLeft), L2(Up), C3(UpLeft).
+                // Reverse: C3(DownRight), L2(Down), C2(DownRight), L1(Right), C1(DownRight).
+                
+                d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+                
+                // 4. Line Right
+                d += ` l ${l_short} 0`;
+                
+                // 5. Curve Down/Right (Bottom Step)
+                d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+                
+                // Now we are at (w, socketH).
+                // Line Down to Bottom-Right Corner start
+                d += ` L ${w} ${h - r}`;
+                
+                // Bottom-Right Corner
+                d += ` a ${r} ${r} 0 0 1 -${r} ${r}`; // Sweep 1 for clockwise
+                
+                // Bottom Edge
+                d += ` L ${r} ${h}`;
+                
+                // Bottom-Left Corner
+                d += ` a ${r} ${r} 0 0 1 -${r} -${r}`;
+                
+                // Left Edge
+                d += ` L 0 ${r}`;
+                
+                // Top-Left Corner
+                d += ` a ${r} ${r} 0 0 1 ${r} -${r}`;
+                
+                d += ' Z';
+                
+                path.setAttribute('d', d);
+            });
+        }
+        
+        // Init
+        updateSocketPaths();
+        window.addEventListener('resize', updateSocketPaths);
+        // Also run after a short delay for layout shifts
+        setTimeout(updateSocketPaths, 100);
+        setTimeout(updateSocketPaths, 500);
+    })();
+</script>
 <!-- Init Script -->
 
 <script type="module">
