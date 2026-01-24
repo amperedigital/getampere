@@ -342,23 +342,27 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Front Door Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Reception & Routing</p>
@@ -401,23 +405,27 @@
                 </div></div>
 
                 <!-- Card 2: Demo Guide -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Feature Walkthroughs</p>
@@ -453,23 +461,27 @@
                 </div></div>
 
                 <!-- Card 3: Onboarding Coach -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding Coach</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Setup Assistance</p>
@@ -505,23 +517,27 @@
                 </div></div>
 
                 <!-- Card 4: Technical Specialist -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Technical Specialist</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Deep Support</p>
@@ -557,23 +573,27 @@
                 </div></div>
 
                 <!-- Card 5: Sales Advisor -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Revenue & Plans</p>
@@ -609,23 +629,27 @@
                 </div></div>
 
                 <!-- Card 6: Booking Agent -->
-                <!-- v2.284: Applied "Socket Notch" aesthetic (Concave Cutout) -->
+                <!-- v2.285: Applied "Crater Socket" aesthetic -->
                 <div class="relative group h-full"> 
-                    <!-- Action Button (Floats in the Socket) -->
-                    <div class="absolute top-0 right-0 w-16 h-16 -mt-2 -mr-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <!-- 1. The Floating Action Button (Nest in the crater) -->
+                    <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     
-                    <!-- Socket Border Patch (The Curved Line) -->
-                    <svg class="absolute top-0 right-0 w-[4.3rem] h-[4.3rem] pointer-events-none z-10 text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                         <path d="M 0 0 A 100 100 0 0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <!-- 2. The Border Ring (Defines the crater edge) -->
+                    <!-- Sized 5x5 rem to capture the 2.1rem radius fully -->
+                    <svg class="absolute top-0 right-0 w-[5rem] h-[5rem] pointer-events-none z-10 text-white/10" viewBox="0 0 80 80">
+                         <!-- Center (2rem, 2rem) = (32px, 32px) -->
+                         <!-- Radius 2.1rem = 33.6px -->
+                         <circle cx="32" cy="32" r="33.6" fill="none" stroke="currentColor" stroke-width="1.2" />
                     </svg>
 
-                    <!-- Main Card Body (Masked) -->
-                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
-                         style="mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem); -webkit-mask-image: radial-gradient(circle at 100% 0%, transparent 4rem, black 4.1rem);">
+                    <!-- 3. The Card Body (Masked) -->
+                    <div class="h-full border border-white/10 p-4 lg:p-8 rounded-[2rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:from-white/15 hover:to-white/5 transition-all duration-500"
+                         style="mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem); -webkit-mask-image: radial-gradient(circle at calc(100% - 2rem) 2rem, transparent 2.1rem, black 2.15rem);">
                         
-                        <!-- Header -->
+                        <!-- Header with spacer for the hole -->
+                        <!-- The hole is top-right. We need to insure title doesn't hit it. -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Scheduling</p>
