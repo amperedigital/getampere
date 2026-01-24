@@ -707,7 +707,9 @@ export class TechDemoScene {
 
     addCentralSphere() {
         // Obsidian Black Glass Orb
-        const geometry = new THREE.SphereGeometry(0.72, 64, 64);
+        // v2.271: Increased size by 20% on mobile (0.72 -> 0.864)
+        const radius = this.isMobile ? 0.864 : 0.72;
+        const geometry = new THREE.SphereGeometry(radius, 64, 64);
         const material = new THREE.MeshPhysicalMaterial({
             color: 0x000000,
             roughness: 0.15,
@@ -744,7 +746,10 @@ export class TechDemoScene {
         this.paths = []; 
         this.pads = []; 
 
-        const surfaceRadius = 0.725; 
+        // v2.271: Match surface radius to sphere size
+        const sphereRadius = this.isMobile ? 0.864 : 0.72;
+        const surfaceRadius = sphereRadius + 0.005; 
+        
         const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
         const padMaterial = new THREE.MeshBasicMaterial({ color: 0x0b5c85, side: THREE.DoubleSide }); 
 
