@@ -1,5 +1,18 @@
 # Changelog
 
+## [v2.307] - 2026-01-24
+### Assets
+- **Tech Demo v15.6 (Iconography Update)**
+    - **Custom Vector Integration**: Replaced the previous generic Heroicon placeholders with a new set of bespoke vector assets from the Design System (`assets/icons/SVG`).
+    - **Mapped Visuals**:
+        - *Front Door Agent* (Reception) → `18_AI.svg` (Gate/Container)
+        - *Demo Guide* (Walkthrough) → `08_AI.svg` (Cyclical Process)
+        - *Onboarding Coach* (Help) → `32_AI.svg` (Connected Nodes)
+        - *Technical Specialist* (Support) → `40_AI.svg` (CPU/Chip Logic)
+        - *Sales Advisor* (Revenue) → `24_AI.svg` (Neural/Strategy)
+        - *Booking Agent* (Scheduling) → `02_AI.svg` (Grid/Network)
+    - **Optimized SVG**: Cleaned all new SVGs to remove hardcoded `fill` colors and `cls` styles, standardizing them to `fill="currentColor"` to inherit the monotone white/90 styling perfectly.
+
 ## [v2.306] - 2026-01-24
 ### Fixes
 - **Tech Demo v15.5 (Geometric Precision)**
