@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.259] - 2026-01-24
+### Changed
+- **Mobile Control Alignment**:
+    -   **Horizontal Flow**: Refactored the Mobile Control Cluster from a vertical column (`flex-col`) to a single horizontal row (`flex-row`). The Status Pill now sits to the immediate left of the Power Button, creating a seamless "Status + Action" unit in the top-right corner of the scene.
+
 ## [v2.258] - 2026-01-24
 ### Changed
 - **Mobile Control Layout**:

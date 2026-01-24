@@ -80,7 +80,8 @@
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
-                <div class="lg:hidden absolute top-4 right-4 z-50 flex flex-col items-end gap-3 pointer-events-auto">
+                <!-- v2.259: Changed to single row (Status Left, Power Right) -->
+                <div class="lg:hidden absolute top-4 right-4 z-50 flex flex-row items-center gap-3 pointer-events-auto">
                     <!-- Status Display -->
                     <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
                         <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
@@ -89,16 +90,14 @@
 
                     <!-- Single Power Toggle -->
                     <!-- Green when On, Slate when Off -->
-                    <div class="flex items-center gap-2">
-                            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                                    class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
-                                    id="btn-mobile-power"
-                                    aria-label="Power Toggle">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
-                                </svg>
-                            </button>
-                    </div>
+                    <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                            class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                            id="btn-mobile-power"
+                            aria-label="Power Toggle">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                        </svg>
+                    </button>
                 </div>
 
                 <!-- MASTER CONTAINER (Center of the Universe) -->
