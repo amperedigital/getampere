@@ -342,85 +342,74 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                <!-- Card: Front Door Agent -->
+                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-0">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-0)" mask="url(#mask-card-0)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-0)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Front Door Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Reception & Routing</p>
@@ -453,82 +442,71 @@
                 <!-- Card: Demo Guide -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-1">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-1)" mask="url(#mask-card-1)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-1)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Feature Walkthroughs</p>
@@ -561,82 +539,71 @@
                 <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-2">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-2)" mask="url(#mask-card-2)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-2)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding Coach</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Setup Assistance</p>
@@ -669,82 +636,71 @@
                 <!-- Card: Technical Specialist -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-3">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-3)" mask="url(#mask-card-3)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-3)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Technical Specialist</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Deep Support</p>
@@ -777,82 +733,71 @@
                 <!-- Card: Sales Advisor -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-4">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-4)" mask="url(#mask-card-4)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-4)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
-                        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Revenue & Plans</p>
@@ -885,82 +830,71 @@
                 <!-- Card: Booking Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- 1. MAIN SHELL (Background + Main Border) -->
-                    <!-- We use clip-path carefully. 128px is width/height of socket patch. -->
-                    <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem] border-l border-b border-white/20"
-                         style="
-                            /* Use border-l and border-b for left/bottom edges. */
-                            /* Mask defaults: */
-                            border-top-left-radius: 2rem;
-                            border-bottom-left-radius: 2rem;
-                            border-bottom-right-radius: 2rem;
-                            border-top-right-radius: 0; /* Corner is removed by clip-path anyway */
-                            clip-path: polygon(
-                                0 0, 
-                                calc(100% - 128px) 0, 
-                                calc(100% - 128px) 128px, 
-                                100% 128px, 
-                                100% 100%, 
-                                0 100%
-                            );
-                         "></div>
-                    
-                    <!-- Top Border Line (To replace border-t, stopping at socket) -->
-                    <div class="absolute top-0 left-[2rem] right-[128px] h-[1px] bg-white/20 z-10"></div>
-                    <!-- Top-Left Corner Border? No, border-l handles straight part. We need the curve. -->
-                    <!-- Actually `border` on the main div handles TL radius if we set it. -->
-                    <!-- BUT to avoid double borders, we usually separate them. -->
-                    <!-- Let's iterate: Main Div has `border-l border-b border-t-0 border-r-0`. -->
-                    <!-- Matches the Top Line and Right Line logic below. -->
-                    
-                    <!-- Right Line (Starts below socket) -->
-                    <div class="absolute bottom-[2rem] right-0 top-[128px] w-[1px] bg-white/20 z-10"></div>
-                    
-                    <!-- Top-Left Corner Arc? The main div has `rounded-tl-[2rem] border-l`. 
-                         Tailwind `border-l` draws the whole left side. 
-                         If `rounded` is present, the border curves. So TL is covered. 
-                    -->
-
-
-                    <!-- 2. SOCKET PATCH (The Corner Geometry) -->
-                    <!-- Positioned at Top Right (Strict). Size 128x128. -->
-                    <div class="absolute top-0 right-0 w-[128px] h-[128px] z-10 pointer-events-none">
-                        <svg width="100%" height="100%" viewBox="0 0 128 128" fill="none">
+                    <!-- SVG SHELL (Background + Border + Socket) -->
+                    <!-- This single element handles the entire shape math. -->
+                    <!-- Note: 'overflow-visible' allows the stroke to not get clipped if half-pixel off -->
+                    <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
                             
-                            <!-- Fill (Matches Card Background - approx) -->
-                            <!-- We use a path that closes the shape for the fill. -->
-                            <!-- Starts at 0,0 (Top edge of patch) -> Socket Curve -> End 128,128 (Right edge) -> Corner (0,128) -> Close -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112 L 128 128 L 0 128 Z" 
-                                  class="fill-white/5" /> <!-- Slight tint to match gradient avg -->
-                            
-                            <!-- Border (Matches Card Border) -->
-                            <!-- Must match stroke width of `1px` (white/20) -->
-                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 72 Q 64 112 104 112 L 128 112" 
-                                  stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
-                        </svg>
+                            <mask id="mask-card-5">
+                                <!-- Reveal Everything (White) -->
+                                <rect width="100%" height="100%" fill="white" />
+                                <!-- Hide The Socket Area (Black) at Top Right -->
+                                <!-- We translate 100% X, then back 128px to align the 128px box -->
+                                <g transform="translate(100%, 0)">
+                                    <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                </g>
+                            </mask>
+                        </defs>
+                        
+                        <!-- 1. The Glass Background -->
+                        <!-- Applying backdrop-filter via CSS class on parent div is usually safer, but we can fake it or try here. -->
+                        <!-- Issue: SVG rect doesn't support backdrop-filter easily in all browsers. -->
+                        <!-- Strategy: Put backdrop-blur on a separate DIV layer that is Clipped via CSS. -->
+                        <!-- But to ensure perfect match, let's keep the Fill here. -->
+                        <rect width="100%" height="100%" rx="2rem" fill="url(#grad-card-5)" mask="url(#mask-card-5)" />
+                        
+                        <!-- 2. The Main Border -->
+                        <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-5)" vector-effect="non-scaling-stroke"/>
+                        
+                        <!-- 3. The Socket Border Curve -->
+                        <!-- Pinned Top Right -->
+                        <g transform="translate(100%, 0)">
+                            <path d="M 0 0 L 24 0 Q 64 0 64 40 L 64 88 Q 64 128 104 128 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                        </g>
+                    </svg>
+                    
+                    <!-- Backdrop Blur Layer (Underneath SVG) -->
+                    <!-- We use CSS clip-path to mimic the mask so we can apply native backdrop-filter -->
+                    <!-- The clip-path needs to be fluid. -->
+                    <!-- Simplified Clip: Polygon cutting the corner. -->
+                    <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
+                         style="clip-path: polygon(0 0, calc(100% - 128px) 0, calc(100% - 128px) 128px, 100% 128px, 100% 100%, 0 100%);">
                     </div>
 
                     <!-- Button (Positioned in the Hollow) -->
-                    <!-- Centered in the 'Void'. 
-                         Socket Curve logic:
-                         Horizontal segment: 0 to 64 (~middle). 
-                         Vertical segment: 40 to 72. 
-                         The button center should be around (92, 40)? 
-                         Let's assume the button is 48x48 (12x12 tailwind).
-                         If we position it `top-2 right-2` (8px, 8px), it's at (120, 8) in card coords? No.
-                         Right-2 means 8px from right edge. 
-                         
-                         We need to center it in the Socket Arc.
-                         The arc visually centers around (96, 32)? 
-                         Let's place it absolutely relative to the socket shape.
-                         top-[24px] right-[24px] puts it 24px from edges.
+                    <!-- Based on Path: 
+                         Horizontal segment L 24 0 -> (ends x=24)
+                         Curve to (64, 40)
+                         Vertical L 64 88
+                         Center of the 'void' area is approx (96, 40) relative to box.
+                         Box is Top Right.
+                         So 'right' offset is 128 - 96 = 32px?
+                         'top' offset is 40px?
+                         Let's align it nicely.
                     -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <div class="absolute top-[28px] right-[28px] w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
 
                     <!-- Content -->
-                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
+                         <!-- Enable pointer events for content if needed, but card is mostly static -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Scheduling</p>
