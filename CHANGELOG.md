@@ -1,6 +1,7 @@
 # Changelog
 
-## [v2.272] - 2026-01-24
+## [v2.273] - 2026-01-24
+- **v2.273**: Responsive Fix (Updated resize handler and status gauge CSS to respect 1024px mobile breakpoint, ensuring valid layout on 820px iPad Air).
 - **v2.272**: Tablet Breakpoint Fix (Synced JS mobile detection and CSS injections to 1024px to enforce Mobile Layout on iPad Mini/Tablets).
 - **v2.271**: Visual Enhancement (Increased Inner Sphere size by 20% on mobile to improve visibility).
 - **v2.270**: Mobile Standby Timer Fix (Added 'STBY IN' prefix and fixed countdown freeze bug by observing childList mutations).

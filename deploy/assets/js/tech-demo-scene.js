@@ -324,13 +324,13 @@ export class TechDemoScene {
                     text-align: center;
                     white-space: nowrap;
                 }
-                @media (max-width: 600px) {
+                @media (max-width: 1023px) {
                     #ampere-system-status {
                          /* Mobile: Push higher to clear the track (Track@40px + 48px height + 12px gap) */
                          bottom: 100px; 
                     }
                 }
-                @media (min-width: 601px) {
+                @media (min-width: 1024px) {
                     #ampere-system-status {
                         bottom: 100px; /* Tighter stack, aligned with warning level */
                     }
@@ -1210,7 +1210,8 @@ export class TechDemoScene {
 
             this.width = this.container.clientWidth;
             this.height = this.container.clientHeight;
-            this.isMobile = (this.width <= 600);
+            // v2.273: Fixed mobile check inside resize handler to match constructor (1024px)
+            this.isMobile = (this.width < 1024);
 
             // console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
             // console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
