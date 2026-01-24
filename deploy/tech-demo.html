@@ -342,10 +342,10 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -357,7 +357,7 @@
                             <mask id="mask-card-0">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -370,27 +370,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
 
@@ -428,7 +430,7 @@
                 <!-- Card: Demo Guide -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -440,7 +442,7 @@
                             <mask id="mask-card-1">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -453,27 +455,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
@@ -511,7 +515,7 @@
                 <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -523,7 +527,7 @@
                             <mask id="mask-card-2">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -536,27 +540,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
@@ -594,7 +600,7 @@
                 <!-- Card: Technical Specialist -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -606,7 +612,7 @@
                             <mask id="mask-card-3">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -619,27 +625,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
 
@@ -677,7 +685,7 @@
                 <!-- Card: Sales Advisor -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -689,7 +697,7 @@
                             <mask id="mask-card-4">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -702,27 +710,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
 
@@ -760,7 +770,7 @@
                 <!-- Card: Booking Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v8 -->
+                    <!-- SVG SHELL v9 -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -772,7 +782,7 @@
                             <mask id="mask-card-5">
                                 <rect width="100%" height="100%" fill="white" />
                                 <g transform="translate(100%, 0)">
-                                    <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
+                                    <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128 L 128 0 Z" fill="black" transform="translate(-128, 0)" />
                                 </g>
                             </mask>
                         </defs>
@@ -785,27 +795,29 @@
                         
                         <!-- Socket Curve (Stroke) -->
                         <g transform="translate(100%, 0)">
-                            <path d="M 0 0 L 44.23 0 A 16 16 0 0 1 56.15 26.66 A 32 32 0 0 0 101.33 71.85 A 16 16 0 0 1 128 83.77 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
+                            <path d="M 0 0 L 60.22 0 A 16 16 0 0 1 72.14 26.66 A 32 32 0 0 0 128 48 L 128 128" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="translate(-128, 0)" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Accurate Polynomial Clip) -->
-                    <!-- Matches v8 Geometry Keypoints -->
+                    <!-- Backdrop Blur (Accurate v9 Clip) -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
-                             calc(100% - 84px) 0,        /* x ~ 44 */
-                             calc(100% - 72px) 27px,     /* T1 ~ 56, 27 */
-                             calc(100% - 27px) 72px,     /* T2 ~ 101, 72 */
-                             100% 84px,                  /* y ~ 84 */
+                             calc(100% - 68px) 0,        /* Start ~ 60 */
+                             calc(100% - 56px) 27px,     /* T1 ~ 72, 27 */
+                             100% 48px,                  /* T2 ~ 128, 48 */
                              100% 100%, 
                              0 100%
                          );">
                     </div>
 
                     <!-- Button -->
-                    <!-- Position: Top 24px, Right 24px. Matches Cs(80,48) perfectly. -->
-                    <div class="absolute top-[24px] right-[24px] w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
+                    <!-- Position: 
+                         Svg Center (96, 48). 
+                         Top = 48 - 24 = 24.
+                         Right = 128 - (96 + 24) = 8.
+                    -->
+                    <div class="absolute top-[24px] right-[8px] w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
 
