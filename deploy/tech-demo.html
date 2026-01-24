@@ -77,7 +77,8 @@
             <!-- v2.254: Backed off negative margin to -mt-4 to prevent overlap. Reduced height to 440px to pull cards up. -->
             <!-- v2.255: Changed to POSITIVE mt-4 to push scene down into the empty void. Height 420px. -->
             <!-- v2.266: Layout Change - Removed fixed height (h-[420px]) and layout constraints on mobile to allow flex stacking. -->
-            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-[2rem] z-0 group/scene flex flex-col lg:flex-row items-stretch lg:items-center justify-start lg:justify-center lg:bg-white/5 lg:border lg:border-white/5">
+            <!-- v2.274: Removed desktop background (lg:bg-white/5) and border as requested. -->
+            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-[2rem] z-0 group/scene flex flex-col lg:flex-row items-stretch lg:items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -331,11 +332,14 @@
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 w-full h-auto lg:h-full lg:min-h-[850px]">
+            <!-- v2.274: Restored desktop card spacing to gap-4 (1rem) or gap-8 (2rem) as requested. Using gap-4 for now to balance space. -->
+            <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-8 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
                 <!-- Added h-full to flex container -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -385,7 +389,8 @@
                 </div>
 
                 <!-- Card 2: Demo Guide -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
@@ -426,7 +431,8 @@
                 </div>
 
                 <!-- Card 3: Onboarding Coach -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding</h3>
@@ -467,7 +473,8 @@
                 </div>
 
                 <!-- Card 4: Technical Specialist -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Tech Specialist</h3>
@@ -508,7 +515,8 @@
                 </div>
 
                 <!-- Card 5: Sales Advisor -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
@@ -549,7 +557,8 @@
                 </div>
 
                 <!-- Card 6: Booking Agent -->
-                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.274: Updated radius to rounded-[2rem] -->
+                <div class="group border-2 border-white/5 p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>

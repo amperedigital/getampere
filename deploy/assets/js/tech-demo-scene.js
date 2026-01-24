@@ -10,8 +10,11 @@ export class TechDemoScene {
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
-        // v2.272: Changed mobile breakpoint from 600 to 1024 to include Tablet/iPad Mini
-        this.isMobile = (this.width < 1024);
+        // v2.274: FIXED - isMobile should use WINDOW width to properly detect "splitscreen desktop" vs "true tablet"
+        // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
+        // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
+        // We assume anything with a Viewport < 1024 is the Tablet/Mobile realm.
+        this.isMobile = (window.innerWidth < 1024);
 
         console.log("Tech Demo Scene Initialized - vDesignTwo.10 (Isolated Branch)");
         
@@ -1210,8 +1213,11 @@ export class TechDemoScene {
 
             this.width = this.container.clientWidth;
             this.height = this.container.clientHeight;
-            // v2.273: Fixed mobile check inside resize handler to match constructor (1024px)
-            this.isMobile = (this.width < 1024);
+            // v2.274: FIXED - isMobile should use WINDOW width to properly detect "splitscreen desktop" vs "true tablet"
+            // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
+            // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
+            // We assume anything with a Viewport < 1024 is the Tablet/Mobile realm.
+            this.isMobile = (window.innerWidth < 1024);
 
             // console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
             // console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
