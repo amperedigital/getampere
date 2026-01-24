@@ -57,43 +57,23 @@
                     <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
                     <div class="lg:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
                     
-                    <!-- Status Display -->
-                    <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
-                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
-                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
-                    </div>
+                        <!-- Status Display -->
+                        <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
+                            <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                            <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                        </div>
 
-                    <!-- Compact Buttons (Dots/Toggles) -->
-                    <div class="flex items-center gap-2">
-                         <!-- ACTIVE (Play/Bolt) -->
-                         <button onclick="window.demoScene && window.demoScene.setSystemState('ACTIVE')" 
-                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-blue-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
-                                 id="btn-mobile-active"
-                                 aria-label="Active Mode">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                         </button>
-
-                         <!-- STANDBY (Pause) -->
-                         <button onclick="window.demoScene && window.demoScene.setSystemState('STANDBY')"
-                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
-                                 id="btn-mobile-standby"
-                                 aria-label="Standby Mode">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
-                            </svg>
-                         </button>
-
-                         <!-- OFF (Power) -->
-                         <button onclick="window.demoScene && window.demoScene.setSystemState('OFF')"
-                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-red-400 hover:bg-red-500/20 hover:border-red-500/30 active:scale-95 transition-all shadow-lg"
-                                 id="btn-mobile-off"
-                                 aria-label="Power Off">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
-                            </svg>
-                         </button>
+                        <!-- Single Power Toggle -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                                    class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                    id="btn-mobile-power"
+                                    aria-label="Power Toggle">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -557,6 +537,15 @@
                     // Optional: Expose to window for debugging
                     window.demoScene = scene;
 
+                    // Toggle Helper for Mobile Power Button
+                    window.toggleMobilePower = () => {
+                        if (!window.demoScene) return;
+                        const current = window.demoScene.systemState;
+                        // If OFF -> Turn ON (ACTIVE). If ON (Active/Standby) -> Turn OFF.
+                        const next = (current === 'OFF') ? 'ACTIVE' : 'OFF';
+                        window.demoScene.setSystemState(next);
+                    };
+
                     // --- Mobile UI State Observer ---
                     const obs = new MutationObserver((mutations) => {
                         for(const m of mutations) {
@@ -573,9 +562,25 @@
                     const dot = document.getElementById('mobile-status-dot');
                     const text = document.getElementById('mobile-status-text');
                     const container = document.getElementById('mobile-system-status');
+                    const btn = document.getElementById('btn-mobile-power');
                     
                     if(!dot || !text) return;
                     
+                    // Update Power Button Appearance
+                    if (btn) {
+                        const onClasses = ['text-blue-400', 'bg-blue-500/20', 'border-blue-400/30', 'shadow-[0_0_15px_rgba(59,130,246,0.5)]'];
+                        const offClasses = ['text-slate-500', 'bg-white/5', 'border-white/10'];
+                        
+                        if (state === 'OFF') {
+                            btn.classList.remove(...onClasses);
+                            btn.classList.add(...offClasses);
+                        } else {
+                            // Active or Standby -> Button looks "On"
+                            btn.classList.remove(...offClasses);
+                            btn.classList.add(...onClasses);
+                        }
+                    }
+
                     if (state === 'ACTIVE') {
                         text.innerText = "AI ONLINE";
                         text.className = 'text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300';

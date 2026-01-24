@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.257] - 2026-01-24
+### Changed
+- **Mobile Mobile Controls Simplified**:
+    -   **Control Cluster**: Replaced the previous 3-button design (Active, Standby, Off) with a **Single Power Toggle** button.
+    -   **Power Logic**: Tapping the Power button toggles the system between `ACTIVE` and `OFF`. `STANDBY` mode is now handled exclusively by the automatic idle timer, removing the manual button.
+    -   **Visual Feedback**: The Power button now glows blue when the system is On (Active or Standby) and dims to slate/grey when Off.
+    -   **Status Pill**: Retained the Status Pill ("AI ONLINE", "STANDBY") to provide clear systemic feedback, especially for the auto-standby state.
+
 ## [v2.256] - 2026-01-23
 ### Changed
 - **Mobile Header Refactor**:
