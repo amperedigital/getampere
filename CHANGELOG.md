@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.280] - 2026-01-24
+- **v2.280**: Critical Repair (Fixed corrupted HTML markup in Cards 3, 4, 5, and 6 caused by previous failed edit. Restored full `rounded-3xl` and `lg:p-8` styling to all cards).
+
 ## [v2.279] - 2026-01-24
 - **v2.279**: Visual Polish (Updated internal desktop card padding to `lg:p-8` (2rem) and confirmed grid spacing is `gap-8` (2rem) as requested).
 
