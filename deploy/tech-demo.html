@@ -79,7 +79,8 @@
             <!-- v2.266: Layout Change - Removed fixed height (h-[420px]) and layout constraints on mobile to allow flex stacking. -->
             <!-- v2.274: Removed desktop background (lg:bg-white/5) and border as requested. -->
             <!-- v2.276: Restored border/bg and updated radius to rounded-2xl. -->
-            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-2xl lg:bg-white/5 lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-row items-stretch lg:items-center justify-start lg:justify-center">
+            <!-- v2.277: Removed bg (kept border) and updated radius to rounded-3xl to match cards. -->
+            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-row items-stretch lg:items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -339,8 +340,8 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-8 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
-                <!-- Added h-full to flex container -->2xl (standard Tailwind) -->
-                <div class="group border-2 border-white/5 p-4 rounded-2ilwind) -->
+                <!-- Added h-full to flex container -->
+                <!-- v2.277: Fixed partial overwrite and updated radius to rounded-3xl -->
                 <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
@@ -390,8 +391,8 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Demo Guide -->
-                <!-- v2.275: Updated radius to rounded-2xl -->
+                <!-- Card 7: Updated radius to rounded-3xl -->
+                <div class="group border-2 border-white/5 p-4 rounded-3
                 <div class="group border-2 border-white/5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -433,8 +434,8 @@
                 </div>
 
                 <!-- Card 3: Onboarding Coach -->
-                <!-- v2.275: Updated radius to rounded-2xl -->
-                <div class="group border-2 border-white/5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.277: Updated radius to rounded-3xl -->
+                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding</h3>
@@ -475,8 +476,8 @@
                 </div>
 
                 <!-- Card 4: Technical Specialist -->
-                <!-- v2.275: Updated radius to rounded-2xl -->
-                <div class="group border-2 border-white/5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.277: Updated radius to rounded-3xl -->
+                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Tech Specialist</h3>
@@ -517,8 +518,8 @@
                 </div>
 
                 <!-- Card 5: Sales Advisor -->
-                <!-- v2.275: Updated radius to rounded-2xl (standard Tailwind) -->
-                <div class="group border-2 border-white/5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.277: Updated radius to rounded-3xl (standard Tailwind) -->
+                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
@@ -559,8 +560,8 @@
                 </div>
 
                 <!-- Card 6: Booking Agent -->
-                <!-- v2.275: Updated radius to rounded-2xl (standard Tailwind) -->
-                <div class="group border-2 border-white/5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.277: Updated radius to rounded-3xl (standard Tailwind) -->
+                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>

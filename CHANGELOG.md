@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.277] - 2026-01-24
+- **v2.277**: Visual Correction (Fixed HTML corruption in Card 1, updated all card radii to standard `rounded-3xl` per user request, and removed `bg-white/5` from scene container to restore dark navy appearance while keeping border).
+
 ## [v2.276] - 2026-01-24
 - **v2.276**: Visual Polish (Restored left scene container border/background, increased right container padding to `pr-12`, and standardized all card and container radii to `rounded-2xl`).
 
