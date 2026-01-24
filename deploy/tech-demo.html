@@ -262,7 +262,8 @@
                     </svg>
                     </div>
                          
-                </div><!-- End Master Container -->
+                </div>
+<!-- End Master Container -->
 
                 <!-- Mobile Ring Sliders (v2.264) -->
                 <!-- Positioned at the bottom of the Scene Container -->
@@ -342,38 +343,26 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -422,42 +411,34 @@
                         <!-- Row 6 -->
                         <div class="text-slate-400 flex items-center">Auth</div>
                         <div class="text-white text-right">99.9%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 w-[99%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 w-[99%]">
 </div>
                     </div>
-                </div><!-- Card 2: Demo Guide -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                </div>
+                </div>
+</div>
+</div>
+<!-- Card 2: Demo Guide -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -499,42 +480,34 @@
 
                         <div class="text-slate-400 flex items-center">Rating</div>
                         <div class="text-white text-right">4.8/5</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[96%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[96%]">
 </div>
                     </div>
-                </div><!-- Card 3: Onboarding Coach -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                </div>
+                </div>
+</div>
+</div>
+<!-- Card 3: Onboarding Coach -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -576,42 +549,34 @@
 
                         <div class="text-slate-400 flex items-center">Success</div>
                         <div class="text-white text-right">98%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-200 w-[98%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-200 w-[98%]">
 </div>
                     </div>
-                </div><!-- Card 4: Technical Specialist -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                </div>
+                </div>
+</div>
+</div>
+<!-- Card 4: Technical Specialist -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -653,42 +618,33 @@
 
                         <div class="text-slate-400 flex items-center">CSAT</div>
                         <div class="text-white text-right">4.9</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[98%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[98%]">
 </div>
                     </div>
-                </div><!-- Card 5: Sales Advisor -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                </div>
+                </div>
+</div>
+<!-- Card 5: Sales Advisor -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -730,42 +686,33 @@
 
                         <div class="text-slate-400 flex items-center">Upsells</div>
                         <div class="text-white text-right">12</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[30%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[30%]">
 </div>
                     </div>
-                </div><!-- Card 6: Booking Agent -->
-                <!-- v2.286: Applied "Liquid Socket" aesthetic -->
+                </div>
+                </div>
+</div>
+<!-- Card 6: Booking Agent -->
+                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
                 <div class="relative group h-full"> 
                     
                     <!-- 1. Background Layer (Masked) -->
-                    <!-- Note: We use style="mask:..." for the masking. 
-                         We construct the visual style (Glass, Border-ish) inside. -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask); -webkit-mask: url(#liquid-socket-mask);">
-                         <!-- Inner Highlight for pseudo-border effect? 
-                              Since standard border is masked out, we need a separate border overlay. -->
+                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
                     </div>
 
                     <!-- 2. Border Overlay (SVG) -->
-                    <!-- Top-Left, Bottom, Left borders are handled by a standard div or SVG rect? 
-                         Let's use a standard div border for the 'Safe' areas and SVG for the corner? 
-                         Actually, let's just draw the border with SVG. -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
                          <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry" x="100%" y="0" class="text-white/20" />
-                         <!-- We need the REST of the border. 
-                              The symbol covers Top (-300px to 0) and Right (0 to 300px).
-                              We need to connect the rest. 
-                              Since the symbol has `vector-effect=non-scaling-stroke`, scaling lines is hard to match.
-                              Let's compromise: Use a standard border div, but Clip it?
-                          -->
+                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
                     </svg>
                     <!-- Backing Div for Standard Borders (Left, Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket) -->
-                    <div class="absolute top-0 left-0 right-[4rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket) -->
-                    <div class="absolute bottom-0 right-0 top-[4rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
+                    <!-- Inset right-20 (5rem) covers it? -->
+                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
+                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
 
 
                     <!-- 3. Floating Button (Nested in the socket) -->
@@ -807,18 +754,22 @@
 
                         <div class="text-slate-400 flex items-center">Sync</div>
                         <div class="text-white text-right">0.2s</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-200 w-[95%]"></div></div></div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-200 w-[95%]">
 </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
-    <!-- Init Script -->
-    <script type="module">
+    </div>
+</div>
+<!-- Init Script -->
+    </div>
+        </div>
+    </div>
+
+<script type="module">
         import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.137';
         
         document.addEventListener('DOMContentLoaded', () => {
