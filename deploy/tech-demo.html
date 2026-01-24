@@ -705,9 +705,9 @@
                              if (opacity > 0 && text.includes('STANDBY IN')) {
                                  // Show on Mobile
                                  mobileTimer.classList.remove('hidden');
-                                 // Format: "30s" instead of full text to save space
+                                 // Format: "STBY IN 30s"
                                  const match = text.match(/\d+s/);
-                                 if(match) mobileTimer.innerText = match[0];
+                                 if(match) mobileTimer.innerText = "STBY IN " + match[0];
                              } else {
                                  mobileTimer.classList.add('hidden');
                              }
@@ -720,7 +720,7 @@
                              // Hide the original overlay on mobile via CSS? Or just let it be hidden by z-index/position override?
                              // Better to hide it explicitly via CSS style injection
                              warningEl.classList.add('lg:block', 'hidden'); // Force hide on mobile via classes if possible
-                             observerWarning.observe(warningEl, { characterData: true, subtree: true, attributes: true });
+                             observerWarning.observe(warningEl, { childList: true, characterData: true, subtree: true, attributes: true });
                         }
                     }, 1000);
 

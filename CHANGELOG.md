@@ -1,6 +1,7 @@
 # Changelog
 
-## [v2.259] - 2026-01-24
+## [v2.270] - 2026-01-24
+- **v2.270**: Mobile Standby Timer Fix (Added 'STBY IN' prefix and fixed countdown freeze bug by observing childList mutations).
 - **v2.269**: Mobile Standby Timer Integration (Moved countdown into status pill to fix overlap, hidden large warning text on mobile).
 - **v2.268**: Mobile Power Button Logic Fix (Standby/Off -> On, Active -> Off).
 - **v2.267**: Mobile Logic Update (Sliders are now disabled and greyed out when system is not ACTIVE, mirroring desktop lock).
