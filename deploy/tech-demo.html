@@ -76,7 +76,8 @@
             <!-- v2.253 Update: Increased negative margin (-mt-24) to pull scene higher. Reduced height to 480px. -->
             <!-- v2.254: Backed off negative margin to -mt-4 to prevent overlap. Reduced height to 440px to pull cards up. -->
             <!-- v2.255: Changed to POSITIVE mt-4 to push scene down into the empty void. Height 420px. -->
-            <div class="relative w-full mx-auto h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
+            <!-- v2.266: Layout Change - Removed fixed height (h-[420px]) and layout constraints on mobile to allow flex stacking. -->
+            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-[2rem] z-0 group/scene flex flex-col lg:flex-row items-stretch lg:items-center justify-start lg:justify-center lg:bg-white/5 lg:border lg:border-white/5">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -107,7 +108,8 @@
                 <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
                 <!-- v2.262: Added pt-12 (padding-top) to push the ring down away from the top-right overlay buttons -->
                 <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
-                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto mt-12 lg:mt-0">
+                <!-- v2.266: Keep mt-12. Changed h-full to h-[350px] on mobile to force aspect ratio for scene. -->
+                <div class="relative w-full h-[350px] lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto mt-12 lg:mt-0">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
@@ -260,7 +262,8 @@
                 <!-- Mobile Ring Sliders (v2.264) -->
                 <!-- Positioned at the bottom of the Scene Container -->
                 <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
-                <div class="lg:hidden absolute bottom-0 left-0 w-full px-6 pb-6 flex flex-col gap-5 z-50 pointer-events-auto bg-gradient-to-t from-black via-black/80 to-transparent pt-12">
+                <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
+                <div class="lg:hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">
@@ -598,8 +601,9 @@
             
             // v2.265: Mobile Config Override before Init
             // Reduce camera distance to make Neural Net appear larger on mobile
+            // v2.266: Reduced further to 4.5.
             if (window.innerWidth <= 1024 && container) {
-                container.setAttribute('data-camera-distance', '6.0'); // Reduced from 13.0
+                container.setAttribute('data-camera-distance', '4.5'); 
             }
 
             if(container) {
