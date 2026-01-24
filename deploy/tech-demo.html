@@ -105,7 +105,8 @@
                 <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
                 <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
                 <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
-                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto">
+                <!-- v2.262: Added pt-12 (padding-top) to push the ring down away from the top-right overlay buttons -->
+                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto pt-12 lg:pt-0">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
@@ -261,7 +262,7 @@
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
                 <!-- Added h-full to flex container -->
