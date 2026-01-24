@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.306] - 2026-01-24
+### Fixes
+- **Tech Demo v15.5 (Geometric Precision)**
+    - **Stroke Stabilization**: Increased the SVG border stroke width from `1.0px` to `1.5px`. This extra half-pixel provides enough "meat" for the anti-aliasing engine (especially on non-retina displays) to calculate smooth alpha transitions without the "dotted/jagged" artifacting seen on thinner lines.
+    - **Backdrop Containment**: Applied a tight `-webkit-mask-image: radial-gradient(white, black)` to the glass background layer. This forces the backdrop blur to strictly respect the compiled border radius, preventing the "squared-off" blur bleeding that can appear as pixelated halos around rounded corners.
+    - **Layer Isolation**: Promoted the Icon layer with `translateZ(1px)` and the Background layer with `translateZ(0)`. This forces the browser to composite them as separate texture planes, ensuring the blur filter on the background does not contaminate or re-rasterize the vector icon on top.
+
 ## [v2.305] - 2026-01-24
 ### Fixes
 - **Tech Demo v15.4 (Glass Artifacts Fix)**
