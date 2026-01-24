@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.282] - 2026-01-24
+- **v2.282**: Design Refresh (Applied "Organic Glass" aesthetic to all cards: Asymmetric corners (mirrored columns), gradient glass backgrounds, subtle borders, and circular action buttons. Maintained existing color palette).
+
 ## [v2.281] - 2026-01-24
 - **v2.281**: Layout Adjustment (Reduced desktop card grid gap from `gap-8` (2rem) to `gap-4` (1rem) as requested).
 
