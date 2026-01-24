@@ -1,6 +1,7 @@
 # Changelog
 
 ## [v2.259] - 2026-01-24
+- **v2.261**: Maximize card width (reduced container right padding to 1rem).
 - **v2.260**: UI refinements (raised mobile controls to top-2, increased control spacing, reduced card grid gap to 1rem).
 ### Changed
 - **Mobile Control Alignment**:

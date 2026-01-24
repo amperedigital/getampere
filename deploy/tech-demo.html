@@ -255,7 +255,8 @@
         <!-- Fix v2.243: Changed overflow-y-auto so we ALWAYS have a scrollbar if content (cards) >> screen height. -->
         <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
+        <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-4 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
