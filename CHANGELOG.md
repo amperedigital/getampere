@@ -1,6 +1,7 @@
 # Changelog
 
 ## [v2.259] - 2026-01-24
+- **v2.268**: Mobile Power Button Logic Fix (Standby/Off -> On, Active -> Off).
 - **v2.267**: Mobile Logic Update (Sliders are now disabled and greyed out when system is not ACTIVE, mirroring desktop lock).
 - **v2.266**: Mobile Layout Fix (Stacked sliders below neural net, removed overlap, increased neural net size via camera distance 4.5).
 - **v2.265**: Mobile Slider Upgrade (Snapping 0-5 steps, live title updates, enhanced visual ticks) and Neural Net Resizing (reduced camera distance to 6.0 on mobile).

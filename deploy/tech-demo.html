@@ -673,8 +673,10 @@
                     window.toggleMobilePower = () => {
                         if (!window.demoScene) return;
                         const current = window.demoScene.systemState;
-                        // If OFF -> Turn ON (ACTIVE). If ON (Active/Standby) -> Turn OFF.
-                        const next = (current === 'OFF') ? 'ACTIVE' : 'OFF';
+                        // v2.268: Logic Update
+                        // If ACTIVE -> Turn OFF.
+                        // If OFF or STANDBY -> Turn ACTIVE.
+                        const next = (current === 'ACTIVE') ? 'OFF' : 'ACTIVE';
                         window.demoScene.setSystemState(next);
                     };
 
