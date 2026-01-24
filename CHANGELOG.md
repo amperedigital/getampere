@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.281] - 2026-01-24
+- **v2.281**: Layout Adjustment (Reduced desktop card grid gap from `gap-8` (2rem) to `gap-4` (1rem) as requested).
+
 ## [v2.280] - 2026-01-24
 - **v2.280**: Critical Repair (Fixed corrupted HTML markup in Cards 3, 4, 5, and 6 caused by previous failed edit. Restored full `rounded-3xl` and `lg:p-8` styling to all cards).
 
