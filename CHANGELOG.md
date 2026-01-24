@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.305] - 2026-01-24
+### Fixes
+- **Tech Demo v15.4 (Glass Artifacts Fix)**
+    - **Separate Composition Layers**: Decomposed the glass button into three distinct layers: Background (Blur), Border (Vector), and Content (Icon). This prevents the backdrop blur filter from "flattening" or rasterizing the icon itself, which was causing the blurriness on hover.
+    - **SVG Vector Borders**: Replaced the CSS `mask-composite` border (which was prone to pixelation/aliasing) with a true SVG `<circle>` overlay. This ensures the diagonal gradient border is mathematically perfect and crisp at any screen scale.
+    - **Rendering Optimization**: Removed the aggressive GPU layer promotion hacks (`backface-visibility`, `translateZ`) that were contributing to texture scaling artifacts.
+
 ## [v2.304] - 2026-01-24
 ### Fixes
 - **Tech Demo v15.3 (Rendering Hotfix)**
