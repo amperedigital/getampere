@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.303] - 2026-01-24
+### Design
+- **Tech Demo v15.3 (Glass Aesthetic Update)**
+    - **Monotone Buttons**: Stripped all color from the floating action buttons (previously brand-colored). They now feature a unified `bg-white/5` frosted glass appearance with varying opacity.
+    - **Apple-Style Gradient Borders**: Implemented a sophisticated diagonal gradient border on the buttons using a `mask-composite` technique. The border is significantly brighter at the Top-Left and Bottom-Right corners (mimicking light hit and reflection) while fading to near-transparent in the perpendicular corners.
+    - **Monochrome Icons**: Converted all button icons to a clean translucent white (`text-white/90`), removing the color-coding to fully embrace the minimal glass aesthetic.
+
 ## [v2.302] - 2026-01-24
 ### Fixes
 - **Tech Demo v15.2 (Scaling Fix)**
