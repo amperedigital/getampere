@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.283] - 2026-01-24
+- **v2.283**: Design Refinement (Implemented "Carved Notch" aesthetic. Updated all cards to use a large top-right inverse-style radius with a floating button filling the negative space, creating a "socketed" look).
+
 ## [v2.282] - 2026-01-24
 - **v2.282**: Design Refresh (Applied "Organic Glass" aesthetic to all cards: Asymmetric corners (mirrored columns), gradient glass backgrounds, subtle borders, and circular action buttons. Maintained existing color palette).
 
