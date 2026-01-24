@@ -1,6 +1,7 @@
 # Changelog
 
 ## [v2.259] - 2026-01-24
+- **v2.264**: Mobile Redesign (Replaced rings with sliders, maximized neural net size, hidden markers/rings on mobile).
 - **v2.263**: Layout fix (switched pt-12 to mt-12 on ring container to correctly push it down from overlay buttons).
 - **v2.262**: Layout refinements (reduced grid gap to 0.5rem aka gap-2, added top padding to ring container on mobile).
 - **v2.261**: Maximize card width (reduced container right padding to 1rem).

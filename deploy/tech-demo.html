@@ -201,6 +201,19 @@
 
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
+                                    /* Mobile Overrides (v2.264) */
+                                    @media (max-width: 1024px) {
+                                        /* Hide Rings & Needle */
+                                        #halo-ring-outer, #halo-ring-inner, #static-needle {
+                                            display: none !important;
+                                        }
+                                        /* Expand Neural Net to 95% of Dashed Ring (r=360) -> 342px radius */
+                                        /* 342px / 400px (half-width) = 85.5% */
+                                        #tech-demo-scene {
+                                            clip-path: circle(85.5% at center) !important;
+                                        }
+                                    }
+
                                     /* --- System Power State Transitions --- */
                                     /* Controlled by .halo-dimmed class on SVG applied by halo-rotator.js */
 
@@ -243,6 +256,18 @@
                     </div>
                          
                 </div><!-- End Master Container -->
+
+                <!-- Mobile Ring Sliders (v2.264) -->
+                <!-- Positioned at the bottom of the Scene Container -->
+                <div class="lg:hidden absolute bottom-6 left-0 w-full px-8 flex flex-col gap-4 z-50 pointer-events-auto">
+                     <!-- Outer Ring Control (Blue) -->
+                     <input type="range" id="mobile-ring-slider-outer" min="0" max="360" step="1" value="0" 
+                            class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-400 transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                     
+                     <!-- Inner Ring Control (Slate) -->
+                     <input type="range" id="mobile-ring-slider-inner" min="0" max="360" step="1" value="0" 
+                            class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-400 hover:accent-slate-300 transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                </div>
 
                 <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
             </div>
@@ -544,6 +569,44 @@
                     
                     // Optional: Expose to window for debugging
                     window.demoScene = scene;
+
+                    // v2.264: Mobile Slider Logic
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+
+                    if (sliderOuter && window.demoScene.rotatorOuter) {
+                        sliderOuter.addEventListener('input', (e) => {
+                            window.demoScene.rotatorOuter.targetRotation = parseFloat(e.target.value);
+                            // Disable auto-snap while scrubbing
+                            window.demoScene.rotatorOuter.isDragging = true; 
+                        });
+                        sliderOuter.addEventListener('change', (e) => {
+                            window.demoScene.rotatorOuter.isDragging = false;
+                            // Trigger snap logic if exposed, or just let it settle
+                            // HaloRotator doesn't public expose snapToGrid simply, but update() handles lerp.
+                            // To force snap we'd need to round the target.
+                            const interval = window.demoScene.rotatorOuter.snapInterval || 60;
+                            const current = parseFloat(e.target.value);
+                            const snapped = Math.round(current / interval) * interval;
+                            window.demoScene.rotatorOuter.targetRotation = snapped;
+                            // Optional: Update slider to snapped position?
+                            // e.target.value = snapped; 
+                        });
+                    }
+
+                    if (sliderInner && window.demoScene.rotatorInner) {
+                        sliderInner.addEventListener('input', (e) => {
+                            window.demoScene.rotatorInner.targetRotation = parseFloat(e.target.value);
+                            window.demoScene.rotatorInner.isDragging = true;
+                        });
+                        sliderInner.addEventListener('change', (e) => {
+                            window.demoScene.rotatorInner.isDragging = false;
+                            const interval = window.demoScene.rotatorInner.snapInterval || 60;
+                            const current = parseFloat(e.target.value);
+                            const snapped = Math.round(current / interval) * interval;
+                            window.demoScene.rotatorInner.targetRotation = snapped;
+                        });
+                    }
 
                     // Toggle Helper for Mobile Power Button
                     window.toggleMobilePower = () => {
