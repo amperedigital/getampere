@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.304] - 2026-01-24
+### Fixes
+- **Tech Demo v15.3 (Rendering Hotfix)**
+    - **Anti-Aliasing**: Fixed pixelation artifacts on the glass button borders when in the default (non-hover) state.
+    - **Layer Promotion**: Applied `transform: translateZ(0)`, `will-change: transform`, and `backface-visibility: hidden` to the button containers and their mask layers. This forces the browser to promote these elements to their own compositor layers with high-fidelity rasterization, eliminating the "crunchy" edges seen on some displays at standard scale.
+
 ## [v2.303] - 2026-01-24
 ### Design
 - **Tech Demo v15.3 (Glass Aesthetic Update)**
