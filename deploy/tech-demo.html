@@ -87,6 +87,8 @@
                     <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
                         <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
                         <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                        <!-- v2.269: Integrated Standby Timer -->
+                        <span id="mobile-standby-timer" class="text-[10px] font-mono text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
                     </div>
 
                     <!-- Single Power Toggle -->
@@ -690,6 +692,38 @@
                         }
                     });
                     obs.observe(document.body, { attributes: true });
+
+                    // v2.269: Observe Standby Warning Changes
+                    // The TechDemoScene updates #ampere-standby-warning text. We monitor it and copy to mobile pill.
+                    const observerWarning = new MutationObserver((mutations) => {
+                         const warningEl = document.getElementById('ampere-standby-warning');
+                         const mobileTimer = document.getElementById('mobile-standby-timer');
+                         if(warningEl && mobileTimer) {
+                             const text = warningEl.innerText;
+                             const opacity = window.getComputedStyle(warningEl).opacity;
+                             
+                             if (opacity > 0 && text.includes('STANDBY IN')) {
+                                 // Show on Mobile
+                                 mobileTimer.classList.remove('hidden');
+                                 // Format: "30s" instead of full text to save space
+                                 const match = text.match(/\d+s/);
+                                 if(match) mobileTimer.innerText = match[0];
+                             } else {
+                                 mobileTimer.classList.add('hidden');
+                             }
+                         }
+                    });
+                    // Wait for warning element to be created by JS
+                    setTimeout(() => {
+                        const warningEl = document.getElementById('ampere-standby-warning');
+                        if(warningEl) {
+                             // Hide the original overlay on mobile via CSS? Or just let it be hidden by z-index/position override?
+                             // Better to hide it explicitly via CSS style injection
+                             warningEl.classList.add('lg:block', 'hidden'); // Force hide on mobile via classes if possible
+                             observerWarning.observe(warningEl, { characterData: true, subtree: true, attributes: true });
+                        }
+                    }, 1000);
+
                 }, 50);
 
                 function updateMobileDisplay(state) {
