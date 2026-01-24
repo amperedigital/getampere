@@ -342,10 +342,10 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -356,7 +356,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-0)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -415,7 +414,7 @@
                 <!-- Card: Demo Guide -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -426,7 +425,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-1)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -485,7 +483,7 @@
                 <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -496,7 +494,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-2)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -555,7 +552,7 @@
                 <!-- Card: Technical Specialist -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -566,7 +563,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-3)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -625,7 +621,7 @@
                 <!-- Card: Sales Advisor -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -636,7 +632,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-4)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -695,7 +690,7 @@
                 <!-- Card: Booking Agent -->
                 <div class="relative group h-full socket-card-container"> 
                     
-                    <!-- SVG SHELL v15 (Single Path via JS) -->
+                    <!-- SVG SHELL v15.1 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -706,7 +701,6 @@
                         </defs>
                         
                         <!-- The Single Path (Filled & Stroked) -->
-                        <!-- JS will set the 'd' attribute based on current width/height -->
                         <path class="socket-path" 
                               fill="url(#grad-card-5)" 
                               style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;" 
@@ -821,6 +815,92 @@
                 d += ` l ${l_short} 0`;
                 
                 // 5. Curve Down/Right (Bottom Step)
+                d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+                
+                // Now we are at (w, socketH).
+                // Line Down to Bottom-Right Corner start
+                d += ` L ${w} ${h - r}`;
+                
+                // Bottom-Right Corner
+                d += ` a ${r} ${r} 0 0 1 -${r} ${r}`; // Sweep 1 for clockwise
+                
+                // Bottom Edge
+                d += ` L ${r} ${h}`;
+                
+                // Bottom-Left Corner
+                d += ` a ${r} ${r} 0 0 1 -${r} -${r}`;
+                
+                // Left Edge
+                d += ` L 0 ${r}`;
+                
+                // Top-Left Corner
+                d += ` a ${r} ${r} 0 0 1 ${r} -${r}`;
+                
+                d += ' Z';
+                
+                path.setAttribute('d', d);
+            });
+        }
+        
+        // Init
+        updateSocketPaths();
+        window.addEventListener('resize', updateSocketPaths);
+        // Also run after a short delay for layout shifts
+        setTimeout(updateSocketPaths, 100);
+        setTimeout(updateSocketPaths, 500);
+    })();
+</script>
+
+<script>
+    (function() {
+        // v15.1 Socket Logic
+        function updateSocketPaths() {
+            const containers = document.querySelectorAll('.socket-card-container');
+            const S = 0.5;
+            // Bezier delta constants
+            // Note: Middle curve will swap X/Y to invert (V->H)
+            const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+            const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+            const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+            const l_short = 10.9 * S; 
+            
+            // Corner Radius (for standard corners)
+            const r = 32; // 2rem
+            
+            containers.forEach(container => {
+                const svg = container.querySelector('svg');
+                const path = container.querySelector('.socket-path');
+                if (!svg || !path) return;
+                
+                const w = container.clientWidth;
+                const h = container.clientHeight;
+                
+                // Construct d string (Clockwise)
+                // Start Top-Left (actually after top-left corner)
+                let d = `M ${r} 0`;
+                
+                // Top Edge Line to Socket Start
+                // Offset calculation (approximate 95.36px)
+                const socketW = 95.36;
+                // const socketH = 95.36; 
+                
+                // Line to start of socket
+                d += ` L ${w - socketW} 0`;
+                
+                // 1. Curve Down/Right (First Step - Top) - H->V Convex
+                d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+                
+                // 2. Line Down (Vertical)
+                d += ` l 0 ${l_short}`;
+                
+                // 3. Curve Down/Right (Middle Step) - V->H Concave/Inverted
+                // INVERTED: Swap X and Y coordinates relative to step start
+                d += ` c ${c_cp1_y} ${c_cp1_x}, ${c_cp2_y} ${c_cp2_x}, ${c_end_y} ${c_end_x}`;
+                
+                // 4. Line Right (Horizontal)
+                d += ` l ${l_short} 0`;
+                
+                // 5. Curve Down/Right (Bottom Step) - H->V Convex
                 d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
                 
                 // Now we are at (w, socketH).

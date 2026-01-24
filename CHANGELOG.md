@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.301] - 2026-01-24
+### Design
+- **Tech Demo v15.1 (Tangent Continuous Path)**
+    - Fixed the "Bumbled" middle curve of the socket cascade by inverting its Bezier definition.
+    - **Inverted Logic**: The middle curve now flows Vertical -> Horizontal (V->H) instead of H->V. This creates a seamlessly alternating "Staircase" shape (H->V, V, V->H, H, H->V) that maintains perfect tangent continuity at every joint.
+    - **Result**: A smooth, manufactured "zipper" look without the previous sharp kinks or disjointed angles.
+
 ## [v2.300] - 2026-01-24
 ### Design (Major Architecture Update)
 - **Tech Demo v15 (Single Continuous Path)**
