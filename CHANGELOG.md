@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.294] - 2026-01-24
+- **v2.294**: Design Perfection (Implemented "Cascading Socket" Geometry (v10). Replaced the socket curve with a stepped/cascading corner profile derived specifically from the user's Illustrator SVG. The shape mimics a "digital shutter" or "stepped void" effect. Scaled the complex geometry by 0.4x to fit standard UI card proportions (76px extent). The button is now nested perfectly in the top step of the cascade (`top-0 right-0` relative to void context), creating a highly technical, precise interface definition).
+
 ## [v2.293] - 2026-01-24
 - **v2.293**: Design Perfection (Implemented "Half-Socket Tangency" (v9). Re-engineered the socket geometry to shift the button significantly closer to the edge (`right: 8px`) while maintaining the 8px internal padding halo. The socket curve now enters via a 16px fillet, wraps around the button (centered at 96,48), and exits vertically tangent to the right border. This creates a much tighter, deeper "bite" that effectively removes the long entrance tail and integrates the button fully into the corner silhouette).
 
