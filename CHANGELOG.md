@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.302] - 2026-01-24
+### Fixes
+- **Tech Demo v15.2 (Scaling Fix)**
+    - **Resize Observer**: Replaced the static window resize listener with a robust `ResizeObserver`. This ensures the socket geometry recalculates instantly whenever the card container changes size (e.g., during responsive layout shifts or flex resizing), preventing "detached" corners.
+    - **Transition Override**: Explicitly forced `transition: none !important;` on the generated socket path. This overrides the global `svg path { transition: all 1.5s; }` rule which was causing the "easing/disconnect" artifact where the border would morph slowly while the container snapped to its new size.
+    - **Result**: Cards now scale perfectly responsively with zero visual disconnects or animation lag on the border.
+
 ## [v2.301] - 2026-01-24
 ### Design
 - **Tech Demo v15.1 (Tangent Continuous Path)**
