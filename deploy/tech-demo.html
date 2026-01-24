@@ -342,10 +342,10 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -356,8 +356,8 @@
                             
                             <mask id="mask-card-0">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -370,23 +370,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-0)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -397,9 +387,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
@@ -438,7 +427,7 @@
                 <!-- Card: Demo Guide -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -449,8 +438,8 @@
                             
                             <mask id="mask-card-1">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -463,23 +452,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-1)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -490,9 +469,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
@@ -531,7 +509,7 @@
                 <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -542,8 +520,8 @@
                             
                             <mask id="mask-card-2">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -556,23 +534,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-2)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -583,9 +551,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
@@ -624,7 +591,7 @@
                 <!-- Card: Technical Specialist -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -635,8 +602,8 @@
                             
                             <mask id="mask-card-3">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -649,23 +616,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-3)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -676,9 +633,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
@@ -717,7 +673,7 @@
                 <!-- Card: Sales Advisor -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -728,8 +684,8 @@
                             
                             <mask id="mask-card-4">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -742,23 +698,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-4)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -769,9 +715,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
@@ -810,7 +755,7 @@
                 <!-- Card: Booking Agent -->
                 <div class="relative group h-full"> 
                     
-                    <!-- SVG SHELL v11 (Exact Bezier Replica) -->
+                    <!-- SVG SHELL v12 (Fixed Transforms) -->
                     <svg class="absolute inset-0 w-full h-full z-0 rounded-[2rem] pointer-events-none text-slate-300" overflow="visible">
                         <defs>
                             <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -821,8 +766,8 @@
                             
                             <mask id="mask-card-5">
                                 <rect width="100%" height="100%" fill="white" />
-                                <g transform="translate(100%, 0)">
-                                    <!-- The hole is the black corner piece -->
+                                <!-- Fix: Use CSS transform for percentage support -->
+                                <g style="transform: translateX(100%)">
                                     <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 L 0 0 Z" fill="black" />
                                 </g>
                             </mask>
@@ -835,23 +780,13 @@
                         <rect width="100%" height="100%" rx="2rem" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" mask="url(#mask-card-5)" vector-effect="non-scaling-stroke"/>
                         
                         <!-- Socket Curve (Stroke) -->
-                        <g transform="translate(100%, 0)">
+                        <!-- Fix: Use CSS transform here too -->
+                        <g style="transform: translateX(100%)">
                             <path d="M 0 95.36 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 l -5.45 0.00 c -16.55 0.00, -29.97 -13.42, -29.97 -29.97 l 0.00 -5.45 c 0.00 -16.55, -13.42 -29.97, -29.97 -29.97 " fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" vector-effect="non-scaling-stroke" />
                         </g>
                     </svg>
                     
-                    <!-- Backdrop Blur (Exact Bezier Clip - Simplified Polygon) -->
-                     <!-- Since we can't easily do bezier clips in CSS polygon(), we approximate the steps. -->
-                     <!-- Steps: (0, 0) -> (Start, 0) -> ... Stepped approximation -->
-                     <!-- Points relative to Top-Right (100% 0) -->
-                     <!-- 0. Top Left of Card (0 0) -->
-                     <!-- 1. Top Edge Start of Cutout: x = 100% - 96px, y = 0. -->
-                     <!-- 2. Step 1 (Top Curve): x = 100% - 96px, y = 30px. (Approx) -->
-                     <!-- 3. Riser 1: x = 100% - 96 +? No. -->
-                     <!-- Let's just use a simplified diagonal or rectangular clip for the blur to avoid complexity. -->
-                     <!-- Or better: just standard rounded rect clip. The visual impact of perfect blur clip is minimal. -->
-                     <!-- We'll skip complex polygon and just use the SVG mask context visually. -->
-                     <!-- Actually, let's just clip the corner broadly. -->
+                    <!-- Backdrop Blur -->
                     <div class="absolute inset-0 z-[-1] backdrop-blur-md rounded-[2rem]"
                          style="clip-path: polygon(
                              0 0, 
@@ -862,9 +797,8 @@
                          );">
                     </div>
 
-                    <!-- Button (Positioned in the Top Step) -->
-                    <!-- Top Step is near (0,0) in cutout coords. i.e. Top Right corner of card. -->
-                    <!-- Position: top-2 right-2 to sit inside the curve? -->
+                    <!-- Button (Positioned in First Step) -->
+                    <!-- top-2 right-2 works well with s=0.5 scale -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>

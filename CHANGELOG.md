@@ -1,12 +1,11 @@
 # Changelog
 
-## [v2.295] - 2026-01-24
+## [v2.296] - 2026-01-24
 ### Design
-- **Tech Demo v11 (Exact Bezier Recreation)**
-    - Replaced the approximated arc geometry with the mathematically exact Cubic Bezier curves extracted from the user's Illustrator SVG (`cls-1`).
-    - Implemented the 3-Step Cascading Corner using the precise `c` (curve), `l` (line) sequence: `c 0 -33, -26 -59, -59 -59` -> `l -10` -> `c -33 0, ...` -> `l -10` -> `c ...`.
-    - Applied a fixed scale factor of 0.5 (95.5px extent) to adapt the 191px original geometry to the responsive card layout, maintaining proportional fidelity.
-    - Updated button positioning to align with the start of the first Bezier step.
+- **Tech Demo v12 (SVG Transform Fix)**
+    - Fixed a critical rendering bug where the SVG socket shape was being replicated on the left side of the card in some browsers.
+    - Replaced the invalid SVG attribute `transform="translate(100%, 0)"` with the standard CSS property `style="transform: translateX(100%)"`, ensuring the coordinate system correctly anchors to the top-right corner.
+    - This resolves the "ramping off" look and the ghost artifact, ensuring the Bezier curve integrates correctly with the card border.
 
 ## [v2.293] - 2026-01-24
 - **v2.293**: Design Perfection (Implemented "Half-Socket Tangency" (v9). Re-engineered the socket geometry to shift the button significantly closer to the edge (`right: 8px`) while maintaining the 8px internal padding halo. The socket curve now enters via a 16px fillet, wraps around the button (centered at 96,48), and exits vertically tangent to the right border. This creates a much tighter, deeper "bite" that effectively removes the long entrance tail and integrates the button fully into the corner silhouette).
