@@ -696,6 +696,26 @@
                     const container = document.getElementById('mobile-system-status');
                     const btn = document.getElementById('btn-mobile-power');
                     
+                    // v2.267: Slider Elements for Power State Management
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    // Parent containers for opacity control
+                    const sliderContainers = document.querySelectorAll('.lg\\:hidden input[type="range"]').forEach(input => {
+                         // Find the visual parent (div with flex col)
+                         const parent = input.closest('.flex-col');
+                         if(parent) {
+                             if (state === 'ACTIVE') {
+                                 parent.classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = false;
+                             } else {
+                                 parent.classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = true;
+                             }
+                         }
+                    });
+
                     if(!dot || !text) return;
                     
                     // Update Power Button Appearance
