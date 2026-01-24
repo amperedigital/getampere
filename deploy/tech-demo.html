@@ -342,432 +342,336 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                <!-- Card 1: Front Door Agent -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Front Door Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Reception & Routing</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <!-- Headings -->
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
-                        <!-- Row 1 -->
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
                         <div class="text-slate-400 flex items-center">Visitors</div>
-                        <div class="text-white text-right font-bold">1,428</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[75%]"></div></div></div>
-                        
-                        <!-- Row 2 -->
+                        <div class="text-white text-right font-mono">1,428</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[85%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Active</div>
-                        <div class="text-white text-right">342</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-400 w-[45%]"></div></div></div>
-
-                        <!-- Row 3 -->
+                        <div class="text-white text-right font-mono">342</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-400 w-[60%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Bounce</div>
-                        <div class="text-white text-right">12%</div>
+                        <div class="text-white text-right font-mono">12%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[12%]"></div></div></div>
-
-                        <!-- Row 4 -->
                         <div class="text-slate-400 flex items-center">Routed</div>
-                        <div class="text-white text-right">89%</div>
+                        <div class="text-white text-right font-mono">89%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[89%]"></div></div></div>
-
-                        <!-- Row 5 -->
                         <div class="text-slate-400 flex items-center">Avg Time</div>
-                        <div class="text-white text-right">4.2s</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-300 w-[60%]"></div></div></div>
-
-                        <!-- Row 6 -->
+                        <div class="text-white text-right font-mono">4.2s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-300 w-[70%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Auth</div>
-                        <div class="text-white text-right">99.9%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 w-[99%]">
-</div>
+                        <div class="text-white text-right font-mono">99.9%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-400 w-[99%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
-                </div>
-</div>
-</div>
-<!-- Card 2: Demo Guide -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                <!-- Card: Demo Guide -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Feature Walkthroughs</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
                         <div class="text-slate-400 flex items-center">Sessions</div>
-                        <div class="text-white text-right font-bold">892</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[65%]"></div></div></div>
-                        
+                        <div class="text-white text-right font-mono">892</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[75%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Completion</div>
-                        <div class="text-white text-right">76%</div>
+                        <div class="text-white text-right font-mono">76%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-400 w-[76%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Drop-off</div>
-                        <div class="text-white text-right">8%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-400 w-[8%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">8%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[8%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Click-thru</div>
-                        <div class="text-white text-right">45%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-300 w-[45%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">45%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 w-[45%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Avg Dur</div>
-                        <div class="text-white text-right">5m 20s</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-teal-500 w-[55%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">5m 20s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-teal-400 w-[55%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Rating</div>
-                        <div class="text-white text-right">4.8/5</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[96%]">
-</div>
+                        <div class="text-white text-right font-mono">4.8/5</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[96%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
-                </div>
-</div>
-</div>
-<!-- Card 3: Onboarding Coach -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                <!-- Card: Onboarding Coach -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Onboarding Coach</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Setup Assistance</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
                         <div class="text-slate-400 flex items-center">New Users</div>
-                        <div class="text-white text-right font-bold">156</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[42%]"></div></div></div>
-                        
+                        <div class="text-white text-right font-mono">156</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[40%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Profiles</div>
-                        <div class="text-white text-right">92%</div>
+                        <div class="text-white text-right font-mono">92%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-400 w-[92%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Guides</div>
-                        <div class="text-white text-right">3.5</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-300 w-[35%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">3.5</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-violet-400 w-[35%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Verified</div>
-                        <div class="text-white text-right">100%</div>
+                        <div class="text-white text-right font-mono">100%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 w-[100%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Stuck</div>
-                        <div class="text-white text-right">2.1%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-500 w-[4%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">2.1%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[2%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Success</div>
-                        <div class="text-white text-right">98%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-200 w-[98%]">
-</div>
+                        <div class="text-white text-right font-mono">98%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-fuchsia-200 w-[98%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
-                </div>
-</div>
-</div>
-<!-- Card 4: Technical Specialist -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                <!-- Card: Technical Specialist -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Technical Specialist</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Deep Support</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
                         <div class="text-slate-400 flex items-center">Tickets</div>
-                        <div class="text-white text-right font-bold">42</div>
+                        <div class="text-white text-right font-mono">42</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[25%]"></div></div></div>
-                        
                         <div class="text-slate-400 flex items-center">Resolved</div>
-                        <div class="text-white text-right">38</div>
+                        <div class="text-white text-right font-mono">38</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-400 w-[90%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">AI Res</div>
-                        <div class="text-white text-right">85%</div>
+                        <div class="text-white text-right font-mono">85%</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-300 w-[85%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Escalated</div>
-                        <div class="text-white text-right">3</div>
+                        <div class="text-white text-right font-mono">3</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[10%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Avg TTR</div>
-                        <div class="text-white text-right">2.4m</div>
+                        <div class="text-white text-right font-mono">2.4m</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-200 w-[60%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">CSAT</div>
-                        <div class="text-white text-right">4.9</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[98%]">
-</div>
+                        <div class="text-white text-right font-mono">4.9</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[98%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
-                </div>
-</div>
-<!-- Card 5: Sales Advisor -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                <!-- Card: Sales Advisor -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Revenue & Plans</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
                         <div class="text-slate-400 flex items-center">Leads</div>
-                        <div class="text-white text-right font-bold">89</div>
+                        <div class="text-white text-right font-mono">89</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 w-[50%]"></div></div></div>
-                        
                         <div class="text-slate-400 flex items-center">Qualified</div>
-                        <div class="text-white text-right">45</div>
+                        <div class="text-white text-right font-mono">45</div>
                         <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-400 w-[55%]"></div></div></div>
-
                         <div class="text-slate-400 flex items-center">Conv Rate</div>
-                        <div class="text-white text-right">18%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-300 w-[18%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">18%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-300 w-[20%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Pipeline</div>
-                        <div class="text-white text-right">$450k</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 w-[70%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">$450k</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 w-[80%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Queries</div>
-                        <div class="text-white text-right">312</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-200 w-[60%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">312</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-200 w-[75%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Upsells</div>
-                        <div class="text-white text-right">12</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[30%]">
-</div>
+                        <div class="text-white text-right font-mono">12</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[30%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
-                </div>
-</div>
-<!-- Card 6: Booking Agent -->
-                <!-- v2.287: Applied "Tangent Socket" aesthetic -->
+                <!-- Card: Booking Agent -->
                 <div class="relative group h-full"> 
-                    
-                    <!-- 1. Background Layer (Masked) -->
+                    <!-- Masked Background -->
                     <div class="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-md rounded-[2rem]"
-                         style="mask: url(#liquid-socket-mask-v3); -webkit-mask: url(#liquid-socket-mask-v3);">
-                    </div>
-
-                    <!-- 2. Border Overlay (SVG) -->
+                         style="mask: url(#liquid-socket-mask-v4); -webkit-mask: url(#liquid-socket-mask-v4);"></div>
+                    
+                    <!-- SVG Border Overlay -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 text-white/20">
-                         <!-- Use the symbol for top-right -->
-                         <use href="#socket-geometry-v3" x="100%" y="0" class="text-white/20" />
+                         <use href="#socket-geometry-v4" x="100%" y="0" />
                     </svg>
-                    <!-- Backing Div for Standard Borders (Left, Bottom) -->
+                    
+                    <!-- Safe Borders (Left/Bottom) -->
                     <div class="absolute inset-0 z-10 rounded-[2rem] border-l border-b border-t-0 border-r-0 border-white/20 pointer-events-none"></div>
-                    <!-- Top Border Segment (Left of socket start: -77.25px = -4.8rem approx) -->
-                    <!-- Inset right-20 (5rem) covers it? -->
-                    <div class="absolute top-0 left-0 right-[5rem] h-[1px] bg-white/20 z-10"></div> 
-                    <!-- Right Border Segment (Below socket end: 77.25px = 4.8rem) -->
-                    <div class="absolute bottom-0 right-0 top-[5rem] w-[1px] bg-white/20 z-10"></div>
+                    <!-- Top Line (Stop at -97.6px = -6.1rem) -->
+                    <div class="absolute top-0 left-0 right-[6.1rem] h-[1px] bg-white/20 z-10"></div> 
+                    <!-- Right Line (Start at 97.6px = 6.1rem) -->
+                    <div class="absolute bottom-0 right-0 top-[6.1rem] w-[1px] bg-white/20 z-10"></div>
 
-
-                    <!-- 3. Floating Button (Nested in the socket) -->
+                    <!-- Button -->
                     <div class="absolute top-2 right-2 w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,0,0,0.2)] z-20 group-hover:scale-105 transition-transform duration-300 backdrop-blur-md">
                         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
 
-                    <!-- 4. Card Content -->
+                    <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10">
-                        
-                        <!-- Header -->
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>
                             <p class="text-xs text-slate-500 mt-0.5">Scheduling</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
-                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
-                        
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[10px] w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Requests</div>
+                        <div class="text-white text-right font-mono">215</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[65%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Booked</div>
-                        <div class="text-white text-right font-bold">24</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[45%]"></div></div></div>
-                        
-                        <div class="text-slate-400 flex items-center">Pending</div>
-                        <div class="text-white text-right">8</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 w-[15%]"></div></div></div>
-
-                        <div class="text-slate-400 flex items-center">Slots</div>
-                        <div class="text-white text-right">45%</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-300 w-[45%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">142</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 w-[70%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Resched</div>
-                        <div class="text-white text-right">2</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[5%]"></div></div></div>
-
-                        <div class="text-slate-400 flex items-center">Drop-off</div>
-                        <div class="text-white text-right">1</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[2%]"></div></div></div>
-
+                        <div class="text-white text-right font-mono">18</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-400 w-[15%]"></div></div></div>
+                        <div class="text-slate-400 flex items-center">No-show</div>
+                        <div class="text-white text-right font-mono">4%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[4%]"></div></div></div>
+                        <div class="text-slate-400 flex items-center">Utilization</div>
+                        <div class="text-white text-right font-mono">82%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-teal-400 w-[82%]"></div></div></div>
                         <div class="text-slate-400 flex items-center">Sync</div>
-                        <div class="text-white text-right">0.2s</div>
-                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-200 w-[95%]">
-</div>
+                        <div class="text-white text-right font-mono">0.2s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-200 w-[95%]"></div></div></div>
+                        </div>
                     </div>
                 </div>
+
             </div>
-        </div>
-    </div>
 
     </div>
 </div>
 <!-- Init Script -->
-    </div>
-        </div>
-    </div>
 
 <script type="module">
         import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.137';
