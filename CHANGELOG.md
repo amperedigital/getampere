@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.258] - 2026-01-24
+### Changed
+- **Mobile Control Layout**:
+    -   **Re-Positioning**: Moved the Power Button and Status Pill *inside* the 3D scene container (`absolute top-4 right-4`). This places them directly overlaying the visualization area, closer to the Neuronet as requested, rather than floating in the header.
+    -   **Visual Styling**: Updated the Power Button to use **Emerald/Green** styling when the system is ON (Active or Standby), contrasting with **Slate/Gray** when OFF. This replaces the previous Blue theme for the button itself.
+
 ## [v2.257] - 2026-01-24
 ### Changed
 - **Mobile Mobile Controls Simplified**:

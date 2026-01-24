@@ -56,24 +56,7 @@
                     <!-- Mobile Control Cluster (Top Right) -->
                     <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
                     <div class="lg:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
-                    
-                        <!-- Status Display -->
-                        <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
-                            <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
-                            <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
-                        </div>
-
-                        <!-- Single Power Toggle -->
-                        <div class="flex items-center gap-2">
-                            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                                    class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
-                                    id="btn-mobile-power"
-                                    aria-label="Power Toggle">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
-                                </svg>
-                            </button>
-                        </div>
+                     <!-- Controls Moved Down to Scene Container v2.258 -->
                     </div>
                 </div>
             </div>
@@ -95,6 +78,29 @@
             <!-- v2.255: Changed to POSITIVE mt-4 to push scene down into the empty void. Height 420px. -->
             <div class="relative w-full mx-auto h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
                 
+                <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
+                <!-- Absolute Positioned: Top Right within the container box -->
+                <div class="lg:hidden absolute top-4 right-4 z-50 flex flex-col items-end gap-3 pointer-events-auto">
+                    <!-- Status Display -->
+                    <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
+                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                    </div>
+
+                    <!-- Single Power Toggle -->
+                    <!-- Green when On, Slate when Off -->
+                    <div class="flex items-center gap-2">
+                            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                                    class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                    id="btn-mobile-power"
+                                    aria-label="Power Toggle">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                                </svg>
+                            </button>
+                    </div>
+                </div>
+
                 <!-- MASTER CONTAINER (Center of the Universe) -->
                 <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
                 <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
@@ -567,15 +573,16 @@
                     if(!dot || !text) return;
                     
                     // Update Power Button Appearance
+                    // v2.258: OnState -> Green (Emerald), OffState -> Slate (Grayed Out)
                     if (btn) {
-                        const onClasses = ['text-blue-400', 'bg-blue-500/20', 'border-blue-400/30', 'shadow-[0_0_15px_rgba(59,130,246,0.5)]'];
+                        const onClasses = ['text-emerald-400', 'bg-emerald-500/20', 'border-emerald-400/30', 'shadow-[0_0_15px_rgba(52,211,153,0.5)]'];
                         const offClasses = ['text-slate-500', 'bg-white/5', 'border-white/10'];
                         
                         if (state === 'OFF') {
                             btn.classList.remove(...onClasses);
                             btn.classList.add(...offClasses);
                         } else {
-                            // Active or Standby -> Button looks "On"
+                            // Active or Standby -> Button looks "On" (Green)
                             btn.classList.remove(...offClasses);
                             btn.classList.add(...onClasses);
                         }
