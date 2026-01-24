@@ -337,12 +337,14 @@
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
             <!-- v2.274: Restored desktop card spacing to gap-4 (1rem) or gap-8 (2rem) as requested. Using gap-4 for now to balance space. -->
             <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
+            <!-- v2.279: Maintained lg:gap-8 (2rem) as requested ("two rem spacing, not four"). Changed card padding to lg:p-8 below. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-8 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                 <!-- Card 1: Front Door Agent -->
                 <!-- Added h-full to flex container -->
                 <!-- v2.277: Fixed partial overwrite and updated radius to rounded-3xl -->
-                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -393,7 +395,8 @@
 
                 <!-- Card 2: Demo Guide -->
                 <!-- v2.278: Fixed corruption and updated radius to rounded-3xl -->
-                <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
                             <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
@@ -434,7 +437,8 @@
                 </div>
 
                 <!-- Card 3: Onboarding Coach -->
-                <!-- v2.277: Updated radius to rounded-3xl -->
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8>
                 <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -476,7 +480,8 @@
                 </div>
 
                 <!-- Card 4: Technical Specialist -->
-                <!-- v2.277: Updated radius to rounded-3xl -->
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8>
                 <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -518,7 +523,8 @@
                 </div>
 
                 <!-- Card 5: Sales Advisor -->
-                <!-- v2.277: Updated radius to rounded-3xl (standard Tailwind) -->
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8tandard Tailwind) -->
                 <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
                         <div class="flex flex-col">
@@ -559,7 +565,8 @@
                     </div>
                 </div>
 
-                <!-- Card 6: Booking Agent -->
+                <!-- v2.279: Increased internal padding to lg:p-8 (2rem) for desktop. -->
+                <div class="group border-2 border-white/5 p-4 lg:p-8
                 <!-- v2.277: Updated radius to rounded-3xl (standard Tailwind) -->
                 <div class="group border-2 border-white/5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">

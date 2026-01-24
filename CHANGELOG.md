@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.279] - 2026-01-24
+- **v2.279**: Visual Polish (Updated internal desktop card padding to `lg:p-8` (2rem) and confirmed grid spacing is `gap-8` (2rem) as requested).
+
 ## [v2.278] - 2026-01-24
 - **v2.278**: Visual Polish & Repair (Fixed HTML corruption in Card 2, corrected its radius to `rounded-3xl` to match other cards).
 
