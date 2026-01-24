@@ -259,14 +259,52 @@
 
                 <!-- Mobile Ring Sliders (v2.264) -->
                 <!-- Positioned at the bottom of the Scene Container -->
-                <div class="lg:hidden absolute bottom-6 left-0 w-full px-8 flex flex-col gap-4 z-50 pointer-events-auto">
+                <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
+                <div class="lg:hidden absolute bottom-0 left-0 w-full px-6 pb-6 flex flex-col gap-5 z-50 pointer-events-auto bg-gradient-to-t from-black via-black/80 to-transparent pt-12">
+                     
                      <!-- Outer Ring Control (Blue) -->
-                     <input type="range" id="mobile-ring-slider-outer" min="0" max="360" step="1" value="0" 
-                            class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-400 transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                     <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">System Function</span>
+                            <span id="label-slider-outer" class="text-xs font-mono text-blue-400 font-bold tracking-wider">MEMORY FUNCTION</span>
+                        </div>
+                        <div class="relative w-full h-6 flex items-center">
+                            <!-- Ticks (Absolute Background) -->
+                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                            </div>
+                            <!-- Slider (Z-10) -->
+                            <input type="range" id="mobile-ring-slider-outer" min="0" max="5" step="1" value="0" 
+                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none hover:accent-blue-400 transition-all">
+                        </div>
+                     </div>
                      
                      <!-- Inner Ring Control (Slate) -->
-                     <input type="range" id="mobile-ring-slider-inner" min="0" max="360" step="1" value="0" 
-                            class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-slate-400 hover:accent-slate-300 transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                     <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Active Agent</span>
+                            <span id="label-slider-inner" class="text-xs font-mono text-slate-300 font-bold tracking-wider">FRONT DOOR AGENT</span>
+                        </div>
+                        <div class="relative w-full h-6 flex items-center">
+                            <!-- Ticks -->
+                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                            </div>
+                            <input type="range" id="mobile-ring-slider-inner" min="0" max="5" step="1" value="0" 
+                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-emerald-500 outline-none hover:accent-emerald-400 transition-all">
+                        </div>
+                     </div>
+
                 </div>
 
                 <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
@@ -557,6 +595,13 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('tech-demo-scene');
+            
+            // v2.265: Mobile Config Override before Init
+            // Reduce camera distance to make Neural Net appear larger on mobile
+            if (window.innerWidth <= 1024 && container) {
+                container.setAttribute('data-camera-distance', '6.0'); // Reduced from 13.0
+            }
+
             if(container) {
                 // Initialize Scene with a slight delay to ensure layout stability
                 // This prevents 0x0 canvas issues in the new grid layout
@@ -573,39 +618,51 @@
                     // v2.264: Mobile Slider Logic
                     const sliderOuter = document.getElementById('mobile-ring-slider-outer');
                     const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    
+                    // v2.265: Explicit Label Mapping to match Ring Indices
+                    const outerTitles = [
+                        "MEMORY FUNCTION",     // Index 0
+                        "HUMAN HANDOFF",       // Index 2 (Step 1)
+                        "AGENT TRANSFER",      // Index 4
+                        "OTP AUTHORIZATION",   // Index 6
+                        "IDENTITY & HANDOFF",  // Index 8
+                        "CALENDAR BOOKING"     // Index 10
+                    ];
+                    
+                    const innerTitles = [
+                        "FRONT DOOR AGENT",    // Index 1
+                        "DEMO GUIDE",          // Index 3 (Step 1)
+                        "ONBOARDING",          // Index 5
+                        "TECH SPECIALIST",     // Index 7
+                        "SALES ADVISOR",       // Index 9
+                        "BOOKING AGENT"        // Index 11
+                    ];
 
-                    if (sliderOuter && window.demoScene.rotatorOuter) {
-                        sliderOuter.addEventListener('input', (e) => {
-                            window.demoScene.rotatorOuter.targetRotation = parseFloat(e.target.value);
-                            // Disable auto-snap while scrubbing
-                            window.demoScene.rotatorOuter.isDragging = true; 
-                        });
-                        sliderOuter.addEventListener('change', (e) => {
-                            window.demoScene.rotatorOuter.isDragging = false;
-                            // Trigger snap logic if exposed, or just let it settle
-                            // HaloRotator doesn't public expose snapToGrid simply, but update() handles lerp.
-                            // To force snap we'd need to round the target.
-                            const interval = window.demoScene.rotatorOuter.snapInterval || 60;
-                            const current = parseFloat(e.target.value);
-                            const snapped = Math.round(current / interval) * interval;
-                            window.demoScene.rotatorOuter.targetRotation = snapped;
-                            // Optional: Update slider to snapped position?
-                            // e.target.value = snapped; 
-                        });
+                    const updateRing = (type, slider, label, titles) => {
+                        const step = parseInt(slider.value); // 0 to 5
+                        const title = titles[step];
+                        
+                        // Update Label
+                        if(label) label.innerText = title;
+                        
+                        // Calculate Rotation
+                        // Step 0 -> 0 deg. Step 1 -> -60 deg (move next item to top).
+                        const targetDeg = step * -60;
+                        
+                        const rotator = (type === 'outer') ? window.demoScene.rotatorOuter : window.demoScene.rotatorInner;
+                        if(rotator) {
+                            rotator.targetRotation = targetDeg;
+                            rotator.isDragging = false; // Let it snap/lerp
+                        }
+                    };
+
+                    if (sliderOuter) {
+                        sliderOuter.addEventListener('input', (e) => updateRing('outer', e.target, labelOuter, outerTitles));
                     }
-
-                    if (sliderInner && window.demoScene.rotatorInner) {
-                        sliderInner.addEventListener('input', (e) => {
-                            window.demoScene.rotatorInner.targetRotation = parseFloat(e.target.value);
-                            window.demoScene.rotatorInner.isDragging = true;
-                        });
-                        sliderInner.addEventListener('change', (e) => {
-                            window.demoScene.rotatorInner.isDragging = false;
-                            const interval = window.demoScene.rotatorInner.snapInterval || 60;
-                            const current = parseFloat(e.target.value);
-                            const snapped = Math.round(current / interval) * interval;
-                            window.demoScene.rotatorInner.targetRotation = snapped;
-                        });
+                    if (sliderInner) {
+                        sliderInner.addEventListener('input', (e) => updateRing('inner', e.target, labelInner, innerTitles));
                     }
 
                     // Toggle Helper for Mobile Power Button
