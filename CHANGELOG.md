@@ -1,6 +1,7 @@
 # Changelog
 
-## [v2.271] - 2026-01-24
+## [v2.272] - 2026-01-24
+- **v2.272**: Tablet Breakpoint Fix (Synced JS mobile detection and CSS injections to 1024px to enforce Mobile Layout on iPad Mini/Tablets).
 - **v2.271**: Visual Enhancement (Increased Inner Sphere size by 20% on mobile to improve visibility).
 - **v2.270**: Mobile Standby Timer Fix (Added 'STBY IN' prefix and fixed countdown freeze bug by observing childList mutations).
 - **v2.269**: Mobile Standby Timer Integration (Moved countdown into status pill to fix overlap, hidden large warning text on mobile).

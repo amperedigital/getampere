@@ -10,7 +10,8 @@ export class TechDemoScene {
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
-        this.isMobile = (this.width <= 600);
+        // v2.272: Changed mobile breakpoint from 600 to 1024 to include Tablet/iPad Mini
+        this.isMobile = (this.width < 1024);
 
         console.log("Tech Demo Scene Initialized - vDesignTwo.10 (Isolated Branch)");
         
@@ -182,7 +183,8 @@ export class TechDemoScene {
                 }
                 
                 /* Mobile: Hide legacy bottom track. Use Header Controls. */
-                @media (max-width: 600px) {
+                /* v2.272: Updated breakpoint to 1023px to match Tailwind lg and include iPad Mini */
+                @media (max-width: 1023px) {
                     #ampere-ui-track {
                         display: none !important;
                     }
@@ -259,8 +261,8 @@ export class TechDemoScene {
                     text-shadow: 0 0 10px rgba(100, 150, 255, 0.4);
                 }
                 
-                /* Mobile Overrides */
-                @media (max-width: 600px) {
+                /* Mobile Overrides - Updated to 1023px (v2.272) */
+                @media (max-width: 1023px) {
                     #ampere-ui-track {
                         bottom: 40px; /* Pushed down for better spacing */
                         width: calc(100% - 48px); /* 24px margins */
@@ -276,7 +278,7 @@ export class TechDemoScene {
                 }
                 
                 /* Desktop Override for Standby Warning Position */
-                @media (min-width: 601px) {
+                @media (min-width: 1024px) {
                     #ampere-ui-track {
                         bottom: 40px; /* Lowered further to 40px */
                     }
