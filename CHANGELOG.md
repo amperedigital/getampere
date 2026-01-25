@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.316.cache_fix] - 2026-01-24
+### Deployment
+- **Tech Demo v15.15 (Cache Busting)**
+    - **CDN Enforcement**: Hardcoded `tech-demo.html` to load the scene script from jsDelivr CDN (`@v2.316...`).
+    - **Fix**: Resolves browser caching issues where the new flex layout UI fixes were not appearing for some users.
+
 ## [v2.315.flex_ui] - 2026-01-24
 ### UI Refactor
 - **Tech Demo v15.14 (Flexbox Layout)**
