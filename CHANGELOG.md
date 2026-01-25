@@ -1,6 +1,14 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.367_universal_tablet_positioning] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.67 (Universal Tablet Positioning)**
+    - **Logic Refinement**:
+        - **Change**: Removed `and (orientation: portrait)` from the Tablet Positioning Media Query (820px - 1024px).
+        - **Impact**: Landscape Desktops and Tablets in this width range now *inherit* the "Lifted" control layout (3rem lift), rather than falling back to the unstyled flow.
+        - **Target**: Resolves the "dead zone" reported between 820px and 1023px on Desktop, ensuring the Mobile UI is fully active and positioned.
+    - **iPad Pro Context**: The specific override for iPad Pro (1024px Portrait -> 9rem lift) remains active and takes precedence for that specific device state.
 ## [v2.366_height_independence] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.66 (Height Independence)**

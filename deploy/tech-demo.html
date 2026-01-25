@@ -279,11 +279,10 @@
                                         }
                                     }
 
-                                    /* B. POSITIONING: Tablet Portrait (Lifted Layout) (v2.359) */
-                                    /* Applies explicitly to Portrait orientation (iPad Air/Pro) where vertical space allows lifting elements. */
-                                    /* v2.364: Re-included 1024px to ensure iPad Pro inherits general layout (gutters, pill), then overridden by Section C. */
-                                    /* Desktop Landscape windows at this width use standard flow to avoid clipping. */
-                                    @media (min-width: 820px) and (max-width: 1024px) and (orientation: portrait) {
+                                    /* B. POSITIONING: Tablet/Desktop Range (820px - 1024px) (v2.367) */
+                                    /* Removed orientation:portrait to ensure Landscape Desktops in this width get the styled layout. */
+                                    /* This fixes the "Nothing from 820 to 1023" issue by activating the Mobile positioning logic. */
+                                    @media (min-width: 820px) and (max-width: 1024px) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;
