@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.355_ipad_pro_pill_revert] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.54 (iPad Pro Live Demo Pill Alignment)**
+    - **Live Demo Pill (iPad Pro)**: Reverted horizontal positioning from `1.5rem` back to `3rem` (right-12).
+        - *Reason*: Matches the restored 3rem padding of the Header Text, maintaining vertical alignment down the "content gutter" line, even though the structural containers (Scene/Grid) remain wider at 1.5rem.
+
 ## [v2.354_ipad_pro_text_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.53 (iPad Pro Typography Restoration)**
