@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.331_hang] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.30 (Negative Positioning Strategy)**
+    - **Overflow Logic**: Changed the Scene Container to `lg:overflow-visible` (previously hidden) to allow elements to protrude outside the box boundaries.
+    - **Control Placement**: Pushed the Control Cluster DOWN to `lg:bottom-[-2rem]`. Use of negative bottom positioning allows it to "hang" slightly off the bottom edge of the container while keeping the container itself aligned with the adjacent grid.
+    - **Purpose**: This creates maximum vertical clearance for the internal ring graphic while ensuring the controls are physically separated and lower than the "Start a Call" widget interaction zone.
+
 ## [v2.330_hybrid] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.29 (Hybrid Layout Strategy)**
