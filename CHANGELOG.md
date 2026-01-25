@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.323.responsive_ring] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.22 (Responsive Scaling)**
+    - **Vertical Fit**: Changed the Layout Wrapper to `h-full` and satisfied the "disappearing cluster" layout bug by switching the Ring constraints.
+    - **Logic**: The Ring now uses `lg:h-full lg:max-h-[calc(100%-4rem)] lg:aspect-square`.
+        - *Previous*: Width-driven (caused vertical overflow on short screens).
+        - *Now*: Height-driven (shrinks to fit viewport height, spacing for controls preserved).
+    - **Result**: On short screens, the ring shrinks to prevent the control cluster from being pushed off-screen.
+
 ## [v2.322.alignment] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.21 (Control Insets)**

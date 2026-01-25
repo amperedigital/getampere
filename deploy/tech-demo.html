@@ -115,10 +115,12 @@
                 <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
 
                 <!-- WRAPPER: Width constrains and centers column -->
-                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] flex flex-col items-center mx-auto mt-12 lg:mt-0">
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-0">
                     
                     <!-- RING CONTAINER: Aspect Ratio & Sizing -->
-                    <div class="relative w-full h-[350px] lg:h-auto lg:aspect-square flex items-center justify-center">
+                    <!-- Desktop: Height-driven sizing (h-full constrained by max-h) to ensure it fits vertically -->
+                    <!-- Aspect Square forces width to match height, centered by flex parent -->
+                    <div class="relative w-full h-[350px] lg:w-auto lg:h-full lg:max-h-[calc(100%-4rem)] lg:aspect-square flex items-center justify-center">
                     
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
