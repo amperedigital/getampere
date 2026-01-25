@@ -24,7 +24,8 @@
 </head>
 <body class="bg-[#05060f] text-white lg:overflow-hidden">
 
-    <div class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
+    <!-- Master Container (ID added v2.360 for Scrolling Control) -->
+    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
         <div class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
@@ -262,6 +263,17 @@
                                         #mobile-sliders-container {
                                             display: flex !important;
                                         }
+
+                                        /* 4. LAYOUT FLOW SAFETY (v2.360) */
+                                        /* Ensure container expands to fit content on short screens (Landscape Desktop) */
+                                        #tech-demo-master {
+                                            height: auto !important;
+                                            overflow-y: auto !important;
+                                        }
+                                        #tech-demo-left-column {
+                                            height: auto !important;
+                                            overflow: visible !important;
+                                        }
                                     }
 
                                     /* B. POSITIONING: Tablet Portrait (Lifted Layout) (v2.359) */
@@ -362,7 +374,8 @@
                 <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
                 <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
-                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
+                <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
+                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-slate-950">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">

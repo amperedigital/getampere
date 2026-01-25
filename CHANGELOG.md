@@ -1,6 +1,15 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.360_layout_safety] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.59 (Layout Safety & flow)**
+    - **Visual Clarity**:
+        - **Mobile Sliders**: Changed background from `transparent` to `bg-slate-950`. This ensures that in any edge case where controls might overlap the Scene (e.g., extremely short windows), they obscure the underlying Neural Net rather than blending confusingly with it.
+    - **Scroll & Flow Logic (The "Short Desktop" Fix)**:
+        - **Issue**: On 820px-1024px Desktop screens with short height (Landscape), the "App-Style" fixed height (`h-screen`) forced content to clip or overlap because vertical space ran out.
+        - **Fix**: For all screens under 1024px, we now force `height: auto` and `overflow-y: auto` on the Master Container and Left Column.
+        - **Result**: The page mimics a scrolling website on these devices, allowing the Neural Net and Sliders to stack naturally without crashing into each other, regardless of viewport height.
 ## [v2.359_safe_tablet_lift] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.58 (Safe Tablet Positioning)**
