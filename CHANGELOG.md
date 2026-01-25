@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.350_desktop_alignment_polish] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.49 (Desktop Alignment & Clearance)**
+    - **Live Demo Pill (Desktop)**: Adjusted horizontal positioning from `lg:right-20` (5rem) to `lg:right-12` (3rem).
+        - *Reason*: Aligns perfectly with the standard `p-12` grid padding used by the Header and Breadcrumbs, fixing the visual "drift" on desktop.
+    - **Power Cluster Controls (Desktop)**: Lifted from `lg:bottom-[-2rem]` to `lg:bottom-12`.
+        - *Reason*: The controls were sitting too low, often touching the screen edge or overlapping bottom-left widgets (e.g., Chat). This lift places them cleanly inside the scene container's bottom padding zone.
+    - **Safety Check**: These changes apply to `lg:` (Desktop/Laptop), but iPad Pro (821-1024px) remains protected by its specific `!important` media query overrides (`bottom: 15rem`, `right: 3rem`), ensuring no regression on tablets.
+
 ## [v2.349_standby_controls_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.48 (Mobile Control State Logic Repair)**

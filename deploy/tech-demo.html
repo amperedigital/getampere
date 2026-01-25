@@ -66,7 +66,8 @@
             <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
             <!-- v2.253: Hidden on mobile to reduce clutter -->
             <!-- v2.343: Added ID for iPad positioning overrides -->
-            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <!-- v2.350: Adjusted lg:right-20 to lg:right-12 (3rem) to match p-12 logic. Alignment Fix. -->
+            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>
@@ -319,7 +320,8 @@
                     <!-- Controls Target: Absolute Overlay (v2.331) -->
                     <!-- Positioned at lg:bottom-[-2rem] to hang slightly below the container edge. -->
                     <!-- Visuals are clipped by the ring but controls must be visible. Container is overflow-visible. -->
-                    <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-[-2rem] left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
+                    <!-- v2.350: Lifted from lg:bottom-[-2rem] to lg:bottom-12 to clear Chat Widget on Desktop. -->
+                    <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-12 left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
                 </div>
                 <!-- End Ring Container -->
 
