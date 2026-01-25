@@ -1,5 +1,19 @@
 # Changelog
 
+## [v2.336_ipad_restore] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.35 (iPad Pro Layout Restoration)**
+    - **Layout Revert**: Restored the "Split Column" desktop-style layout for devices >= 1024px, complying with the user's preference for the two-column view on iPad Pro. Reverted `xl` breakpoints to `lg` in HTML.
+    - **Mobile Sliders**:
+        - Retained visibility of Mobile Range Sliders (`#mobile-sliders-container`) for iPad Pro (1024px) by selectively setting them to `xl:hidden` (so visible at 1024px, hidden at 1280px+).
+        - Used the strict CSS override `src/input.css` (Portrait 1024px) to position them absolutely at `bottom: 2rem` within the Left Column.
+    - **Neural Net Scaling (Fit Check)**:
+        - **Problem**: In 2-column mode on iPad (~500px width), the "Mobile Zoom In" (0.48 factor) caused the neural net to expand beyond the narrow container width, clipping the sides.
+        - **Fix (`tech-demo-scene.js`)**: Implemented Aspect Ratio detection.
+            - If Aspect < 0.5 (Narrow Column Split View): Use typical factor `0.7` (Zoom Out) to fit width.
+            - If Aspect >= 0.5 (Full Width Mobile): Use factor `0.48` (Zoom In) to fill height.
+            - This ensures the 3D scene scales correctly whether it's in a narrow column (iPad Split) or full screen (iPhone).
+
 ## [v2.335_ipad_ui] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.34 (iPad Pro 12.9" Layout Overhaul)**

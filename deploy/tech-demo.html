@@ -22,20 +22,20 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
-<body class="bg-[#05060f] text-white xl:overflow-hidden">
+<body class="bg-[#05060f] text-white lg:overflow-hidden">
 
-    <div class="flex flex-col xl:flex-row min-h-screen xl:h-screen w-full relative xl:overflow-hidden">
+    <div class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
-        <div class="relative w-full xl:w-1/2 h-auto xl:h-full flex flex-col xl:block">
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
             
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
-            <div class="relative xl:absolute top-0 left-0 w-full p-8 pt-12 pb-0 xl:p-20 z-20 pointer-events-none flex flex-col xl:block">
+            <div class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-20 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
-                <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-1 xl:mb-6">
+                <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-1 lg:mb-6">
                     <span class="text-blue-400">/</span>
                     <span class="text-slate-500">Visualization</span>
                     <span class="text-blue-400">/</span>
@@ -43,12 +43,12 @@
                 </div>
 
                 <!-- Row: Heading + Mobile Controls -->
-                <div class="flex justify-between items-start w-full xl:block xl:w-auto">
+                <div class="flex justify-between items-start w-full lg:block lg:w-auto">
                     <div class="max-w-md pt-2">
-                        <h1 class="text-4xl xl:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
+                        <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
                             <span class="font-bold text-blue-400">AI</span> Neural <span class="block font-light text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
                         </h1>
-                        <p class="text-sm xl:text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
+                        <p class="text-sm lg:text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
                             Explore the autonomous decision making core of Ampere AI.
                         </p>
                     </div>
@@ -64,7 +64,7 @@
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
             <!-- v2.253: Hidden on mobile to reduce clutter -->
-            <div class="hidden xl:inline-flex absolute z-30 xl:left-auto xl:translate-x-0 xl:-translate-y-1/2 xl:right-20 xl:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <div class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>
@@ -84,12 +84,12 @@
             <!-- v2.330: Added lg:pb-32 to create an internal "Safety Zone" at the bottom where the ring cannot grow. -->
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
             <!-- This reserved space accommodates the Absolute Positioned controls. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 xl:mt-0 xl:mb-0 xl:mx-0 xl:w-auto xl:h-auto xl:absolute xl:top-12 xl:bottom-12 xl:left-12 xl:right-4 overflow-visible xl:overflow-visible xl:rounded-3xl xl:border xl:border-white/5 z-0 group/scene flex flex-col xl:flex-col xl:pb-32 items-center justify-start xl:justify-center">
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-visible lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
                 <!-- v2.259: Changed to single row (Status Left, Power Right) -->
-                <div class="xl:hidden absolute top-2 right-4 z-50 flex flex-row items-center gap-4 pointer-events-auto">
+                <div class="lg:hidden absolute top-2 right-4 z-50 flex flex-row items-center gap-4 pointer-events-auto">
                     <!-- Status Display -->
                     <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
                         <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
@@ -285,7 +285,7 @@
                     <!-- Controls Target: Absolute Overlay (v2.331) -->
                     <!-- Positioned at lg:bottom-[-2rem] to hang slightly below the container edge. -->
                     <!-- Visuals are clipped by the ring but controls must be visible. Container is overflow-visible. -->
-                    <div id="tech-demo-controls-target" class="w-full relative xl:absolute xl:bottom-[-2rem] left-0 right-0 z-30 flex justify-center pb-4 xl:pb-0 pointer-events-auto"></div>
+                    <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-[-2rem] left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
                 </div>
                 <!-- End Ring Container -->
 
@@ -359,7 +359,7 @@
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.276: Restored right padding to lg:pr-12 for breathing room. -->
-        <div class="relative w-full xl:w-1/2 h-auto xl:h-full bg-[#05060f] z-10 p-4 pb-40 xl:pt-12 xl:pb-12 xl:pr-12 xl:pl-4 overflow-y-auto">
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
@@ -969,7 +969,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.335_ipad_ui/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.336_ipad_restore/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
@@ -1092,7 +1092,7 @@
                     const labelOuter = document.getElementById('label-slider-outer');
                     const labelInner = document.getElementById('label-slider-inner');
                     // Parent containers for opacity control
-                    const sliderContainers = document.querySelectorAll('.xl\\:hidden input[type="range"]').forEach(input => {
+                    const sliderContainers = document.querySelectorAll('.lg\\:hidden input[type="range"]').forEach(input => {
                          // Find the visual parent (div with flex col)
                          const parent = input.closest('.flex-col');
                          if(parent) {

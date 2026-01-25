@@ -666,9 +666,11 @@ export class TechDemoScene {
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         
         // Mobile Override: Zoom IN for maximum visual fill (Matching 85% Clip Path)
-        // v2.335: Tuned to 0.48 to fit within standard Ring boundary (visible on iPad Pro).
-        // Target: Object Radius (1.5) needs to occupy ~95% of Ring (r=360).
-        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 0.48 : this.config.cameraDistance;
+        // v2.336: Split Layout Fit Logic. 
+        // If aspect is < 0.5 (Narrow Column), we must Zoom OUT (factor 0.7) to prevent side clipping.
+        // If aspect is > 0.5 (Full Width Mobile), we Zoom IN (factor 0.48) to fill the height.
+        const zoomFactor = (this.width / this.height < 0.5) ? 0.7 : 0.48;
+        this.camera.position.z = this.isMobile ? this.config.cameraDistance * zoomFactor : this.config.cameraDistance;
         
         // Store Initial Position for Auto-Recenter (v2.189 Fix)
         this.initialCameraPos = this.camera.position.clone();
