@@ -161,11 +161,36 @@ export class TechDemoScene {
             const style = document.createElement('style');
             style.id = 'ampere-ui-styles';
             style.textContent = `
+                /* 
+                  New "Inline Stack" Layout (v2.300+):
+                  Instead of absolute positioning scattered everywhere, we wrap the 
+                  Track, Status, and Warning into a single #ampere-controls-cluster
+                  that sits naturally in the flex flow BELOW the main ring scene.
+                */
+
+                #ampere-controls-cluster {
+                    position: relative;
+                    /* No absolute - we want it in the flow */
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 12px;
+                    z-index: 100;
+                    margin-top: 2rem; /* Breathing room from ring */
+                    width: 100%;
+                    max-width: 400px;
+                    pointer-events: none; /* Let clicks pass through gaps */
+                }
+
                 #ampere-ui-track {
-                    position: absolute;
-                    bottom: 85px;
-                    left: 50%;
-                    transform: translate(-50%, 0);
+                    position: relative; /* Static inside cluster */
+                    top: auto;
+                    left: auto;
+                    bottom: auto;
+                    right: auto;
+                    transform: none;
+                    
                     width: 320px;
                     height: 48px;
                     background: rgba(5, 6, 10, 0.85);
@@ -177,30 +202,62 @@ export class TechDemoScene {
                     align-items: center;
                     justify-content: space-between;
                     padding: 6px;
-                    z-index: 1000;
-                    user-select: none; /* Prevent text selection */
+                    user-select: none;
                     -webkit-user-select: none;
-                    touch-action: none; /* Prevent scrolling on the track */
+                    touch-action: none;
                     cursor: pointer;
                     box-sizing: border-box;
+                    pointer-events: auto; /* Re-enable clicks */
+                }
+                
+                #ampere-system-status {
+                    position: relative; /* Static inside cluster */
+                    top: auto;
+                    left: auto;
+                    bottom: auto;
+                    right: auto;
+                    transform: none;
+                    
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 6px;
+                    transition: opacity 0.5s ease;
+                    opacity: 0;
+                    pointer-events: auto;
+                    order: -1; /* Place ABOVE the track */
+                }
+
+                 #ampere-standby-warning {
+                    position: relative; /* Static inside cluster */
+                    top: auto;
+                    left: auto;
+                    bottom: auto;
+                    transform: none;
+                    
+                    color: rgba(200, 220, 255, 0.9);
+                    font-family: monospace;
+                    font-size: 11px;
+                    font-weight: 500;
+                    letter-spacing: 1.5px;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 0.5s ease;
+                    white-space: nowrap;
+                    text-shadow: 0 0 10px rgba(100, 150, 255, 0.4);
+                    order: -2; /* Place ABOVE status */
                 }
                 
                 /* Mobile: Hide legacy bottom track. Use Header Controls. */
-                /* v2.272: Updated breakpoint to 1023px to match Tailwind lg and include iPad Mini */
                 @media (max-width: 1023px) {
-                    #ampere-ui-track {
+                    #ampere-controls-cluster {
                         display: none !important;
-                    }
-                    #ampere-system-status {
-                        display: none !important; 
-                    }
-                    #ampere-standby-warning {
-                        bottom: 15% !important; /* Move warning up since track is gone */
                     }
                 }
 
                 .ampere-ui-label {
                     flex: 1;
+                    /* ... (rest unchanged) */
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -245,66 +302,14 @@ export class TechDemoScene {
                     box-sizing: border-box;
                 }
                 
-                #ampere-standby-warning {
-                    position: absolute;
-                    bottom: 45px; /* Between track and instructions */
-                    left: 50%;
-                    transform: translateX(-50%);
-                    color: rgba(200, 220, 255, 0.9);
-                    font-family: monospace;
-                    font-size: 11px;
-                    font-weight: 500;
-                    letter-spacing: 1.5px;
-                    /* text-transform: uppercase; Removed to allow lowercase 's' */
-                    pointer-events: none;
-                    opacity: 0;
-                    transition: opacity 0.5s ease;
-                    z-index: 999;
-                    white-space: nowrap;
-                    text-shadow: 0 0 10px rgba(100, 150, 255, 0.4);
-                }
-                
-                /* Mobile Overrides - Updated to 1023px (v2.272) */
+                /* DEPRECATED MOBILE OVERRIDES (Now handled by display:none) */
                 @media (max-width: 1023px) {
-                    #ampere-ui-track {
-                        bottom: 40px; /* Pushed down for better spacing */
-                        width: calc(100% - 48px); /* 24px margins */
-                        max-width: 360px;
-                    }
-                    #ampere-standby-warning {
-                        bottom: 15px; /* Adjust for lower track */
-                    }
                     .ampere-ui-label {
                         font-size: 10px;
                         letter-spacing: 0px;
                     }
                 }
                 
-                /* Desktop Override for Standby Warning Position */
-                @media (min-width: 1024px) {
-                    #ampere-ui-track {
-                        bottom: 40px; /* Lowered further to 40px */
-                    }
-                    #ampere-standby-warning {
-                         bottom: 100px; /* Tighter stack above track */
-                         /* Opacity controlled by JS */
-                    }
-                }
-                
-                #ampere-system-status {
-                    position: absolute;
-                    bottom: 55px; /* Mobile: Slightly above track */
-                    left: 50%;
-                    transform: translateX(-50%);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 6px;
-                    z-index: 998;
-                    pointer-events: none;
-                    transition: opacity 0.5s ease;
-                    opacity: 0;
-                }
                 .ampere-dot-row {
                     display: flex;
                     gap: 4px;
@@ -327,23 +332,16 @@ export class TechDemoScene {
                     text-align: center;
                     white-space: nowrap;
                 }
-                @media (max-width: 1023px) {
-                    #ampere-system-status {
-                         /* Mobile: Push higher to clear the track (Track@40px + 48px height + 12px gap) */
-                         bottom: 100px; 
-                    }
-                }
-                @media (min-width: 1024px) {
-                    #ampere-system-status {
-                        bottom: 100px; /* Tighter stack, aligned with warning level */
-                    }
-                }
             `;
             document.head.appendChild(style);
         }
 
         const padding = 6; 
-
+        
+        // --- CLUSTER CONTAINER (New v2.300) ---
+        const cluster = document.createElement('div');
+        cluster.id = 'ampere-controls-cluster';
+        
         // Container (Track)
         const container = document.createElement('div');
         this.uiContainer = container;
@@ -393,7 +391,7 @@ export class TechDemoScene {
             uiRoot.style.position = 'relative';
         }
 
-        uiRoot.appendChild(container);
+        // uiRoot.appendChild(container); // OLD DIRECT APPEND
 
         // --- Multi-Function Display (Gauge + Status) ---
         const statusContainer = document.createElement('div');
@@ -417,14 +415,23 @@ export class TechDemoScene {
         statusText.innerText = 'INITIALIZING...';
         statusContainer.appendChild(statusText);
         
-        uiRoot.appendChild(statusContainer);
+        // uiRoot.appendChild(statusContainer); // OLD DIRECT APPEND
 
         // --- Standby Warning UI ---
         const warning = document.createElement('div');
         this.standbyWarning = warning;
         warning.id = 'ampere-standby-warning';
         warning.innerText = 'STANDBY IN 30s';
-        uiRoot.appendChild(warning);
+        // uiRoot.appendChild(warning); // OLD DIRECT APPEND
+        
+        // --- NEW CLUSTER ASSEMBLY (v2.300) ---
+        // Stack Order: Warning (Top) -> Status (Middle) -> Track (Bottom)
+        // Flex Direction is Column, so we append in order Top->Bottom
+        cluster.appendChild(warning);
+        cluster.appendChild(statusContainer);
+        cluster.appendChild(container);
+        
+        uiRoot.appendChild(cluster);
 
         // --- Helper: Update Thumb Size ---
         const updateThumbSize = () => {

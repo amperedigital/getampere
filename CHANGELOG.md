@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.315.flex_ui] - 2026-01-24
+### UI Refactor
+- **Tech Demo v15.14 (Flexbox Layout)**
+    - **Control Cluster**: Moved "Power Up" controls (Slider, Status, Warning) from absolute positioning to a new `flex-col` layout.
+    - **Mobile/Desktop Fix**: Controls now sit inline below the Neural Net visualization, preventing overlap with chat widgets or other UI elements on all screen sizes.
+
 ## [v2.314] - 2026-01-24
 ### Assets
 - **Tech Demo v15.13 (Completed User Icons)**
