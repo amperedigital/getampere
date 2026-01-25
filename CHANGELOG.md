@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.311] - 2026-01-24
+### Assets
+- **Tech Demo v15.10 (Standardized Icons)**
+    - **Remediation**: Replaced experimental abstract icons with standard geometric primitives to solve rendering ambiguity.
+    - **Sales Advisor**: Swapped "Orb" for **"Growth Chart"**.
+        - *Visual*: Three vertical bars of ascending height. Unmistakable symbol for revenue/plans.
+    - **Demo Guide**: Swapped "Cycle" for **"Presentation Play"**.
+        - *Visual*: A rounded screen rectangle containing a solid play triangle. Clear metaphor for walkthroughs/videos.
+
 ## [v2.310] - 2026-01-24
 ### Assets
 - **Tech Demo v15.9 (Refined Iconography)**
