@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.322.alignment] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.21 (Control Insets)**
+    - **Layout Fix**: Reduced top margin of the control cluster (`mt-2`) to remove excessive gap below the neural ring.
+- **Glass Socket v1.5 (Correction)**
+    - **Geometry Repair**: Re-applied the original Bezier path constants (Scale=0.5) to the `glass-socket.js` module.
+    - **Fix**: Resolves the "screwed up alignment" where the calculated socket path did not match the static button position, causing visual clipping and overlap.
+
 ## [v2.321.deploy_fix] - 2026-01-24
 ### DevOps
 - **Deployment Script Fix**: Updated `scripts/publish.sh` to correctly handle version tags containing underscores (e.g., `v2.315.flex_ui`).

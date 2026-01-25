@@ -1,5 +1,6 @@
-// Ampere Glass Socket Generator (v1.0)
+// Ampere Glass Socket Generator (v1.5 Fixed)
 // Generates the path for the "Socket" cutout on cards.
+// v2.321: Restored original Bezier geometry values from tech-demo.html (v15.2)
 
 export function updateSocketPath(container, options = {}) {
     if (!container) return;
@@ -14,22 +15,26 @@ export function updateSocketPath(container, options = {}) {
     const w = container.clientWidth || 300;
     const h = container.clientHeight || 150;
     
-    // Configuration (Standardized)
-    // These match the values in tech-demo.html
-    const c_cp1_x = 10;
-    const c_cp1_y = 0;
-    const c_cp2_x = 24.14; 
-    const c_cp2_y = 14.14; 
-    const c_end_x = 24.14; 
-    const c_end_y = 38.28; 
+    // Original Geometry Constants (Scale Factor 0.5)
+    // Source: tech-demo.html (v15.2)
+    const S = 0.5;
+    
+    // Bezier Control Points
+    const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+    const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+    const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+    
+    // Short vertical/horizontal line segments
+    const l_short = 10.9 * S; // ~5.45px
 
-    // Short vertical line
-    const l_short = 2.0;
+    // Top Right Width Calculation
+    // Total Width = (CurveX * 3) + LineX
+    // 59.94*3 + 10.9 = 179.82 + 10.9 = 190.72
+    // Scaled by 0.5 = 95.36
+    const socketW = 95.36; 
 
     // Corner Radius
     const r = 32; // 2rem
-
-    const socketW = 95.36; // Constant width of the socket shape logic
 
     // Construct d string (Clockwise)
     // Start Top-Left (actually after top-left corner)
