@@ -1,6 +1,14 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.366_height_independence] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.66 (Height Independence)**
+    - **Logic Refinement**:
+        - **Maintain**: The unified Width Layout (1024px triggers Mobile Mode) remains active.
+        - **Correct**: Removed the forced `height: 100vh` from the unified block.
+        - **Reasoning**: While widths (layout columns) should match, viewport heights differ vastly between an iPad Pro (Tall) and a Landscape Laptop (Short). Forcing 1024px desktops to 100vh often cuts off content.
+        - **Implementation**: The master container reverts to `min-height: 100vh` (Tailwind default) but allows auto-expansion. The specific `height: 100%` override on columns is removed to let them grow naturally with content.
 ## [v2.365_unified_tablet_desktop_1024_retry] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.65 (Deploy Retry)**

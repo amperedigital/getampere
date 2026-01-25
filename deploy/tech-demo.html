@@ -264,17 +264,18 @@
                                             display: flex !important;
                                         }
 
-                                        /* 4. LAYOUT FLOW SAFETY (v2.365) */
-                                        /* Enforce App-Like Full Height for 1024px/Tablet to match iPad Pro expectation */
-                                        /* Use overflow-y: auto to handle short screens safely without collapsing the container */
+                                        /* 4. LAYOUT FLOW SAFETY (v2.366) */
+                                        /* Enforce flexible height for 1024px/Tablet */
+                                        /* Use auto height to handle short screens safely */
                                         #tech-demo-master {
-                                            height: 100vh !important; /* Was auto, now full viewport */
+                                            height: auto !important;
+                                            min-height: 100vh !important;
                                             overflow-y: auto !important;
                                         }
-                                        /* Columns must fill the master container */
+                                        /* Columns grow naturally */
                                         #tech-demo-left-column, #tech-demo-right-column {
-                                            height: 100% !important; /* Fill the 100vh parent */
-                                            overflow-y: visible !important; /* Let the master container handle scroll if needed */
+                                            height: auto !important;
+                                            overflow-y: visible !important;
                                         }
                                     }
 
