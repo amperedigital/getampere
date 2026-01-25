@@ -16,20 +16,24 @@ export class CardExpander {
         if (!column) return;
 
         column.addEventListener('click', (e) => {
-            // Find if click hit a trigger button
-            // Trigger is the top-right button div: .absolute.top-0.right-0.w-14.h-14
-            // We'll look for a specific data attribute or the class structure
-            
-            // Check if user clicked the "Close" button on an active card
-            // Or the "Expand" button on an inactive card.
-            
-            // Heuristic: The icon container is the button
+            // Check for explicit expand trigger first
+            const expandTrigger = e.target.closest('.expand-trigger');
+            if (expandTrigger) {
+                 const card = expandTrigger.closest('.socket-card-container');
+                 if (card) this.toggleCard(card, expandTrigger, column);
+                 return;
+            }
+
+            // Fallback: Check top-right button (Close action only? or both?)
+            // If card is expanded, top-right button acts as close.
             const btn = e.target.closest('.group\\/button-trigger') || e.target.closest('.w-14.h-14.z-20');
-            
             if (btn) {
                 const card = btn.closest('.socket-card-container');
-                if (card) {
-                    this.toggleCard(card, btn, column);
+                // Only act if expanded (Close functionality), OR if we revert to allowing top-right expand too.
+                // User said "Close button where icon button is... Expand button separate".
+                // So top-right should primarily be for closing/status.
+                if (card && card.classList.contains('is-expanded')) {
+                    this.collapse(card, btn, column);
                 }
             }
         });
@@ -41,13 +45,7 @@ export class CardExpander {
         if (isExpanded) {
             this.collapse(card, btn, container);
         } else {
-            // Check if another card is already expanded
             if (this.activeCard && this.activeCard !== card) {
-                // Collapse the other one first? Or just swap?
-                // For safety, collapse it.
-                // Re-find the button for the active card is tricky if we don't store it.
-                // But we can just call collapse on activeCard.
-                // We'll need a reference to its button to flip icon, but visual state is enough.
                 this.collapse(this.activeCard, null, container);
             }
             this.expand(card, btn, container);
@@ -55,46 +53,43 @@ export class CardExpander {
     }
 
     expand(card, btn, container) {
-        // Save original icon if needed
-        if (btn && !btn.hasAttribute('data-original-icon')) {
-            const iconContainer = btn.querySelector('.z-30 svg');
+        // v2.402: Logic to handle separate Expand Button (Bottom Right) vs Close Button (Top Right)
+        // If 'btn' is the expand trigger, we don't need to save its icon, because we don't change IT.
+        // We change the Top-Right button to become a Close button.
+        
+        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
+        
+        // Save original icon of the TOP RIGHT button
+        if (topRightBtn && !topRightBtn.hasAttribute('data-original-icon')) {
+            const iconContainer = topRightBtn.querySelector('.z-30 svg');
             if (iconContainer) {
-                btn.setAttribute('data-original-icon', iconContainer.innerHTML);
+                topRightBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
             }
         }
 
         // 1. Measure layout before moving
-        // We need to insert the spacer exactly where the card is
-        // The spacer needs to match the card's CURRENT grid dimensions
-        // Grid auto-layout makes this tricky if we don't know the explicit size.
-        // But since we are expanding TO absolute, the spacer just needs to hold the slot.
-        // A simple div in the DOM flow at the same position works if the card is static.
-        
-        // 2. Insert Spacer
-        // Copy relevant grid classes if any? Or just being in the DOM is enough for grid flow?
-        // The card has `relative group h-full socket-card-container`.
-        // The spacer should mimic `h-full`.
-        this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); // Ensure no expand class
-        // Remove ID if any
+        this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
         this.spacer.id = '';
-        // Clear content
         this.spacer.innerHTML = '';
         
-        // Insert spacer before the card
         if (card.parentNode) {
             card.parentNode.insertBefore(this.spacer, card);
         }
 
         // 3. Promote Card
         card.classList.add('is-expanded');
-        document.body.classList.add('card-expanded-mode'); // Optional global state
+        document.body.classList.add('card-expanded-mode'); 
         container.classList.add('has-active-card');
 
         // Store reference
         this.activeCard = card;
 
-        // 4. Update Icon to "Compress/Close"
-        this.updateIcon(btn, 'close');
+        // 4. Update TOP RIGHT Icon to "Close"
+        this.updateIcon(topRightBtn, 'close');
+        
+        // 5. Hide the Expand Trigger while expanded (opacity 0)
+        if(btn) btn.style.opacity = '0';
+        if(btn) btn.style.pointerEvents = 'none';
     }
 
     collapse(card, btn, container) {
@@ -112,12 +107,16 @@ export class CardExpander {
 
         this.activeCard = null;
 
-        // 3. Update Icon to "Expand"
-        // If btn is null (auto-collapse), find it
-        if (!btn) {
-           btn = card.querySelector('.w-14.h-14.z-20');
-        }
-        this.updateIcon(btn, 'expand');
+        // 3. Update TOP RIGHT Icon to "Original" (Socket Logo)
+        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
+        this.updateIcon(topRightBtn, 'expand');
+        
+        // 3b. Restore Expand Triggers
+        const triggers = card.querySelectorAll('.expand-trigger');
+        triggers.forEach(t => {
+            t.style.opacity = ''; // Restore CSS control
+            t.style.pointerEvents = '';
+        });
     }
 
     updateIcon(btn, state) {

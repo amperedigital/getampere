@@ -1,6 +1,16 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+- **v2.402_bottom_right_trigger**
+  - **UX**: Separated "Expand" and "Close" controls.
+    - **Expand**: New floating button at Bottom-Right of each card (Maximize icon). Only appears on hover.
+    - **Close**: Top-Right button (was previously dual-purpose). Now transforms to "X" only when the card is expanded.
+  - **Visuals**: Reverted Top-Right button to the original brand Socket Logo when collapsed.
+  - **Logic**: Updated `card-expander.js` to handle the dual-trigger workflow (Expand from Bottom, Close from Top).
+- **v2.401_intuitive_triggers**
+  - **UX Improvement**: Replaced the generic Socket Brand icon on card buttons with a "Maximize" (Corner Brackets) icon to clearly indicate the expand function.
+  - **Interaction**: Added `cursor-pointer` and `hover:bg-white/5` (white glow) to the button trigger for better affordance.
+  - **Logic**: The `card-expander.js` system automatically adapts to this change (it stores the new Maximize icon as the 'original' state to restore upon closing).
 - **v2.400_focus_mode_cards**
   - **Feature**: Added "Zen Mode" Card Expansion. Clicking the top-right button on any grid card now expands it to fill the entire column.
   - **Interaction**: Uses a "Lift & Fill" technique (Spacer insertion) to ensure the underlying grid layout does not shift or collapse.
