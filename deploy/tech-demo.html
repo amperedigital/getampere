@@ -226,16 +226,26 @@
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
                                     /* Mobile Overrides (v2.264) */
-                                    /* v2.338: Strict Portrait Targeting for 1024px (iPad Pro) to avoid Desktop cross-pollination */
+                                    /* v2.339: Strict Portrait Targeting for 1024px + Containment & Moving Controls Up */
                                     @media (max-width: 1024px) and (orientation: portrait) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
                                         }
-                                        /* Expand Neural Net to 95% of Dashed Ring (r=360) -> 342px radius */
-                                        /* 342px / 400px (half-width) = 85.5% */
-                                        #tech-demo-scene {
-                                            clip-path: circle(85.5% at center) !important;
+                                        /* Make Dashed Ring More Visible (Constraint Boundary) */
+                                        /* The Dashed Ring is circle[r="360"] inside the SVG */
+                                        circle[r="360"] {
+                                           stroke-opacity: 0.8 !important; /* Increase from 0.5 to be clear boundary */
+                                        }
+
+                                        /* Move Controls (Standby Pill) UP (User: "controls need to be moved up") */
+                                        #tech-demo-controls-target {
+                                            bottom: 12rem !important; /* Moved up from ~2rem/10rem */
+                                        }
+                                        
+                                        /* Move Sliders (Cluster) UP and Ensure Visibility */
+                                        #mobile-sliders-container {
+                                            bottom: 4rem !important; /* Moved up from 2rem */
                                         }
                                     }
 
@@ -970,7 +980,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.336_ipad_restore/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.339_ipad_containment/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

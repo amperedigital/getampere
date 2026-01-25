@@ -1280,37 +1280,31 @@ export class TechDemoScene {
             const FOV = 45; 
             const tanHalfFOV = Math.tan( (FOV * Math.PI / 180) / 2 );
             const objectSize = 3.0; // Radius 1.5 * 2
-            const ringToViewportRatio = 400 / 800; // Inner Ring (400px) in Box (800px)
-            const fillPercentage = 0.95; // 95% of Inner Ring (User Request v2.239)
+            // v2.339: Containment Logic Update (Strict Constrain to Dashed Ring)
+            // Mobile/Tablet (including iPad Pro) must be contained to 95% of the DASHED LINE RING (Diameter 720).
+            // Desktop remains focused on the INNER RING (Diameter 400).
+            
+            const dashedRingRatio = 720 / 800; // 0.9
+            const innerRingRatio = 400 / 800; // 0.5
+            
+            // iPad/Mobile uses the larger outer boundary (Dashed Ring)
+            const referenceRatio = (this.isMobile) ? dashedRingRatio : innerRingRatio;
+            
+            const fillPercentage = 0.95; // 95% of selected ring
             
             let targetVisibleSize;
 
             if (this.camera.aspect >= 1.0) {
                 // LANDSCAPE (Height Limited)
-                // Ring is 50% of screen HEIGHT.
-                // We want Object to be 90% of Ring.
-                // Target Object Coverage = 0.45 of Screen Height.
-                const targetCoverage = ringToViewportRatio * fillPercentage;
+                const targetCoverage = referenceRatio * fillPercentage;
                 targetVisibleSize = objectSize / targetCoverage;
             } else {
                 // PORTRAIT (Width Limited)
-                // Ring is 50% of screen WIDTH.
-                // WebGL FOV is vertical, but Aspect determines visible width.
-                // Visible Width = Visible Height * Aspect.
-                // We want Object to be (0.45 * Width).
-                // objectSize = (Visible Height * Aspect) * 0.45
-                // Visible Height = objectSize / (Aspect * 0.45)
-                const targetCoverage = ringToViewportRatio * fillPercentage;
+                // Remove artificial 'mobileBoost' which broke containment. 
+                // Rely on the dashedRingRatio (0.9) to set the constraint correctly.
+                const targetCoverage = referenceRatio * fillPercentage;
                 
-                // Increase size for Mobile (custom boost)
-                // If width is constrained, we can afford to let the object be visually larger relative to the "ring box"
-                // because the ring box on mobile occupies nearly 100% of the screen width.
-                // v2.254: Increased boost to 1.9 to fill the ring void.
-                // v2.255: Increased boost to 2.4.
-                // v2.256: Increased boost to 3.2 to fix "dropping size" issue.
-                const mobileBoost = (this.isMobile) ? 3.2 : 1.0; 
-                
-                targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage * mobileBoost);
+                targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage);
             }
 
             // Calculate Required Distance

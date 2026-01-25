@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.339_ipad_containment] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.38 (iPad Containment & Positioning)**
+    - **3D Containment (Fix)**: Updated `tech-demo-scene.js` to strictly constrain the Neural Net to 95% of the **Dashed Ring** (Diameter 720px) on Mobile/iPad Pro, removing the artificial zoom boost. This ensures the 3D model never expands beyond the dashed boundary.
+    - **Control Positioning**: moved Layout elements up to avoid crowding the bottom edge on iPad Pro:
+        - *Controls Pill*: Raised to `bottom: 12rem`.
+        - *Sliders Cluster*: Raised to `bottom: 4rem`.
+    - **Visual Boundaries**: Increased opacity of the Dashed Ring on iPad Pro to clearly visualize the containment zone.
+
 ## [v2.338_ipad_strict] - 2026-01-25
 ### Technical
 - **Tech Demo v15.37 (Strict Isolation)**
