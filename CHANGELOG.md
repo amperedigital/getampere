@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.335_ipad_ui] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.34 (iPad Pro 12.9" Layout Overhaul)**
+    - **Control Visibility**: Enabled Mobile Range Sliders specifically for iPad Pro Portrait (1024px) by shifting layout breakpoints from `lg` to `xl`.
+        - *Mechanism*: Changed main layout classes to `xl:flex-row`, `xl:w-1/2`, etc. This forces 1024px devices into the "Stacked" column layout (maximizing space) instead of cramping them into side-by-side Desktop columns.
+        - *Controls*: Sliders (`#mobile-sliders-container`) are now `xl:hidden` instead of `lg:hidden`, meaning they are **visible** on 1024px screens.
+    - **Positioning**: Added CSS override for `orientation: portrait` at 1024px to position these sliders at `bottom: 2rem`, ensuring they sit neatly below the hanging Control Cluster (which is at `bottom: 10rem`).
+    - **Space Maximization**: The stack layout allows the 3D scene to occupy the full 1024px width, resolving the "Neural Net expanding beyond container" issue simply by providing a larger container.
+
 ## [v2.334_ipad_fixes] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.33 (iPad Pro 12.9" Specifics)**
