@@ -383,15 +383,19 @@ export class TechDemoScene {
 
         container.insertBefore(thumb, container.firstChild);
         
-        // Fix: Append UI to the main card container (group/scene) if available, 
-        // to keep controls outside the aspect-ratio restricted ring area.
-        const uiRoot = this.container.closest('.group\\/scene') || this.container;
-        // Make sure the root is positioned so absolute children work (it is usually relative or absolute already)
-        if (window.getComputedStyle(uiRoot).position === 'static') {
-            uiRoot.style.position = 'relative';
+        // Fix (v2.320): Target the explicit controls cluster container (#tech-demo-controls-target)
+        // This ensures the UI flows naturally below the ring in the stacked flex layout.
+        let uiRoot = document.getElementById('tech-demo-controls-target');
+        
+        if (!uiRoot) {
+             console.warn("TechDemoScene: #tech-demo-controls-target not found. Falling back to scene container.");
+             uiRoot = this.container.closest('.group\\/scene') || this.container;
+             
+             // Ensure positioning context for fallback
+             if (window.getComputedStyle(uiRoot).position === 'static') {
+                 uiRoot.style.position = 'relative';
+             }
         }
-
-        // uiRoot.appendChild(container); // OLD DIRECT APPEND
 
         // --- Multi-Function Display (Gauge + Status) ---
         const statusContainer = document.createElement('div');

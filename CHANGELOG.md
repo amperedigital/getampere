@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.320.layout_fix] - 2026-01-24
+### UI & Architecture
+- **Tech Demo v15.20 (Layout Refactor)**
+    - **Structure**: Split the main "Circle Container" into a vertical flex column (`#tech-demo-wrapper`).
+    - **Isolation**: The visual ring now resides in a strictly aspect-ratio locked container (`w-full aspect-square`).
+    - **Controls**: The "Power Up" cluster is now injected into a sibling container (`#tech-demo-controls-target`) that sits *below* the ring in the document flow, ensuring correct positioning on all devices without overlap.
+- **Optimization**
+    - **Glass Socket Script**: Extracted the duplicate socket path generation logic (previously repeated 19 times inline) into a single module `glass-socket.js`.
+    - **Performance**: Reduced HTML size and parsing overhead significantly.
+
 ## [v2.316.cache_fix] - 2026-01-24
 ### Deployment
 - **Tech Demo v15.15 (Cache Busting)**
