@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.314] - 2026-01-24
+### Assets
+- **Tech Demo v15.13 (Completed User Icons)**
+    - **Demo Guide**: Swapped to "Dedicated Hosting" carbon icon (CarbonDedicatedHosting.svg).
+    - **Completion**: All tech demo cards now use the Carbon set provided in `assets/icons/new/`.
+
 ## [v2.313] - 2026-01-24
 ### Assets
 - **Tech Demo v15.12 (Final Icon Set)**

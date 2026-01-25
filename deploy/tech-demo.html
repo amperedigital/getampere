@@ -342,7 +342,7 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full socket-card-container"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
@@ -497,7 +497,7 @@
                         <!-- Layer 3: Icon -->
                         <!-- Promoted to distinct layer to preventing scaling jitter -->
                         <div class="relative z-30" style="transform: translateZ(1px);">
-                             <svg class="w-6 h-6 text-white/90" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="20" width="60" height="40" rx="4" /><path d="M 35 30 L 35 50 L 52 40 Z" fill="currentColor" stroke="none" /></svg>
+                             <svg class="w-6 h-6 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M19 27H5V13h4v-2H5c-1.1 0-2 .9-2 2v6H0v2h3v6c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4h-2v4z"></path><path fill="currentColor" d="M11 19h10v2H11zm0-4h10v2H11zm0-4h10v2H11z"></path><path fill="currentColor" d="M29 11V5c0-1.1-.9-2-2-2H13c-1.1 0-2 .9-2 2v4h2V5h14v14h-4v2h4c1.1 0 2-.9 2-2v-6h3v-2h-3z"></path></svg>
                         </div>
                     </div>
 
@@ -1090,6 +1090,98 @@
         // Also run after a short delay for layout shifts
         setTimeout(updateSocketPaths, 100);
         setTimeout(updateSocketPaths, 500);
+    })();
+</script>
+
+<script>
+    (function() {
+        // v15.2 Socket Logic (Resize Safe)
+        const updateSocketPath = (container) => {
+            const svg = container.querySelector('svg');
+            const path = container.querySelector('.socket-path');
+            if (!svg || !path) return;
+            
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            
+            // If measurements are 0 (e.g. detached), skip
+            if (w === 0 || h === 0) return;
+
+            const S = 0.5;
+            // Bezier delta constants
+            // Note: Middle curve inverted (V->H)
+            const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+            const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+            const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+            const l_short = 10.9 * S; 
+            
+            // Corner Radius (for standard corners)
+            const r = 32; // 2rem
+            
+            // Construct d string (Clockwise)
+            // Start Top-Left (actually after top-left corner)
+            let d = `M ${r} 0`;
+            
+            const socketW = 95.36;
+            
+            // Line to start of socket
+            d += ` L ${w - socketW} 0`;
+            
+            // 1. Curve Down/Right (First Step - Top) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // 2. Line Down (Vertical)
+            d += ` l 0 ${l_short}`;
+            
+            // 3. Curve Down/Right (Middle Step) - V->H Concave/Inverted
+            // INVERTED: Swap X and Y coordinates relative to step start
+            d += ` c ${c_cp1_y} ${c_cp1_x}, ${c_cp2_y} ${c_cp2_x}, ${c_end_y} ${c_end_x}`;
+            
+            // 4. Line Right (Horizontal)
+            d += ` l ${l_short} 0`;
+            
+            // 5. Curve Down/Right (Bottom Step) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // Now we are at (w, socketH).
+            // Line Down to Bottom-Right Corner start
+            d += ` L ${w} ${h - r}`;
+            
+            // Bottom-Right Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} ${r}`; // Sweep 1 for clockwise
+            
+            // Bottom Edge
+            d += ` L ${r} ${h}`;
+            
+            // Bottom-Left Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} -${r}`;
+            
+            // Left Edge
+            d += ` L 0 ${r}`;
+            
+            // Top-Left Corner
+            d += ` a ${r} ${r} 0 0 1 ${r} -${r}`;
+            
+            d += ' Z';
+            
+            path.setAttribute('d', d);
+        };
+
+        // ResizeObserver implementation
+        const ro = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // entry.target is the container
+                updateSocketPath(entry.target);
+            }
+        });
+        
+        // Init Loop
+        const containers = document.querySelectorAll('.socket-card-container');
+        containers.forEach(c => {
+            updateSocketPath(c);
+            ro.observe(c);
+        });
+
     })();
 </script>
 
