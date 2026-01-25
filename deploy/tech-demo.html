@@ -80,10 +80,10 @@
             <!-- v2.274: Removed desktop background (lg:bg-white/5) and border as requested. -->
             <!-- v2.276: Restored border/bg and updated radius to rounded-2xl. -->
             <!-- v2.277: Removed bg (kept border) and updated radius to rounded-3xl to match cards. -->
-            <!-- v2.326: Changed lg:top-12 to lg:top-32 to clear the header text (Room to breathe). -->
-            <!-- v2.329: REVERTED lg:bottom-28 back to lg:bottom-12 to align the container border with the Right Column. -->
-            <!-- Clearance for the chat widget inside the container is now handled by internal padding on the cluster. -->
-            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-32 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
+            <!-- v2.330: Reverted lg:top-32 to lg:top-12 to match Live Demo pill and Right Column (Alignment Repair). -->
+            <!-- v2.330: Added lg:pb-32 to create an internal "Safety Zone" at the bottom where the ring cannot grow. -->
+            <!-- This reserved space accommodates the Absolute Positioned controls. -->
+            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -280,11 +280,10 @@
                         </div> <!-- End Aspect Square Wrapper -->
                     </div> <!-- End Visuals Wrapper -->
                          
-                    <!-- Controls Target: Flex Sibling (v2.326/v2.329) -->
-                    <!-- Natural flow at bottom of container, consuming remaining height -->
-                    <!-- v2.328: Added -mt-2. -->
-                    <!-- v2.329: Added mb-24 (6rem) to PUSH the cluster UP away from the bottom corner chat widget. -->
-                    <div id="tech-demo-controls-target" class="w-full relative z-30 shrink-0 flex justify-center -mt-2 pb-4 lg:mb-24 pointer-events-auto"></div>
+                    <!-- Controls Target: Absolute Overlay (v2.330) -->
+                    <!-- Reverted to Absolute Positioning to allow specific placement (bottom-24) clearing the chat widget. -->
+                    <!-- The parent container has lg:pb-32 padding to ensure the ring doesn't overlap this area. -->
+                    <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-24 left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
                 </div>
                 <!-- End Ring Container -->
 

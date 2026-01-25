@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.330_hybrid] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.29 (Hybrid Layout Strategy)**
+    - **Top Alignment**: Restored the Scene Container to `lg:top-12`. This perfectly aligns the top border with the "Live Demo" pill and the Right Column (as requested).
+    - **Control Positioning**: Converted the Control Cluster back to `absolute` positioning at `lg:bottom-24`. This guaranteed "lift" ensures it clears the chat widget regardless of flex flow.
+    - **Collision Prevention**: Added `lg:pb-32` (8rem) padding to the Scene Container. This effectively reserves the bottom area for the absolute controls, forcing the `flex-grow` Ring to shrink and stop *before* it hits the controls, combining the best of both layout worlds (Flex Scaling + Absolute Precision).
+
 ## [v2.329_lift] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.28 (Layout Container Alignment)**
