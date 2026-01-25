@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.327_cluster] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.26 (Cluster Alignment Fix)**
+    - **Visuals Alignment**: Updated the `Visuals Wrapper` alignment from `items-center` to `items-end`.
+        - *Logic*: This forces the flexible square container (Ring) to sit at the *bottom* of the available vertical space, rather than floating in the middle.
+        - *Result*: The Ring now sits directly on top of the Control Cluster with no variable gap, regardless of screen height, solving the "way to the bottom" disconnection issue.
+
 ## [v2.326_spacing] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.25 (Spacing & Aspect Fix)**
