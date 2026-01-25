@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.312] - 2026-01-24
+### Assets
+- **Tech Demo v15.11 (User-Supplied Icons)**
+    - **Front Door Agent**: Switched to "API/Hub" carbon icon (CarbonApi.svg).
+    - **Technical Specialist**: Switched to "Server Chip" carbon icon (CarbonChip.svg).
+    - **Source**: Imported from user assets (`assets/icons/new/`).
+
 ## [v2.311] - 2026-01-24
 ### Assets
 - **Tech Demo v15.10 (Standardized Icons)**
