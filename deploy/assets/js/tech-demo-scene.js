@@ -669,11 +669,12 @@ export class TechDemoScene {
         // v2.336: Split Layout Fit Logic. 
         // If aspect is < 0.5 (Narrow Column), we must Zoom OUT (factor 0.7) to prevent side clipping.
         // If aspect is > 0.5 (Full Width Mobile), we Zoom IN (factor 0.48) to fill the height.
-        const zoomFactor = (this.width / this.height < 0.5) ? 0.7 : 0.48;
-        this.camera.position.z = this.isMobile ? this.config.cameraDistance * zoomFactor : this.config.cameraDistance;
+        // v2.346: REMOVED Legacy Z-Positioning. Relies entirely on handleResize() for responsive Z.
+        // previously: this.camera.position.z = this.isMobile ? this.config.cameraDistance * zoomFactor : this.config.cameraDistance;
         
         // Store Initial Position for Auto-Recenter (v2.189 Fix)
-        this.initialCameraPos = this.camera.position.clone();
+        // Initialize with temporary value, will be updated by handleResize logic immediately
+        this.initialCameraPos = new THREE.Vector3(0, 0, 10); 
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height, false); // false = Do not update CSS style (prevent layout resizing loop)
@@ -1403,17 +1404,13 @@ export class TechDemoScene {
                  
                  // Determine Targets based on Device
                  let targetLookAt = new THREE.Vector3(0,0,0);
-                 const baseZ = this.config.cameraDistance; // Use Configured Distance (v2.189 Fix: Was hardcoded 5)
-                 let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0,baseZ);
-    
-                 if (this.isMobile) {
-                     // Adjust Z based on aspect ratio to prevent side clipping
-                     const aspect = this.width / this.height;
-                     const targetZ = Math.max(baseZ, baseZ + (2.5 / Math.max(aspect, 0.4)) - 3.0); 
-                     
-                     targetCamPos.z = targetZ;
-                 }
-    
+                 
+                 // v2.346: Logic Update - TRUST handleResize() for Z-Position.
+                 // Removed manual "Mobile Z Recalculation" overlay which was causing expansion drift.
+                 // The handleResize() method updates this.initialCameraPos with the strict 85% containment Z.
+                 // We simply return to THAT position.
+                 let targetCamPos = this.initialCameraPos ? this.initialCameraPos.clone() : new THREE.Vector3(0,0, this.config.cameraDistance);
+
                  this.camera.position.lerp(targetCamPos, lerpSpeed);
                  if (this.controls) this.controls.target.lerp(targetLookAt, lerpSpeed);
             }

@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.346_ipad_expansion_root_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.45 (Neural Net Expansion Root Cause Fix)**
+    - **Logic Repair**: Removed legacy "Auto-Recenter Math" in the `animate()` loop that was overriding the carefully calculated camera position with an arbitrary Z-value on mobile/iPad.
+        - *Issue*: Even though `handleResize()` calculated the correct position (85% containment), the idle animation loop immediately "corrected" it to a different, closer distance, causing the "Expansion on load" effect.
+        - *Fix*: The animation loop now strictly respects `this.initialCameraPos`, which is authoritative and set by the responsive logic.
+    - **Cleanup**: Removed unused `IcosahedronScene` import from `tech-demo.html` to reduce network requests and script overhead.
+    - **Initialization**: Removed legacy Camera Z initialization to prevent initial frame jumps.
+
 ## [v2.345_ipad_fixes_final] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.44 (iPad Visibility & Expansion Fix)**

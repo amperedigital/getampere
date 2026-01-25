@@ -979,7 +979,7 @@
 <!-- Init Script -->
 
 <script type="module">
-        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.137';
+        /* v2.346: Cleanup - Removed unused IcosahedronScene import to reduce request count */
         
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('tech-demo-scene');
@@ -999,7 +999,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.345_ipad_fixes_final/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.346_ipad_expansion_root_fix/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
