@@ -1,6 +1,10 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+- **v2.368_responsive_gutters_fix**
+  - **Fixed**: Solved horizontal overflow and clipping on Small Desktop/Landscape Tablet (820px-1024px).
+  - **CSS**: Applied `width: calc(100% - 3rem)` to `#tech-demo-scene-container` to compensate for the `left: 1.5rem` offset in relative layout mode.
+  - **Layout**: Unified page gutters to `1.5rem` (Header, Scene, Cards) for consistent alignment in this range.
 ## [v2.367_universal_tablet_positioning] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.67 (Universal Tablet Positioning)**

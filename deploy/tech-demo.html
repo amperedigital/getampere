@@ -282,6 +282,7 @@
                                     /* B. POSITIONING: Tablet/Desktop Range (820px - 1024px) (v2.367) */
                                     /* Removed orientation:portrait to ensure Landscape Desktops in this width get the styled layout. */
                                     /* This fixes the "Nothing from 820 to 1023" issue by activating the Mobile positioning logic. */
+                                    /* v2.368: Fixed Margins & Overflow (Use calc width to prevent left-shift clipping) */
                                     @media (min-width: 820px) and (max-width: 1024px) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
@@ -295,24 +296,32 @@
                                         }
 
                                         /* Move Live Demo Pill */
-                                        /* v2.355: Reverted right gutter to 3rem (48px) to align with Header Text */
+                                        /* aligned with new 1.5rem gutter */
                                         #live-demo-pill {
                                             top: 2rem !important;
-                                            right: 3rem !important;
+                                            right: 1.5rem !important;
                                         }
 
-                                        /* v2.353: Reduce Page Gutters (Global Outer Edges) to 1.5rem (24px) */
+                                        /* v2.368: Unified 1.5rem (24px) Gutters & Overflow Protection */
                                         
-                                        /* Left Column: Heading Text - REVERTED v2.353: Kept at default (p-12/3rem) to avoid jamming text */
-                                        /* #tech-demo-header { padding-left: 1.5rem !important; } */
+                                        /* Left Column: Heading Text */
+                                        /* Force specific padding to match the scene gutter */
+                                        #tech-demo-header { 
+                                            padding-left: 1.5rem !important;
+                                            padding-right: 1.5rem !important;
+                                        }
 
-                                        /* Left Column: Scene Container Box (Absolute Position) */
+                                        /* Left Column: Scene Container Box */
+                                        /* CRITICAL: When using left: 1.5rem on a relative/w-full element, */
+                                        /* we MUST reduce width to prevent horizontal overflow/clipping. */
                                         #tech-demo-scene-container {
                                             left: 1.5rem !important;
+                                            width: calc(100% - 3rem) !important;
                                         }
 
                                         /* Right Column: Cards Container (Flex Flow) */
                                         #tech-demo-right-column {
+                                            padding-left: 1.5rem !important;
                                             padding-right: 1.5rem !important;
                                         }
                                     }
