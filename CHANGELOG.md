@@ -1,6 +1,11 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.365_unified_tablet_desktop_1024_retry] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.65 (Deploy Retry)**
+    - **Note**: Retry of v2.365 due to Cloudflare API 502 error.
+    - **Logic**: (Same as v2.365) Unified 1024px layout strategy with full-height enforcement.
 ## [v2.365_unified_tablet_desktop_1024] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.64 (Unified 1024px Layout Strategy)**
