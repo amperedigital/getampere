@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.357_control_overlap_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.56 (Responsive Control Overlap)**
+    - **Logic Check**: Fixed an issue where both the "Halo Ring" (Desktop controls) and "Mobile Sliders" (Mobile controls) were visible simultaneously on screens between **1025px** and **1279px** (e.g., Landscape Tablets, Small Laptops).
+    - **Fix Implementation**:
+        - **Default State**: Changed `#mobile-sliders-container` from `xl:hidden` to `hidden` (Hidden by default on ALL screen sizes).
+        - **Activation Rule**: Added `display: flex !important` to the specific Media Query that defines "Mobile Mode" (`max-width: 1024px portrait` OR `max-width 768px`).
+    - **Result**: The Mobile Sliders now *only* appear when the Halo Ring is explicitly hidden by the same rule, ensuring mutually exclusive visibility across all viewports.
+
 ## [v2.356_radius_match] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.55 (Border Radius Alignment)**
