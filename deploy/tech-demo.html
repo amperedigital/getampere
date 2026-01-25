@@ -275,9 +275,20 @@
                                             right: 1.5rem !important;
                                         }
 
-                                        /* v2.352: Reduce Page Gutters to 1.5rem (24px) */
+                                        /* v2.353: Reduce Page Gutters (Global Outer Edges) to 1.5rem (24px) */
+                                        
+                                        /* Left Column: Heading Text */
                                         #tech-demo-header {
                                             padding-left: 1.5rem !important;
+                                        }
+
+                                        /* Left Column: Scene Container Box (Absolute Position) */
+                                        #tech-demo-scene-container {
+                                            left: 1.5rem !important;
+                                        }
+
+                                        /* Right Column: Cards Container (Flex Flow) */
+                                        #tech-demo-right-column {
                                             padding-right: 1.5rem !important;
                                         }
                                     }
@@ -404,7 +415,8 @@
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
+        <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->

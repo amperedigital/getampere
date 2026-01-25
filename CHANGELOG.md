@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.353_ipad_pro_real_gutters] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.52 (iPad Pro Page Gutter Correction)**
+    - **Page Gutters (iPad Pro 1024px)**: Standardized Outer Page Gutter to `1.5rem` (24px) for specific iPad Pro layout.
+        - **Left Edge**: 
+            - Header Text (`#tech-demo-header`): `padding-left: 1.5rem`.
+            - Scene Container (`#tech-demo-scene-container`): `left: 1.5rem` (Previously `2rem`).
+        - **Right Edge**:
+            - Content Grid (`#tech-demo-right-column`): `padding-right: 1.5rem` (Previously `2rem`).
+            - Live Pillars (`#live-demo-pill`): `right: 1.5rem`.
+        - **Correction**: Previous fix (v2.352) only adjusted the header text padding ("Content Gutter") but left the containers ("Page Gutter") at 2rem, creating misalignment. This update aligns the entire page frame.
+
 ## [v2.352_ipad_pro_gutters] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.51 (iPad Pro Gutter Reduction)**
