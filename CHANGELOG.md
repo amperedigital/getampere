@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.356_radius_match] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.55 (Border Radius Alignment)**
+    - **Scene Container (Left Column)**: Increased Corner Radius from `rounded-3xl` (1.5rem / 24px) to `rounded-[2rem]` (2rem / 32px).
+    - **Reason**: Matches the explicit `2rem` border radius used by the Interactive Cards in the right column (and their generated SVG socket paths), ensuring consistent shape language across the primary UI containers.
+
 ## [v2.355_ipad_pro_pill_revert] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.54 (iPad Pro Live Demo Pill Alignment)**
