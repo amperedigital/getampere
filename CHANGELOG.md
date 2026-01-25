@@ -1,6 +1,15 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.363_ipad_pro_specific] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.62 (iPad Pro Specific Fix)**
+    - **Control Positioning**:
+        - **Targeted Adjustment**: Added a specific CSS rule for `(width: 1024px) and (orientation: portrait)`.
+        - **Action**: Applied `bottom: 9rem` *only* to this iPad Pro viewport, restoring the "Lifted" look that fits the taller screen.
+        - **Context**: Other devices (820px-1023px) remain at the safer `3rem` (or standard flow) to prevent desktop overlaps.
+    - **Visuals**:
+        - **Correction**: Reverted `#mobile-sliders-container` background to `bg-transparent` (from slate-950), restoring the intended aesthetic.
 ## [v2.362_exclude_ipad_pro] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.61 (iPad Pro Exclusion)**

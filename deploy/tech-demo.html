@@ -315,6 +315,14 @@
                                         }
                                     }
 
+                                    /* C. POSITIONING: iPad Pro Specific (1024px Portrait) (v2.363) */
+                                    /* Restore 9rem lift for typical iPad Pro Portrait width (1024x1366) */
+                                    @media (width: 1024px) and (orientation: portrait) {
+                                        #mobile-sliders-container {
+                                            bottom: 9rem !important;
+                                        }
+                                    }
+
                                     /* --- System Power State Transitions --- */
                                     /* Controlled by .halo-dimmed class on SVG applied by halo-rotator.js */
 
@@ -377,7 +385,8 @@
                 <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
-                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-slate-950">
+                <!-- v2.363: Reverted to bg-transparent as requested. Overlaps handled by better positioning logic. -->
+                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">
