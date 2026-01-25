@@ -226,8 +226,8 @@
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
                                     /* Mobile Overrides (v2.264) */
-                                    /* v2.337: Updated to 1024px to HIDE rings on iPad Pro (User Request). */
-                                    @media (max-width: 1024px) {
+                                    /* v2.338: Strict Portrait Targeting for 1024px (iPad Pro) to avoid Desktop cross-pollination */
+                                    @media (max-width: 1024px) and (orientation: portrait) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;

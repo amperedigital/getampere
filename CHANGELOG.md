@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.338_ipad_strict] - 2026-01-25
+### Technical
+- **Tech Demo v15.37 (Strict Isolation)**
+    - **CSS Query Refinement**: Updated the Ring Hiding Logic to stricter targeting: `@media (max-width: 1024px) and (orientation: portrait)`.
+        - *Reasoning*: Enforce strict isolation between "iPad Pro Portrait" (Tablet) and "Desktop Window at 1024px" (Desktop). This prevents Desktop users who happen to browse at 1024px Landscape from losing the Rings, while ensuring the iPad experience (Portrait) is clean and ring-free as requested. "No cross-pollination".
+
 ## [v2.337_ipad_polish] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.36 (iPad Pro Real Estate & Polish)**
