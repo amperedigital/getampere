@@ -277,10 +277,10 @@
                                     }
 
                                     /* B. POSITIONING: Tablet Portrait (Lifted Layout) (v2.359) */
-                                    /* Applies explicitly to Portrait orientation (iPad Air) where vertical space allows lifting elements. */
-                                    /* v2.362: Excluded iPad Pro (1024px) from this specific lift logic to prevent breakage. Range caps at 1023px. */
+                                    /* Applies explicitly to Portrait orientation (iPad Air/Pro) where vertical space allows lifting elements. */
+                                    /* v2.364: Re-included 1024px to ensure iPad Pro inherits general layout (gutters, pill), then overridden by Section C. */
                                     /* Desktop Landscape windows at this width use standard flow to avoid clipping. */
-                                    @media (min-width: 820px) and (max-width: 1023px) and (orientation: portrait) {
+                                    @media (min-width: 820px) and (max-width: 1024px) and (orientation: portrait) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;

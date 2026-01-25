@@ -1,6 +1,13 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.364_reinclude_ipad_pro_base] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.63 (iPad Pro Base Layout Restoration)**
+    - **Logic Correction**:
+        - **Revert**: Changed the Tablet Portrait Positioning query range back to `max-width: 1024px` (was 1023px).
+        - **Reason**: iPad Pro (1024px) relies on this query for essential layout properties (Gutters, Live Demo Pill position, Controls Target base). Excluding it caused those elements to break.
+        - **Conflict Resolution**: The slider position (`bottom: 3rem` in this block) is successfully overridden by the specific 1024px rule (`bottom: 9rem`) added in v2.363, because the specific rule appears later in the cascade.
 ## [v2.363_ipad_pro_specific] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.62 (iPad Pro Specific Fix)**
