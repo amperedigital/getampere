@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.325_flex] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.24 (Flex Layout Refactor)**
+    - **Layout Architecture**: Converted the Ring Container into a Flex Column (`flex-col justify-between`) to eliminate overlap/jamming issues.
+    - **Visuals Area**: Wrapped Scene & Ring in a `flex-grow` container that maintains the aspect-square constraint but allows shrinking.
+    - **Controls Area**: Converted Controls to a standard relative flex item (`pb-2`) that sits naturally below the visuals within the same scaling parent.
+    - **Outcome**: The visual ring shrinks to accommodate the controls, ensuring "room to breathe" and preventing UI collision while maintaining 1:1 scaling.
+
 ## [v2.324_struct] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.23 (Structural Refactor)**
