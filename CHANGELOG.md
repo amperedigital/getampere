@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.349_standby_controls_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.48 (Mobile Control State Logic Repair)**
+    - **Bug Fix**: Addressed regression where Mobile Ring Sliders remained active/interactive during `STANDBY` mode.
+        - *Root Cause*: The state observer used a legacy CSS selector (`.lg:hidden`) to find the sliders, but the container had been updated to `.xl:hidden` in a previous layout pass, causing the JS toggle logic to fail silently.
+        - *Resolution*: Updated the logic to target the container by ID (`#mobile-sliders-container`), ensuring controls are correctly disabled (dimmed/grayscale) when the system enters Standby or Offline states. All inputs now strictly require `ACTIVE` state to be usable.
+
 ## [v2.348_tablet_size_bump] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.47 (Tablet Scale Increase)**

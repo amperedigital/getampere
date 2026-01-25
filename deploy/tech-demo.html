@@ -1126,7 +1126,9 @@
                     const labelOuter = document.getElementById('label-slider-outer');
                     const labelInner = document.getElementById('label-slider-inner');
                     // Parent containers for opacity control
-                    const sliderContainers = document.querySelectorAll('.lg\\:hidden input[type="range"]').forEach(input => {
+                    // v2.349: Use ID selector exclusively to ensure targeting regardless of responsive visibility classes (lg:hidden vs xl:hidden)
+                    const inputsToToggle = document.querySelectorAll('#mobile-sliders-container input[type="range"]');
+                    inputsToToggle.forEach(input => {
                          // Find the visual parent (div with flex col)
                          const parent = input.closest('.flex-col');
                          if(parent) {
