@@ -1280,28 +1280,31 @@ export class TechDemoScene {
             const FOV = 45; 
             const tanHalfFOV = Math.tan( (FOV * Math.PI / 180) / 2 );
             const objectSize = 3.0; // Radius 1.5 * 2
-            // v2.339: Containment Logic Update (Strict Constrain to Dashed Ring)
-            // Mobile/Tablet (including iPad Pro) must be contained to 95% of the DASHED LINE RING (Diameter 720).
-            // Desktop remains focused on the INNER RING (Diameter 400).
+            // v2.341: Unified Containment Logic based on Layout State
+            // Rule: If Rings are Hidden (Mobile/Portrait Tablet), constrain to 95% of Dashed Ring.
+            //       If Rings are Visible (Desktop/Landscape), constrain to 95% of Inner Ring.
+            
+            // Check CSS Media Query Matches directly to stay in sync with HTML Styles
+            // Matches: (max-width: 1024px) AND (orientation: portrait) OR (max-width: 768px)
+            const isRingHiddenLayout = window.matchMedia("(max-width: 1024px) and (orientation: portrait), (max-width: 768px)").matches;
             
             const dashedRingRatio = 720 / 800; // 0.9
             const innerRingRatio = 400 / 800; // 0.5
             
-            // iPad/Mobile uses the larger outer boundary (Dashed Ring)
-            const referenceRatio = (this.isMobile) ? dashedRingRatio : innerRingRatio;
+            const referenceRatio = (isRingHiddenLayout) ? dashedRingRatio : innerRingRatio;
             
-            const fillPercentage = 0.95; // 95% of selected ring
+            // User Rule: "Neuronet must be within 95% width [of the container]"
+            const fillPercentage = 0.95; 
             
             let targetVisibleSize;
 
-            if (this.camera.aspect >= 1.0) {
-                // LANDSCAPE (Height Limited)
+            if (this.camera.aspect >= 1.0 && !isRingHiddenLayout) {
+                // LANDSCAPE DESKTOP (Height Limited, Rings Visible)
                 const targetCoverage = referenceRatio * fillPercentage;
                 targetVisibleSize = objectSize / targetCoverage;
             } else {
-                // PORTRAIT (Width Limited)
-                // Remove artificial 'mobileBoost' which broke containment. 
-                // Rely on the dashedRingRatio (0.9) to set the constraint correctly.
+                // PORTRAIT or MOBILE (Width Limited OR Rings Hidden)
+                // Use the reference ratio (Dashed or Inner)
                 const targetCoverage = referenceRatio * fillPercentage;
                 
                 targetVisibleSize = objectSize / (this.camera.aspect * targetCoverage);

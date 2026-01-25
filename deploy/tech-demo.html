@@ -168,7 +168,8 @@
                         <g transform="translate(400, 400)">
                             
                             <!-- 1. Outer Dashed Ring (Border Line - Static) -->
-                            <circle r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
+                            <!-- Added ID for strict targeting -->
+                            <circle id="halo-ring-dashed" r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
                             
                             <!-- STATIC MARKERS (Selection Needles) -->
                             <!-- 12 O'Clock (Top) - Inward/Down -->
@@ -226,26 +227,36 @@
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
                                     /* Mobile Overrides (v2.264) */
-                                    /* v2.339: Strict Portrait Targeting for 1024px + Containment & Moving Controls Up */
-                                    @media (max-width: 1024px) and (orientation: portrait) {
+                                    /* v2.341: Unified Rule - HIDE Rings & SHOW Dashed Constraint for Mobile/Tablet */
+                                    /* Includes Standard Mobile (<=768px) and iPad Pro Portrait (<=1024px Portrait) */
+                                    @media (max-width: 768px), (max-width: 1024px) and (orientation: portrait) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
                                         }
-                                        /* Make Dashed Ring More Visible (Constraint Boundary) */
-                                        /* The Dashed Ring is circle[r="360"] inside the SVG */
-                                        circle[r="360"] {
-                                           stroke-opacity: 0.8 !important; /* Increase from 0.5 to be clear boundary */
+                                        /* 1. FORCE DASHED RING VISIBILITY */
+                                        #halo-ring-dashed {
+                                            stroke: #94a3b8 !important; /* Slate-400 */
+                                            stroke-opacity: 1 !important;
+                                            opacity: 1 !important;
+                                            stroke-width: 2px !important;
                                         }
 
-                                        /* Move Controls (Standby Pill) UP (User: "controls need to be moved up") */
+                                        /* 2. STRICT CONTAINMENT (Clip Path) */
+                                        /* Dashed Ring is 360px radius in 800px box -> 45% of size */
+                                        /* We clip slightly outside it to avoid cutting the line itself */
+                                        #tech-demo-scene {
+                                            clip-path: circle(46% at center) !important;
+                                        }
+
+                                        /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
-                                            bottom: 12rem !important; /* Moved up from ~2rem/10rem */
+                                            bottom: 15rem !important;
                                         }
                                         
-                                        /* Move Sliders (Cluster) UP and Ensure Visibility */
+                                        /* Move Sliders (Cluster) UP */
                                         #mobile-sliders-container {
-                                            bottom: 4rem !important; /* Moved up from 2rem */
+                                            bottom: 6rem !important;
                                         }
                                     }
 
@@ -980,7 +991,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.339_ipad_containment/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.341_containment_rules/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

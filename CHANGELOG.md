@@ -1,5 +1,26 @@
 # Changelog
 
+## [v2.341_containment_rules] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.40 (Unified Containment Rules)**
+    - **Global Layout Rule**: Established a unified rule linking Ring Visibility to Container Rules across all breakpoints.
+        - **Condition**: IF (Mobile `< 768px`) OR (Tablet/iPad `< 1024px` AND Portrait) -> Rings Hidden.
+        - **Effect 1**: Dashed Line Container (Diameter 720px) becomes fully visible (`opacity: 1`, `slate-400`).
+        - **Effect 2 (JS)**: Neural Net strictly resizes to fit 95% of the Dashed Ring (0.9 ratio).
+        - **Effect 3 (Visual)**: `clip-path` set to 46% of container (matching 360/800 radius) to hard-clip any potential overflows.
+    - **Desktop Behavior**: If above conditions are NOT met (e.g. 1024px Landscape), Rings remain visible, and Neural Net fits to the Inner Ring (Standard).
+
+## [v2.340_ipad_final_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.39 (Strict Containment & Layout Fixes)**
+    - **Dashed Ring (Force Show)**: Assigned ID `#halo-ring-dashed` and forced `stroke: #94a3b8` (Slate-400), `opacity: 1`, and `stroke-width: 2px` on iPad Pro/Mobile. This guarantees the container boundary is visible.
+    - **Crowding Fix (Lifted Controls)**:
+        - *Controls Pill*: Raised further to `bottom: 15rem` (approx 240px from bottom).
+        - *Sliders*: Raised to `bottom: 6rem` (approx 96px from bottom).
+    - **Strict Containment**:
+        - **Logic**: Reduced Neural Net fill percentage from 95% to **85%** of the Dashed Ring diameter. This provides a hard visual cushion to prevent expanding beyond the edge.
+        - **Hard Clip**: Implemented `clip-path: circle(44vmin at center)` for iPad Portrait to physically chop off any overflowing particles at the ring boundary (calculated as max width of the container).
+
 ## [v2.339_ipad_containment] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.38 (iPad Containment & Positioning)**
