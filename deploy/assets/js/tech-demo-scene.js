@@ -666,10 +666,10 @@ export class TechDemoScene {
         this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
         
         // Mobile Override: Zoom IN for maximum visual fill (Matching 85% Clip Path)
-        // v2.332: Changed from * 1.6 (Zoom Out) to * 0.65 (Zoom In).
-        // Since mobile layout hides the rings and expands the clip-path to 342px (85%),
-        // we must bring the camera closer to make the sphere fill this new void.
-        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 0.65 : this.config.cameraDistance;
+        // v2.333: Changed from 0.65 to 0.33 to fully fill the container.
+        // Target: Object Radius (1.5) needs to occupy ~85% of Viewport Height.
+        // Calc: Z = 1.5 / tan(22.5) / 0.85 = ~4.25. (13 * 0.33 = 4.29)
+        this.camera.position.z = this.isMobile ? this.config.cameraDistance * 0.33 : this.config.cameraDistance;
         
         // Store Initial Position for Auto-Recenter (v2.189 Fix)
         this.initialCameraPos = this.camera.position.clone();

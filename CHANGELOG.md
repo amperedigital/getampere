@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.333_mobile_zoom_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.32 (Mobile Fill Factor)**
+    - **Sizing Correction**: Updated `tech-demo-scene.js` scaling logic to strictly satisfy the "95% Fill" requirement for mobile/tablet.
+    - **Math**: Adjusted camera distance factor from `0.65` to `0.33`.
+        - *Logic*: Previous zoom (`0.65`) resulted in ~45% occupancy. New factor (`0.33`) calculates to `Z=4.29`, ensuring the `R=1.5` Icosahedron geometry visually occupies ~85% of the viewport height, effectively filling the expanding clip-path area on screens < 1024px.
+
 ## [v2.332_mobile_scale] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.31 (Mobile Neural Scale)**
