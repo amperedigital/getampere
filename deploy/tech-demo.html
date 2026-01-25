@@ -80,7 +80,8 @@
             <!-- v2.274: Removed desktop background (lg:bg-white/5) and border as requested. -->
             <!-- v2.276: Restored border/bg and updated radius to rounded-2xl. -->
             <!-- v2.277: Removed bg (kept border) and updated radius to rounded-3xl to match cards. -->
-            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
+            <!-- v2.326: Changed lg:top-12 to lg:top-32 to clear the header text (Room to breathe). -->
+            <div class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-32 lg:bottom-8 lg:left-12 lg:right-4 overflow-visible lg:overflow-hidden lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -117,15 +118,15 @@
                 <!-- WRAPPER: Width constrains and centers column -->
                 <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-0">
                     
-                    <!-- RING CONTAINER: Aspect Ratio & Sizing -->
-                    <!-- Desktop: Height-driven sizing (h-full constrained by max-h) to ensure it fits vertically -->
-                    <!-- Aspect Square forces width to match height, centered by flex parent -->
-                    <div class="relative w-full h-[350px] lg:w-auto lg:h-full lg:max-h-[calc(100%-4rem)] lg:aspect-square flex flex-col items-center justify-center">
+                    <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
+                    <!-- REMOVED lg:aspect-square from this parent. Ideally, the parent is just a flex column. -->
+                    <!-- The Inner Visuals Wrapper determines the aspect ratio limit. -->
+                    <div class="relative w-full h-[350px] lg:w-full lg:h-full flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- VISUALS WRAPPER (Flex Grow) -->
                     <!-- Consumes available space, centering the square visualization -->
-                    <div class="relative w-full flex-grow min-h-0 flex items-center justify-center py-4">
-                        <div class="relative h-full aspect-square">
+                    <div class="relative w-full flex-grow min-h-0 flex items-center justify-center py-2 pointer-events-auto">
+                        <div class="relative h-full aspect-square max-h-full max-w-full">
 
                     <!-- 1. NESTED SCENE (Background Layer) -->
                     <!-- Centered within the Ring's coordinate space. Full Size. -->
@@ -276,9 +277,10 @@
                         </div> <!-- End Aspect Square Wrapper -->
                     </div> <!-- End Visuals Wrapper -->
                          
-                    <!-- Controls Target: Flex Sibling (v2.325) -->
+                    <!-- Controls Target: Flex Sibling (v2.326) -->
                     <!-- Natural flow at bottom of container, consuming remaining height -->
-                    <div id="tech-demo-controls-target" class="w-full relative z-30 flex justify-center pb-2 lg:pb-0 pointer-events-none"></div>
+                    <!-- Added pointer-events-auto because parent is pointer-events-none to prevent blocking edge clicks -->
+                    <div id="tech-demo-controls-target" class="w-full relative z-30 shrink-0 flex justify-center pb-4 pointer-events-auto"></div>
                 </div>
                 <!-- End Ring Container -->
 

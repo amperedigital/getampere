@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.326_spacing] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.25 (Spacing & Aspect Fix)**
+    - **Header Clearance**: Moved the Main Scene Container `top` position from `12` (3rem) to `32` (8rem) to prevent the "AI Neural Architecture" header from overlapping the visualization geometry.
+    - **Aspect Ratio Logic**: TRANSFERRED the `aspect-square` constraint from the Parent Flex Container to the Inner Visuals Wrapper.
+        - *Why*: Applying square aspect to a parent that contains (Square + Rectangle Strip) forces squeezing.
+        - *Fix*: Parent is now a purely adaptive flex column (`h-full`). Inner visual wrapper is `aspect-square`, scaling to fit the *remaining* space above the controls.
+    - **Control Isolation**: Enforced `shrink-0` and extra padding (`pb-4`) on the control cluster to guarantee it never collapses or overlaps with the ring labels.
+
 ## [v2.325_flex] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.24 (Flex Layout Refactor)**
