@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.354_ipad_pro_text_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.53 (iPad Pro Typography Restoration)**
+    - **Header Text Fix**: Reverted the `padding-left: 1.5rem` override on `#tech-demo-header` for iPad Pro.
+        - *Reason*: Reducing the padding "jammed" the heavy typography ("AI Neural Architecture") against the screen edge, breaking the design's breathability.
+        - *State*: Usage returns to the default `lg:p-12` (3rem), ensuring the text aligns with the breathable design language even while the *structural containers* (Scene & Grid) utilize the wider 1.5rem gutter for efficiency.
+    - **Container Logic**: Kept the Scene Container (`left: 1.5rem`) and Right Column (`padding-right: 1.5rem`) expanded. This creates a pleasing visual step where the text is indented relative to the structural frame.
+
 ## [v2.353_ipad_pro_real_gutters] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.52 (iPad Pro Page Gutter Correction)**
