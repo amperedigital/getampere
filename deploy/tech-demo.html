@@ -342,7 +342,7 @@
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
-                                                                                                                                                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                                                                                                                                                                                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
                 <div class="relative group h-full socket-card-container"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
@@ -402,7 +402,7 @@
                         <!-- Layer 3: Icon -->
                         <!-- Promoted to distinct layer to preventing scaling jitter -->
                         <div class="relative z-30" style="transform: translateZ(1px);">
-                             <svg class="w-6 h-6 text-white/90" viewBox="0 0 78.91 78.04" fill="currentColor"><path d="M71.73,29.53c2.82-3.57,3.48-8.25,1.61-12.59-1.84-4.27-5.59-6.92-9.92-7.19-.57-3.32-2.46-6.04-5.48-7.82-4.33-2.55-10.2-2.57-14.59-.06-1.6,.92-2.9,2.11-3.89,3.52-.99-1.41-2.29-2.6-3.89-3.52-4.4-2.51-10.26-2.49-14.59,.06-3.02,1.78-4.91,4.5-5.48,7.82-4.33,.27-8.07,2.92-9.92,7.19-1.87,4.34-1.21,9.02,1.61,12.59C2.18,33.26-.6,39.35,.11,45.48c.62,5.26,3.7,9.39,8.43,11.43-2.02,5.22-1.47,10.39,1.61,14.47,3.15,4.18,8.6,6.66,14.09,6.66,1.26,0,2.53-.13,3.77-.4,5.07-1.11,9.06-4.35,11.45-9.13,2.39,4.78,6.38,8.01,11.45,9.13,1.24,.27,2.51,.4,3.77,.4,5.49,0,10.93-2.48,14.09-6.66,3.08-4.09,3.63-9.25,1.61-14.47,4.72-2.05,7.81-6.17,8.43-11.43,.71-6.12-2.07-12.21-7.07-15.95ZM22.88,27.58c1.77,0,3.21,1.44,3.21,3.21s-1.44,3.21-3.21,3.21-3.21-1.44-3.21-3.21,1.44-3.21,3.21-3.21ZM26.31,53.43c1.77,0,3.21,1.44,3.21,3.21s-1.44,3.21-3.21,3.21-3.21-1.44-3.21-3.21,1.44-3.21,3.21-3.21ZM56.03,50.47c-1.77,0-3.21-1.44-3.21-3.21s1.44-3.21,3.21-3.21,3.21,1.44,3.21,3.21-1.44,3.21-3.21,3.21ZM52.6,24.62c-1.77,0-3.21-1.44-3.21-3.21s1.44-3.21,3.21-3.21,3.21,1.44,3.21,3.21-1.44,3.21-3.21,3.21Z"/></svg>
+                             <svg class="w-6 h-6 text-white/90" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="40" r="8" fill="currentColor" stroke="none"/><circle cx="60" cy="20" r="6" fill="currentColor" stroke="none"/><circle cx="60" cy="40" r="6" fill="currentColor" stroke="none"/><circle cx="60" cy="60" r="6" fill="currentColor" stroke="none"/><path d="M 20 40 L 60 20" /><path d="M 20 40 L 60 40" /><path d="M 20 40 L 60 60" /></svg>
                         </div>
                     </div>
 
@@ -1090,6 +1090,190 @@
         // Also run after a short delay for layout shifts
         setTimeout(updateSocketPaths, 100);
         setTimeout(updateSocketPaths, 500);
+    })();
+</script>
+
+<script>
+    (function() {
+        // v15.2 Socket Logic (Resize Safe)
+        const updateSocketPath = (container) => {
+            const svg = container.querySelector('svg');
+            const path = container.querySelector('.socket-path');
+            if (!svg || !path) return;
+            
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            
+            // If measurements are 0 (e.g. detached), skip
+            if (w === 0 || h === 0) return;
+
+            const S = 0.5;
+            // Bezier delta constants
+            // Note: Middle curve inverted (V->H)
+            const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+            const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+            const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+            const l_short = 10.9 * S; 
+            
+            // Corner Radius (for standard corners)
+            const r = 32; // 2rem
+            
+            // Construct d string (Clockwise)
+            // Start Top-Left (actually after top-left corner)
+            let d = `M ${r} 0`;
+            
+            const socketW = 95.36;
+            
+            // Line to start of socket
+            d += ` L ${w - socketW} 0`;
+            
+            // 1. Curve Down/Right (First Step - Top) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // 2. Line Down (Vertical)
+            d += ` l 0 ${l_short}`;
+            
+            // 3. Curve Down/Right (Middle Step) - V->H Concave/Inverted
+            // INVERTED: Swap X and Y coordinates relative to step start
+            d += ` c ${c_cp1_y} ${c_cp1_x}, ${c_cp2_y} ${c_cp2_x}, ${c_end_y} ${c_end_x}`;
+            
+            // 4. Line Right (Horizontal)
+            d += ` l ${l_short} 0`;
+            
+            // 5. Curve Down/Right (Bottom Step) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // Now we are at (w, socketH).
+            // Line Down to Bottom-Right Corner start
+            d += ` L ${w} ${h - r}`;
+            
+            // Bottom-Right Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} ${r}`; // Sweep 1 for clockwise
+            
+            // Bottom Edge
+            d += ` L ${r} ${h}`;
+            
+            // Bottom-Left Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} -${r}`;
+            
+            // Left Edge
+            d += ` L 0 ${r}`;
+            
+            // Top-Left Corner
+            d += ` a ${r} ${r} 0 0 1 ${r} -${r}`;
+            
+            d += ' Z';
+            
+            path.setAttribute('d', d);
+        };
+
+        // ResizeObserver implementation
+        const ro = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // entry.target is the container
+                updateSocketPath(entry.target);
+            }
+        });
+        
+        // Init Loop
+        const containers = document.querySelectorAll('.socket-card-container');
+        containers.forEach(c => {
+            updateSocketPath(c);
+            ro.observe(c);
+        });
+
+    })();
+</script>
+
+<script>
+    (function() {
+        // v15.2 Socket Logic (Resize Safe)
+        const updateSocketPath = (container) => {
+            const svg = container.querySelector('svg');
+            const path = container.querySelector('.socket-path');
+            if (!svg || !path) return;
+            
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            
+            // If measurements are 0 (e.g. detached), skip
+            if (w === 0 || h === 0) return;
+
+            const S = 0.5;
+            // Bezier delta constants
+            // Note: Middle curve inverted (V->H)
+            const c_cp1_x = 33.11 * S; const c_cp1_y = 0 * S;
+            const c_cp2_x = 59.94 * S; const c_cp2_y = 26.84 * S;
+            const c_end_x = 59.94 * S; const c_end_y = 59.94 * S;
+            const l_short = 10.9 * S; 
+            
+            // Corner Radius (for standard corners)
+            const r = 32; // 2rem
+            
+            // Construct d string (Clockwise)
+            // Start Top-Left (actually after top-left corner)
+            let d = `M ${r} 0`;
+            
+            const socketW = 95.36;
+            
+            // Line to start of socket
+            d += ` L ${w - socketW} 0`;
+            
+            // 1. Curve Down/Right (First Step - Top) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // 2. Line Down (Vertical)
+            d += ` l 0 ${l_short}`;
+            
+            // 3. Curve Down/Right (Middle Step) - V->H Concave/Inverted
+            // INVERTED: Swap X and Y coordinates relative to step start
+            d += ` c ${c_cp1_y} ${c_cp1_x}, ${c_cp2_y} ${c_cp2_x}, ${c_end_y} ${c_end_x}`;
+            
+            // 4. Line Right (Horizontal)
+            d += ` l ${l_short} 0`;
+            
+            // 5. Curve Down/Right (Bottom Step) - H->V Convex
+            d += ` c ${c_cp1_x} ${c_cp1_y}, ${c_cp2_x} ${c_cp2_y}, ${c_end_x} ${c_end_y}`;
+            
+            // Now we are at (w, socketH).
+            // Line Down to Bottom-Right Corner start
+            d += ` L ${w} ${h - r}`;
+            
+            // Bottom-Right Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} ${r}`; // Sweep 1 for clockwise
+            
+            // Bottom Edge
+            d += ` L ${r} ${h}`;
+            
+            // Bottom-Left Corner
+            d += ` a ${r} ${r} 0 0 1 -${r} -${r}`;
+            
+            // Left Edge
+            d += ` L 0 ${r}`;
+            
+            // Top-Left Corner
+            d += ` a ${r} ${r} 0 0 1 ${r} -${r}`;
+            
+            d += ' Z';
+            
+            path.setAttribute('d', d);
+        };
+
+        // ResizeObserver implementation
+        const ro = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // entry.target is the container
+                updateSocketPath(entry.target);
+            }
+        });
+        
+        // Init Loop
+        const containers = document.querySelectorAll('.socket-card-container');
+        containers.forEach(c => {
+            updateSocketPath(c);
+            ro.observe(c);
+        });
+
     })();
 </script>
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.309] - 2026-01-24
+### Assets
+- **Tech Demo v15.8 (Front Door Polish)**
+    - **Icon Reconstruction**: Replaced the "Front Door Agent" icon (previously `#10` Circuit Flow) with a synthesized, high-contrast geometric routing icon.
+        - *Reason*: The previous SVG was too complex for the 24px scale, rendering as an indistinct blob.
+        - *New Design*: A clear "1-to-3" node split using primitive shapes (`circle`, `path`) and standard strokes (`stroke-width="5"`) to match the "Glass" monoline aesthetic and ensuring perfect legibility at small sizes.
+
 ## [v2.308] - 2026-01-24
 ### Assets
 - **Tech Demo v15.7 (Specific Icon Swaps)**
