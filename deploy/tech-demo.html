@@ -264,9 +264,10 @@
                                         }
                                     }
 
-                                    /* B. POSITIONING: Apply to Tablet Range (820px - 1024px) (v2.358) */
-                                    /* Includes iPad Air (820px) and iPad Pro (1024px) in the "Lifted" layout */
-                                    @media (min-width: 820px) and (max-width: 1024px) {
+                                    /* B. POSITIONING: Tablet Portrait (Lifted Layout) (v2.359) */
+                                    /* Applies explicitly to Portrait orientation (iPad Air/Pro) where vertical space allows lifting elements. */
+                                    /* Desktop Landscape windows at this width use standard flow to avoid clipping. */
+                                    @media (min-width: 820px) and (max-width: 1024px) and (orientation: portrait) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;

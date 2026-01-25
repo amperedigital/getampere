@@ -1,6 +1,15 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.359_safe_tablet_lift] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.58 (Safe Tablet Positioning)**
+    - **Logic Refinement**:
+        - **Issue**: Expanding the "Lifted" controls (raising sliders/buttons) to all screens 820px-1024px caused overlaps on Desktop Landscape windows where vertical height is limited.
+        - **Fix**: Re-applied the `and (orientation: portrait)` constraint to the **Positioning** logic.
+    - **Result**:
+        - **Tablets (Portrait)**: Receive the optimized "Lifted" layout to utilize vertical space.
+        - **Desktop (Landscape 820px-1024px)**: Receive the standard "Flow" layout (Sliders below Scene), ensuring no content overlaps regardless of window height.
 ## [v2.358_broad_tablet_support] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.57 (Tablet Range Unification)**
