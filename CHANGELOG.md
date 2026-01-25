@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.328_clearance] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.27 (Chat Widget Clearance)**
+    - **Bottom Margin**: Increased the Scene Container `bottom` position from `8` (2rem) to `28` (7rem).
+    - **Fix**: This creates a strictly protected vertical zone at the bottom of the screen, ensuring the Control Cluster never gets hidden behind the fixed "Start a Call" / Intercom widget when resizing the window vertically.
+    - **Tightening**: Applied `-mt-2` to the control cluster to reduce visual gap between the ring bottom and the controls.
+
 ## [v2.327_cluster] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.26 (Cluster Alignment Fix)**
