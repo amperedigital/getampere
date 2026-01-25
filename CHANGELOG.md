@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.321.deploy_fix] - 2026-01-24
+### DevOps
+- **Deployment Script Fix**: Updated `scripts/publish.sh` to correctly handle version tags containing underscores (e.g., `v2.315.flex_ui`).
+    - **Issue**: The regex previously excluded `_`, causing the script to fail to detect and update CDN links for versions like `v2.320.layout_fix`.
+    - **Impact**: This prevented `tech-demo.html` from pointing to the correct new Javascript files, leading to "missing" features (Controls in wrong place, broken sockets).
+    - **Resolution**: Updating to this version triggers a complete link refresh.
+
 ## [v2.320.layout_fix] - 2026-01-24
 ### UI & Architecture
 - **Tech Demo v15.20 (Layout Refactor)**
