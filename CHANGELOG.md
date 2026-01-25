@@ -1,6 +1,11 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+- **v2.400_focus_mode_cards**
+  - **Feature**: Added "Zen Mode" Card Expansion. Clicking the top-right button on any grid card now expands it to fill the entire column.
+  - **Interaction**: Uses a "Lift & Fill" technique (Spacer insertion) to ensure the underlying grid layout does not shift or collapse.
+  - **Visuals**: Other cards fade out (`opacity: 0`) to provide focus. The expanded card respects the 1.5rem responsive gutters.
+  - **Resizing**: The generated socket path (glass effect) automatically redraws to match the new dimensions via the existing ResizeObserver.
 - **v2.368_responsive_gutters_fix**
   - **Fixed**: Solved horizontal overflow and clipping on Small Desktop/Landscape Tablet (820px-1024px).
   - **CSS**: Applied `width: calc(100% - 3rem)` to `#tech-demo-scene-container` to compensate for the `left: 1.5rem` offset in relative layout mode.
