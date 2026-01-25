@@ -228,29 +228,32 @@
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
                                     /* Mobile Overrides (v2.264) */
-                                    /* v2.341: Unified Rule - HIDE Rings & SHOW Dashed Constraint for Mobile/Tablet */
-                                    /* Includes Standard Mobile (<=768px) and iPad Pro Portrait (<=1024px Portrait) */
-                                    @media (max-width: 768px), (max-width: 1024px) and (orientation: portrait) {
+                                    /* v2.341: Unified Rule - HIDE Rings & SHOW Dashed Constraint for Mobile/Tablet (Global) */
+                                    /* v2.347: Separated Visuals from Positioning to fix iPad Air (820px) Layout */
+                                    
+                                    /* A. VISUALS: Apply to ALL Mobile/Tablet (Phone -> iPad Pro 1024px) */
+                                    @media (max-width: 1024px) and (orientation: portrait), (max-width: 768px) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
                                         }
                                         /* 1. DASHED RING VISIBILITY (Standard Style) */
-                                        /* v2.345: Explicitly boost opacity for iPad/Mobile so it's actually visible against the dark bg */
-                                        /* Use Slate-600 (#475569) which is subtle but visible, unlike the previous Slate-400 (too bright) */
+                                        /* v2.345: Explicitly boost opacity for iPad/Mobile */
                                         #halo-ring-dashed {
                                             stroke: #475569 !important;
                                             opacity: 1 !important;
-                                            stroke-dasharray: 4 6; /* Maintain dashed look */
+                                            stroke-dasharray: 4 6; 
                                         }
                                         
                                         /* 2. STRICT CONTAINMENT (Clip Path) */
-                                        /* Dashed Ring is 360px radius in 800px box -> 45% of size */
-                                        /* We clip slightly outside it to avoid cutting the line itself */
                                         #tech-demo-scene {
                                             clip-path: circle(46% at center) !important;
                                         }
+                                    }
 
+                                    /* B. POSITIONING: Apply ONLY to Large Portrait Tablets (iPad Pro 1024px) */
+                                    /* Excludes iPad Air (820px) and Phones, which use default flow positioning */
+                                    @media (min-width: 821px) and (max-width: 1024px) and (orientation: portrait) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;
@@ -261,7 +264,7 @@
                                             bottom: 9rem !important;
                                         }
 
-                                        /* Move Live Demo Pill (User: "Top 2rem, Right 3rem") */
+                                        /* Move Live Demo Pill */
                                         #live-demo-pill {
                                             top: 2rem !important;
                                             right: 3rem !important;

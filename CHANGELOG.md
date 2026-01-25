@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.347_ipad_air_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.46 (iPad Air 820px Layout Fix)**
+    - **CSS Overrides Separation**:
+        - **Visuals (Global Mobile/Tablet)**: Rules for Hiding Rings, showing Dashed Ring, and 95% Containment remain applied to ALL devices `<= 1024px` (including iPad Air & iPhone).
+        - **Positioning (Targeted)**: The "Lifted" controls logic (`bottom: 15rem`, Pill `top: 2rem`) is now restricted to **Large Tablets only** (`min-width: 821px` AND `max-width: 1024px`).
+    - **Impact**: 
+        - iPad Pro (1024px) retains the spacious "Lifted" layout.
+        - iPad Air (820px) and Phones revert to the standard flow positioning (controls stacked below content), preventing the overlap/clipping issues seen on the smaller tablet viewport.
+
 ## [v2.346_ipad_expansion_root_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.45 (Neural Net Expansion Root Cause Fix)**
