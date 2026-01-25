@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.351_pill_bisect] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.50 (Live Demo Pill Bisect)**
+    - **Live Demo Pill (Desktop)**: Moved from `lg:top-12` (3rem) to `lg:top-8` (2rem).
+        - *Reason*: The Scene Container starts at `lg:top-8` (2rem). With `-translate-y-1/2` applied, positioning the pill at `top-8` places its vertical center accurately on the container's top border line, effectively "straddling" or "bisecting" it for the intended mechanical overlay look.
+
 ## [v2.350_desktop_alignment_polish] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.49 (Desktop Alignment & Clearance)**
