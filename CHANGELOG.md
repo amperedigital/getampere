@@ -1,6 +1,10 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+- **v2.403_container_queries_align**
+  - **Mechanics**: Implemented CSS Container Queries (`@container`) scaffolding for auto-scaling card content (Grids, Charts, Typography) when expanded.
+  - **Fixed**: Solved Layout Shift bug where the expanded card (absolute overlay) did not perfectly align with the underlying grid column.
+  - **CSS**: Standardized Desktop Grid Padding and Expanded Card Insets to `2rem (Top/Bottom)` and `1.5rem (Left/Right)` for pixel-perfect overlays.
 - **v2.402_bottom_right_trigger**
   - **UX**: Separated "Expand" and "Close" controls.
     - **Expand**: New floating button at Bottom-Right of each card (Maximize icon). Only appears on hover.
