@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.329_lift] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.28 (Layout Container Alignment)**
+    - **Container Alignment**: Reverted the Scene Container `bottom` position to `12` (Standard 3rem alignment) to strictly match the Right Column's vertical extent.
+    - **Cluster Clearance**: Applied `lg:mb-24` (6rem) margin specifically to the *Control Cluster* element.
+    - **Result**: This lifts the controls safely above the "Start a Call" chat widget while keeping the left-side border/container fully expanded and aligned with the right-side content, satisfying both requirements (Alignment + Clearance).
+
 ## [v2.328_clearance] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.27 (Chat Widget Clearance)**
