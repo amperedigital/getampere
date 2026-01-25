@@ -1,6 +1,15 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.365_unified_tablet_desktop_1024] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.64 (Unified 1024px Layout Strategy)**
+    - **Philosophy**: Simplified the responsive logic for the 1024px break point.
+        - **Goal**: Make "Desktop 1024px" and "iPad Pro 1024px" behavior identical to resolve fragility.
+        - **Implementation**:
+            - **Height**: Reverted `#tech-demo-master` to `height: 100vh` (App-like full height) for the <= 1024px range. This restores the full-screen "Command Center" feel for iPad Pro and comparable desktops.
+            - **Columns**: Forced Left and Right columns to `height: 100%` to ensure the dark backgrounds and card grids extend fully to the viewport edges, preventing the "cutoff" look seen in screenshots.
+            - **Scroll Safety**: Maintained `overflow-y: auto` on the master container so that strictly shorter screens in this width range can still scroll if content overflows, but standard Tablets/Pro Desktops will fit snugly.
 ## [v2.364_reinclude_ipad_pro_base] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.63 (iPad Pro Base Layout Restoration)**

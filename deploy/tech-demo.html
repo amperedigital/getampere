@@ -264,15 +264,17 @@
                                             display: flex !important;
                                         }
 
-                                        /* 4. LAYOUT FLOW SAFETY (v2.360) */
-                                        /* Ensure container expands to fit content on short screens (Landscape Desktop) */
+                                        /* 4. LAYOUT FLOW SAFETY (v2.365) */
+                                        /* Enforce App-Like Full Height for 1024px/Tablet to match iPad Pro expectation */
+                                        /* Use overflow-y: auto to handle short screens safely without collapsing the container */
                                         #tech-demo-master {
-                                            height: auto !important;
+                                            height: 100vh !important; /* Was auto, now full viewport */
                                             overflow-y: auto !important;
                                         }
-                                        #tech-demo-left-column {
-                                            height: auto !important;
-                                            overflow: visible !important;
+                                        /* Columns must fill the master container */
+                                        #tech-demo-left-column, #tech-demo-right-column {
+                                            height: 100% !important; /* Fill the 100vh parent */
+                                            overflow-y: visible !important; /* Let the master container handle scroll if needed */
                                         }
                                     }
 
