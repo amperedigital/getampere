@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.342_ipad_spacing] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.41 (iPad Spacing Adjustment)**
+    - **Slider Positioning**: Updated `#mobile-sliders-container` for iPad Pro Portrait/Mobile to `bottom: 9rem` (was 6rem) per user request ("9rem works for iPad"). This ensures optimal spacing from the bezel and other UI elements.
+
 ## [v2.341_containment_rules] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.40 (Unified Containment Rules)**
