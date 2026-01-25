@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.313] - 2026-01-24
+### Assets
+- **Tech Demo v15.12 (Final Icon Set)**
+    - **Sales Advisor**: Swapped to "Data Definition" carbon icon (CarbonDataDefinition.svg).
+    - **Booking Agent**: Swapped to "Direct Link" carbon icon (CarbonDirectLink.svg).
+    - **Source**: Imported from user assets (`assets/icons/new/`).
+
 ## [v2.312] - 2026-01-24
 ### Assets
 - **Tech Demo v15.11 (User-Supplied Icons)**
