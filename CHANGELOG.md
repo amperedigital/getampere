@@ -1,6 +1,12 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.361_ipad_pro_fix] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.60 (iPad Pro Adjustment)**
+    - **Positioning Update**:
+        - **Fix**: Reduced the vertical lift of `#mobile-sliders-container` from `9rem` to `3rem` in the Tablet Portrait media query (820px-1024px).
+        - **Reason**: The previous 9rem lift was excessive for iPad Pro, causing the controls to overlap the scene. 3rem provides sufficient clearance while keeping controls accessible.
 ## [v2.360_layout_safety] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.59 (Layout Safety & flow)**

@@ -28,7 +28,7 @@
     <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
+        <div id="tech-demo-left-column" class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
             
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
@@ -286,8 +286,9 @@
                                         }
                                         
                                         /* Move Sliders (Cluster) UP */
+                                        /* v2.361: Reduced from 9rem to 3rem to fix iPad Pro overlap */
                                         #mobile-sliders-container {
-                                            bottom: 9rem !important;
+                                            bottom: 3rem !important;
                                         }
 
                                         /* Move Live Demo Pill */
