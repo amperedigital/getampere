@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.324_struct] - 2026-01-24
+### UI & Visuals
+- **Tech Demo v15.23 (Structural Refactor)**
+    - **DOM Restructure**: Moved `#tech-demo-controls-target` from being a sibling of the Ring Container to being a direct child *inside* the scale-constrained Ring Container.
+    - **Positioning**: Changed from relative flow (`mt-6`) to absolute positioning (`bottom-4 lg:bottom-8`) inside the aspect-ratio parent.
+    - **Fix**: Ensures the control cluster scales *with* the ring and remains visible on short viewports, satisfying the "flex together" requirement.
+
 ## [v2.323.responsive_ring] - 2026-01-24
 ### UI & Visuals
 - **Tech Demo v15.22 (Responsive Scaling)**
