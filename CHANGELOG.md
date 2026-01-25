@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.343_ipad_pill] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.42 (iPad Pill Positioning)**
+    - **Live Demo Pill**: Adjusted positioning for iPad Pro/Mobile.
+        - Added ID `#live-demo-pill`.
+        - Applied CSS Override in the Containment Media Query: `top: 2rem`, `right: 3rem`. matches user request for better breathing room on tablet devices.
+
 ## [v2.342_ipad_spacing] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.41 (iPad Spacing Adjustment)**

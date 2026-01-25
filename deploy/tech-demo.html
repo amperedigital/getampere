@@ -65,7 +65,8 @@
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
             <!-- v2.253: Hidden on mobile to reduce clutter -->
-            <div class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <!-- v2.343: Added ID for iPad positioning overrides -->
+            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>
@@ -257,6 +258,12 @@
                                         /* Move Sliders (Cluster) UP */
                                         #mobile-sliders-container {
                                             bottom: 9rem !important;
+                                        }
+
+                                        /* Move Live Demo Pill (User: "Top 2rem, Right 3rem") */
+                                        #live-demo-pill {
+                                            top: 2rem !important;
+                                            right: 3rem !important;
                                         }
                                     }
 
