@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.337_ipad_polish] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.36 (iPad Pro Real Estate & Polish)**
+    - **Control Visibility**: Updated Mobile Ring Hiding logic to include `1024px`.
+        - *Change*: Changed `@media (max-width: 1023px)` to `(max-width: 1024px)` to explicitly **hide the Halo Rings** on iPad Pro Portrait (1024px).
+        - *Reasoning*: User screenshot showed ring overlap/clutter. The Dashboard Cards and Neural Net are the priority here.
+    - **Layout Expansion (Gutters)**: Reduced page gutters to maximize usable area (Real Estate).
+        - *Header*: Reduced padding from `lg:p-20` (5rem) to `lg:p-12` (3rem).
+        - *Scene Container*: Reduced insets from `lg:top-12/bottom-12` to `lg:top-8/bottom-8` (2rem).
+        - *Right Column*: Reduced padding from `lg:pt-12`... to `lg:pt-8`... (2rem).
+        - *Result*: Tighter, more expansive layout that utilizes the iPad Pro's large screen more efficiently.
+
 ## [v2.336_ipad_restore] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.35 (iPad Pro Layout Restoration)**

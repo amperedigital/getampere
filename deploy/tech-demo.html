@@ -31,7 +31,8 @@
             
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
-            <div class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-20 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
+            <div class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -83,8 +84,8 @@
             <!-- v2.330: Reverted lg:top-32 to lg:top-12 to match Live Demo pill and Right Column (Alignment Repair). -->
             <!-- v2.330: Added lg:pb-32 to create an internal "Safety Zone" at the bottom where the ring cannot grow. -->
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
-            <!-- This reserved space accommodates the Absolute Positioned controls. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-visible lg:overflow-visible lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-4 overflow-visible lg:overflow-visible lg:rounded-3xl lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -225,8 +226,8 @@
                                 <!-- CURVED TEXT LABELS STYLE (Global) -->
                                 <style>
                                     /* Mobile Overrides (v2.264) */
-                                    /* v2.335: Adjusted from 1024px to 1023px so iPad Pro (1024) allows RINGS to be visible */
-                                    @media (max-width: 1023px) {
+                                    /* v2.337: Updated to 1024px to HIDE rings on iPad Pro (User Request). */
+                                    @media (max-width: 1024px) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
@@ -358,8 +359,8 @@
         <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
-        <!-- v2.276: Restored right padding to lg:pr-12 for breathing room. -->
-        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
+        <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
