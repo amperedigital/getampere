@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.310] - 2026-01-24
+### Assets
+- **Tech Demo v15.9 (Refined Iconography)**
+    - **Sales Advisor**: Swapped complex "Hand holding AI" icon for a minimal "Orb of Value" concept.
+        - *Design*: A central solid orb supported by an abstract "cupped hand" curve below it. Removed all text ("AI") for cleaner scaling.
+    - **Demo Guide**: Swapped "Stack Cycle" icon for a pure "Sync Cycle".
+        - *Design*: Two large chasing arrows forming a circle loop.
+        - *Cleanup*: Removed the center stack graphic completely to reduce visual noise.
+
 ## [v2.309] - 2026-01-24
 ### Assets
 - **Tech Demo v15.8 (Front Door Polish)**
