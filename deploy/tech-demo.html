@@ -236,8 +236,13 @@
                                             display: none !important;
                                         }
                                         /* 1. DASHED RING VISIBILITY (Standard Style) */
-                                        /* Removed aggressive styling (slate-400, 2px) to restore original subtle look */
-                                        /* The ring is visible by default because we only hid #halo-ring-outer/inner */
+                                        /* v2.345: Explicitly boost opacity for iPad/Mobile so it's actually visible against the dark bg */
+                                        /* Use Slate-600 (#475569) which is subtle but visible, unlike the previous Slate-400 (too bright) */
+                                        #halo-ring-dashed {
+                                            stroke: #475569 !important;
+                                            opacity: 1 !important;
+                                            stroke-dasharray: 4 6; /* Maintain dashed look */
+                                        }
                                         
                                         /* 2. STRICT CONTAINMENT (Clip Path) */
                                         /* Dashed Ring is 360px radius in 800px box -> 45% of size */
@@ -994,7 +999,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.341_containment_rules/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.345_ipad_fixes_final/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

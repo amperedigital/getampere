@@ -1294,7 +1294,9 @@ export class TechDemoScene {
             const referenceRatio = (isRingHiddenLayout) ? dashedRingRatio : innerRingRatio;
             
             // User Rule: "Neuronet must be within 95% width [of the container]"
-            const fillPercentage = 0.95; 
+            // v2.345: Reduced to 85% for Mobile/iPad to prevent visual expansion beyond the Dashed Ring.
+            // 95% was visually touching the edge due to perspective. 85% provides a safe buffer.
+            const fillPercentage = (isRingHiddenLayout) ? 0.85 : 0.95; 
             
             let targetVisibleSize;
 

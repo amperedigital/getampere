@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.345_ipad_fixes_final] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.44 (iPad Visibility & Expansion Fix)**
+    - **Dashed Ring Visibility**: Applied a specific override for iPad/Mobile (`#halo-ring-dashed`) to set `stroke: #475569` (Slate-600) and `opacity: 1`. 
+        - *Reason*: The default `slate-700/50` was too faint to be seen on the iPad display. This new color is visible but subtle (darker than the rejected Slate-400).
+    - **Neural Net Expansion**: Reduced the `fillPercentage` for Mobile/iPad from 95% to **85%**.
+        - *Reason*: Users reported the net "expands" on load. The 95% fill, combined with 3D perspective, visually touched or crossed the ring boundary. 85% ensures a clear "safe zone" cushion inside the Dashed Ring.
+
 ## [v2.344_ipad_restore_ring] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.43 (Dashed Ring Aesthetic Restoration)**
