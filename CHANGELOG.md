@@ -1,6 +1,13 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.362_exclude_ipad_pro] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.61 (iPad Pro Exclusion)**
+    - **Positioning Logic**:
+        - **Change**: Restricted the "Tablet Portrait Lift" media query to `max-width: 1023px` (previously 1024px).
+        - **Effect**: Specifically excludes iPad Pro 12.9" / 11" (which report typically as 1024px width in portrait) from the "Lifted" layout controls that were adjusted in v2.361.
+        - **Result**: iPad Pro now falls back to the standard flow positioning for controls (beneath the scene), avoiding the verified overlaps caused by the 3rem lift.
 ## [v2.361_ipad_pro_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.60 (iPad Pro Adjustment)**
