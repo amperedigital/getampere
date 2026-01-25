@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.332_mobile_scale] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.31 (Mobile Neural Scale)**
+    - **Camera Logic**: Inverted the mobile camera zoom logic in `tech-demo-scene.js`.
+        - *Previous*: `distance * 1.6` (Zoom Out). This logic assumed the sphere needed to shrink to fit a cramped UI.
+        - *New*: `distance * 0.65` (Zoom In). This aligns with the CSS `clip-path` expansion (85%) on mobile/tablet, bringing the camera significantly closer so the Icosahedron fills the visual void instead of floating as a tiny dot.
+    - **Target**: Solves the "tiny neural net" issue on iPad/Tablet layouts where rings are hidden but the sphere failed to scale up to occupy the empty space.
+
 ## [v2.331_hang] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.30 (Negative Positioning Strategy)**
