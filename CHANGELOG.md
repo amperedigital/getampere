@@ -1,6 +1,16 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+## [v2.358_broad_tablet_support] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.57 (Tablet Range Unification)**
+    - **Visibility Logic (The "Desktop Gap")**:
+        - **Change**: Broadened the "Mobile Mode" trigger (Hidden Rings / Visible Sliders) to specificly target `max-width: 1024px` regardless of device orientation.
+        - **Reason**: Previously, screens between 860px and 1024px on Desktop (landscape) fell through the cracks, showing a broken desktop layout. Now, anything under 1024px gets the optimized Mobile interface.
+    - **Positioning Logic (The "820 View")**:
+        - **Change**: Expanded the "Lifted" layout controls (which raise the UI elements for better spacing) to include the **820px** breakpoint (iPad Air) and removed the portrait restriction.
+        - **Range**: Now applies to `(min-width: 820px) and (max-width: 1024px)`.
+        - **Result**: A consistent "Tablet/Netbook" view for all devices in this width bracket.
 ### UI & Visuals
 - **Tech Demo v15.56 (Responsive Control Overlap)**
     - **Logic Check**: Fixed an issue where both the "Halo Ring" (Desktop controls) and "Mobile Sliders" (Mobile controls) were visible simultaneously on screens between **1025px** and **1279px** (e.g., Landscape Tablets, Small Laptops).

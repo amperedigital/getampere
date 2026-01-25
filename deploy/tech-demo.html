@@ -237,7 +237,9 @@
                                     /* v2.347: Separated Visuals from Positioning to fix iPad Air (820px) Layout */
                                     
                                     /* A. VISUALS: Apply to ALL Mobile/Tablet (Phone -> iPad Pro 1024px) */
-                                    @media (max-width: 1024px) and (orientation: portrait), (max-width: 768px) {
+                                    /* A. VISIBILITY: Global Mobile/Tablet Mode (v2.358) */
+                                    /* Applied to ANY screen 1024px or narrower, correcting the "Desktop Gap" (860-1024px) */
+                                    @media (max-width: 1024px) {
                                         /* Hide Rings & Needle */
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
@@ -262,9 +264,9 @@
                                         }
                                     }
 
-                                    /* B. POSITIONING: Apply ONLY to Large Portrait Tablets (iPad Pro 1024px) */
-                                    /* Excludes iPad Air (820px) and Phones, which use default flow positioning */
-                                    @media (min-width: 821px) and (max-width: 1024px) and (orientation: portrait) {
+                                    /* B. POSITIONING: Apply to Tablet Range (820px - 1024px) (v2.358) */
+                                    /* Includes iPad Air (820px) and iPad Pro (1024px) in the "Lifted" layout */
+                                    @media (min-width: 820px) and (max-width: 1024px) {
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;
