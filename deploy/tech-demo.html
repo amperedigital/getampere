@@ -126,7 +126,8 @@
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
                     <!-- REMOVED lg:aspect-square from this parent. Ideally, the parent is just a flex column. -->
                     <!-- The Inner Visuals Wrapper determines the aspect ratio limit. -->
-                    <div class="relative w-full h-[350px] lg:w-full lg:h-full flex flex-col items-center justify-between pointer-events-none">
+                    <!-- v2.348: Increased height for Tablets (MD=768px+) from 350px default to 600px to use available space -->
+                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-full flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
                     <!-- VISUALS WRAPPER (Flex Grow) -->

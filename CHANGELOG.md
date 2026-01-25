@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.348_tablet_size_bump] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.47 (Tablet Scale Increase)**
+    - **Container Sizing**: Increased the Dashed Ring container height for Tablet devices (`md` breakpoint, >= 768px).
+    - **Change**: Upgraded from the Mobile default (`h-[350px]`) to `h-[600px]` for iPad Air (820px) and iPad Mini.
+    - **Reason**: 350px was too small for the available real estate on tablets, leaving large gaps. 600px effectively utilizes the screen space (~70% increase in visual size).
+
 ## [v2.347_ipad_air_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.46 (iPad Air 820px Layout Fix)**
