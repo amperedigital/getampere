@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.334_ipad_fixes] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.33 (iPad Pro 12.9" Specifics)**
+    - **Logic Expansion**: Updated `isMobile` check to include `1024px` width (changed from `<` to `<=`). This ensures iPad Pro Portrait gets the "Zoom In" visual treatment to fill the screen (95% fill) instead of the small desktop view.
+    - **Controls Layout**: Added precise CSS media query override for `1024px` Portrait orientation.
+        - *Change*: Forces the Control Cluster to `bottom: 10rem` (lifting it significantly) specifically on iPad Pro Portrait.
+        - *Override*: Bypasses the standard Desktop `bottom: -2rem` hang, preventing overlap in the taller portrait vertical flow.
+
 ## [v2.333_mobile_zoom_fix] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.32 (Mobile Fill Factor)**
