@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.308] - 2026-01-24
+### Assets
+- **Tech Demo v15.7 (Specific Icon Swaps)**
+    - **Focused Selection**:
+        - *Front Door Agent* → Swapped to `10_AI.svg` (Circuit Flow). Cleaned up the SVG by removing complex inner paths to improve legibility at small scale.
+        - *Technical Specialist* → Swapped to `17_AI.svg` (Isometric Cube).
+    - **Complexity Reduction**: Removed "AI" text characters from Icon #10 to adhere to visual minimalism guidelines.
+
 ## [v2.307] - 2026-01-24
 ### Assets
 - **Tech Demo v15.6 (Iconography Update)**
