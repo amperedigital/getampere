@@ -235,14 +235,10 @@
                                         #halo-ring-outer, #halo-ring-inner, #static-needle {
                                             display: none !important;
                                         }
-                                        /* 1. FORCE DASHED RING VISIBILITY */
-                                        #halo-ring-dashed {
-                                            stroke: #94a3b8 !important; /* Slate-400 */
-                                            stroke-opacity: 1 !important;
-                                            opacity: 1 !important;
-                                            stroke-width: 2px !important;
-                                        }
-
+                                        /* 1. DASHED RING VISIBILITY (Standard Style) */
+                                        /* Removed aggressive styling (slate-400, 2px) to restore original subtle look */
+                                        /* The ring is visible by default because we only hid #halo-ring-outer/inner */
+                                        
                                         /* 2. STRICT CONTAINMENT (Clip Path) */
                                         /* Dashed Ring is 360px radius in 800px box -> 45% of size */
                                         /* We clip slightly outside it to avoid cutting the line itself */

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.344_ipad_restore_ring] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.43 (Dashed Ring Aesthetic Restoration)**
+    - **Reverted Dashed Ring Styling**: 
+        - Removed the aggressive CSS overrides (`stroke: slate-400`, `stroke-width: 2px`) for `#halo-ring-dashed` on iPad/Mobile.
+        - **Reasoning**: The previous change made the ring look like a "new, different" element overlaying the content. Restoring the original subtle style (`slate-700/50`, `1px`) preserves the intended background aesthetic while maintaining the active containment logic.
+    - **Note**: The containment logic (JS 95% limit) and positioning fixes remain active.
+
 ## [v2.343_ipad_pill] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.42 (iPad Pill Positioning)**
