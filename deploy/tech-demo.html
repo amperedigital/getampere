@@ -32,7 +32,8 @@
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
             <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
-            <div class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -268,9 +269,16 @@
                                         }
 
                                         /* Move Live Demo Pill */
+                                        /* v2.352: Reduced right gutter to 1.5rem (24px) for more real estate */
                                         #live-demo-pill {
                                             top: 2rem !important;
-                                            right: 3rem !important;
+                                            right: 1.5rem !important;
+                                        }
+
+                                        /* v2.352: Reduce Page Gutters to 1.5rem (24px) */
+                                        #tech-demo-header {
+                                            padding-left: 1.5rem !important;
+                                            padding-right: 1.5rem !important;
                                         }
                                     }
 

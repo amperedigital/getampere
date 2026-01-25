@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.352_ipad_pro_gutters] - 2026-01-25
+### UI & Visuals
+- **Tech Demo v15.51 (iPad Pro Gutter Reduction)**
+    - **Page Gutters (iPad Pro Only)**: Reduced horizontal padding from `3rem` (p-12) to `1.5rem` (24px) for the Header and Live Demo Pill.
+        - *Target*: Strictly applied to `min-width: 821px` AND `max-width: 1024px` (Portrait).
+        - *Benefit*: Maximizes usable screen real estate on 11" and 12.9" iPads by pushing content closer to the edges, reducing the generous desktop-style whitespace.
+    - **Integration**: Added `id="tech-demo-header"` to the main title container to enable precise CSS targeting without affecting other views.
+
 ## [v2.351_pill_bisect] - 2026-01-25
 ### UI & Visuals
 - **Tech Demo v15.50 (Live Demo Pill Bisect)**
