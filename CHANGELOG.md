@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.437] - 2026-01-26
+- **Visual Fix**: Completed the UV Meter scaling update for *all* metrics in the Front Door Agent card (Bounce, Routed, Avg Time, etc.), ensuring they all resize correctly in "Zen Mode".
+- **Rendering Isolation**: Applied `isolation: isolate` to ALL socket cards (not just the active one) to permanently prevent stacking context leakage and shadow artifacts during hover or expansion.
+
 ## [v2.436] - 2026-01-26
 - **Visual Fix (Zen Mode)**: "UV Meter" bars in the Agent Card stats now use relative `em` units instead of fixed pixels. This ensures they scale up beautifully alongside the text when the card is expanded, rather than remaining tiny.
 - **Rendering Fix**: Added `isolation: isolate` to Agent Cards to contain stacking contexts. This prevents the hover effects (glow/blur) of one card from causing repainting artifacts on adjacent cards.

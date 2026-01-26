@@ -629,16 +629,15 @@
 </div>
                         <div class="text-slate-400 flex items-center">Routed</div>
                         <div class="text-white text-right font-mono">89%</div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-emerald-500 shadow-[0_0_8px_rgba(10,185,129,0.6)] w-[89%] transition-all duration-500"></div>
         
         <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->
@@ -647,16 +646,15 @@
 </div>
                         <div class="text-slate-400 flex items-center">Avg Time</div>
                         <div class="text-white text-right font-mono">4.2s</div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-blue-300 shadow-[0_0_8px_rgba(147,197,253,0.6)] w-[40%] transition-all duration-500"></div>
         
         <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->
@@ -665,16 +663,15 @@
 </div>
                         <div class="text-slate-400 flex items-center">Auth</div>
                         <div class="text-white text-right font-mono">99.9%</div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)] w-[99%] transition-all duration-500"></div>
         
         <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->
@@ -685,7 +682,8 @@
                     </div>
                 </div>
                 <!-- Card: Demo Guide -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -876,8 +874,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Card: Onboarding Coach -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1068,8 +1068,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Card: Technical Specialist -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1260,8 +1262,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Card: Sales Advisor -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1452,8 +1456,10 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Card: Booking Agent -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1673,7 +1679,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.435/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.436/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
