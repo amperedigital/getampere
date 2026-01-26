@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.427] - 2026-01-26
+- **Live/Standby States**: Implemented visual state logic for Agent Cards in the Power Cluster.
+- **Default State**: "Front Door Agent" is now the only active card (`data-agent-status="active"`). All other agents are dimmed and desaturated (`data-agent-status="standby"`).
+- **Visuals**: Standby agents are at 50% opacity and 100% grayscale to reduce visual noise and focus attention on the active agent.
+
 ## [v2.426] - 2026-01-26
 - **Refactor**: Renamed all internal references, comments, and documentation from "Range Slider" to "Range Meter" to better reflect the non-interactive visualization nature of the component.
 

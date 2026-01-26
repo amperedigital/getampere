@@ -369,6 +369,28 @@
                                         filter: none !important;
                                         fill: #1e293b !important;
                                     }
+
+                                    /* --- Agent Power States (v2.427) --- */
+                                    /* Logic: Off = Dim + Desaturated */
+                                    [data-agent-status="standby"] {
+                                        opacity: 0.5;
+                                        filter: grayscale(100%) contrast(0.9);
+                                        transition: all 0.5s ease-out;
+                                    }
+                                    
+                                    /* Logic: Hover Hint = Slightly visible to indicate interactivity */
+                                    [data-agent-status="standby"]:hover {
+                                        opacity: 0.9;
+                                        filter: grayscale(60%) contrast(1);
+                                        cursor: not-allowed; /* Until activation logic is added */
+                                    }
+                                    
+                                    [data-agent-status="active"] {
+                                        opacity: 1;
+                                        filter: none;
+                                        transition: all 0.5s ease-out;
+                                        cursor: default;
+                                    }
                                 </style>
 
                         </g>
@@ -472,7 +494,7 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- Card: Front Door Agent -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="active"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -664,7 +686,7 @@
                     </div>
                 </div>
                 <!-- Card: Demo Guide -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -856,7 +878,7 @@
                     </div>
                 </div>
                 <!-- Card: Onboarding Coach -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1048,7 +1070,7 @@
                     </div>
                 </div>
                 <!-- Card: Technical Specialist -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1240,7 +1262,7 @@
                     </div>
                 </div>
                 <!-- Card: Sales Advisor -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1432,7 +1454,7 @@
                     </div>
                 </div>
                 <!-- Card: Booking Agent -->
-                <div class="relative group h-full socket-card-container @container"> 
+                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
