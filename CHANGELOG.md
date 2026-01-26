@@ -1,4 +1,8 @@
 # Changelog
+## v2.406_easing_fix (2026-01-25)
+### Fixed
+- **Animation missing**: Added explicit `transition-duration: 0.6s` to `.socket-card-container` in CSS. Previously, only the timing function was defined, resulting in instant (0s) transitions that made the "Spring Pop" effect invisible.
+
 ## v2.405_fix_sockets (2026-01-25)
 ### Fixed
 - **Glass Socket Initialization**: corrected JS selector syntax (`.socket-card-container` vs `.socket-card-container @container`) which caused the socket SVG path generator to fail on load, resulting in "lost" card shapes.
