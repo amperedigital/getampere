@@ -20,6 +20,10 @@ export class HaloRotator {
         this.markerClassInactive = options.markerClassInactive || 'fill-blue-500';
         this.textClassActive = options.textClassActive || 'ring-text-green';
         this.textClassInactive = options.textClassInactive || 'ring-text-blue';
+        
+        // Hover Classes (v2.434)
+        this.ringClassIdle = options.ringClassIdle || '';
+        this.ringClassHover = options.ringClassHover || '';
 
         // State
         this.rotation = 0;
@@ -119,16 +123,16 @@ export class HaloRotator {
 
     setHoverState(isHovered) {
         if (!this.trackCircle) return;
+        if (!this.ringClassIdle || !this.ringClassHover) return;
         
-        // Visual Feedback: Brighten the ring track when hovered
-        // Existing classes are stroke-blue-500/10 (0.1) or stroke-slate-500/10 (0.1).
-        // We boost this significantly to indicate "graspable".
+        // Visual Feedback: Class Swap
+        // This is robust against Tailwind opacity implementation details
         if (isHovered) {
-            this.trackCircle.style.strokeOpacity = '0.5';
-            this.trackCircle.style.transition = 'stroke-opacity 0.2s';
+            this.trackCircle.classList.remove(this.ringClassIdle);
+            this.trackCircle.classList.add(this.ringClassHover);
         } else {
-            this.trackCircle.style.strokeOpacity = '';
-            this.trackCircle.style.transition = 'stroke-opacity 0.2s';
+            this.trackCircle.classList.remove(this.ringClassHover);
+            this.trackCircle.classList.add(this.ringClassIdle);
         }
     }
 

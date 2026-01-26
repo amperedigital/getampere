@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.434] - 2026-01-26
+- **UX Refinement**: Increased the "Dead Zone" between the Inner and Outer rings to **25px** (Inner Max: 255px, Outer Min: 280px) to practically eliminate accidental ring switching.
+- **Visual Feedback**: Refactored the Halo Wheel hover effect to use robust CSS class swapping (`stroke-blue-500/10` ↔ `stroke-blue-500/50`) instead of style manipulation, ensuring reliable visual feedback on all browsers.
+
 ## [v2.433] - 2026-01-26
 - **Visual Feedback**: Added dynamic hover highlighting to the Halo Wheel rings. When a user hovers over a ring's interaction zone (Inner or Outer), the ring's stroke opacity boosts from 10% to 50%, clearly indicating which ring will be grabbed.
 
