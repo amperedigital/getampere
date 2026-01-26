@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.446] - 2026-01-26
+- **Mobile/Tablet Responsibility**:
+    - **Sticky Control Panel**: Upgraded the Mobile Control Panel (`#mobile-sliders-container`) to be `sticky top-0` with `backdrop-blur-xl`. This keeps the agent selection controls accessible while scrolling through the long card grid.
+    - **Scroll Sync**: Added an auto-scroll interaction. When selecting an agent via the Mobile Slider, the page now smoothly scrolls to the corresponding Agent Card (accounting for the sticky header offset).
+    - **Layout Fix (iPad Alignment)**: Adjusted horizontal padding (`px-4`) on the mobile controls to match the card grid alignment, fixing the "pushed right" visual glitch on iPad Air.
+    - **UI Fix (Button Overlap)**: Added `pb-12` to the Agent Card content container. This creates a safe zone at the bottom of each card content block, ensuring specific text content doesn't flow under the absolutely positioned "Expand" button on smaller screens.
+
 ## [v2.445] - 2026-01-26
 - **Interaction Correction**: Confirmed the retention of `group-hover` triggers for the Glass Button (Background & Rotation) to maintain the "Card Hover" feedback loop requested by design.
 - **Rendering Fix (Rotation Bleed)**: Added `overflow-hidden` and `isolate` to the Glass Button container (`.w-14.h-14`). This creates a strict stacking context and clipping mask around the rotating SVG, preventing the animation's repaint rect from spilling over onto adjacent cards (the source of the "gradient bleed").
