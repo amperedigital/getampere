@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.424] - 2026-01-26
+- **Typography**: Converted Socket Card typography to use Container Queries (`cqw`). Titles, subtitles, and metrics now scale fluently with the card width.
+- **Motion**: Eliminated text "snapping" during card expansion (Zen Mode); text size now transitions continuously using the container's easing curve.
+- **Visibility**: Increased base scaling factors for Metrics to improve readability on large screens.
+
 ## [v2.423] - 2026-01-26
 - **UI Upgrade**: Replaced standard dots with "Glass Blocks" (8x12px) in the Power Cluster.
 - **Visuals**: Blocks feature inner depth shadows (inactive) and complex illuminated glow (active) for a more tactile, premium feel.
