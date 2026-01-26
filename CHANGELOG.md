@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.440] - 2026-01-26
+- **Rendering Fix (Button Artifacts)**: Removed unnecessary `transform: translateZ(...)` forced layer promotions from the Glass Button and its internal icon. These properties, when combined with the card's backdrop-filter, were triggering GPU texture bleeds on adjacent cards during hover animations.
+- **Cleanup**: Stripped `will-change: backdrop-filter` to further reduce GPU memory pressure and artifacting potential.
+
 ## [v2.439] - 2026-01-26
 - **Critical Rendering Fix**: Removed `will-change: backdrop-filter` from all Agent Cards. This property was causing aggressive GPU layer promotion that led to "gradient bleed" artifacts and flashing on adjacent cards during hover states. The removal relies on standard compositing which handles the static blur correctly without the artifacting side effects.
 
