@@ -1,4 +1,11 @@
 # Changelog
+
+## [v2.422] - 2026-01-26
+- **Restored**: UI Status Dots in Power Cluster (20-dot row).
+- **Updated**: Range dots now use Emerald Green theme (`#10b981`) to match the Power Up button.
+- **Design**: "Dot Gauge" established as the standard visualization for range sliders.
+
+# Changelog
 ### Changed
 ## [v2.421] - 2026-01-26
 ### Changed

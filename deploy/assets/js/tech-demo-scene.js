@@ -320,18 +320,30 @@ export class TechDemoScene {
                     }
                 }
                 
-                .ampere-status-text {
-                    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                    font-size: 10px;
-                    font-weight: 700;
-                    letter-spacing: 0.1em;
-                    color: #77ccff;
-                    text-transform: uppercase;
-                    /* text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); Removed for flatter glass look */
-                    min-height: 12px;
-                    text-align: center;
-                    white-space: nowrap;
-                }
+.ampere-dot-row {
+                        display: flex;
+                        gap: 4px;
+                        margin-bottom: 2px;
+                    }
+                    .ampere-dot {
+                        width: 3px;
+                        height: 3px;
+                        border-radius: 50%;
+                        background-color: rgba(255, 255, 255, 0.1);
+                        transition: background-color 0.1s, box-shadow 0.1s;
+                    }
+                    .ampere-status-text {
+                        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                        font-size: 10px;
+                        font-weight: 700;
+                        letter-spacing: 0.1em;
+                        color: #10b981;
+                        text-transform: uppercase;
+                        /* text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); Removed for flatter glass look */
+                        min-height: 12px;
+                        text-align: center;
+                        white-space: nowrap;
+                    }
             `;
             document.head.appendChild(style);
         }
@@ -404,8 +416,17 @@ export class TechDemoScene {
         this.uiStatusContainer = statusContainer;
         statusContainer.id = 'ampere-system-status';
         
-        // v2.415: Dots removed per design request (Modern Glass Style)
+        // Dots Row (Restored v2.422)
+        const dotRow = document.createElement('div');
+        dotRow.className = 'ampere-dot-row';
         this.uiDots = [];
+        for (let i = 0; i < 20; i++) {
+             const dot = document.createElement('div');
+             dot.className = 'ampere-dot';
+             dotRow.appendChild(dot);
+             this.uiDots.push(dot);
+        }
+        statusContainer.appendChild(dotRow);
 
         const statusText = document.createElement('div');
         this.uiStatusText = statusText;
@@ -1465,8 +1486,9 @@ export class TechDemoScene {
                      if (this.uiDots) {
                          this.uiDots.forEach((dot, i) => {
                              if (i < activeCount) {
-                                 dot.style.backgroundColor = '#00ccff';
-                                 dot.style.boxShadow = '0 0 4px #00ccff';
+                                 // Updated to Emerald (v2.422)
+                                 dot.style.backgroundColor = '#10b981';
+                                 dot.style.boxShadow = '0 0 4px #10b981';
                              } else {
                                  dot.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
                                  dot.style.boxShadow = 'none';
@@ -1480,7 +1502,7 @@ export class TechDemoScene {
                          if (this.systemState === 'ACTIVE') {
                              if (this.simIntensity > 0.96) {
                                  this.uiStatusText.innerText = 'AI ONLINE | V - AMP 2.0';
-                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(0, 200, 255, 0.5)';
+                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(16, 185, 129, 0.5)';
                              } else {
                                  this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
                                  this.uiStatusText.style.textShadow = 'none';
