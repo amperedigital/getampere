@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.456] - 2026-01-26
+- **iPad Pro Refinement (Visual Alignment Only)**:
+    - **Header Content (Title/Breadcrumb)**: Significantly increased left padding (`lg:pl-24` / 6rem) to align the text vertically with the visual start of the central Ring Scene, correcting the "pushed left" alignment issue. Increased top padding (`lg:pt-24`) to clear the rounded page corners.
+    - **Live Demo Pill**: Increased right offset from `right-36` to `right-40` (10rem) to further clear the top-right corner radius and reduce visual cramping.
+
 ## [v2.455] - 2026-01-26
 - **iPad Pro Layout Refinement**:
     - **Overflow Protection**: Removed forced `overflow-hidden` and `h-screen` constraints on the `lg` breakpoint (1024px). The layout now defaults to `h-auto` with natural scrolling on iPad Pro, preventing content clipping caused by increased padding/font sizes.
