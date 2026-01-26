@@ -1,4 +1,9 @@
 # Changelog
+## v2.407_flip_and_vis (2026-01-25)
+### Fixed
+- **Mobile Triggers**: Expand buttons are now `opacity-100` by default on mobile (hidden only on desktop until hover), fixing the "missing hover" issue on touch devices.
+- **Animation Logic (FLIP)**: Implemented "First Last Invert Play" (FLIP) logic in `card-expander.js`. The card now measures its start position in the grid and explicitly animating from those coordinates to the full-screen insets, effectively preventing the "width snap" and "bottom bounce" visual glitches. Use of `requestAnimationFrame` ensures the browser registers the start frame before expanding.
+
 ## v2.406_easing_fix (2026-01-25)
 ### Fixed
 - **Animation missing**: Added explicit `transition-duration: 0.6s` to `.socket-card-container` in CSS. Previously, only the timing function was defined, resulting in instant (0s) transitions that made the "Spring Pop" effect invisible.

@@ -68,6 +68,26 @@ export class CardExpander {
         }
 
         // 1. Measure layout before moving
+        // FLIP Animation: First, Last, Invert, Play
+        const startRect = card.getBoundingClientRect();
+        
+        // Context: The card will become 'absolute' relative to 'container' (tech-demo-right-column).
+        // Since container is relative, we strictly map offsets.
+        const parentRect = container.getBoundingClientRect();
+        
+        // Calculate the initial "Grid Position" in pixels relative to the parent
+        const startTop = startRect.top - parentRect.top;
+        const startLeft = startRect.left - parentRect.left;
+        const startWidth = startRect.width;
+        const startHeight = startRect.height;
+        
+        // Calculate explicit 'bottom' and 'right' to allow transition to 'inset' based expansion
+        // CSS target is: top: 2rem, bottom: 2rem, left: 1.5rem, right: 1.5rem.
+        // So we must transition FROM specific top/bottom/left/right values.
+        const startBottom = parentRect.height - (startTop + startHeight);
+        const startRight = parentRect.width - (startLeft + startWidth);
+
+        // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
         this.spacer.id = '';
         this.spacer.innerHTML = '';
@@ -77,9 +97,43 @@ export class CardExpander {
         }
 
         // 3. Promote Card
-        card.classList.add('is-expanded');
-        document.body.classList.add('card-expanded-mode'); 
-        container.classList.add('has-active-card');
+        // Apply Inline Styles to "Lock" the card to its starting grid position visually
+        // Also remove grid gap implications by making it absolute immediately.
+        card.style.position = 'absolute';
+        card.style.top = `${startTop}px`;
+        card.style.left = `${startLeft}px`;
+        card.style.right = `${startRight}px`;
+        card.style.bottom = `${startBottom}px`;
+        card.style.zIndex = '50';
+        card.style.margin = '0'; // Clear margins to prevent offsets
+        
+        // Force Layout Recalculation (Reflow) to register the start frame
+        void card.offsetWidth; 
+
+        // 3b. Trigger Transformation
+        // Adding the class will switch the inline styles? NO. Inline styles have higher specificity.
+        // We must REMOVE the inline styles for top/left/right/bottom so the CSS class 'is-expanded' takes over.
+        // However, we want 'transition' to interpolate between the inline values and the class values.
+        // The standard trick: Inline styles override class.
+        // So we can't just adding class.
+        // We have to set NEW inline styles matching the target?
+        // OR: Set it to empty string "" and let CSS transition handle it?
+        // Browsers CAN transition from Inline Value to Class Value if the property matches.
+        
+        requestAnimationFrame(() => {
+            card.classList.add('is-expanded');
+            document.body.classList.add('card-expanded-mode'); 
+            container.classList.add('has-active-card');
+            
+            // Release the visual lock, allowing CSS class 'is-expanded' (inset-...) to dictate layout
+            // The existing 'transition: all' should catch the change from specific px to strict insets.
+            card.style.top = '';
+            card.style.left = '';
+            card.style.right = '';
+            card.style.bottom = '';
+            card.style.width = ''; // Ensure width is unset
+            card.style.height = ''; 
+        });
 
         // Store reference
         this.activeCard = card;
