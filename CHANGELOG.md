@@ -1,8 +1,11 @@
 # Changelog
 
+## [v2.426] - 2026-01-26
+- **Refactor**: Renamed all internal references, comments, and documentation from "Range Slider" to "Range Meter" to better reflect the non-interactive visualization nature of the component.
+
 ## [v2.425] - 2026-01-26
-- **UI Unification**: Transformed all standard progress bars into "LED Glass Range Sliders".
-- **Visuals**: Sliders now mimic the "Power Cluster" glass block aesthetic with segmentation (8px block / 2px gap) and bevels.
+- **UI Unification**: Transformed all standard progress bars into "LED Glass Range Meters".
+- **Visuals**: Meters now mimic the "Power Cluster" glass block aesthetic with segmentation (8px block / 2px gap) and bevels.
 - **Performance**: Utilized CSS Masking and Repeater Gradients (`repeating-linear-gradient`) to simulate segmented LEDs without increasing DOM node count.
 
 ## [v2.424] - 2026-01-26
