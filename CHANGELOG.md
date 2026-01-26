@@ -1,5 +1,15 @@
 # Changelog
 ## [v2.413] - 2026-01-25
+## [v2.416] - 2026-01-25
+
+### Changed
+- **Power Cluster Glass Aesthetics**:
+  - **Desktop Slider**:
+    - Applied the specific "highlight opposite corners" shadowing (`inset 1px 1px` Top-Left, `inset -1px -1px` Bottom-Right) to mimic the SVG gradient border of the card buttons.
+    - Fixed padding uniformity: Track Height 42px (40px content) - 2x 2px Padding - 36px Thumb = Perfect alignment.
+  - **Mobile Controls**:
+    - Applied the same Highlight/Shadow glass effect to the Status Pill and Power Toggle button using `shadow-[inset_1px_1px...]` utility classes.
+
 ## [v2.415] - 2026-01-25
 
 ### Changed

@@ -198,11 +198,11 @@ export class TechDemoScene {
                     -webkit-backdrop-filter: blur(24px);
                     border-radius: 999px;
                     border: 1px solid rgba(255, 255, 255, 0.1);
-                    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+                    box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.4), inset -1px -1px 0 0 rgba(255,255,255,0.4), 0 8px 32px rgba(0,0,0,0.12);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 3px;
+                    padding: 0; /* Padding handled by JS layout logic now */
                     user-select: none;
                     -webkit-user-select: none;
                     touch-action: none;
@@ -277,13 +277,13 @@ export class TechDemoScene {
 
                 #ampere-ui-thumb {
                     position: absolute;
-                    top: 3px;
-                    left: 3px;
-                    height: 36px; /* 42 - 6 */
+                    top: 2px;
+                    left: 2px;
+                    height: 36px; /* 42 - 2 (border) - 2 (pad) - 2 (pad) = 36 */
                     background: rgba(255, 255, 255, 0.1);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 999px;
-                    box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.05);
+                    box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.4), inset -1px -1px 0 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.2);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
                     /* Smoother easing (easeOutQuint) */
@@ -316,7 +316,7 @@ export class TechDemoScene {
             document.head.appendChild(style);
         }
 
-        const padding = 3; 
+        const padding = 2; // Updated from 3 for perfect 2px gap uniformity (42 - 36 - 2 - 2 = 2px)
         
         // --- CLUSTER CONTAINER (New v2.300) ---
         const cluster = document.createElement('div');
