@@ -1,4 +1,10 @@
 # Changelog
+## v2.408_flip_collapse (2026-01-25)
+### Fixed
+- **Animation Glitches**: Implemented full bidirectional FLIP (First-Last-Invert-Play) animation logic.
+  - **Expand**: Locks card to grid position via inline styles before releasing to CSS class, preventing "width snap".
+  - **Collapse**: Calculates the exact position of the "spacer" and animates the card from full-screen back to those coordinates before returning it to the grid flow. This solves the "doesn't pop back in place" issue where the card would instantly snap without transitioning.
+
 ## v2.407_flip_and_vis (2026-01-25)
 ### Fixed
 - **Mobile Triggers**: Expand buttons are now `opacity-100` by default on mobile (hidden only on desktop until hover), fixing the "missing hover" issue on touch devices.

@@ -82,8 +82,6 @@ export class CardExpander {
         const startHeight = startRect.height;
         
         // Calculate explicit 'bottom' and 'right' to allow transition to 'inset' based expansion
-        // CSS target is: top: 2rem, bottom: 2rem, left: 1.5rem, right: 1.5rem.
-        // So we must transition FROM specific top/bottom/left/right values.
         const startBottom = parentRect.height - (startTop + startHeight);
         const startRight = parentRect.width - (startLeft + startWidth);
 
@@ -97,41 +95,34 @@ export class CardExpander {
         }
 
         // 3. Promote Card
-        // Apply Inline Styles to "Lock" the card to its starting grid position visually
-        // Also remove grid gap implications by making it absolute immediately.
+        // Apply Inline Styles to "Lock" the card to its starting grid position visually.
+        // We set explicitly everything to prevent "Jumping" to auto width.
         card.style.position = 'absolute';
         card.style.top = `${startTop}px`;
         card.style.left = `${startLeft}px`;
         card.style.right = `${startRight}px`;
         card.style.bottom = `${startBottom}px`;
+        card.style.width = `${startWidth}px`; // Lock width
+        card.style.height = `${startHeight}px`; // Lock height
         card.style.zIndex = '50';
-        card.style.margin = '0'; // Clear margins to prevent offsets
+        card.style.margin = '0'; 
         
-        // Force Layout Recalculation (Reflow) to register the start frame
+        // Force Layout Recalculation (Reflow)
         void card.offsetWidth; 
 
         // 3b. Trigger Transformation
-        // Adding the class will switch the inline styles? NO. Inline styles have higher specificity.
-        // We must REMOVE the inline styles for top/left/right/bottom so the CSS class 'is-expanded' takes over.
-        // However, we want 'transition' to interpolate between the inline values and the class values.
-        // The standard trick: Inline styles override class.
-        // So we can't just adding class.
-        // We have to set NEW inline styles matching the target?
-        // OR: Set it to empty string "" and let CSS transition handle it?
-        // Browsers CAN transition from Inline Value to Class Value if the property matches.
-        
         requestAnimationFrame(() => {
             card.classList.add('is-expanded');
             document.body.classList.add('card-expanded-mode'); 
             container.classList.add('has-active-card');
             
-            // Release the visual lock, allowing CSS class 'is-expanded' (inset-...) to dictate layout
-            // The existing 'transition: all' should catch the change from specific px to strict insets.
+            // Release the visual lock to allow CSS transition
+            // We clear ALL the position properties so the CSS class rules take over.
             card.style.top = '';
             card.style.left = '';
             card.style.right = '';
             card.style.bottom = '';
-            card.style.width = ''; // Ensure width is unset
+            card.style.width = ''; 
             card.style.height = ''; 
         });
 
@@ -149,15 +140,100 @@ export class CardExpander {
     collapse(card, btn, container) {
         if (!card) return;
 
-        // 1. Demote Card
+        // 1. REVERSE FLIP: Measure current state (Expanded)
+        const currentRect = card.getBoundingClientRect();
+        const parentRect = container.getBoundingClientRect();
+        
+        // Measure where we want to go (The Spacer)
+        const targetRect = this.spacer.getBoundingClientRect();
+
+        const targetTop = targetRect.top - parentRect.top;
+        const targetLeft = targetRect.left - parentRect.left;
+        const targetWidth = targetRect.width;
+        const targetHeight = targetRect.height;
+        const targetRight = parentRect.width - (targetLeft + targetWidth);
+        const targetBottom = parentRect.height - (targetTop + targetHeight);
+
+        // 2. Lock Current State (Absolute)
+        // We apply inline styles matching the current Expanded state so removing the class doesn't jump.
+        // Actually, we can just KEEP the class for a moment, apply the 'Target' styles inline, 
+        // and rely on inline styles winning over the class?
+        // No, the class uses !important often or has high specificity. 
+        // Best to Remove Class, Apply Current Inline (Pre-flight), then Transition to Target Inline.
+        
+        // Alternative: Just animate the inline styles while keeping 'is-expanded' (if it doesn't force insets)?
+        // .is-expanded forces `inset-x-6` etc. Inline styles usually override classes unless !important used.
+        // Let's check if my CSS uses !important. src/input.css had !important on timing function...
+        
+        // Strategy:
+        // A. Remove 'is-expanded' class (which puts it normally back in flow).
+        // B. BUT immediately override with Inline Styles of "Current Position" (Full Screen).
+        // C. Force Reflow.
+        // D. Set Inline Styles to "Target Position" (Spacer).
+        
+        const currentTop = currentRect.top - parentRect.top;
+        const currentLeft = currentRect.left - parentRect.left;
+        const currentRight = parentRect.width - (currentLeft + currentRect.width);
+        const currentBottom = parentRect.height - (currentTop + currentRect.height);
+
+        // A & B: Lock to current expanded visual, but stripped of class constraints
         card.classList.remove('is-expanded');
         document.body.classList.remove('card-expanded-mode');
         container.classList.remove('has-active-card');
+        
+        card.style.position = 'absolute';
+        card.style.top = `${currentTop}px`;
+        card.style.left = `${currentLeft}px`;
+        card.style.right = `${currentRight}px`;
+        card.style.bottom = `${currentBottom}px`;
+        card.style.zIndex = '50';
+        
+        // C. Reflow
+        void card.offsetWidth;
 
-        // 2. Remove Spacer
-        if (this.spacer.parentNode) {
-            this.spacer.parentNode.removeChild(this.spacer);
-        }
+        // D. Animate to Grid Slot
+        requestAnimationFrame(() => {
+            card.style.top = `${targetTop}px`;
+            card.style.left = `${targetLeft}px`;
+            card.style.right = `${targetRight}px`;
+            card.style.bottom = `${targetBottom}px`;
+            // We don't strictly *need* width/height if we use 4-point constraint, 
+            // but setting them helps consistency.
+        });
+
+        // 3. Cleanup after transition
+        // Duration: 0.6s (600ms)
+        setTimeout(() => {
+            // Remove Spacer
+            if (this.spacer.parentNode) {
+                this.spacer.parentNode.removeChild(this.spacer);
+            }
+            
+            // Reset Card Styles to return to normal grid flow
+            card.style.position = '';
+            card.style.top = '';
+            card.style.left = '';
+            card.style.right = '';
+            card.style.bottom = '';
+            card.style.width = '';
+            card.style.height = '';
+            card.style.zIndex = '';
+            card.style.margin = '';
+            
+            this.activeCard = null;
+        }, 600); // Sync with CSS 0.6s
+
+        // 4. Update TOP RIGHT Icon to "Original" (Socket Logo)
+        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
+        this.updateIcon(topRightBtn, 'expand');
+        
+        // 5. Restore Expand Triggers
+        const triggers = card.querySelectorAll('.expand-trigger');
+        triggers.forEach(t => {
+            t.style.opacity = ''; // Restore CSS control
+            t.style.pointerEvents = '';
+        });
+    }
 
         this.activeCard = null;
 
