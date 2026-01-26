@@ -1,4 +1,8 @@
 # Changelog
+## v2.412_remove_bounce (2026-01-25)
+### Changed
+- **Animation Feel**: Updated the expansion easing curve from `Spring Pop` (overshooting) to `Expo Ease Out` (`cubic-bezier(0.19, 1, 0.22, 1)`). This eliminates the bounce/rebound effect, resulting in a smooth, confident "magnetic" lock-in feel.
+
 ## v2.411_fix_syntax_and_safety (2026-01-25)
 ### Fixed
 - **JavaScript Syntax Error**: Removed a duplicate block of code in `card-expander.js` that caused an `Identifier 'topRightBtn' has already been declared` error, restoring card functionality.
