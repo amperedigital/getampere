@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.429] - 2026-01-26
+- **Feature**: Wired the "Halo Wheel" (and mobile slider) to the Agent Cards.
+- **Interaction**: Rotating the inner wheel now selects the active agent in real-time.
+- **Visuals**: As the user turns the wheel, the corresponding agent card lights up (`active` state) while others dim (`standby` state). This works for both Desktop 3D Ring and Mobile Range Slider.
+
 ## [v2.428] - 2026-01-26
 - **Interaction Logic**: Connected the Global Power State (`ACTIVE` / `STANDBY` / `OFF`) to the individual Agent Card visual states.
 - **Power Up Behavior**: When system enters `ACTIVE` state, the Front Door Agent automatically wakes up (`active` state), while other agents remain in `standby`.

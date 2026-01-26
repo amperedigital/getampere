@@ -32,6 +32,9 @@ export class TechDemoScene {
         this.standbyMix = 0;
         this.targetStandbyMix = 0; // Default to 0, if starting in Standby, setSystemState will fix
 
+        // v2.429: Active Card Sync State
+        this.lastActiveCardIndex = -1;
+
         // --- Configuration (Data Attributes) ---
         this.config = {
             standbyTimeout: 120,    // Seconds before auto-standby (data-standby-timeout)
@@ -579,6 +582,9 @@ export class TechDemoScene {
     }
 
     setSystemState(newState) {
+        // v2.429: Force Card Sync Refresh
+        this.lastActiveCardIndex = -1;
+
         // Determine transition speed based on target state
         // Uses configured lerp speed
         this.lerpSpeed = this.config.lerpSpeed;
@@ -1388,8 +1394,62 @@ export class TechDemoScene {
         onResize('Init');
     }
 
+    // v2.429: Sync Active Agent Card with Halo Ring Rotation
+    syncCardsToRing() {
+        if (!this.rotatorInner) return;
+
+        // 1. Calculate Active Index based on Rotation
+        // Ring steps are 60 degrees. Positive rotation (CW) -> Negative Step Logic
+        const interval = 60; // 360 / 6
+        const numSlots = 6;
+        
+        // Normalize rotation
+        let angle = this.rotatorInner.rotation;
+        
+        // Convert to step index using Math.round for "Nearest Neighbor" snapping
+        let step = Math.round(angle / interval);
+        
+        // Wrap to 0-5
+        const mod = (n, m) => ((n % m) + m) % m;
+        // Step 1 (-60deg) -> Index 1. So we use -step.
+        const activeIndex = mod(-step, numSlots);
+
+        // 2. Logic Check
+        // If System is OFF/STANDBY, strictly enforce Standby on all cards.
+        if (this.systemState !== 'ACTIVE') {
+            if (this.lastActiveCardIndex !== -2) {
+                // Apply "All Standby" once
+                const cards = document.querySelectorAll('.socket-card-container');
+                cards.forEach(card => card.setAttribute('data-agent-status', 'standby'));
+                this.lastActiveCardIndex = -2; // Sentinel for "All Standby Applied"
+            }
+            return;
+        }
+
+        // If System ACTIVE, check if Index Changed
+        if (activeIndex === this.lastActiveCardIndex) return;
+
+        // 3. Apply Active State
+        this.lastActiveCardIndex = activeIndex;
+        const cards = document.querySelectorAll('.socket-card-container');
+        
+        // Safety check: ensure we have corresponding card
+        if (activeIndex >= cards.length) return;
+
+        cards.forEach((card, index) => {
+            if (index === activeIndex) {
+                card.setAttribute('data-agent-status', 'active');
+            } else {
+                card.setAttribute('data-agent-status', 'standby');
+            }
+        });
+    }
+
     animate() {
         requestAnimationFrame(this.animate.bind(this));
+        
+        // Update Card Sync
+        this.syncCardsToRing();
         
         if (this.controls) this.controls.update();
 
