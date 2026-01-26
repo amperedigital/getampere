@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.452] - 2026-01-26
+- **UX Alignment**:
+    - **Removed Scroll-to-Slider Sync**: Disabled the logic where manual page scrolling updated the mobile slider state. The slider now acts exclusively as a controller/navigator, not a passive scroll indicator, preventing interference during reading.
+
 ## [v2.451] - 2026-01-26
 - **Mobile Card Internal Spacing**:
     - **Top & Side Padding**: Increased internal card content padding from `p-4` (1rem) to `p-6` (1.5rem) to ensure text elements don't feel crowded by the large `rounded-2xl` corner radius.

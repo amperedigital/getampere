@@ -1727,40 +1727,10 @@
                         sliderInner.addEventListener('input', (e) => updateRing('inner', e.target, labelInner, innerTitles));
                     }
 
-                    // v2.447: Card Scroll-to-Slider Sync (Bi-directional)
-                    // Updates the slider when the user manually scrolls the cards
-                    // Only active on mobile width
-                    if (window.innerWidth < 1024 && !!window.IntersectionObserver) {
-                        setTimeout(() => {
-                            const cardIds = ['card-0', 'card-1', 'card-2', 'card-3', 'card-4', 'card-5'];
-                            const scrollObserver = new IntersectionObserver((entries) => {
-                                entries.forEach(entry => {
-                                    if (entry.isIntersecting) {
-                                        const id = entry.target.id;
-                                        const index = parseInt(id.replace('card-', ''));
-                                        // Update slider if value differs
-                                        const currentVal = sliderInner ? parseInt(sliderInner.value) : -1;
-                                        if (!isNaN(index) && sliderInner && currentVal !== index) {
-                                            sliderInner.value = index;
-                                            // Call updateRing with preventScroll = true to avoid sync loop
-                                            updateRing('inner', sliderInner, labelInner, innerTitles, true);
-                                        }
-                                    }
-                                });
-                            }, {
-                                root: null,
-                                // Center weighted: Active when card center passes middle of viewport
-                                rootMargin: '-45% 0px -45% 0px', 
-                                threshold: 0
-                            });
-
-                            cardIds.forEach(id => {
-                                const el = document.getElementById(id);
-                                if (el) scrollObserver.observe(el);
-                            });
-                        }, 500); // Wait for DOM layout
-                    }
-
+                    // v2.452: Removed Scroll-to-Slider Sync (IntersectionObserver)
+                    // Rationale: User feedback indicates scroll syncing interferes with UX. 
+                    // The slider should control the view, but manual scrolling should not hijack the slider state.
+                    
                     // Toggle Helper for Mobile Power Button
                     window.toggleMobilePower = () => {
                         if (!window.demoScene) return;
