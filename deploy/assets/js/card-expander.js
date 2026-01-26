@@ -64,6 +64,10 @@ export class CardExpander {
             const iconContainer = topRightBtn.querySelector('.z-30 svg');
             if (iconContainer) {
                 topRightBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
+                // Save original viewbox to support different icon sizes (32x32 original vs 24x24 close)
+                if (iconContainer.hasAttribute('viewBox')) {
+                    topRightBtn.setAttribute('data-original-viewbox', iconContainer.getAttribute('viewBox'));
+                }
             }
         }
 
@@ -240,34 +244,18 @@ export class CardExpander {
         if (!iconContainer) return;
 
         if (state === 'close') {
-            // Change to "X" or "Minimize"
-            // Simple X path
-             iconContainer.innerHTML = '<path fill="currentColor" d="M24 9.4L22.6 8L16 14.6L9.4 8L8 9.4l6.6 6.6L8 22.6L9.4 24l6.6-6.6l6.6 6.6l1.4-1.4l-6.6-6.6L24 9.4z"/>';
+            // Change to "X" (Close)
+            // Use 24x24 viewBox for the standard X icon
+             iconContainer.innerHTML = '<path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+             iconContainer.setAttribute('viewBox', '0 0 24 24');
         } else {
-            // Restore "Expand/Arrows" path
-            // Original: M26 22... (Socket Icon)
-            // Wait, the original icon is the Ampere Socket logo thing?
-            // "M26 22a3.86 3.86..."
-            // We should ideally restore the original HTML.
-            // Simplest way: The HTML in tech-demo.html has the SVG inline.
-            // We can just swap the innerHTML based on a stored "original" state or hardcode.
-            // Given I cannot read the specific icon for each card easily without caching, 
-            // I will assume for now we want a generic "Expand" icon vs "Close".
-            // OR, the original icon WAS the content icon (e.g. Chat Bubble, Document).
-            // User request: "Button stays the same, curves stay the same".
-            // AND "Just the area of the card is expanded."
-            // This might mean the user wants the button to be the TRIGGER, but maybe the icon shouldn't change?
-            // "Button stays the same" -> Visual style stays.
-            // But function changes. A toggle needs state indication.
-            // I'll swap it to an X to be safe, but keep the style.
-            
-            // Hardcode the original "Socket" icon for now as a fallback or read data-attribute?
-            // Better: Store the original path in a data attribute on first expand.
-            if (!btn.hasAttribute('data-original-icon')) {
-                 // Too late to save if we already overwrote it.
-                 // We should save it in 'expand'.
-            } else {
+            // Restore original icon
+            if (btn.hasAttribute('data-original-icon')) {
                 iconContainer.innerHTML = btn.getAttribute('data-original-icon');
+                // Restore original ViewBox if saved
+                if (btn.hasAttribute('data-original-viewbox')) {
+                    iconContainer.setAttribute('viewBox', btn.getAttribute('data-original-viewbox'));
+                }
             }
         }
     }

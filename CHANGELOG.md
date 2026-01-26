@@ -1,4 +1,12 @@
 # Changelog
+## [v2.413] - 2026-01-25
+
+### Fixed
+- **Close Icon Alignment**: Fixed an issue where the "X" close icon appeared tiny and off-center in the top-right button.
+  - Updated `card-expander.js` to dynamicallly manage SVG `viewBox` attributes.
+  - Switched to a standard 24x24 Material Design "Close" path.
+  - Implemented state preservation for original icon `viewBox` (restoring 32x32 sockets correctly).
+
 ## v2.412_remove_bounce (2026-01-25)
 ### Changed
 - **Animation Feel**: Updated the expansion easing curve from `Spring Pop` (overshooting) to `Expo Ease Out` (`cubic-bezier(0.19, 1, 0.22, 1)`). This eliminates the bounce/rebound effect, resulting in a smooth, confident "magnetic" lock-in feel.
