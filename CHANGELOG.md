@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.453] - 2026-01-26
+- **iPad Pro & Typography Refinement**:
+    - **Layout density**: Reduced internal card padding on `lg` breakpoints (1024px, like iPad Pro) from `p-8` to `p-5`. The full `p-8` padding is now reserved for `xl` (1280px+) screens. This prevents the "too much empty space" feel when the 2-column grid is active on narrower 1024px screens.
+    - **Font Sizing**: Replaced container-query (cqw) units with standard Tailwind utilities to guarantee minimum legibility. 
+        - **Metrics**: Increased from ~7px (3.5cqw) to `text-xs lg:text-sm` (~12-14px), effectively doubling readability.
+        - **Titles**: Fixed at `text-lg lg:text-xl` for consistent hierarchy.
+
 ## [v2.452] - 2026-01-26
 - **UX Alignment**:
     - **Removed Scroll-to-Slider Sync**: Disabled the logic where manual page scrolling updated the mobile slider state. The slider now acts exclusively as a controller/navigator, not a passive scroll indicator, preventing interference during reading.
