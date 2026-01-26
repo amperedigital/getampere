@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.432] - 2026-01-26
+- **UX Refinement**: Tightened hit detection zones for the 3D Halo Wheel to eliminate ambiguous clicks. Added a "Dead Zone" (0-150px) in the center and capped the outer ring (450px) to prevent accidental edge interactions.
+- **Visual Feedback**: Implemented cursor state changes (`cursor: grab`) when hovering over valid ring interaction zones, improving affordance on desktop.
+
 ## [v2.431] - 2026-01-26
 - **Animation Logic**: Implemented Hysteresis Thresholding for card power states.
 - **Power Up**: Cards now wait until system intensity hits 95% (synced with "AI ONLINE") before activating.

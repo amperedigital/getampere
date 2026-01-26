@@ -1,3 +1,5 @@
+const activeHovers = new Set();
+
 export class HaloRotator {
     constructor(svgElement, selector = '#halo-rotary-dial', options = {}) {
         this.svg = svgElement;
@@ -36,6 +38,7 @@ export class HaloRotator {
         this.handlePointerMove = this.handlePointerMove.bind(this);
         this.handlePointerUp = this.handlePointerUp.bind(this);
         this.handleWheel = this.handleWheel.bind(this);
+        this.handleHover = this.handleHover.bind(this); // v2.432
 
         // Init
         this.attachListeners();
@@ -69,9 +72,46 @@ export class HaloRotator {
     attachListeners() {
         // We attach to the SVG mainly, but for drag we might want window for release
         this.svg.addEventListener('pointerdown', this.handlePointerDown);
+        this.svg.addEventListener('pointermove', this.handleHover); // v2.432 Hover Feedback
+        this.svg.addEventListener('pointerleave', this.handleHover); // v2.432 Clear on leave
         window.addEventListener('pointermove', this.handlePointerMove);
         window.addEventListener('pointerup', this.handlePointerUp);
         this.svg.addEventListener('wheel', this.handleWheel, { passive: false });
+    }
+
+    handleHover(e) {
+        if (!this.isActive) return;
+        if (this.isDragging) return;
+
+        let isHit = false;
+
+        if (e.type !== 'pointerleave') {
+            const rect = this.svg.getBoundingClientRect();
+            // Map to SVG viewbox 0..800
+            const scale = 800 / rect.width;
+            const x = (e.clientX - rect.left) * scale;
+            const y = (e.clientY - rect.top) * scale;
+            
+            const dx = x - 400;
+            const dy = y - 400;
+            const radius = Math.sqrt(dx*dx + dy*dy);
+
+            if (radius >= this.hitMin && radius <= this.hitMax) {
+                isHit = true;
+            }
+        }
+
+        if (isHit) {
+            activeHovers.add(this);
+        } else {
+            activeHovers.delete(this);
+        }
+
+        if (activeHovers.size > 0) {
+            this.svg.style.cursor = 'grab';
+        } else {
+            this.svg.style.cursor = '';
+        }
     }
 
     handlePointerDown(e) {

@@ -110,10 +110,10 @@ export class TechDemoScene {
             this.staticNeedle = svg.querySelector('#static-needle');
 
             // Outer Ring (#halo-ring-outer): Blue, r=270-330 approx
-            // Hit Area: > 265
+            // v2.432: Adjusted Hit Area (270-450) to prevent accidental drags from far outside
             this.rotatorOuter = new HaloRotator(svg, '#halo-ring-outer', {
-                hitMin: 265,
-                hitMax: 800, // Extend to edge
+                hitMin: 270,
+                hitMax: 450, 
                 snapInterval: 60, // 6 items = 60 degrees
                 // Tailwind Class Overrides (Blue Theme)
                 markerClassInactive: 'fill-blue-500',
@@ -123,9 +123,9 @@ export class TechDemoScene {
             });
 
             // Inner Ring (#halo-ring-inner): Purple/Slate, r=200-260 approx
-            // Hit Area: < 265
+            // v2.432: Adjusted Hit Area (150-265) to create a "Dead Zone" in the very center
             this.rotatorInner = new HaloRotator(svg, '#halo-ring-inner', {
-                hitMin: 0,
+                hitMin: 150,
                 hitMax: 265,
                 snapInterval: 60, // 6 items = 60 degrees
                 // Tailwind Class Overrides (Slate Theme)
