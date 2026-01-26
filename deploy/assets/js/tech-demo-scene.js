@@ -289,9 +289,21 @@ export class TechDemoScene {
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
                     /* Smoother easing (easeOutQuint) */
-                    transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+                    transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
                     z-index: 1;
                     box-sizing: border-box;
+                }
+
+                /* Hover Interaction: Lift and Glow when user interacts with the track */
+                #ampere-ui-track:hover #ampere-ui-thumb {
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 0 12px rgba(255,255,255,0.3);
+                    transform: scale(1.02);
+                    cursor: grab;
+                }
+                
+                #ampere-ui-thumb:active {
+                    cursor: grabbing;
+                    transform: scale(0.98);
                 }
                 
                 /* DEPRECATED MOBILE OVERRIDES (Now handled by display:none) */
