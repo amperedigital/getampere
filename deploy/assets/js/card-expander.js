@@ -231,18 +231,7 @@ export class CardExpander {
             t.style.pointerEvents = '';
         });
         
-        this.activeCard = null;
 
-        // 6. Update TOP RIGHT Icon to "Original" (Socket Logo)
-        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
-        this.updateIcon(topRightBtn, 'expand');
-        
-        // 3b. Restore Expand Triggers
-        const triggers = card.querySelectorAll('.expand-trigger');
-        triggers.forEach(t => {
-            t.style.opacity = ''; // Restore CSS control
-            t.style.pointerEvents = '';
-        });
     }
 
     updateIcon(btn, state) {

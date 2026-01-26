@@ -1,4 +1,10 @@
 # Changelog
+## v2.411_fix_syntax_and_safety (2026-01-25)
+### Fixed
+- **JavaScript Syntax Error**: Removed a duplicate block of code in `card-expander.js` that caused an `Identifier 'topRightBtn' has already been declared` error, restoring card functionality.
+### Added
+- **Safety**: Added `scripts/validate_js.sh` to the publishing pipeline. This tool uses `node --check` to verify the syntax of all JavaScript files in `deploy/` before a release can proceed, preventing Syntax Errors from reaching production.
+
 ## v2.410_fix_syntax_error (2026-01-25)
 ### Fixed
 - **JavaScript Sytax Error**: Fixed a stray closing brace `}` inside the `collapse` function of `card-expander.js` which was prematurely closing the method, leaving subsequent code (like `this.activeCard = null`) executing in class body scope, causing `Uncaught SyntaxError: Unexpected token '.'`.
