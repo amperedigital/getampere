@@ -1415,8 +1415,12 @@ export class TechDemoScene {
         const activeIndex = mod(-step, numSlots);
 
         // 2. Logic Check
-        // If System is OFF/STANDBY, strictly enforce Standby on all cards.
-        if (this.systemState !== 'ACTIVE') {
+        // v2.430: Sync Power Up with Ramp-Up Animation
+        // Valid if ACTIVE AND Simulation Intensity > 80% (Initializing complete)
+        const isReady = (this.systemState === 'ACTIVE' && this.simIntensity > 0.8);
+
+        // If System is OFF/STANDBY or Initializing, strictly enforce Standby on all cards.
+        if (!isReady) {
             if (this.lastActiveCardIndex !== -2) {
                 // Apply "All Standby" once
                 const cards = document.querySelectorAll('.socket-card-container');
@@ -1426,7 +1430,7 @@ export class TechDemoScene {
             return;
         }
 
-        // If System ACTIVE, check if Index Changed
+        // If System READY, check if Index Changed
         if (activeIndex === this.lastActiveCardIndex) return;
 
         // 3. Apply Active State
