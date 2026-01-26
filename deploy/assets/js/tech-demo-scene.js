@@ -192,16 +192,17 @@ export class TechDemoScene {
                     transform: none;
                     
                     width: 320px;
-                    height: 48px;
-                    background: rgba(5, 6, 10, 0.85);
-                    backdrop-filter: blur(12px);
+                    height: 42px; /* Uniform height with pills */
+                    background: rgba(0, 0, 0, 0.4); /* Glass Dark */
+                    backdrop-filter: blur(24px);
+                    -webkit-backdrop-filter: blur(24px);
                     border-radius: 999px;
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 6px;
+                    padding: 3px;
                     user-select: none;
                     -webkit-user-select: none;
                     touch-action: none;
@@ -264,38 +265,27 @@ export class TechDemoScene {
                     height: 100%;
                     margin: 0;
                     padding: 0;
-                    font-family: monospace;
-                    font-size: 12px;
-                    letter-spacing: 1px;
-                    color: #666;
+                    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    font-size: 11px;
+                    letter-spacing: 0.05em;
+                    color: rgba(255,255,255,0.6);
                     z-index: 2;
                     font-weight: 600;
                     pointer-events: none;
                     transition: color 0.3s ease, text-shadow 0.3s ease;
                 }
 
-                /* Digital Dot for Labels */
-                .ampere-ui-label::before {
-                    content: '';
-                    display: block;
-                    width: 4px;
-                    height: 4px;
-                    background-color: currentColor; 
-                    border-radius: 50%;
-                    margin-right: 6px;
-                    opacity: 0.8;
-                    box-shadow: 0 0 5px currentColor;
-                }
-
                 #ampere-ui-thumb {
                     position: absolute;
-                    top: 6px;
-                    left: 6px;
-                    height: 36px; /* 48 - 12 */
-                    background: linear-gradient(180deg, rgba(30, 40, 50, 0.9), rgba(20, 30, 40, 0.9));
-                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    top: 3px;
+                    left: 3px;
+                    height: 36px; /* 42 - 6 */
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 999px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.05);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
                     /* Smoother easing (easeOutQuint) */
                     transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
                     z-index: 1;
@@ -310,24 +300,14 @@ export class TechDemoScene {
                     }
                 }
                 
-                .ampere-dot-row {
-                    display: flex;
-                    gap: 4px;
-                }
-                .ampere-dot {
-                    width: 3px;
-                    height: 3px;
-                    border-radius: 50%;
-                    background-color: rgba(255, 255, 255, 0.1);
-                    transition: background-color 0.1s, box-shadow 0.1s;
-                }
                 .ampere-status-text {
-                    font-family: monospace;
+                    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                     font-size: 10px;
-                    letter-spacing: 2px;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
                     color: #77ccff;
                     text-transform: uppercase;
-                    text-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+                    /* text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); Removed for flatter glass look */
                     min-height: 12px;
                     text-align: center;
                     white-space: nowrap;
@@ -336,7 +316,7 @@ export class TechDemoScene {
             document.head.appendChild(style);
         }
 
-        const padding = 6; 
+        const padding = 3; 
         
         // --- CLUSTER CONTAINER (New v2.300) ---
         const cluster = document.createElement('div');
@@ -402,17 +382,9 @@ export class TechDemoScene {
         this.uiStatusContainer = statusContainer;
         statusContainer.id = 'ampere-system-status';
         
-        const dotRow = document.createElement('div');
-        dotRow.className = 'ampere-dot-row';
+        // v2.415: Dots removed per design request (Modern Glass Style)
         this.uiDots = [];
-        for (let i = 0; i < 20; i++) {
-             const dot = document.createElement('div');
-             dot.className = 'ampere-dot';
-             dotRow.appendChild(dot);
-             this.uiDots.push(dot);
-        }
-        statusContainer.appendChild(dotRow);
-        
+
         const statusText = document.createElement('div');
         this.uiStatusText = statusText;
         statusText.className = 'ampere-status-text';

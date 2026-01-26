@@ -1,5 +1,17 @@
 # Changelog
 ## [v2.413] - 2026-01-25
+## [v2.415] - 2026-01-25
+
+### Changed
+- **Power Cluster Refinement (Desktop & Mobile)**:
+  - **Aesthetic Upgrade**: Updated the "Power Cluster" (3-state slider on desktop, toggle and status on mobile) to use the new "Apple Glass" style.
+    - **Background**: `bg-black/40` / `rgba(0,0,0,0.4)` with `backdrop-filter: blur(24px)`.
+    - **Border**: `rgba(255,255,255,0.1)` for a crisp edge.
+    - **Shadow**: `shadow-[0_8px_32px_rgba(0,0,0,0.12)]`.
+  - **Height Uniformity**: Enforced a `42px` height across all control pills (matching the "Live Demo" pill) for visual consistency.
+  - **Typography**: Removed `font-mono` from status text and labels, switching to a clean system sans-serif font (`ui-sans-serif`).
+  - **Design Cleanup**: Removed the "dot matrix" status row from the desktop cluster and the single status dot from the mobile control labels to reduce visual noise.
+
 ## [v2.414] - 2026-01-25
 
 ### Changed

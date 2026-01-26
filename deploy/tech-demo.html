@@ -98,17 +98,17 @@
                 <!-- v2.259: Changed to single row (Status Left, Power Right) -->
                 <div class="lg:hidden absolute top-2 right-4 z-50 flex flex-row items-center gap-4 pointer-events-auto">
                     <!-- Status Display -->
-                    <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
-                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
-                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                    <div id="mobile-system-status" class="flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-xl shadow-2xl transition-colors duration-300 min-h-[42px]">
+                        <div id="mobile-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                        <span id="mobile-status-text" class="text-xs font-bold tracking-widest text-emerald-400 transition-colors duration-300 font-sans">ONLINE</span>
                         <!-- v2.269: Integrated Standby Timer -->
-                        <span id="mobile-standby-timer" class="text-[10px] font-mono text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
+                        <span id="mobile-standby-timer" class="text-xs font-sans font-bold text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
                     </div>
 
                     <!-- Single Power Toggle -->
                     <!-- Green when On, Slate when Off -->
                     <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                            class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center bg-black/40 border border-white/10 backdrop-blur-xl text-slate-500 hover:bg-white/10 active:scale-95 transition-all shadow-2xl"
                             id="btn-mobile-power"
                             aria-label="Power Toggle">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1112,7 +1112,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.346_ipad_expansion_root_fix/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.415/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
