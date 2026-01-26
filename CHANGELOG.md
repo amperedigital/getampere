@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.423] - 2026-01-26
+- **UI Upgrade**: Replaced standard dots with "Glass Blocks" (8x12px) in the Power Cluster.
+- **Visuals**: Blocks feature inner depth shadows (inactive) and complex illuminated glow (active) for a more tactile, premium feel.
+
+# Changelog
+
 ## [v2.422] - 2026-01-26
 - **Restored**: UI Status Dots in Power Cluster (20-dot row).
 - **Updated**: Range dots now use Emerald Green theme (`#10b981`) to match the Power Up button.

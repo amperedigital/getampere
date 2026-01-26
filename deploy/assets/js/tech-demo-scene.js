@@ -322,15 +322,18 @@ export class TechDemoScene {
                 
 .ampere-dot-row {
                         display: flex;
-                        gap: 4px;
-                        margin-bottom: 2px;
+                        gap: 2px;
+                        margin-bottom: 8px;
+                        justify-content: center;
                     }
                     .ampere-dot {
-                        width: 3px;
-                        height: 3px;
-                        border-radius: 50%;
-                        background-color: rgba(255, 255, 255, 0.1);
-                        transition: background-color 0.1s, box-shadow 0.1s;
+                        width: 8px; /* Defined block width */
+                        height: 12px; /* Taller rectangular blocks */
+                        border-radius: 1px; /* Slight bevel */
+                        background: rgba(255, 255, 255, 0.03);
+                        border: 1px solid rgba(255, 255, 255, 0.08);
+                        box-shadow: inset 0 0 2px rgba(0,0,0,0.5); /* Inner depth for glass feel */
+                        transition: all 0.15s ease-out;
                     }
                     .ampere-status-text {
                         font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -1486,12 +1489,17 @@ export class TechDemoScene {
                      if (this.uiDots) {
                          this.uiDots.forEach((dot, i) => {
                              if (i < activeCount) {
-                                 // Updated to Emerald (v2.422)
-                                 dot.style.backgroundColor = '#10b981';
-                                 dot.style.boxShadow = '0 0 4px #10b981';
+                                 // Active: Illuminated Glass Block (Emerald)
+                                 // Inner glow (inset) + Outer glow (box-shadow)
+                                 dot.style.background = '#10b981'; 
+                                 dot.style.border = '1px solid #6ee7b7'; // Lighter border
+                                 // Complex shadow for "lit glass" effect
+                                 dot.style.boxShadow = '0 0 8px rgba(16, 185, 129, 0.5), inset 0 1px 3px rgba(255,255,255,0.4)';
                              } else {
-                                 dot.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                                 dot.style.boxShadow = 'none';
+                                 // Inactive: Dark Glass
+                                 dot.style.background = 'rgba(255, 255, 255, 0.03)';
+                                 dot.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+                                 dot.style.boxShadow = 'inset 0 0 2px rgba(0,0,0,0.5)';
                              }
                          });
                      }
