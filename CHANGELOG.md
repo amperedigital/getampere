@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.455] - 2026-01-26
+- **iPad Pro Layout Refinement**:
+    - **Overflow Protection**: Removed forced `overflow-hidden` and `h-screen` constraints on the `lg` breakpoint (1024px). The layout now defaults to `h-auto` with natural scrolling on iPad Pro, preventing content clipping caused by increased padding/font sizes.
+    - **Gutter Balancing**: Reduced Left Header padding from `px-12` (3rem) to `px-8` (2rem) to match the Right Column's gutter, creating symmetrical page edges.
+    - **Header Adjustments**:
+        - **Breadcrumb**: Increased top spacing (`pt-16 lg:pt-20`, +1rem) to avoid corner radius cramping.
+        - **Live Demo Pill**: Increased right offset from `right-24` to `right-36` (+3rem) to clear the top-right rounded corner area.
+    - **Typography**: Promoted the header blurb to `text-lg` universally (was `text-sm lg:text-lg`).
+
 ## [v2.454] - 2026-01-26
 - **Visual Polish**:
     - **Inactive State**: Reduced opacity of inactive metric labels to `0.6` by default, restoring full opacity when the agent is active. This creates a clear visual hierarchy and prevents the interface from looking "washed out".
