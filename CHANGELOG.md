@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.431] - 2026-01-26
+- **Animation Logic**: Implemented Hysteresis Thresholding for card power states.
+- **Power Up**: Cards now wait until system intensity hits 95% (synced with "AI ONLINE") before activating.
+- **Power Down**: Cards remain active until system intensity drops below 10%, ensuring they visually "drain" with the power meter instead of snapping off immediately.
+
 ## [v2.430] - 2026-01-26
 - **Visual Sync**: Synchronized the "Power Up" animation of Agent Cards with the system initialization ramp-up. Cards now remain in standby until the system initialization reaches ~80%, providing a more cohesive "power grid" effect. (Previously, they snapped to active instantly).
 - **Optimization**: Applied `transform: translate3d(0,0,0)` and `backface-visibility: hidden` to glass cards to eliminate shader artifacting/flickering during focus changes or scrolling.

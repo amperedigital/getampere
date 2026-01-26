@@ -34,6 +34,7 @@ export class TechDemoScene {
 
         // v2.429: Active Card Sync State
         this.lastActiveCardIndex = -1;
+        this.isCardPowerActive = false; // v2.431: Hysteresis State
 
         // --- Configuration (Data Attributes) ---
         this.config = {
@@ -1415,12 +1416,20 @@ export class TechDemoScene {
         const activeIndex = mod(-step, numSlots);
 
         // 2. Logic Check
-        // v2.430: Sync Power Up with Ramp-Up Animation
-        // Valid if ACTIVE AND Simulation Intensity > 80% (Initializing complete)
-        const isReady = (this.systemState === 'ACTIVE' && this.simIntensity > 0.8);
+        // v2.431: Hysteresis Logic for Power Up/Down
+        // Power Up: Wait until 95% intensity (Sync with "AI ONLINE" text)
+        // Power Down: Stay on until 10% intensity (Sync with Meter Draining)
+        const sim = this.simIntensity;
+        if (this.isCardPowerActive) {
+            // Falling Edge
+            if (sim < 0.1) this.isCardPowerActive = false;
+        } else {
+            // Rising Edge
+            if (sim > 0.95) this.isCardPowerActive = true;
+        }
 
         // If System is OFF/STANDBY or Initializing, strictly enforce Standby on all cards.
-        if (!isReady) {
+        if (!this.isCardPowerActive) {
             if (this.lastActiveCardIndex !== -2) {
                 // Apply "All Standby" once
                 const cards = document.querySelectorAll('.socket-card-container');
