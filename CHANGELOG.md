@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.441] - 2026-01-26
+- **Test (Artifacting)**: Temporarily disabled the `rotate-180` animation on the Glass Button hover state. This is a diagnostic step to confirm if the continuous repaint caused by the SVG rotation is the trigger for the "gradient bleed" flashes on adjacent cards.
+
 ## [v2.440] - 2026-01-26
 - **Rendering Fix (Button Artifacts)**: Removed unnecessary `transform: translateZ(...)` forced layer promotions from the Glass Button and its internal icon. These properties, when combined with the card's backdrop-filter, were triggering GPU texture bleeds on adjacent cards during hover animations.
 - **Cleanup**: Stripped `will-change: backdrop-filter` to further reduce GPU memory pressure and artifacting potential.
