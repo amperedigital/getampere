@@ -37,7 +37,8 @@
             <!-- v2.456: Reverted px-8 to pl-20/24 to align content with Scene Ring (Vertical Alignment Fix). Pushed Down. -->
             <!-- v2.457: Reverted Left Gutter to lg:pl-8 (2rem) and set equal Right Gutter lg:pr-8 (2rem) for perfect symmetry. -->
             <!-- v2.458: Reverted alignment to lg:pl-8 (2rem) to match Scene Container Left Edge. Alignment restored. -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-8 lg:pr-8 lg:pt-16 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.459: Increased Top Padding to lg:pt-24 (6rem) to clear rounded corners. -->
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-8 lg:pr-8 lg:pt-24 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -74,7 +75,8 @@
             <!-- v2.350: Adjusted lg:right-20 to lg:right-12 (3rem) to match p-12 logic. Alignment Fix. -->
             <!-- v2.351: Adjusted lg:top-12 to lg:top-8 (2rem) to straddle the scene container border. -->
             <!-- v2.458: Moved to lg:right-12 (3rem) for iPad Pro. Restored xl:right-36 (9rem) to prevent desktop jump. -->
-            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 xl:right-36 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <!-- v2.459: Removed xl:right-36 to enforce consistent right-12 (3rem) spacing on all Desktop/Tablet screens. -->
+            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.459] - 2026-01-26
+- **Stability & Corner Clearance**:
+    - **Header Clearance**: Increased top padding to `lg:pt-24` (6rem) to force the breadcrumb/title down, clearing the large rounded viewport corners on iPad Pro and preventing "cramming".
+    - **Pill Consistency**: Removed the Desktop-specific `xl:right-36` override. The Live Demo Pill is now consistently parked at `lg:right-12` (3rem) on all large screens, preventing it from jumping wildly on desktop resizing.
+    - **Column Gutter**: Confirmed 1rem central gap (`lg:right-2` + `lg:pl-2`) matching the `gap-4` card spacing.
+
 ## [v2.458] - 2026-01-26
 - **iPad Pro Refinement & Desktop FixES**:
     - **Live Demo Pill**:
