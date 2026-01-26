@@ -1,5 +1,12 @@
 # Changelog
 ## [v2.413] - 2026-01-25
+## [v2.417] - 2026-01-25
+
+### Changed
+- **Glass Button Accuracy**: Updated the "Power Cluster" (Desktop Slider Track & Thumb, and Mobile Buttons) to use a true "Gradient Mask Border" technique (`linear-gradient` border-box) instead of `inset` shadows. This accurately recreates the "Partial Border" look where the Top-Left and Bottom-Right corners are highlighted, while maintaining transparency elsewhere.
+- **Improved Spacing**: Increased Desktop Slider Track height to `48px` (from `42px`) while keeping the Thumb at `36px`, increasing the internal padding to `6px` (up from `2px`) for a much less cramped appearance.
+- **Card Hover Logic**: Updated the Expand Button rotation trigger. Now, hovering anywhere on the **Card** (`.socket-card-container`) will trigger the button's spin effect, providing earlier interactive feedback.
+
 ## [v2.416] - 2026-01-25
 
 ### Changed

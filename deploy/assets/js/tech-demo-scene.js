@@ -192,17 +192,18 @@ export class TechDemoScene {
                     transform: none;
                     
                     width: 320px;
-                    height: 42px; /* Uniform height with pills */
-                    background: rgba(0, 0, 0, 0.4); /* Glass Dark */
+                    height: 48px; /* Height increased for breathing room */
+                    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)) padding-box,
+                                linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.4) 100%) border-box;
                     backdrop-filter: blur(24px);
                     -webkit-backdrop-filter: blur(24px);
                     border-radius: 999px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.4), inset -1px -1px 0 0 rgba(255,255,255,0.4), 0 8px 32px rgba(0,0,0,0.12);
+                    border: 1px solid transparent; /* Required for border-box gradient */
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.12); /* Clean shadow, border does the work */
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 0; /* Padding handled by JS layout logic now */
+                    padding: 0; 
                     user-select: none;
                     -webkit-user-select: none;
                     touch-action: none;
@@ -277,13 +278,14 @@ export class TechDemoScene {
 
                 #ampere-ui-thumb {
                     position: absolute;
-                    top: 2px;
-                    left: 2px;
-                    height: 36px; /* 42 - 2 (border) - 2 (pad) - 2 (pad) = 36 */
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    top: 5px; /* (48px - 36px) / 2 = 6px -> -1px border = 5px */
+                    left: 5px;
+                    height: 36px;
+                    background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) padding-box,
+                                linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.45) 100%) border-box;
+                    border: 1px solid transparent; /* Required for border-box gradient */
                     border-radius: 999px;
-                    box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.4), inset -1px -1px 0 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.2);
+                    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
                     /* Smoother easing (easeOutQuint) */
@@ -316,7 +318,7 @@ export class TechDemoScene {
             document.head.appendChild(style);
         }
 
-        const padding = 2; // Updated from 3 for perfect 2px gap uniformity (42 - 36 - 2 - 2 = 2px)
+        const padding = 5; // Updated from 3 for perfect 2px gap uniformity (42 - 36 - 2 - 2 = 2px)
         
         // --- CLUSTER CONTAINER (New v2.300) ---
         const cluster = document.createElement('div');
@@ -342,6 +344,8 @@ export class TechDemoScene {
         thumbGlow.style.borderRadius = '999px';
         thumbGlow.style.background = 'radial-gradient(circle at center, rgba(0, 170, 255, 0.15), transparent 70%)';
         thumb.appendChild(thumbGlow);
+
+        // Update JS logic to use new padding (5px)
         
         // Labels (Reordered: STANDBY | ON | OFF)
         const labelsData = [
