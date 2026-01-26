@@ -588,6 +588,18 @@ export class TechDemoScene {
         // Update Body Attribute for Global CSS Styling (Titles, etc.)
         document.body.setAttribute('data-system-state', newState);
 
+        // Update Agent Card Status (v2.428)
+        // Active: Front Door Agent (Index 0) is Active, others are Standby.
+        // Standby/Off: All agents are Standby.
+        const cards = document.querySelectorAll('.socket-card-container');
+        cards.forEach((card, index) => {
+            if (newState === 'ACTIVE' && index === 0) {
+                card.setAttribute('data-agent-status', 'active');
+            } else {
+                card.setAttribute('data-agent-status', 'standby');
+            }
+        });
+
         // Sync HaloRotator State (Both Rings)
         if (this.rotatorOuter) this.rotatorOuter.setPowerState(newState);
         if (this.rotatorInner) this.rotatorInner.setPowerState(newState);

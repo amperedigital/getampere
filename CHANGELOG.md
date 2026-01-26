@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.428] - 2026-01-26
+- **Interaction Logic**: Connected the Global Power State (`ACTIVE` / `STANDBY` / `OFF`) to the individual Agent Card visual states.
+- **Power Up Behavior**: When system enters `ACTIVE` state, the Front Door Agent automatically wakes up (`active` state), while other agents remain in `standby`.
+- **Power Down Behavior**: When system enters `STANDBY` or `OFF` state, ALL agents (including Front Door) revert to `standby` mode.
+
 ## [v2.427] - 2026-01-26
 - **Live/Standby States**: Implemented visual state logic for Agent Cards in the Power Cluster.
 - **Default State**: "Front Door Agent" is now the only active card (`data-agent-status="active"`). All other agents are dimmed and desaturated (`data-agent-status="standby"`).
