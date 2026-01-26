@@ -751,3 +751,16 @@ You cannot use `border-color`. You must use `background-image` composite masking
   - **Shadow**: Deepen the shadow (`box-shadow: 0 12px 48px ...`) to imply increased height from the background.
   - **Rim**: Optionally add `0 0 0 1px rgba(255,255,255,0.1)` to catch the light.
 - **Transition**: Use `transition: all 0.4s ease` for a heavy, premium feel (not too fast).
+
+## 13. Tailwind Configuration & Utilities
+The project relies on a specific set of Tailwind plugins and custom configurations.
+
+### Plugins
+- **`@tailwindcss/typography`**: Provides `prose` classes for Markdown rendering (e.g., in `changelog.html`).
+- **`@tailwindcss/container-queries`**: Enables `@container` and `@lg:w-full` logic for modular components like "Zen Mode" widgets.
+- **`tailwind-scrollbar`**: Provides `scrollbar-thin`, `scrollbar-thumb-*` utilities for custom scrollbar styling.
+
+### Custom Utilities (Architecture)
+To achieve the "Glass" effect without external CSS files, we use two approaches:
+1.  **Standard Utilities**: `backdrop-blur-xl`, `mix-blend-overlay`, `bg-white/10`.
+2.  **Injected CSS (CSS-in-JS)**: For complex properties like `background-image` masking (Partial Borders), we inject `<style>` blocks directly from the JS component. This bypasses Tailwind's limitations for multi-layer background composition.
