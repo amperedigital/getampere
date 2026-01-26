@@ -1,4 +1,8 @@
 # Changelog
+## v2.405_fix_sockets (2026-01-25)
+### Fixed
+- **Glass Socket Initialization**: corrected JS selector syntax (`.socket-card-container` vs `.socket-card-container @container`) which caused the socket SVG path generator to fail on load, resulting in "lost" card shapes.
+
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
 - **v2.404_ease_and_polish**
