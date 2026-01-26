@@ -1,4 +1,8 @@
 # Changelog
+## v2.410_fix_syntax_error (2026-01-25)
+### Fixed
+- **JavaScript Sytax Error**: Fixed a stray closing brace `}` inside the `collapse` function of `card-expander.js` which was prematurely closing the method, leaving subsequent code (like `this.activeCard = null`) executing in class body scope, causing `Uncaught SyntaxError: Unexpected token '.'`.
+
 ## v2.409_fix_scrolling_expansion (2026-01-25)
 ### Fixed
 - **Scroll-Aware Expansion**: Cards now expand correctly even when the list is scrolled. Previously, the expansion calculation did not account for `scrollTop` in the `absolute` positioning logic, causing cards to jump to the top of the content (often out of view) or break completely.

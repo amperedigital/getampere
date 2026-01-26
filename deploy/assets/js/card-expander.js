@@ -230,11 +230,10 @@ export class CardExpander {
             t.style.opacity = ''; // Restore CSS control
             t.style.pointerEvents = '';
         });
-    }
-
+        
         this.activeCard = null;
 
-        // 3. Update TOP RIGHT Icon to "Original" (Socket Logo)
+        // 6. Update TOP RIGHT Icon to "Original" (Socket Logo)
         const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
         this.updateIcon(topRightBtn, 'expand');
         
