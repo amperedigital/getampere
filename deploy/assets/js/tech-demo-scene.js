@@ -200,6 +200,7 @@ export class TechDemoScene {
                     border-radius: 999px;
                     border: 1px solid transparent; /* Required for border-box gradient */
                     box-shadow: 0 8px 32px rgba(0,0,0,0.12); /* Clean shadow, border does the work */
+                    transition: box-shadow 0.4s ease, transform 0.4s ease;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -210,6 +211,11 @@ export class TechDemoScene {
                     cursor: pointer;
                     box-sizing: border-box;
                     pointer-events: auto; /* Re-enable clicks */
+                }
+
+                #ampere-ui-track:hover {
+                    box-shadow: 0 12px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+                    transform: translateY(-1px);
                 }
                 
                 #ampere-system-status {

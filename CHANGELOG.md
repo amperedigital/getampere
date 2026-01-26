@@ -2,6 +2,10 @@
 ## [v2.413] - 2026-01-25
 ## [v2.420] - 2026-01-26
 ### Changed
+- **Tech Demo UI**: Added "Glass Lift" hover effect to the Power Cluster track. On hover, the control lifts (`translateY(-1px)`), the shadow deepens, and a subtle rim light appears, matching the project's physical glass aesthetic.
+
+## [v2.420] - 2026-01-26
+### Changed
 - **Tech Demo UI**: Added interactive hover states to the Power Control Cluster.
   - Hovering the generic track now "wakes up" the thumb control with a lift effect (`scale(1.02)`) and intensified glow/shadow.
   - Added `cursor: grab` and `grabbing` states for better affordance.
