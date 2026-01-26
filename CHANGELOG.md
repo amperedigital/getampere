@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.445] - 2026-01-26
+- **Interaction Correction**: Confirmed the retention of `group-hover` triggers for the Glass Button (Background & Rotation) to maintain the "Card Hover" feedback loop requested by design.
+- **Rendering Fix (Rotation Bleed)**: Added `overflow-hidden` and `isolate` to the Glass Button container (`.w-14.h-14`). This creates a strict stacking context and clipping mask around the rotating SVG, preventing the animation's repaint rect from spilling over onto adjacent cards (the source of the "gradient bleed").
+
 ## [v2.444] - 2026-01-26
 - **Interaction Refinement (Decoupled Hover)**: Decoupled the Glass Button interactions from the main Card hover state.
     - **Background**: `hover:bg-white/5` (was `group-hover:...`). Now only brightens when the button itself is hovered.
