@@ -29,6 +29,7 @@ export class HaloRotator {
         this.velocity = 0;
         
         // Cache Elements
+        this.trackCircle = this.dialGroup.querySelector('circle[stroke-width="60"]');
         this.dots = Array.from(this.dialGroup.querySelectorAll('circle[data-index]'));
         this.texts = Array.from(this.dialGroup.querySelectorAll('text[data-index]'));
         
@@ -103,14 +104,31 @@ export class HaloRotator {
 
         if (isHit) {
             activeHovers.add(this);
+            this.setHoverState(true);
         } else {
             activeHovers.delete(this);
+            this.setHoverState(false);
         }
-
+        
         if (activeHovers.size > 0) {
             this.svg.style.cursor = 'grab';
         } else {
             this.svg.style.cursor = '';
+        }
+    }
+
+    setHoverState(isHovered) {
+        if (!this.trackCircle) return;
+        
+        // Visual Feedback: Brighten the ring track when hovered
+        // Existing classes are stroke-blue-500/10 (0.1) or stroke-slate-500/10 (0.1).
+        // We boost this significantly to indicate "graspable".
+        if (isHovered) {
+            this.trackCircle.style.strokeOpacity = '0.5';
+            this.trackCircle.style.transition = 'stroke-opacity 0.2s';
+        } else {
+            this.trackCircle.style.strokeOpacity = '';
+            this.trackCircle.style.transition = 'stroke-opacity 0.2s';
         }
     }
 

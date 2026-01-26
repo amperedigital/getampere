@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.433] - 2026-01-26
+- **Visual Feedback**: Added dynamic hover highlighting to the Halo Wheel rings. When a user hovers over a ring's interaction zone (Inner or Outer), the ring's stroke opacity boosts from 10% to 50%, clearly indicating which ring will be grabbed.
+
 ## [v2.432] - 2026-01-26
 - **UX Refinement**: Tightened hit detection zones for the 3D Halo Wheel to eliminate ambiguous clicks. Added a "Dead Zone" (0-150px) in the center and capped the outer ring (450px) to prevent accidental edge interactions.
 - **Visual Feedback**: Implemented cursor state changes (`cursor: grab`) when hovering over valid ring interaction zones, improving affordance on desktop.
