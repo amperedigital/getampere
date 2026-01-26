@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.458] - 2026-01-26
+- **iPad Pro Refinement & Desktop FixES**:
+    - **Live Demo Pill**:
+        - **iPad Pro (1024px)**: Moved closer to the right edge (`lg:right-12` / 3rem) as requested to clear the corner radius effectively while maintaining margin.
+        - **Desktop (1280px+)**: Restored to `xl:right-36` (9rem) to prevent the pill from jumping to the right edge on wider screens, fixing the regression where "desktop moved" unintentionally.
+    - **Header & Scene Alignment**:
+        - **Alignment**: Standardized Header Left Padding to `lg:pl-8` (2rem) to strictly align with the Scene Container's positions (`lg:left-8`).
+        - **Scene Left**: Reverted Scene Container to `lg:left-8` (2rem).
+    - **Column Symmetry**: maintained the 1rem gap between columns (`lg:right-2` on Scene + `lg:pl-2` on Cards).
+
 ## [v2.457] - 2026-01-26
 - **Layout Symmetry & Gutter Alignment**:
     - **Global Symmetry**: Enforced equal 2rem (`32px`) external gutters on both sides of the page (`lg:pl-8` Left Header, `lg:pr-8` Right Column). Fixed the asymmetry where the left gutter was disproportionately large.
