@@ -494,7 +494,8 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- Card: Front Door Agent -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="active"> 
+                <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="active"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -576,16 +577,16 @@
                             
                         <div class="text-slate-400 flex items-center">Visitors</div>
                         <div class="text-white text-right font-mono">1,428</div>
-                        <div class="flex items-center">
-    <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+                        <div class="flex items-center text-[1em]"> <!-- Enforce font scaling context -->
+    <!-- LED Glass Range Meter: Scaled via EM units -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] w-[85%] transition-all duration-500"></div>
         
-        <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
+        <!-- Segmentation Mask (The Gaps): Scaled via EM units -->
+        <!-- 0.6em Block, 0.15em Gap = 0.75em Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->
@@ -594,16 +595,15 @@
 </div>
                         <div class="text-slate-400 flex items-center">Active</div>
                         <div class="text-white text-right font-mono">342</div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)] w-[60%] transition-all duration-500"></div>
         
         <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->
@@ -612,16 +612,15 @@
 </div>
                         <div class="text-slate-400 flex items-center">Bounce</div>
                         <div class="text-white text-right font-mono">12%</div>
-                        <div class="flex items-center">
+                        <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
-    <div class="relative w-full h-3 rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
         <!-- Active Bar (Lit LEDs) -->
         <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[12%] transition-all duration-500"></div>
         
         <!-- Segmentation Mask (The Gaps) -->
-        <!-- 8px Block, 2px Gap = 10px Repeat -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
-             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
         </div>
         
         <!-- Surface Shine (Top Glass Refraction) -->

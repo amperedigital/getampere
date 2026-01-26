@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.436] - 2026-01-26
+- **Visual Fix (Zen Mode)**: "UV Meter" bars in the Agent Card stats now use relative `em` units instead of fixed pixels. This ensures they scale up beautifully alongside the text when the card is expanded, rather than remaining tiny.
+- **Rendering Fix**: Added `isolation: isolate` to Agent Cards to contain stacking contexts. This prevents the hover effects (glow/blur) of one card from causing repainting artifacts on adjacent cards.
+
 ## [v2.435] - 2026-01-26
 - **Critical Fix**: Improved Halo Ring coordinate detection by using `getScreenCTM()` instead of simple rect scaling. This eliminates persistent offset errors caused by container padding or aspect ratio clamping, ensuring the mouse position exactly matches the SVG visual geometry.
 - **Tuning**: Re-aligned hit zones closer to visual bounds (Inner: 180-265, Outer: 275-400) now that the underlying math is precise.
