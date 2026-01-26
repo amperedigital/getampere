@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.444] - 2026-01-26
+- **Interaction Refinement (Decoupled Hover)**: Decoupled the Glass Button interactions from the main Card hover state.
+    - **Background**: `hover:bg-white/5` (was `group-hover:...`). Now only brightens when the button itself is hovered.
+    - **Rotation**: `group-hover/button-trigger:rotate-180` (was `group-hover:...`). Now only rotates when the button is specifically hovered.
+    - **Reasoning**: This prevents the heavy rotation redraw from triggering constantly as the user moves across the grid ("card hover"), restricting it to deliberate button interactions. This should eliminate the residual artifacting on neighbor cards.
+
 ## [v2.443] - 2026-01-26
 - **Feature Restoration**: Re-enabled the `group-hover:rotate-180` animation on the Agent Card glass buttons. With the underlying rendering layer fix from v2.442 (removing forced GPU promotion on backdrops) confirmed to solve the bleed issues, this animation can now safely return without triggering artifacts.
 
