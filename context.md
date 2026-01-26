@@ -237,7 +237,135 @@
   key.updateProgress(scrollyProgress); // 0.0 to 1.0
   ```
 
+### The "Glass Socket" Card (Component Definition v15.5)
+**Official Name**: `Ampere-Glass-Socket-v15`
+**Description**: A generative-UI component characterized by a frosted glass body, a unique Javascript-calculated "socket" cutout in the top-right corner, and a monotone glass button installation. It is NOT a static SVG; it is a computed path that responds to container resizing.
+
+#### 1. Generative Architecture
+This component **must** be generated via the `scripts/rebuild_tech_demo.py` pipeline.
+- **Data Source**: Python list (`cards_data`) containing Title, Subtitle, Hex Colors, and Metric Rows.
+- **Injection**: Python regex cleans raw SVGs to `text-white/90` and injects them into the template.
+- **Path Engine**: A `ResizeObserver` in Javascript calculates the SVG `d` attribute in real-time.
+
+#### 2. The Socket Geometry (Javascript Math)
+The signature curve is defined by a 5-step path logic running in the client DOM.
+**Constants**: `S = 0.5` (Scale Factor).
+**Path Sequence**:
+1.  **Start**: Top-Left (`0,0`) -> Top-Right Indent (`w - 95.36, 0`).
+2.  **Curve 1 (Convex Shoulder)**: Standard Bezier.
+    *   `cp1`: 33.11 * S, 0
+    *   `cp2`: 59.94 * S, 26.84 * S
+    *   `end`: 70.39 * S, 51.98 * S
+3.  **Line 2 (Vertical Drop)**: `l 0 49.03 * S` (`l_short`).
+4.  **Curve 3 (Concave Throat)**: **INVERTED** Bezier (V->H) causing the "socket" look.
+    *   `cp1`: 0, 33.11 * S (Swapped X/Y from shoulder)
+    *   `cp2`: 26.84 * S, 59.94 * S
+    *   `end`: 51.98 * S, 70.39 * S
+5.  **Line 4 (Horizontal Run)**: `l 49.03 * S 0` (`l_short`).
+6.  **Curve 5 (Convex Lip)**: Standard Bezier (Return pattern).
+    *   `cp1`: 33.11 * S, 0
+    *   `cp2`: 59.94 * S, 26.84 * S
+    *   `end`: 70.39 * S, 51.98 * S
+
+#### 3. Visual Layer Stack (Z-Index Strategy)
+Correct layering is critical for the "Glass" effect. Attempting to flatten these layers will break the optical illusion.
+
+*   **Layer 0 (Base)**: `<svg>` with `.socket-path`.
+    *   **Stroke**: `rgba(255,255,255,0.2)` (1px width).
+    *   **Fill**: `linearGradient` (White 10% -> Transparent).
+*   **Layer 1 (The Blur)**: `div` with `backdrop-blur-md` (Tailwind).
+    *   **Clipping**: Manually clipped via CSS `polygon` to roughly match the socket shape (excludes the button area).
+    *   `clip-path: polygon(0 0, calc(100% - 96px) 0, 100% 96px, 100% 100%, 0 100%)`.
+*   **Layer 2 (The Button)**: `absolute top-0 right-0 w-14 h-14`.
+    *   **Body**: `backdrop-blur-xl` + `bg-white/10`.
+    *   **Physics**: `-webkit-mask-image: radial-gradient(white, black)` to force blur radius compliance on WebKit.
+    *   **Ring**: SVG `<circle>` with `stroke-width="1.5"` and `stroke="url(#glass-border-grad)"`.
+    *   **Icon**: Centered `text-white`.
+
 ### 3D Icosahedron Scene (v2.00+)
+
+### Glass Control Cluster ("Power Pill")
+
+#### 4. The Expansion Mode (v2.410+ "Active Card")
+**Description**: The "Glass Socket" can expand from a card into a full-column overlay using a FLIP animation technique to ensure zero layout shift.
+**File**: `deploy/assets/js/card-expander.js`
+**Features**:
+- **FLIP Animation**: Calculates `startRect` (Card) vs `targetRect` (Column) and transitions `transform`/`width`/`height` smoothly.
+- **Top-Right Dynamic Action**:
+  - **Collapsed**: Shows "Expand" icon (Arrows out).
+  - **Expanded**: Swaps to "Close" icon (X) using `viewBox="0 0 24 24"` (Crucial for size fix) and `data-original-icon` preservation.
+- **Spacer Injection**: Leaves a `div.card-spacer` behind to hold the flow document capability.
+
+**Agent Reconstruction Prompt (Expansion Ability)**:
+> "Implement the 'Card Expansion' ability for the Glass Socket component:
+>
+> 1.  **Javascript Controller (`CardExpander` class)**:
+>     -   **Init**: Listen for clicks on `.socket-card-container` or `.expand-trigger`.
+>     -   **FLIP Logic**:
+>         1.  **First**: Measure `card.getBoundingClientRect()`.
+>         2.  **Last**: Apply `position: absolute; inset: 0; z-index: 50;` to fill the parent container (`#tech-demo-right-column`).
+>         3.  **Invert**: Calculate `deltaX`, `deltaY`, `scaleX`, `scaleY`.
+>         4.  **Play**: Animate from inverted transform to `none` using `transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1)`.
+>     -   **Button Logic**:
+>         -   When expanding, find the Top-Right button (`.group/button-trigger`).
+>         -   Save inner HTML to `data-original-icon`.
+>         -   Replace with Close Icon `<path d='M6 18L18 6M6 6l12 12' ...>`.
+>         -   **CRITICAL**: Set `<svg viewBox='0 0 24 24'>` to ensure the X is sized correctly (24px) vs the original icon (32px).
+>
+> 2.  **CSS States**:
+>     -   `.is-expanded`: `z-index: 50`, `background: rgba(10, 10, 15, 0.95)`, `backdrop-filter: blur(40px)`.
+> "
+**Description**: The "Apple Glass" style control interface for interacting with system states (Active/Standby/Off). Features a "Partial Border" aesthetic where borders fade in/out based on light angles, and deep hover physics.
+**File**: `deploy/assets/js/tech-demo-scene.js` (Injected dynamically)
+**Dependency**: Tailwind CSS (Build Process)
+
+**Structure**:
+1.  **Container (`#ampere-controls-cluster`)**: Flex column wrapper.
+2.  **Track (`#ampere-ui-track`)**: The glass vessel.
+    -   HEIGHT: `48px` (Desktop Standard).
+    -   BG: Composite Linear Gradients (Padding-box Body + Border-box Rim).
+    -   SHADOW: `0 8px 32px rgba(0,0,0,0.12)`.
+    -   BACKDROP: `blur(24px)`.
+3.  **Thumb (`#ampere-ui-thumb`)**: The active control pill.
+    -   SIZE: `36px` Circle.
+    -   INSET: `5px` (Top/Left). `48px (Track) - 36px (Thumb) - 2px (Border) / 2 = 5px`.
+    -   STYLE: Emerald Green Gradient (Active) / Silver (Standby).
+    -   GLOW: `box-shadow` + `inset` highlight.
+4.  **Labels (`.ampere-ui-label`)**:
+    -   TEXT: White (Active) for Max Contrast.
+    -   FONT: `ui-sans-serif, system-ui` (Clean, Legible).
+
+**Agent Reconstruction Prompt**:
+> "Rebuild the 'Glass Control Cluster' using the following specifications:
+>
+> 1.  **CSS-in-JS Architecture**:
+>     -   Inject a `<style>` block for `#ampere-ui-track` and `#ampere-ui-thumb`.
+>     -   **The 'Glass' Recipe (MANDATORY)**:
+>         ```css
+>         background: 
+>             linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) padding-box,
+>             linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.45) 100%) border-box;
+>         border: 1px solid transparent;
+>         ```
+>     -   **Hover Physics**: 
+>         -   Track Lift: `transform: translateY(-1px);`
+>         -   Shadow Deepening: `box-shadow: 0 12px 48px rgba(0,0,0,0.3);`
+>         -   Transition: `all 0.4s ease`.
+>
+> 2.  **Layout Logic**:
+>     -   **Flex Layout**: `justify-content: space-between` for labels.
+>     -   **Thumb Positioning**: Absolute `top: 5px`, `left: 5px`.
+>     -   **State Machine**:
+>         -   *STANDBY*: `left: 5px` (Index 0).
+>         -   *ACTIVE*: `left: calc(50% - 18px)` (Index 1).
+>         -   *OFF*: `left: calc(100% - 41px)` (Index 2).
+>
+> 3.  **Aesthetics (Emerald Active)**:
+>     -   If State == ACTIVE:
+>         -   Thumb BG: `linear-gradient(180deg, rgba(5, 150, 105, 0.9), rgba(4, 120, 87, 0.9))` (Emerald-700).
+>         -   Text Color: `#FFFFFF`.
+>         -   Text Shadow: `0 0 8px rgba(5, 150, 105, 0.6)`.
+> "
 **Description**: Interactive 3D network visualization with connecting nodes and electrons.
 **Files**: `deploy/assets/js/icosahedron-scene.js` (Main), `deploy/assets/js/icosahedron-scene-blue-silver.js` (Variant).
 
@@ -423,6 +551,25 @@ Control the physics interaction using `data-wave-type="..."`.
 4.  **Standard** (`interaction`):
     *   Effect: Original "swirl" physics with ambient noise/wobble.
 
+### Tech Demo (V-Amp 2.0) (v2.180+)
+**Description**: The "AI Neural Architecture" Visualization. A specialized layout where the 3D Neural Net interacts with a 2D SVG Halo overlay.
+**File**: `deploy/tech-demo.html` (Layout), `deploy/assets/js/tech-demo-scene.js` (Engine).
+**Reconstruction Specs**:
+1.  **Layout Architecture (Strict)**:
+    *   **Master Container**: `max-w-[800px] aspect-square` (Centered). acts as the shared bounding box.
+    *   **Layering Strategy**: The `#tech-demo-scene` (containing the Canvas) and the Ring Overlay (SVG) are **siblings** absolutely positioned (`inset-0`) within this Master Container.
+    *   **Why**: This ensures the 3D Scene and the 2D Ring share the exact same 800x800 coordinate space, making the "Center of the Ring" (400,400) mathematically identical to the "Center of the World" (0,0,0) in Three.js. No manual offsets required.
+    *   **Camera Distance**: Must be set to `data-camera-distance="6.4"` to provide adequate breathing room (~3rem) between the Sphere and the Ring (r=320).
+2.  **SVG HUD System**:
+    *   **Geometry**: Uses precise arc paths (`d="M -320,0 A 320,320..."`) matching the ring graphic radius (`320px`).
+    *   **Typography**: Labels use `<textPath>` elements.
+        *   **Upper Hemisphere**: Clockwise path (Feet In).
+        *   **Lower Hemisphere**: Counter-Clockwise path (Feet Out/Smile).
+        *   **Alignment**: `dy="2"` to vertically center text on the ring band.
+3.  **Stability Rules**:
+    *   **Auto-Recenter**: Must use `initialCameraPos` clone or config value, NEVER hardcoded defaults (e.g., `z=5`).
+    *   **Resize**: Camera zoom must adapt responsively but respect the `isMobile` multiplier (`1.6x`).
+
 ## 7. Performance & Scroll Standards (Mobile)
 **CRITICAL**: Strictly mandated patterns for scroll-linked animations.
 
@@ -500,7 +647,7 @@ python3 scripts/safe_replace_html.py "deploy/index.html" "hero-section" "new-con
 # Correct usage for fixing a typo safely
 python3 scripts/smart_replace.py "deploy/index.html" "old_snippet.txt" "new_snippet.txt"
 ```
-## 7. Design Principles (Directive)
+## 10. Design Principles (Directive)
 
 ### Room to Breathe
 - **Core Concept**: Ambiguity in spacing destroys trust. Layouts must confidently frame content.
@@ -509,3 +656,98 @@ python3 scripts/smart_replace.py "deploy/index.html" "old_snippet.txt" "new_snip
   - **Desktop Insets**: Scale up to `48px`+ (`p-12`+).
 - **Anti-Pattern**: Content touching the viewport edge or container border without a specific bleeding-edge design intent.
 - **Implementation**: When refactoring a jammed UI, **double** the current padding first, then adjust.
+
+## 11. Responsive Breakpoint Engine (Rules)
+
+### The "Universal Compact" Class (820px - 1024px)
+- **Problem**: This range historically relied on "Tablet vs Laptop" distinction using `orientation` or device detection. This fails because resizing a desktop browser to 900px mimics a tablet but reports as Landscape Desktop.
+- **Rule**: Treat **820px to 1024px** as a unified "Compact" class.
+  - **Logic**: Use Mobile/Tablet layout rules (Sliders visible, Rings hidden) regardless of device type.
+  - **Priority**: Optimize for **Width**, not Device.
+
+### The Relative Shift Math
+- **Problem**: Shifting a `w-full` element using `left: 1.5rem` pushes it off-screen, causing horizontal scrolling and clipping.
+- **Rule**: **Compensate for Shifts**.
+  - **Pattern**: If `left: X`, then `width: calc(100% - 2X)` (for centered) or `calc(100% - X)` (for sidebar).
+  - **Example**: `left: 1.5rem; width: calc(100% - 3rem);` ensures strict containment within the viewport.
+
+### Safe Verticality (The "Short Screen" Trap)
+- **Problem**: Using `height: 100vh` on desktops causes content clipping on short screens (e.g., MacBook Air 11" or Landscape iPad).
+- **Rule**: Prefer **Minimum Height**.
+  - **Pattern**: `min-height: 100vh; height: auto; overflow-y: auto;`
+  - **Outcome**: Behaves like an app on tall screens (no scroll) but adapts to a scrollable website on short screens.
+
+### The Hard 1024px Switch
+- **Rule**: Establish a binary UI paradigm switch at **1024px**.
+  - **< 1024px**: Mobile Paradigm (Stacking, Sliders, Reduced Complexity).
+  - **> 1024px**: Desktop Paradigm (Grid, Rims, Full Effects).
+- **Constraint**: Do not attempt to blend paradigms (e.g., "Desktop Rings on iPad")—it causes endless layout collisions.
+
+## 12. Modern Layout Techniques
+
+### Container Queries (Scaling Mechanics)
+- **Usage**: Use for components that must drastically change layout based on their *own size*, not the screen size (e.g., a Card expanding to a Modal).
+- **Tool**: `@tailwindcss/container-queries`.
+- **Constraint**: Only valid when the component is context-aware (e.g., "Zen Mode" dashboard widgets). Do not use for general page layout.
+- **Pattern**:
+  1.  **Define**: `.parent { container-type: inline-size; container-name: card; }`
+  2.  **Query**: `@container card (min-width: 500px) { ... }`
+  3.  **Result**: Content auto-scales (Grid -> Columns, Text -> Large) without JS resizing logic.
+
+## 7. Design System & Aesthetics
+
+### The "Apple Glass" Aesthetic (Partial Borders)
+**Philosophy**: Borders are not uniform lines; they are edges that catch light. We avoid flat `1px solid` borders in favor of "Partial Borders" that fade in and out, simulating physical glass catching a light source (Key & Rim).
+
+#### 1. The "Partial Border" Technique
+**Description**: Creates a border that exists only at the corners (Top-Left highlight, Bottom-Right reflex) and disappears in the middle.
+**CSS Recipe (Strict)**:
+You cannot use `border-color`. You must use `background-image` composite masking.
+```css
+.glass-element {
+    /* 1. Define the physical space */
+    border: 1px solid transparent; /* Essential anchor */
+    border-radius: 999px;          /* Shape */
+    
+    /* 2. Composite Background Layering */
+    background: 
+        /* LAYER A: The Body Content (Fills the inside) restricted to padding-box */
+        linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) padding-box,
+        
+        /* LAYER B: The Light Edge (Fills the border area) restricted to border-box */
+        /* Angle 135deg hits Top-Left and Bottom-Right */
+        linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.45) 100%) border-box;
+    
+    /* 3. Surface Polish */
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+```
+
+#### 2. Color System: Emerald Active State
+**Usage**: Used for "Active/On" states in UI sliders and toggles.
+**Palette**:
+- **Gradient Body**: `emerald-500` (Top) -> `emerald-700` (Bottom).
+- **Text**: Pure White (`#ffffff`) for maximum contrast.
+- **Text Glow**: `text-shadow: 0 0 8px rgba(5, 150, 105, 0.6)` (Subtle, Deep Green).
+- **Border Tint**: `rgba(52, 211, 153, 0.4)` (Emerald-400 equivalent).
+
+#### 3. Spacing & Metrics (Touch UI)
+**Rules**:
+- **Track Height**: Standardize to `48px` for desktop controls.
+- **Thumb Size**: `36px` circle.
+- **Inset**: `5px` padding + `1px` border = `6px` visual gap.
+- **Result**: The thumb floats "inside" the track, it does not touch the edges.
+
+### Interaction Patterns
+**Group Hover triggers**:
+- **Rule**: Do not put hover effects *only* on the icon. Put `group` on the parent card/container.
+- **CSS**: `group-hover:rotate-180` on the icon allows the user to hover anywhere on the large card to trigger the micro-interaction.
+
+### Glass Interaction States
+**Rule**: Glass components (`.glass-element`) should feel physical.
+- **Hover State**:
+  - **Lift**: `transform: translateY(-1px)` to simulate buoyancy.
+  - **Shadow**: Deepen the shadow (`box-shadow: 0 12px 48px ...`) to imply increased height from the background.
+  - **Rim**: Optionally add `0 0 0 1px rgba(255,255,255,0.1)` to catch the light.
+- **Transition**: Use `transition: all 0.4s ease` for a heavy, premium feel (not too fast).
