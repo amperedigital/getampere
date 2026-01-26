@@ -307,8 +307,8 @@
                                         /* Left Column: Heading Text */
                                         /* Force specific padding to match the scene gutter */
                                         #tech-demo-header { 
-                                            padding-left: 1.5rem !important;
-                                            padding-right: 1.5rem !important;
+                                            
+                                            
                                         }
 
                                         /* Left Column: Scene Container Box */
@@ -321,8 +321,8 @@
 
                                         /* Right Column: Cards Container (Flex Flow) */
                                         #tech-demo-right-column {
-                                            padding-left: 1.5rem !important;
-                                            padding-right: 1.5rem !important;
+                                            
+                                            
                                         }
                                     }
 
@@ -418,9 +418,9 @@
                 <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
-                <!-- v2.446: Responsive Sticky Header for Mobile Control Panel -->
-                <!-- Added sticky top-0, background/blur, and border for visibility over scroll content -->
-                <div id="mobile-sliders-container" class="hidden sticky top-0 lg:relative lg:top-auto w-full px-4 pb-6 pt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-[#05060f]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl transition-all duration-300">
+                <!-- v2.447: Visual Tweaks (No Border, Top Margin workaround) -->
+                <!-- Removed border-b. Added pt-8 to create internal space at the top. -->
+                <div id="mobile-sliders-container" class="hidden sticky top-0 lg:relative lg:top-auto w-full px-4 pb-6 pt-8 flex flex-col gap-5 z-50 pointer-events-auto bg-[#05060f]/95 backdrop-blur-xl shadow-2xl transition-all duration-300">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">

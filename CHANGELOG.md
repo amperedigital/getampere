@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.447] - 2026-01-26
+- **Layout Alignment (Mobile/Tablet)**: Removed forced `1.5rem` padding overrides (`!important`) from the Tablet/Desktop transition range (820px-1024px). This restores proper edge-to-edge alignment and fixes the "double gutter" issue where content was unnecessarily constricted on iPad devices.
+- **UI Polish**: Removed the bottom border from the Mobile Control Panel (`v2.447` tweak) to create a cleaner, floating glass aesthetic over the scrolling content.
+
 ## [v2.446] - 2026-01-26
 - **Mobile/Tablet Responsibility**:
     - **Sticky Control Panel**: Upgraded the Mobile Control Panel (`#mobile-sliders-container`) to be `sticky top-0` with `backdrop-blur-xl`. This keeps the agent selection controls accessible while scrolling through the long card grid.
