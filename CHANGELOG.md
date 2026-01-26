@@ -1,5 +1,9 @@
 # Changelog
 ## [v2.413] - 2026-01-25
+## [v2.419] - 2026-01-26
+### Changed
+- **Tech Demo UI**: Improved contrast on "Power Up" button. Darkened green background and changed text to White for better legibility.
+
 ## [v2.418] - 2026-01-26
 ### Changed
 - **Tech Demo UI**: Updated "Power Up" active state color from Blue to Emerald Green for clearer status indication.

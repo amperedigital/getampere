@@ -564,10 +564,10 @@ export class TechDemoScene {
             
             // Update Thumb Styling (Monotone Blue/Silver Theme)
             if (newState === 'ACTIVE') {
-                 // Active Green
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(110, 231, 183, 0.4)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(16, 185, 129, 0.5), inset 0 1px 0 rgba(255,255,255,0.2)';
+                 // Active Green (Darker for Contrast)
+                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(5, 150, 105, 0.9), rgba(4, 120, 87, 0.9))';
+                 this.uiThumb.style.border = '1px solid rgba(52, 211, 153, 0.4)';
+                 this.uiThumb.style.boxShadow = '0 0 15px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)';
             } else if (newState === 'STANDBY') {
                  // Standby White/Silver
                  this.uiThumb.style.background = 'linear-gradient(180deg, rgba(140, 150, 160, 0.9), rgba(100, 110, 120, 0.9))';
@@ -585,8 +585,8 @@ export class TechDemoScene {
                 const id = l.getAttribute('data-id');
                 if (id === newState) {
                     if (id === 'ACTIVE') {
-                        l.style.color = '#6ee7b7'; // Bright Green
-                        l.style.textShadow = '0 0 12px rgba(16, 185, 129, 0.8)';
+                        l.style.color = '#ffffff'; // White for Max Contrast
+                        l.style.textShadow = '0 0 8px rgba(5, 150, 105, 0.6)'; // Subtle dark green glow
                     } else if (id === 'STANDBY') {
                          l.style.color = '#ddeeff'; // White/Blue
                          l.style.textShadow = '0 0 8px rgba(200, 220, 255, 0.6)';
