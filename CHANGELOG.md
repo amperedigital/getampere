@@ -1,4 +1,10 @@
 # Changelog
+## v2.409_fix_scrolling_expansion (2026-01-25)
+### Fixed
+- **Scroll-Aware Expansion**: Cards now expand correctly even when the list is scrolled. Previously, the expansion calculation did not account for `scrollTop` in the `absolute` positioning logic, causing cards to jump to the top of the content (often out of view) or break completely.
+- **Scroll-Aware Collapse**: Fixed the return animation to ensure the card flies back to the correct specific slot in the scrollable list.
+- **CSS Architecture**: Consolidated `.socket-card-container.is-expanded` rules and removed `!important` from positioning properties to allows JavaScript to dynamically set the correct Top/Left values matching the user's scroll position.
+
 ## v2.408_flip_collapse (2026-01-25)
 ### Fixed
 - **Animation Glitches**: Implemented full bidirectional FLIP (First-Last-Invert-Play) animation logic.

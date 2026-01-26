@@ -76,14 +76,28 @@ export class CardExpander {
         const parentRect = container.getBoundingClientRect();
         
         // Calculate the initial "Grid Position" in pixels relative to the parent
-        const startTop = startRect.top - parentRect.top;
-        const startLeft = startRect.left - parentRect.left;
+        // FIX (v2.409): Add scrollTop/scrollLeft to account for scrolling.
+        // Unscrolled: top 100 - parent 0 = 100.
+        // Scrolled 200: top -100 - parent 0 = -100. Correct visual pos.
+        // But absolute top: -100 puts it way above up.
+        // Absolute with scrolling ancestor moves WITH the content.
+        // So we need: top relative to CONTENT start.
+        // = VisualDiff + ScrollTop.
+        const startTop = (startRect.top - parentRect.top) + container.scrollTop;
+        const startLeft = (startRect.left - parentRect.left) + container.scrollLeft;
         const startWidth = startRect.width;
         const startHeight = startRect.height;
         
-        // Calculate explicit 'bottom' and 'right' to allow transition to 'inset' based expansion
-        const startBottom = parentRect.height - (startTop + startHeight);
-        const startRight = parentRect.width - (startLeft + startWidth);
+        // Calculate the TARGET positions relative to content start.
+        // Target: Top of content + 2rem.
+        const targetTop = container.scrollTop + 32; // 2rem
+        // Target Height: Viewport Height - 4rem (Top 2rem + Bottom 2rem).
+        // Using parentRect.height (viewport height of container) is correct.
+        const targetHeight = parentRect.height - 64; 
+        
+        // Target Left: 24px (1.5rem).
+        const targetLeft = 24; 
+        const targetWidth = parentRect.width - 48; // Width - 3rem
 
         // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
@@ -96,14 +110,11 @@ export class CardExpander {
 
         // 3. Promote Card
         // Apply Inline Styles to "Lock" the card to its starting grid position visually.
-        // We set explicitly everything to prevent "Jumping" to auto width.
         card.style.position = 'absolute';
         card.style.top = `${startTop}px`;
         card.style.left = `${startLeft}px`;
-        card.style.right = `${startRight}px`;
-        card.style.bottom = `${startBottom}px`;
-        card.style.width = `${startWidth}px`; // Lock width
-        card.style.height = `${startHeight}px`; // Lock height
+        card.style.width = `${startWidth}px`; 
+        card.style.height = `${startHeight}px`; 
         card.style.zIndex = '50';
         card.style.margin = '0'; 
         
@@ -117,13 +128,17 @@ export class CardExpander {
             container.classList.add('has-active-card');
             
             // Release the visual lock to allow CSS transition
-            // We clear ALL the position properties so the CSS class rules take over.
-            card.style.top = '';
-            card.style.left = '';
+            // BUT we override the CSS position properties (removed !important in v2.409 CSS)
+            // to insure they match the scroll position.
+            
+            card.style.top = `${targetTop}px`;
+            card.style.left = `${targetLeft}px`;
+            card.style.width = `${targetWidth}px`;
+            card.style.height = `${targetHeight}px`;
+            
+            // Reset right/bottom to allow width/height to win
             card.style.right = '';
             card.style.bottom = '';
-            card.style.width = ''; 
-            card.style.height = ''; 
         });
 
         // Store reference
@@ -147,45 +162,29 @@ export class CardExpander {
         // Measure where we want to go (The Spacer)
         const targetRect = this.spacer.getBoundingClientRect();
 
-        const targetTop = targetRect.top - parentRect.top;
-        const targetLeft = targetRect.left - parentRect.left;
+        // Calculate Target relative to Content Start (Visual + Scroll)
+        const targetTop = (targetRect.top - parentRect.top) + container.scrollTop;
+        const targetLeft = (targetRect.left - parentRect.left) + container.scrollLeft;
         const targetWidth = targetRect.width;
         const targetHeight = targetRect.height;
-        const targetRight = parentRect.width - (targetLeft + targetWidth);
-        const targetBottom = parentRect.height - (targetTop + targetHeight);
-
-        // 2. Lock Current State (Absolute)
-        // We apply inline styles matching the current Expanded state so removing the class doesn't jump.
-        // Actually, we can just KEEP the class for a moment, apply the 'Target' styles inline, 
-        // and rely on inline styles winning over the class?
-        // No, the class uses !important often or has high specificity. 
-        // Best to Remove Class, Apply Current Inline (Pre-flight), then Transition to Target Inline.
         
-        // Alternative: Just animate the inline styles while keeping 'is-expanded' (if it doesn't force insets)?
-        // .is-expanded forces `inset-x-6` etc. Inline styles usually override classes unless !important used.
-        // Let's check if my CSS uses !important. src/input.css had !important on timing function...
+        // Current Visual Start (which is already set via inline styles from expand, but might have changed if scrolled?)
+        // If user scrolled while expanded, the card moved with it.
+        // currentRect reflects new visual pos.
+        // We need to set inline styles to current visual pos relative to content start.
+        const currentTop = (currentRect.top - parentRect.top) + container.scrollTop;
+        const currentLeft = (currentRect.left - parentRect.left) + container.scrollLeft;
         
-        // Strategy:
-        // A. Remove 'is-expanded' class (which puts it normally back in flow).
-        // B. BUT immediately override with Inline Styles of "Current Position" (Full Screen).
-        // C. Force Reflow.
-        // D. Set Inline Styles to "Target Position" (Spacer).
-        
-        const currentTop = currentRect.top - parentRect.top;
-        const currentLeft = currentRect.left - parentRect.left;
-        const currentRight = parentRect.width - (currentLeft + currentRect.width);
-        const currentBottom = parentRect.height - (currentTop + currentRect.height);
-
-        // A & B: Lock to current expanded visual, but stripped of class constraints
         card.classList.remove('is-expanded');
         document.body.classList.remove('card-expanded-mode');
         container.classList.remove('has-active-card');
         
+        // Lock to current visual state
         card.style.position = 'absolute';
         card.style.top = `${currentTop}px`;
         card.style.left = `${currentLeft}px`;
-        card.style.right = `${currentRight}px`;
-        card.style.bottom = `${currentBottom}px`;
+        card.style.width = `${currentRect.width}px`;
+        card.style.height = `${currentRect.height}px`;
         card.style.zIndex = '50';
         
         // C. Reflow
@@ -195,10 +194,8 @@ export class CardExpander {
         requestAnimationFrame(() => {
             card.style.top = `${targetTop}px`;
             card.style.left = `${targetLeft}px`;
-            card.style.right = `${targetRight}px`;
-            card.style.bottom = `${targetBottom}px`;
-            // We don't strictly *need* width/height if we use 4-point constraint, 
-            // but setting them helps consistency.
+            card.style.width = `${targetWidth}px`;
+            card.style.height = `${targetHeight}px`;
         });
 
         // 3. Cleanup after transition
