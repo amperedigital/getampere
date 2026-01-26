@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.450] - 2026-01-26
+- **Mobile Cards Breathing Room**:
+    - **Container Padding**: Increased `#tech-demo-right-column` padding from `p-4` to `p-6` to give cards more space from the viewport edges.
+    - **Grid Gap**: Increased mobile grid gap from `gap-2` (0.5rem) to `gap-4` (1rem) to separate the cards.
+    - **Zen Mode Clearance**: Increased card internal bottom padding from `pb-12` to `pb-16` to prevent the Zen Mode button from overlapping/touching the bottom metadata row.
+
+## [v2.449] - 2026-01-26
+- **Sticky UI Polish**:
+    - **Top Margin**: Added `top-6` and `rounded-2xl` to `#mobile-sliders-container` so it floats with breathing room when sticky, rather than jamming against the viewport edge.
+
 ## [v2.448] - 2026-01-26
 - **Layout Alignment (Mobile/Tablet)**: Removed forced `left: 1.5rem` offset logic from the Scene Container in the 820px-1024px range. This corrects the left-shift/centering issue on iPad Air, preventing the main visualizer from being pushed off-center or clipped.
 - **Scroll Sync Restoration (Bi-Directional)**:

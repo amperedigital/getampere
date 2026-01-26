@@ -418,9 +418,9 @@
                 <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
-                <!-- v2.447: Visual Tweaks (No Border, Top Margin workaround) -->
+                <!-- v2.449: Added top-6 for breathing room when sticky. -->
                 <!-- Removed border-b. Added pt-8 to create internal space at the top. -->
-                <div id="mobile-sliders-container" class="hidden sticky top-0 lg:relative lg:top-auto w-full px-4 pb-6 pt-8 flex flex-col gap-5 z-50 pointer-events-auto bg-[#05060f]/95 backdrop-blur-xl shadow-2xl transition-all duration-300">
+                <div id="mobile-sliders-container" class="hidden sticky top-6 lg:relative lg:top-auto w-full px-4 pb-6 pt-8 flex flex-col gap-5 z-50 pointer-events-auto bg-[#05060f]/95 backdrop-blur-xl shadow-2xl transition-all duration-300 rounded-2xl">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">
@@ -482,17 +482,18 @@
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
-        <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
+        <!-- v2.450: Increased mobile padding from p-4 to p-6 for breathing room -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
+            <!-- v2.450: Increased mobile gap from gap-2 to gap-4 -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
             <!-- v2.274: Restored desktop card spacing to gap-4 (1rem) or gap-8 (2rem) as requested. Using gap-4 for now to balance space. -->
             <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
             <!-- v2.279: Maintained lg:gap-8 (2rem) as requested ("two rem spacing, not four"). Changed card padding to lg:p-8 below. -->
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-4 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- Card: Front Door Agent -->
                 <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->
@@ -567,7 +568,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Reception & Routing</p>
@@ -755,7 +756,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Demo Guide</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
@@ -944,7 +945,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Setup Assistance</p>
@@ -1132,7 +1133,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Deep Support</p>
@@ -1320,7 +1321,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
@@ -1508,7 +1509,7 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-4 pb-12 lg:p-8 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 pb-16 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
                             <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Booking Agent</h3>
                             <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Scheduling</p>
