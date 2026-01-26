@@ -1,5 +1,13 @@
 # Changelog
 ## [v2.413] - 2026-01-25
+## [v2.414] - 2026-01-25
+
+### Changed
+- **Button Hover Effect**: Replaced the "Zoom/Scale" hover effect on card expand buttons with a "Gradient Rotation" effect.
+  - Removed `group-hover:scale-110`.
+  - Added `group-hover:rotate-180` to the glass border SVG.
+  - This creates a sophisticated light-shifting effect on the glass bezel without changing the button's physical size.
+
 
 ### Fixed
 - **Close Icon Alignment**: Fixed an issue where the "X" close icon appeared tiny and off-center in the top-right button.
