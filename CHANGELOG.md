@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.462] - 2026-01-26
+- **Layout Finalization & Spacing**:
+    - **Header Specifics**: Enforced strict top padding (`5rem`) and left padding (`4rem`) via inline styles to lock in position regardless of utility conflicts.
+    - **Column Gutter**: Removed all horizontal padding from the Right Column on desktop (`lg:px-0`), eliminating the 1.5rem gap and allowing the grid to define the spacing naturally.
+
 ## [v2.459] - 2026-01-26
 - **Stability & Corner Clearance**:
     - **Header Clearance**: Increased top padding to `lg:pt-24` (6rem) to force the breadcrumb/title down, clearing the large rounded viewport corners on iPad Pro and preventing "cramming".

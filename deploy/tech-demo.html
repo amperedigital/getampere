@@ -38,7 +38,9 @@
             <!-- v2.457: Reverted Left Gutter to lg:pl-8 (2rem) and set equal Right Gutter lg:pr-8 (2rem) for perfect symmetry. -->
             <!-- v2.458: Reverted alignment to lg:pl-8 (2rem) to match Scene Container Left Edge. Alignment restored. -->
             <!-- v2.459: Increased Top Padding to lg:pt-24 (6rem) to clear rounded corners. -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-8 lg:pr-8 lg:pt-24 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.460: Applied explicit user request: PADDING-TOP 5REM (lg:pt-20), PADDING-LEFT 4REM (lg:pl-16). -->
+            <!-- v2.462: Forced inline styles to ensure overwrite. -->
+            <div id="tech-demo-header" style="padding-top: 5rem; padding-left: 4rem;" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-16 lg:pr-8 lg:pt-20 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -99,7 +101,8 @@
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
             <!-- v2.457: Reduced inner gap lg:right-4 to lg:right-2 (0.5rem) to reduce column gap to 1rem total. -->
             <!-- v2.458: Restored lg:left-8 (2rem) to align with Header. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <!-- v2.460: Aligned with Header Left Padding (lg:left-16 / 4rem). Reduced center gap by extending right edge to lg:right-0. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-16 lg:right-0 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -305,9 +308,10 @@
 
                                         /* Move Live Demo Pill */
                                         /* aligned with new 1.5rem gutter */
+                                        /* v2.461: Removed !important overrides to allow standard Tailwind classes to work. */
                                         #live-demo-pill {
-                                            top: 2rem !important;
-                                            right: 1.5rem !important;
+                                            /* top: 2rem !important; */
+                                            /* right: 1.5rem !important; */
                                         }
 
                                         /* v2.368: Unified 1.5rem (24px) Gutters & Overflow Protection */
@@ -322,9 +326,10 @@
                                         /* Left Column: Scene Container Box */
                                         /* CRITICAL: When using left: 1.5rem on a relative/w-full element, */
                                         /* we MUST reduce width to prevent horizontal overflow/clipping. */
+                                        /* v2.461: Removed !important width constraint to fix spacing issues. */
                                         #tech-demo-scene-container {
                                             /* left: 1.5rem !important; */
-                                            width: calc(100% - 3rem) !important;
+                                            /* width: calc(100% - 3rem) !important; */
                                         }
 
                                         /* Right Column: Cards Container (Flex Flow) */
@@ -492,7 +497,9 @@
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
         <!-- v2.450: Increased mobile padding from p-4 to p-6 for breathing room -->
         <!-- v2.457: Set lg:pl-2 (0.5rem) to reduce center gap to 1rem. Set lg:pr-8 (2rem) to match Left Gutter (Symmetry). -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-2 overflow-y-auto">
+        <!-- v2.461: Removed horizontal padding (lg:pr-8 lg:pl-4) as requested. -->
+        <!-- v2.462: Added lg:px-0 to clear the fallback p-6 (1.5rem) that was persisting on desktop. -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:px-0 lg:pt-8 lg:pb-8 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- v2.450: Increased mobile gap from gap-2 to gap-4 -->
