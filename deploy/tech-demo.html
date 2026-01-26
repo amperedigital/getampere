@@ -35,7 +35,8 @@
             <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
             <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
             <!-- v2.456: Reverted px-8 to pl-20/24 to align content with Scene Ring (Vertical Alignment Fix). Pushed Down. -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-24 lg:pr-8 lg:pt-24 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.457: Reverted Left Gutter to lg:pl-8 (2rem) and set equal Right Gutter lg:pr-8 (2rem) for perfect symmetry. -->
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-8 lg:pr-8 lg:pt-24 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -92,7 +93,8 @@
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-4 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <!-- v2.457: Reduced inner gap lg:right-4 to lg:right-2 (0.5rem) to reduce column gap to 1rem total. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -484,7 +486,8 @@
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
         <!-- v2.450: Increased mobile padding from p-4 to p-6 for breathing room -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
+        <!-- v2.457: Set lg:pl-2 (0.5rem) to reduce center gap to 1rem. Set lg:pr-8 (2rem) to match Left Gutter (Symmetry). -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-2 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- v2.450: Increased mobile gap from gap-2 to gap-4 -->

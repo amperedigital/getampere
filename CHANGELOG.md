@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.457] - 2026-01-26
+- **Layout Symmetry & Gutter Alignment**:
+    - **Global Symmetry**: Enforced equal 2rem (`32px`) external gutters on both sides of the page (`lg:pl-8` Left Header, `lg:pr-8` Right Column). Fixed the asymmetry where the left gutter was disproportionately large.
+    - **Header Alignment**: Aligned the "Title / Header" content strictly with the Scene Container's left edge (`left-8`), satisfying the requirement to align with the "dash circle content div".
+    - **Column Gap Reduction**: Reduced the central gap between the Left (Scene) and Right (Cards) columns to exactly **1rem** (16px), matching the internal `gap-4` of the card grid. 
+        - Left Column Inner Margin: `lg:right-2` (0.5rem).
+        - Right Column Inner Padding: `lg:pl-2` (0.5rem).
+        - Total Center Gap: 1rem.
+
 ## [v2.456] - 2026-01-26
 - **iPad Pro Refinement (Visual Alignment Only)**:
     - **Header Content (Title/Breadcrumb)**: Significantly increased left padding (`lg:pl-24` / 6rem) to align the text vertically with the visual start of the central Ring Scene, correcting the "pushed left" alignment issue. Increased top padding (`lg:pt-24`) to clear the rounded page corners.
