@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.443] - 2026-01-26
+- **Feature Restoration**: Re-enabled the `group-hover:rotate-180` animation on the Agent Card glass buttons. With the underlying rendering layer fix from v2.442 (removing forced GPU promotion on backdrops) confirmed to solve the bleed issues, this animation can now safely return without triggering artifacts.
+
 ## [v2.442] - 2026-01-26
 - **Rendering Fix (Card Backdrops)**: Removed `transform: translate3d(0,0,0)` and `backface-visibility: hidden` from the card backdrop layers. These forced promotions were causing persistent layer bleeding on inactive cards by creating large, overlapping GPU textures. Reverting to standard flow context allows `isolation: isolate` on the container to properly manage the stacking context.
 
