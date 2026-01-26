@@ -1,6 +1,6 @@
 # Changelog
 
-## [v2.465] - 2026-01-26
+## [v2.466] - 2026-01-26
 - **System Restore**: Performed a hard rollback of `deploy/tech-demo.html`, `context.md`, and `CHANGELOG.md` to version `v2.445.stable`.
     - **Reasoning**: Recent layout changes (v2.450+) introduced persistent regressions in the Header alignment, Right Column Gutters, and Zen Mode interactivity.
     - **State**: The codebase is now mathematically identical to the stable release from earlier today.
