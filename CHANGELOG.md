@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.439] - 2026-01-26
+- **Critical Rendering Fix**: Removed `will-change: backdrop-filter` from all Agent Cards. This property was causing aggressive GPU layer promotion that led to "gradient bleed" artifacts and flashing on adjacent cards during hover states. The removal relies on standard compositing which handles the static blur correctly without the artifacting side effects.
+
 ## [v2.438] - 2026-01-26
 - **Global Rollout (Zen Mode)**: Applied the "UV Meter" scaling fix to **all 5 remaining Agent Cards** (Demo Guide, Onboarding, Technical, Sales, Booking). Now every single metric bar in the grid scales proportionally using `em` units when expanded, maintaining perfect layout ratios.
 
