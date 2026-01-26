@@ -340,6 +340,15 @@
                                         }
                                     }
 
+                                    /* v2.464: Force Layout Override for ALL Desktop (1024px+) */
+                                    /* Fixes "Pushed to Left" issue where atomic classes were failing. */
+                                    @media (min-width: 1024px) {
+                                        #tech-demo-header {
+                                            padding-top: 5rem !important;
+                                            padding-left: 4rem !important;
+                                        }
+                                    }
+
                                     /* C. POSITIONING: iPad Pro Specific (1024px Portrait) (v2.363) */
                                     /* Restore 9rem lift for typical iPad Pro Portrait width (1024x1366) */
                                     @media (width: 1024px) and (orientation: portrait) {
@@ -498,9 +507,8 @@
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
         <!-- v2.450: Increased mobile padding from p-4 to p-6 for breathing room -->
         <!-- v2.457: Set lg:pl-2 (0.5rem) to reduce center gap to 1rem. Set lg:pr-8 (2rem) to match Left Gutter (Symmetry). -->
-        <!-- v2.461: Removed horizontal padding (lg:pr-8 lg:pl-4) as requested. -->
-        <!-- v2.462: Added lg:px-0 to clear the fallback p-6 (1.5rem) that was persisting on desktop. -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:px-0 lg:pt-8 lg:pb-8 overflow-y-auto">
+        <!-- v2.464: Restored Right Padding (lg:pr-8) to preserve page gutter. Removed Left Padding (lg:pl-0) to close column gap. -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pl-0 lg:pr-8 lg:pt-8 lg:pb-8 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- v2.450: Increased mobile gap from gap-2 to gap-4 -->

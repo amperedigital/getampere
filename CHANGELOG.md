@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.464] - 2026-01-26
+- **Layout Critical Fixes**:
+    - **Header Padding**: Added a global `@media (min-width: 1024px)` override to strictly enforce `padding-left: 4rem` and `padding-top: 5rem`. This fixes the regression where the previous rule (limited to `max-width: 1024px`) was failing on larger desktop screens, causing the header to stick to the left edge.
+    - **Right Column Gutter**: Restored `lg:pr-8` (2rem) to the Right Column to prevent content from hitting the screen edge ("destroying page gutters"). Kept `lg:pl-0` to maintain the tight gap between columns.
+
 ## [v2.463] - 2026-01-26
 - **Layout Fixes (iPad Pro)**:
     - **Header Padding**: Removed inline styles and correctly applied `padding-top: 5rem !important` and `padding-left: 4rem !important` within the iPad Pro/Tablet media query (`820px - 1024px`) to strictly enforce the requested layout without conflicts.
