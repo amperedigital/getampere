@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.438] - 2026-01-26
+- **Global Rollout (Zen Mode)**: Applied the "UV Meter" scaling fix to **all 5 remaining Agent Cards** (Demo Guide, Onboarding, Technical, Sales, Booking). Now every single metric bar in the grid scales proportionally using `em` units when expanded, maintaining perfect layout ratios.
+
 ## [v2.437] - 2026-01-26
 - **Visual Fix**: Completed the UV Meter scaling update for *all* metrics in the Front Door Agent card (Bounce, Routed, Avg Time, etc.), ensuring they all resize correctly in "Zen Mode".
 - **Rendering Isolation**: Applied `isolation: isolate` to ALL socket cards (not just the active one) to permanently prevent stacking context leakage and shadow artifacts during hover or expansion.
