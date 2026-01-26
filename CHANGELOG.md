@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.454] - 2026-01-26
+- **Visual Polish**:
+    - **Inactive State**: Reduced opacity of inactive metric labels to `0.6` by default, restoring full opacity when the agent is active. This creates a clear visual hierarchy and prevents the interface from looking "washed out".
+    - **Zen Button Overlap**: Fixed content overlap on iPad/Desktop by enforcing `pb-16` (bottom padding) on all breakpoints, ensuring the expand button never obscures the last row of data.
+
 ## [v2.453] - 2026-01-26
 - **iPad Pro & Typography Refinement**:
     - **Layout density**: Reduced internal card padding on `lg` breakpoints (1024px, like iPad Pro) from `p-8` to `p-5`. The full `p-8` padding is now reserved for `xl` (1280px+) screens. This prevents the "too much empty space" feel when the 2-column grid is active on narrower 1024px screens.
