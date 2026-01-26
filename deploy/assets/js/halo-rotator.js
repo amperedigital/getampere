@@ -84,6 +84,30 @@ export class HaloRotator {
         this.svg.addEventListener('wheel', this.handleWheel, { passive: false });
     }
 
+    getSVGCoordinates(clientX, clientY) {
+        // Use robust SVG matrix transformation (v2.435)
+        // This handles CSS scaling, padding, and aspect ratio positioning correctly
+        if (this.svg.createSVGPoint) {
+            let point = this.svg.createSVGPoint();
+            point.x = clientX;
+            point.y = clientY;
+            
+            // Transform screen pixel to SVG user unit
+            // NOTE: We must use the matrix of the SVG element itself
+            const matrix = this.svg.getScreenCTM();
+            if (matrix) {
+                return point.matrixTransform(matrix.inverse());
+            }
+        }
+        
+        // Fallback for very old environments (unlikely)
+        const rect = this.svg.getBoundingClientRect();
+        return {
+            x: (clientX - rect.left) * (800 / rect.width),
+            y: (clientY - rect.top) * (800 / rect.width)
+        };
+    }
+
     handleHover(e) {
         if (!this.isActive) return;
         if (this.isDragging) return;
@@ -91,14 +115,10 @@ export class HaloRotator {
         let isHit = false;
 
         if (e.type !== 'pointerleave') {
-            const rect = this.svg.getBoundingClientRect();
-            // Map to SVG viewbox 0..800
-            const scale = 800 / rect.width;
-            const x = (e.clientX - rect.left) * scale;
-            const y = (e.clientY - rect.top) * scale;
+            const svgPt = this.getSVGCoordinates(e.clientX, e.clientY);
             
-            const dx = x - 400;
-            const dy = y - 400;
+            const dx = svgPt.x - 400;
+            const dy = svgPt.y - 400;
             const radius = Math.sqrt(dx*dx + dy*dy);
 
             if (radius >= this.hitMin && radius <= this.hitMax) {
@@ -142,17 +162,12 @@ export class HaloRotator {
         // Mobile Guard: REMOVED v2.252 per user request ("Should be touch draggable")
         // if (window.innerWidth <= 1024) return;
 
-        // Hit Test using Radius from Center (400, 400 SVG coords)
-        const rect = this.svg.getBoundingClientRect();
-        // Assume SVG viewbox 0 0 800 800 is mapped to rect
-        // We need coordinates in 800x800 space
-        const scale = 800 / rect.width;
-        const x = (e.clientX - rect.left) * scale;
-        const y = (e.clientY - rect.top) * scale;
+        // Hit Test using Robust CTM (v2.435)
+        const svgPt = this.getSVGCoordinates(e.clientX, e.clientY);
         
         // Center is 400,400
-        const dx = x - 400;
-        const dy = y - 400;
+        const dx = svgPt.x - 400;
+        const dy = svgPt.y - 400;
         const radius = Math.sqrt(dx*dx + dy*dy);
 
         // Check bounds
@@ -198,13 +213,10 @@ export class HaloRotator {
         // If screen width is small, assume user wants to scroll the page, not the ring.
         if (window.innerWidth <= 1024) return;
         
-        // Hit test for wheel too? Strictness vs Usability.
-        // Let's check radius to allow independent scrolling
-        const rect = this.svg.getBoundingClientRect();
-        const scale = 800 / rect.width;
-        const x = (e.clientX - rect.left) * scale;
-        const y = (e.clientY - rect.top) * scale;
-        const dx = x - 400; const dy = y - 400;
+        // CTM Hit Test for Wheel
+        const svgPt = this.getSVGCoordinates(e.clientX, e.clientY);
+        const dx = svgPt.x - 400; 
+        const dy = svgPt.y - 400;
         const radius = Math.sqrt(dx*dx + dy*dy);
         
         if (radius < this.hitMin || radius > this.hitMax) return;

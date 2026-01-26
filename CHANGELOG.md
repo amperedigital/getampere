@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.435] - 2026-01-26
+- **Critical Fix**: Improved Halo Ring coordinate detection by using `getScreenCTM()` instead of simple rect scaling. This eliminates persistent offset errors caused by container padding or aspect ratio clamping, ensuring the mouse position exactly matches the SVG visual geometry.
+- **Tuning**: Re-aligned hit zones closer to visual bounds (Inner: 180-265, Outer: 275-400) now that the underlying math is precise.
+
 ## [v2.434] - 2026-01-26
 - **UX Refinement**: Increased the "Dead Zone" between the Inner and Outer rings to **25px** (Inner Max: 255px, Outer Min: 280px) to practically eliminate accidental ring switching.
 - **Visual Feedback**: Refactored the Halo Wheel hover effect to use robust CSS class swapping (`stroke-blue-500/10` ↔ `stroke-blue-500/50`) instead of style manipulation, ensuring reliable visual feedback on all browsers.
