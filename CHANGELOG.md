@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.448] - 2026-01-26
+- **Layout Alignment (Mobile/Tablet)**: Removed forced `left: 1.5rem` offset logic from the Scene Container in the 820px-1024px range. This corrects the left-shift/centering issue on iPad Air, preventing the main visualizer from being pushed off-center or clipped.
+- **Scroll Sync Restoration (Bi-Directional)**:
+    - **Script Fix**: Repaired the `updateRing` function which had become unstable in v2.446 due to a referencing error with `mobileContainer`.
+    - **Scroll -> Slider**: Implemented a new `IntersectionObserver` that watches the center 45% of the viewport. As you scroll through the Agent Cards manually, the Sticky Mobile Slider now automatically updates to reflect the active agent.
+    - **Slider -> Scroll**: Refined the logic to ensure that selecting an agent from the slider smoothly scrolls to the card without creating a feedback loop with the observer.
+
 ## [v2.447] - 2026-01-26
 - **Layout Alignment (Mobile/Tablet)**: Removed forced `1.5rem` padding overrides (`!important`) from the Tablet/Desktop transition range (820px-1024px). This restores proper edge-to-edge alignment and fixes the "double gutter" issue where content was unnecessarily constricted on iPad devices.
 - **UI Polish**: Removed the bottom border from the Mobile Control Panel (`v2.447` tweak) to create a cleaner, floating glass aesthetic over the scrolling content.
