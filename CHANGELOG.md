@@ -1,6 +1,11 @@
 # Changelog
 
 ## [v2.357_control_overlap_fix] - 2026-01-25
+- **v2.404_ease_and_polish**
+  - **Visuals**: Added "Spring Pop" easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`) to the expansion animation for a more tactile feel.
+  - **Styles**: Activated dark mode scrollbars (`tailwind-scrollbar`) for all scrollable panels.
+  - **Interaction**: Fixed the Close (Top-Right) button sticky-hover state when in Expanded Mode.
+  - **Responsive**: Applied active Container Query classes (`@lg:text-sm`, `@lg:gap-y-6`) to the Metric Grids. Content now scales up significantly when expanded.
 - **v2.403_container_queries_align**
   - **Mechanics**: Implemented CSS Container Queries (`@container`) scaffolding for auto-scaling card content (Grids, Charts, Typography) when expanded.
   - **Fixed**: Solved Layout Shift bug where the expanded card (absolute overlay) did not perfectly align with the underlying grid column.
