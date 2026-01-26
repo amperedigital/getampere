@@ -22,10 +22,10 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
-<body class="bg-[#05060f] text-white xl:overflow-hidden">
+<body class="bg-[#05060f] text-white lg:overflow-hidden">
 
     <!-- Master Container (ID added v2.360 for Scrolling Control) -->
-    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-auto xl:h-screen w-full relative xl:overflow-hidden">
+    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
         <div id="tech-demo-left-column" class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
@@ -34,13 +34,7 @@
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
             <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
             <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
-            <!-- v2.456: Reverted px-8 to pl-20/24 to align content with Scene Ring (Vertical Alignment Fix). Pushed Down. -->
-            <!-- v2.457: Reverted Left Gutter to lg:pl-8 (2rem) and set equal Right Gutter lg:pr-8 (2rem) for perfect symmetry. -->
-            <!-- v2.458: Reverted alignment to lg:pl-8 (2rem) to match Scene Container Left Edge. Alignment restored. -->
-            <!-- v2.459: Increased Top Padding to lg:pt-24 (6rem) to clear rounded corners. -->
-            <!-- v2.460: Applied explicit user request: PADDING-TOP 5REM (lg:pt-20), PADDING-LEFT 4REM (lg:pl-16). -->
-            <!-- v2.463: Reverted inline styles, moved to !important CSS rule in media query. -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-16 lg:pr-8 lg:pt-20 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -57,7 +51,7 @@
                         <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
                             <span class="font-bold text-blue-400">AI</span> Neural <span class="block font-light text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
                         </h1>
-                        <p class="text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
+                        <p class="text-sm lg:text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
                             Explore the autonomous decision making core of Ampere AI.
                         </p>
                     </div>
@@ -76,8 +70,6 @@
             <!-- v2.343: Added ID for iPad positioning overrides -->
             <!-- v2.350: Adjusted lg:right-20 to lg:right-12 (3rem) to match p-12 logic. Alignment Fix. -->
             <!-- v2.351: Adjusted lg:top-12 to lg:top-8 (2rem) to straddle the scene container border. -->
-            <!-- v2.458: Moved to lg:right-12 (3rem) for iPad Pro. Restored xl:right-36 (9rem) to prevent desktop jump. -->
-            <!-- v2.459: Removed xl:right-36 to enforce consistent right-12 (3rem) spacing on all Desktop/Tablet screens. -->
             <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
@@ -99,10 +91,7 @@
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
-            <!-- v2.457: Reduced inner gap lg:right-4 to lg:right-2 (0.5rem) to reduce column gap to 1rem total. -->
-            <!-- v2.458: Restored lg:left-8 (2rem) to align with Header. -->
-            <!-- v2.460: Aligned with Header Left Padding (lg:left-16 / 4rem). Reduced center gap by extending right edge to lg:right-0. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-16 lg:right-0 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-4 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -308,44 +297,32 @@
 
                                         /* Move Live Demo Pill */
                                         /* aligned with new 1.5rem gutter */
-                                        /* v2.461: Removed !important overrides to allow standard Tailwind classes to work. */
                                         #live-demo-pill {
-                                            /* top: 2rem !important; */
-                                            /* right: 1.5rem !important; */
+                                            top: 2rem !important;
+                                            right: 1.5rem !important;
                                         }
 
                                         /* v2.368: Unified 1.5rem (24px) Gutters & Overflow Protection */
                                         
                                         /* Left Column: Heading Text */
                                         /* Force specific padding to match the scene gutter */
-                                        /* v2.463: Added !important to enforce 5rem/4rem padding on iPad Pro (1024px) specifically. */
                                         #tech-demo-header { 
-                                            padding-top: 5rem !important;
-                                            padding-left: 4rem !important;
+                                            padding-left: 1.5rem !important;
+                                            padding-right: 1.5rem !important;
                                         }
 
                                         /* Left Column: Scene Container Box */
                                         /* CRITICAL: When using left: 1.5rem on a relative/w-full element, */
                                         /* we MUST reduce width to prevent horizontal overflow/clipping. */
-                                        /* v2.461: Removed !important width constraint to fix spacing issues. */
                                         #tech-demo-scene-container {
-                                            /* left: 1.5rem !important; */
-                                            /* width: calc(100% - 3rem) !important; */
+                                            left: 1.5rem !important;
+                                            width: calc(100% - 3rem) !important;
                                         }
 
                                         /* Right Column: Cards Container (Flex Flow) */
                                         #tech-demo-right-column {
-                                            
-                                            
-                                        }
-                                    }
-
-                                    /* v2.464: Force Layout Override for ALL Desktop (1024px+) */
-                                    /* Fixes "Pushed to Left" issue where atomic classes were failing. */
-                                    @media (min-width: 1024px) {
-                                        #tech-demo-header {
-                                            padding-top: 5rem !important;
-                                            padding-left: 4rem !important;
+                                            padding-left: 1.5rem !important;
+                                            padding-right: 1.5rem !important;
                                         }
                                     }
 
@@ -441,9 +418,8 @@
                 <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
-                <!-- v2.449: Added top-6 for breathing room when sticky. -->
-                <!-- Removed border-b. Added pt-8 to create internal space at the top. -->
-                <div id="mobile-sliders-container" class="hidden sticky top-6 lg:relative lg:top-auto w-full px-4 pb-6 pt-8 flex flex-col gap-5 z-50 pointer-events-auto bg-[#05060f]/95 backdrop-blur-xl shadow-2xl transition-all duration-300 rounded-2xl">
+                <!-- v2.363: Reverted to bg-transparent as requested. Overlaps handled by better positioning logic. -->
+                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">
@@ -505,24 +481,21 @@
         <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
-        <!-- v2.450: Increased mobile padding from p-4 to p-6 for breathing room -->
-        <!-- v2.457: Set lg:pl-2 (0.5rem) to reduce center gap to 1rem. Set lg:pr-8 (2rem) to match Left Gutter (Symmetry). -->
-        <!-- v2.464: Restored Right Padding (lg:pr-8) to preserve page gutter. Removed Left Padding (lg:pl-0) to close column gap. -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-6 pb-40 lg:pl-0 lg:pr-8 lg:pt-8 lg:pb-8 overflow-y-auto">
+        <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-4 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
-            <!-- v2.450: Increased mobile gap from gap-2 to gap-4 -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
             <!-- v2.274: Restored desktop card spacing to gap-4 (1rem) or gap-8 (2rem) as requested. Using gap-4 for now to balance space. -->
             <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
             <!-- v2.279: Maintained lg:gap-8 (2rem) as requested ("two rem spacing, not four"). Changed card padding to lg:p-8 below. -->
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-4 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
                 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- Card: Front Door Agent -->
                 <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->
-                <div id="card-0" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="active"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="active"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -593,16 +566,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Reception & Routing</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Reception & Routing</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Visitors</div>
+                        <div class="text-slate-400 flex items-center">Visitors</div>
                         <div class="text-white text-right font-mono">1,428</div>
                         <div class="flex items-center text-[1em]"> <!-- Enforce font scaling context -->
     <!-- LED Glass Range Meter: Scaled via EM units -->
@@ -620,7 +593,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Active</div>
+                        <div class="text-slate-400 flex items-center">Active</div>
                         <div class="text-white text-right font-mono">342</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -637,7 +610,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Bounce</div>
+                        <div class="text-slate-400 flex items-center">Bounce</div>
                         <div class="text-white text-right font-mono">12%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -654,7 +627,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Routed</div>
+                        <div class="text-slate-400 flex items-center">Routed</div>
                         <div class="text-white text-right font-mono">89%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -671,7 +644,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Avg Time</div>
+                        <div class="text-slate-400 flex items-center">Avg Time</div>
                         <div class="text-white text-right font-mono">4.2s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -688,7 +661,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Auth</div>
+                        <div class="text-slate-400 flex items-center">Auth</div>
                         <div class="text-white text-right font-mono">99.9%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -710,7 +683,7 @@
                 </div>
                 <!-- Card: Demo Guide -->
                 <!-- v2.437: Update to isolate -->
-                <div id="card-1" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="standby"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -781,16 +754,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Demo Guide</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Demo Guide</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Sessions</div>
+                        <div class="text-slate-400 flex items-center">Sessions</div>
                         <div class="text-white text-right font-mono">892</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -807,7 +780,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Completion</div>
+                        <div class="text-slate-400 flex items-center">Completion</div>
                         <div class="text-white text-right font-mono">76%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -824,7 +797,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Drop-off</div>
+                        <div class="text-slate-400 flex items-center">Drop-off</div>
                         <div class="text-white text-right font-mono">8%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -841,7 +814,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Click-thru</div>
+                        <div class="text-slate-400 flex items-center">Click-thru</div>
                         <div class="text-white text-right font-mono">45%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -858,7 +831,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Avg Dur</div>
+                        <div class="text-slate-400 flex items-center">Avg Dur</div>
                         <div class="text-white text-right font-mono">5m 20s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -876,7 +849,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Rating</div>
+                        <div class="text-slate-400 flex items-center">Rating</div>
                         <div class="text-white text-right font-mono">4.8/5</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -899,7 +872,7 @@
 
                 <!-- Card: Onboarding Coach -->
                 <!-- v2.437: Update to isolate -->
-                <div id="card-2" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="standby"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -970,16 +943,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Setup Assistance</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Setup Assistance</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">New Users</div>
+                        <div class="text-slate-400 flex items-center">New Users</div>
                         <div class="text-white text-right font-mono">156</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -996,7 +969,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Profiles</div>
+                        <div class="text-slate-400 flex items-center">Profiles</div>
                         <div class="text-white text-right font-mono">92%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1013,7 +986,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Guides</div>
+                        <div class="text-slate-400 flex items-center">Guides</div>
                         <div class="text-white text-right font-mono">3.5</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1030,7 +1003,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Verified</div>
+                        <div class="text-slate-400 flex items-center">Verified</div>
                         <div class="text-white text-right font-mono">100%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1047,7 +1020,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Stuck</div>
+                        <div class="text-slate-400 flex items-center">Stuck</div>
                         <div class="text-white text-right font-mono">2.1%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1064,7 +1037,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Success</div>
+                        <div class="text-slate-400 flex items-center">Success</div>
                         <div class="text-white text-right font-mono">98%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1087,7 +1060,7 @@
 
                 <!-- Card: Technical Specialist -->
                 <!-- v2.437: Update to isolate -->
-                <div id="card-3" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="standby"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1158,16 +1131,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Deep Support</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Deep Support</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Tickets</div>
+                        <div class="text-slate-400 flex items-center">Tickets</div>
                         <div class="text-white text-right font-mono">42</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1184,7 +1157,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Resolved</div>
+                        <div class="text-slate-400 flex items-center">Resolved</div>
                         <div class="text-white text-right font-mono">38</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1201,7 +1174,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">AI Res</div>
+                        <div class="text-slate-400 flex items-center">AI Res</div>
                         <div class="text-white text-right font-mono">85%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1218,7 +1191,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Escalated</div>
+                        <div class="text-slate-400 flex items-center">Escalated</div>
                         <div class="text-white text-right font-mono">3</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1235,7 +1208,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Avg TTR</div>
+                        <div class="text-slate-400 flex items-center">Avg TTR</div>
                         <div class="text-white text-right font-mono">2.4m</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1252,7 +1225,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">CSAT</div>
+                        <div class="text-slate-400 flex items-center">CSAT</div>
                         <div class="text-white text-right font-mono">4.9</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1275,7 +1248,7 @@
 
                 <!-- Card: Sales Advisor -->
                 <!-- v2.437: Update to isolate -->
-                <div id="card-4" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="standby"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1346,16 +1319,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Leads</div>
+                        <div class="text-slate-400 flex items-center">Leads</div>
                         <div class="text-white text-right font-mono">89</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1372,7 +1345,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Qualified</div>
+                        <div class="text-slate-400 flex items-center">Qualified</div>
                         <div class="text-white text-right font-mono">45</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1389,7 +1362,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Conv Rate</div>
+                        <div class="text-slate-400 flex items-center">Conv Rate</div>
                         <div class="text-white text-right font-mono">18%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1406,7 +1379,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Pipeline</div>
+                        <div class="text-slate-400 flex items-center">Pipeline</div>
                         <div class="text-white text-right font-mono">$450k</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1423,7 +1396,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Queries</div>
+                        <div class="text-slate-400 flex items-center">Queries</div>
                         <div class="text-white text-right font-mono">312</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1440,7 +1413,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Upsells</div>
+                        <div class="text-slate-400 flex items-center">Upsells</div>
                         <div class="text-white text-right font-mono">12</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1463,7 +1436,7 @@
 
                 <!-- Card: Booking Agent -->
                 <!-- v2.437: Update to isolate -->
-                <div id="card-5" class="relative group h-full socket-card-container @container isolate scroll-mt-60" data-agent-status="standby"> 
+                <div class="relative group h-full socket-card-container @container isolate" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1534,16 +1507,16 @@
                          </svg>
                     </div>
                     <!-- Content -->
-                    <div class="relative h-full p-6 pb-16 lg:p-5 lg:pb-16 xl:p-8 xl:pb-16 flex flex-col z-10 pointer-events-none">
+                    <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-none">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-lg lg:text-xl font-normal text-white tracking-wide leading-none">Booking Agent</h3>
-                            <p class="text-sm lg:text-base text-slate-500 mt-1 leading-tight">Scheduling</p>
+                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Booking Agent</h3>
+                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Scheduling</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-xs lg:text-sm @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[10px] lg:text-xs col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full">
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
                             
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Requests</div>
+                        <div class="text-slate-400 flex items-center">Requests</div>
                         <div class="text-white text-right font-mono">215</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1560,7 +1533,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Booked</div>
+                        <div class="text-slate-400 flex items-center">Booked</div>
                         <div class="text-white text-right font-mono">142</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1577,7 +1550,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Resched</div>
+                        <div class="text-slate-400 flex items-center">Resched</div>
                         <div class="text-white text-right font-mono">18</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1594,7 +1567,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">No-show</div>
+                        <div class="text-slate-400 flex items-center">No-show</div>
                         <div class="text-white text-right font-mono">4%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1611,7 +1584,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Utilization</div>
+                        <div class="text-slate-400 flex items-center">Utilization</div>
                         <div class="text-white text-right font-mono">82%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1628,7 +1601,7 @@
         <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
     </div>
 </div>
-                        <div class="text-slate-400 opacity-60 group-data-[agent-status=active]:opacity-100 transition-opacity duration-300 flex items-center">Sync</div>
+                        <div class="text-slate-400 flex items-center">Sync</div>
                         <div class="text-white text-right font-mono">0.2s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
@@ -1709,30 +1682,12 @@
                         "BOOKING AGENT"        // Index 11
                     ];
 
-                    const updateRing = (type, slider, label, titles, preventScroll = false) => {
+                    const updateRing = (type, slider, label, titles) => {
                         const step = parseInt(slider.value); // 0 to 5
                         const title = titles[step];
                         
                         // Update Label
                         if(label) label.innerText = title;
-
-                        // v2.446/v2.447: Responsive Scroll-to-Card Logic
-                        // Only scroll if NOT prevented (i.e. User moved slider, not Scroll Observer)
-                        if (type === 'inner' && window.innerWidth < 1024 && !preventScroll) {
-                             const cardId = `card-${step}`;
-                             const cardEl = document.getElementById(cardId);
-                             if (cardEl) {
-                                 // Offset to account for sticky header (~180px)
-                                 const headerOffset = 180;
-                                 const elementPosition = cardEl.getBoundingClientRect().top;
-                                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                                 
-                                 window.scrollTo({
-                                      top: offsetPosition,
-                                      behavior: "smooth"
-                                 });
-                             }
-                        }
                         
                         // Calculate Rotation
                         // Step 0 -> 0 deg. Step 1 -> -60 deg (move next item to top).
@@ -1752,10 +1707,6 @@
                         sliderInner.addEventListener('input', (e) => updateRing('inner', e.target, labelInner, innerTitles));
                     }
 
-                    // v2.452: Removed Scroll-to-Slider Sync (IntersectionObserver)
-                    // Rationale: User feedback indicates scroll syncing interferes with UX. 
-                    // The slider should control the view, but manual scrolling should not hijack the slider state.
-                    
                     // Toggle Helper for Mobile Power Button
                     window.toggleMobilePower = () => {
                         if (!window.demoScene) return;

@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.465] - 2026-01-26
+- **Emergency Rollback**: Restored `tech-demo.html` to **v2.445.stable**. 
+    - **Reason**: Systematic layout failures in v2.46x series (Header Alignment, Column Gutters, and Zen Mode Expansion regression).
+    - **Note**: This restores the stable grid layout, header position, and functional "Zen Mode" expansion mechanics.
+
 ## [v2.464] - 2026-01-26
 - **Layout Critical Fixes**:
     - **Header Padding**: Added a global `@media (min-width: 1024px)` override to strictly enforce `padding-left: 4rem` and `padding-top: 5rem`. This fixes the regression where the previous rule (limited to `max-width: 1024px`) was failing on larger desktop screens, causing the header to stick to the left edge.
