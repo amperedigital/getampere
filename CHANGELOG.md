@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.425] - 2026-01-26
+- **UI Unification**: Transformed all standard progress bars into "LED Glass Range Sliders".
+- **Visuals**: Sliders now mimic the "Power Cluster" glass block aesthetic with segmentation (8px block / 2px gap) and bevels.
+- **Performance**: Utilized CSS Masking and Repeater Gradients (`repeating-linear-gradient`) to simulate segmented LEDs without increasing DOM node count.
+
 ## [v2.424] - 2026-01-26
 - **Typography**: Converted Socket Card typography to use Container Queries (`cqw`). Titles, subtitles, and metrics now scale fluently with the card width.
 - **Motion**: Eliminated text "snapping" during card expansion (Zen Mode); text size now transitions continuously using the container's easing curve.
