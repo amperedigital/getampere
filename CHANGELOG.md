@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.451] - 2026-01-26
+- **Mobile Card Internal Spacing**:
+    - **Top & Side Padding**: Increased internal card content padding from `p-4` (1rem) to `p-6` (1.5rem) to ensure text elements don't feel crowded by the large `rounded-2xl` corner radius.
+
 ## [v2.450] - 2026-01-26
 - **Mobile Cards Breathing Room**:
     - **Container Padding**: Increased `#tech-demo-right-column` padding from `p-4` to `p-6` to give cards more space from the viewport edges.
