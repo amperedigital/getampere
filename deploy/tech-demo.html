@@ -39,8 +39,8 @@
             <!-- v2.458: Reverted alignment to lg:pl-8 (2rem) to match Scene Container Left Edge. Alignment restored. -->
             <!-- v2.459: Increased Top Padding to lg:pt-24 (6rem) to clear rounded corners. -->
             <!-- v2.460: Applied explicit user request: PADDING-TOP 5REM (lg:pt-20), PADDING-LEFT 4REM (lg:pl-16). -->
-            <!-- v2.462: Forced inline styles to ensure overwrite. -->
-            <div id="tech-demo-header" style="padding-top: 5rem; padding-left: 4rem;" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-16 lg:pr-8 lg:pt-20 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
+            <!-- v2.463: Reverted inline styles, moved to !important CSS rule in media query. -->
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-16 pb-0 lg:pl-16 lg:pr-8 lg:pt-20 lg:pb-0 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -318,9 +318,10 @@
                                         
                                         /* Left Column: Heading Text */
                                         /* Force specific padding to match the scene gutter */
+                                        /* v2.463: Added !important to enforce 5rem/4rem padding on iPad Pro (1024px) specifically. */
                                         #tech-demo-header { 
-                                            
-                                            
+                                            padding-top: 5rem !important;
+                                            padding-left: 4rem !important;
                                         }
 
                                         /* Left Column: Scene Container Box */

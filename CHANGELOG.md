@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.463] - 2026-01-26
+- **Layout Fixes (iPad Pro)**:
+    - **Header Padding**: Removed inline styles and correctly applied `padding-top: 5rem !important` and `padding-left: 4rem !important` within the iPad Pro/Tablet media query (`820px - 1024px`) to strictly enforce the requested layout without conflicts.
+    - **Refinement**: This targets the specific `1024px` breakpoint overlap where Tailwind classes and media queries were contending.
+
 ## [v2.462] - 2026-01-26
 - **Layout Finalization & Spacing**:
     - **Header Specifics**: Enforced strict top padding (`5rem`) and left padding (`4rem`) via inline styles to lock in position regardless of utility conflicts.
