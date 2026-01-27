@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.504] - 2026-01-27
+- **Tech Demo UI**: Applied "Apple-like" Glass effect to all control elements (Live Demo pill, Mobile controls, Desktop Control Cluster).
+- **Refactor**: Unified glass styling using `.apple-glass` class and matching injected styles.
+
 ## [v2.503] - 2026-01-27
 - **Tech Demo Spacing (Mobile)**:
     - **Header Vertical Rhythm**:
