@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.556] - 2026-01-27
+- **Device Support (Tablet / Compact)**:
+    - **Layout Consistency**: Applied the iPad Pro layout logic (Floating UI) to the Tablet/Compact range (`820px - 1023px`).
+    - **Behavior**: Forced `position: absolute` for both the Status Meter and Control Sliders, stacking them at `bottom: 19rem` and `bottom: 15rem` respectively. This ensures the Chat Widget has ample clearance on smaller tablet devices as well.
+
 ## [v2.555] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **UI Polish**: Raised the Control Sliders to `bottom: 15rem` (from 11rem) to maximize clearance for the Chat Widget while maintaining a safe visual gap (~4rem) below the UV Meter (`19rem`).
