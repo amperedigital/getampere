@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.489] - 2026-01-27
+- **iPad Pro Refinement (Visual Alignment)**:
+    - **Header Containment**: Increased Left Column Header padding from `p-6` (1.5rem) to `p-8` (2rem) and reduced Scene Container offsets to `top-4/left-4`. This ensures the "AI Neural Architecture" title sits visually *inside* the border-radius container (1rem clear margin) rather than hanging outside it.
+    - **Pill Adjustment**: Shifted the "LIVE DEMO" status pill to the left (`right-12` -> `right-20`) to grant it more breathing room from the container edge on tablet screens, as requested.
+
 ## [v2.488] - 2026-01-27
 - **iPad Pro Layout Optimization**:
     - **Native Scrolling**: Relaxed the viewport lock from `lg:overflow-hidden` to `xl:overflow-hidden`. This restores native vertical scrolling on iPad Pro devices (width < 1280px) while maintaining the fixed "app-like" experience on large desktops.
