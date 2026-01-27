@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.480] - 2026-01-26
+- **Layout Unification (Center Column Seam)**:
+    - **Gap Reduction**: Tightened the central gap between the Neural Net (Left Column) and the Card Grid (Right Column).
+    - **Symmetry**: Reduced Scene `lg:right` inset from 4 to 2, and Grid `lg:pl` from 4 to 2.
+    - **Visual Result**: The central column gap is now 1rem (`0.5rem` + `0.5rem`), matching strictly with the `gap-4` (1rem) used between the grid cards. This eliminates the "huge gap" dissonance.
+
 ## [v2.479] - 2026-01-26
 - **Layout Precision (Expand Button & Gap)**:
     - **Expand Trigger**: Updated positioning to `top-[0.7rem] right-[4.8rem]` (arbitrary values) to perfectly nestle the button into the socket's bezier curve.
