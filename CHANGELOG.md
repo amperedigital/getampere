@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.479] - 2026-01-26
+- **Layout Precision (Expand Button & Gap)**:
+    - **Expand Trigger**: Updated positioning to `top-[0.7rem] right-[4.8rem]` (arbitrary values) to perfectly nestle the button into the socket's bezier curve.
+    - **Content Gutter**: Standardized the metrics grid padding to `pr-8` (2rem). This matches the visual rhythm of the larger `lg:gap-8` layout elements found elsewhere, providing a balanced clearance that isn't as loose as 2.5rem but not "jammed" like 1.5rem.
+
 ## [v2.478] - 2026-01-26
 - **Final Layout Polish (Scrollbar & Gutter)**:
     - **Scrollbar Position**: Doubled the right spacing of the container (`pr-2` -> `pr-4` on desktop) to move the scrollbar distinctly inwards from the card edge.
