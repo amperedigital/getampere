@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.510] - 2026-01-27
+- **Visual Refresh (2026 Apple Glass)**: Implemented "Incomplete Border" glass effect.
+    - **Aesthetic**: Replaces the "frosted/steel" look with a darker, transparent glass (`rgba(0,0,0,0.4)`) featuring diagonal gradient borders (`135deg`) that simulate light glints on broken edges.
+    - **Application**: Applied to all key interactive elements including the Live Demo Pill, Mobile Slider Track, and toggles.
+    - **Zen Mode**: Removed `isolate` property to fix transparency issues on expanded cards.
+
 ## [v2.509] - 2026-01-27
 - **Fix (iPad Pro)**: Hidden the Zen Mode expand trigger (`.expand-trigger`) specifically on iPad Pro Portrait (`width: 1024px`) to prevent visual overlap with the card controls. Users can still expand cards by clicking anywhere on the card body.
 
