@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.474] - 2026-01-26
+- **Layout Refinement (Scrollbar)**:
+    - **Right-Aligned Scrollbar**: Restructured the card content container to remove parent padding.
+    - **Content Spacing**: Migrated padding to the Header and Grid directly (`mx`, `mt` for header; `pl` for grid) to ensure the scrollbar sits flush against the right edge of the card while content remains visually inset.
+
 ## [v2.473] - 2026-01-26
 - **Layout Restoration & Spacing**:
     - **Corner Reset**: Restored Main Icon button to absolute zero (`top-0 right-0`) as requested.
