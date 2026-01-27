@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.484] - 2026-01-26
+- **Typography Stabilization (Ultra-Wide support)**:
+    - **Unit Change**: Switched all container query units in the card internal layouts from `cqw` (width-based) to `cqmin` (min of width/height).
+    - **Impact**: This prevents fonts from exploding to massive sizes on ultra-wide screens (e.g. 3000px width) where the container height remains relatively standard. The text scaling is now constrained by the limiting dimension (usually height in these aspect ratios), ensuring "uniform" and sane readability across all form factors.
+
 ## [v2.483] - 2026-01-26
 - **Layout Stabilization (Card Background Sync)**:
     - **Visual Fix**: Resolved the "repaint/detachment" glitch where the glass card backgrounds would drift or snap separately from their SVG borders during resize.
