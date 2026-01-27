@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.499] - 2026-01-27
+- **Tech Demo Refinement (Desktop)**:
+    - **Live Demo Pill**: Adjusted position to `lg:right-12` (3rem) to perfectly mirror the Header's left indentation (`pl-12`). This ensures symmetric "hanging" alignment relative to the Scene Container's borders on both sides.
+
 ## [v2.498] - 2026-01-27
 - **Tech Demo Refinement (Desktop)**:
     - **Header Indentation**: While maintaining the 1.5rem (`lg:left-6`) structural gutter for the Scene Container, we increased the Header's left padding to `lg:pl-12` (3rem).
