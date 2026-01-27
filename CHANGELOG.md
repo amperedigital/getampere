@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.491] - 2026-01-27
+- **iPad Pro Refinement (Vertical Alignment)**:
+    - **Header Balance**: Corrected the visual starting height of the Left Column by pushing the Scene Container top offset from `1rem` to `2rem`.
+    - **Symmetry**: This ensures the Left Column's visual border starts at the exact same Y-coordinate as the Right Column's content (which has `pt-8` / 2rem padding), resolving the "Left side higher than right" discrepancy.
+
 ## [v2.490] - 2026-01-27
 - **iPad Pro Specific (Visual Correction)**:
     - **Isolation Strategy**: Removed all previous Tailwind-based adjustments (which inadvertently affected Desktop) and migrated all iPad Pro specific fixes to the dedicated `@media (min-width: 820px) and (max-width: 1024px)` CSS block.
