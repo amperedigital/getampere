@@ -126,7 +126,8 @@
                         <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></div>
                         <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-blue-300 transition-colors duration-300">STANDBY</span>
                         <!-- v2.269: Integrated Standby Timer -->
-                        <span id="mobile-standby-timer" class="text-xs font-sans font-bold text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
+                        <!-- v2.522: Uniform Typography (Mono/10px/Upper) to match Status Text -->
+                        <span id="mobile-standby-timer" class="text-[10px] font-mono font-bold tracking-widest text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
                     </div>
                 </div>
 
@@ -1594,9 +1595,9 @@
                              if (opacity > 0 && text.includes('STANDBY IN')) {
                                  // Show on Mobile
                                  mobileTimer.classList.remove('hidden');
-                                 // Format: "STBY IN 30s"
+                                 // Format: "STBY IN 30s" -> "STBY IN 30S" (Uniform uppercase)
                                  const match = text.match(/\d+s/);
-                                 if(match) mobileTimer.innerText = "STBY IN " + match[0];
+                                 if(match) mobileTimer.innerText = "STBY IN " + match[0].toUpperCase();
                              } else {
                                  mobileTimer.classList.add('hidden');
                              }
