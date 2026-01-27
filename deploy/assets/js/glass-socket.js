@@ -12,6 +12,9 @@ export function updateSocketPath(container, options = {}) {
     const path = container.querySelector('.socket-path');
     if (!path) return;
 
+    // NEW: Find bg to sync clip-path (v2.483)
+    const bg = container.querySelector('.socket-background');
+
     const w = container.clientWidth || 300;
     const h = container.clientHeight || 150;
     
@@ -81,6 +84,11 @@ export function updateSocketPath(container, options = {}) {
     d += ' Z';
     
     path.setAttribute('d', d);
+
+    // Sync Background Shape
+    if (bg) {
+        bg.style.clipPath = `path('${d}')`;
+    }
 }
 
 // Auto-initializer for all elements matching a selector

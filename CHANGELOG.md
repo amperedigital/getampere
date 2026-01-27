@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.483] - 2026-01-26
+- **Layout Stabilization (Card Background Sync)**:
+    - **Visual Fix**: Resolved the "repaint/detachment" glitch where the glass card backgrounds would drift or snap separately from their SVG borders during resize.
+    - **Method**: 
+        - Added `socket-background` class to the backdrop blur layers.
+        - Updated `glass-socket.js` to programmatically apply the exact same calculated Bezier path to the background's `clip-path` (via `path()`), ensuring pixel-perfect 1:1 synchronization with the border.
+    - **DevOps**: Updated `tech-demo.html` to use local `glass-socket.js` import for faster iteration and to replace the stale hardcoded CDN link.
+
 ## [v2.482] - 2026-01-26
 - **Deployment Fix (Cache Busting)**:
     - **CSS Link**: Updated the stylesheet link in `tech-demo.html` with a version query string (`?v=2.482`).
