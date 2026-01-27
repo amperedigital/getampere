@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.508] - 2026-01-27
+- **Fix (Card Interaction)**: Resolved the "Right Shift" issue in expanded state ("Zen Mode").
+    - The expander now dynamically calculates the target `left` and `width` based on the container's computed padding (`div.paddingLeft`), rather than using hardcoded values.
+    - This ensures the expanded card aligns perfectly with the visual edges of the content column, regardless of asymmetric padding rules (`lg:pl-2`/`pr-6`).
+
 ## [v2.507] - 2026-01-27
 - **Fix (Card Styles)**: Added deep background color (`rgba(10, 10, 15, 0.95)`) and backdrop blur to Expanded Cards ("Zen Mode"). This prevents underlying cards from being visible through the expanded state.
 - **Fix (Z-Index)**: Explicitly enforced `z-index: 50 !important` and shadow depth in CSS for the expanded state to ensure correct layering.

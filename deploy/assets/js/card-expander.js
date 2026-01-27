@@ -111,9 +111,16 @@ export class CardExpander {
         // Using parentRect.height (viewport height of container) is correct.
         const targetHeight = parentRect.height - 64; 
         
-        // Target Left: 24px (1.5rem).
-        const targetLeft = 24; 
-        const targetWidth = parentRect.width - 48; // Width - 3rem
+        // Target Layout (Dynamic Padding Awareness)
+        // Fix v2.508: Calculate margins dynamically to match container padding exactly.
+        const containerStyle = window.getComputedStyle(container);
+        const padLeft = parseFloat(containerStyle.paddingLeft) || 0;
+        const padRight = parseFloat(containerStyle.paddingRight) || 0;
+
+        // Target Left: Align exactly with the content box (padding-left)
+        const targetLeft = padLeft; 
+        // Target Width: Full width minus horizontal padding (Fill the content box)
+        const targetWidth = parentRect.width - (padLeft + padRight);
 
         // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
