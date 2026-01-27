@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.555] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **UI Polish**: Raised the Control Sliders to `bottom: 15rem` (from 11rem) to maximize clearance for the Chat Widget while maintaining a safe visual gap (~4rem) below the UV Meter (`19rem`).
+
 ## [v2.554] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **Visual Calibration**: Optimized the vertical placement to ensure the UI sits "Just below the Ring" but keeps the sliders clear of the Chat Widget.
