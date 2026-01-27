@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.497] - 2026-01-27
+- **Tech Demo Refinement (Desktop)**:
+    - **Tighter Gutters**: Reduced the global horizontal page gutters on Desktop from `3rem/2rem` to a symmetric `1.5rem` (24px) to match the iPad Pro "Compact" layout spacing.
+        - Header: `lg:px-6` (was `12`)
+        - Live Demo Pill: `lg:right-6` (was `12`)
+        - Scene Container: `lg:left-6` (was `8`)
+        - Right Column: `lg:pr-6` (was `8`)
+
 ## [v2.496] - 2026-01-27
 - **Tech Demo Refinement (Desktop)**:
     - **Vertical Spacing**: Increased the desktop header top padding `lg:pt-20` (5rem) to strictly match the iPad Pro vertical positioning, ensuring consistent alignment of the breadcrumb and title across large screens.
