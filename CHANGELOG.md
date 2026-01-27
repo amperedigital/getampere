@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.537] - 2026-01-27
+- **Visual Polish (Button Blending)**:
+    - **Reduced Opacity**: Lowered the background opacity of the Card Launch Buttons from `bg-white/10` to `bg-white/5`.
+    - **Context**: The buttons were appearing "lighter" than the card background because their 10% white layer was stacking on top of the card's local 5% white gradient. Reducing to 5% brings the total tonal value closer to the card body, making the buttons feel more integrated and less like "stickers".
+
 ## [v2.536] - 2026-01-27
 - **Visual Polish (Green Glass)**: Refined the Active State of the Master Power Button to be much more subtle.
     - **Deep Tint**: Instead of replacing the dark glass with a light transparent green (which felt "ghostly"), we now **tint** the dark glass base with green (`rgba(6, 40, 25, 0.75)`). This preserves the solid "pebble" weight of the button while clearly indicating it is ON.
