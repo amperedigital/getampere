@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.503] - 2026-01-27
+- **Tech Demo Spacing (Mobile)**:
+    - **Header Vertical Rhythm**:
+        - **Lifted Breadcrumbs**: Reduced the header container's top padding from `pt-12` to `pt-8`.
+        - **Increased Gap**: Increased the margin between the breadcrumbs and the heading from `mb-1` to `mb-8`.
+    - **Result**: The breadcrumb now sits higher on the screen, with a substantial visual gap separating it from the main title, improving legibility and modernizing the layout balance on small screens.
+
 ## [v2.502] - 2026-01-27
 - **Responsive Typography & Layout (Mobile/Tablet)**:
     - **Heading & Blurb**: Significantly increased base font sizes for screens 1023px and down.
