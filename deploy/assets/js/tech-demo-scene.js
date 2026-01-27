@@ -260,7 +260,8 @@ export class TechDemoScene {
                     transform: translateY(-2px);
                 }
 
-                #ampere-ui-track:hover #ampere-ui-border-layer {
+                #ampere-ui-track:hover #ampere-ui-border-layer,
+                #ampere-ui-track:active #ampere-ui-border-layer {
                     transform: rotate(180deg);
                 }
                 
@@ -699,13 +700,13 @@ export class TechDemoScene {
                     // Selected State Style
                     if (id === 'ACTIVE') {
                         l.style.color = '#10b981'; // Emerald 500
-                        l.style.textShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
+                        l.style.textShadow = 'none';
                     } else if (id === 'STANDBY') {
                          l.style.color = '#94a3b8'; // Slate 400
-                         l.style.textShadow = '0 0 12px rgba(148, 163, 184, 0.4)';
+                         l.style.textShadow = 'none';
                     } else {
                          l.style.color = '#aabbcc'; // Grey Blue
-                         l.style.textShadow = '0 0 8px rgba(120, 140, 160, 0.5)';
+                         l.style.textShadow = 'none';
                     }
                 } else {
                     l.style.color = '#556677'; // Dim Blue-Grey

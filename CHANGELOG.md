@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.515] - 2026-01-27
+- **Interaction Polish**: 
+    - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
+
+## [v2.514] - 2026-01-27
+- **Visual Polish (Clean Glass)**:
+    - **No Gradient Blur**: Removed all `text-shadow` glows from the Desktop Control Cluster labels, ensuring a crisp, clean appearance consistent with the "Glass Pebble" aesthetic.
+    - **Mobile Layout**: Swapped the positions of the Mobile Power Button (now Left) and Status Pill (now Right) to better align with the new header hierarchy.
+
 ## [v2.513] - 2026-01-27
 - **Visual Refresh (Icon-Only Color)**: Finalized the "Glass Pebble" control aesthetic.
     - **Thumb/Button Transparency**: Removed all underglow and background tints from the toggle buttons. They are now purely clear glass (`apple-glass`).
