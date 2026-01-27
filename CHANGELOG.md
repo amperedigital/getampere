@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.550] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **Layout Fix**: Shifted the bottom UI controls (Sliders & UV/Status Meter) upwards significantly (`bottom: 18rem`) on iPad Pro Portrait (`1024px`) to provide ample clearance for the embedded Chat Widget.
+    - **Refinement**: Tightened vertical spacing within the slider cluster to reduce visual noise in the raised position.
+
 ## [v2.549] - 2026-01-27
 - **Visual Polish (Zen Mode Scaling)**:
     - **Feature**: Implemented expansive typography scaling for "Zen Mode" (Expanded Card View).
