@@ -1,13 +1,11 @@
 # Changelog
 
-## [v2.523] - 2026-01-27
+## [v2.524] - 2026-01-27
 - **Visual Polish (Button Physics)**:
-    - **Rocker Switch Glints**: Updated the `.apple-glass` gradient to a vertical orientation to simulate a rocker switch.
-    - **12 O'Clock (Top)**: Hard glint (0.8 opacity) representing the light catching the top edge.
-    - **6 O'Clock (Bottom)**: Soft glint (0.2 opacity) representing the bottom rim light.
-    - **Rotation Physics**: The existing 360° rotation logic now effectively simulates "rocking" the switch by inverting these vertical glints (Top becomes Bottom, Bottom becomes Top) when toggled.
+    - **Physical Glint Model (Rocker Snap)**: Removed the CSS transition (`transform 0.6s`) from the `.apple-glass` pseudo-element.
+    - **Behavior**: The Rocker Switch "flip" (inverting the 12 o'clock and 6 o'clock glints) is now **instant** ("On/Off" snap) rather than a visible rotation. This better simulates the mechanical action of a rocker switch snapping between states.
 
-## [v2.522] - 2026-01-27
+## [v2.523] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 
