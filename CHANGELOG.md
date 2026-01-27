@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.509] - 2026-01-27
+- **Fix (iPad Pro)**: Hidden the Zen Mode expand trigger (`.expand-trigger`) specifically on iPad Pro Portrait (`width: 1024px`) to prevent visual overlap with the card controls. Users can still expand cards by clicking anywhere on the card body.
+
 ## [v2.508] - 2026-01-27
 - **Fix (Card Interaction)**: Resolved the "Right Shift" issue in expanded state ("Zen Mode").
     - The expander now dynamically calculates the target `left` and `width` based on the container's computed padding (`div.paddingLeft`), rather than using hardcoded values.
