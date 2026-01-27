@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.485] - 2026-01-27
+- **Rendering Optimization (Artifact Fix)**:
+    - **Backdrop Blur Removal**: Removed `backdrop-blur-md` from all 6 Agent Cards (`.socket-card-container`).
+    - **Reasoning**: The dynamic repainting of these elements (triggered by SVG path updates or interactions) combined with cached blur layers was causing persistent pixel bleeding and artifacting. Since the card backgrounds are essentially transparent glass over empty space, the expensive blur filter was unnecessary and its removal eliminates the graphical glitch.
+
 ## [v2.484] - 2026-01-26
 - **Typography Stabilization (Ultra-Wide support)**:
     - **Unit Change**: Switched all container query units in the card internal layouts from `cqw` (width-based) to `cqmin` (min of width/height).
