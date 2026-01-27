@@ -32,6 +32,10 @@ export class TechDemoScene {
         this.standbyMix = 0;
         this.targetStandbyMix = 0; // Default to 0, if starting in Standby, setSystemState will fix
 
+        // v2.547: Capture Power Buttons for JS-Synced Breathing Animation
+        // This ensures the button pulse matches the Neural Net "Breathing" exactly.
+        this.uiPowerButtons = document.querySelectorAll('.power-toggle-btn');
+
         // v2.429: Active Card Sync State
         this.lastActiveCardIndex = -1;
         this.isCardPowerActive = false; // v2.431: Hysteresis State
@@ -1519,6 +1523,19 @@ export class TechDemoScene {
         // Pulse Timer (Global)
         this.standbyPulseTimer = (this.standbyPulseTimer || 0) + 0.015; 
         const pulse = (Math.sin(this.standbyPulseTimer) * 0.5 + 0.5); 
+
+        // v2.548: Drive UI Button Opacity from the Neural Net Pulse
+        // Matches the "Breathing" frequency (approx 7s cycle) instead of fixed CSS time.
+        if (this.uiPowerButtons) {
+            const opacity = (this.systemState === 'STANDBY') ? (0.4 + (pulse * 0.6)) : '';
+            this.uiPowerButtons.forEach(btn => {
+                // Use '' to remove inline style and revert to CSS when not in Standby
+                // Use .style.opacity directly for high-performance animation
+                if (btn.style.opacity !== String(opacity)) {
+                    btn.style.opacity = opacity;
+                }
+            });
+        }
 
         // --- Light & State Logic ---
         if (this.lightTargets) {

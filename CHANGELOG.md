@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.548] - 2026-01-27
+- **Visual Polish (Standby Sync)**:
+    - **Logic Update**: Switched the Standby Pulse animation from CSS (`animate-pulse-slow`) to a JavaScript-driven opacity update in the main render loop.
+    - **Context**: The Power Button now "breathes" in perfect synchronization with the Neural Net's ambient/core light pulse (~7s cycle), creating a unified "alive" feeling.
+    - **Implementation**: `tech-demo-scene.js` now captures `.power-toggle-btn` elements and updates their opacity based on the scene's internal `sine` wave generator.
+
 ## [v2.547] - 2026-01-27
 - **Visual Polish (Standby Pulse)**:
     - **Color Update**: Changed Power Button Standby color from `text-amber-400` to lighter `text-amber-300` (less orange) as requested.

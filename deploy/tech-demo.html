@@ -88,7 +88,7 @@
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
             <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
             <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-300 animate-pulse-slow active:scale-95 transition-all power-toggle-btn"
+                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
                     aria-label="Power & Standby Control"
                     aria-pressed="false">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,7 +129,7 @@
                     <!-- Single Power Toggle -->
                     <!-- Green when On, Amber when Standby, Slate when Off -->
                     <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-amber-300 animate-pulse-slow active:scale-95 transition-all power-toggle-btn"
+                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
                             id="btn-mobile-power"
                             aria-label="Power Toggle">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1533,7 +1533,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.543/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.548/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
@@ -1680,7 +1680,7 @@
                     // v2.518: Added rotation logic for ON state.
                     if (btns.length > 0) {
                         const activeClasses = ['text-emerald-400', 'apple-glass-rotated'];
-                        const standbyClasses = ['text-amber-300', 'animate-pulse-slow']; // v2.547: Lighter Amber + Slow Pulse
+                        const standbyClasses = ['text-amber-300']; // v2.548: Pulse handled by JS Sync
                         const offClasses = ['text-slate-500'];
                         
                         // Clean all states
