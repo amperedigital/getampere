@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.560] - 2026-01-27
+- **Mobile Card UI**:
+    - **Single Card View**: Increased mobile card width to `85%` (was `40%`) to display a single focused card with a visual "peek" of the next card, improving focus and scroll affordance.
+    - **Vertical Fix**: Increased track minimum height to `60vh` to prevent content clipping on mobile screens.
+    - **Zen Mode Fix**: Updated expanded card behavior to use `position: fixed` on mobile, ensuring expanded cards break out of the horizontal scroll track and overlay the full screen correctly.
+
 ## [v2.558] - 2026-01-27
 - **Mobile Polish**:
     - **Visual Fix**: Removed the background blur and border from the sticky mobile controls to clean up the UI transparency.
