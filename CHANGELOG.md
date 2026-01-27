@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.486] - 2026-01-27
+- **UI Tuning (Typography & Layout)**:
+    - **Reduced Metrics Scale**: Updated the container query clamp for metrics from `max 1.75rem` to `max 1.1rem`.
+        - **Logic**: This prevents the data grid font from becoming excessively large on ultra-wide screens (e.g., 3000px width), keeping it dense and legible.
+    - **Tightened Grid**: Reduced vertical gap from `gap-y-6` (1.5rem) to `gap-y-2` (0.5rem) on desktop.
+    - **Result**: The data tables are now much more compact and professional, avoiding the sparse/huge look on large displays.
+
 ## [v2.485] - 2026-01-27
 - **Rendering Optimization (Artifact Fix)**:
     - **Backdrop Blur Removal**: Removed `backdrop-blur-md` from all 6 Agent Cards (`.socket-card-container`).
