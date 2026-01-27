@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.488] - 2026-01-27
+- **iPad Pro Layout Optimization**:
+    - **Native Scrolling**: Relaxed the viewport lock from `lg:overflow-hidden` to `xl:overflow-hidden`. This restores native vertical scrolling on iPad Pro devices (width < 1280px) while maintaining the fixed "app-like" experience on large desktops.
+    - **Grid Maximization**: Shifted column balance from 50/50 to ~42/58 (`lg:w-[42%]` / `lg:w-[58%]`) to grant significantly more horizontal space to the data grid.
+    - **Space Efficiency**: Reduced Left Header padding (`lg:p-12` -> `lg:p-6`) and removed redundant column gutters (`lg:pl-0`) to push content closer to the edges, utilizing the full tablet screen width.
+
 ## [v2.487] - 2026-01-27
 - **UI Tuning (Title Typography)**:
     - **Reduced Heading Scale**: Updated the container query clamp for Agent Card Titles from `max 2.5rem` to `max 1.75rem`.

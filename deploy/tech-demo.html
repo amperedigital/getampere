@@ -22,19 +22,19 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css?v=2.484">
 </head>
-<body class="bg-[#05060f] text-white lg:overflow-hidden">
+<body class="bg-[#05060f] text-white xl:overflow-hidden">
 
     <!-- Master Container (ID added v2.360 for Scrolling Control) -->
-    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
+    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative xl:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
-        <div id="tech-demo-left-column" class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
+        <div id="tech-demo-left-column" class="relative w-full lg:w-[42%] h-auto lg:h-full flex flex-col lg:block">
             
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
             <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
             <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-6 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -476,7 +476,7 @@
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
         <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-2 overflow-y-auto">
+        <div id="tech-demo-right-column" class="relative w-full lg:w-[58%] h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-0 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
