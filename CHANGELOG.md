@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.545] - 2026-01-27
+- **Visual Polish (Power Button)**:
+    - **Standby State**: Updated the Power Button icon color in Standby mode to **Amber** (`text-amber-400`).
+    - **Context**: Previously, the button would appear Green (Active) or Slate (Off). The Standby state is now distinct, indicating the system is "Ready" but not "Active".
+    - **Logic**: Updated `updateMobileDisplay` in `tech-demo.html` to explicitly handle `STANDBY` state separation.
+        - **Active**: `text-emerald-400` + Rotation.
+        - **Standby**: `text-amber-400`.
+        - **Off**: `text-slate-500`.
+
 ## [v2.544] - 2026-01-27
 - **Visual Polish (Active Text)**:
     - **Correction**: Manually set the "Front Door Agent" text (Index 1) to the **Active Green** state (`fill-emerald-400` + Glow) in the HTML markup.

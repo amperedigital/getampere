@@ -1679,16 +1679,23 @@
                     // v2.516: REMOVED ALL GLOW/DROP-SHADOWS. Clean, sharp icon only.
                     // v2.518: Added rotation logic for ON state.
                     if (btns.length > 0) {
-                        const onClasses = ['text-emerald-400', 'apple-glass-rotated'];
+                        const activeClasses = ['text-emerald-400', 'apple-glass-rotated'];
+                        const standbyClasses = ['text-amber-400']; // v2.545: Amber for Standby
                         const offClasses = ['text-slate-500'];
                         
+                        // Clean all states
+                        const allStates = [...activeClasses, ...standbyClasses, ...offClasses];
+
                         btns.forEach(btn => {
-                            if (state === 'OFF') {
-                                btn.classList.remove(...onClasses);
-                                btn.classList.add(...offClasses);
+                            btn.classList.remove(...allStates);
+                            
+                            if (state === 'ACTIVE') {
+                                btn.classList.add(...activeClasses);
+                            } else if (state === 'STANDBY') {
+                                btn.classList.add(...standbyClasses);
                             } else {
-                                btn.classList.remove(...offClasses);
-                                btn.classList.add(...onClasses);
+                                // OFF or Default
+                                btn.classList.add(...offClasses);
                             }
                         });
                     }
