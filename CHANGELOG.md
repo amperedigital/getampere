@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.494] - 2026-01-27
+- **iPad Pro Refinement (Page Gutters)**:
+    - **Symmetric Margins**: Reduced the Right Column's right padding from `2rem` (default) to `1.5rem` (`padding-right: 1.5rem !important`) within the iPad Pro media query.
+    - **Logic**: This now exactly matches the Left Column's visual left gutter (`left: 1.5rem`), creating perfect symmetry on the outer edges of the screen (1.5rem Left / 1.5rem Right).
+
 ## [v2.493] - 2026-01-27
 - **iPad Pro Refinement (Column Gap)**:
     - **Gap Synchronization**: Adjusted the Scene Container's width calculation in the iPad Pro profile from `calc(100% - 3rem)` to `calc(100% - 2.5rem)`.
