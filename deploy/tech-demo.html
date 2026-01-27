@@ -120,8 +120,10 @@
                     </button>
 
                     <!-- Status Display -->
-                    <div id="mobile-system-status" class="flex items-center gap-2 px-4 py-2 rounded-full apple-glass transition-colors duration-300 min-h-[42px]">
-                        <div id="mobile-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                    <!-- v2.516: Reverted to Canonical "Standard Pill" (No Apple Glass Pebble) -->
+                    <!-- As per request: "Standby isn't a button... No glass effect" -->
+                    <div id="mobile-system-status" class="flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-colors duration-300 min-h-[42px]">
+                        <div id="mobile-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
                         <span id="mobile-status-text" class="text-xs font-bold tracking-widest text-emerald-400 transition-colors duration-300 font-sans">ONLINE</span>
                         <!-- v2.269: Integrated Standby Timer -->
                         <span id="mobile-standby-timer" class="text-xs font-sans font-bold text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>

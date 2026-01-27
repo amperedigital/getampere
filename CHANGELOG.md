@@ -1,9 +1,10 @@
 # Changelog
 
 ## [v2.516] - 2026-01-27
-- **Visual Polish (Glow Removal)**:
+- **Visual Polish (Glow & Glass Removal)**:
     - **Mobile Controls**: Removed all `drop-shadow` and `box-shadow` "glows" from the Power Icon and Status Dot.
-    - **Aesthetic**: The active state now relies purely on the flat LED color (`bg-emerald-400`/`text-emerald-400`) viewed through the glass pebble, eliminating the "2016 gradient blur" effect entirely.
+    - **Mobile Status Pill**: Reverted the Status indicator to the "Standard Pill" aesthetic (`bg-black/40` + `backdrop-blur-md`), removing the `.apple-glass` pebble effect entirely since it is a passive information display, not an interactive button.
+    - **Aesthetic**: The active state now relies purely on flat LED colors (`bg-emerald-400`/`text-emerald-400`) within the glass/pill frames.
 
 ## [v2.515] - 2026-01-27
 - **Interaction Polish**: 
