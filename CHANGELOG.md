@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.554] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **Visual Calibration**: Optimized the vertical placement to ensure the UI sits "Just below the Ring" but keeps the sliders clear of the Chat Widget.
+        - **UV / Status Meter**: Lowered to `bottom: 19rem` (from 28rem) to sit cleanly below the "Dashed Ring" / Neural Net.
+        - **Control Sliders**: Lowered to `bottom: 11rem` (from 18rem) to provide distinct separation below the UV, while comfortably clearing the screen bottom.
+
 ## [v2.553] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **Stacking Fix**: Corrected the stacking order of the Bottom UI elements.
