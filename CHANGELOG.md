@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.544] - 2026-01-27
+- **Visual Polish (Active Text)**:
+    - **Correction**: Manually set the "Front Door Agent" text (Index 1) to the **Active Green** state (`fill-emerald-400` + Glow) in the HTML markup.
+    - **Context**: In v2.543, all text was set to the inactive slate color. Since "Front Door Agent" is the default active selection on load, it appeared "off" until the user interacted with the ring. This fix ensures the initial state matches the active selection logic.
+    - **Inactive States**: Confirmed all other indices (3, 5, 7, 9, 11) are set to the muted `fill-slate-500/50`.
+
 ## [v2.543] - 2026-01-27
 - **Visual Polish (Text Muting)**:
     - **Concept**: The text labels on the Halo Rings were visually competing with the central elements due to their high brightness and glow.
