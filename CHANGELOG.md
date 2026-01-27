@@ -4,6 +4,8 @@
 - **Visual Polish (Glow & Glass Removal)**:
     - **Mobile Controls**: Removed all `drop-shadow` and `box-shadow` "glows" from the Power Icon and Status Dot.
     - **Mobile Status Pill**: Reverted the Status indicator to the "Standard Pill" aesthetic (`bg-black/40` + `backdrop-blur-md`), removing the `.apple-glass` pebble effect entirely since it is a passive information display, not an interactive button.
+    - **Standby Animation**: Restored the `animate-pulse` behavior to the Status Dot in "STANDBY" mode, ensuring it flashes blue to match the Live Demo behavior.
+    - **Power Button**: Fixed the interactive rotation animation by applying the correct `.apple-glass-interactive` class to the mobile power toggle.
     - **Aesthetic**: The active state now relies purely on flat LED colors (`bg-emerald-400`/`text-emerald-400`) within the glass/pill frames.
 
 ## [v2.515] - 2026-01-27
