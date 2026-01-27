@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.492] - 2026-01-27
+- **iPad Pro Refinement (Header Spacing)**:
+    - **Increased Breathing Room**: Increased the top padding of the Left Column Header (`#tech-demo-header`) from ~3rem to `5rem` within the iPad Pro breakpoint range.
+    - **Logic**: This pushes the breadcrumb and "AI Neural Architecture" title down, creating more negative space at the top of the interface as requested.
+
 ## [v2.491] - 2026-01-27
 - **iPad Pro Refinement (Vertical Alignment)**:
     - **Header Balance**: Corrected the visual starting height of the Left Column by pushing the Scene Container top offset from `1rem` to `2rem`.
