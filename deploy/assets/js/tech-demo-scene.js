@@ -1358,6 +1358,17 @@ export class TechDemoScene {
         cards.forEach((card, index) => {
             if (index === activeIndex) {
                 card.setAttribute('data-agent-status', 'active');
+                
+                // v2.557: Scroll Sync Logic
+                // If on mobile/horizontal scroll view, scroll to the active card
+                const track = document.getElementById('tech-demo-card-track');
+                if (track && window.getComputedStyle(track).overflowX === 'auto') {
+                     // Calculate offset: index * width of card ? 
+                     // Or just use scrollIntoView behavior?
+                     // scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }) is best
+                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                }
+
             } else {
                 card.setAttribute('data-agent-status', 'standby');
             }

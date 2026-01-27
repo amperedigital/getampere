@@ -95,9 +95,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
                 </svg>
                 
-                <!-- Tooltip: Appears on Hover on the Left -->
+                <!-- Tooltip: Appears on Hover BELOW (v2.557) -->
+                <!-- Previously left side. Now centered below. -->
                 <span id="power-btn-tooltip" 
-                      class="absolute right-full mr-4 px-3 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[11px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+                      class="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[11px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
                     Turn On
                 </span>
             </button>
@@ -367,11 +368,13 @@
             <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
             <!-- v2.279: Maintained lg:gap-8 (2rem) as requested ("two rem spacing, not four"). Changed card padding to lg:p-8 below. -->
             <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-2 lg:gap-4 w-full h-auto lg:h-full lg:min-h-[850px]">
+            <!-- v2.557: Mobile Scroll Track (Flex) -->
+            <div id="tech-demo-card-track" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-4 lg:grid lg:grid-cols-2 lg:grid-rows-3 lg:gap-4 lg:px-0 lg:pb-0 w-full h-auto lg:h-full lg:min-h-[850px] hide-scrollbar" style="scroll-behavior: smooth;">
                 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- Card: Front Door Agent -->
+                <!-- Card: Front Door Agent -->
                 <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="active"> 
+                <!-- v2.557: Added flex-shrink-0 min-w-[40%] for scrolling -->
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="active"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -560,7 +563,7 @@
                 </div>
                 <!-- Card: Demo Guide -->
                 <!-- v2.437: Update to isolate -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -750,7 +753,7 @@
 
                 <!-- Card: Onboarding Coach -->
                 <!-- v2.437: Update to isolate -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -939,7 +942,7 @@
 
                 <!-- Card: Technical Specialist -->
                 <!-- v2.437: Update to isolate -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1128,7 +1131,7 @@
 
                 <!-- Card: Sales Advisor -->
                 <!-- v2.437: Update to isolate -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1317,7 +1320,7 @@
 
                 <!-- Card: Booking Agent -->
                 <!-- v2.437: Update to isolate -->
-                <div class="relative group h-full socket-card-container @container" data-agent-status="standby"> 
+                <div class="relative group h-full flex-shrink-0 min-w-[40%] lg:min-w-0 snap-center socket-card-container @container" data-agent-status="standby"> 
                     
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
@@ -1533,7 +1536,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.548/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.557/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

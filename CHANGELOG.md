@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.557] - 2026-01-27
+- **Mobile Experience Upgrade (< 1024px)**:
+    - **Horizontal Scroll Track**: Replaced the tight grid layout with a horizontal "Snap Scroll" track for Agent Cards. Viewport now fits ~2.5 cards visible at once (`min-w-[40%]`).
+    - **Scroll Sync**: Changing the "Active Agent" via the bottom slider now automatically scrolls the track to center the corresponding card.
+    - **Sticky Controls**: Restored "Sticky" positioning for the bottom control slider cluster, ensuring it remains accessible while scrolling through cards. Added a glass backdrop (`bg-slate-900/80`, `blur-md`) for legibility.
+    - **Power Tooltip**: Moved the Desktop Power Button tooltip from "Left" to "Below" (Centered) to prevent layout clipping.
+
 ## [v2.556] - 2026-01-27
 - **Device Support (Tablet / Compact)**:
     - **Layout Consistency**: Applied the iPad Pro layout logic (Floating UI) to the Tablet/Compact range (`820px - 1023px`).
