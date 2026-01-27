@@ -1,15 +1,13 @@
 # Changelog
 
-## [v2.522] - 2026-01-27
-- **Visual Polish (Typography Uniformity)**:
-    - **Mobile Standby Timer**: Updated the "STBY IN 30s" countdown to match the "AI ONLINE/STANDBY" status text exactly.
-        - **Font**: Changed from `font-sans` to `font-mono`.
-        - **Size**: Changed from `text-xs` (12px) to `text-[10px]` to match the status label.
-        - **Tracking**: Added `tracking-widest` for uniform spacing.
-        - **Case**: Forced the seconds unit to uppercase ("30S") to ensure strictly uniform capitalization across the entire status pill.
-    - **Button Physics**: (Retained from v2.521) Asymmetric glint model for push-down feel.
+## [v2.523] - 2026-01-27
+- **Visual Polish (Button Physics)**:
+    - **Rocker Switch Glints**: Updated the `.apple-glass` gradient to a vertical orientation to simulate a rocker switch.
+    - **12 O'Clock (Top)**: Hard glint (0.8 opacity) representing the light catching the top edge.
+    - **6 O'Clock (Bottom)**: Soft glint (0.2 opacity) representing the bottom rim light.
+    - **Rotation Physics**: The existing 360° rotation logic now effectively simulates "rocking" the switch by inverting these vertical glints (Top becomes Bottom, Bottom becomes Top) when toggled.
 
-## [v2.521] - 2026-01-27
+## [v2.522] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 
