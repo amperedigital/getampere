@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.512] - 2026-01-27
+- **Visual Refresh (True Pebble Glass)**: Refined the control aesthetics to match the "Glass Stone" request.
+    - **Thumb**: Removed all gradient fills and gradient blurs from the thumb body. It is now a purely transparent glass "pebble" (`rgba(255,255,255,0.05)`) with a sharp shadow (`0 4px 12px`) and a subtle inner reflection.
+    - **Color Logic**: Color is now provided strictly by an under-glow element (`#ampere-thumb-glow`) sitting *behind* the glass surface, diffusing softly (`blur(6px)`).
+    - **Interaction**:
+        - **Live Demo Pill**: Hovering this *non-button* element NO LONGER triggers the border rotation animation.
+        - **Interactive Buttons**: Only actionable elements (Track, Thumb, Mobile Toggles) trigger the rotating glint on hover.
+    - **Text**: Status labels now use flat colors (Emerald for Active, Slate for Standby) with cleaner shadows, abandoning the "glowing neon" look.
+
 ## [v2.511] - 2026-01-27
 - **Visual Polish (Pebble Glass)**: Refined the glass aesthetic based on "Muted Pebble" feedback.
     - **Material**: Increased opacity (`rgba(20,20,24,0.85)`) and blur (`40px`) to create a solid, muted feel instead of a thin steel sheet.

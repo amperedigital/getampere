@@ -423,10 +423,16 @@ export class TechDemoScene {
         
         // Active Highlight in Thumb (Glow)
         const thumbGlow = document.createElement('div');
+        // This is THE color source now. The thumb itself is clear glass.
+        // It provides a diffuse UNDERGLOW because it's the first child.
+        // We need to position it BEHIND the glass surface visually.
+        thumbGlow.id = 'ampere-thumb-glow';
         thumbGlow.style.position = 'absolute';
-        thumbGlow.style.inset = '0';
+        thumbGlow.style.inset = '4px'; // Slightly inset to softness
         thumbGlow.style.borderRadius = '999px';
-        thumbGlow.style.background = 'radial-gradient(circle at center, rgba(0, 170, 255, 0.15), transparent 70%)';
+        thumbGlow.style.transition = 'background 0.5s ease, opacity 0.5s ease';
+        thumbGlow.style.filter = 'blur(6px)'; // Soften the source
+        thumbGlow.style.opacity = '0'; // Default hidden
         thumb.appendChild(thumbGlow);
 
         // Update JS logic to use new padding (5px)
@@ -670,34 +676,51 @@ export class TechDemoScene {
             const targetLeft = padding + (index * thumbWidth);
             this.uiThumb.style.left = targetLeft + 'px';
             
-            // Update Thumb Styling (Monotone Blue/Silver Theme)
+            // Update Thumb Styling (Muted Pebble Theme v2.512)
+            // Logic: The thumb itself acts as a glass lens ("Pebble").
+            // It does NOT have its own color. Color is transmitted via the "Glow" layer underneath.
+            // This ensures the surface looks like glass/reflection only.
+            
+            // Core Glass Properties (Shared across states)
+            // No gradient blur. Just raw glass transparency.
+            this.uiThumb.style.background = 'rgba(255, 255, 255, 0.05)'; 
+            this.uiThumb.style.border = 'none'; // Border is handled by glint layer ideally, but here we can use subtle box shadow ring
+            // Sharp shadow + Inner Reflection Rim
+            this.uiThumb.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3), inset 0 0 0 0.5px rgba(255,255,255,0.1)';
+            
             if (newState === 'ACTIVE') {
-                 // Active Green (Darker for Contrast)
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(5, 150, 105, 0.9), rgba(4, 120, 87, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(52, 211, 153, 0.4)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)';
+                 // Active: Green Glow Injection
+                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
+                 if(glow) {
+                     glow.style.background = '#10b981';
+                     glow.style.opacity = '0.6';
+                 }
             } else if (newState === 'STANDBY') {
-                 // Standby White/Silver
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(140, 150, 160, 0.9), rgba(100, 110, 120, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(200, 220, 255, 0.4)';
-                 this.uiThumb.style.boxShadow = '0 0 15px rgba(200, 220, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.2)';
+                 // Standby: Blue/Silver Glow Injection
+                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
+                 if(glow) {
+                     glow.style.background = '#64748b';
+                     glow.style.opacity = '0.4';
+                 }
             } else {
-                 // Off Dark Blue/Grey
-                 this.uiThumb.style.background = 'linear-gradient(180deg, rgba(50, 60, 70, 0.9), rgba(30, 40, 50, 0.9))';
-                 this.uiThumb.style.border = '1px solid rgba(120, 140, 160, 0.3)';
-                 this.uiThumb.style.boxShadow = '0 0 12px rgba(120, 140, 160, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)';
+                 // Off: No Glow
+                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
+                 if(glow) {
+                     glow.style.opacity = '0';
+                 }
             }
 
             // Update Labels
             labels.forEach(l => {
                 const id = l.getAttribute('data-id');
                 if (id === newState) {
+                    // Selected State Style
                     if (id === 'ACTIVE') {
-                        l.style.color = '#ffffff'; // White for Max Contrast
-                        l.style.textShadow = '0 0 8px rgba(5, 150, 105, 0.6)'; // Subtle dark green glow
+                        l.style.color = '#10b981'; // Emerald 500
+                        l.style.textShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
                     } else if (id === 'STANDBY') {
-                         l.style.color = '#ddeeff'; // White/Blue
-                         l.style.textShadow = '0 0 8px rgba(200, 220, 255, 0.6)';
+                         l.style.color = '#94a3b8'; // Slate 400
+                         l.style.textShadow = '0 0 12px rgba(148, 163, 184, 0.4)';
                     } else {
                          l.style.color = '#aabbcc'; // Grey Blue
                          l.style.textShadow = '0 0 8px rgba(120, 140, 160, 0.5)';
