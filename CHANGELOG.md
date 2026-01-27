@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.470] - 2026-01-26
+- **Zen Mode & Layout Stabilization**:
+    - **Visual Fix (Text Explosion)**: Replaced unbounded `cqw` units with `min(cqw, rem)` clamps for all metrics and headers. This prevents typography from becoming comically large when the card expands to fill the screen (Zen Mode).
+    - **Grid Alignment**: Added proper flex alignment to numeric data cells (`flex items-center justify-end`) to ensure they stay vertically centered with their corresponding rows and graphs.
+    - **Button Positioning**: Moved the Top-Right button cluster (Icon & Expand Trigger) inward by ~1.5rem (`top-4 right-6`) to provide breathing room from the viewport edge in Zen Mode.
+
 ## [v2.469] - 2026-01-26
 - **Layout Refinement (Metrics Scroll)**:
     - **No Card Scroll**: Reverted the card content container to `overflow-hidden` to prevent unwanted scrollbars on the card body itself.

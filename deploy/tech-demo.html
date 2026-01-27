@@ -529,7 +529,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -559,7 +559,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -568,15 +568,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Reception & Routing</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Reception & Routing</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">Visitors</div>
-                        <div class="text-white text-right font-mono">1,428</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">1,428</div>
                         <div class="flex items-center text-[1em]"> <!-- Enforce font scaling context -->
     <!-- LED Glass Range Meter: Scaled via EM units -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -594,7 +594,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Active</div>
-                        <div class="text-white text-right font-mono">342</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">342</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -611,7 +611,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Bounce</div>
-                        <div class="text-white text-right font-mono">12%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">12%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -628,7 +628,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Routed</div>
-                        <div class="text-white text-right font-mono">89%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">89%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -645,7 +645,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Avg Time</div>
-                        <div class="text-white text-right font-mono">4.2s</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.2s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -662,7 +662,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Auth</div>
-                        <div class="text-white text-right font-mono">99.9%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">99.9%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -717,7 +717,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -747,7 +747,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -756,15 +756,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Demo Guide</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Demo Guide</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">Sessions</div>
-                        <div class="text-white text-right font-mono">892</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">892</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -781,7 +781,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Completion</div>
-                        <div class="text-white text-right font-mono">76%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">76%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -798,7 +798,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Drop-off</div>
-                        <div class="text-white text-right font-mono">8%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">8%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -815,7 +815,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Click-thru</div>
-                        <div class="text-white text-right font-mono">45%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">45%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -832,7 +832,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Avg Dur</div>
-                        <div class="text-white text-right font-mono">5m 20s</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">5m 20s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -850,7 +850,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Rating</div>
-                        <div class="text-white text-right font-mono">4.8/5</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.8/5</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -906,7 +906,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -936,7 +936,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -945,15 +945,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Setup Assistance</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Setup Assistance</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">New Users</div>
-                        <div class="text-white text-right font-mono">156</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">156</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -970,7 +970,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Profiles</div>
-                        <div class="text-white text-right font-mono">92%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">92%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -987,7 +987,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Guides</div>
-                        <div class="text-white text-right font-mono">3.5</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">3.5</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1004,7 +1004,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Verified</div>
-                        <div class="text-white text-right font-mono">100%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">100%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1021,7 +1021,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Stuck</div>
-                        <div class="text-white text-right font-mono">2.1%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">2.1%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1038,7 +1038,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Success</div>
-                        <div class="text-white text-right font-mono">98%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">98%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1094,7 +1094,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -1124,7 +1124,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -1133,15 +1133,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Deep Support</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Deep Support</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">Tickets</div>
-                        <div class="text-white text-right font-mono">42</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">42</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1158,7 +1158,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Resolved</div>
-                        <div class="text-white text-right font-mono">38</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">38</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1175,7 +1175,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">AI Res</div>
-                        <div class="text-white text-right font-mono">85%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">85%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1192,7 +1192,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Escalated</div>
-                        <div class="text-white text-right font-mono">3</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">3</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1209,7 +1209,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Avg TTR</div>
-                        <div class="text-white text-right font-mono">2.4m</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">2.4m</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1226,7 +1226,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">CSAT</div>
-                        <div class="text-white text-right font-mono">4.9</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.9</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1282,7 +1282,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -1312,7 +1312,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -1321,15 +1321,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">Leads</div>
-                        <div class="text-white text-right font-mono">89</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">89</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1346,7 +1346,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Qualified</div>
-                        <div class="text-white text-right font-mono">45</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">45</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1363,7 +1363,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Conv Rate</div>
-                        <div class="text-white text-right font-mono">18%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">18%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1380,7 +1380,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Pipeline</div>
-                        <div class="text-white text-right font-mono">$450k</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">$450k</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1397,7 +1397,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Queries</div>
-                        <div class="text-white text-right font-mono">312</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">312</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1414,7 +1414,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Upsells</div>
-                        <div class="text-white text-right font-mono">12</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">12</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1470,7 +1470,7 @@
 
                     <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
                     <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
-                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                    <div class="absolute top-4 right-6 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
                         
                         <!-- Layer 1: Glass Background -->
                         <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
@@ -1500,7 +1500,7 @@
                     </div>
 
                     <!-- v2.402: Bottom Right Expand Button -->
-                    <div class="expand-trigger absolute top-2.5 right-16 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+                    <div class="expand-trigger absolute top-6 right-22 z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
                          <!-- Maximize Icon (Corner Brackets) -->
                          <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
                              <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
@@ -1509,15 +1509,15 @@
                     <!-- Content -->
                     <div class="relative h-full p-4 lg:p-8 flex flex-col z-10 pointer-events-auto overflow-hidden">
                         <div class="flex flex-col mb-4 border-b border-white/5 pb-2 mr-16">
-                            <h3 class="text-[5cqw] font-normal text-white tracking-wide leading-none">Booking Agent</h3>
-                            <p class="text-[3.5cqw] text-slate-500 mt-1 leading-tight">Scheduling</p>
+                            <h3 class="text-[min(5cqw,1.5rem)] font-normal text-white tracking-wide leading-none">Booking Agent</h3>
+                            <p class="text-[min(3.5cqw,1.1rem)] text-slate-500 mt-1 leading-tight">Scheduling</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[3.5cqw] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-1">Metric</div>
-                            <div class="text-slate-600 uppercase tracking-wider text-[2.5cqw] col-span-2 text-right">Data</div>
+                        <div class="grid grid-cols-3 gap-y-3 gap-x-4 text-[min(3.5cqw,1.1rem)] @lg:gap-y-6 @lg:gap-x-12 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[min(2.5cqw,0.8rem)] col-span-2 text-right">Data</div>
                             
                         <div class="text-slate-400 flex items-center">Requests</div>
-                        <div class="text-white text-right font-mono">215</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">215</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1534,7 +1534,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Booked</div>
-                        <div class="text-white text-right font-mono">142</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">142</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1551,7 +1551,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Resched</div>
-                        <div class="text-white text-right font-mono">18</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">18</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1568,7 +1568,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">No-show</div>
-                        <div class="text-white text-right font-mono">4%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1585,7 +1585,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Utilization</div>
-                        <div class="text-white text-right font-mono">82%</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">82%</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
@@ -1602,7 +1602,7 @@
     </div>
 </div>
                         <div class="text-slate-400 flex items-center">Sync</div>
-                        <div class="text-white text-right font-mono">0.2s</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">0.2s</div>
                         <div class="flex items-center text-[1em]">
     <!-- LED Glass Range Meter -->
     <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
