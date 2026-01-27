@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.471] - 2026-01-26
+- **Zen Mode Scaling & Layout Fixes**:
+    - **Smart Typography Scaling**: Replaced strict `min()` clamps with `clamp(min, cqw, max)` logic. This fixes the issue where text stayed tiny in expanded mode (creating gaps) while preventing it from exploding indefinitely.
+    - **Button Layout**: Restored the Main Glass Icon to `top-5 right-5` and positioned the Expand Trigger vertically below it (`top-20 right-5`) for a clean, aligned control stack.
+
 ## [v2.470] - 2026-01-26
 - **Zen Mode & Layout Stabilization**:
     - **Visual Fix (Text Explosion)**: Replaced unbounded `cqw` units with `min(cqw, rem)` clamps for all metrics and headers. This prevents typography from becoming comically large when the card expands to fill the screen (Zen Mode).
