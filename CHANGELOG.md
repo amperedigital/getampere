@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.496] - 2026-01-27
+- **Tech Demo Refinement (Desktop)**:
+    - **Vertical Spacing**: Increased the desktop header top padding `lg:pt-20` (5rem) to strictly match the iPad Pro vertical positioning, ensuring consistent alignment of the breadcrumb and title across large screens.
+
 ## [v2.495] - 2026-01-27
 - **Refactoring (Tech Demo)**:
     - **CSS Migration**: Moved all inline styles from `tech-demo.html` to `src/input.css`.
