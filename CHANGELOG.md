@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.562] - 2026-01-27
+- **Mobile Interaction Refinement**:
+    - **Left Alignment**: Changed the scroll snap alignment behavior from `center` to `start` (Left Aligned), satisfying the request for the active card to be positioned "all the way to the left".
+    - **Scroll Sync Logic**: Updated `scrollIntoView` to use `inline: 'start'`, ensuring the card aligns perfectly with the left edge of the container (respecting padding) when triggered via the slider.
+
 ## [v2.561] - 2026-01-27
 - **Mobile Interaction**:
     - **Smooth Scroll Sync**: Connected the Mobile Active Agent Slider (Inner Ring) to the card scroll track. Changing the agent on the slider now smoothly scrolls (`behavior: 'smooth'`) the corresponding card to the center of the screen.
