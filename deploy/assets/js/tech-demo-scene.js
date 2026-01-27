@@ -118,7 +118,8 @@ export class TechDemoScene {
                 // Tailwind Class Overrides (Blue Theme)
                 markerClassInactive: 'fill-blue-500',
                 markerClassActive: 'fill-emerald-500',
-                textClassInactive: 'fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]',
+                // v2.543: Muted Inactive Text State (Slate-500/50, No Glow)
+                textClassInactive: 'fill-slate-500/50 drop-shadow-none',
                 textClassActive: 'fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
                 // v2.434: Explicit Ring Classes for Hover
                 ringClassIdle: 'stroke-blue-500/10',
@@ -134,7 +135,8 @@ export class TechDemoScene {
                 // Tailwind Class Overrides (Slate Theme)
                 markerClassInactive: 'fill-slate-400',
                 markerClassActive: 'fill-emerald-500', 
-                textClassInactive: 'fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]',
+                // v2.543: Muted Inactive Text State (Slate-500/50, No Glow)
+                textClassInactive: 'fill-slate-500/50 drop-shadow-none',
                 textClassActive: 'fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
                 // v2.434: Explicit Ring Classes for Hover
                 ringClassIdle: 'stroke-slate-500/10',

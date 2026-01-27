@@ -214,22 +214,11 @@
                             <!-- 12 O'Clock (Top) - Inward/Down -->
                             <path id="static-needle" d="M -8,-385 L 8,-385 L 0,-365 Z" class="fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] transition-colors duration-300" />
 
-                            <!-- RING 1: OUTER (Gradient Fill) - Even Indices -->
+                            <!-- RING 1: OUTER (Dark Slate) - Even Indices -->
                             <g id="halo-ring-outer">
-                                <!-- Define Radial Gradient for Ring Band -->
-                                <defs>
-                                    <radialGradient id="grad-ring-track" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                                        <stop offset="75%" stop-color="rgba(30, 41, 59, 0.0)" /> <!-- Transparent Inner (Slate-950) -->
-                                        <stop offset="85%" stop-color="rgba(30, 41, 59, 0.4)" /> <!-- Mid Band (Slate-800) -->
-                                        <stop offset="95%" stop-color="rgba(255, 255, 255, 0.05)" /> <!-- Outer Glint -->
-                                        <stop offset="100%" stop-color="transparent" />
-                                    </radialGradient>
-                                </defs>
-                                
-                                <!-- Band: 270-330 (Width 60, Center 300). Updated to use Gradient Fill instead of solid stroke -->
-                                <!-- v2.542: Applied Radial Gradient similar to Cards to connect visuals -->
-                                <circle r="300" fill="none" stroke="url(#grad-ring-track)" stroke-width="60" class="transition-opacity duration-500 hover:opacity-80" />
-                                
+                                <!-- Band: 270-330 (Width 60, Center 300) -->
+                                <!-- v2.541: Reverted to Solid Dark Fill (slate-800/20) as requested. Gradient removed. -->
+                                <circle r="300" fill="none" class="stroke-slate-800/20 transition-colors duration-500 hover:stroke-cyan-400/30" stroke-width="60" />
                                 <!-- Border Rings: Fixed to slate-700/30 -->
                                 <circle r="330" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
                                 <circle r="270" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
@@ -243,12 +232,13 @@
                                 <g transform="rotate(210)"><circle cx="312" cy="0" r="4" data-index="10" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
 
                                 <!-- Labels (Outer Track) -->
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
-                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
+                                <!-- v2.543: Reduced Text Opacity from Initial Blue to Muted Slate (Waiting for Active State) -->
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
                             </g>
 
                             <!-- RING 2: INNER (Slate) - Odd Indices -->
@@ -1542,7 +1532,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.540/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.543/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

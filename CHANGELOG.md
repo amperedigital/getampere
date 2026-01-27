@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.543] - 2026-01-27
+- **Visual Polish (Text Muting)**:
+    - **Concept**: The text labels on the Halo Rings were visually competing with the central elements due to their high brightness and glow.
+    - **Implementation**:
+        - **Inactive State**: Changed the default text style from `fill-blue-400` (Outer) / `fill-slate-400` (Inner) with glows to a unified, muted **`fill-slate-500/50`** with **no drop-shadows**.
+        - **Active State**: Preserved the `fill-emerald-400` + `drop-shadow` for the selected item.
+    - **Result**: The text now recedes into the background until activated, creating a cleaner, less cluttered visual hierarchy centered on the orb.
+    - **Reversion**: Removed the radial gradient experiment from v2.542 and restored the solid dark band (`slate-800/20`) as per user instruction.
+
 ## [v2.542] - 2026-01-27
 - **Visual Polish (Gradient Halo)**:
     - **Concept**: Applied a Radial Gradient to the Outer Halo Ring to verify visual consistency with the Card Styles ("linear gradient mapping").
