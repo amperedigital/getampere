@@ -232,10 +232,10 @@ export class TechDemoScene {
                 /* v2.525: Removed Complex Border Layer for Desktop Track */
                 #ampere-ui-border-layer {
                     display: none;
-                }</style>`; // End Style Injection
+                }
                 
-                // v2.525: Removed #ampere-ui-border-layer logic entirely.
-                // Restored track to simple css styling in <style> block above.
+                /* v2.525: Removed #ampere-ui-border-layer logic entirely. */
+                /* Restored track to simple css styling in style block above. */
 
                 /* 
                 #ampere-ui-track:hover {

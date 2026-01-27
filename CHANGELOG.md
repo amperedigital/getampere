@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.526] - 2026-01-27
+- **Hotfix (Critical)**: Fixed a `SyntaxError` in `tech-demo-scene.js` introduced in v2.525.
+    - **Issue**: A template literal was prematurely closed during the removal of the specific border layer CSS, causing subsequent CSS rules to be parsed as invalid JavaScript.
+    - **Fix**: Restored the integrity of the CSS injection string.
+
 ## [v2.525] - 2026-01-27
 - **Visual Polish (Desktop Restorations)**:
     - **Live Demo Pill (Desktop)**: Restored to the canonical "Standard Pill" style (`bg-black/40` + `border-white/10`).
