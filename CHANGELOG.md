@@ -1,6 +1,6 @@
 # Changelog
 
-## [v2.516] - 2026-01-27
+## [v2.517] - 2026-01-27
 - **Visual Polish (Glow & Glass Removal)**:
     - **Mobile Controls**: Removed all `drop-shadow` and `box-shadow` "glows" from the Power Icon and Status Dot.
     - **Mobile Status Pill**: Reverted the Status indicator to the "Standard Pill" aesthetic (`bg-black/40` + `backdrop-blur-md`), removing the `.apple-glass` pebble effect entirely since it is a passive information display, not an interactive button.
