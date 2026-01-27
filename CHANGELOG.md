@@ -1,17 +1,13 @@
 # Changelog
 
-## [v2.520] - 2026-01-27
-- **Visual Polish (Standby & Power Physics)**:
-    - **Initial State**: Updated `tech-demo.html` and `tech-demo-scene.js` to initialize the system in **STANDBY** mode (pulsing blue dot) rather than ONLINE.
-    - **Physical Feedback Loop (Rotation)**:
-        - Implemented a **360-degree rotation logic** for the Power Button to ensure visible animation on every state change.
-        - **Hover In (Off)**: 0° -> 180° (Standard feel).
-        - **Click On**: 180° -> 360° (Visible "locking" turn).
-        - **Click Off**: 360° -> 180° (Visible "unlocking" turn back to hover state).
-        - **Hover Out (Off)**: 180° -> 0° (Return to rest).
-        - This solves the issue where "Click Off" was invisible if the mouse remained hovering.
+## [v2.521] - 2026-01-27
+- **Visual Polish (Button Physics)**:
+    - **Physical Glint Model**: Refined the `.apple-glass` gradient to simulate genuine 3D button physics.
+    - **Resting State (Raised)**: The Top-Left glint is hard/sharp (0.8 opacity) reflecting the main light source. The Bottom-Right is soft/dim (0.2).
+    - **Pushed State (Rotated)**: When rotated 180° (Active/Hover), the glints invest. Solid Bottom-Right (Rim Light catching edge), Dark Top-Left (Bezel Shadow).
+    - This creates a convincing "Push Down" effect where the button surface retreats from the light source.
 
-## [v2.519] - 2026-01-27
+## [v2.520] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 
