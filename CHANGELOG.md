@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.541] - 2026-01-27
+- **Visual Polish (Dark Halo)**:
+    - **Concept**: Changed the Outer Halo Ring from a "Light/Glass" aesthetic (`white/10`) to a "Dark/Stealth" aesthetic to blend with the background.
+    - **Implementation**:
+        - **Band**: Changed from `stroke-white/10` (Light) to `stroke-slate-800/20` (Dark, subtle tonal shift).
+        - **Borders**: Changed from `stroke-white/20` to `stroke-slate-700/30`.
+    - **Interaction**: Preserved the `hover:stroke-cyan-400` state, allowing the ring to illuminate only when interacted with. This fulfills the requirement for the ring to be "dark, almost the same color as the background" while resting.
+
 ## [v2.540] - 2026-01-27
 - **Visual Polish (Central Orb Scale)**:
     - **Reverted**: Rolled back the scene-wide camera zoom from v2.539. This was inadvertently scaling the outer cage/icosahedron.
