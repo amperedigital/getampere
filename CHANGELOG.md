@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.478] - 2026-01-26
+- **Final Layout Polish (Scrollbar & Gutter)**:
+    - **Scrollbar Position**: Doubled the right spacing of the container (`pr-2` -> `pr-4` on desktop) to move the scrollbar distinctly inwards from the card edge.
+    - **Content Gutter**: Increased the metrics grid right padding (`pr-6` -> `pr-10` / 2.5rem) to ensure massive separation between the data and the scrollbar.
+
 ## [v2.477] - 2026-01-26
 - **Layout Tuning (Content Spacing)**:
     - **Scrollbar Gap**: Increased the padding-right of the inner metrics grid from `pr-2` (0.5rem) to `pr-6` (1.5rem).
