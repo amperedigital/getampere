@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.540] - 2026-01-27
+- **Visual Polish (Central Orb Scale)**:
+    - **Reverted**: Rolled back the scene-wide camera zoom from v2.539. This was inadvertently scaling the outer cage/icosahedron.
+    - **Sphere Geometry**: Directly applied the 20% size increase to the internal Sphere Geometry and its associated Circuitry Paths.
+        - **Desktop Radius**: `0.72` -> `0.864`
+        - **Mobile Radius**: `0.864` -> `1.037`
+    - **Outcome**: The central black orb and its blue circuitry are now significantly larger, while the outer wireframe cage remains at its standard size, creating a denser, more filling core visualization.
+
 ## [v2.539] - 2026-01-27
 - **Visual Polish (Neural Halo & Orb)**:
     - **Logic Fix (Orb Size)**: Updated `tech-demo-scene.js` to correctly calculate the scene camera distance based on a 20% larger target fill percentage (increased from 0.95 to 1.15). The previous HTML data-attribute change was being overridden by the responsive layout logic.

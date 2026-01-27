@@ -665,8 +665,8 @@ export class TechDemoScene {
 
     addCentralSphere() {
         // Obsidian Black Glass Orb
-        // v2.271: Increased size by 20% on mobile (0.72 -> 0.864)
-        const radius = this.isMobile ? 0.864 : 0.72;
+        // v2.540: Increased scale to 120% (Desktop: 0.864, Mobile: 1.037)
+        const radius = this.isMobile ? 1.037 : 0.864;
         const geometry = new THREE.SphereGeometry(radius, 64, 64);
         const material = new THREE.MeshPhysicalMaterial({
             color: 0x000000,
@@ -704,8 +704,8 @@ export class TechDemoScene {
         this.paths = []; 
         this.pads = []; 
 
-        // v2.271: Match surface radius to sphere size
-        const sphereRadius = this.isMobile ? 0.864 : 0.72;
+        // v2.540: Match surface radius to sphere size (120% scale)
+        const sphereRadius = this.isMobile ? 1.037 : 0.864;
         const surfaceRadius = sphereRadius + 0.005; 
         
         const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
@@ -1233,10 +1233,8 @@ export class TechDemoScene {
             
             // User Rule: "Neuronet must be within 95% width [of the container]"
             // v2.345: Reduced to 85% for Mobile/iPad to prevent visual expansion beyond the Dashed Ring.
-            // v2.539: Increased Orb Size by ~20% per user request.
-            // - Desktop: Increased from 0.95 to 1.15 (120% scale)
-            // - Mobile: Increased from 0.85 to 1.02 (120% scale)
-            const fillPercentage = (isRingHiddenLayout) ? 1.02 : 1.15; 
+            // 95% was visually touching the edge due to perspective. 85% provides a safe buffer.
+            const fillPercentage = (isRingHiddenLayout) ? 0.85 : 0.95; 
             
             let targetVisibleSize;
 
