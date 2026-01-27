@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.487] - 2026-01-27
+- **UI Tuning (Title Typography)**:
+    - **Reduced Heading Scale**: Updated the container query clamp for Agent Card Titles from `max 2.5rem` to `max 1.75rem`.
+    - **Logic**: Caps the headline size on ultra-wide screens to maintain a balanced hierarchy with the newly compacted metrics grid.
+
 ## [v2.486] - 2026-01-27
 - **UI Tuning (Typography & Layout)**:
     - **Reduced Metrics Scale**: Updated the container query clamp for metrics from `max 1.75rem` to `max 1.1rem`.
