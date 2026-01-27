@@ -379,82 +379,30 @@ export class TechDemoScene {
             document.head.appendChild(style);
         }
 
-        const padding = 5; // Updated from 3 for perfect 2px gap uniformity (42 - 36 - 2 - 2 = 2px)
+        const padding = 5; 
         
         // --- CLUSTER CONTAINER (New v2.300) ---
         const cluster = document.createElement('div');
         cluster.id = 'ampere-controls-cluster';
         
-        // Container (Track)
-        const container = document.createElement('div');
-        this.uiContainer = container;
-        container.id = 'ampere-ui-track';
-        
-        // NEW: Rotating Border Layer (2026 Glint Animation)
-        const borderLayer = document.createElement('div');
-        borderLayer.id = 'ampere-ui-border-layer';
-        container.appendChild(borderLayer);
-        
-        // Thumb (The Draggable Pill)
-        const thumb = document.createElement('div');
-        this.uiThumb = thumb;
-        thumb.id = 'ampere-ui-thumb';
-        
-        // In JS we set the initial width, but resizing handles the rest
-        // We will update logic to read clientWidth.
-        
-        // Active Highlight in Thumb (Glow)
-        // REMOVED (v2.513): User feedback "Pebble should only reflect what's behind".
-        // The thumb acts as a pure glass lens. Color comes from the text/icon behind it.
-        /* 
-        const thumbGlow = document.createElement('div');
-        thumbGlow.id = 'ampere-thumb-glow';
-        ...
-        thumb.appendChild(thumbGlow); 
-        */
-
-        // Update JS logic to use new padding (5px)
-        
-        // Labels (Reordered: STANDBY | ON | OFF)
-        const labelsData = [
-            { id: 'STANDBY', label: 'STANDBY' },
-            { id: 'ACTIVE', label: 'POWER UP' },
-            { id: 'OFF', label: 'POWER DOWN' } // Shortened for mobile fit? Keep for now.
-        ];
-        
-        this.statePositions = { 'STANDBY': 0, 'ACTIVE': 1, 'OFF': 2 };
-        this.positionToState = ['STANDBY', 'ACTIVE', 'OFF'];
-
-        labelsData.forEach((item, i) => {
-            const label = document.createElement('div');
-            label.className = 'ampere-ui-label';
-            label.innerText = item.label;
-            label.setAttribute('data-id', item.id);
-            container.appendChild(label);
-        });
-
-        container.insertBefore(thumb, container.firstChild);
-        
-        // Fix (v2.320): Target the explicit controls cluster container (#tech-demo-controls-target)
-        // This ensures the UI flows naturally below the ring in the stacked flex layout.
+        // Target the explicit controls cluster container 
         let uiRoot = document.getElementById('tech-demo-controls-target');
         
         if (!uiRoot) {
              console.warn("TechDemoScene: #tech-demo-controls-target not found. Falling back to scene container.");
              uiRoot = this.container.closest('.group\\/scene') || this.container;
-             
-             // Ensure positioning context for fallback
              if (window.getComputedStyle(uiRoot).position === 'static') {
                  uiRoot.style.position = 'relative';
              }
         }
 
-        // --- Multi-Function Display (Gauge + Status) ---
+        // --- Multi-Function Display (Status) ---
+        // v2.528: Only Status Display retained (Power Meter). Slider removed.
         const statusContainer = document.createElement('div');
         this.uiStatusContainer = statusContainer;
         statusContainer.id = 'ampere-system-status';
         
-        // Dots Row (Restored v2.422)
+        // Dots Row
         const dotRow = document.createElement('div');
         dotRow.className = 'ampere-dot-row';
         this.uiDots = [];
@@ -471,145 +419,22 @@ export class TechDemoScene {
         statusText.className = 'ampere-status-text';
         statusText.innerText = 'INITIALIZING...';
         statusContainer.appendChild(statusText);
-        
-        // uiRoot.appendChild(statusContainer); // OLD DIRECT APPEND
 
         // --- Standby Warning UI ---
         const warning = document.createElement('div');
         this.standbyWarning = warning;
         warning.id = 'ampere-standby-warning';
-        warning.innerText = 'STANDBY IN 30s';
-        // uiRoot.appendChild(warning); // OLD DIRECT APPEND
+        warning.innerText = '';
         
-        // --- NEW CLUSTER ASSEMBLY (v2.300) ---
-        // Stack Order: Warning (Top) -> Status (Middle) -> Track (Bottom)
-        // Flex Direction is Column, so we append in order Top->Bottom
+        // --- CLUSTER ASSEMBLY ---
+        // Stack Order: Warning (Top) -> Status (Bottom)
         cluster.appendChild(warning);
         cluster.appendChild(statusContainer);
-        cluster.appendChild(container);
         
         uiRoot.appendChild(cluster);
 
-        // --- Helper: Update Thumb Size ---
-        const updateThumbSize = () => {
-             const trackWidth = container.clientWidth;
-             const thumbW = (trackWidth - (padding * 2)) / 3;
-             thumb.style.width = thumbW + 'px';
-             
-             // Also force re-position based on current state
-             if (this.systemState) this.setSystemState(this.systemState);
-        };
-        
-        // Observer for Resize
-        const resizeObserver = new ResizeObserver(() => {
-             updateThumbSize();
-        });
-        resizeObserver.observe(container);
-
-        // --- Interaction Logic (Drag & Throw) ---
-        let isDragging = false;
-        let dragOffset = 0;
-
-        const setThumbPosition = (clientX) => {
-            const rect = container.getBoundingClientRect();
-            // Recalculate Widths dynamically
-             const trackWidth = rect.width;
-             const thumbW = (trackWidth - (padding * 2)) / 3;
-
-            let relativeX = clientX - rect.left - dragOffset;
-            
-            // Constrain
-            const maxLeft = trackWidth - thumbW - padding; 
-            const minLeft = padding;
-            relativeX = Math.max(minLeft, Math.min(relativeX, maxLeft)); 
-            
-            thumb.style.transition = 'none'; // Instant movement
-            thumb.style.left = relativeX + 'px';
-        };
-
-        const snapToNearest = () => {
-            const currentLeft = parseFloat(thumb.style.left);
-            const distFromStart = currentLeft - padding;
-            
-            const rect = container.getBoundingClientRect();
-            const trackWidth = rect.width;
-            const thumbW = (trackWidth - (padding * 2)) / 3;
-
-            // Simple rounding
-            let index = Math.round(distFromStart / thumbW);
-            index = Math.max(0, Math.min(index, 2));
-            
-            const state = this.positionToState[index];
-            
-            // Restore transition for the snap with smoother curve
-            thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-            this.setSystemState(state);
-        };
-
-        const onPointerDown = (e) => {
-            this.lastInteractionTime = Date.now(); 
-
-            // Direct Click on Label?
-            if (e.target.classList && e.target.classList.contains('ampere-ui-label')) {
-                const targetId = e.target.getAttribute('data-id');
-                if (targetId) {
-                     // Force smooth transition instead of drag-jump
-                     thumb.style.transition = 'left 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-                     this.setSystemState(targetId);
-                     return;
-                }
-            }
-
-            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            
-            const rect = container.getBoundingClientRect();
-            const trackWidth = rect.width;
-            const thumbW = (trackWidth - (padding * 2)) / 3;
-
-            // Calculate Drag Offset
-            if (e.target === thumb || thumb.contains(e.target)) {
-                 const thumbRect = thumb.getBoundingClientRect();
-                 dragOffset = clientX - thumbRect.left;
-            } else {
-                 // Clicking track background: Center thumb on pointer
-                 dragOffset = thumbW / 2;
-            }
-
-            isDragging = true;
-            
-            // Initial Jump (Only if clicking track background, NOT labels)
-            if (e.target !== thumb && !thumb.contains(e.target)) {
-                 setThumbPosition(clientX);
-            }
-            // Global listeners
-            document.addEventListener('mousemove', onPointerMove);
-            document.addEventListener('mouseup', onPointerUp);
-            document.addEventListener('touchmove', onPointerMove, {passive: false});
-            document.addEventListener('touchend', onPointerUp);
-        };
-
-        const onPointerMove = (e) => {
-            if (!isDragging) return;
-            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            setThumbPosition(clientX);
-        };
-
-        const onPointerUp = () => {
-            this.lastInteractionTime = Date.now();
-            if (!isDragging) return;
-            isDragging = false;
-            snapToNearest();
-            
-            document.removeEventListener('mousemove', onPointerMove);
-            document.removeEventListener('mouseup', onPointerUp);
-            document.removeEventListener('touchmove', onPointerMove);
-            document.removeEventListener('touchend', onPointerUp);
-        };
-
-        container.addEventListener('mousedown', onPointerDown);
-        container.addEventListener('touchstart', onPointerDown, {passive: false});
-
         // Initialize UI state
+        // We defer slightly to ensure DOM is ready
         setTimeout(() => this.setSystemState('STANDBY'), 0);
     }
 

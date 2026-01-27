@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.528] - 2026-01-27
+- **UI Architecture (Desktop Power Cluster)**:
+    - **Concept Shift**: Replaced the Desktop Slider Control with the **Mobile Power Button** (Rocker Switch style).
+    - **Layout**:
+        - **Control**: The Rocker Switch is positioned at the **Top Right** (`lg:top-28 lg:right-12`), sitting with "breathing room" beneath the Live Demo Pill.
+        - **Meter**: The Status Display (Dots + Text) is preserved and remains centered **underneath the Neural Net** (at the bottom of the scene container).
+    - **Removal**: Removed the Desktop Slider Track and its associated drag/resize logic from `tech-demo-scene.js`. 
+    - **Logic**: Unified the power toggle logic. Both the Mobile and Desktop buttons now share the same `power-toggle-btn` class and state synchronization (controlled by `window.toggleMobilePower` and observed via mutation observer).
+
 ## [v2.527] - 2026-01-27
 - **Tooling Fix (Validator)**: Upgraded `scripts/validate_js.sh` to enforce Strict ESM validation.
     - **Issue**: The previous validator (`node --check file.js`) was too lenient with CommonJS files, allowing invalid class syntax (like undeclared private fields) to pass silently.

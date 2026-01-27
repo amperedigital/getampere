@@ -85,6 +85,16 @@
                 <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
             </div>
 
+            <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
+            <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
+            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                    class="hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all power-toggle-btn"
+                    aria-label="Power Toggle">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                </svg>
+            </button>
+
             <!-- Scene Container with "Breathing Room" Packaging -->
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
@@ -112,7 +122,7 @@
                     <!-- Single Power Toggle -->
                     <!-- Green when On, Slate when Off -->
                     <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all"
+                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all power-toggle-btn"
                             id="btn-mobile-power"
                             aria-label="Power Toggle">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1506,7 +1516,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.527/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.528/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
@@ -1621,7 +1631,8 @@
                     const dot = document.getElementById('mobile-status-dot');
                     const text = document.getElementById('mobile-status-text');
                     const container = document.getElementById('mobile-system-status');
-                    const btn = document.getElementById('btn-mobile-power');
+                    // v2.528: Target ALL power toggle buttons (Mobile and Desktop)
+                    const btns = document.querySelectorAll('.power-toggle-btn');
                     
                     // v2.267: Slider Elements for Power State Management
                     const sliderOuter = document.getElementById('mobile-ring-slider-outer');
@@ -1647,27 +1658,22 @@
 
                     if(!dot || !text) return;
                     
-                    // Update Power Button Appearance
+                    // Update Power Button Appearance (Iterate all buttons)
                     // v2.516: REMOVED ALL GLOW/DROP-SHADOWS. Clean, sharp icon only.
                     // v2.518: Added rotation logic for ON state.
-                    if (btn) {
-                        // Just text color. No glow. 
-                        // Added apple-glass-rotated to persist rotation when ON.
+                    if (btns.length > 0) {
                         const onClasses = ['text-emerald-400', 'apple-glass-rotated'];
                         const offClasses = ['text-slate-500'];
                         
-                        // We must ensure we don't accidentally remove the apple-glass classes.
-                        // The 'apple-glass' class handles the background/border physics.
-                        
-                        if (state === 'OFF') {
-                            btn.classList.remove(...onClasses);
-                            btn.classList.add(...offClasses);
-                            // Ensure no residual BG from previous states (if any were inline, but here we use classes)
-                        } else {
-                            // Active or Standby -> Button looks "On" (Green Icon)
-                            btn.classList.remove(...offClasses);
-                            btn.classList.add(...onClasses);
-                        }
+                        btns.forEach(btn => {
+                            if (state === 'OFF') {
+                                btn.classList.remove(...onClasses);
+                                btn.classList.add(...offClasses);
+                            } else {
+                                btn.classList.remove(...offClasses);
+                                btn.classList.add(...onClasses);
+                            }
+                        });
                     }
 
                     if (state === 'ACTIVE') {
