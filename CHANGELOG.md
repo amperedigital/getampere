@@ -1,5 +1,18 @@
 # Changelog
 
+## [v2.542] - 2026-01-27
+- **Visual Polish (Gradient Halo)**:
+    - **Concept**: Applied a Radial Gradient to the Outer Halo Ring to verify visual consistency with the Card Styles ("linear gradient mapping").
+    - **Implementation**:
+        - **Radial Gradient**: Defined a `radialGradient` (`#grad-ring-track`) that mimics the card's subtle glass reflection.
+            - Stops:
+                - 75%: Transparent (Inner Edge)
+                - 85%: `slate-800/40` (Mid Band Body)
+                - 95%: `white/5` (Outer Glint)
+                - 100%: Transparent (Outer Edge)
+        - **Application**: Applied this gradient as the `stroke` content for the main 60px Ring Band.
+    - **Goal**: To visually "connect" the central control element with the surrounding card aesthetics using shared lighting/gradient logic.
+
 ## [v2.541] - 2026-01-27
 - **Visual Polish (Dark Halo)**:
     - **Concept**: Changed the Outer Halo Ring from a "Light/Glass" aesthetic (`white/10`) to a "Dark/Stealth" aesthetic to blend with the background.

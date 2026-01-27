@@ -214,11 +214,22 @@
                             <!-- 12 O'Clock (Top) - Inward/Down -->
                             <path id="static-needle" d="M -8,-385 L 8,-385 L 0,-365 Z" class="fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] transition-colors duration-300" />
 
-                            <!-- RING 1: OUTER (White/Blue) - Even Indices -->
+                            <!-- RING 1: OUTER (Gradient Fill) - Even Indices -->
                             <g id="halo-ring-outer">
-                                <!-- Band: 270-330 (Width 60, Center 300) -->
-                                <!-- v2.541: Changed from white/10 to slate-800/20 (Dark/Subtle) per user request -->
-                                <circle r="300" fill="none" class="stroke-slate-800/20 transition-colors duration-500 hover:stroke-cyan-400/30" stroke-width="60" />
+                                <!-- Define Radial Gradient for Ring Band -->
+                                <defs>
+                                    <radialGradient id="grad-ring-track" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                        <stop offset="75%" stop-color="rgba(30, 41, 59, 0.0)" /> <!-- Transparent Inner (Slate-950) -->
+                                        <stop offset="85%" stop-color="rgba(30, 41, 59, 0.4)" /> <!-- Mid Band (Slate-800) -->
+                                        <stop offset="95%" stop-color="rgba(255, 255, 255, 0.05)" /> <!-- Outer Glint -->
+                                        <stop offset="100%" stop-color="transparent" />
+                                    </radialGradient>
+                                </defs>
+                                
+                                <!-- Band: 270-330 (Width 60, Center 300). Updated to use Gradient Fill instead of solid stroke -->
+                                <!-- v2.542: Applied Radial Gradient similar to Cards to connect visuals -->
+                                <circle r="300" fill="none" stroke="url(#grad-ring-track)" stroke-width="60" class="transition-opacity duration-500 hover:opacity-80" />
+                                
                                 <!-- Border Rings: Fixed to slate-700/30 -->
                                 <circle r="330" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
                                 <circle r="270" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
