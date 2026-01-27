@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.538] - 2026-01-27
+- **Visual Polish (Neural Halo)**: Refined the visual weight of the central Neural Network visualization.
+    - **Lighter Ring**: Changed the background Halo Ring color from `stroke-blue-500/10` to `stroke-white/5`. This makes the ring feel more translucent and less "tinted", fitting the lighter aesthetic.
+    - **Larger Orb**: Increased the visual diameter of the Central Orb by ~20% (reduced camera distance from `13.0` to `10.8`). This makes the neural activity more prominent in the frame.
+
 ## [v2.537] - 2026-01-27
 - **Visual Polish (Button Blending)**:
     - **Reduced Opacity**: Lowered the background opacity of the Card Launch Buttons from `bg-white/10` to `bg-white/5`.

@@ -185,7 +185,7 @@
                          data-lerp-speed="0.015"
                          data-min-velocity="0.0025"
                          data-rotation-rpm="0.17"
-                         data-camera-distance="13.0"></div>
+                         data-camera-distance="10.8"></div>
 
                     <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
                     <!-- Absolute inset-0 of the Master Container -->
@@ -214,12 +214,14 @@
                             <!-- 12 O'Clock (Top) - Inward/Down -->
                             <path id="static-needle" d="M -8,-385 L 8,-385 L 0,-365 Z" class="fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] transition-colors duration-300" />
 
-                            <!-- RING 1: OUTER (Blue) - Even Indices -->
+                            <!-- RING 1: OUTER (White/Blue) - Even Indices -->
                             <g id="halo-ring-outer">
                                 <!-- Band: 270-330 (Width 60, Center 300) -->
-                                <circle r="300" fill="none" class="stroke-blue-500/10" stroke-width="60" />
-                                <circle r="330" fill="none" class="stroke-blue-500/20" stroke-width="1" />
-                                <circle r="270" fill="none" class="stroke-blue-500/20" stroke-width="1" />
+                                <!-- v2.538: Changed background from blue-500/10 to white/5 per user request "translucent/lighter" -->
+                                <circle r="300" fill="none" class="stroke-white/5" stroke-width="60" />
+                                <!-- v2.538: Changed border from blue-500/20 to white/10 -->
+                                <circle r="330" fill="none" class="stroke-white/10" stroke-width="1" />
+                                <circle r="270" fill="none" class="stroke-white/10" stroke-width="1" />
 
                                 <!-- Markers (r=312) -->
                                 <g transform="rotate(-90)"><circle cx="312" cy="0" r="4" data-index="0" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
