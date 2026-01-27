@@ -22,19 +22,19 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css?v=2.484">
 </head>
-<body class="bg-[#05060f] text-white xl:overflow-hidden">
+<body class="bg-[#05060f] text-white lg:overflow-hidden">
 
     <!-- Master Container (ID added v2.360 for Scrolling Control) -->
-    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative xl:overflow-hidden">
+    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
         
         <!-- Left Column: 3D Scene -->
-        <div id="tech-demo-left-column" class="relative w-full lg:w-[42%] h-auto lg:h-full flex flex-col lg:block">
+        <div id="tech-demo-left-column" class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
             
             <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
             <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
             <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
             <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
-            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-8 z-20 pointer-events-none flex flex-col lg:block">
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-12 z-20 pointer-events-none flex flex-col lg:block">
                 
                 <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
                 <!-- Moved out of flex-row to ensure it stays on top line -->
@@ -70,7 +70,7 @@
             <!-- v2.343: Added ID for iPad positioning overrides -->
             <!-- v2.350: Adjusted lg:right-20 to lg:right-12 (3rem) to match p-12 logic. Alignment Fix. -->
             <!-- v2.351: Adjusted lg:top-12 to lg:top-8 (2rem) to straddle the scene container border. -->
-            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
                 <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
             </div>
@@ -91,7 +91,7 @@
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-4 lg:bottom-4 lg:left-4 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-8 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -284,6 +284,17 @@
                                     /* This fixes the "Nothing from 820 to 1023" issue by activating the Mobile positioning logic. */
                                     /* v2.368: Fixed Margins & Overflow (Use calc width to prevent left-shift clipping) */
                                     @media (min-width: 820px) and (max-width: 1024px) {
+                                        /* Unlock Scrolling (v2.490) */
+                                        body, #tech-demo-master {
+                                            overflow-y: auto !important;
+                                            height: auto !important;
+                                            min-height: 100vh !important;
+                                        }
+
+                                        /* Adjust Column Balance (v2.490: 42/58 Split) */
+                                        #tech-demo-left-column { width: 42% !important; }
+                                        #tech-demo-right-column { width: 58% !important; padding-left: 0 !important; }
+
                                         /* Move Controls (Standby Pill) UP */
                                         #tech-demo-controls-target {
                                             bottom: 15rem !important;
@@ -295,26 +306,28 @@
                                             bottom: 3rem !important;
                                         }
 
-                                        /* Move Live Demo Pill */
-                                        /* aligned with new 1.5rem gutter */
+                                        /* Move Live Demo Pill (Shifted Left v2.490) */
+                                        /* aligned with new 3rem gutter but pushed left */
                                         #live-demo-pill {
                                             top: 2rem !important;
-                                            right: 1.5rem !important;
+                                            right: 5rem !important; /* Pushed left significantly as requested */
                                         }
 
                                         /* v2.368: Unified 1.5rem (24px) Gutters & Overflow Protection */
                                         
                                         /* Left Column: Heading Text */
-                                        /* Force specific padding to match the scene gutter */
+                                        /* v2.490: Increased to 2.75rem to sit INSIDE the border radius container (1.5rem border + pad) */
                                         #tech-demo-header { 
-                                            padding-left: 1.5rem !important;
+                                            padding-left: 2.75rem !important;
                                             padding-right: 1.5rem !important;
                                         }
 
                                         /* Left Column: Scene Container Box */
                                         /* CRITICAL: When using left: 1.5rem on a relative/w-full element, */
                                         /* we MUST reduce width to prevent horizontal overflow/clipping. */
+                                        /* v2.490: Adjusted top to 1rem */
                                         #tech-demo-scene-container {
+                                            top: 1rem !important;
                                             left: 1.5rem !important;
                                             width: calc(100% - 3rem) !important;
                                         }
@@ -476,7 +489,7 @@
         <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
         <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
         <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
-        <div id="tech-demo-right-column" class="relative w-full lg:w-[58%] h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-0 overflow-y-auto">
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-8 lg:pb-8 lg:pr-8 lg:pl-2 overflow-y-auto">
             
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->

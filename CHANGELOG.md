@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.490] - 2026-01-27
+- **iPad Pro Specific (Visual Correction)**:
+    - **Isolation Strategy**: Removed all previous Tailwind-based adjustments (which inadvertently affected Desktop) and migrated all iPad Pro specific fixes to the dedicated `@media (min-width: 820px) and (max-width: 1024px)` CSS block.
+    - **Header Alignment**: Increased Header Left Padding to `2.75rem` while keeping Scene Container at `1.5rem`. This pushes the "AI Neural Architecture" text visually *inside* the border-radius container by 1.25rem, fixing the "hanging outside" look.
+    - **Pill Offset**: Shifted the "LIVE DEMO" pill to `right: 5rem` (from 1.5rem). This moves it significantly leftwards, preventing it from bisecting the radius corner and providing the requested right margin.
+    - **Column Balance**: Applied the `42% / 58%` column width split *strictly* to the iPad Pro breakpoint range, ensuring Desktop remains 50/50.
+    - **Scroll Unlock**: Unlocked vertical scrolling (`overflow-y: auto`) exclusively for this tablet range.
+
 ## [v2.489] - 2026-01-27
 - **iPad Pro Refinement (Visual Alignment)**:
     - **Header Containment**: Increased Left Column Header padding from `p-6` (1.5rem) to `p-8` (2rem) and reduced Scene Container offsets to `top-4/left-4`. This ensures the "AI Neural Architecture" title sits visually *inside* the border-radius container (1rem clear margin) rather than hanging outside it.
