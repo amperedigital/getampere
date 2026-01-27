@@ -123,8 +123,8 @@
                     <!-- v2.516: Reverted to Canonical "Standard Pill" (No Apple Glass Pebble) -->
                     <!-- As per request: "Standby isn't a button... No glass effect" -->
                     <div id="mobile-system-status" class="flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-colors duration-300 min-h-[42px]">
-                        <div id="mobile-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                        <span id="mobile-status-text" class="text-xs font-bold tracking-widest text-emerald-400 transition-colors duration-300 font-sans">ONLINE</span>
+                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></div>
+                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-blue-300 transition-colors duration-300">STANDBY</span>
                         <!-- v2.269: Integrated Standby Timer -->
                         <span id="mobile-standby-timer" class="text-xs font-sans font-bold text-slate-400 hidden ml-2 border-l border-white/20 pl-2"></span>
                     </div>
@@ -1504,7 +1504,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.515/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.520/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

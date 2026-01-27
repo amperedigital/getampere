@@ -18,7 +18,7 @@ export class TechDemoScene {
 
         console.log("Tech Demo Scene Initialized - vDesignTwo.10 (Isolated Branch)");
         
-        this.systemState = 'ACTIVE'; // ACTIVE, STANDBY, OFF
+        this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
         this.standbyPulseTimer = 0;
         

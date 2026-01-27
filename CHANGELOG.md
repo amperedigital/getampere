@@ -1,17 +1,17 @@
 # Changelog
 
-## [v2.519] - 2026-01-27
+## [v2.520] - 2026-01-27
 - **Visual Polish (Standby & Power Physics)**:
-    - **Status Dot Logic**: Swapped the pulse animation logic.
-        - **ACTIVE (AI ONLINE)**: Dot is now **Steady** (removed `animate-pulse`).
-        - **STANDBY**: Dot is now **Pulsing** (restored `animate-pulse`).
-    - **Power Button Physics**:
-        - Implemented persistent rotation state for the Power Button.
-        - When **ON** (Active/Standby), the button border glints rotate 180° and stay there (`.apple-glass-rotated`), simulating the "pressed/active" physical state.
-        - When **OFF**, it rotates back to 0° (standard resting state).
-        - This effectively mimics "Click On (0->180) / Click Off (180->0)" physics matching the hover interactions.
+    - **Initial State**: Updated `tech-demo.html` and `tech-demo-scene.js` to initialize the system in **STANDBY** mode (pulsing blue dot) rather than ONLINE.
+    - **Physical Feedback Loop (Rotation)**:
+        - Implemented a **360-degree rotation logic** for the Power Button to ensure visible animation on every state change.
+        - **Hover In (Off)**: 0° -> 180° (Standard feel).
+        - **Click On**: 180° -> 360° (Visible "locking" turn).
+        - **Click Off**: 360° -> 180° (Visible "unlocking" turn back to hover state).
+        - **Hover Out (Off)**: 180° -> 0° (Return to rest).
+        - This solves the issue where "Click Off" was invisible if the mouse remained hovering.
 
-## [v2.518] - 2026-01-27
+## [v2.519] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 
