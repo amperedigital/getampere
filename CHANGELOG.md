@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.549] - 2026-01-27
+- **Visual Polish (Zen Mode Scaling)**:
+    - **Feature**: Implemented expansive typography scaling for "Zen Mode" (Expanded Card View).
+    - **Behavior**: When a card is expanded, the content (Header, Subheader, Metrics table, and LED bars) now scales up significantly (2x-3x) to utilize the increased screen real estate, rather than remaining small in a vast container.
+    - **Technical**: Added CSS overrides in `src/input.css` targeting `.socket-card-container.is-expanded`. Uses `clamp()` and container queries/viewport units to ensure smooth scaling.
+
 ## [v2.548] - 2026-01-27
 - **Visual Polish (Standby Sync)**:
     - **Logic Update**: Switched the Standby Pulse animation from CSS (`animate-pulse-slow`) to a JavaScript-driven opacity update in the main render loop.
