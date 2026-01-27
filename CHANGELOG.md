@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.469] - 2026-01-26
+- **Layout Refinement (Metrics Scroll)**:
+    - **No Card Scroll**: Reverted the card content container to `overflow-hidden` to prevent unwanted scrollbars on the card body itself.
+    - **Internal Metrics Scroll**: Applied `overflow-y-auto` specifically to the Metrics Grid container (`div.grid`).
+    - **Preservation**: This ensures the card shell remains fixed size while allowing the data list to scroll if it exceeds available space, satisfying the requirement for "growing content without destroying grid layout".
+
 ## [v2.468] - 2026-01-26
 - **UX Improved (Zen Button + Interaction)**:
     - **Moved "Open Zen" button**: Relocated from bottom-right to **top-right** (beside the card icon). This eliminates content clipping issues without requiring excessive padding.
