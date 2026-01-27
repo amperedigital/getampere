@@ -1,14 +1,17 @@
 # Changelog
 
-## [v2.518] - 2026-01-27
-- **Visual Polish (Glow & Glass Removal)**:
-    - **Mobile Controls**: Removed all `drop-shadow` and `box-shadow` "glows" from the Power Icon and Status Dot.
-    - **Mobile Status Pill**: Reverted the Status indicator to the "Standard Pill" aesthetic (`bg-black/40` + `backdrop-blur-md`), removing the `.apple-glass` pebble effect entirely since it is a passive information display, not an interactive button.
-    - **Standby Animation**: Restored the `animate-pulse` behavior to the Status Dot in "STANDBY" mode, ensuring it flashes blue to match the Live Demo behavior.
-    - **Power Button**: Fixed the interactive rotation animation by applying the correct `.apple-glass-interactive` class to the mobile power toggle.
-    - **Aesthetic**: The active state now relies purely on flat LED colors (`bg-emerald-400`/`text-emerald-400`) within the glass/pill frames.
+## [v2.519] - 2026-01-27
+- **Visual Polish (Standby & Power Physics)**:
+    - **Status Dot Logic**: Swapped the pulse animation logic.
+        - **ACTIVE (AI ONLINE)**: Dot is now **Steady** (removed `animate-pulse`).
+        - **STANDBY**: Dot is now **Pulsing** (restored `animate-pulse`).
+    - **Power Button Physics**:
+        - Implemented persistent rotation state for the Power Button.
+        - When **ON** (Active/Standby), the button border glints rotate 180° and stay there (`.apple-glass-rotated`), simulating the "pressed/active" physical state.
+        - When **OFF**, it rotates back to 0° (standard resting state).
+        - This effectively mimics "Click On (0->180) / Click Off (180->0)" physics matching the hover interactions.
 
-## [v2.515] - 2026-01-27
+## [v2.518] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 
