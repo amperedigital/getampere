@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.506] - 2026-01-27
+- **Fix (Layout)**: Removed `isolation: isolate` from Socket Cards. This reverts a legacy change (v2.436) that was causing Z-index stacking issues for the expanded "Zen Mode" card state.
+- **Fix (Card Interaction)**: Ensuring the expanded card properly overlays siblings without clipping or margin artifacts.
+
 ## [v2.505] - 2026-01-27
 - **Tech Demo UI**: Reverted "Apple Glass" effect on Desktop Control Cluster and Live Demo Pill (User Request: "Should not have been touched").
 - **Mobile Controls**: Maintained the new "Apple Glass" look (`.apple-glass`) on the mobile Standby/Power buttons exclusively.
