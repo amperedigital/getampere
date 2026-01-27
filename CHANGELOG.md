@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.477] - 2026-01-26
+- **Layout Tuning (Content Spacing)**:
+    - **Scrollbar Gap**: Increased the padding-right of the inner metrics grid from `pr-2` (0.5rem) to `pr-6` (1.5rem).
+    - **Visual Result**: The scrollbar stays near the right edge, but the content is pushed significantly left, creating a clear "gutter" between the data and the scroll control to prevent jamming.
+
 ## [v2.476] - 2026-01-26
 - **Layout Tuning (Scrollbar Breathing Room)**:
     - **Balanced Insets**: Adjusted parent container padding to `pl-8` (Left) but `pr-2` (Right).
