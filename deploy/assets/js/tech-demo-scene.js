@@ -422,18 +422,14 @@ export class TechDemoScene {
         // We will update logic to read clientWidth.
         
         // Active Highlight in Thumb (Glow)
+        // REMOVED (v2.513): User feedback "Pebble should only reflect what's behind".
+        // The thumb acts as a pure glass lens. Color comes from the text/icon behind it.
+        /* 
         const thumbGlow = document.createElement('div');
-        // This is THE color source now. The thumb itself is clear glass.
-        // It provides a diffuse UNDERGLOW because it's the first child.
-        // We need to position it BEHIND the glass surface visually.
         thumbGlow.id = 'ampere-thumb-glow';
-        thumbGlow.style.position = 'absolute';
-        thumbGlow.style.inset = '4px'; // Slightly inset to softness
-        thumbGlow.style.borderRadius = '999px';
-        thumbGlow.style.transition = 'background 0.5s ease, opacity 0.5s ease';
-        thumbGlow.style.filter = 'blur(6px)'; // Soften the source
-        thumbGlow.style.opacity = '0'; // Default hidden
-        thumb.appendChild(thumbGlow);
+        ...
+        thumb.appendChild(thumbGlow); 
+        */
 
         // Update JS logic to use new padding (5px)
         
@@ -689,25 +685,11 @@ export class TechDemoScene {
             this.uiThumb.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3), inset 0 0 0 0.5px rgba(255,255,255,0.1)';
             
             if (newState === 'ACTIVE') {
-                 // Active: Green Glow Injection
-                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
-                 if(glow) {
-                     glow.style.background = '#10b981';
-                     glow.style.opacity = '0.6';
-                 }
+                 // Active: No Thumb Glow
             } else if (newState === 'STANDBY') {
-                 // Standby: Blue/Silver Glow Injection
-                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
-                 if(glow) {
-                     glow.style.background = '#64748b';
-                     glow.style.opacity = '0.4';
-                 }
+                 // Standby: No Thumb Glow
             } else {
                  // Off: No Glow
-                 const glow = this.uiThumb.querySelector('#ampere-thumb-glow');
-                 if(glow) {
-                     glow.style.opacity = '0';
-                 }
             }
 
             // Update Labels

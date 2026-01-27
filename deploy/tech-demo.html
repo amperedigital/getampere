@@ -1502,7 +1502,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.512/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.513/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
@@ -1644,16 +1644,23 @@
                     if(!dot || !text) return;
                     
                     // Update Power Button Appearance
-                    // v2.258: OnState -> Green (Emerald), OffState -> Slate (Grayed Out)
+                    // v2.513: PURE GLASS PEBBLE Rule. NO Background tint. NO Border tint.
+                    // Color only applies to the ICON (text-emerald) and its shadow.
                     if (btn) {
-                        const onClasses = ['text-emerald-400', 'bg-emerald-500/20', 'border-emerald-400/30', 'shadow-[0_0_15px_rgba(52,211,153,0.5)]'];
-                        const offClasses = ['text-slate-500', 'bg-white/5', 'border-white/10'];
+                        // REMOVED: bg-emerald-500/20, border-emerald-400/30
+                        // ADDED: drop-shadow on icon via class
+                        const onClasses = ['text-emerald-400', 'drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]'];
+                        const offClasses = ['text-slate-500'];
+                        
+                        // We must ensure we don't accidentally remove the apple-glass classes.
+                        // The 'apple-glass' class handles the background/border physics.
                         
                         if (state === 'OFF') {
                             btn.classList.remove(...onClasses);
                             btn.classList.add(...offClasses);
+                            // Ensure no residual BG from previous states (if any were inline, but here we use classes)
                         } else {
-                            // Active or Standby -> Button looks "On" (Green)
+                            // Active or Standby -> Button looks "On" (Green Icon)
                             btn.classList.remove(...offClasses);
                             btn.classList.add(...onClasses);
                         }

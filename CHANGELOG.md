@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.513] - 2026-01-27
+- **Visual Refresh (Icon-Only Color)**: Finalized the "Glass Pebble" control aesthetic.
+    - **Thumb/Button Transparency**: Removed all underglow and background tints from the toggle buttons. They are now purely clear glass (`apple-glass`).
+    - **Icon Illumination**: Color (Green/Emerald) is now applied **strictly** to the icon SVG (Mobile) or Text Label (Desktop), ensuring the glass lens only reflects/refracts the content behind it.
+    - **Mobile Power**: Updated the mobile toggle logic to remove `bg-emerald` tints, relying on `text-emerald` and `drop-shadow` on the icon itself.
+
 ## [v2.512] - 2026-01-27
 - **Visual Refresh (True Pebble Glass)**: Refined the control aesthetics to match the "Glass Stone" request.
     - **Thumb**: Removed all gradient fills and gradient blurs from the thumb body. It is now a purely transparent glass "pebble" (`rgba(255,255,255,0.05)`) with a sharp shadow (`0 4px 12px`) and a subtle inner reflection.
