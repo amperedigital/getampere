@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.481] - 2026-01-26
+- **Layout Fix (Desktop Override Removal)**:
+    - **CSS Cleanup**: Removed specific `!important` padding overrides for `#tech-demo-right-column` in the tablet/compact-desktop range (820px-1024px).
+    - **Resolution**: This override was preventing the Tailwind classes (`lg:pl-2`) from taking effect, preserving the "huge gap". Removing it allows the new 1rem gap logic to apply correctly.
+
 ## [v2.480] - 2026-01-26
 - **Layout Unification (Center Column Seam)**:
     - **Gap Reduction**: Tightened the central gap between the Neural Net (Left Column) and the Card Grid (Right Column).
