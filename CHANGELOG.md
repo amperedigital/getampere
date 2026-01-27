@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.539] - 2026-01-27
+- **Visual Polish (Neural Halo & Orb)**:
+    - **Logic Fix (Orb Size)**: Updated `tech-demo-scene.js` to correctly calculate the scene camera distance based on a 20% larger target fill percentage (increased from 0.95 to 1.15). The previous HTML data-attribute change was being overridden by the responsive layout logic.
+    - **Halo Ring Interaction**: Restored and improved the interaction state for the outer Halo Ring (`#halo-ring-outer`).
+        - **Base State**: `stroke-white/10` (Slightly more visible than v2.538).
+        - **Hover State**: Added `hover:stroke-cyan-400/30` with a smooth 500ms transition. This restores the "responsive" feel of the UI that was lost in the previous update.
+
 ## [v2.538] - 2026-01-27
 - **Visual Polish (Neural Halo)**: Refined the visual weight of the central Neural Network visualization.
     - **Lighter Ring**: Changed the background Halo Ring color from `stroke-blue-500/10` to `stroke-white/5`. This makes the ring feel more translucent and less "tinted", fitting the lighter aesthetic.

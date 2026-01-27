@@ -217,11 +217,11 @@
                             <!-- RING 1: OUTER (White/Blue) - Even Indices -->
                             <g id="halo-ring-outer">
                                 <!-- Band: 270-330 (Width 60, Center 300) -->
-                                <!-- v2.538: Changed background from blue-500/10 to white/5 per user request "translucent/lighter" -->
-                                <circle r="300" fill="none" class="stroke-white/5" stroke-width="60" />
-                                <!-- v2.538: Changed border from blue-500/20 to white/10 -->
-                                <circle r="330" fill="none" class="stroke-white/10" stroke-width="1" />
-                                <circle r="270" fill="none" class="stroke-white/10" stroke-width="1" />
+                                <!-- v2.539: Updated base opacity to 10% and Restored Hover State (Cyan/Blue) -->
+                                <circle r="300" fill="none" class="stroke-white/10 transition-colors duration-500 hover:stroke-cyan-400/30" stroke-width="60" />
+                                <!-- Border Rings: v2.539 Added Hover/Transition -->
+                                <circle r="330" fill="none" class="stroke-white/20 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
+                                <circle r="270" fill="none" class="stroke-white/20 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
 
                                 <!-- Markers (r=312) -->
                                 <g transform="rotate(-90)"><circle cx="312" cy="0" r="4" data-index="0" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
@@ -1531,7 +1531,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.532/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.539/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

@@ -1233,8 +1233,10 @@ export class TechDemoScene {
             
             // User Rule: "Neuronet must be within 95% width [of the container]"
             // v2.345: Reduced to 85% for Mobile/iPad to prevent visual expansion beyond the Dashed Ring.
-            // 95% was visually touching the edge due to perspective. 85% provides a safe buffer.
-            const fillPercentage = (isRingHiddenLayout) ? 0.85 : 0.95; 
+            // v2.539: Increased Orb Size by ~20% per user request.
+            // - Desktop: Increased from 0.95 to 1.15 (120% scale)
+            // - Mobile: Increased from 0.85 to 1.02 (120% scale)
+            const fillPercentage = (isRingHiddenLayout) ? 1.02 : 1.15; 
             
             let targetVisibleSize;
 
