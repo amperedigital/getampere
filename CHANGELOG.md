@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.498] - 2026-01-27
+- **Tech Demo Refinement (Desktop)**:
+    - **Header Indentation**: While maintaining the 1.5rem (`lg:left-6`) structural gutter for the Scene Container, we increased the Header's left padding to `lg:pl-12` (3rem).
+    - **Logic**: This creates a 1.5rem "internal indentation" relative to the Scene Container's border, ensuring the breadcrumb and title don't feel "jammed" against the screen edge despite the tighter global margins.
+
 ## [v2.497] - 2026-01-27
 - **Tech Demo Refinement (Desktop)**:
     - **Tighter Gutters**: Reduced the global horizontal page gutters on Desktop from `3rem/2rem` to a symmetric `1.5rem` (24px) to match the iPad Pro "Compact" layout spacing.
