@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.547] - 2026-01-27
+- **Visual Polish (Standby Pulse)**:
+    - **Color Update**: Changed Power Button Standby color from `text-amber-400` to lighter `text-amber-300` (less orange) as requested.
+    - **Animation**: Added `.animate-pulse-slow` to the Standby state. The Power Button (and its glass container) now breathes slowly (4s cycle) when the system is ready, replacing the static amber state.
+    - **Implementation**: Updated both the initial HTML state and the JS state logic in `tech-demo.html`.
+
 ## [v2.546] - 2026-01-27
 - **Visual Polish (Standby Init)**:
     - **Logic Update**: Updated the *initial* HTML class state of the Power Buttons (Desktop & Mobile) to use `text-amber-400` instead of `text-slate-500`.
