@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.535] - 2026-01-27
+- **Visual Polish (Button Simplification)**:
+    - **No Bottom Glint**: Removed the bottom "rebound" glint from both the Master Power Button and all Card Launch Buttons. Lighting is now strictly top-down (12 o'clock only), making the controls feel more grounded and less "shiny/glassy".
+    - **No Drop Shadows**: Removed the heavy `box-shadow` and `drop-shadow` effects from buttons to flatten the UI and reduce visual noise.
+    - **Active State (Power)**: Added a **Light Green Background** (`bg-green-500/20`) to the Master Power Button when in the `ACTIVE` state. This replaces the previous "Rotated Glint" logic, providing a clearer, more standard "On" indicator.
+    - **No Rotation**: Removed the 180° rotation animation from the Master Power Button. It now remains static, using color (Green vs Slate) to indicate state.
+
 ## [v2.534] - 2026-01-27
 - **Visual Polish (Icon Scaling)**: Reduced the size of specific dashboard icons that felt visually overweight compared to the rest of the set.
     - **Front Door Agent**: Scaled down from `w-6 h-6` (24px) to `w-5 h-5` (20px).
