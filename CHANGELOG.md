@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.501] - 2026-01-27
+- **Responsive Layout Fix (iPad Air / Tablet)**:
+    - **Range Definition**: Redefined the tablet layout range to `820px - 1023px` (strictly excluding 1024px iPad Pro).
+    - **Stacked Layout**: Enforced `width: 100%` and `height: auto` for both columns within this range.
+    - **Context**: This fixes an issue where iPad Air devices (820px) were correctly stacking vertically (due to being `< lg`), but were inheriting the `42%/58%` width constraints intended for the desktop/iPad Pro split view, resulting in narrow centered columns. They now correctly fill the screen width.
+
 ## [v2.500] - 2026-01-27
 - **iPad Pro Refinement (Live Demo Pill)**:
     - **Positioning Fix**: Updated the scoped CSS for the `820px-1024px` range to use `right: 3rem !important` (was 5rem).
