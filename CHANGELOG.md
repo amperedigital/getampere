@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.532] - 2026-01-27
+- **UX Improvement (Desktop Controls)**:
+    - **Dynamic Tooltip**: Added a hover-state tooltip to the Desktop Power Button (`top-right`) that explicitly states the action ("Turn On", "Turn Off", "Wake") before clicking.
+    - **ARIA Support**: Added `aria-label` and `aria-pressed` attributes that update dynamically with system state, improving accessibility.
+    - **Visual Fix (Status Meter)**: Restored the "Glass Pill" container styling (`bg-black/40`, `backdrop-blur`) to the bottom Power/UV Meter, ensuring it matches the Standby Warning pill.
+    - **Visual Polish (Glint)**: Softened the `linear-gradient` stops on the `.apple-glass` class to eliminate the sharp "aliasing" edge effect on the top button glint.
+
 ## [v2.530] - 2026-01-27
 - **Interaction Logic (Rocker Switch)**:
     - **Hover Fix**: Disabled CSS-based rotation on hover for the `.apple-glass` element.

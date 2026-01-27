@@ -254,10 +254,22 @@ export class TechDemoScene {
                     right: auto;
                     transform: none;
                     
+                    /* v2.531: Restored Pill Status Container */
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    justify-content: center;
                     gap: 6px;
+                    
+                    /* Pill Visuals (Matches Standby Warning) */
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    background: rgba(0,0,0,0.4);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
                     transition: opacity 0.5s ease;
                     opacity: 0;
                     pointer-events: auto;
@@ -461,6 +473,24 @@ export class TechDemoScene {
         
         // Update Body Attribute for Global CSS Styling (Titles, etc.)
         document.body.setAttribute('data-system-state', newState);
+
+        // v2.532: Update Power Button Tooltip & ARIA
+        const tooltip = document.getElementById('power-btn-tooltip');
+        // Select Desktop Button specifically or all buttons
+        const btns = document.querySelectorAll('.power-toggle-btn');
+        
+        if (tooltip) {
+             if (newState === 'ACTIVE') tooltip.innerText = 'Turn Off';
+             else if (newState === 'STANDBY') tooltip.innerText = 'Wake';
+             else tooltip.innerText = 'Turn On';
+        }
+        
+        btns.forEach(btn => {
+             btn.setAttribute('aria-pressed', newState === 'ACTIVE');
+             // Update aria-label dynamically too for screen readers
+             const action = (newState === 'ACTIVE') ? 'Turn Off' : (newState === 'STANDBY' ? 'Wake' : 'Turn On');
+             btn.setAttribute('aria-label', `Power Control: ${action}`);
+        });
 
         // Update Agent Card Status (v2.428)
         // Active: Front Door Agent (Index 0) is Active, others are Standby.
