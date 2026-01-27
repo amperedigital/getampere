@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.558] - 2026-01-27
+- **Mobile Polish**:
+    - **Visual Fix**: Removed the background blur and border from the sticky mobile controls to clean up the UI transparency.
+    - **Scroll Logic**: creating a "Center Snap" behavior for the Active Agent scroll sync. `scrollIntoView` now targets `inline: 'center'` instead of `start`, ensuring the active card is perfectly centered and never cut off by the screen edge.
+
 ## [v2.557] - 2026-01-27
 - **Mobile Experience Upgrade (< 1024px)**:
     - **Horizontal Scroll Track**: Replaced the tight grid layout with a horizontal "Snap Scroll" track for Agent Cards. Viewport now fits ~2.5 cards visible at once (`min-w-[40%]`).

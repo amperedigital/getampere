@@ -1366,7 +1366,8 @@ export class TechDemoScene {
                      // Calculate offset: index * width of card ? 
                      // Or just use scrollIntoView behavior?
                      // scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }) is best
-                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                     // v2.558: Changed to 'center' to prevent cut-off issues
+                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
 
             } else {
