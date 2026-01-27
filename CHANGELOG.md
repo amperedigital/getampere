@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.551] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **UI Polish**: Increased vertical separation between the Bottom Sliders and the "UV" / Status Pill by `3rem` (setting Sliders to `bottom: 21rem`) to prevent visual overlap.
+
 ## [v2.550] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **Layout Fix**: Shifted the bottom UI controls (Sliders & UV/Status Meter) upwards significantly (`bottom: 18rem`) on iPad Pro Portrait (`1024px`) to provide ample clearance for the embedded Chat Widget.
