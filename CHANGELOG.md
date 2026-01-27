@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.493] - 2026-01-27
+- **iPad Pro Refinement (Column Gap)**:
+    - **Gap Synchronization**: Adjusted the Scene Container's width calculation in the iPad Pro profile from `calc(100% - 3rem)` to `calc(100% - 2.5rem)`.
+    - **Logic**: With a fixed left offset of `1.5rem`, this new width leaves exactly `1rem` of empty space on the right edge of the Left Column. This perfectly matches the `gap-4` (1rem) grid spacing used between cards in the Right Column, satisfying the design requirement.
+
 ## [v2.492] - 2026-01-27
 - **iPad Pro Refinement (Header Spacing)**:
     - **Increased Breathing Room**: Increased the top padding of the Left Column Header (`#tech-demo-header`) from ~3rem to `5rem` within the iPad Pro breakpoint range.

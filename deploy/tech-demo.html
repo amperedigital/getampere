@@ -328,10 +328,12 @@
                                         /* CRITICAL: When using left: 1.5rem on a relative/w-full element, */
                                         /* we MUST reduce width to prevent horizontal overflow/clipping. */
                                         /* v2.491: Adjusted top to 2rem to match Right Column alignment */
+                                        /* v2.493: Width calc adjusted to leave exactly 1rem right-margin (Gap-4) */
+                                        /* 1.5rem (Left) + 1rem (Right) = 2.5rem deduction */
                                         #tech-demo-scene-container {
                                             top: 2rem !important;
                                             left: 1.5rem !important;
-                                            width: calc(100% - 3rem) !important;
+                                            width: calc(100% - 2.5rem) !important;
                                         }
                                     }
 
