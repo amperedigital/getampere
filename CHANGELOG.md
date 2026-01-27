@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.495] - 2026-01-27
+- **Refactoring (Tech Demo)**:
+    - **CSS Migration**: Moved all inline styles from `tech-demo.html` to `src/input.css`.
+    - **Scoped Styles**: Strictly scoped all moved styles to `#tech-demo-master` and `.tech-demo-page` to prevent global conflicts.
+    - **Cleanup**: Removed the `<style>` block from `tech-demo.html`.
+
 ## [v2.494] - 2026-01-27
 - **iPad Pro Refinement (Page Gutters)**:
     - **Symmetric Margins**: Reduced the Right Column's right padding from `2rem` (default) to `1.5rem` (`padding-right: 1.5rem !important`) within the iPad Pro media query.
