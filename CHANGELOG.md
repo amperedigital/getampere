@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.468] - 2026-01-26
+- **UX Improved (Zen Button + Interaction)**:
+    - **Moved "Open Zen" button**: Relocated from bottom-right to **top-right** (beside the card icon). This eliminates content clipping issues without requiring excessive padding.
+    - **Card Click Expansion**: Enabled "Click Anywhere" on the card to trigger Zen Mode, improving accessibility and usability (especially on touch devices).
+    - **Cleanup**: Removed the `!pb-20` padding fix from v2.467 as it is no longer needed.
+
 ## [v2.467] - 2026-01-26
 - **UI Fix (Zen Button Clipping)**: Added `!pb-20` to the Agent Card content containers.
     - **Issue**: The absolute positioned Expand/Zen button (Bottom-Right) was being overlapped by the metrics content on full cards.

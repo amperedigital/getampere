@@ -34,7 +34,19 @@ export class CardExpander {
                 // So top-right should primarily be for closing/status.
                 if (card && card.classList.contains('is-expanded')) {
                     this.collapse(card, btn, column);
+                    return;
                 }
+            }
+
+            // NEW (v2.468): Allow clicking anywhere on the card to expand (Zen Mode)
+            const card = e.target.closest('.socket-card-container');
+            if (card && !card.classList.contains('is-expanded')) {
+                 // Ignore interactive elements
+                 if (['INPUT', 'BUTTON', 'A', 'LABEL'].includes(e.target.tagName)) return;
+                 // Ignore if hitting the scrollbar (approx check?)
+                 // Actually the click event target would be the content div. 
+                 
+                 this.expand(card, null, column);
             }
         });
     }
