@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.552] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **UI Polish**: Further increased the separation between the Bottom Sliders and the "UV" Status Pill to `6rem` (`bottom: 24rem`) to accommodate the Standby Counter and prevent intersection.
+
 ## [v2.551] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **UI Polish**: Increased vertical separation between the Bottom Sliders and the "UV" / Status Pill by `3rem` (setting Sliders to `bottom: 21rem`) to prevent visual overlap.
