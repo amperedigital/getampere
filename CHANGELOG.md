@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.476] - 2026-01-26
+- **Layout Tuning (Scrollbar Breathing Room)**:
+    - **Balanced Insets**: Adjusted parent container padding to `pl-8` (Left) but `pr-2` (Right).
+    - **Result**: The scrollbar is no longer "jammed" against the border (it has `0.5rem` clearance) but is still pushed further right than the content, creating distinct visual layers.
+    - **Vertical Rhythm**: Restored `py-8` to parent, simplifying header/grid margins.
+
 ## [v2.475] - 2026-01-26
 - **Layout Consistency (Global Scrollbar Fix)**:
     - **Global Application**: Applied the "Right-Aligned Scrollbar" fix to ALL 6 agent cards (previously only applied to Booking Agent).
