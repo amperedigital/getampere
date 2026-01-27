@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.529] - 2026-01-27
+- **Visual Polish (Standby Visuals)**:
+    - **Standby Warning Pill**: Restored the "Pill" styling for the `STANDBY IN 30S` warning text on Desktop.
+        - **Style**: Applies `bg-black/40`, `border-white/10`, and `backdrop-blur` to match the Standard Pill aesthetic used elsewhere (like the Live Demo badge).
+        - **Fix**: Previously, the warning was just floating text. It now sits inside a proper container for better visibility and consistency.
+
 ## [v2.528] - 2026-01-27
 - **UI Architecture (Desktop Power Cluster)**:
     - **Concept Shift**: Replaced the Desktop Slider Control with the **Mobile Power Button** (Rocker Switch style).

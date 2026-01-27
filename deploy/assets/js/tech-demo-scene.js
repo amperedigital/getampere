@@ -271,6 +271,17 @@ export class TechDemoScene {
                     bottom: auto;
                     transform: none;
                     
+                    /* v2.529: Standby Warning Pill Style */
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 6px 16px;
+                    border-radius: 9999px;
+                    background: rgba(0,0,0,0.4);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
                     color: rgba(200, 220, 255, 0.9);
                     font-family: monospace;
                     font-size: 11px;
