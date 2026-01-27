@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.475] - 2026-01-26
+- **Layout Consistency (Global Scrollbar Fix)**:
+    - **Global Application**: Applied the "Right-Aligned Scrollbar" fix to ALL 6 agent cards (previously only applied to Booking Agent).
+    - **Uniformity**: Ensured all cards (Front Door, Sales, Support, etc.) now have flush-right scrollbars with proper content insets.
+
 ## [v2.474] - 2026-01-26
 - **Layout Refinement (Scrollbar)**:
     - **Right-Aligned Scrollbar**: Restructured the card content container to remove parent padding.
