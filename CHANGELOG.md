@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.534] - 2026-01-27
+- **Visual Polish (Icon Scaling)**: Reduced the size of specific dashboard icons that felt visually overweight compared to the rest of the set.
+    - **Front Door Agent**: Scaled down from `w-6 h-6` (24px) to `w-5 h-5` (20px).
+    - **Onboarding Coach**: Scaled down from `w-6 h-6` (24px) to `w-5 h-5` (20px).
+    - **Sales Advisor**: Scaled down from `w-6 h-6` (24px) to `w-5 h-5` (20px).
+    - **Context**: These icons use full-bleed 32x32 viewboxes, making them appear larger than standard 24px outlined icons. The reduction brings their visual weight into parity with the other card controls.
+
 ## [v2.533] - 2026-01-27
 - **Visual Polish (Card Buttons)**:
     - **Unified Glint Physics**: Updated all socket card buttons (Launch triggers) to match the new **vertical lighting model** used by the Master Power Button.
