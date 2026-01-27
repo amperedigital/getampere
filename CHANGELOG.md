@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.507] - 2026-01-27
+- **Fix (Card Styles)**: Added deep background color (`rgba(10, 10, 15, 0.95)`) and backdrop blur to Expanded Cards ("Zen Mode"). This prevents underlying cards from being visible through the expanded state.
+- **Fix (Z-Index)**: Explicitly enforced `z-index: 50 !important` and shadow depth in CSS for the expanded state to ensure correct layering.
+
 ## [v2.506] - 2026-01-27
 - **Fix (Layout)**: Removed `isolation: isolate` from Socket Cards. This reverts a legacy change (v2.436) that was causing Z-index stacking issues for the expanded "Zen Mode" card state.
 - **Fix (Card Interaction)**: Ensuring the expanded card properly overlays siblings without clipping or margin artifacts.
