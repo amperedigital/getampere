@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.502] - 2026-01-27
+- **Responsive Typography & Layout (Mobile/Tablet)**:
+    - **Heading & Blurb**: Significantly increased base font sizes for screens 1023px and down.
+        - Heading: `text-5xl` (was `text-4xl`).
+        - Blurb: `text-lg` (was `text-sm`).
+    - **Power Cluster**: Relocated the mobile power controls (Standby/Toggle) from the top-right (`right-4`) to the top-left (`left-8`). This aligns it vertically with the Header's content indentation (`p-8`), creating a cleaner left-aligned vertical rhythm on mobile devices.
+
 ## [v2.501] - 2026-01-27
 - **Responsive Layout Fix (iPad Air / Tablet)**:
     - **Range Definition**: Redefined the tablet layout range to `820px - 1023px` (strictly excluding 1024px iPad Pro).
