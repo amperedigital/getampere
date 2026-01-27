@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.527] - 2026-01-27
+- **Tooling Fix (Validator)**: Upgraded `scripts/validate_js.sh` to enforce Strict ESM validation.
+    - **Issue**: The previous validator (`node --check file.js`) was too lenient with CommonJS files, allowing invalid class syntax (like undeclared private fields) to pass silently.
+    - **Fix**: The validator now pipes content to `node --check --input-type=module`. This forces strict mode and treats all JS files as ES Modules, ensuring that syntax errors—including the one that caused the v2.525 regression—are caught before publish.
+
 ## [v2.526] - 2026-01-27
 - **Hotfix (Critical)**: Fixed a `SyntaxError` in `tech-demo-scene.js` introduced in v2.525.
     - **Issue**: A template literal was prematurely closed during the removal of the specific border layer CSS, causing subsequent CSS rules to be parsed as invalid JavaScript.
