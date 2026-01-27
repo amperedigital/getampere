@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.473] - 2026-01-26
+- **Layout Restoration & Spacing**:
+    - **Corner Reset**: Restored Main Icon button to absolute zero (`top-0 right-0`) as requested.
+    - **Expand Trigger**: Positioned to the left (`top-2 right-20`) with meaningful spacing to let the design breathe.
+
+## [v2.472] - 2026-01-26
+- **Layout Adjustment (Buttons)**:
+    - **Reverted Positioning**: Moved the Expand Trigger back to the top-right horizontal row (`top-5 right-20`), aligned with the Main Icon (`top-5 right-5`).
+    - **Reason**: User feedback indicated the stacked approach (v2.471) felt unnatural, effectively requesting a restoration of the previous horizontal layout logic.
+
 ## [v2.471] - 2026-01-26
 - **Zen Mode Scaling & Layout Fixes**:
     - **Smart Typography Scaling**: Replaced strict `min()` clamps with `clamp(min, cqw, max)` logic. This fixes the issue where text stayed tiny in expanded mode (creating gaps) while preventing it from exploding indefinitely.
