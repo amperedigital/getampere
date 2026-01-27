@@ -1585,6 +1585,18 @@
                             rotator.targetRotation = targetDeg;
                             rotator.isDragging = false; // Let it snap/lerp
                         }
+
+                        // v2.561: Scroll Sync with buttery easing (Inner Ring ONLY)
+                        if (type === 'inner') {
+                             const track = document.getElementById('tech-demo-card-track');
+                             if (track) {
+                                  const cards = track.querySelectorAll('.socket-card-container');
+                                  if (cards[step]) {
+                                      // center the card in the viewport with smooth behavior
+                                      cards[step].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                                  }
+                             }
+                        }
                     };
 
                     if (sliderOuter) {

@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.561] - 2026-01-27
+- **Mobile Interaction**:
+    - **Smooth Scroll Sync**: Connected the Mobile Active Agent Slider (Inner Ring) to the card scroll track. Changing the agent on the slider now smoothly scrolls (`behavior: 'smooth'`) the corresponding card to the center of the screen.
+
 ## [v2.560] - 2026-01-27
 - **Mobile Card UI**:
     - **Single Card View**: Increased mobile card width to `85%` (was `40%`) to display a single focused card with a visual "peek" of the next card, improving focus and scroll affordance.
