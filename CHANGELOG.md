@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.530] - 2026-01-27
+- **Interaction Logic (Rocker Switch)**:
+    - **Hover Fix**: Disabled CSS-based rotation on hover for the `.apple-glass` element.
+    - **Issue**: On Desktop, the hover state (force-rotating to 180°) was conflicting with the System State logic (where "On" meant 360° or 180° depending on previous state), causing inconsistencies in the "Click" status visualization.
+    - **Resolution**: Rotation is now **JavaScript-driven only** via the `.apple-glass-rotated` class. "On" corresponds to a simple 180° flip (swapping the glints), and "Off" corresponds to 0° (Standard). Hovering no longer rotates the glint, preventing the "Click Status" mismatch.
+
 ## [v2.529] - 2026-01-27
 - **Visual Polish (Standby Visuals)**:
     - **Standby Warning Pill**: Restored the "Pill" styling for the `STANDBY IN 30S` warning text on Desktop.
