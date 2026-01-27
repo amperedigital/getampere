@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.467] - 2026-01-26
+- **UI Fix (Zen Button Clipping)**: Added `!pb-20` to the Agent Card content containers.
+    - **Issue**: The absolute positioned Expand/Zen button (Bottom-Right) was being overlapped by the metrics content on full cards.
+    - **Fix**: Increased bottom padding on the scrolling content area to guarantee a 5rem safety clearance, ensuring the content flow terminates before intersecting the button.
+
 ## [v2.466] - 2026-01-26
 - **System Restore**: Performed a hard rollback of `deploy/tech-demo.html`, `context.md`, and `CHANGELOG.md` to version `v2.445.stable`.
     - **Reasoning**: Recent layout changes (v2.450+) introduced persistent regressions in the Header alignment, Right Column Gutters, and Zen Mode interactivity.
