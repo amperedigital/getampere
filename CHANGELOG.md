@@ -1,11 +1,13 @@
 # Changelog
 
-## [v2.524] - 2026-01-27
-- **Visual Polish (Button Physics)**:
-    - **Physical Glint Model (Rocker Snap)**: Removed the CSS transition (`transform 0.6s`) from the `.apple-glass` pseudo-element.
-    - **Behavior**: The Rocker Switch "flip" (inverting the 12 o'clock and 6 o'clock glints) is now **instant** ("On/Off" snap) rather than a visible rotation. This better simulates the mechanical action of a rocker switch snapping between states.
+## [v2.525] - 2026-01-27
+- **Visual Polish (Desktop Restorations)**:
+    - **Live Demo Pill (Desktop)**: Restored to the canonical "Standard Pill" style (`bg-black/40` + `border-white/10`).
+        - **Fix**: Removed the `.apple-glass` class which was mistakenly applied, causing the pill to inherit the "Rocker Switch" vertical glints (which look broken on non-interactive display pills).
+    - **Desktop Control Cluster**: Restored to a clean, flat aesthetic.
+        - **Fix**: Removed the injected `#ampere-ui-border-layer` (the pseudo-element that creates the spinning/rocking glints). The wide, pill-shaped track handles shadows better with a simple `border-white/10` than with the complex localized glint physics meant for round buttons.
 
-## [v2.523] - 2026-01-27
+## [v2.524] - 2026-01-27
 - **Interaction Polish**: 
     - **Active Glint**: The "Rotating Glint" animation (180-degree border spin) now triggers on both `hover` and `active` (mouse down) states. This provides a subtle "button press" simulation where the light refraction shifts as pressure is applied.
 

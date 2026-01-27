@@ -210,6 +210,8 @@ export class TechDemoScene {
                     backdrop-filter: blur(40px);
                     -webkit-backdrop-filter: blur(40px);
                     border-radius: 999px;
+                    border: 1px solid rgba(255,255,255,0.1);
+                    background: rgba(0,0,0,0.4);
                     
                     /* Deep, rich shadow */
                     box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6); 
@@ -227,43 +229,22 @@ export class TechDemoScene {
                     isolation: isolate; /* Create stacking context for pseudo-children */
                 }
 
-                /* The 180-deg Rotating Glint Border */
+                /* v2.525: Removed Complex Border Layer for Desktop Track */
                 #ampere-ui-border-layer {
-                    position: absolute;
-                    inset: 0;
-                    border-radius: 999px;
-                    z-index: 10;
-                    pointer-events: none;
-                    
-                    /* Border Creation via Mask */
-                    padding: 1.5px; /* Border Width */
-                    background: linear-gradient(115deg, 
-                        rgba(255, 255, 255, 0.8) 0%, 
-                        rgba(255, 255, 255, 0.0) 25%, 
-                        rgba(255, 255, 255, 0.0) 75%, 
-                        rgba(255, 255, 255, 0.8) 100%
-                    );
-                    
-                    -webkit-mask: 
-                        linear-gradient(#fff 0 0) content-box, 
-                        linear-gradient(#fff 0 0);
-                    mask: 
-                        linear-gradient(#fff 0 0) content-box, 
-                        linear-gradient(#fff 0 0);
-                    -webkit-mask-composite: xor;
-                    mask-composite: exclude;
-                    
-                    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-                }
+                    display: none;
+                }</style>`; // End Style Injection
+                
+                // v2.525: Removed #ampere-ui-border-layer logic entirely.
+                // Restored track to simple css styling in <style> block above.
 
+                /* 
                 #ampere-ui-track:hover {
                     transform: translateY(-2px);
                 }
-
-                #ampere-ui-track:hover #ampere-ui-border-layer,
-                #ampere-ui-track:active #ampere-ui-border-layer {
-                    transform: rotate(180deg);
-                }
+                */
+                
+                // --- JS Logic for State ---
+                // ... (rest of logic)
                 
                 #ampere-system-status {
                     position: relative; /* Static inside cluster */
