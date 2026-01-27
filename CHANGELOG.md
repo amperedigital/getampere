@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.553] - 2026-01-27
+- **Device Support (iPad Pro)**:
+    - **Stacking Fix**: Corrected the stacking order of the Bottom UI elements.
+        - **UV / Status Pill**: Moved to `bottom: 28rem` (Upper Position).
+        - **Control Sliders**: Moved to `bottom: 18rem` (Lower Position).
+        - **Fix**: Resolves the intersection issue where the sliders were inverted and rendering on top of the status meter. Forced `position: absolute` on the slider container to ensure deterministic placement relative to the viewport/master container.
+
 ## [v2.552] - 2026-01-27
 - **Device Support (iPad Pro)**:
     - **UI Polish**: Further increased the separation between the Bottom Sliders and the "UV" Status Pill to `6rem` (`bottom: 24rem`) to accommodate the Standby Counter and prevent intersection.
