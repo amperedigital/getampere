@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.482] - 2026-01-26
+- **Deployment Fix (Cache Busting)**:
+    - **CSS Link**: Updated the stylesheet link in `tech-demo.html` with a version query string (`?v=2.482`).
+    - **Resolution**: Forces browsers to load the freshly compiled CSS (which contains the removal of the `#tech-demo-right-column` padding override) instead of serving the cached legacy version.
+
 ## [v2.481] - 2026-01-26
 - **Layout Fix (Desktop Override Removal)**:
     - **CSS Cleanup**: Removed specific `!important` padding overrides for `#tech-demo-right-column` in the tablet/compact-desktop range (820px-1024px).
