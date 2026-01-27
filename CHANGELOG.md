@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.533] - 2026-01-27
+- **Visual Polish (Card Buttons)**:
+    - **Unified Glint Physics**: Updated all socket card buttons (Launch triggers) to match the new **vertical lighting model** used by the Master Power Button.
+        - **Change**: Replaced the diagonal 180° gradient with a strictly vertical (Top-to-Bottom) glint.
+        - **Stops**: Glint is strong at 12 o'clock (0.8 opacity), softens at 15%, disappears in the middle, and reappears softly at 6 o'clock (0.2 opacity).
+    - **Interaction Update**: Removed the `hover:rotate-180` animation from card buttons. They are now statically oriented (12/6 axis) to feel like physical controls rather than spinning icons.
+
 ## [v2.532] - 2026-01-27
 - **UX Improvement (Desktop Controls)**:
     - **Dynamic Tooltip**: Added a hover-state tooltip to the Desktop Power Button (`top-right`) that explicitly states the action ("Turn On", "Turn Off", "Wake") before clicking.
