@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.536] - 2026-01-27
+- **Visual Polish (Green Glass)**: Refined the Active State of the Master Power Button to be much more subtle.
+    - **Deep Tint**: Instead of replacing the dark glass with a light transparent green (which felt "ghostly"), we now **tint** the dark glass base with green (`rgba(6, 40, 25, 0.75)`). This preserves the solid "pebble" weight of the button while clearly indicating it is ON.
+    - **Subtle Rim**: Reduced the green rim highlight opacity to `0.2`, making the translucency feel natural and high-end.
+
 ## [v2.535] - 2026-01-27
 - **Visual Polish (Button Simplification)**:
     - **No Bottom Glint**: Removed the bottom "rebound" glint from both the Master Power Button and all Card Launch Buttons. Lighting is now strictly top-down (12 o'clock only), making the controls feel more grounded and less "shiny/glassy".
