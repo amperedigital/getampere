@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.505] - 2026-01-27
+- **Tech Demo UI**: Reverted "Apple Glass" effect on Desktop Control Cluster and Live Demo Pill (User Request: "Should not have been touched").
+- **Mobile Controls**: Maintained the new "Apple Glass" look (`.apple-glass`) on the mobile Standby/Power buttons exclusively.
+
 ## [v2.504] - 2026-01-27
 - **Tech Demo UI**: Applied "Apple-like" Glass effect to all control elements (Live Demo pill, Mobile controls, Desktop Control Cluster).
 - **Refactor**: Unified glass styling using `.apple-glass` class and matching injected styles.

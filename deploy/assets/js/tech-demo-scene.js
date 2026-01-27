@@ -203,13 +203,13 @@ export class TechDemoScene {
                     
                     width: 320px;
                     height: 48px; /* Height increased for breathing room */
-                    background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) padding-box,
-                                linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.45) 100%) border-box;
-                    backdrop-filter: blur(20px);
-                    -webkit-backdrop-filter: blur(20px);
+                    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)) padding-box,
+                                linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.4) 100%) border-box;
+                    backdrop-filter: blur(24px);
+                    -webkit-backdrop-filter: blur(24px);
                     border-radius: 999px;
                     border: 1px solid transparent; /* Required for border-box gradient */
-                    box-shadow: 0 8px 32px rgba(0,0,0,0.12); /* Clean shadow, border does the work, matches Apple Glass */
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.12); /* Clean shadow, border does the work */
                     transition: box-shadow 0.4s ease, transform 0.4s ease;
                     display: flex;
                     align-items: center;
@@ -224,10 +224,8 @@ export class TechDemoScene {
                 }
 
                 #ampere-ui-track:hover {
-                    box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+                    box-shadow: 0 12px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
                     transform: translateY(-1px);
-                    background: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1)) padding-box,
-                                linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 40%, transparent 60%, rgba(255, 255, 255, 0.6) 100%) border-box;
                 }
                 
                 #ampere-system-status {
