@@ -88,7 +88,7 @@
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
             <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
             <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all power-toggle-btn"
+                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-400 active:scale-95 transition-all power-toggle-btn"
                     aria-label="Power & Standby Control"
                     aria-pressed="false">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,9 +127,9 @@
                 <!-- v2.502: Moved to left-8 to align with Header content. Removed right-4. -->
                 <div class="lg:hidden absolute top-2 left-8 z-50 flex flex-row items-center gap-4 pointer-events-auto">
                     <!-- Single Power Toggle -->
-                    <!-- Green when On, Slate when Off -->
+                    <!-- Green when On, Amber when Standby, Slate when Off -->
                     <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all power-toggle-btn"
+                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-amber-400 active:scale-95 transition-all power-toggle-btn"
                             id="btn-mobile-power"
                             aria-label="Power Toggle">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

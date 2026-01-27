@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.546] - 2026-01-27
+- **Visual Polish (Standby Init)**:
+    - **Logic Update**: Updated the *initial* HTML class state of the Power Buttons (Desktop & Mobile) to use `text-amber-400` instead of `text-slate-500`.
+    - **Context**: Since the application boots into "Standby" (not Off), the button icon should immediately reflect the Amber readiness state before any JS updates kick in. This eliminates the "Slate Flash" on load.
+
 ## [v2.545] - 2026-01-27
 - **Visual Polish (Power Button)**:
     - **Standby State**: Updated the Power Button icon color in Standby mode to **Amber** (`text-amber-400`).
