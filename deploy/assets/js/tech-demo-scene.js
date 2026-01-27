@@ -202,20 +202,18 @@ export class TechDemoScene {
                     transform: none;
                     
                     width: 320px;
-                    height: 48px; /* Height increased for breathing room */
+                    height: 48px;
                     
-                    /* Apple Glass Look 2026 (Dark + Incomplete Borders) */
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.0) 100%) padding-box,
-                                linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.6) 100%) border-box;
-                    background-color: rgba(0, 0, 0, 0.4);
-                    
-                    backdrop-filter: blur(24px);
-                    -webkit-backdrop-filter: blur(24px);
+                    /* Apple Glass Look 2026: "Muted Pebble" */
+                    /* High opacity, dark, solid feel. Not a thin sheet of glass */
+                    background-color: rgba(20, 20, 24, 0.85);
+                    backdrop-filter: blur(40px);
+                    -webkit-backdrop-filter: blur(40px);
                     border-radius: 999px;
-                    border: 1px solid transparent; /* Required for border-box gradient */
                     
-                    box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05); 
-                    transition: box-shadow 0.4s ease, transform 0.4s ease;
+                    /* Deep, rich shadow */
+                    box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6); 
+                    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -225,14 +223,45 @@ export class TechDemoScene {
                     touch-action: none;
                     cursor: pointer;
                     box-sizing: border-box;
-                    pointer-events: auto; /* Re-enable clicks */
+                    pointer-events: auto;
+                    isolation: isolate; /* Create stacking context for pseudo-children */
+                }
+
+                /* The 180-deg Rotating Glint Border */
+                #ampere-ui-border-layer {
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 999px;
+                    z-index: 10;
+                    pointer-events: none;
+                    
+                    /* Border Creation via Mask */
+                    padding: 1.5px; /* Border Width */
+                    background: linear-gradient(115deg, 
+                        rgba(255, 255, 255, 0.8) 0%, 
+                        rgba(255, 255, 255, 0.0) 25%, 
+                        rgba(255, 255, 255, 0.0) 75%, 
+                        rgba(255, 255, 255, 0.8) 100%
+                    );
+                    
+                    -webkit-mask: 
+                        linear-gradient(#fff 0 0) content-box, 
+                        linear-gradient(#fff 0 0);
+                    mask: 
+                        linear-gradient(#fff 0 0) content-box, 
+                        linear-gradient(#fff 0 0);
+                    -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+                    
+                    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 #ampere-ui-track:hover {
-                    box-shadow: 0 12px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-                    transform: translateY(-1px);
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%) padding-box,
-                                linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.8) 100%) border-box;
+                    transform: translateY(-2px);
+                }
+
+                #ampere-ui-track:hover #ampere-ui-border-layer {
+                    transform: rotate(180deg);
                 }
                 
                 #ampere-system-status {
@@ -378,6 +407,11 @@ export class TechDemoScene {
         const container = document.createElement('div');
         this.uiContainer = container;
         container.id = 'ampere-ui-track';
+        
+        // NEW: Rotating Border Layer (2026 Glint Animation)
+        const borderLayer = document.createElement('div');
+        borderLayer.id = 'ampere-ui-border-layer';
+        container.appendChild(borderLayer);
         
         // Thumb (The Draggable Pill)
         const thumb = document.createElement('div');

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.511] - 2026-01-27
+- **Visual Polish (Pebble Glass)**: Refined the glass aesthetic based on "Muted Pebble" feedback.
+    - **Material**: Increased opacity (`rgba(20,20,24,0.85)`) and blur (`40px`) to create a solid, muted feel instead of a thin steel sheet.
+    - **Glints**: Implemented a rotating "Incomplete Border" animation. Hovering the track or button rotates the gradient border 180 degrees, shifting the highlight position dynamically.
+    - **Uniformity**: Applied this logic to both the `tech-demo-scene.js` Control Cluster and the global `.apple-glass` utility (Live Demo Pill, Mobile Toggles).
+
 ## [v2.510] - 2026-01-27
 - **Visual Refresh (2026 Apple Glass)**: Implemented "Incomplete Border" glass effect.
     - **Aesthetic**: Replaces the "frosted/steel" look with a darker, transparent glass (`rgba(0,0,0,0.4)`) featuring diagonal gradient borders (`135deg`) that simulate light glints on broken edges.
