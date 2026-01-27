@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.500] - 2026-01-27
+- **iPad Pro Refinement (Live Demo Pill)**:
+    - **Positioning Fix**: Updated the scoped CSS for the `820px-1024px` range to use `right: 3rem !important` (was 5rem).
+    - **Alignment**: This ensures the pill is correctly positioned at 3rem from the right edge on iPad Pro, matching the new Desktop positioning and correcting the unintentional 5rem override that was migrated from the legacy inline styles.
+
 ## [v2.499] - 2026-01-27
 - **Tech Demo Refinement (Desktop)**:
     - **Live Demo Pill**: Adjusted position to `lg:right-12` (3rem) to perfectly mirror the Header's left indentation (`pl-12`). This ensures symmetric "hanging" alignment relative to the Scene Container's borders on both sides.
