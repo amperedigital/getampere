@@ -120,8 +120,9 @@
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
             <!-- v2.585: Reverted container top to lg:top-8. Visuals are now pushed down internally via the wrapper. -->
-            <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end to anchor visuals to the bottom edge. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-end">
+            <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end. -->
+            <!-- v2.588: Reverted to justify-center here, moving alignment logic to the wrapper to prevent collapse. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -160,15 +161,14 @@
                 <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
 
                 <!-- WRAPPER: Width constrains and centers column -->
-                <!-- v2.585: Removed lg:pt-64 (which caused width shrinkage). Added lg:mt-48 to push full-size visuals down. -->
-                <!-- v2.587: Switched to lg:h-auto and lg:justify-end logic. Removed lg:mt-48 as Flex alignment handles position. Added lg:max-h-full safety. -->
-                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full lg:h-auto lg:max-h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-0">
+                <!-- v2.585: Removed lg:pt-64. -->
+                <!-- v2.588: Restored lg:h-full (preventing collapse). Added lg:justify-end to anchor content to bottom. -->
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center lg:justify-end mx-auto mt-12 lg:mt-0">
                     
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
-                    <!-- REMOVED lg:aspect-square from this parent. Ideally, the parent is just a flex column. -->
-                    <!-- The Inner Visuals Wrapper determines the aspect ratio limit. -->
-                    <!-- v2.348: Increased height for Tablets (MD=768px+) from 350px default to 600px to use available space -->
-                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-full flex flex-col items-center justify-between pointer-events-none">
+                    <!-- v2.588: Changed lg:h-full to lg:h-auto. This prevents it from filling the height blindly. -->
+                    <!-- Combining h-auto with max-w-[800px] and aspect-square children allows it to be 'as tall as it needs to be' (800px) and sit at the bottom. -->
+                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
                     <!-- VISUALS WRAPPER (Flex Grow) -->

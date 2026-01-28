@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.588] - 2026-01-28
+- **Layout Recovery & Refinement (Scene Visibility)**:
+    - **Fix**: Reverted `tech-demo-wrapper` to `h-full` to fix the height collapse introduced in v2.587 (where `h-auto` parents caused `h-full` children to disappear).
+    - **Alignment**: Applied `lg:justify-end` to the *wrapper* rather than the container.
+    - **Sizing**: Switches the inner Ring Container to `lg:h-auto` (previously `h-full`). This allows the visual block to size itself naturally (max 800px width/height) and be pushed to the bottom of the wrapper by the flex alignment, ensuring it sits as low as possible without shrinking.
+
 ## [v2.587] - 2026-01-28
 - **Layout Finalization (Bottom Anchor)**:
     - **Container Alignment**: Switched `tech-demo-scene-container` from `lg:justify-center` to `lg:justify-end`. This strictly anchors the visual content to the bottom of the card/column.
