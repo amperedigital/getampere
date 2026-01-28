@@ -215,6 +215,8 @@ export class CardExpander {
 
         // D. Animate to Grid Slot
         requestAnimationFrame(() => {
+            // v2.564: Use transition class to ensure smooth movement even if CSS is tricky
+            card.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
             card.style.top = `${targetTop}px`;
             card.style.left = `${targetLeft}px`;
             card.style.width = `${targetWidth}px`;
@@ -239,9 +241,10 @@ export class CardExpander {
             card.style.height = '';
             card.style.zIndex = '';
             card.style.margin = '';
+            card.style.transition = ''; // clear inline transition
             
             this.activeCard = null;
-        }, 600); // Sync with CSS 0.6s
+        }, 500); // Sync with CSS 0.5s
 
         // 4. Update TOP RIGHT Icon to "Original" (Socket Logo)
         const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');

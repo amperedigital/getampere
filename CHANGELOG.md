@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.564] - 2026-01-28
+- **Zen Mode Fixes**:
+    - **Closing Animation**: Fixed visual artifacts (jumping/stuttering) when closing an expanded card by enforcing a JS-driven `transition` matching the CSS cubic-bezier curve (`0.5s`), ensuring the card smoothly glides back to its original grid slot.
+    - **Layout Stability**: Removed `transform: none` on the close button in expanded state, restoring intended hover transitions.
+
 ## [v2.563] - 2026-01-28
 - **Mobile UI Fixes**:
     - **Card Opener**: Hidden the "Expand/Maximize" button on Agent Cards for mobile devices (`< 1024px`) to prevent text clipping on smaller screens. The button remains accessible on Desktop via hover.
