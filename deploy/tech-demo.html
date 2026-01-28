@@ -1702,6 +1702,20 @@
                             if(m.type === 'attributes' && m.attributeName === 'data-system-state') {
                                 const state = document.body.getAttribute('data-system-state');
                                 updateMobileDisplay(state);
+
+                                // v2.596: Global State Enforcement for AI
+                                // If system enters STANDBY or OFF (manually or automatically), kill AI and hide window.
+                                if (state !== 'ACTIVE') {
+                                     const chatContainer = document.getElementById('ampere-ai-chat-container');
+                                     
+                                     // 1. Hide Window Immediately
+                                     if(chatContainer) chatContainer.classList.add('hidden');
+                                     
+                                     // 2. Terminate Session if running
+                                     if (window.ampereAI && (window.ampereAI.isConnected || window.ampereAI.isConnecting)) {
+                                         window.ampereAI.endSession();
+                                     }
+                                }
                             }
                         }
                     });

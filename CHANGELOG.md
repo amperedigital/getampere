@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.596] - 2026-01-28
+- **Refactoring (Global State Enforcement)**:
+    - **Concept**: Ensures the AI Chat Interface respects the global machine state (ACTIVE/STANDBY/OFF) regardless of how that state was reached (e.g., auto-timeout, manual power toggle, etc.).
+    - **Behavior**:
+        - If the system transitions to **STANDBY** or **OFF** for any reason, the **Chat Window is immediately forced hidden** and any active AI session is terminated.
+        - This prevents the chat window from "hanging around" when the machine powers down or sleeps.
+    - **Implementation**:
+        - Hooked into the `MutationObserver` monitoring `data-system-state` on the body tag to trigger cleanup logic on non-ACTIVE states.
+
 ## [v2.595] - 2026-01-28
 - **Feature (Unified Power Architecture)**:
     - **Synchronized Systems**: The "Power Button" (Visuals) and "Start/End Conversation" (AI) are now functionally linked as a single system.
