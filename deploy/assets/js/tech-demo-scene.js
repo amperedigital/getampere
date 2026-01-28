@@ -474,7 +474,7 @@ export class TechDemoScene {
         this.uiStatusContainer = statusContainer;
         
         if (isPillMode) {
-            statusContainer.className = 'ampere-status-pill-mode';
+            statusContainer.className = 'ampere-status-pill-mode flex items-center gap-3';
         } else {
             statusContainer.id = 'ampere-system-status';
         }
@@ -483,7 +483,9 @@ export class TechDemoScene {
         const dotRow = document.createElement('div');
         dotRow.className = 'ampere-dot-row';
         this.uiDots = [];
-        for (let i = 0; i < 20; i++) {
+        // v2.613: Reduce UV Meter Dot Count to 5 to fit clean mobile pill (matches bar visualizer count)
+        const dotCount = 5; 
+        for (let i = 0; i < dotCount; i++) {
              const dot = document.createElement('div');
              dot.className = 'ampere-dot';
              dotRow.appendChild(dot);
@@ -505,6 +507,7 @@ export class TechDemoScene {
         // --- ASSEMBLY ---
         if (isPillMode) {
             // Horizontal Layout: Warning | Text | Dots
+            // v2.613: Specific order for Pill: Text FIRST, then Dots (UV) to match Desktop "Status | Visualizer" flow
             statusContainer.appendChild(warning);
             statusContainer.appendChild(statusText);
             statusContainer.appendChild(dotRow);

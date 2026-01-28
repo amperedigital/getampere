@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.613] - 2026-01-28
+- **Fix (Mobile Status Injection)**:
+    - **UV Matrix Restoration**: Fixed a logic gap in `TechDemoScene.js` where the "Dot Matrix" UV meter and Initialization text failed to render in the Mobile Status Pill. Explicitly enabled Pill Mode rendering for the dot row with a reduced count (5 dots) to fit the mobile layout while preserving the "Desktop-grade" system status aesthetic.
+
 ## [v2.612] - 2026-01-28
 - **Logic Refinement (Status Sequence)**:
     - **Initialization Handover**: Removed the forced "Disconnected" status on page load in `AmpereAIChat`. This allows the `TechDemoScene` to correctly own the Status Pill during the boot-up sequence, displaying "INITIALIZING...", "SYSTEM CHECK", or "STANDBY" along with its own "Dot Matrix" UV meter, matching the Desktop experience.
