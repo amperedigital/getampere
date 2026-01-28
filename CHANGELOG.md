@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.610] - 2026-01-28
+- **UI Refinement (Mobile Pill Finalization)**:
+    - **Hidden Left Indicator**: On Mobile, the "Base Indicator" (Blue Dot + Live Demo text) is now completely hidden. The Status Pill now contains *only* the connection status (`DISCONNECTED` or `CONNECTED` + Visualizer). This removes all asymmetry and "empty space" to the right.
+    - **Enhanced Visualizer**: Increased the height (`h-4`) and base opacity (`70%`) of the "UV Meter" bars in the pill to make them clearly visible on mobile screens against the dark background.
+    - **Behavior**: The Visualizer now appears immediately upon connection start, ensuring the user gets feedback that audio is active.
+
 ## [v2.609] - 2026-01-28
 - **UI Refinement (Mobile Space Optimization)**:
     - **Removed Divider Line**: On Mobile, the vertical divider line (`border-l`) and its associated padding (`pl-2`) inside the Status Pill have been removed. This eliminates the "dead space" or "double gap" between the Blue Indicator Dot and the Status Text using just a simple gap (`gap-2`).

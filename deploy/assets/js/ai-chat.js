@@ -338,11 +338,12 @@ export class AmpereAIChat {
         // This satisfies the "UV Meter" request for Mobile/Desktop Unified Pill
         if (state === 'connected' || state === 'connecting') {
             // Create mini visualizer
+            // v2.610: Increased base opacity (70%) and height (h-4) for better visibility on mobile
             const viz = document.createElement('div');
-            viz.className = "flex items-center gap-0.5 h-3 ml-2 opacity-50 transition-opacity duration-300";
+            viz.className = "flex items-center gap-0.5 h-4 ml-2 opacity-70 transition-opacity duration-300";
             
             // 5 Bars
-            const heights = ['h-1', 'h-2.5', 'h-3', 'h-2', 'h-1'];
+            const heights = ['h-1.5', 'h-3', 'h-4', 'h-2.5', 'h-1.5'];
             
             heights.forEach((h, i) => {
                 const bar = document.createElement('div');
