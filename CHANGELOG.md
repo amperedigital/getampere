@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.577] - 2026-01-28
+- **Mobile Layout (Refinement)**:
+    - **Zero-Gap Scrollbar**: Removed internal padding (`pb-4` -> `0`) from the card slider track. The visual scrollbar now sits directly flush against the card content boundary.
+    - **Container Tightening**: Reduced external column padding (`pb-12` -> `pb-4`) to eliminate the visual gap between the card stack and the bottom of the screen.
+
 ## [v2.576] - 2026-01-28
 - **Mobile Experience**: 
     - **Zen Mode Disabled**: Completely disabled card expansion ("Zen Mode") on mobile phone screens (`< 768px`). Users will now view cards directly in the horizontal slider to prevent navigation confusion and overlapping artifacts.
