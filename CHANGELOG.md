@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.616] - 2026-01-28
+- **Fix (Unified Status System)**:
+    - **Non-Destructive Integration**: Updated `AmpereAIChat.js` to intelligently detect if the Status Pill is managed by `TechDemoScene.js `(Text + Dots). If found, it now updates the status *in-place* and appends audio visualizer bars, rather than wiping the entire container.
+    - **Result**: This resolves the issue where the "Power Up UV" sequence (Dots) was being destroyed when the agent connected. Now, the UV Meter (Dots) remains visible alongside the Connection Status and Audio Visualizer, preserving the full animation sequence and system status context.
+
 ## [v2.615] - 2026-01-28
 - **Fix (Animation Loop Initialization)**:
     - **Variable Initialization**: Fixed a critical race condition where `simIntensity` and `lightTargets` were undefined during the first few frames of the render loop (before the `setTimeout` callback in `initUI` triggered). This caused the animation variables to become `NaN`, effectively freezing the visual state and preventing the UV Meter from animating.

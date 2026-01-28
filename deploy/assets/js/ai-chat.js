@@ -293,6 +293,54 @@ export class AmpereAIChat {
     updateStatusUI(state, message) {
         if (!this.statusTarget) return;
         
+        // v2.616: Non-Destructive Update Integration with TechDemoScene
+        // Check if the TechDemoScene has injected its structure (Text + Dots)
+        // If so, we modify it in-place rather than wiping it.
+        const sceneText = this.statusTarget.querySelector('.ampere-status-text');
+        const sceneContainer = this.statusTarget.querySelector('.ampere-status-pill-mode') || this.statusTarget;
+
+        if (sceneText) {
+            // 1. Update Text
+            sceneText.innerText = message;
+            
+            // 2. Color/Animation Overrides
+            // Remove previous overrides first
+            sceneText.classList.remove('text-yellow-400', 'text-blue-400', 'text-red-500', 'text-slate-500', 'animate-pulse');
+            sceneText.style.color = ''; // specific hex overrides from TechDemoScene might persist
+
+            if (state === 'connecting') {
+                sceneText.classList.add('text-yellow-400', 'animate-pulse');
+                sceneText.style.color = '#facc15'; // Force Yellow Overide
+            } else if (state === 'connected') {
+                sceneText.classList.add('text-blue-400');
+                sceneText.style.color = '#60a5fa'; // Force Blue Override
+            } else if (state === 'error') {
+                sceneText.classList.add('text-red-500');
+                sceneText.style.color = '#ef4444'; 
+            } else {
+                 // Disconnected/Default - Revert to Scene Logic?
+                 // Usually Scene handles its own, so we leave it or set to slate.
+                 // TechDemoScene usually makes it green or slate.
+            }
+            
+            // 3. Inject Visualizer (If needed)
+            // We only add the bars if we are connecting/connected AND they don't exist yet.
+            if ((state === 'connecting' || state === 'connected') && !this.visualizer) {
+                const viz = this.createVisualizer('bg-blue-400');
+                // Append to the Flex Container (Pill), preserving existing Dots
+                sceneContainer.appendChild(viz);
+                this.visualizer = viz;
+            } else if (state === 'disconnected') {
+                // Remove visualizer if exists
+                if (this.visualizer) {
+                    this.visualizer.remove();
+                    this.visualizer = null;
+                }
+            }
+            
+            return; // EXIT: Do not run legacy destructive code
+        }
+        
         // We inject into the Pill (Text | Dots | Visualizer)
         // If state is 'connecting' or 'connected', we assume the Pill is in 'Pill Mode' (flex row)
         
@@ -450,6 +498,8 @@ export class AmpereAIChat {
     // --- Helpers ---
 
     updateVisualizer(isActive) {
+        if (!this.visualizer) return;
+        
         // Simple CSS toggle for the bars
         const bars = this.visualizer.querySelectorAll('div');
         if (isActive) {
@@ -466,5 +516,28 @@ export class AmpereAIChat {
                 bar.style.animationDuration = '1.5s';
             });
         }
+    }
+
+    createVisualizer(colorClass = 'bg-blue-400') {
+        const viz = document.createElement('div');
+        viz.className = "flex items-center gap-0.5 h-4 ml-2 opacity-70 transition-opacity duration-300";
+        
+        // 5 Bars
+        const heights = ['h-1.5', 'h-3', 'h-4', 'h-2.5', 'h-1.5'];
+        
+        heights.forEach((h, i) => {
+            const bar = document.createElement('div');
+            // Use the active color (blue/yellow) for the bars too
+            const bg = colorClass.includes('text') ? 'bg-blue-400' : colorClass;
+            
+            bar.className = `w-0.5 rounded-full ${bg} animate-pulse`; 
+            // Add initial height
+            bar.classList.add(h);
+            // Stagger animations
+            bar.style.animationDelay = `${i * 75}ms`;
+            viz.appendChild(bar);
+        });
+        
+        return viz;
     }
 }
