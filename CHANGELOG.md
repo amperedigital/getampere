@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.581] - 2026-01-28
+- **Fix: AI Chat SDK Import**:
+    - **Corrected Package Name**: Switched the import from the non-existent `@elevenlabs/convai` to the correct `@elevenlabs/client` package.
+    - **CDN**: Updated to use `https://esm.sh/@elevenlabs/client?bundle`. This resolves the `500 Server Error` seen in the console when trying to load the chat module.
+
 ## [v2.580] - 2026-01-28
 - **Feature: Inline AI Chat (Glass Interface)**:
     - **Custom UI**: Replaced the floating ElevenLabs widget with a fully custom "Glass Card" interface powered by the ElevenLabs SDK.

@@ -1,4 +1,4 @@
-import { Conversation } from 'https://esm.sh/@elevenlabs/convai?bundle';
+import { Conversation } from 'https://esm.sh/@elevenlabs/client?bundle';
 
 export class AmpereAIChat {
     constructor(containerId, agentId) {
