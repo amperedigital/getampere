@@ -99,31 +99,19 @@ export class CardExpander {
         const startWidth = startRect.width;
         const startHeight = startRect.height;
         
-        // Target Layout (Dynamic Padding Awareness)
-        // Fix v2.508: Calculate margins dynamically to match container padding exactly.
-        const containerStyle = window.getComputedStyle(container);
-        const padLeft = parseFloat(containerStyle.paddingLeft) || 0;
-        const padRight = parseFloat(containerStyle.paddingRight) || 0;
-        const padTop = parseFloat(containerStyle.paddingTop) || 0;
-
-        // Calculate the TARGET positions relative to VIEWPORT (Fixed).
-        // Target Top: Container Top (Viewport) + PaddingTop
-        const targetTop = parentRect.top + padTop;
+        // v2.567: Universal "Zen Mode" Target Calculation
+        // Ignoring parent container position/dimensions and filling the Viewport directly.
+        // This ensures the card is always centered and maximized on screen, preventing "drop" issues.
+        const viewportW = window.innerWidth;
+        const viewportH = window.innerHeight;
         
-        // Target Height: Viewport Height of Container - (TopPadding + BottomPadding effectively? Or just some margins?)
-        // Old logic: parentRect.height - 64 (4rem). Let's stick to safe margins.
-        // v2.566: Use explicit safe margins. Height = ContainerHeight - (PadTop + PadTop).
-        // Or just `targetHeight = parentRect.height - 64` as before but relative to size.
-        // Let's use `calc(100% - 2rem)` equivalent.
-        // For robustness, let's keep the explicitly calculated rect.
-        // User requested "17px" top which is ~1rem. padTop on mobile is 16px (1rem).
-        // On desktop padTop is 32px (2rem). This matches exactly.
-        const targetHeight = parentRect.height - (padTop * 2); 
+        // Target Gap/Padding (1rem = 16px usually, but let's be dynamic or fixed safe area)
+        const safeGap = 16; 
         
-        // Target Left: Container Left + PaddingLeft
-        const targetLeft = parentRect.left + padLeft; 
-        // Target Width: Container Width - Horizontal Padding
-        const targetWidth = parentRect.width - (padLeft + padRight);
+        const targetTop = safeGap;
+        const targetLeft = safeGap;
+        const targetWidth = viewportW - (safeGap * 2);
+        const targetHeight = viewportH - (safeGap * 2);
 
         // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 

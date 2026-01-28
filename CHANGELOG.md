@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.567] - 2026-01-28
+- **Zen Mode (Fixed):**
+    - **Universal Target**: Rewrote the target calculation to ignore the parent container's unpredictable scroll position on mobile. Now uses `window.innerHeight` and `window.innerWidth` with a fixed `16px` (1rem) safe area.
+    - **Result**: The card will now reliably open to fill the screen (minus 16px margins), centered perfectly, regardless of whether the column is scrolled, offset, or sticky.
+
 ## [v2.566] - 2026-01-28
 - **Zen Mode Logic**:
     - **Positioning Engine**: Rewrote the `expand` logic to use `position: fixed` coordinates relative to the Viewport, instead of calculating Absolute offsets.
