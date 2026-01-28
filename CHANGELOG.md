@@ -1,5 +1,19 @@
 # Changelog
 
+## [v2.592] - 2026-01-28
+- **Refactoring (Interaction Modalities)**:
+    - **Concept**: Separated "Voice Mode" and "Text Mode" into distinct interaction paths, replacing the single integrated widget button.
+    - **Voice Mode (Primary)**:
+        - Moved the **"Start Conversation"** button out of the chat window and into the main "Left Column" text area as a primary CTA.
+        - **Visuals**: Large pill button, blue heavy shadow, highly visible below the main description.
+        - **Logic**: Directly triggers the ElevenLabs session. Auto-reveals the visualizer window upon connection.
+    - **Text Mode (Secondary)**:
+        - Added a discrete **"Chat"** text button next to the voice button.
+        - **Logic**: Toggles the visibility of the "Transcript/Chat Window" (Right Column) without necessarily starting audio.
+    - **Status Integration**:
+        - Wired `AmpereAIChat` to inject its connection status (Connecting, Secure, Error) directly into the new **Live Demo Pill** (Status Window), unifying all system status indicators in one top-bar location.
+        - Removed legacy status headers from the Chat Window itself to reduce clutter.
+
 ## [v2.591] - 2026-01-28
 - **Refactoring (Status Window Integration)**:
     - **Concept**: Refactored the floating "UV Display" / "Active Status" cluster into the **Live Demo Pill**. It is no longer a separate floating element attached to the neural net container.

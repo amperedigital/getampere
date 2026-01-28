@@ -61,6 +61,34 @@
                         <p class="text-lg lg:text-xl text-slate-300 leading-relaxed drop-shadow-lg text-balance">
                             Explore the autonomous decision making core of Ampere AI.
                         </p>
+
+                        <!-- v2.592: Action CTA Cluster (Voice & Text) -->
+                        <div class="flex flex-wrap items-center gap-4 mt-8 pointer-events-auto">
+                            <!-- Voice Chat (Start Conversation) -->
+                            <button id="btn-start-voice" class="flex items-center gap-3 px-8 py-4 rounded-full bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/25 transition-all duration-300 group">
+                                <span class="relative flex h-3 w-3">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                                </span>
+                                <span class="font-bold tracking-wide">Star Conversation</span>
+                            </button>
+                            
+                            <!-- Voice Chat (End Conversation) - Hidden by default -->
+                            <button id="btn-end-voice" class="hidden flex items-center gap-3 px-8 py-4 rounded-full bg-red-500 hover:bg-red-400 text-white shadow-lg shadow-red-500/25 transition-all duration-300">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span class="font-bold tracking-wide">End Call</span>
+                            </button>
+
+                            <!-- Text Chat Toggle -->
+                            <button id="btn-start-text" class="flex items-center gap-3 px-6 py-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all duration-300">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                                <span class="font-medium">Chat</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Mobile Control Cluster (Top Right) -->
@@ -375,7 +403,8 @@
             
             <!-- Ampere AI Chat Interface (Inline - Top of Right Column) -->
             <!-- v2.582: Relocated here to sit "above the cards" on mobile/desktop as requested. -->
-            <div id="ampere-ai-chat-container" class="relative w-full mb-6 z-50 pointer-events-auto"></div>
+            <!-- v2.592: Hidden on load, acts as text chat modal. Start Button removed. -->
+            <div id="ampere-ai-chat-container" class="hidden relative w-full mb-6 z-50 pointer-events-auto"></div>
 
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
@@ -1778,9 +1807,14 @@
     <script type="module">
         import { AmpereAIChat } from './assets/js/ai-chat.js';
         
-        // Initialize with Container ID and Agent ID
+        // Initialize with Container ID, Agent ID, and UI Options
         // Agent ID: agent_4501ka281xkpe6e8jzbspgy9qh4d
-        new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d');
+        new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
+            startBtnId: 'btn-start-voice',
+            endBtnId: 'btn-end-voice',
+            textChatBtnId: 'btn-start-text',
+            statusTargetId: 'status-injection-target'
+        });
     </script>
 </body>
 </html>
