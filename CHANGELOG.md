@@ -3,7 +3,7 @@
 ## [v2.571] - 2026-01-28
 - **Mobile UI Polish**: 
     - **Card Parsing**: Increased internal padding (Top 2rem, Bottom/Left 1.5rem) for better content breathing room on mobile.
-    - **Uniform Height**: Implemented strict JavaScript-based height equalization. Calculates the tallest card content and enforces that height across the entire slider to prevent "stepping" visual defects.
+    - **Uniform Height**: Implemented strict JavaScript-based height equalization. Measures the tallest card content and enforces that height across the entire slider to prevent "stepping" visual defects. (Refactored to `CardExpander` module).
 
 ## [v2.570] - 2026-01-28
 - **Zen Mode (Mobile):** Removed closing animation on mobile devices. Cards now close instantly to prevent layout thrashing and "bounce" artifacts.

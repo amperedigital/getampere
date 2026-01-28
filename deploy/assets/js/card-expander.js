@@ -11,6 +11,13 @@ export class CardExpander {
     }
 
     init() {
+        // v2.571: Run Height Equalizer immediately and on resize
+        this.equalizeHeights();
+        window.addEventListener('resize', () => this.equalizeHeights());
+        // Run slightly later to account for asset loading/font rendering
+        setTimeout(() => this.equalizeHeights(), 500); 
+        setTimeout(() => this.equalizeHeights(), 2000);
+
         // Delegate click events on the right column
         const column = document.getElementById('tech-demo-right-column');
         
@@ -316,4 +323,26 @@ export class CardExpander {
             }
         }
     }
+
+    // v2.571: Uniform Card Height Enforcement
+    equalizeHeights() {
+        const cards = document.querySelectorAll('.socket-card-container');
+        if (!cards.length) return;
+
+        // Reset first to measure natural height
+        cards.forEach(card => card.style.minHeight = '');
+
+        let maxHeight = 0;
+        cards.forEach(card => {
+            const height = card.scrollHeight;
+            if (height > maxHeight) maxHeight = height;
+        });
+
+        if (maxHeight > 0) {
+             cards.forEach(card => {
+                card.style.minHeight = `${maxHeight}px`;
+            });
+        }
+    }
 }
+

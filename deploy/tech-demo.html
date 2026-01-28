@@ -1754,54 +1754,6 @@
     <script type="module">
         import { initAllSockets } from './assets/js/glass-socket.js?v=2.483';
         initAllSockets('.socket-card-container');
-
-        // v2.571: Dynamic Equalizer for Card Heights
-        // Measures the tallest card content and applies it to all cards to ensure the slider is uniform.
-        function equalizeCardHeights() {
-            // Only relevant on Mobile/Tablet slider mode? 
-            // The user said "Looks weird in a slider", implying mobile/tablet.
-            // On desktop, it's a grid, which might already handle height via grid-rows.
-            
-            const cards = document.querySelectorAll('.socket-card-container');
-            if (!cards.length) return;
-
-            // Reset first to measure natural height
-            cards.forEach(card => card.style.minHeight = '');
-
-            let maxHeight = 0;
-            cards.forEach(card => {
-                // We want the content height. The card itself has h-full.
-                // We should look at the first child or the computed height?
-                // The structure is: Card -> SVG, Backdrop, Content Wrapper.
-                // Let's measure the scrollHeight of the card element itself, 
-                // but we must be careful if it's currently shrunk by flex (it shouldn't be if flex-shrink-0).
-                const height = card.scrollHeight;
-                if (height > maxHeight) maxHeight = height;
-            });
-
-            // Add a buffer? The user said "calculation based on the content".
-            // If they are flex items in a row, they should stretch to the tallest ANYWAY.
-            // The fact they aren't implies align-items isn't stretch, or something breaks it.
-            // The track has "items-stretch" (implicit in flex default)? No, let's check.
-            // Track class: "flex flex-row overflow-x-auto..."
-            // Default align-items is 'stretch'.
-            
-            // However, on mobile, if content is short, it might be shorter than the 60vh min-height?
-            // Let's enforce the max found height.
-            
-            if (maxHeight > 0) {
-                 cards.forEach(card => {
-                    card.style.minHeight = `${maxHeight}px`;
-                });
-            }
-        }
-
-        // Run on load and resize
-        window.addEventListener('load', equalizeCardHeights);
-        window.addEventListener('resize', equalizeCardHeights);
-        // Also run after a short delay to allow fonts/images
-        setTimeout(equalizeCardHeights, 500);
-        setTimeout(equalizeCardHeights, 2000);
     </script>
     <elevenlabs-convai agent-id="agent_4501ka281xkpe6e8jzbspgy9qh4d"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
