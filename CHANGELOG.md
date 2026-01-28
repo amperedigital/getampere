@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.578] - 2026-01-28
+- **Mobile Layout (Gap Fix)**:
+    - **Removed Minimum Height**: Removed the `min-h-[60vh]` constraint from the card slider track on mobile. This was forcing a large empty gap below the cards. The container now `shrink-wraps` (`h-auto`) to the actual card height, placing the following content (or page bottom) directly underneath.
+
 ## [v2.577] - 2026-01-28
 - **Mobile Layout (Refinement)**:
     - **Zero-Gap Scrollbar**: Removed internal padding (`pb-4` -> `0`) from the card slider track. The visual scrollbar now sits directly flush against the card content boundary.
