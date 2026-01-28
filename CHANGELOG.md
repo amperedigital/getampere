@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.590] - 2026-01-28
+- **Layout Tuning (Bottom Flush)**:
+    - **Scene Container**: Removed `lg:pb-32` (8rem padding). This constraint was artificially holding the 3D visuals up. By removing it, the `justify-end` wrapper can now push the Neural Net/Ring to the absolute bottom of the card, maximizing the clearance from the Header Text.
+
 ## [v2.589] - 2026-01-28
 - **Layout Recovery (Zero-Height Fix)**:
     - **Issue**: In v2.588/587, setting `h-auto` on the Ring Container without an explicit aspect ratio caused it to collapse to 0px height because its children were relying on `h-full` (parent reference).
