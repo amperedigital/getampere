@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.565] - 2026-01-28
+- **Card Animation System**:
+    - **Clipped Animation Fix**: Overhauled the card closing animation (`collapse`) to use `position: fixed` instead of `absolute`. This solves a critical bug on Mobile where the shrinking card would be "trapped" and clipped inside the `overflow: auto` scroll track, causing visual artifacting, cropped content ("trailed animation"), and misalignment ("dropped/lower" appearance). The card now floats above all containers until fully restored to its slot.
+
 ## [v2.564] - 2026-01-28
 - **Zen Mode Fixes**:
     - **Closing Animation**: Fixed visual artifacts (jumping/stuttering) when closing an expanded card by enforcing a JS-driven `transition` matching the CSS cubic-bezier curve (`0.5s`), ensuring the card smoothly glides back to its original grid slot.

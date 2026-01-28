@@ -180,40 +180,38 @@ export class CardExpander {
 
         // 1. REVERSE FLIP: Measure current state (Expanded)
         const currentRect = card.getBoundingClientRect();
-        const parentRect = container.getBoundingClientRect();
+        // const parentRect = container.getBoundingClientRect(); // No longer needed for Fixed Position
         
         // Measure where we want to go (The Spacer)
         const targetRect = this.spacer.getBoundingClientRect();
 
-        // Calculate Target relative to Content Start (Visual + Scroll)
-        const targetTop = (targetRect.top - parentRect.top) + container.scrollTop;
-        const targetLeft = (targetRect.left - parentRect.left) + container.scrollLeft;
+        // v2.565: Use FIXED positioning for the return animation to avoid clipping by parent containers
+        // (like the mobile scroll track) which happens when using 'absolute'.
+        const targetTop = targetRect.top;
+        const targetLeft = targetRect.left;
         const targetWidth = targetRect.width;
         const targetHeight = targetRect.height;
         
-        // Current Visual Start (which is already set via inline styles from expand, but might have changed if scrolled?)
-        // If user scrolled while expanded, the card moved with it.
-        // currentRect reflects new visual pos.
-        // We need to set inline styles to current visual pos relative to content start.
-        const currentTop = (currentRect.top - parentRect.top) + container.scrollTop;
-        const currentLeft = (currentRect.left - parentRect.left) + container.scrollLeft;
+        // Current Visual Start (Fixed Viewport Coords)
+        const currentTop = currentRect.top;
+        const currentLeft = currentRect.left;
         
         card.classList.remove('is-expanded');
         document.body.classList.remove('card-expanded-mode');
         container.classList.remove('has-active-card');
         
-        // Lock to current visual state
-        card.style.position = 'absolute';
+        // Lock to current visual state using FIXED position
+        card.style.position = 'fixed'; // Keep it fixed!
         card.style.top = `${currentTop}px`;
         card.style.left = `${currentLeft}px`;
         card.style.width = `${currentRect.width}px`;
         card.style.height = `${currentRect.height}px`;
-        card.style.zIndex = '50';
+        card.style.zIndex = '9999'; // Stay on top during anim
         
         // C. Reflow
         void card.offsetWidth;
 
-        // D. Animate to Grid Slot
+        // D. Animate to Grid Slot (Fixed Coords)
         requestAnimationFrame(() => {
             // v2.564: Use transition class to ensure smooth movement even if CSS is tricky
             card.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
