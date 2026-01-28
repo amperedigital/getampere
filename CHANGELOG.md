@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.575] - 2026-01-28
+- **Mobile Zen Mode (Alignment)**:
+    - **In-Line Expansion**: Cards now expand strictly from their scroll track position (`startTop`, `startLeft`) instead of centering on screen. This maintains the "scroller context" and prevents the disorienting "hovering" effect.
+    - **Anchored Geometry**: Width exactly matches the card slot. Max-height fills the space below the header to the bottom of the screen (`availableSpace`).
+
+## [v2.574] - 2026-01-28
+- **Mobile Card UI Polish**:
+    - **Header Sizing**: Reduced title size to `clamp(1.1rem, 4cqw, ...)` and added `line-clamp-2` to prevent overflow on small screens.
+    - **Safe Area**: Increased header margin to `mr-16` (4rem) to ensure the title never overlaps the Close button.
+    - **Breathing Room**: Increased card internal padding to `pt-10 pb-8 pl-8` and metric grid spacing to `gap-y-5`.
+
 ## [v2.573] - 2026-01-28
 - **Mobile Zen Mode**: 
     - **Content-First Sizing**: Cards now expand to specific content height (`auto`) instead of filling the full screen height.

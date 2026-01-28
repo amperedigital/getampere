@@ -142,16 +142,22 @@ export class CardExpander {
         if (window.innerWidth <= 768) {
              card.style.transition = 'none'; // Ensure no transition
              
-             // Set Final State Immediately (Centered, Content-Based Height)
+             // v2.575: Anchor to Original Position (No "Hovering")
+             // Card expands In-Place (visually) but grows Downwards.
              card.style.position = 'fixed';
-             card.style.top = '50%';        // Center Vertical
-             card.style.left = '50%';       // Center Horizontal
-             card.style.transform = 'translate(-50%, -50%)'; // Perfectly center
+             card.style.top = `${startTop}px`;     // Anchor strictly to slot
+             card.style.left = `${startLeft}px`;   // Anchor strictly to slot
+             card.style.transform = 'none';        // No re-centering logic
              
-             card.style.width = `${targetWidth}px`; 
-             card.style.height = 'auto'; // Let content dictate height
-             card.style.minHeight = '0'; // Override any equalizer min-height
-             card.style.maxHeight = 'calc(100vh - 64px)'; // Prevent overflow off screen
+             card.style.width = `${startWidth}px`; // Match slot width exactly
+             card.style.height = 'auto';           // Let content dictate height
+             card.style.minHeight = '0'; 
+             
+             // Max Height: Fill downwards until roughly bottom of screen (minus 2rem buffer)
+             // But ensure at least 50vh is available, else we might need to nudge it up?
+             // Simplest approach: Allow it to fill to bottom of screen.
+             const availableSpace = window.innerHeight - startTop - 32; 
+             card.style.maxHeight = `${availableSpace}px`;
              
              card.style.zIndex = '9999';
              card.style.margin = '0';
