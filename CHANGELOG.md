@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.609] - 2026-01-28
+- **UI Refinement (Mobile Space Optimization)**:
+    - **Removed Divider Line**: On Mobile, the vertical divider line (`border-l`) and its associated padding (`pl-2`) inside the Status Pill have been removed. This eliminates the "dead space" or "double gap" between the Blue Indicator Dot and the Status Text using just a simple gap (`gap-2`).
+    - **Result**: The "Disconnected" state is now tightly packed: `[ • DISCONNECTED ]`, removing the perception of extra empty space or misalignment. Desktop layout remains unchanged.
+
 ## [v2.608] - 2026-01-28
 - **UI Logic Update (Status Pill Polish)**:
     - **Removed Connected Dot**: The static status dot in the "Connected" state has been removed. The UI now displays `[Text] [Visualizer]`, eliminating the "extra dot" that appeared between the text and the bars.

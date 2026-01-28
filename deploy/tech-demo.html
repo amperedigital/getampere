@@ -119,9 +119,9 @@
 
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- v2.603: Centered Top (Absolute) on Mobile to align with margins (top-8). -->
-            <!-- v2.605: Compact styling for Mobile (reduced padding/gaps) to prevent clipping. -->
-            <!-- v2.606: HIDING 'Live Demo' text on Mobile to prevent clipping. Only showing the Status (Disconnected/Connected). -->
-            <div id="live-demo-pill" class="flex absolute z-30 top-8 left-1/2 -translate-x-1/2 lg:top-8 lg:left-auto lg:right-12 lg:translate-x-0 lg:-translate-y-1/2 items-center gap-2 lg:gap-4 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300 max-w-[90vw]">
+            <!-- v2.609: Hyper-Compact Mobile Pill (Border Removed). -->
+            <!-- Mobile: [Blue Dot] --gap-2-- [DISCONNECTED]. No vertical dividers to save space. -->
+            <div id="live-demo-pill" class="flex absolute z-30 top-8 left-1/2 -translate-x-1/2 lg:top-8 lg:left-auto lg:right-12 lg:translate-x-0 lg:-translate-y-1/2 items-center gap-2 lg:gap-4 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300 w-fit max-w-[90vw]">
                 
                 <!-- Base Indicator -->
                 <div class="flex items-center gap-2 lg:gap-3 shrink-0">
@@ -130,8 +130,8 @@
                 </div>
 
                 <!-- Status Injection Target (JS will populate this: Text | Dot) -->
-                <!-- v2.602: Ensure visible on mobile (removed auto-hiding classes if any) -->
-                <div id="status-injection-target" class="flex items-center gap-2 lg:gap-4 border-l border-white/10 pl-2 lg:pl-4"></div>
+                <!-- v2.609: Removed border-l and padding on mobile (lg:border-l lg:pl-4) to remove "dead space". -->
+                <div id="status-injection-target" class="flex items-center gap-2 lg:gap-4 lg:border-l border-white/10 lg:pl-4"></div>
             </div>
 
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
