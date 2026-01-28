@@ -625,10 +625,10 @@ export class TechDemoScene {
             // Also: "light green background should be much lighter" on active.
             btns.forEach(btn => {
                 // Remove all potential state colors first
-                btn.classList.remove('text-amber-300', 'text-emerald-400', 'text-slate-500', 'bg-emerald-500/20');
+                btn.classList.remove('text-amber-300', 'text-emerald-400', 'text-slate-500', 'bg-emerald-500/20', 'bg-emerald-500/5');
                 
                 if (newState === 'ACTIVE') {
-                    btn.classList.add('text-emerald-400', 'bg-emerald-500/20');
+                    btn.classList.add('text-emerald-400', 'bg-emerald-500/5');
                     // Ensure glow is green? The glow is handled by Apple Glass usually via text shadow or internal logic.
                     // Adding a text shadow via style just in case
                     btn.style.textShadow = '0 0 15px rgba(52, 211, 153, 0.6)';

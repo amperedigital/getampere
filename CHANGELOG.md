@@ -1,3 +1,9 @@
+## [v2.641] - 2026-01-28
+- **Power Button Visuals**:
+    - **Fix**: Removed conflicting CSS `!important` rule that was forcing a dark/black background on the button's active state.
+    - **Polish**: Lightened the active state background significantly (to 5% opacity) to achieve the requested "very very light" look.
+    - **Verify**: Icon color now correctly displays as Emerald (Green) instead of persisting as Amber (Orange), as the visual conflict is resolved.
+
 ## [v2.640] - 2026-01-28
 - **Tablet Breakpoint Adjustment**:
     - **Logic Strict**: Changed the layout and logic breakpoints from `<= 1024px` to `< 1024px`.
