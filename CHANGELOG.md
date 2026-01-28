@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.586] - 2026-01-28
+- **Layout Tuning (Neural Net Alignment)**:
+    - **Visual Translation**: Replaced `lg:pt-64` with `lg:mt-48` on the `tech-demo-wrapper`.
+    - **Outcome**: This pushes the Neural Net and Halo Ring down by 12rem (clearing the "AI Neural Architecture" header) *without* compressing the container height. This ensures the visuals retain their full original width and impact, fulfilling the "push down, but width remains the same" requirement.
+
 ## [v2.585] - 2026-01-28
 - **Layout Repair (Scene Alignment)**:
     - **Container Restoration**: Reverted the `tech-demo-scene-container` top position back to `lg:top-8` (2rem). This restores the correct layout symmetry where the left and right columns are perfectly aligned at the top.

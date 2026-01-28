@@ -159,8 +159,8 @@
                 <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
 
                 <!-- WRAPPER: Width constrains and centers column -->
-                <!-- v2.585: Added lg:pt-64 to push only the internal visual content (Ring, Neural Net) down, keeping the container frame intact. -->
-                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-0 lg:pt-64">
+                <!-- v2.585: Removed lg:pt-64 (which caused width shrinkage). Added lg:mt-48 to push full-size visuals down. -->
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-48">
                     
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
                     <!-- REMOVED lg:aspect-square from this parent. Ideally, the parent is just a flex column. -->
