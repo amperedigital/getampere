@@ -1,4 +1,14 @@
-# Changelog
+## [v2.635] - 2026-01-28
+- **Mobile Layout Experiment**:
+## [v2.635] - 2026-01-28
+- **Mobile Layout Experiment**:
+    - **Visualizer Centering**: Moved the Voice UV Visualizer to the absolute center of the Neural Net Orb (`top-1/2 left-1/2`) on mobile and tablet devices (<1024px). This creates a direct visual integration between the voice synthesis and the neural core.
+    - **Desktop Stability**: Preserved the bottom-right positioning for desktop layouts.
+
+## [v2.635] - 2026-01-28
+- **Mobile Layout Experiment**:
+    - **Visualizer Centering**: Moved the Voice UV Visualizer to the absolute center of the Neural Net Orb (`top-1/2 left-1/2`) on mobile and tablet devices (<1024px). This creates a direct visual integration between the voice synthesis and the neural core.
+    - **Desktop Stability**: Preserved the bottom-right positioning for desktop layouts.
 
 ## [v2.634] - 2026-01-28
 - **Typography Polish**:
