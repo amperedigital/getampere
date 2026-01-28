@@ -1,5 +1,18 @@
-## [v2.635] - 2026-01-28
-- **Mobile Layout Experiment**:
+## [v2.637] - 2026-01-28
+- **Mobile Visualizer Fix**:
+## [v2.637] - 2026-01-28
+- **Mobile Visualizer Fix**:
+    - **DOM Nesting Correction**: Moved the Voice UV Visualizer *inside* the `Ring Container` (specifically into the aspect-ratio preserved block). 
+    - **Result**: The `top-1/2` positioning now calculates relative to the Orb itself, not the entire scene wrapper (which included bottom sliders/padding), ensuring true mathematical centering of the waveform within the Neural Net.
+
+## [v2.637] - 2026-01-28
+- **Mobile Visualizer Fix**:
+    - **DOM Nesting Correction**: Moved the Voice UV Visualizer *inside* the `Ring Container` (specifically into the aspect-ratio preserved block). 
+    - **Result**: The `top-1/2` positioning now calculates relative to the Orb itself, not the entire scene wrapper (which included bottom sliders/padding), ensuring true mathematical centering of the waveform within the Neural Net.
+
+    - **DOM Nesting Correction**: Moved the Voice UV Visualizer *inside* the `Ring Container` (specifically into the aspect-ratio preserved block). 
+    - **Result**: The `top-1/2` positioning now calculates relative to the Orb itself, not the entire scene wrapper (which included bottom sliders/padding), ensuring true mathematical centering of the waveform within the Neural Net.
+
 ## [v2.636] - 2026-01-28
 - **Mobile UX Refinement (Voice UV)**:
     - **True Optical Centering**: Relocated the Voice UV Visualizer DOM element *inside* the `tech-demo-scene-container`.

@@ -324,6 +324,11 @@
                     <!-- Visuals are clipped by the ring but controls must be visible. Container is overflow-visible. -->
                     <!-- v2.350: Lifted from lg:bottom-[-2rem] to lg:bottom-12 to clear Chat Widget on Desktop. -->
                     <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-12 left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
+
+                    <!-- v2.636: Voice UV Visualizer - Centered in Ring Container for true layout center -->
+                    <div id="voice-visualizer-container" class="flex absolute z-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:top-auto lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:bottom-12 lg:right-12 pointer-events-none">
+                         <!-- Visualizer Injected Here -->
+                    </div>
                 </div>
                 <!-- End Ring Container -->
 
@@ -387,11 +392,6 @@
 
                 <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
 
-                <!-- v2.635: Centered in Neural Net Orb on Mobile/Tablet (top-1/2 left-1/2 of Scene Container) -->
-                <!-- Moved INSIDE the scene container to ensure perfect centering on the Orb component -->
-                <div id="voice-visualizer-container" class="flex absolute z-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:top-auto lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:bottom-12 lg:right-12 pointer-events-none">
-                     <!-- Visualizer Injected Here -->
-                </div>
             </div>
                  
             
