@@ -142,14 +142,22 @@ export class CardExpander {
         if (window.innerWidth <= 768) {
              card.style.transition = 'none'; // Ensure no transition
              
-             // Set Final State Immediately
+             // Set Final State Immediately (Centered, Content-Based Height)
              card.style.position = 'fixed';
-             card.style.top = `${targetTop}px`;
-             card.style.left = `${targetLeft}px`;
+             card.style.top = '50%';        // Center Vertical
+             card.style.left = '50%';       // Center Horizontal
+             card.style.transform = 'translate(-50%, -50%)'; // Perfectly center
+             
              card.style.width = `${targetWidth}px`; 
-             card.style.height = `${targetHeight}px`; 
+             card.style.height = 'auto'; // Let content dictate height
+             card.style.minHeight = '0'; // Override any equalizer min-height
+             card.style.maxHeight = 'calc(100vh - 64px)'; // Prevent overflow off screen
+             
              card.style.zIndex = '9999';
              card.style.margin = '0';
+             
+             // Allow internal scrolling if content exceeds screen
+             card.style.overflowY = 'auto'; 
              
              card.classList.add('is-expanded');
              document.body.classList.add('card-expanded-mode'); 
@@ -252,10 +260,18 @@ export class CardExpander {
             card.style.bottom = '';
             card.style.width = '';
             card.style.height = '';
+            card.style.minHeight = ''; // Clear overrides from expand
+            card.style.maxHeight = ''; // Clear overrides from expand
+            card.style.transform = ''; // Clear center transform
+            card.style.overflowY = ''; // Clear overflow
+            
             card.style.zIndex = '';
             card.style.margin = '';
             // keep transition disabled for this frame
             card.style.transition = 'none';
+            
+            // v2.573: Re-apply Equalizer immediately if needed
+            this.equalizeHeights();
             
             this.activeCard = null;
             

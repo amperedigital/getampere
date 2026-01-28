@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.573] - 2026-01-28
+- **Mobile Zen Mode**: 
+    - **Content-First Sizing**: Cards now expand to specific content height (`auto`) instead of filling the full screen height.
+    - **Vertical Centering**: Expanded cards are perfectly centered on screen using `transform: translate(-50%, -50%)`.
+    - **Height Limits**: Capped to `calc(100vh - 64px)` with internal scrolling enabled if content overflows. This eliminates the "empty space" issue on shorter cards.
+
 ## [v2.572] - 2026-01-28
 - **Mobile Zen Mode**: Removed opening animation on mobile devices. Cards now expand instantly to the centered "Zen" position, mirroring the instant-close behavior. This eliminates visual distraction and layout interpolation artifacts during the transition.
 
