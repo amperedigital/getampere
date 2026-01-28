@@ -294,8 +294,9 @@ export class AmpereAIChat {
         // Remove existing content in target
         this.statusTarget.innerHTML = '';
         
+        // v2.606: Responsive Tracking (Normal on Mobile, Widest on Desktop) to save space
         const statusText = document.createElement('span');
-        statusText.className = "text-[10px] font-mono font-bold tracking-widest uppercase whitespace-nowrap";
+        statusText.className = "text-[10px] font-mono font-bold tracking-normal lg:tracking-widest uppercase whitespace-nowrap";
         statusText.innerText = message;
         
         const dot = document.createElement('div');

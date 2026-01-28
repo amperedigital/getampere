@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.606] - 2026-01-28
+- **UI Refinement (Mobile Clipping Prevention)**:
+    - **Hidden Label**: The "LIVE DEMO" text label is now hidden on Mobile (`hidden lg:block`). The Blue Pulse Dot remains, acting as the system indicator. This recovers significant horizontal space.
+    - **Responsive Tracking**: The "DISCONNECTED/CONNECTED" status text now uses standard tracking (`tracking-normal`) on Mobile instead of `tracking-widest`. It retains wide tracking on Desktop.
+    - **Max Width Safety**: Added `max-w-[90vw]` to the pill container as a final fail-safe against horizontal overflow.
+
 ## [v2.605] - 2026-01-28
 - **UI Refinement (Mobile Fitting)**:
     - **Compact Status Pill**: Reduced padding and gaps on the Status Pill specifically for Mobile screens (`gap-2`, `px-3`, `pl-2`) while maintaining full spacing on Desktop. This prevents the pill from clipping off the edges on narrower devices when displaying longer status messages like "DISCONNECTED".
