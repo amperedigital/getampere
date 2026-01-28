@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.584] - 2026-01-28
+- **Layout Adjustments (Desktop)**:
+    - **Header Clearance**: Increased the top inset of the Scene Container from `lg:top-40` to `lg:top-64` (16rem). This aggressive spacing ensures the 3D Neural Net visuals are pushed well below the absolute-positioned Page Title and Description, preventing overlap on all screen heights.
+
 ## [v2.583] - 2026-01-28
 - **Layout Adjustments**:
     - **Chat Interface Relocation**: Successfully moved the AI Chat widget from the mobile slider area to the top of the **Right Column** (`#tech-demo-right-column`). It now sits directly above the card stack on all devices, respecting the column's width and padding.
