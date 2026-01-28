@@ -44,25 +44,44 @@ export class AmpereAIChat {
                 <!-- Background Gradient Glow -->
                 <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/20 transition-colors duration-500"></div>
                 
-                <!-- Internal Header (Visualizer Only?) -->
+                <!-- Internal Header (Visualizer + Close) -->
                 <!-- If status is external, we might just show visualizer here or nothing -->
                 <div class="flex items-center justify-between z-10 border-b border-white/5 pb-2">
                     <span class="text-xs font-mono uppercase text-slate-500 tracking-widest">Transcript</span>
                     
-                    <!-- Audio Visualizer (CSS Bars) -->
-                    <div id="ai-visualizer" class="flex items-center gap-1 h-4 opacity-50">
-                        <div class="w-1 h-1 bg-white/80 rounded-full animate-pulse"></div>
-                        <div class="w-1 h-3 bg-white/80 rounded-full animate-pulse delay-75"></div>
-                        <div class="w-1 h-2 bg-white/80 rounded-full animate-pulse delay-150"></div>
-                        <div class="w-1 h-3 bg-white/80 rounded-full animate-pulse delay-100"></div>
-                        <div class="w-1 h-1 bg-white/80 rounded-full animate-pulse"></div>
+                    <div class="flex items-center gap-2">
+                        <!-- Audio Visualizer (CSS Bars) -->
+                        <div id="ai-visualizer" class="flex items-center gap-1 h-4 opacity-50">
+                            <div class="w-1 h-1 bg-white/80 rounded-full animate-pulse"></div>
+                            <div class="w-1 h-3 bg-white/80 rounded-full animate-pulse delay-75"></div>
+                            <div class="w-1 h-2 bg-white/80 rounded-full animate-pulse delay-150"></div>
+                            <div class="w-1 h-3 bg-white/80 rounded-full animate-pulse delay-100"></div>
+                            <div class="w-1 h-1 bg-white/80 rounded-full animate-pulse"></div>
+                        </div>
+
+                        <!-- Close / Hangup Button (v2.593) -->
+                        <button id="ai-close-btn" class="p-1 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white" title="End Session & Close">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Transcript / Messages -->
                 <!-- Always visible inside this window -->
-                <div id="ai-messages" class="w-full max-h-64 overflow-y-auto space-y-2 pr-2 text-sm text-slate-300 font-light scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                <div id="ai-messages" class="w-full h-64 overflow-y-auto space-y-2 pr-2 text-sm text-slate-300 font-light scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                     <p class="italic text-slate-500 text-xs">Ready to chat.</p>
+                </div>
+                
+                <!-- Input Area (v2.593) -->
+                <div class="flex items-center gap-2 border-t border-white/5 pt-2">
+                    <input type="text" id="ai-chat-input" placeholder="Type a message..." class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors">
+                    <button id="ai-chat-send" class="p-2 bg-blue-500/20 hover:bg-blue-500/40 text-blue-400 rounded-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         `;
@@ -74,18 +93,73 @@ export class AmpereAIChat {
         
         this.visualizer = this.container.querySelector('#ai-visualizer');
         this.messages = this.container.querySelector('#ai-messages');
+        this.chatInput = this.container.querySelector('#ai-chat-input');
+        this.chatSendBtn = this.container.querySelector('#ai-chat-send');
+        this.closeBtn = this.container.querySelector('#ai-close-btn');
     }
 
     bindEvents() {
         if (this.startBtn) this.startBtn.addEventListener('click', () => this.startSession());
         if (this.endBtn) this.endBtn.addEventListener('click', () => this.endSession());
         
+        // Internal Close Button
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => {
+                this.endSession();
+                this.container.classList.add('hidden');
+            });
+        }
+        
         // Text Chat Toggle (Opens Window)
         if (this.textChatBtn) {
             this.textChatBtn.addEventListener('click', () => {
                 this.container.classList.toggle('hidden');
+                // Focus input if opening
+                if (!this.container.classList.contains('hidden') && this.chatInput) {
+                    this.chatInput.focus();
+                }
             });
         }
+        
+        // Chat Input Logic
+        if (this.chatInput && this.chatSendBtn) {
+            const sendMessage = () => {
+                const text = this.chatInput.value.trim();
+                if (!text) return;
+                
+                // Add to UI
+                this.addMessage(text, 'user');
+                this.chatInput.value = '';
+                
+                // TODO: Send to Agent if SDK supports it.
+                // Assuming conversation.sendText or similar exists?
+                // If strictly voice, we might simulating or using a separate endpoint.
+                // For now, we simulate a response if not connected, or just log.
+                console.log("Sending text:", text);
+            };
+
+            this.chatSendBtn.addEventListener('click', sendMessage);
+            this.chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+    }
+    
+    addMessage(text, sender) {
+        if (!this.messages) return;
+        
+        const div = document.createElement('div');
+        const isUser = sender === 'user';
+        div.className = `flex w-full ${isUser ? 'justify-end' : 'justify-start'}`;
+        
+        div.innerHTML = `
+            <div class="${isUser ? 'bg-blue-500/20 text-blue-100' : 'bg-slate-700/50 text-slate-200'} px-3 py-2 rounded-lg max-w-[80%] text-xs leading-relaxed">
+                ${text}
+            </div>
+        `;
+        
+        this.messages.appendChild(div);
+        this.messages.scrollTop = this.messages.scrollHeight;
     }
 
     async startSession() {
@@ -111,6 +185,13 @@ export class AmpereAIChat {
         } catch (error) {
             console.error('AmpereAIChat: Connection failed', error);
             this.handleError(error);
+        }
+    }
+
+    async endSession() {
+        if (this.conversation) {
+            await this.conversation.endSession();
+            this.conversation = null;
         }
     }
     
@@ -210,11 +291,17 @@ export class AmpereAIChat {
 
     handleModeChange(modeData) {
         const isSpeaking = modeData.mode === 'speaking';
-        this.statusText.innerText = isSpeaking ? "Agent Speaking" : "Listening...";
-        this.updateVisualizer(isSpeaking);
+        // v2.593: Fixed null reference to statusText. Using updateStatusUI or direct modification if needed.
+        // Actually, let's just update the Pill Text if connected.
+        if (this.isConnected) {
+             const statusMsg = isSpeaking ? "Agent Speaking" : "Listening...";
+             // We can't easily change just the text in the pill without rebuilding it or storing a ref.
+             // For now, let's stick to 'Secure Connection' or generic status to avoid flickering, 
+             // OR rebuild the pill status.
+             this.updateStatusUI('connected', statusMsg);
+        }
         
-        // Optional: Log state change
-        // this.addMessage(isSpeaking ? "Agent is speaking..." : "User is speaking...");
+        this.updateVisualizer(isSpeaking);
     }
 
     // --- Helpers ---

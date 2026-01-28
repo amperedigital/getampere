@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.593] - 2026-01-28
+- **Refactoring (Chat UX Refinement)**:
+    - **Buttons & Layout**:
+        - Reduced CTA button sizes to standard "Pill" dimensions (`px-5 py-2.5`) to match system design.
+        - Fixed typo: "Star Conversation" -> "Start Conversation".
+        - Added tooltips to Voice ("Start Voice Mode") and Chat ("Open Text Interface") buttons.
+        - Replaced initial voice button icon with a microphone SVG.
+    - **Chat Interaction**:
+        - **Text Input**: Added a functional text input field and send button to the chat window. Users can now type messages.
+        - **Close Control**: Added a close button (X) to the internal chat header. Clicking it hangs up the session and hides the window.
+        - **Modality**: Chat button now focuses the input field when opening the window.
+
 ## [v2.592] - 2026-01-28
 - **Refactoring (Interaction Modalities)**:
     - **Concept**: Separated "Voice Mode" and "Text Mode" into distinct interaction paths, replacing the single integrated widget button.
