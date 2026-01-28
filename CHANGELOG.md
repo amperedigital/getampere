@@ -1,6 +1,6 @@
 # Changelog
 
-## [v2.599] - 2026-01-28
+## [v2.600] - 2026-01-28
 - **Feature (Hidden Transcript)**:
     - **Phone Metaphor**: The AI conversation now follows a "Phone Call" metaphor. The transcript window remains hidden by default when a voice session starts.
     - **Context-Aware Controls**: Added a "Show Transcript" icon button beside the **Power Button** (on both Desktop and Mobile).
