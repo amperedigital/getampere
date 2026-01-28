@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.634] - 2026-01-28
+- **Typography Polish**:
+    - **Button Weight**: Updated the "Start Conversation" and "End Call" buttons to use `font-medium` (500) instead of `font-bold` (700). This reduces visual heaviness on mobile screens where the specific font (Geist/Sans) renders thicker, ensuring a refined and legible UI.
+
 ## [v2.633] - 2026-01-28
 - **Mobile UX Relocation (Voice UV)**:
     - **Upper Right Placement**: Moved the Voice UV Visualizer on mobile to the **Upper Right** of the Neural Architecture section (`top-32 right-6`) to maintain a strong visual connection with the Neural Net title and the active agent state, while avoiding overlay issues with the bottom card stack.
