@@ -51,6 +51,14 @@ export class TechDemoScene {
             cameraDistance: 5.0     // Z-Distance (Zoom) (data-camera-distance)
         };
         this.parseConfig();
+        
+        // v2.615: Initialize Animation State Variables to prevent NaN/Frozen loops
+        this.simIntensity = 0.0;
+        this.targetSimIntensity = 0.0;
+        this.standbyMix = 1.0;
+        this.targetStandbyMix = 1.0;
+        // Pre-fill lightTargets to ensure update loop has data immediately
+        this.lightTargets = { ambient: 0.05, core: 0.2 };
 
         this.initScene();
         this.initLights();

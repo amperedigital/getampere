@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.615] - 2026-01-28
+- **Fix (Animation Loop Initialization)**:
+    - **Variable Initialization**: Fixed a critical race condition where `simIntensity` and `lightTargets` were undefined during the first few frames of the render loop (before the `setTimeout` callback in `initUI` triggered). This caused the animation variables to become `NaN`, effectively freezing the visual state and preventing the UV Meter from animating.
+    - **Result**: The UV Meter and Power Up sequence should now animate correctly on load and interaction.
+
 ## [v2.614] - 2026-01-28
 - **Fix (Desktop UV Restoration)**:
     - **Adaptive Dot Matrix**: Updated `TechDemoScene.js` to use an adaptive dot count for the Power Up UV Meter. It now correctly renders **20 dots** on Desktop (restoring the original high-fidelity visualization) while using **5 dots** on Mobile (to fit the compact pill).
