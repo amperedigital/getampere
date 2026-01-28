@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.597] - 2026-01-28
+- **Refactoring (Error Handling)**:
+    - **Microphone Check**: Added explicit pre-check for microphone access before attempting to start the AI session.
+    - **Friendly Dialogue**:
+        - If microphone access is denied or no device is found, the system now displays a helpful message in the chat window: **"Microphone not detected. Please connect a microphone to start the conversation."**
+        - This replaces generic connection errors with specific guidance for users without audio hardware.
+    - **Status UI**: Updates the status pill to "No Mic Detected" in red when this occurs.
+
 ## [v2.596] - 2026-01-28
 - **Refactoring (Global State Enforcement)**:
     - **Concept**: Ensures the AI Chat Interface respects the global machine state (ACTIVE/STANDBY/OFF) regardless of how that state was reached (e.g., auto-timeout, manual power toggle, etc.).

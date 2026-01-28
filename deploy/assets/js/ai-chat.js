@@ -193,7 +193,8 @@ export class AmpereAIChat {
         this.container.classList.remove('hidden'); 
 
         try {
-            // Request Mic
+            // Request Mic Check before starting SDK
+            // This allows us to give a friendly "No Mic" error before the SDK explodes or fails silently
             await navigator.mediaDevices.getUserMedia({ audio: true });
 
             this.conversation = await Conversation.startSession({
@@ -207,8 +208,24 @@ export class AmpereAIChat {
             });
 
         } catch (error) {
-            console.error('AmpereAIChat: Connection failed', error);
-            this.handleError(error);
+            console.warn('AmpereAIChat: Mic access failed or connection error', error);
+            
+            // v2.597: Friendly Mic Error Dialogue
+            if (error.name === 'NotAllowedError' || error.name === 'NotFoundError' || error.name === 'NotReadableError') {
+                this.isConnecting = false;
+                this.addMessage("Microphone not detected. Please connect a microphone to start the conversation.", 'system');
+                this.updateStatusUI('error', 'No Mic Detected');
+                // We do NOT close the window, so the user sees the message.
+                
+                // Re-enable start buttons so they can try again
+                if (this.startBtn) {
+                     this.startBtn.classList.remove('hidden');
+                     this.startBtn.disabled = false;
+                     this.startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            } else {
+                this.handleError(error);
+            }
         }
     }
 
