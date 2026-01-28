@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.603] - 2026-01-28
+- **UI Polish (Mobile Layout)**:
+    - **Pill Alignment**: Restored absolute positioning for the Mobile Status Pill (`top-8`, Centered). This ensures it aligns neatly with the page top margin and doesn't "float" awkwardly in the content flow.
+
 ## [v2.602] - 2026-01-28
 - **UI Refinement (Clean Mobile)**:
     - **Visualizer in Pill**: Moved the Audio Visualizer ("UV Meter") inside the unified Status Pill on Mobile. Now, when the user speaks, the pill animates, providing immediate feedback without needing the transcript window open.
