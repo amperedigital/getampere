@@ -184,6 +184,9 @@ export class AmpereAIChat {
     async startSession() {
         if (this.isConnecting || this.isConnected) return;
 
+        // v2.595: Trigger external callback (e.g. for Power Up sequence)
+        if (this.options.onStart) this.options.onStart();
+
         this.setConnectingState();
         
         // Auto-open chat window on voice start? Maybe prefer hidden unless asked.
@@ -220,6 +223,9 @@ export class AmpereAIChat {
     }
 
     async endSession() {
+        // v2.595: Trigger external callback (e.g. for Power Down)
+        if (this.options.onEnd) this.options.onEnd();
+
         if (this.conversation) {
             await this.conversation.endSession();
             this.conversation = null;

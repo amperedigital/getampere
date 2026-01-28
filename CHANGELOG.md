@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.595] - 2026-01-28
+- **Feature (Unified Power Architecture)**:
+    - **Synchronized Systems**: The "Power Button" (Visuals) and "Start/End Conversation" (AI) are now functionally linked as a single system.
+    - **Flows**:
+        - **Power Button ON**: Turns on the 3D scene lights/rings AND automatically starts the AI Agent session.
+        - **Power Button OFF**: Powers down the visuals AND hangs up the AI / Closes chat window.
+        - **Start Conversation / Chat**: Starting the AI via buttons automatically triggers the visual "Power Up" sequence for the machine.
+        - **End Call / Close Window**: Ending the AI session automatically triggers the visual "Power Down" sequence.
+    - **Implementation**:
+        - Updated `AmpereAIChat` to support `onStart` and `onEnd` callbacks.
+        - Wired `tech-demo.html` to bi-directionally sync `window.demoScene` state with `window.ampereAI` session state.
+
 ## [v2.594] - 2026-01-28
 - **Refactoring (Chat Connection Logic)**:
     - **Unified Connection**:

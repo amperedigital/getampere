@@ -1672,14 +1672,28 @@
                     }
 
                     // Toggle Helper for Mobile Power Button
+                    // v2.595: Unified Power Architecture
+                    // This button now controls BOTH the visual scene (lighting/rings) AND the AI Agent.
                     window.toggleMobilePower = () => {
                         if (!window.demoScene) return;
                         const current = window.demoScene.systemState;
-                        // v2.268: Logic Update
-                        // If ACTIVE -> Turn OFF.
-                        // If OFF or STANDBY -> Turn ACTIVE.
                         const next = (current === 'ACTIVE') ? 'OFF' : 'ACTIVE';
+                        
+                        // 1. Trigger Visuals
                         window.demoScene.setSystemState(next);
+                        
+                        // 2. Trigger AI (if available)
+                        if (window.ampereAI) {
+                            if (next === 'ACTIVE') {
+                                // Only start if not already connected
+                                if (!window.ampereAI.isConnected && !window.ampereAI.isConnecting) {
+                                    window.ampereAI.startSession();
+                                }
+                            } else {
+                                // Turn OFF
+                                window.ampereAI.endSession();
+                            }
+                        }
                     };
 
                     // --- Mobile UI State Observer ---
@@ -1822,12 +1836,28 @@
         import { AmpereAIChat } from './assets/js/ai-chat.js';
         
         // Initialize with Container ID, Agent ID, and UI Options
-        // Agent ID: agent_4501ka281xkpe6e8jzbspgy9qh4d
-        new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
+        // v2.595: Added Power Sync Callbacks. 
+        // Any AI start/end event (via buttons or otherwise) will sync the visual Power State.
+        window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
             startBtnId: 'btn-start-voice',
             endBtnId: 'btn-end-voice',
             textChatBtnId: 'btn-start-text',
-            statusTargetId: 'status-injection-target'
+            statusTargetId: 'status-injection-target',
+            onStart: () => {
+                // Ensure Visuals Power Up
+                if (window.demoScene && window.demoScene.systemState !== 'ACTIVE') {
+                    window.demoScene.setSystemState('ACTIVE');
+                }
+            },
+            onEnd: () => {
+                // Ensure Visuals Power Down
+                if (window.demoScene && window.demoScene.systemState === 'ACTIVE') {
+                    window.demoScene.setSystemState('OFF');
+                    // Also ensure window closes on power down if not already handled
+                    const chatContainer = document.getElementById('ampere-ai-chat-container');
+                    if(chatContainer) chatContainer.classList.add('hidden');
+                }
+            }
         });
     </script>
 </body>
