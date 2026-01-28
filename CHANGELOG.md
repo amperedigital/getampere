@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.572] - 2026-01-28
+- **Mobile Zen Mode**: Removed opening animation on mobile devices. Cards now expand instantly to the centered "Zen" position, mirroring the instant-close behavior. This eliminates visual distraction and layout interpolation artifacts during the transition.
+
 ## [v2.571] - 2026-01-28
 - **Mobile UI Polish**: 
     - **Card Parsing**: Increased internal padding (Top 2rem, Bottom/Left 1.5rem) for better content breathing room on mobile.

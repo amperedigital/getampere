@@ -137,6 +137,34 @@ export class CardExpander {
             card.parentNode.insertBefore(this.spacer, card);
         }
 
+        // v2.572: Mobile Optimization - Instant Expansion
+        // Skip FLIP animation on mobile to avoid translation artifacts.
+        if (window.innerWidth <= 768) {
+             card.style.transition = 'none'; // Ensure no transition
+             
+             // Set Final State Immediately
+             card.style.position = 'fixed';
+             card.style.top = `${targetTop}px`;
+             card.style.left = `${targetLeft}px`;
+             card.style.width = `${targetWidth}px`; 
+             card.style.height = `${targetHeight}px`; 
+             card.style.zIndex = '9999';
+             card.style.margin = '0';
+             
+             card.classList.add('is-expanded');
+             document.body.classList.add('card-expanded-mode'); 
+             container.classList.add('has-active-card');
+             
+             this.activeCard = card;
+             this.updateIcon(topRightBtn, 'close');
+             
+             if(btn) {
+                 btn.style.opacity = '0';
+                 btn.style.pointerEvents = 'none';
+             }
+             return;
+        }
+
         // 3. Promote Card
         // Apply Inline Styles to "Lock" the card to its starting grid position visually.
         card.style.position = 'fixed';
