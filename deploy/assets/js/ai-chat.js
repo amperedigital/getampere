@@ -327,10 +327,15 @@ export class AmpereAIChat {
                 if (needsInjection) {
                     // v2.619: Color Class 'bg-blue-400' is hardcoded here
                     const viz = this.createVisualizer('bg-blue-400');
-                    console.log('[AI-Chat] Injecting Visualizer into:', sceneContainer);
                     
-                    // Append to the Flex Container (Pill)
-                    sceneContainer.appendChild(viz);
+                    // v2.624: Target Priority - Check for specific container first
+                    const explicitContainer = document.getElementById('voice-visualizer-container');
+                    const target = explicitContainer || sceneContainer;
+                    
+                    console.log('[AI-Chat] Injecting Visualizer into:', target);
+                    
+                    // Append to Target
+                    target.appendChild(viz);
                     this.visualizer = viz;
                     
                     // Verify immediately

@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.624] - 2026-01-28
+- **UI Relocation (Voice UV)**:
+    - **Strategic Placement**: Moved the Voice UV Visualizer from the Status Pill to a new dedicated location at the bottom-right of the left interface column. This places it centrally near the "Fold", creating a stronger visual connection between the Neural Architecture (Left) and the Voice Agent (Right).
+    - **Injection Logic Priority**: Updated `AmpereAIChat.js` to prioritize the new `#voice-visualizer-container` ID if it exists, falling back to the Status Pill only if the container is missing (e.g., on Mobile).
+
 ## [v2.622] - 2026-01-28
 - **Debug Instrumentation**: Added comprehensive console logging to `AmpereAIChat.js` to trace the injection path of the Voice UV Visualizer. This will help identify why the element is invalid or hidden in the production DOM.
 
