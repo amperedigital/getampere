@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.628] - 2026-01-28
+- **Visibility Guarantee (Visualizer)**:
+    - **Container Logic**: Updated `tech-demo.html` to remove `hidden lg:flex` from the Voice Visualizer wrapper, making it visible on ALL screen sizes (`flex` by default). This solves the issue of it vanishing on tablets or smaller viewports.
+    - **Visual Debug**: Added a subtle `bg-black/20 backdrop-blur-sm` wrapper around the bars so the container's footprint is always visible, even if the bars themselves are idle.
+    - **Bar Dimensions**: Increased container height to `h-8` (was `h-6`) and hardcoded bar width to `w-[6px]` (pixel-perfect) to prevent Tailwind utility stripping or collapse.
+    - **Fallback Color**: Added `bg-blue-500` as a fallback class for the bars in case the gradient plugin fails to load or render on some devices.
+
 ## [v2.627] - 2026-01-28
 - **cache-busting**: Updated `tech-demo.html` module import to explicitly request `ai-chat.js?v=2.626` to force browsers to reload the new Visualizer code.
 

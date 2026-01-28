@@ -534,8 +534,6 @@ export class AmpereAIChat {
         if (!this.visualizer) return;
         
         // v2.626: Real-time Waveform Simulation (High Fidelity)
-        // Instead of simple CSS pulse, we run a JS animation loop to simulate frequency bands.
-        
         if (isActive) {
             this.visualizer.classList.remove('opacity-60');
             this.visualizer.classList.add('opacity-100');
@@ -585,10 +583,11 @@ export class AmpereAIChat {
     }
 
     createVisualizer(colorClass = 'bg-blue-400') {
-        // v2.626: Advanced Waveform Visualizer (ElevenLabs Style)
-        // Explicit container size to allow percentage heights
+        // v2.628: Advanced Waveform Visualizer
+        // Added solid fallback background (bg-blue-500) behind gradient for compatibility.
+        // Explicit dimensions for container to ensure visibility.
         const viz = document.createElement('div');
-        viz.className = "flex items-center justify-center gap-[2px] h-6 ml-0 opacity-100 transition-opacity duration-300";
+        viz.className = "flex items-center justify-center gap-[2px] h-8 ml-0 opacity-100 transition-opacity duration-300 pointer-events-auto bg-black/20 backdrop-blur-sm rounded-lg px-2 py-1";
         // Tag it for identification
         viz.id = "ampere-voice-uv";
         
@@ -598,12 +597,9 @@ export class AmpereAIChat {
         
         initialHeights.forEach((h, i) => {
             const bar = document.createElement('div');
-            // v2.626: Styling
-            // - w-1.5: Thicker bars for better visibility
-            // - rounded-full: Soft look
-            // - bg-gradient-to-t: Synthetic gradient (Cyan to Blue)
-            // - transition-all: Smooths the JS updates so they aren't jerky
-            bar.className = `uv-bar w-1.5 rounded-full bg-gradient-to-t from-blue-500 to-cyan-300 transition-all duration-100 ease-out`; 
+            // v2.628: Styling - Added explicit w-[6px] instead of w-1.5 to guarantee pixel width.
+            // Added bg-blue-500 as fallback color.
+            bar.className = `uv-bar w-[6px] rounded-full bg-blue-500 bg-gradient-to-t from-blue-600 to-cyan-300 transition-all duration-100 ease-out`; 
             
             // Set initial height
             bar.style.height = `${h}%`;
