@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.587] - 2026-01-28
+- **Layout Finalization (Bottom Anchor)**:
+    - **Container Alignment**: Switched `tech-demo-scene-container` from `lg:justify-center` to `lg:justify-end`. This strictly anchors the visual content to the bottom of the card/column.
+    - **Wrapper Logic**: Removed `lg:mt-48` and switched the wrapper to `lg:h-auto` with `lg:max-h-full`. This allows the wrapper to shrink to the content size (maintaining the aspect-square width) and sit at the bottom of the column, maximizing the gap between the Header Text and the Visualization.
+
 ## [v2.586] - 2026-01-28
 - **Layout Tuning (Neural Net Alignment)**:
     - **Visual Translation**: Replaced `lg:pt-64` with `lg:mt-48` on the `tech-demo-wrapper`.

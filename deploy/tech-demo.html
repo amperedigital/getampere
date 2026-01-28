@@ -120,7 +120,8 @@
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
             <!-- v2.585: Reverted container top to lg:top-8. Visuals are now pushed down internally via the wrapper. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end to anchor visuals to the bottom edge. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-end">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -160,7 +161,8 @@
 
                 <!-- WRAPPER: Width constrains and centers column -->
                 <!-- v2.585: Removed lg:pt-64 (which caused width shrinkage). Added lg:mt-48 to push full-size visuals down. -->
-                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-48">
+                <!-- v2.587: Switched to lg:h-auto and lg:justify-end logic. Removed lg:mt-48 as Flex alignment handles position. Added lg:max-h-full safety. -->
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full lg:h-auto lg:max-h-full flex flex-col items-center justify-center mx-auto mt-12 lg:mt-0">
                     
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
                     <!-- REMOVED lg:aspect-square from this parent. Ideally, the parent is just a flex column. -->
