@@ -197,6 +197,11 @@ export class AmpereAIChat {
             // This allows us to give a friendly "No Mic" error before the SDK explodes or fails silently
             await navigator.mediaDevices.getUserMedia({ audio: true });
 
+            // v2.611: Delay Audio Start to allow Visual Power-Up to complete
+            // User request: "Emily shouldn't speak until the power ramp-up is complete."
+            // We wait 1.8 seconds here (typical animation ramp up).
+            await new Promise(resolve => setTimeout(resolve, 1800));
+
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
                 onConnect: () => this.handleConnect(),

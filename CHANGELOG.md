@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.611] - 2026-01-28
+- **UI & Logic Refinement (Authentic Desktop Experience on Mobile)**:
+    - **Pill Layout Restored**: Reverted the Mobile Status Pill to match the Desktop layout exactly (Visual parity). It now features the [Blue Dot] on the left, a vertical divider, and the [Status] on the right. The "Live Demo" text remains hidden on mobile to save space, but the structure is identical.
+    - **Audio Delay**: Implemented a 1.8-second delay between the "Start Conversation" click (Power Up) and the actual Agent Connection. This ensures the 3D Power-Up animation completes its ramp-up sequence before "Emily" starts speaking, preventing audio/visual sync issues.
+
 ## [v2.610] - 2026-01-28
 - **UI Refinement (Mobile Pill Finalization)**:
     - **Hidden Left Indicator**: On Mobile, the "Base Indicator" (Blue Dot + Live Demo text) is now completely hidden. The Status Pill now contains *only* the connection status (`DISCONNECTED` or `CONNECTED` + Visualizer). This removes all asymmetry and "empty space" to the right.

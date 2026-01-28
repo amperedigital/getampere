@@ -119,20 +119,20 @@
 
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- v2.603: Centered Top (Absolute) on Mobile to align with margins (top-8). -->
-            <!-- v2.610: Ultra-Minimal Mobile Pill. -->
-            <!-- Mobile: Only shows [Status]. Base Indicator (Blue Dot) hidden to remove asymmetry. -->
+            <!-- v2.611: Reverting to Full Desktop-Style Pill (Blue Dot | Status) on Mobile as requested. -->
+            <!-- We hide the "Live Demo" TEXT on mobile, but keep the Blue Dot and the Divider. -->
             <div id="live-demo-pill" class="flex absolute z-30 top-8 left-1/2 -translate-x-1/2 lg:top-8 lg:left-auto lg:right-12 lg:translate-x-0 lg:-translate-y-1/2 items-center gap-2 lg:gap-4 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300 w-fit max-w-[90vw]">
                 
                 <!-- Base Indicator (Live Demo + Blue Dot) -->
-                <!-- Hidden on Mobile to ensure perfect centering of the Status text. -->
-                <div class="hidden lg:flex items-center gap-3 shrink-0">
+                <!-- Mobile: Show Dot, Hide Text. Desktop: Show Both. -->
+                <div class="flex items-center gap-3 shrink-0">
                     <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
-                    <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
+                    <span class="hidden lg:block text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
                 </div>
 
                 <!-- Status Injection Target (JS will populate this: Text | Dot) -->
-                <!-- v2.609: Removed border-l and padding on mobile (lg:border-l lg:pl-4) to remove "dead space". -->
-                <div id="status-injection-target" class="flex items-center gap-2 lg:gap-4 lg:border-l border-white/10 lg:pl-4"></div>
+                <!-- v2.611: Restored divider/padding on mobile to match Desktop look. -->
+                <div id="status-injection-target" class="flex items-center gap-2 lg:gap-4 border-l border-white/10 pl-3 lg:pl-4"></div>
             </div>
 
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
