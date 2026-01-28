@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.585] - 2026-01-28
+- **Layout Repair (Scene Alignment)**:
+    - **Container Restoration**: Reverted the `tech-demo-scene-container` top position back to `lg:top-8` (2rem). This restores the correct layout symmetry where the left and right columns are perfectly aligned at the top.
+    - **Internal Shift**: Applied `lg:pt-64` (16rem) to the *internal* `tech-demo-wrapper` instead. This successfully pushes the Neural Net and Halo visuals down to clear the header text, *without* breaking the container boundary or hiding the top-right Power button.
+
 ## [v2.584] - 2026-01-28
 - **Layout Adjustments (Desktop)**:
     - **Header Clearance**: Increased the top inset of the Scene Container from `lg:top-40` to `lg:top-64` (16rem). This aggressive spacing ensures the 3D Neural Net visuals are pushed well below the absolute-positioned Page Title and Description, preventing overlap on all screen heights.
