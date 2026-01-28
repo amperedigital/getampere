@@ -293,57 +293,52 @@ export class AmpereAIChat {
     updateStatusUI(state, message) {
         if (!this.statusTarget) return;
         
+        console.log(`[AI-Chat] updateStatusUI called. State: ${state}, Msg: ${message}`);
+
         // v2.616: Non-Destructive Update Integration with TechDemoScene
-        // Check if the TechDemoScene has injected its structure (Text + Dots)
-        // If so, we modify it in-place rather than wiping it.
         const sceneText = this.statusTarget.querySelector('.ampere-status-text');
-        // v2.620: Robust Container Selection to ensure Visualizer Injection
-        // Try precise class first, then fallback to target itself.
         const sceneContainer = this.statusTarget.querySelector('.ampere-status-pill-mode') || this.statusTarget;
 
         if (sceneText) {
+            console.log('[AI-Chat] Non-Destructive Update path active.');
             // 1. Update Text
             sceneText.innerText = message;
             
             // 2. Color/Animation Overrides
-            // Remove previous overrides first
             sceneText.classList.remove('text-yellow-400', 'text-blue-400', 'text-red-500', 'text-slate-500', 'animate-pulse');
-            sceneText.style.color = ''; // specific hex overrides from TechDemoScene might persist
+            sceneText.style.color = ''; 
 
             if (state === 'connecting') {
                 sceneText.classList.add('text-yellow-400', 'animate-pulse');
-                sceneText.style.color = '#facc15'; // Force Yellow Overide
+                sceneText.style.color = '#facc15'; 
             } else if (state === 'connected') {
                 sceneText.classList.add('text-blue-400');
-                sceneText.style.color = '#60a5fa'; // Force Blue Override
+                sceneText.style.color = '#60a5fa'; 
             } else if (state === 'error') {
                 sceneText.classList.add('text-red-500');
                 sceneText.style.color = '#ef4444'; 
-            } else {
-                 // Disconnected/Default - Revert to Scene Logic?
-                 // Usually Scene handles its own, so we leave it or set to slate.
-                 // TechDemoScene usually makes it green or slate.
             }
-            
+
             // 3. Inject Visualizer (If needed)
-            // We only add the bars if we are connecting/connected.
-            // v2.620: Force Injection Check
             if (state === 'connecting' || state === 'connected') {
-                if (!this.visualizer || !this.visualizer.isConnected) {
-                    // v2.619: Color Class 'bg-blue-400' is hardcoded here, ensuring visibility
+                const needsInjection = !this.visualizer || !this.visualizer.isConnected;
+                console.log(`[AI-Chat] Checking Visualizer. Needs Injection: ${needsInjection}`);
+                
+                if (needsInjection) {
+                    // v2.619: Color Class 'bg-blue-400' is hardcoded here
                     const viz = this.createVisualizer('bg-blue-400');
+                    console.log('[AI-Chat] Injecting Visualizer into:', sceneContainer);
                     
                     // Append to the Flex Container (Pill)
                     sceneContainer.appendChild(viz);
                     this.visualizer = viz;
+                    
+                    // Verify immediately
+                    console.log('[AI-Chat] Visualizer parent after append:', this.visualizer.parentNode);
                 }
-            } else if (state === 'disconnected') {
-                 // v2.619: KEEP VISUALIZER?
-                 // User says "We lost our voice UV... add it back to the pill... While she's talking"
-                 // This implies it should be there when active.
-                 // If we disconnect, we destroy it. This is correct as "Voice UV" shouldn't show if voice is off.
-                 
+            } else if (state === 'disconnected') { 
                 if (this.visualizer) {
+                    console.log('[AI-Chat] Removing Visualizer');
                     this.visualizer.remove();
                     this.visualizer = null;
                 }
@@ -352,6 +347,7 @@ export class AmpereAIChat {
             return; // EXIT: Do not run legacy destructive code
         }
         
+        console.log('[AI-Chat] Destructive Update path active (No sceneText found).');
         // We inject into the Pill (Text | Dots | Visualizer)
         // If state is 'connecting' or 'connected', we assume the Pill is in 'Pill Mode' (flex row)
         

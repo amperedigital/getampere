@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.622] - 2026-01-28
+- **Debug Instrumentation**: Added comprehensive console logging to `AmpereAIChat.js` to trace the injection path of the Voice UV Visualizer. This will help identify why the element is invalid or hidden in the production DOM.
+
 ## [v2.621] - 2026-01-28
 - **Visual Visibility Fix (Voice UV)**:
     - **Enhanced Audio Visualizer**: Updated `ai-chat.js` to render the Voice UV bars with 100% opacity (up from 70%) and increased thickness (w-1 up from w-0.5) to ensure they are clearly visible against all backgrounds.
