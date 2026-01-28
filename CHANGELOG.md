@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.626] - 2026-01-28
+- **Visual Upgrade (Voice UV Waveform)**:
+    - **ElevenLabs Aesthetic**: Replaced the static CSS pulse animation with a high-fidelity JS-driven waveform simulation. This mimics the official ElevenLabs "Bar Visualizer" component.
+    - **Synthetic Look**: Updated the bars to use a Cyan-to-Blue gradient (`bg-gradient-to-t from-blue-500 to-cyan-300`) and increased thickness for a more robust "App-Like" feel.
+    - **Dynamic Animation**: The bars now animate with variable heights (20-100%) and a center-bias algorithm when the agent is speaking, creating a realistic "voice energy" effect that responds to the conversation state.
+
 ## [v2.625] - 2026-01-28
 - **Logic Hardening (Voice UV Injection)**:
     - **Enforced Relocation**: Updated `AmpereAIChat.js` to strictly enforce the visualizer's location. If the visualizer exists but is in the wrong container (e.g. the old Status Pill), it is now forcibly detached and moved to the new `#voice-visualizer-container`.

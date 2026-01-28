@@ -488,6 +488,12 @@ export class AmpereAIChat {
         }
         if (this.endBtn) this.endBtn.classList.add('hidden');
 
+        // Kill Animation Loop if active
+        if (this.uvInterval) {
+             clearInterval(this.uvInterval);
+             this.uvInterval = null;
+        }
+
         this.updateVisualizer(false);
     }
 
@@ -527,47 +533,81 @@ export class AmpereAIChat {
     updateVisualizer(isActive) {
         if (!this.visualizer) return;
         
-        // Simple CSS toggle for the bars
-        const bars = this.visualizer.querySelectorAll('div');
+        // v2.626: Real-time Waveform Simulation (High Fidelity)
+        // Instead of simple CSS pulse, we run a JS animation loop to simulate frequency bands.
+        
         if (isActive) {
             this.visualizer.classList.remove('opacity-60');
             this.visualizer.classList.add('opacity-100');
-            bars.forEach(bar => {
-                // Randomize animation duration for organic feel
-                bar.style.animationDuration = `${0.2 + Math.random() * 0.3}s`; 
-                bar.classList.add('animate-pulse');
-            });
+            
+            if (!this.uvInterval) {
+                const bars = this.visualizer.querySelectorAll('.uv-bar');
+                // Fast update for smooth organic motion (approx 20fps is enough for this look)
+                this.uvInterval = setInterval(() => {
+                    bars.forEach((bar, i) => {
+                        // Symmetric wave pattern or Random noise? 
+                        // User wants "Highs and Lows". Center bars usually higher in speech.
+                        // We simulate a center-heavy noise function.
+                        
+                        // Base height modifier based on index (0,1,2,3,4 -> 2 is center)
+                        const distFromCenter = Math.abs(2 - i);
+                        const centerBias = 1.0 - (distFromCenter * 0.15); // Center is louder
+                        
+                        // Random flux
+                        const flux = Math.random(); 
+                        
+                        // Height 20% to 100%
+                        const h = Math.max(20, Math.floor((flux * centerBias) * 100));
+                        
+                        bar.style.height = `${h}%`;
+                    });
+                }, 80);
+            }
+            
         } else {
             this.visualizer.classList.remove('opacity-100');
             this.visualizer.classList.add('opacity-60');
-            // Slow down or pause
-            bars.forEach(bar => {
-                bar.style.animationDuration = '1.2s';
+            
+            // Kill the active loop
+            if (this.uvInterval) {
+                clearInterval(this.uvInterval);
+                this.uvInterval = null;
+            }
+            
+            // Return to "Breathing" state (mid-range static or slow CSS)
+            const bars = this.visualizer.querySelectorAll('.uv-bar');
+            bars.forEach((bar, i) => {
+                // Return to a nice "Idle" wave
+                const idleHeights = [30, 50, 60, 50, 30]; // %
+                bar.style.height = `${idleHeights[i]}%`;
             });
         }
     }
 
     createVisualizer(colorClass = 'bg-blue-400') {
-        // v2.621: Enhanced Visibility (opacity-100 base, h-5 height)
+        // v2.626: Advanced Waveform Visualizer (ElevenLabs Style)
+        // Explicit container size to allow percentage heights
         const viz = document.createElement('div');
-        viz.className = "flex items-center gap-1 h-5 ml-3 opacity-100 transition-opacity duration-300";
+        viz.className = "flex items-center justify-center gap-[2px] h-6 ml-0 opacity-100 transition-opacity duration-300";
         // Tag it for identification
         viz.id = "ampere-voice-uv";
         
-        // 5 Bars - Higher and Wider
-        const heights = ['h-2', 'h-4', 'h-5', 'h-3', 'h-2'];
+        // 5 Bars for minimal but clear read
+        // Using inline styles for height to allow JS animation
+        const initialHeights = [30, 50, 60, 50, 30];
         
-        heights.forEach((h, i) => {
+        initialHeights.forEach((h, i) => {
             const bar = document.createElement('div');
-            // Use the active color (blue/yellow) for the bars too
-            const bg = colorClass.includes('text') ? 'bg-blue-400' : colorClass;
+            // v2.626: Styling
+            // - w-1.5: Thicker bars for better visibility
+            // - rounded-full: Soft look
+            // - bg-gradient-to-t: Synthetic gradient (Cyan to Blue)
+            // - transition-all: Smooths the JS updates so they aren't jerky
+            bar.className = `uv-bar w-1.5 rounded-full bg-gradient-to-t from-blue-500 to-cyan-300 transition-all duration-100 ease-out`; 
             
-            // v2.621: Thicker bars (w-1)
-            bar.className = `w-1 rounded-full ${bg} animate-pulse`; 
-            // Add initial height
-            bar.classList.add(h);
-            // Stagger animations
-            bar.style.animationDelay = `${i * 75}ms`;
+            // Set initial height
+            bar.style.height = `${h}%`;
+            
             viz.appendChild(bar);
         });
         
