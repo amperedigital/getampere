@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.625] - 2026-01-28
+- **Logic Hardening (Voice UV Injection)**:
+    - **Enforced Relocation**: Updated `AmpereAIChat.js` to strictly enforce the visualizer's location. If the visualizer exists but is in the wrong container (e.g. the old Status Pill), it is now forcibly detached and moved to the new `#voice-visualizer-container`.
+    - **Resilience**: This fixes edge cases where the visualizer might have been initialized in the old location before the new container was ready, or persisted across state changes.
+
 ## [v2.624] - 2026-01-28
 - **UI Relocation (Voice UV)**:
     - **Strategic Placement**: Moved the Voice UV Visualizer from the Status Pill to a new dedicated location at the bottom-right of the left interface column. This places it centrally near the "Fold", creating a stronger visual connection between the Neural Architecture (Left) and the Voice Agent (Right).

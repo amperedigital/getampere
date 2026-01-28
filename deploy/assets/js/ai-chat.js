@@ -321,26 +321,41 @@ export class AmpereAIChat {
 
             // 3. Inject Visualizer (If needed)
             if (state === 'connecting' || state === 'connected') {
-                const needsInjection = !this.visualizer || !this.visualizer.isConnected;
-                console.log(`[AI-Chat] Checking Visualizer. Needs Injection: ${needsInjection}`);
+                // v2.625: Enforce Correct Location Logic
+                const explicitContainer = document.getElementById('voice-visualizer-container');
+                const desiredTarget = explicitContainer || sceneContainer;
+                
+                // Existence Check
+                let needsInjection = !this.visualizer || !this.visualizer.isConnected;
+                
+                // Location Check (Migration)
+                if (this.visualizer && this.visualizer.parentNode !== desiredTarget) {
+                    console.log(`[AI-Chat] Visualizer in wrong location. Moving to:`, desiredTarget);
+                    // Detach from wrong parent
+                    if (this.visualizer.parentNode) this.visualizer.parentNode.removeChild(this.visualizer);
+                     needsInjection = true; 
+                    // Note: We could re-append existing 'this.visualizer', but creating fresh is safer for animation state.
+                    // Actually, let's just append the existing one to move it.
+                    desiredTarget.appendChild(this.visualizer);
+                    needsInjection = false; // Handled
+                }
                 
                 if (needsInjection) {
+                    console.log(`[AI-Chat] Creating New Visualizer for:`, desiredTarget);
                     // v2.619: Color Class 'bg-blue-400' is hardcoded here
                     const viz = this.createVisualizer('bg-blue-400');
-                    
-                    // v2.624: Target Priority - Check for specific container first
-                    const explicitContainer = document.getElementById('voice-visualizer-container');
-                    const target = explicitContainer || sceneContainer;
-                    
-                    console.log('[AI-Chat] Injecting Visualizer into:', target);
-                    
-                    // Append to Target
-                    target.appendChild(viz);
+                    desiredTarget.appendChild(viz);
                     this.visualizer = viz;
-                    
-                    // Verify immediately
-                    console.log('[AI-Chat] Visualizer parent after append:', this.visualizer.parentNode);
                 }
+                
+                // v2.625: Final Visibility Safety Check
+                // Ensure the container itself is visible if it has content
+                if (desiredTarget.id === 'voice-visualizer-container' && desiredTarget.classList.contains('hidden')) {
+                     // Note: We can't arbitrarily remove 'hidden' if it's meant to be hidden on mobile.
+                     // The class is 'hidden lg:flex'. 
+                     // If we are on mobile, checking offsetParent would return null.
+                }
+
             } else if (state === 'disconnected') { 
                 if (this.visualizer) {
                     console.log('[AI-Chat] Removing Visualizer');
