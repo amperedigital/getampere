@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.608] - 2026-01-28
+- **UI Logic Update (Status Pill Polish)**:
+    - **Removed Connected Dot**: The static status dot in the "Connected" state has been removed. The UI now displays `[Text] [Visualizer]`, eliminating the "extra dot" that appeared between the text and the bars.
+    - **Visual Hierarchy**: The Yellow Ping dot remains for "Connecting", and the Red dot for "Error", as these are critical state indicators without a visualizer.
+
 ## [v2.607] - 2026-01-28
 - **UI Logic Update (Status Pill)**:
     - **Cleaner Disconnected State**: Removed the grey status dot when the system is in the "DISCONNECTED" state. The text label alone provides sufficient context, reducing redundancy and visual clutter (especially for the "Load Screen" initial state).

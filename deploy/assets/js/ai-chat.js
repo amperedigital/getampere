@@ -327,8 +327,10 @@ export class AmpereAIChat {
         // Order: Text | Dot (Pill style)
         this.statusTarget.appendChild(statusText);
         
-        // Only append dot if NOT disconnected
-        if (state !== 'disconnected') {
+        // v2.608: CLEANUP - Only show the Status Dot for 'Connecting' (Yellow Ping) or 'Error'.
+        // For 'Connected', the Text + Visualizer is enough. The "Extra Dot" was confusing.
+        // For 'Disconnected', we already removed the dot in v2.607.
+        if (state === 'connecting' || state === 'error') {
             this.statusTarget.appendChild(dot);
         }
 
