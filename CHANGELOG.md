@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.583] - 2026-01-28
+- **Layout Adjustments**:
+    - **Chat Interface Relocation**: Successfully moved the AI Chat widget from the mobile slider area to the top of the **Right Column** (`#tech-demo-right-column`). It now sits directly above the card stack on all devices, respecting the column's width and padding.
+    - **Scene Spacing**: Pushed the **Neural Net / Scene Container** down on desktop (`lg:top-8` -> `lg:top-40`). This creates significant vertical clearance (10rem) to ensure the scene visuals do not overlap or crowd the Helper/Title text in the top-left corner.
+
 ## [v2.581] - 2026-01-28
 - **Fix: AI Chat SDK Import**:
     - **Corrected Package Name**: Switched the import from the non-existent `@elevenlabs/convai` to the correct `@elevenlabs/client` package.

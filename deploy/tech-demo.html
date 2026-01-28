@@ -119,8 +119,8 @@
             <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
             <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
             <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
-            <!-- v2.497: Reduced Left Inset to lg:left-6 (1.5rem) to match new page gutter. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
+            <!-- v2.583: Increased Desktop Top to lg:top-40 (10rem) to push Neural Net below the Header Text. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-40 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col lg:pb-32 items-center justify-start lg:justify-center">
                 
                 <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
                 <!-- Absolute Positioned: Top Right within the container box -->
@@ -288,11 +288,6 @@
                 <!-- End Wrapper -->
 <!-- End Master Container -->
 
-                <!-- Ampere AI Chat Interface (Inline) -->
-                <!-- v2.580: Inline Glass Widget. Placed between Scene and Mobile Sliders -->
-                <!-- Hidden by default? No, visible. -->
-                <div id="ampere-ai-chat-container" class="relative w-full px-6 mt-4 z-50 pointer-events-auto"></div>
-
                 <!-- Mobile Ring Sliders (v2.264) -->
                 <!-- Positioned at the bottom of the Scene Container -->
                 <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
@@ -366,6 +361,10 @@
         <!-- v2.497: Decreased right gutter to lg:pr-6 (1.5rem) to match left side. -->
         <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-4 lg:pt-8 lg:pb-8 lg:pr-6 lg:pl-2 overflow-y-auto">
             
+            <!-- Ampere AI Chat Interface (Inline - Top of Right Column) -->
+            <!-- v2.582: Relocated here to sit "above the cards" on mobile/desktop as requested. -->
+            <div id="ampere-ai-chat-container" class="relative w-full mb-6 z-50 pointer-events-auto"></div>
+
             <!-- 6-Box Grid (2 cols x 3 rows) -->
             <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
             <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
