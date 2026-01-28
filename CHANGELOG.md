@@ -1,5 +1,9 @@
-## [v2.637] - 2026-01-28
-- **Mobile Visualizer Fix**:
+## [v2.639] - 2026-01-28
+- **Redeploy**: Forced cache-busting redeploy to ensure v2.638 changes (Mobile scroll fix & Status Pill sync) propagate to all edges.
+## [v2.639] - 2026-01-28
+- **Redeploy**: Forced cache-busting redeploy to ensure v2.638 changes (Mobile scroll fix & Status Pill sync) propagate to all edges.
+
+
 ## [v2.638] - 2026-01-28
 - **Mobile UX Refinement**:
     - **No Scroll Jump**: Disabled the automatic `scrollIntoView` behavior on mobile when an agent card becomes active. This prevents the page from unexpectedly scrolling/jumping during the "Power Up" sequence when the first agent activates.
