@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.576] - 2026-01-28
+- **Mobile Experience**: 
+    - **Zen Mode Disabled**: Completely disabled card expansion ("Zen Mode") on mobile phone screens (`< 768px`). Users will now view cards directly in the horizontal slider to prevent navigation confusion and overlapping artifacts.
+    - **Tablet Support**: Maintained Zen Mode capability for Tablet and Desktop devices (`>= 768px`) where the screen real estate supports strictly centered or grid-based expansion.
+
 ## [v2.575] - 2026-01-28
 - **Mobile Zen Mode (Alignment)**:
     - **In-Line Expansion**: Cards now expand strictly from their scroll track position (`startTop`, `startLeft`) instead of centering on screen. This maintains the "scroller context" and prevents the disorienting "hovering" effect.

@@ -56,6 +56,9 @@ export class CardExpander {
             // NEW (v2.468): Allow clicking anywhere on the card to expand (Zen Mode)
             const card = e.target.closest('.socket-card-container');
             if (card && !card.classList.contains('is-expanded')) {
+                 // v2.576: Disable Zen Mode interaction on Mobile Phones
+                 if (window.innerWidth < 768) return;
+
                  // Ignore interactive elements
                  if (['INPUT', 'BUTTON', 'A', 'LABEL'].includes(e.target.tagName)) return;
                  // Ignore if hitting the scrollbar (approx check?)
@@ -67,6 +70,12 @@ export class CardExpander {
     }
 
     toggleCard(card, btn, container) {
+        // v2.576: Disable Zen Mode (Expansion) on Mobile Phones (< 768px)
+        // Keep active for Tablets (>= 768px) and Desktop.
+        if (window.innerWidth < 768 && !card.classList.contains('is-expanded')) {
+            return;
+        }
+
         const isExpanded = card.classList.contains('is-expanded');
 
         if (isExpanded) {
@@ -80,6 +89,9 @@ export class CardExpander {
     }
 
     expand(card, btn, container) {
+        // v2.576: Double-check Disable for Mobile Phones (Zen Mode Disabled)
+        if (window.innerWidth < 768) return;
+
         // v2.402: Logic to handle separate Expand Button (Bottom Right) vs Close Button (Top Right)
         // If 'btn' is the expand trigger, we don't need to save its icon, because we don't change IT.
         // We change the Top-Right button to become a Close button.
