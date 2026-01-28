@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.618] - 2026-01-28
+- **Refinement (Persistent Status UI)**:
+    - **Always-On Pill**: Updated `TechDemoScene.js` to force the Status Pill (System Status + UV Meter) to remain visible at all times in Pill Mode, regardless of system state (Active, Standby, or Off).
+    - **Preventing Empty State**: This ensures that when the system is powered down or disconnected, users see the "DISCONNECTED" status and the (inactive) UV Dot structure, rather than an empty void which could be mistaken for a text input field.
+
 ## [v2.617] - 2026-01-28
 - **Refinement (Status & Logic)**:
     - **Accelerated Power Up**: Increased `lerpSpeed` (0.015 -> 0.05) and `minVelocity` (0.0025 -> 0.01) significantly. The system now powers up ~3x faster, reducing the wait time during the "INITIALIZING" sequence.

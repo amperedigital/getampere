@@ -1553,11 +1553,11 @@ export class TechDemoScene {
                  let warningActive = (this.standbyWarning && this.standbyWarning.style.opacity === '1');
                  
                  // 2. Are we active OR fading out?
-                 // v2.614: Always Show Gauge (at 0%) when in Standby/Disconnected state on Mobile/Pill Mode.
-                 // This ensures the pills (dots + text) are visible as "DISCONNECTED" instead of vanishing.
+                 // v2.618: ALWAYS show gauge in Pill Mode so it never vanishes (prevents empty gap/input confusion).
+                 // It will show "DISCONNECTED" + Dark Dots loop when OFF/STANDBY.
                  let isPill = this.uiStatusContainer.classList.contains('ampere-status-pill-mode');
                  
-                 let showGauge = !warningActive && (this.systemState === 'ACTIVE' || this.simIntensity > 0.02 || (isPill && this.systemState === 'STANDBY'));
+                 let showGauge = !warningActive && (this.systemState === 'ACTIVE' || this.simIntensity > 0.02 || isPill);
                  
                  if (showGauge) {
                      this.uiStatusContainer.style.opacity = '1';
