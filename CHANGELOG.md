@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.612] - 2026-01-28
+- **Logic Refinement (Status Sequence)**:
+    - **Initialization Handover**: Removed the forced "Disconnected" status on page load in `AmpereAIChat`. This allows the `TechDemoScene` to correctly own the Status Pill during the boot-up sequence, displaying "INITIALIZING...", "SYSTEM CHECK", or "STANDBY" along with its own "Dot Matrix" UV meter, matching the Desktop experience.
+    - **Audio/Visual Handshake**: Combined with the v2.611 audio delay, this ensures a clean sequence: Page Load -> Scene Initialization -> User Click -> Power Up Animation -> Agent Connects -> Visualizer Active -> Agent Speaks.
+
 ## [v2.611] - 2026-01-28
 - **UI & Logic Refinement (Authentic Desktop Experience on Mobile)**:
     - **Pill Layout Restored**: Reverted the Mobile Status Pill to match the Desktop layout exactly (Visual parity). It now features the [Blue Dot] on the left, a vertical divider, and the [Status] on the right. The "Live Demo" text remains hidden on mobile to save space, but the structure is identical.
