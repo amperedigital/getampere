@@ -161,14 +161,13 @@
                 <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
 
                 <!-- WRAPPER: Width constrains and centers column -->
-                <!-- v2.585: Removed lg:pt-64. -->
-                <!-- v2.588: Restored lg:h-full (preventing collapse). Added lg:justify-end to anchor content to bottom. -->
+                <!-- v2.589: Restored h-full to container, applied justify-end to anchor content bottom. -->
                 <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center lg:justify-end mx-auto mt-12 lg:mt-0">
                     
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
-                    <!-- v2.588: Changed lg:h-full to lg:h-auto. This prevents it from filling the height blindly. -->
-                    <!-- Combining h-auto with max-w-[800px] and aspect-square children allows it to be 'as tall as it needs to be' (800px) and sit at the bottom. -->
-                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto flex flex-col items-center justify-between pointer-events-none">
+                    <!-- v2.589: Added aspect-square to force intrinsic height based on width (preventing collapse). -->
+                    <!-- Removed lg:h-auto dependency that caused zero-height structure. -->
+                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto lg:aspect-square flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
                     <!-- VISUALS WRAPPER (Flex Grow) -->

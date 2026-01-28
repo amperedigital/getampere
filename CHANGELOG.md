@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.589] - 2026-01-28
+- **Layout Recovery (Zero-Height Fix)**:
+    - **Issue**: In v2.588/587, setting `h-auto` on the Ring Container without an explicit aspect ratio caused it to collapse to 0px height because its children were relying on `h-full` (parent reference).
+    - **Fix**: Added `lg:aspect-square` directly to the `Ring Container`. This gives it an *intrinsic* height based on its width (which is expanded to `w-full`), forcing it to occupy physical space even when `h-auto`.
+    - **Alignment**: Retained `justify-end` on the wrapper to keep this now-visible square anchored to the bottom of the card.
+
 ## [v2.588] - 2026-01-28
 - **Layout Recovery & Refinement (Scene Visibility)**:
     - **Fix**: Reverted `tech-demo-wrapper` to `h-full` to fix the height collapse introduced in v2.587 (where `h-auto` parents caused `h-full` children to disappear).
