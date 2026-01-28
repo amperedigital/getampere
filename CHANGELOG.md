@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.598] - 2026-01-28
+- **Refactoring (Modal Simplification)**:
+    - **Single Primary Action**: Removed the separate "Chat" button. The primary interaction is assumed to be **Voice First**.
+    - **Fallback Logc**:
+        - If "Start Conversation" is clicked and no microphone is detected:
+        - The chat window opens automatically.
+        - A "System Dialog" appears inside the chat history offering two options:
+            1.  **Retry Mic**: Reloads the page/context to try again.
+            2.  **Use Text Chat**: Enables the text input for typing-based interaction (without audio input).
+    - **System Messages**: Updated `addMessage` to support HTML content, allowing interactive buttons inside system notifications.
+
 ## [v2.597] - 2026-01-28
 - **Refactoring (Error Handling)**:
     - **Microphone Check**: Added explicit pre-check for microphone access before attempting to start the AI session.

@@ -65,6 +65,7 @@
                         <!-- v2.592: Action CTA Cluster (Voice & Text) -->
                         <div class="flex flex-wrap items-center gap-4 mt-8 pointer-events-auto">
                             <!-- Voice Chat (Start Conversation) -->
+                            <!-- v2.598: Single Primary Button (Chat is now a fallback flow) -->
                             <button id="btn-start-voice" class="relative flex items-center gap-3 px-5 py-2.5 rounded-full bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/25 transition-all duration-300 group">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -73,7 +74,7 @@
                                 
                                 <!-- Tooltip -->
                                 <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
-                                    Start Voice Mode
+                                    Start Session
                                 </span>
                             </button>
                             
@@ -87,19 +88,6 @@
                                 <!-- Tooltip -->
                                 <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
                                     Hang Up
-                                </span>
-                            </button>
-
-                            <!-- Text Chat Toggle -->
-                            <button id="btn-start-text" class="relative flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-all duration-300 group">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                </svg>
-                                <span class="font-medium text-sm">Chat</span>
-                                
-                                <!-- Tooltip -->
-                                <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
-                                    Open Text Interface
                                 </span>
                             </button>
                         </div>
@@ -1855,7 +1843,6 @@
         window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
             startBtnId: 'btn-start-voice',
             endBtnId: 'btn-end-voice',
-            textChatBtnId: 'btn-start-text',
             statusTargetId: 'status-injection-target',
             onStart: () => {
                 // Ensure Visuals Power Up
