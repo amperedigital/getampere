@@ -372,8 +372,8 @@
             <!-- v2.559: Increased mobile track minimum height (min-h-[60vh]) to fix "cut off" issue -->
             <!-- v2.577: Removed pb-4 (inner padding) to place scrollbar directly under cards. -->
             <!-- v2.578: REMOVED min-h-[60vh] on mobile and replaced with h-auto for shrink-wrapping. -->
-            <!-- Added pb-6 to provide comfortable breathing room below the cards before the scrollbar/edge. -->
-            <div id="tech-demo-card-track" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-6 lg:grid lg:grid-cols-2 lg:grid-rows-3 lg:gap-4 lg:px-0 lg:pb-0 w-full h-auto lg:h-full lg:min-h-[850px] hide-scrollbar" style="scroll-behavior: smooth;">
+            <!-- v2.579: Increased padding to pb-12 (3rem) to prevent scrollbar from touching card bottom. -->
+            <div id="tech-demo-card-track" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-12 lg:grid lg:grid-cols-2 lg:grid-rows-3 lg:gap-4 lg:px-0 lg:pb-0 w-full h-auto lg:h-full lg:min-h-[850px] hide-scrollbar" style="scroll-behavior: smooth;">
                 
                 <!-- Card: Front Door Agent -->
                 <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->

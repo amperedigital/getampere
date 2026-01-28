@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.579] - 2026-01-28
+- **Mobile UI (Padding)**: Increased the bottom padding of the card slider track to `pb-12` (3rem). This ensures the horizontal scrollbar sits comfortably below the cards with a clear visual gap, preventing it from touching the content.
+
 ## [v2.578] - 2026-01-28
 - **Mobile Layout (Gap Fix)**:
     - **Removed Minimum Height**: Removed the `min-h-[60vh]` constraint from the card slider track on mobile. This was forcing a large empty gap below the cards. The container now `shrink-wraps` (`h-auto`) to the actual card height.
