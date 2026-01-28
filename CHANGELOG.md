@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.630] - 2026-01-28
+- **cache-busting**: Updated `tech-demo.html` module import to `ai-chat.js?v=2.629` (previously 2.626) to ensure the new Apple Glass Pill and Squared Blocks visualizer loads for all users.
+
 ## [v2.629] - 2026-01-28
 - **Visual Overhaul (Voice UV)**:
     - **Apple Glass Pill**: Wrapped the Voice Visualizer in a high-fidelity "Muted Pebble" glass container (\`bg-slate-900/90\`, \`backdrop-blur-xl\`, \`rounded-full\`, \`shadow-2xl\`) to match the system's "Glass OS" design language.
