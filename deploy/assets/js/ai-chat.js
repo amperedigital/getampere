@@ -286,7 +286,7 @@ export class AmpereAIChat {
     updateStatusUI(state, message) {
         if (!this.statusTarget) return;
         
-        // We inject into the Pill (Text | Dots)
+        // We inject into the Pill (Text | Dots | Visualizer)
         // If state is 'connecting' or 'connected', we assume the Pill is in 'Pill Mode' (flex row)
         
         // Remove existing content in target
@@ -299,23 +299,57 @@ export class AmpereAIChat {
         const dot = document.createElement('div');
         dot.className = "w-2 h-2 rounded-full transition-colors duration-300";
         
+        let colorClass = "";
+
         if (state === 'connecting') {
+            colorClass = "bg-yellow-400";
             statusText.className += " text-yellow-400";
-            dot.className += " bg-yellow-400 animate-ping";
+            dot.className += " " + colorClass + " animate-ping";
         } else if (state === 'connected') {
+            colorClass = "bg-blue-400";
             statusText.className += " text-blue-400";
-            dot.className += " bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]";
+            dot.className += " " + colorClass + " shadow-[0_0_8px_rgba(96,165,250,0.6)]";
         } else if (state === 'disconnected') {
+            colorClass = "bg-slate-600";
             statusText.className += " text-slate-500";
-            dot.className += " bg-slate-600";
+            dot.className += " " + colorClass;
         } else if (state === 'error') {
+            colorClass = "bg-red-500";
             statusText.className += " text-red-500";
-            dot.className += " bg-red-500";
+            dot.className += " " + colorClass;
         }
         
         // Order: Text | Dot (Pill style)
         this.statusTarget.appendChild(statusText);
         this.statusTarget.appendChild(dot);
+
+        // v2.602: Inject Visualizer into Pill if Connected/Connecting
+        // This satisfies the "UV Meter" request for Mobile/Desktop Unified Pill
+        if (state === 'connected' || state === 'connecting') {
+            // Create mini visualizer
+            const viz = document.createElement('div');
+            viz.className = "flex items-center gap-0.5 h-3 ml-2 opacity-50 transition-opacity duration-300";
+            
+            // 5 Bars
+            const heights = ['h-1', 'h-2.5', 'h-3', 'h-2', 'h-1'];
+            
+            heights.forEach((h, i) => {
+                const bar = document.createElement('div');
+                // Use the active color (blue/yellow) for the bars too
+                bar.className = `w-0.5 rounded-full ${colorClass.replace('bg-', 'bg-') || 'bg-white'} animate-pulse`; 
+                // Add initial height
+                bar.classList.add(h);
+                // Stagger animations
+                bar.style.animationDelay = `${i * 75}ms`;
+                viz.appendChild(bar);
+            });
+
+            this.statusTarget.appendChild(viz);
+            
+            // CRITICAL: Update the main reference so updateVisualizer() controls THIS set of bars
+            // This effectively moves the "Active" visualizer from the transcript window to the Pill.
+            this.visualizer = viz;
+        }
     }
 
     setConnectingState() {

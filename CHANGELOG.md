@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.602] - 2026-01-28
+- **UI Refinement (Clean Mobile)**:
+    - **Visualizer in Pill**: Moved the Audio Visualizer ("UV Meter") inside the unified Status Pill on Mobile. Now, when the user speaks, the pill animates, providing immediate feedback without needing the transcript window open.
+    - **Removed Breadcrumbs**: Hid the secondary navigation breadcrumbs on Mobile to reduce header clutter.
+    - **Pill Positioning**: Updated the status pill to flow naturally in the layout on Mobile (removed fixed positioning) to prevent overlap with headers or notches.
+    - **Refined Status**: The pill now shows Text + Connection Dot + Audio Visualizer (when active).
+
 ## [v2.601] - 2026-01-28
 - **UI Refactor (Mobile Simplification)**:
     - **Unified Status Pill**: The "Live Demo" pill (previously Desktop only) is now the primary status indicator for BOTH Mobile and Desktop. It is centered at the top of the screen on Mobile.
