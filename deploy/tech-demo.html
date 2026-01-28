@@ -119,17 +119,18 @@
 
             <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
             <!-- v2.603: Centered Top (Absolute) on Mobile to align with margins (top-8). -->
-            <div id="live-demo-pill" class="flex absolute z-30 top-8 left-1/2 -translate-x-1/2 lg:top-8 lg:left-auto lg:right-12 lg:translate-x-0 lg:-translate-y-1/2 items-center gap-4 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300">
+            <!-- v2.605: Compact styling for Mobile (reduced padding/gaps) to prevent clipping. -->
+            <div id="live-demo-pill" class="flex absolute z-30 top-8 left-1/2 -translate-x-1/2 lg:top-8 lg:left-auto lg:right-12 lg:translate-x-0 lg:-translate-y-1/2 items-center gap-2 lg:gap-4 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300">
                 
                 <!-- Base Indicator -->
-                <div class="flex items-center gap-3 shrink-0">
+                <div class="flex items-center gap-2 lg:gap-3 shrink-0">
                     <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
                     <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
                 </div>
 
                 <!-- Status Injection Target (JS will populate this: Text | Dot) -->
                 <!-- v2.602: Ensure visible on mobile (removed auto-hiding classes if any) -->
-                <div id="status-injection-target" class="flex items-center gap-4 border-l border-white/10 pl-4"></div>
+                <div id="status-injection-target" class="flex items-center gap-2 lg:gap-4 border-l border-white/10 pl-2 lg:pl-4"></div>
             </div>
 
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->

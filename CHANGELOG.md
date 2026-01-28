@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.605] - 2026-01-28
+- **UI Refinement (Mobile Fitting)**:
+    - **Compact Status Pill**: Reduced padding and gaps on the Status Pill specifically for Mobile screens (`gap-2`, `px-3`, `pl-2`) while maintaining full spacing on Desktop. This prevents the pill from clipping off the edges on narrower devices when displaying longer status messages like "DISCONNECTED".
+
 ## [v2.604] - 2026-01-28
 - **UI Polish (Mobile Spacing & State)**:
     - **Header Pushed Down**: Increased top padding (`pt-24`) on the Mobile Header to clear the newly centered Status Pill. This aligns the "AI Neural Architecture" heading with the page gutters properly.
