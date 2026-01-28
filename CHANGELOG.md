@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.601] - 2026-01-28
+- **UI Refactor (Mobile Simplification)**:
+    - **Unified Status Pill**: The "Live Demo" pill (previously Desktop only) is now the primary status indicator for BOTH Mobile and Desktop. It is centered at the top of the screen on Mobile.
+    - **Removed Power Button**: The separate Power Button on Mobile/Tablet has been removed. The "Start Conversation" button is now the sole interaction point to wake the system.
+    - **Removed Standby Pill**: The segregated "Standby/Power" pill on Mobile has been removed to reduce clutter.
+    - **Transcript Toggle**: Retained the Transcript Toggle in the top-right corner as a subtle utility.
+
 ## [v2.600] - 2026-01-28
 - **Feature (Hidden Transcript)**:
     - **Phone Metaphor**: The AI conversation now follows a "Phone Call" metaphor. The transcript window remains hidden by default when a voice session starts.
