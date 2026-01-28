@@ -333,11 +333,12 @@ export class AmpereAIChat {
                     console.log(`[AI-Chat] Visualizer in wrong location. Moving to:`, desiredTarget);
                     // Detach from wrong parent
                     if (this.visualizer.parentNode) this.visualizer.parentNode.removeChild(this.visualizer);
-                     needsInjection = true; 
-                    // Note: We could re-append existing 'this.visualizer', but creating fresh is safer for animation state.
-                    // Actually, let's just append the existing one to move it.
-                    desiredTarget.appendChild(this.visualizer);
-                    needsInjection = false; // Handled
+                    
+                    // v2.631: Force Re-Creation (Legacy Cleanup)
+                    // If we are moving the visualizer, it might be the old "transcript-window" style (id="ai-visualizer").
+                    // To ensure we get the new Apple Glass Pill style, we destroy the reference and force a fresh creation.
+                    this.visualizer = null;
+                    needsInjection = true;
                 }
                 
                 if (needsInjection) {

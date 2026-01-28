@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.631] - 2026-01-28
+- **UI Logic Fix (Visualizer Injection)**:
+    - **Legacy Purge**: Updated `AmpereAIChat.js` to force the destruction and re-creation of the Visualizer element when moving it to the active container. This prevents the "Old Icon" (the legacy visualizer from the hidden transcript window) from being moved into the main view, ensuring the new **Apple Glass Pill** component is always generated fresh.
+
 ## [v2.630] - 2026-01-28
 - **cache-busting**: Updated `tech-demo.html` module import to `ai-chat.js?v=2.629` (previously 2.626) to ensure the new Apple Glass Pill and Squared Blocks visualizer loads for all users.
 
