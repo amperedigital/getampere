@@ -640,6 +640,21 @@ export class TechDemoScene {
                     btn.style.textShadow = 'none';
                 }
             });
+            
+            // v2.638: Update Live Demo Pill Dot Color
+            const liveDot = document.getElementById('live-demo-dot');
+            if (liveDot) {
+                // Reset
+                liveDot.classList.remove('bg-blue-400', 'bg-emerald-400', 'bg-amber-400', 'bg-slate-500');
+                
+                if (newState === 'ACTIVE') {
+                    liveDot.classList.add('bg-emerald-400');
+                } else if (newState === 'STANDBY') {
+                    liveDot.classList.add('bg-amber-400');
+                } else {
+                    liveDot.classList.add('bg-slate-500');
+                }
+            }
 
             // Update Labels
             labels.forEach(l => {
@@ -1462,7 +1477,10 @@ export class TechDemoScene {
                      // Or just use scrollIntoView behavior?
                      // scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }) is best
                      // v2.558: Changed to 'center' to prevent cut-off issues
-                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                     
+                     // v2.638: Disabled Auto-Scroll on Mobile entirely per user request.
+                     // It causes distracting jumping during power-up sequence.
+                     // card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
 
             } else {

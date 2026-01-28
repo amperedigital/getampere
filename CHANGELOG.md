@@ -1,5 +1,11 @@
 ## [v2.637] - 2026-01-28
 - **Mobile Visualizer Fix**:
+## [v2.638] - 2026-01-28
+- **Mobile UX Refinement**:
+    - **No Scroll Jump**: Disabled the automatic `scrollIntoView` behavior on mobile when an agent card becomes active. This prevents the page from unexpectedly scrolling/jumping during the "Power Up" sequence when the first agent activates.
+- **Visual Polish**:
+    - **Status Pill Sync**: The "Live Demo" blinking dot in the header pill now syncs with the system power state colors (Amber for Standby, Emerald for Active, Slate for Off), matching the power button logic.
+
 ## [v2.637] - 2026-01-28
 - **Mobile Visualizer Fix**:
     - **DOM Nesting Correction**: Moved the Voice UV Visualizer *inside* the `Ring Container` (specifically into the aspect-ratio preserved block). 

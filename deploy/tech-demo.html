@@ -128,7 +128,7 @@
                 <!-- Base Indicator (Live Demo + Blue Dot) -->
                 <!-- Mobile: Show Dot, Hide Text. Desktop: Show Both. -->
                 <div class="flex items-center gap-3 shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
+                    <span id="live-demo-dot" class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
                     <span class="hidden lg:block text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
                 </div>
 
@@ -1594,7 +1594,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.633/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.638/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
