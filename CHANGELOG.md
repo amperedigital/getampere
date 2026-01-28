@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.563] - 2026-01-28
+- **Mobile UI Fixes**:
+    - **Card Opener**: Hidden the "Expand/Maximize" button on Agent Cards for mobile devices (`< 1024px`) to prevent text clipping on smaller screens. The button remains accessible on Desktop via hover.
+
 ## [v2.562] - 2026-01-27
 - **Mobile Interaction Refinement**:
     - **Left Alignment**: Changed the scroll snap alignment behavior from `center` to `start` (Left Aligned), satisfying the request for the active card to be positioned "all the way to the left".
