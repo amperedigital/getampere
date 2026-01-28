@@ -90,18 +90,6 @@
                                     Hang Up
                                 </span>
                             </button>
-
-                            <!-- v2.599: Transcript Toggle (Optional View) -->
-                            <button id="btn-toggle-transcript" class="relative flex items-center justify-center p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all duration-300 group" aria-label="Toggle Transcript">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                </svg>
-                                
-                                <!-- Tooltip -->
-                                <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
-                                    Show Transcript
-                                </span>
-                            </button>
                         </div>
                     </div>
 
@@ -154,6 +142,17 @@
                 </span>
             </button>
 
+            <!-- v2.599: Desktop Transcript Toggle (Hidden until Power ON) -->
+            <button class="group hidden lg:flex absolute z-30 lg:right-28 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-slate-400 hover:text-white active:scale-95 transition-all duration-500 opacity-0 pointer-events-none transcript-toggle-btn"
+                    aria-label="Show Transcript">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span class="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[11px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                    Transcript
+                </span>
+            </button>
+
             <!-- Scene Container with "Breathing Room" Packaging -->
             <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
             <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
@@ -189,6 +188,14 @@
                             aria-label="Power Toggle">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                        </svg>
+                    </button>
+
+                    <!-- v2.599: Mobile Transcript Toggle -->
+                    <button class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-400 active:scale-95 transition-all duration-500 opacity-0 pointer-events-none transcript-toggle-btn"
+                            aria-label="Show Transcript">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                         </svg>
                     </button>
 
@@ -1783,6 +1790,16 @@
                          }
                     });
 
+                    // v2.599: Transcript Toggle Visibility (Only visible when ON)
+                    const transcriptBtns = document.querySelectorAll('.transcript-toggle-btn');
+                    transcriptBtns.forEach(btn => {
+                        if (state === 'ACTIVE') {
+                            btn.classList.remove('opacity-0', 'pointer-events-none');
+                        } else {
+                            btn.classList.add('opacity-0', 'pointer-events-none');
+                        }
+                    });
+
                     if(!dot || !text) return;
                     
                     // Update Power Button Appearance (Iterate all buttons)
@@ -1855,7 +1872,7 @@
         window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
             startBtnId: 'btn-start-voice',
             endBtnId: 'btn-end-voice',
-            textChatBtnId: 'btn-toggle-transcript', // v2.599: Re-mapped to new Transcript Toggle
+            // textChatBtnId: Removed. Manually handled below for multiple context-aware buttons.
             statusTargetId: 'status-injection-target',
             onStart: () => {
                 // Ensure Visuals Power Up
@@ -1872,6 +1889,24 @@
                     if(chatContainer) chatContainer.classList.add('hidden');
                 }
             }
+        });
+
+        // v2.599: Manual Wiring for Transcript Toggles (Desktop & Mobile)
+        // These buttons are now context-aware (only visible when Power is ON)
+        document.querySelectorAll('.transcript-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle Container Visibility
+                const container = document.getElementById('ampere-ai-chat-container');
+                if(container) {
+                    container.classList.toggle('hidden');
+                    // Focus input if opening (nice to have)
+                    const input = container.querySelector('input');
+                    if(!container.classList.contains('hidden') && input) input.focus();
+                }
+            });
         });
     </script>
 </body>

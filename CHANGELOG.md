@@ -3,9 +3,12 @@
 ## [v2.599] - 2026-01-28
 - **Feature (Hidden Transcript)**:
     - **Phone Metaphor**: The AI conversation now follows a "Phone Call" metaphor. The transcript window remains hidden by default when a voice session starts.
-    - **Toggle Control**: Added a secondary "Show Transcript" icon button (Chat Bubble icon) next to the Hang Up button.
-    - **Wiring**: Mapped the `textChatBtnId` configuration in `AmpereAIChat` to this new toggle button.
-    - **Logic Update**: Updated `ai-chat.js` to remove automatic visibility toggling on connection start. The window only appears if explicitly toggled or if a Microphone Error forces a fallback.
+    - **Context-Aware Controls**: Added a "Show Transcript" icon button beside the **Power Button** (on both Desktop and Mobile).
+    - **Logic**:
+        - The transcript button is **hidden** by default.
+        - It is only revealed when the system is **Powered ON** (Visual State: ACTIVE).
+        - Clicking it toggles the transcript window without affecting the voice session.
+    - **Wiring**: Removed direct `textChatBtnId` mapping in favor of manual event listeners to support multiple buttons (Desktop/Mobile contexts).
 
 ## [v2.598] - 2026-01-28
 - **Refactoring (Modal Simplification)**:
