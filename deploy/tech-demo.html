@@ -1662,7 +1662,8 @@
                     window.toggleMobilePower = () => {
                         if (!window.demoScene) return;
                         const current = window.demoScene.systemState;
-                        const next = (current === 'ACTIVE') ? 'OFF' : 'ACTIVE';
+                        // v2.620: "Power Off" is now "Standby". There is no OFF state for the user.
+                        const next = (current === 'ACTIVE') ? 'STANDBY' : 'ACTIVE';
                         
                         // 1. Trigger Visuals
                         window.demoScene.setSystemState(next);

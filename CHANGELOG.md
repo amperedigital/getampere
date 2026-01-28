@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.620] - 2026-01-28
+- **Logic Refinement (Standby & Voice UV)**:
+    - **No "OFF" State**: Updated the global Power Button logic (`tech-demo.html`) to toggle between `ACTIVE` and `STANDBY`. The `OFF` state is now effectively unreachable by user interaction, ensuring the system always returns to the "Loaded" state (Standby) when powering down, as requested.
+    - **Robust Voice UV**: Hardened the Audio Visualizer injection logic in `AmpereAIChat.js`. It now re-checks for the visualizer's existence in the DOM on every status update. If the visualizer was accidentally removed or detatched, it gets re-injected immediately. This guarantees the Voice UV bars appear when the conversation starts.
+
 ## [v2.619] - 2026-01-28
 - **UI Logic Update (Default Standby)**:
     - **Session End Behavior**: Updated `tech-demo.html` to transition the system to `STANDBY` (instead of `OFF`) when the voice session ends. This aligns the "Post-Call" state with the "Initial Load" state.

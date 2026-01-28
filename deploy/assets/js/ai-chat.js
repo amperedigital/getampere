@@ -297,6 +297,8 @@ export class AmpereAIChat {
         // Check if the TechDemoScene has injected its structure (Text + Dots)
         // If so, we modify it in-place rather than wiping it.
         const sceneText = this.statusTarget.querySelector('.ampere-status-text');
+        // v2.620: Robust Container Selection to ensure Visualizer Injection
+        // Try precise class first, then fallback to target itself.
         const sceneContainer = this.statusTarget.querySelector('.ampere-status-pill-mode') || this.statusTarget;
 
         if (sceneText) {
@@ -324,16 +326,17 @@ export class AmpereAIChat {
             }
             
             // 3. Inject Visualizer (If needed)
-            // We only add the bars if we are connecting/connected AND they don't exist yet.
-            if ((state === 'connecting' || state === 'connected') && !this.visualizer) {
-                // v2.619: Color Class 'bg-blue-400' is hardcoded here, ensuring visibility
-                const viz = this.createVisualizer('bg-blue-400');
-                
-                // Append to the Flex Container (Pill), preserving existing Dots
-                // Ensure we are appending to the right parent. 
-                // sceneContainer is the pill flexbox (.ampere-status-pill-mode)
-                sceneContainer.appendChild(viz);
-                this.visualizer = viz;
+            // We only add the bars if we are connecting/connected.
+            // v2.620: Force Injection Check
+            if (state === 'connecting' || state === 'connected') {
+                if (!this.visualizer || !this.visualizer.isConnected) {
+                    // v2.619: Color Class 'bg-blue-400' is hardcoded here, ensuring visibility
+                    const viz = this.createVisualizer('bg-blue-400');
+                    
+                    // Append to the Flex Container (Pill)
+                    sceneContainer.appendChild(viz);
+                    this.visualizer = viz;
+                }
             } else if (state === 'disconnected') {
                  // v2.619: KEEP VISUALIZER?
                  // User says "We lost our voice UV... add it back to the pill... While she's talking"
