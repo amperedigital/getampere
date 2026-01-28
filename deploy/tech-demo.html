@@ -1582,7 +1582,7 @@
             // v2.265: Mobile Config Override before Init
             // Reduce camera distance to make Neural Net appear larger on mobile
             // v2.266: Reduced further to 4.5.
-            if (window.innerWidth <= 1024 && container) {
+            if (window.innerWidth < 1024 && container) {
                 container.setAttribute('data-camera-distance', '4.5'); 
             }
 
@@ -1594,7 +1594,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.639/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.640/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

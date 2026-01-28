@@ -1,5 +1,11 @@
-## [v2.639] - 2026-01-28
-- **Redeploy**: Forced cache-busting redeploy to ensure v2.638 changes (Mobile scroll fix & Status Pill sync) propagate to all edges.
+## [v2.640] - 2026-01-28
+- **Tablet Breakpoint Adjustment**:
+    - **Logic Strict**: Changed the layout and logic breakpoints from `<= 1024px` to `< 1024px`.
+    - **iPad Pro (1024px)**: Now correctly treated as "Desktop" (Two-Column Layout, Desktop Camera Logic).
+    - **iPad Air & Mobile (<1024px)**: Remain strictly on "Mobile" (Single Column, Mobile Camera Zoom).
+    - **CSS**: Updated specific media queries in `styles.css` to respect the 1023px cutoff.
+
+
 ## [v2.639] - 2026-01-28
 - **Redeploy**: Forced cache-busting redeploy to ensure v2.638 changes (Mobile scroll fix & Status Pill sync) propagate to all edges.
 

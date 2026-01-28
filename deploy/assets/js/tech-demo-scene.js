@@ -13,8 +13,8 @@ export class TechDemoScene {
         // v2.274: FIXED - isMobile should use WINDOW width to properly detect "splitscreen desktop" vs "true tablet"
         // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
         // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
-        // v2.334: Updated to <= 1024 to include iPad Pro Portrait (1024px) in the "Mobile Zoom" logic.
-        this.isMobile = (window.innerWidth <= 1024);
+        // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
+        this.isMobile = (window.innerWidth < 1024);
 
         console.log("Tech Demo Scene Initialized - vDesignTwo.10 (Isolated Branch)");
         
@@ -1285,8 +1285,8 @@ export class TechDemoScene {
             // v2.274: FIXED - isMobile should use WINDOW width to properly detect "splitscreen desktop" vs "true tablet"
             // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
             // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
-            // v2.334: Updated to <= 1024 to include iPad Pro Portrait (1024px) in the "Mobile Zoom" logic.
-            this.isMobile = (window.innerWidth <= 1024);
+            // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
+            this.isMobile = (window.innerWidth < 1024);
 
             // console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
             // console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
