@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.627] - 2026-01-28
+- **cache-busting**: Updated `tech-demo.html` module import to explicitly request `ai-chat.js?v=2.626` to force browsers to reload the new Visualizer code.
+
 ## [v2.626] - 2026-01-28
 - **Visual Upgrade (Voice UV Waveform)**:
     - **ElevenLabs Aesthetic**: Replaced the static CSS pulse animation with a high-fidelity JS-driven waveform simulation. This mimics the official ElevenLabs "Bar Visualizer" component.
