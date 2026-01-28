@@ -377,32 +377,59 @@ export class TechDemoScene {
                     }
                 }
                 
-.ampere-dot-row {
+                    /* Pill Mode Horizontal Layout */
+                    .ampere-status-pill-mode {
                         display: flex;
-                        gap: 2px;
-                        margin-bottom: 8px;
-                        justify-content: center;
+                        flex-direction: row; 
+                        align-items: center;
+                        gap: 16px; 
                     }
+
+                    .ampere-dot-row {
+                        display: flex;
+                        gap: 4px;
+                        height: 12px;
+                        align-items: center;
+                    }
+                    
                     .ampere-dot {
-                        width: 8px; /* Defined block width */
-                        height: 12px; /* Taller rectangular blocks */
-                        border-radius: 1px; /* Slight bevel */
-                        background: rgba(255, 255, 255, 0.03);
-                        border: 1px solid rgba(255, 255, 255, 0.08);
-                        box-shadow: inset 0 0 2px rgba(0,0,0,0.5); /* Inner depth for glass feel */
-                        transition: all 0.15s ease-out;
+                        width: 6px;
+                        height: 12px;
+                        background: rgba(255, 255, 255, 0.1);
+                        border-radius: 1px;
+                        transition: all 0.1s ease;
+                        border: 1px solid rgba(255, 255, 255, 0.05);
                     }
+                    
+                    /* Vertical Text */
                     .ampere-status-text {
-                        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                        font-family: 'JetBrains Mono', monospace;
                         font-size: 10px;
                         font-weight: 700;
                         letter-spacing: 0.1em;
                         color: #10b981;
                         text-transform: uppercase;
-                        /* text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); Removed for flatter glass look */
                         min-height: 12px;
                         text-align: center;
                         white-space: nowrap;
+                        margin-top: 8px; 
+                    }
+                    
+                    /* Pill Text (Horizontal) */
+                    .ampere-status-text.pill-text {
+                        margin-top: 0;
+                        order: -1; 
+                    }
+                    
+                    #ampere-standby-warning {
+                         font-family: 'JetBrains Mono', monospace;
+                         font-size: 10px;
+                         color: #f59e0b;
+                         font-weight: bold;
+                         display: none; 
+                    }
+                    #ampere-standby-warning.active {
+                        display: block;
                     }
             `;
             document.head.appendChild(style);
@@ -410,26 +437,47 @@ export class TechDemoScene {
 
         const padding = 5; 
         
-        // --- CLUSTER CONTAINER (New v2.300) ---
-        const cluster = document.createElement('div');
-        cluster.id = 'ampere-controls-cluster';
-        
-        // Target the explicit controls cluster container 
-        let uiRoot = document.getElementById('tech-demo-controls-target');
+        // --- TARGETING STRATEGY ---
+        // Priority 1: Inject into Top-Right Pill (Desktop)
+        const pillTarget = document.getElementById('status-injection-target');
+        let uiRoot = pillTarget;
+        let isPillMode = !!pillTarget;
         
         if (!uiRoot) {
-             console.warn("TechDemoScene: #tech-demo-controls-target not found. Falling back to scene container.");
-             uiRoot = this.container.closest('.group\\/scene') || this.container;
-             if (window.getComputedStyle(uiRoot).position === 'static') {
-                 uiRoot.style.position = 'relative';
-             }
+            // Fallback: Use Controls Cluster (Mobile/Legacy)
+            // --- CLUSTER CONTAINER (New v2.300) ---
+            const cluster = document.createElement('div');
+            cluster.id = 'ampere-controls-cluster';
+            
+            // Target the explicit controls cluster container 
+            uiRoot = document.getElementById('tech-demo-controls-target');
+            
+            if (!uiRoot) {
+                 console.warn("TechDemoScene: #tech-demo-controls-target not found. Falling back to scene container.");
+                 uiRoot = this.container.closest('.group\\/scene') || this.container;
+                 if (window.getComputedStyle(uiRoot).position === 'static') {
+                     uiRoot.style.position = 'relative';
+                 }
+            }
+            uiRoot.appendChild(cluster); // Append cluster to root
+            uiRoot = cluster; // Root becomes the cluster
+        } else {
+            // Unhide content
+             uiRoot.classList.remove('hidden');
+             // Unhide parent pill if needed
+             const pillParent = document.getElementById('live-demo-pill');
+             if(pillParent) pillParent.classList.remove('hidden');
         }
 
         // --- Multi-Function Display (Status) ---
-        // v2.528: Only Status Display retained (Power Meter). Slider removed.
         const statusContainer = document.createElement('div');
         this.uiStatusContainer = statusContainer;
-        statusContainer.id = 'ampere-system-status';
+        
+        if (isPillMode) {
+            statusContainer.className = 'ampere-status-pill-mode';
+        } else {
+            statusContainer.id = 'ampere-system-status';
+        }
         
         // Dots Row
         const dotRow = document.createElement('div');
@@ -441,13 +489,12 @@ export class TechDemoScene {
              dotRow.appendChild(dot);
              this.uiDots.push(dot);
         }
-        statusContainer.appendChild(dotRow);
 
         const statusText = document.createElement('div');
         this.uiStatusText = statusText;
         statusText.className = 'ampere-status-text';
+        if (isPillMode) statusText.classList.add('pill-text'); 
         statusText.innerText = 'INITIALIZING...';
-        statusContainer.appendChild(statusText);
 
         // --- Standby Warning UI ---
         const warning = document.createElement('div');
@@ -455,12 +502,26 @@ export class TechDemoScene {
         warning.id = 'ampere-standby-warning';
         warning.innerText = '';
         
-        // --- CLUSTER ASSEMBLY ---
-        // Stack Order: Warning (Top) -> Status (Bottom)
-        cluster.appendChild(warning);
-        cluster.appendChild(statusContainer);
+        // --- ASSEMBLY ---
+        if (isPillMode) {
+            // Horizontal Layout: Warning | Text | Dots
+            statusContainer.appendChild(warning);
+            statusContainer.appendChild(statusText);
+            statusContainer.appendChild(dotRow);
+        } else {
+            // Vertical Layout (Cluster)
+            statusContainer.appendChild(dotRow);
+            statusContainer.appendChild(statusText);
+            if (uiRoot.id === 'ampere-controls-cluster' || uiRoot === uiRoot) { // Fallback check
+                 // In cluster mode, warning is separate
+                 // But wait, uiRoot IS the cluster in fallback mode.
+                 uiRoot.appendChild(warning); 
+            }
+        }
         
-        uiRoot.appendChild(cluster);
+        if (isPillMode || uiRoot.id === 'ampere-controls-cluster') {
+             uiRoot.appendChild(statusContainer);
+        }
 
         // Initialize UI state
         // We defer slightly to ensure DOM is ready

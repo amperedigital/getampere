@@ -80,9 +80,18 @@
             <!-- v2.497: Shifted Right to lg:right-6 (1.5rem) to match new page gutter. -->
             <!-- v2.499: Moved Left to lg:right-12 (3rem) to balance with the new Header indentation (pl-12). -->
             <!-- v2.525: Desktop Pill RESTORED to 'Standard Pill' style (bg-black/40). Removed .apple-glass which broke it. -->
-            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
-                <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
+            <!-- v2.591: Expanded Pill to serve as Status Window container. Added #live-demo-content target. -->
+            <div id="live-demo-pill" class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-4 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300">
+                
+                <!-- Base Indicator -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
+                    <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
+                </div>
+
+                <!-- Status Injection Target (JS will populate this) -->
+                <!-- Defaults to hidden until populated -->
+                <div id="status-injection-target" class="flex items-center gap-4 border-l border-white/10 pl-4"></div>
             </div>
 
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
@@ -1548,7 +1557,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.558/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.591/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

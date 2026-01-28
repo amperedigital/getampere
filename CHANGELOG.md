@@ -1,5 +1,18 @@
 # Changelog
 
+## [v2.591] - 2026-01-28
+- **Refactoring (Status Window Integration)**:
+    - **Concept**: Refactored the floating "UV Display" / "Active Status" cluster into the **Live Demo Pill**. It is no longer a separate floating element attached to the neural net container.
+    - **Live Demo Pill**:
+        - Expanded the pill to serve as a comprehensive **Status Window**.
+        - Left side: Retained Pulsing Dot + "Live Demo" label.
+        - Right side: Added a dynamic injection target for the System Status.
+    - **JS Logic**:
+        - `TechDemoScene` now creates the Status UI (Dot Row + Text + Warning) inside the Pill's injection target if available.
+        - **Layout Switch**: When inside the Pill, the status UI switches to a **Horizontal (Flex Row)** layout (`Text | Dots`) instead of the vertical stack.
+        - **Typography**: Switched status text to `JetBrains Mono` for consistency.
+        - **Visuals**: Dots are now smaller (6px) and tighter (4px gap) to fit the inline bar format.
+
 ## [v2.590] - 2026-01-28
 - **Layout Tuning (Bottom Flush)**:
     - **Scene Container**: Removed `lg:pb-32` (8rem padding). This constraint was artificially holding the 3D visuals up. By removing it, the `justify-end` wrapper can now push the Neural Net/Ring to the absolute bottom of the card, maximizing the clearance from the Header Text.
