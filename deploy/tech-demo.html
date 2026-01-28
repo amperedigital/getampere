@@ -288,6 +288,11 @@
                 <!-- End Wrapper -->
 <!-- End Master Container -->
 
+                <!-- Ampere AI Chat Interface (Inline) -->
+                <!-- v2.580: Inline Glass Widget. Placed between Scene and Mobile Sliders -->
+                <!-- Hidden by default? No, visible. -->
+                <div id="ampere-ai-chat-container" class="relative w-full px-6 mt-4 z-50 pointer-events-auto"></div>
+
                 <!-- Mobile Ring Sliders (v2.264) -->
                 <!-- Positioned at the bottom of the Scene Container -->
                 <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
@@ -1758,7 +1763,13 @@
         import { initAllSockets } from './assets/js/glass-socket.js?v=2.483';
         initAllSockets('.socket-card-container');
     </script>
-    <elevenlabs-convai agent-id="agent_4501ka281xkpe6e8jzbspgy9qh4d"></elevenlabs-convai>
-    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    <!-- Initialize Ampere AI Chat (v2.580) -->
+    <script type="module">
+        import { AmpereAIChat } from './assets/js/ai-chat.js';
+        
+        // Initialize with Container ID and Agent ID
+        // Agent ID: agent_4501ka281xkpe6e8jzbspgy9qh4d
+        new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d');
+    </script>
 </body>
 </html>

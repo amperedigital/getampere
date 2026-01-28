@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.580] - 2026-01-28
+- **Feature: Inline AI Chat (Glass Interface)**:
+    - **Custom UI**: Replaced the floating ElevenLabs widget with a fully custom "Glass Card" interface powered by the ElevenLabs SDK.
+    - **Integration**: Encapsulated in a new `AmpereAIChat` module (`assets/js/ai-chat.js`).
+    - **Placement**: Integrated directly into the Mobile DOM flow (between the Neural Orb and the Sliders), solving the "random floating overlay" issue.
+    - **Visuals**: Features a real-time listening/speaking status dot, pulsing audio visualizer, and "Action Area" buttons (Start/End) styled to match the site's glassmorphism aesthetic.
+
 ## [v2.579] - 2026-01-28
 - **Mobile UI (Padding)**: Increased the bottom padding of the card slider track to `pb-12` (3rem). This ensures the horizontal scrollbar sits comfortably below the cards with a clear visual gap, preventing it from touching the content.
 
