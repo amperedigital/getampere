@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.604] - 2026-01-28
+- **UI Polish (Mobile Spacing & State)**:
+    - **Header Pushed Down**: Increased top padding (`pt-24`) on the Mobile Header to clear the newly centered Status Pill. This aligns the "AI Neural Architecture" heading with the page gutters properly.
+    - **Initial State**: The Status Pill now explicitly shows "Disconnected" (with a grey status dot) on page load, ensuring the UI is informative immediately.
+
 ## [v2.603] - 2026-01-28
 - **UI Polish (Mobile Layout)**:
     - **Pill Alignment**: Restored absolute positioning for the Mobile Status Pill (`top-8`, Centered). This ensures it aligns neatly with the page top margin and doesn't "float" awkwardly in the content flow.

@@ -30,6 +30,8 @@ export class AmpereAIChat {
     init() {
         this.render();
         this.bindEvents();
+        // v2.604: Explicitly set Disconnected state on load so the UI isn't empty
+        this.updateStatusUI('disconnected', 'Disconnected');
     }
 
     render() {
