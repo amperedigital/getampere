@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.594] - 2026-01-28
+- **Refactoring (Chat Connection Logic)**:
+    - **Unified Connection**:
+        - Clicking the **"Chat"** button now **automatically starts the voice/agent session** if not already connected. Previously it only opened the UI.
+        - This ensures users immediately hear the agent's voice and see the greeting upon opening the chat window, fulfilling the "immediate response" requirement.
+    - **Message Handling**:
+        - Implemented `onMessage` handler in the ElevenLabs client configuration.
+        - Incoming transcriptions from the agent ("Agent Speaking") are now displayed as bubbles in the chat window.
+        - Added `addMessage` support for System messages ("Connection established").
+    - **UI Polish**:
+        - Refined chat bubble styles (rounded corners, borders) to distinguish User vs Agent vs System messages.
+
 ## [v2.593] - 2026-01-28
 - **Refactoring (Chat UX Refinement)**:
     - **Buttons & Layout**:
