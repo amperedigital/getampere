@@ -591,32 +591,23 @@ export class AmpereAIChat {
     }
 
     createVisualizer(colorClass = 'bg-blue-400') {
-        // v2.629: Apple Glass Pill + Squared UV Aesthetic
-        // Container: High-fidelity "Muted Pebble" glass (Dark + Blur + Stroke)
+        // v2.632: Adaptive Visualizer (Desktop vs Mobile)
+        // User Request Update: Always use the High Fidelity "Apple Glass Pill" visualizer.
+        // Mobile positioning is handled via CSS in 'tech-demo.html'.
+        
+        // --- APPLE GLASS PILL (Universal) ---
         const viz = document.createElement('div');
         viz.className = "flex items-center justify-center gap-[4px] h-12 ml-0 opacity-100 transition-all duration-500 pointer-events-auto bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-full px-6 py-2 shadow-2xl";
-        // Tag it for identification
-        viz.id = "ampere-voice-uv";
+        viz.id = "ampere-voice-uv"; // Unique ID
         
-        // 5 Bars, but thicker and squared
         const initialHeights = [30, 45, 60, 45, 30];
-        
         initialHeights.forEach((h, i) => {
             const bar = document.createElement('div');
-            // v2.629: Styling 
-            // - w-[8px]: Dramatic thickness
-            // - rounded-[1px]: Squared-off UV aesthetic (slight corner rounding for polish)
-            // - animate-pulse: Default "Waiting" state
             bar.className = `uv-bar w-[8px] rounded-[1px] bg-gradient-to-t from-blue-500 to-cyan-300 transition-all duration-100 ease-out animate-pulse`; 
-            
-            // Set initial height
             bar.style.height = `${h}%`;
-            // Stagger the pulse for a "Thinking" wave effect
             bar.style.animationDelay = `${i * 150}ms`;
-            
             viz.appendChild(bar);
         });
-        
         return viz;
     }
 }

@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.633] - 2026-01-28
+- **Mobile UX Relocation (Voice UV)**:
+    - **Upper Right Placement**: Moved the Voice UV Visualizer on mobile to the **Upper Right** of the Neural Architecture section (`top-32 right-6`) to maintain a strong visual connection with the Neural Net title and the active agent state, while avoiding overlay issues with the bottom card stack.
+    - **Unified Component**: Reverted the decision to use a "Compact" visualizer on mobile. The system now renders the full universal **Apple Glass Pill** (High Fidelity) on all devices, ensuring a consistent design language.
+
+## [v2.632] - 2026-01-28
+- **Mobile UX Refinement**:
+    - **Adaptive Visualizer**: Updated `ai-chat.js` to detect the device layout.
+        - **Desktop**: Renders the large Apple Glass Pill container (bottom-right).
+        - **Mobile**: Renders a compact, squared-off visualizer *inside* the Status Pill (top-center). This prevents the large pill from obscuring the UI on small screens.
+    - **Layout Cleanup**: Restored `hidden lg:flex` to the desktop visualizer container in `tech-demo.html` to ensure it doesn't float over the mobile interface.
+
 ## [v2.631] - 2026-01-28
 - **UI Logic Fix (Visualizer Injection)**:
     - **Legacy Purge**: Updated `AmpereAIChat.js` to force the destruction and re-creation of the Visualizer element when moving it to the active container. This prevents the "Old Icon" (the legacy visualizer from the hidden transcript window) from being moved into the main view, ensuring the new **Apple Glass Pill** component is always generated fresh.

@@ -137,7 +137,9 @@
 
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
             <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
-            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+            <!-- v2.632: Added ID for easier targeting. Changed text color logic (handled in JS). -->
+            <button id="tech-demo-toggle-btn"
+                    onclick="window.toggleMobilePower && window.toggleMobilePower()" 
                     class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
                     aria-label="Power & Standby Control"
                     aria-pressed="false">
@@ -390,8 +392,10 @@
             <!-- v2.628: Voice UV Visualizer Container (Bottom Right of Left Column) -->
             <!-- Positioned at the bottom right of the hero section -->
             <!-- Changed 'hidden lg:flex' to 'flex' to ensure visibility on all devices -->
+            <!-- v2.632: Reverted to 'hidden lg:flex' because mobile users want the visualizer in the pill -->
+            <!-- v2.633: Moved to Upper Right on Mobile (top-32 right-6) to sit near Neural Title. -->
             <!-- Added debugging background/border to ensure placement is visible -->
-            <div id="voice-visualizer-container" class="flex absolute bottom-12 right-12 z-40 pointer-events-none">
+            <div id="voice-visualizer-container" class="flex absolute z-40  top-32 right-6 lg:top-auto lg:bottom-12 lg:right-12 Pointer-events-none">
                  <!-- Visualizer Injected Here -->
             </div>
         </div>
@@ -1593,7 +1597,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.619/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.633/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging

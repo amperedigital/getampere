@@ -620,6 +620,27 @@ export class TechDemoScene {
                  // Off: No Glow
             }
 
+            // v2.632: Dynamic Color Update for Power Button(s)
+            // User Requirement: Green when Active, Amber when Standby.
+            // Also: "light green background should be much lighter" on active.
+            btns.forEach(btn => {
+                // Remove all potential state colors first
+                btn.classList.remove('text-amber-300', 'text-emerald-400', 'text-slate-500', 'bg-emerald-500/20');
+                
+                if (newState === 'ACTIVE') {
+                    btn.classList.add('text-emerald-400', 'bg-emerald-500/20');
+                    // Ensure glow is green? The glow is handled by Apple Glass usually via text shadow or internal logic.
+                    // Adding a text shadow via style just in case
+                    btn.style.textShadow = '0 0 15px rgba(52, 211, 153, 0.6)';
+                } else if (newState === 'STANDBY') {
+                    btn.classList.add('text-amber-300');
+                    btn.style.textShadow = '0 0 10px rgba(253, 186, 116, 0.5)';
+                } else {
+                    btn.classList.add('text-slate-500'); // Off
+                    btn.style.textShadow = 'none';
+                }
+            });
+
             // Update Labels
             labels.forEach(l => {
                 const id = l.getAttribute('data-id');
