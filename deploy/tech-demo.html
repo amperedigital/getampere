@@ -90,6 +90,18 @@
                                     Hang Up
                                 </span>
                             </button>
+
+                            <!-- v2.599: Transcript Toggle (Optional View) -->
+                            <button id="btn-toggle-transcript" class="relative flex items-center justify-center p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all duration-300 group" aria-label="Toggle Transcript">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                                
+                                <!-- Tooltip -->
+                                <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                                    Show Transcript
+                                </span>
+                            </button>
                         </div>
                     </div>
 
@@ -1843,6 +1855,7 @@
         window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
             startBtnId: 'btn-start-voice',
             endBtnId: 'btn-end-voice',
+            textChatBtnId: 'btn-toggle-transcript', // v2.599: Re-mapped to new Transcript Toggle
             statusTargetId: 'status-injection-target',
             onStart: () => {
                 // Ensure Visuals Power Up

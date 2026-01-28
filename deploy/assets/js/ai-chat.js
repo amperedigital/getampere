@@ -110,8 +110,17 @@ export class AmpereAIChat {
             });
         }
         
-        // v2.598: Text Chat Button REMOVED. 
-        // Logic handled via fallback prompts if needed.
+        // v2.599: Transcript Toggle (Text Chat Btn converted to Toggle)
+        // Just toggles visibility. Does NOT start session.
+        if (this.textChatBtn) {
+            this.textChatBtn.addEventListener('click', () => {
+                this.container.classList.toggle('hidden');
+                // Focus input if opening
+                if (!this.container.classList.contains('hidden') && this.chatInput) {
+                    this.chatInput.focus();
+                }
+            });
+        }
         
         // Chat Input Logic
         if (this.chatInput && this.chatSendBtn) {
@@ -177,8 +186,9 @@ export class AmpereAIChat {
 
         this.setConnectingState();
         
-        // Auto-open chat window on voice start? Maybe prefer hidden unless asked.
-        this.container.classList.remove('hidden'); 
+        // v2.599: Window stays HIDDEN by default on voice start.
+        // It only opens if manually toggled or if an error occurs (fallback flow).
+        // this.container.classList.remove('hidden'); 
 
         try {
             // Request Mic Check before starting SDK
@@ -328,8 +338,9 @@ export class AmpereAIChat {
         if (this.startBtn) this.startBtn.classList.add('hidden');
         if (this.endBtn) this.endBtn.classList.remove('hidden');
 
-        // Show Messages Area
-        this.container.classList.remove('hidden');
+        // v2.599: Do NOT auto-open window. User must click "Transcript" if they want to see it.
+        // this.container.classList.remove('hidden');
+        
         if (this.messages) {
              // Clear legacy placeholder
              this.messages.innerHTML = '';
