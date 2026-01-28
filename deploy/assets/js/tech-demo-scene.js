@@ -45,8 +45,8 @@ export class TechDemoScene {
             standbyTimeout: 120,    // Seconds before auto-standby (data-standby-timeout)
             standbyWarning: 30,     // Seconds for warning countdown (data-standby-warning)
             autoRecenter: 2.5,      // Seconds before camera recenter (data-auto-recenter)
-            lerpSpeed: 0.015,       // Transition speed factor (data-lerp-speed)
-            minVelocity: 0.0025,    // Min transition step per frame (data-min-velocity)
+            lerpSpeed: 0.05,       // v2.617: Increased Speed (was 0.015) for faster Power Up Sequence
+            minVelocity: 0.01,      // v2.617: Increased Min Velocity (was 0.0025) to prevent stalling
             rotationRPM: 0.17,      // Revs per second (approx) (data-rotation-rpm)
             cameraDistance: 5.0     // Z-Distance (Zoom) (data-camera-distance)
         };
@@ -1588,19 +1588,37 @@ export class TechDemoScene {
                      if (this.uiStatusText) {
                          const pct = Math.floor(this.simIntensity * 100);
                          
+                         // v2.617: Allow AI Chat to override status text
+                         // Check if AmpereAI is active (Connecting/Connected)
+                         const isAIActive = window.ampereAI && (window.ampereAI.isConnecting || window.ampereAI.isConnected);
+                         
                          if (this.systemState === 'ACTIVE') {
-                             if (this.simIntensity > 0.96) {
-                                 this.uiStatusText.innerText = 'AI ONLINE | V - AMP 2.0';
-                                 this.uiStatusText.style.textShadow = '0 0 8px rgba(16, 185, 129, 0.5)';
-                             } else {
-                                 this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
-                                 this.uiStatusText.style.textShadow = 'none';
+                             // Only update text if AI is NOT controlling it
+                             // OR if we are just starting up ("INITIALIZING" phase) and AI hasn't connected yet.
+                             // Actually, if AI is connecting, we want AI to win.
+                             
+                             if (!isAIActive) {
+                                 if (this.simIntensity > 0.96) {
+                                     this.uiStatusText.innerText = 'AI ONLINE | V - AMP 2.0';
+                                     this.uiStatusText.style.textShadow = '0 0 8px rgba(16, 185, 129, 0.5)';
+                                     // Ensure color is reset to default (Emerald) if it was changed
+                                     if (this.uiStatusText.style.color !== '') {
+                                          this.uiStatusText.style.color = '#10b981';
+                                          this.uiStatusText.className = 'ampere-status-text pill-text'; // Reset classes
+                                     }
+                                 } else {
+                                     this.uiStatusText.innerText = `INITIALIZING ${pct}%`;
+                                     this.uiStatusText.style.textShadow = 'none';
+                                     this.uiStatusText.style.color = '#10b981';
+                                 }
                              }
                          } else {
                              // Powering Down / Standby Transition
-                             // v2.614: Show DISCONNECTED on Pill Mode when off
-                             if (isPill && this.simIntensity < 0.05) {
+                             // v2.617: Unified Off/Standby Look
+                             // Always show DISCONNECTED if not active fallback
+                             if (isPill) {
                                  this.uiStatusText.innerText = 'DISCONNECTED';
+                                 this.uiStatusText.style.color = '#64748b'; // Slate 500
                              } else {
                                  this.uiStatusText.innerText = `POWER ${pct}%`;
                              }

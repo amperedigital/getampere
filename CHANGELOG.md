@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.617] - 2026-01-28
+- **Refinement (Status & Logic)**:
+    - **Accelerated Power Up**: Increased `lerpSpeed` (0.015 -> 0.05) and `minVelocity` (0.0025 -> 0.01) significantly. The system now powers up ~3x faster, reducing the wait time during the "INITIALIZING" sequence.
+    - **Status Conflict Resolution**: Updated `TechDemoScene.js` to respect the `AmpereAIChat` status. It effectively "unlocks" the status text when the Agent is Connecting or Connected, preventing the "AI ONLINE" idle loop from overwriting the connection messages.
+    - **Unified Standby State**: Forced the Mobile Pill to display "DISCONNECTED" (in Slate Grey) immediately during power-down or standby, ensuring the "Off" state is identical to the "Load" state as requested.
+
 ## [v2.616] - 2026-01-28
 - **Fix (Unified Status System)**:
     - **Non-Destructive Integration**: Updated `AmpereAIChat.js` to intelligently detect if the Status Pill is managed by `TechDemoScene.js `(Text + Dots). If found, it now updates the status *in-place* and appends audio visualizer bars, rather than wiping the entire container.
