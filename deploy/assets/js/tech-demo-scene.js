@@ -624,19 +624,27 @@ export class TechDemoScene {
             // User Requirement: Green when Active, Amber when Standby.
             // Also: "light green background should be much lighter" on active.
             btns.forEach(btn => {
-                // Remove all potential state colors first
+                // Clean up previous states
                 btn.classList.remove('text-amber-300', 'text-emerald-400', 'text-slate-500', 'bg-emerald-500/20', 'bg-emerald-500/5');
                 
+                // Force Reset Inline Styles
+                btn.style.color = '';
+                btn.style.backgroundColor = '';
+                btn.style.textShadow = '';
+
                 if (newState === 'ACTIVE') {
-                    btn.classList.add('text-emerald-400', 'bg-emerald-500/5');
-                    // Ensure glow is green? The glow is handled by Apple Glass usually via text shadow or internal logic.
-                    // Adding a text shadow via style just in case
+                    // Force Green with !important to guarantee override of default HTML class
+                    btn.classList.add('text-emerald-400');
+                    btn.style.setProperty('color', '#34d399', 'important'); // Emerald-400 hex
+                    btn.style.setProperty('background-color', 'rgba(16, 185, 129, 0.05)', 'important'); // Very light green (5%)
                     btn.style.textShadow = '0 0 15px rgba(52, 211, 153, 0.6)';
                 } else if (newState === 'STANDBY') {
                     btn.classList.add('text-amber-300');
+                    btn.style.setProperty('color', '#fcd34d', 'important'); // Amber-300 hex
                     btn.style.textShadow = '0 0 10px rgba(253, 186, 116, 0.5)';
                 } else {
                     btn.classList.add('text-slate-500'); // Off
+                    btn.style.setProperty('color', '#64748b', 'important'); // Slate-500 hex
                     btn.style.textShadow = 'none';
                 }
             });

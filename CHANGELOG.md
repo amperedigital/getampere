@@ -1,3 +1,8 @@
+## [v2.642] - 2026-01-28
+- **Power Button Visuals (Urgent Fix)**:
+    - **Issue**: The active state green color was not applying due to a specificity conflict with the default Tailwind `text-amber-300` class in the HTML.
+    - **Fix**: Implemented `style.setProperty('color', ..., 'important')` in Javascript to strictly force the Emerald Green color (#34d399) and the low-opacity background (#10b981 with 5% opacity) when Active. This guarantees the visual state regardless of load order or CSS specificity.
+
 ## [v2.641] - 2026-01-28
 - **Power Button Visuals**:
     - **Fix**: Removed conflicting CSS `!important` rule that was forcing a dark/black background on the button's active state.
