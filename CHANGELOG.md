@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.621] - 2026-01-28
+- **Visual Visibility Fix (Voice UV)**:
+    - **Enhanced Audio Visualizer**: Updated `ai-chat.js` to render the Voice UV bars with 100% opacity (up from 70%) and increased thickness (w-1 up from w-0.5) to ensure they are clearly visible against all backgrounds.
+    - **Active State Priority**: The visualizer now strictly pulses at full opacity when the agent is speaking, and dims to 60% when listening, providing clear turn-taking feedback.
+
 ## [v2.620] - 2026-01-28
 - **Logic Refinement (Standby & Voice UV)**:
     - **No "OFF" State**: Updated the global Power Button logic (`tech-demo.html`) to toggle between `ACTIVE` and `STANDBY`. The `OFF` state is now effectively unreachable by user interaction, ensuring the system always returns to the "Loaded" state (Standby) when powering down, as requested.

@@ -514,34 +514,40 @@ export class AmpereAIChat {
         // Simple CSS toggle for the bars
         const bars = this.visualizer.querySelectorAll('div');
         if (isActive) {
-            this.visualizer.classList.remove('opacity-50');
+            this.visualizer.classList.remove('opacity-60');
+            this.visualizer.classList.add('opacity-100');
             bars.forEach(bar => {
                 // Randomize animation duration for organic feel
-                bar.style.animationDuration = `${0.3 + Math.random() * 0.4}s`; 
+                bar.style.animationDuration = `${0.2 + Math.random() * 0.3}s`; 
                 bar.classList.add('animate-pulse');
             });
         } else {
-            this.visualizer.classList.add('opacity-50');
+            this.visualizer.classList.remove('opacity-100');
+            this.visualizer.classList.add('opacity-60');
             // Slow down or pause
             bars.forEach(bar => {
-                bar.style.animationDuration = '1.5s';
+                bar.style.animationDuration = '1.2s';
             });
         }
     }
 
     createVisualizer(colorClass = 'bg-blue-400') {
+        // v2.621: Enhanced Visibility (opacity-100 base, h-5 height)
         const viz = document.createElement('div');
-        viz.className = "flex items-center gap-0.5 h-4 ml-2 opacity-70 transition-opacity duration-300";
+        viz.className = "flex items-center gap-1 h-5 ml-3 opacity-100 transition-opacity duration-300";
+        // Tag it for identification
+        viz.id = "ampere-voice-uv";
         
-        // 5 Bars
-        const heights = ['h-1.5', 'h-3', 'h-4', 'h-2.5', 'h-1.5'];
+        // 5 Bars - Higher and Wider
+        const heights = ['h-2', 'h-4', 'h-5', 'h-3', 'h-2'];
         
         heights.forEach((h, i) => {
             const bar = document.createElement('div');
             // Use the active color (blue/yellow) for the bars too
             const bg = colorClass.includes('text') ? 'bg-blue-400' : colorClass;
             
-            bar.className = `w-0.5 rounded-full ${bg} animate-pulse`; 
+            // v2.621: Thicker bars (w-1)
+            bar.className = `w-1 rounded-full ${bg} animate-pulse`; 
             // Add initial height
             bar.classList.add(h);
             // Stagger animations
