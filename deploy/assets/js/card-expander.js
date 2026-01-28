@@ -87,39 +87,42 @@ export class CardExpander {
         // FLIP Animation: First, Last, Invert, Play
         const startRect = card.getBoundingClientRect();
         
-        // Context: The card will become 'absolute' relative to 'container' (tech-demo-right-column).
+        // Context: The card will become 'FIXED'.
         // Since container is relative, we strictly map offsets.
         const parentRect = container.getBoundingClientRect();
         
         // Calculate the initial "Grid Position" in pixels relative to the parent
-        // FIX (v2.409): Add scrollTop/scrollLeft to account for scrolling.
-        // Unscrolled: top 100 - parent 0 = 100.
-        // Scrolled 200: top -100 - parent 0 = -100. Correct visual pos.
-        // But absolute top: -100 puts it way above up.
-        // Absolute with scrolling ancestor moves WITH the content.
-        // So we need: top relative to CONTENT start.
-        // = VisualDiff + ScrollTop.
-        const startTop = (startRect.top - parentRect.top) + container.scrollTop;
-        const startLeft = (startRect.left - parentRect.left) + container.scrollLeft;
+        // v2.566: Updated to use FIXED positioning (Viewport Coords) to match target state.
+        // This prevents the "drop" effect on mobile when scrollTop was included on absolute elements.
+        const startTop = startRect.top;
+        const startLeft = startRect.left;
         const startWidth = startRect.width;
         const startHeight = startRect.height;
-        
-        // Calculate the TARGET positions relative to content start.
-        // Target: Top of content + 2rem.
-        const targetTop = container.scrollTop + 32; // 2rem
-        // Target Height: Viewport Height - 4rem (Top 2rem + Bottom 2rem).
-        // Using parentRect.height (viewport height of container) is correct.
-        const targetHeight = parentRect.height - 64; 
         
         // Target Layout (Dynamic Padding Awareness)
         // Fix v2.508: Calculate margins dynamically to match container padding exactly.
         const containerStyle = window.getComputedStyle(container);
         const padLeft = parseFloat(containerStyle.paddingLeft) || 0;
         const padRight = parseFloat(containerStyle.paddingRight) || 0;
+        const padTop = parseFloat(containerStyle.paddingTop) || 0;
 
-        // Target Left: Align exactly with the content box (padding-left)
-        const targetLeft = padLeft; 
-        // Target Width: Full width minus horizontal padding (Fill the content box)
+        // Calculate the TARGET positions relative to VIEWPORT (Fixed).
+        // Target Top: Container Top (Viewport) + PaddingTop
+        const targetTop = parentRect.top + padTop;
+        
+        // Target Height: Viewport Height of Container - (TopPadding + BottomPadding effectively? Or just some margins?)
+        // Old logic: parentRect.height - 64 (4rem). Let's stick to safe margins.
+        // v2.566: Use explicit safe margins. Height = ContainerHeight - (PadTop + PadTop).
+        // Or just `targetHeight = parentRect.height - 64` as before but relative to size.
+        // Let's use `calc(100% - 2rem)` equivalent.
+        // For robustness, let's keep the explicitly calculated rect.
+        // User requested "17px" top which is ~1rem. padTop on mobile is 16px (1rem).
+        // On desktop padTop is 32px (2rem). This matches exactly.
+        const targetHeight = parentRect.height - (padTop * 2); 
+        
+        // Target Left: Container Left + PaddingLeft
+        const targetLeft = parentRect.left + padLeft; 
+        // Target Width: Container Width - Horizontal Padding
         const targetWidth = parentRect.width - (padLeft + padRight);
 
         // 2. Insert Spacer
@@ -133,12 +136,12 @@ export class CardExpander {
 
         // 3. Promote Card
         // Apply Inline Styles to "Lock" the card to its starting grid position visually.
-        card.style.position = 'absolute';
+        card.style.position = 'fixed';
         card.style.top = `${startTop}px`;
         card.style.left = `${startLeft}px`;
         card.style.width = `${startWidth}px`; 
         card.style.height = `${startHeight}px`; 
-        card.style.zIndex = '50';
+        card.style.zIndex = '9999';
         card.style.margin = '0'; 
         
         // Force Layout Recalculation (Reflow)
@@ -150,9 +153,7 @@ export class CardExpander {
             document.body.classList.add('card-expanded-mode'); 
             container.classList.add('has-active-card');
             
-            // Release the visual lock to allow CSS transition
-            // BUT we override the CSS position properties (removed !important in v2.409 CSS)
-            // to insure they match the scroll position.
+            // v2.566: Use Fixed Coords
             
             card.style.top = `${targetTop}px`;
             card.style.left = `${targetLeft}px`;

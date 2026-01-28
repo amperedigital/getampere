@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.566] - 2026-01-28
+- **Zen Mode Logic**:
+    - **Positioning Engine**: Rewrote the `expand` logic to use `position: fixed` coordinates relative to the Viewport, instead of calculating Absolute offsets.
+    - **Mobile Fix**: This resolves the issue where expanding a card on mobile (scrolled view) caused it to open "lower" than expected. The new calculation (`paddingTop` of container) ensures precise 16px/32px vertical alignment on all devices, regardless of scroll position.
+
 ## [v2.565] - 2026-01-28
 - **Card Animation System**:
     - **Clipped Animation Fix**: Overhauled the card closing animation (`collapse`) to use `position: fixed` instead of `absolute`. This solves a critical bug on Mobile where the shrinking card would be "trapped" and clipped inside the `overflow: auto` scroll track, causing visual artifacting, cropped content ("trailed animation"), and misalignment ("dropped/lower" appearance). The card now floats above all containers until fully restored to its slot.
