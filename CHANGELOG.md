@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.614] - 2026-01-28
+- **Fix (Desktop UV Restoration)**:
+    - **Adaptive Dot Matrix**: Updated `TechDemoScene.js` to use an adaptive dot count for the Power Up UV Meter. It now correctly renders **20 dots** on Desktop (restoring the original high-fidelity visualization) while using **5 dots** on Mobile (to fit the compact pill).
+    - **Status Logic**: Adjusted the Status Pill logic to explicitly display "DISCONNECTED" (instead of blank or "Power 0%") when the system is in Standby/Off mode on the Pill layout. This corresponds to the user's request for clear system state feedback on load.
+    - **Visibility**: Forced the Status Pill to remain visible (opacity 1) even in Standby mode for the Pill layout, preventing the "vanishing UI" issue on mobile.
+
 ## [v2.613] - 2026-01-28
 - **Fix (Mobile Status Injection)**:
     - **UV Matrix Restoration**: Fixed a logic gap in `TechDemoScene.js` where the "Dot Matrix" UV meter and Initialization text failed to render in the Mobile Status Pill. Explicitly enabled Pill Mode rendering for the dot row with a reduced count (5 dots) to fit the mobile layout while preserving the "Desktop-grade" system status aesthetic.

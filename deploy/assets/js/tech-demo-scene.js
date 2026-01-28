@@ -483,8 +483,10 @@ export class TechDemoScene {
         const dotRow = document.createElement('div');
         dotRow.className = 'ampere-dot-row';
         this.uiDots = [];
-        // v2.613: Reduce UV Meter Dot Count to 5 to fit clean mobile pill (matches bar visualizer count)
-        const dotCount = 5; 
+        // v2.615: Adaptive Dot Count (20 for Desktop, 5 for Mobile) to restore "Power Up UV" fidelity on large screens.
+        const isMobile = window.innerWidth <= 1024;
+        const dotCount = isMobile ? 5 : 20; 
+        
         for (let i = 0; i < dotCount; i++) {
              const dot = document.createElement('div');
              dot.className = 'ampere-dot';
@@ -1543,14 +1545,18 @@ export class TechDemoScene {
                  let warningActive = (this.standbyWarning && this.standbyWarning.style.opacity === '1');
                  
                  // 2. Are we active OR fading out?
-                 // Show gauge if Active, OR if simIntensity > 0 (during shutdown/standby fade)
-                 let showGauge = !warningActive && (this.systemState === 'ACTIVE' || this.simIntensity > 0.02);
+                 // v2.614: Always Show Gauge (at 0%) when in Standby/Disconnected state on Mobile/Pill Mode.
+                 // This ensures the pills (dots + text) are visible as "DISCONNECTED" instead of vanishing.
+                 let isPill = this.uiStatusContainer.classList.contains('ampere-status-pill-mode');
+                 
+                 let showGauge = !warningActive && (this.systemState === 'ACTIVE' || this.simIntensity > 0.02 || (isPill && this.systemState === 'STANDBY'));
                  
                  if (showGauge) {
                      this.uiStatusContainer.style.opacity = '1';
                      
                      // Helper for updating Visuals
-                     const totalDots = 20;
+                     // v2.614: Dynamic Dot Count based on mode (5 for Pill, 20 for Desktop)
+                     const totalDots = this.uiDots ? this.uiDots.length : 20;
                      const activeCount = Math.floor(this.simIntensity * totalDots);
                      
                      if (this.uiDots) {
@@ -1584,7 +1590,12 @@ export class TechDemoScene {
                              }
                          } else {
                              // Powering Down / Standby Transition
-                             this.uiStatusText.innerText = `POWER ${pct}%`;
+                             // v2.614: Show DISCONNECTED on Pill Mode when off
+                             if (isPill && this.simIntensity < 0.05) {
+                                 this.uiStatusText.innerText = 'DISCONNECTED';
+                             } else {
+                                 this.uiStatusText.innerText = `POWER ${pct}%`;
+                             }
                              this.uiStatusText.style.textShadow = 'none';
                          }
                      }
