@@ -533,17 +533,22 @@ export class AmpereAIChat {
     updateVisualizer(isActive) {
         if (!this.visualizer) return;
         
-        // v2.626: Real-time Waveform Simulation (High Fidelity)
+        const bars = this.visualizer.querySelectorAll('.uv-bar');
+
+        // v2.629: Real-time Waveform Simulation (Squared UV + Glow)
         if (isActive) {
             this.visualizer.classList.remove('opacity-60');
             this.visualizer.classList.add('opacity-100');
+            // Active Glow on Container
+            this.visualizer.classList.add('shadow-[0_0_30px_rgba(34,211,238,0.3)]', 'border-cyan-400/30');
             
             if (!this.uvInterval) {
-                const bars = this.visualizer.querySelectorAll('.uv-bar');
+                // Stop the "Waiting" pulse so we can animate height smoothly
+                bars.forEach(b => b.classList.remove('animate-pulse'));
+
                 // Fast update for smooth organic motion (approx 20fps is enough for this look)
                 this.uvInterval = setInterval(() => {
                     bars.forEach((bar, i) => {
-                        // Symmetric wave pattern or Random noise? 
                         // User wants "Highs and Lows". Center bars usually higher in speech.
                         // We simulate a center-heavy noise function.
                         
@@ -564,7 +569,8 @@ export class AmpereAIChat {
             
         } else {
             this.visualizer.classList.remove('opacity-100');
-            this.visualizer.classList.add('opacity-60');
+            this.visualizer.classList.add('opacity-80'); // Higher idle opacity
+            this.visualizer.classList.remove('shadow-[0_0_30px_rgba(34,211,238,0.3)]', 'border-cyan-400/30');
             
             // Kill the active loop
             if (this.uvInterval) {
@@ -572,37 +578,40 @@ export class AmpereAIChat {
                 this.uvInterval = null;
             }
             
-            // Return to "Breathing" state (mid-range static or slow CSS)
-            const bars = this.visualizer.querySelectorAll('.uv-bar');
+            // Return to "Breathing" / "Waiting" state
             bars.forEach((bar, i) => {
                 // Return to a nice "Idle" wave
-                const idleHeights = [30, 50, 60, 50, 30]; // %
+                const idleHeights = [30, 45, 60, 45, 30]; // %
                 bar.style.height = `${idleHeights[i]}%`;
+                // v2.629: Restore the "Waiting" flash
+                bar.classList.add('animate-pulse');
             });
         }
     }
 
     createVisualizer(colorClass = 'bg-blue-400') {
-        // v2.628: Advanced Waveform Visualizer
-        // Added solid fallback background (bg-blue-500) behind gradient for compatibility.
-        // Explicit dimensions for container to ensure visibility.
+        // v2.629: Apple Glass Pill + Squared UV Aesthetic
+        // Container: High-fidelity "Muted Pebble" glass (Dark + Blur + Stroke)
         const viz = document.createElement('div');
-        viz.className = "flex items-center justify-center gap-[2px] h-8 ml-0 opacity-100 transition-opacity duration-300 pointer-events-auto bg-black/20 backdrop-blur-sm rounded-lg px-2 py-1";
+        viz.className = "flex items-center justify-center gap-[4px] h-12 ml-0 opacity-100 transition-all duration-500 pointer-events-auto bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-full px-6 py-2 shadow-2xl";
         // Tag it for identification
         viz.id = "ampere-voice-uv";
         
-        // 5 Bars for minimal but clear read
-        // Using inline styles for height to allow JS animation
-        const initialHeights = [30, 50, 60, 50, 30];
+        // 5 Bars, but thicker and squared
+        const initialHeights = [30, 45, 60, 45, 30];
         
         initialHeights.forEach((h, i) => {
             const bar = document.createElement('div');
-            // v2.628: Styling - Added explicit w-[6px] instead of w-1.5 to guarantee pixel width.
-            // Added bg-blue-500 as fallback color.
-            bar.className = `uv-bar w-[6px] rounded-full bg-blue-500 bg-gradient-to-t from-blue-600 to-cyan-300 transition-all duration-100 ease-out`; 
+            // v2.629: Styling 
+            // - w-[8px]: Dramatic thickness
+            // - rounded-[1px]: Squared-off UV aesthetic (slight corner rounding for polish)
+            // - animate-pulse: Default "Waiting" state
+            bar.className = `uv-bar w-[8px] rounded-[1px] bg-gradient-to-t from-blue-500 to-cyan-300 transition-all duration-100 ease-out animate-pulse`; 
             
             // Set initial height
             bar.style.height = `${h}%`;
+            // Stagger the pulse for a "Thinking" wave effect
+            bar.style.animationDelay = `${i * 150}ms`;
             
             viz.appendChild(bar);
         });

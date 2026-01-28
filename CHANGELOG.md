@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2.629] - 2026-01-28
+- **Visual Overhaul (Voice UV)**:
+    - **Apple Glass Pill**: Wrapped the Voice Visualizer in a high-fidelity "Muted Pebble" glass container (\`bg-slate-900/90\`, \`backdrop-blur-xl\`, \`rounded-full\`, \`shadow-2xl\`) to match the system's "Glass OS" design language.
+    - **Squared Aesthetics**: Changed the audio bars from rounded caps to **Squared-Off Blocks** (\`rounded-[1px]\`) to align with the wider blocky/technical or "UV System" aesthetic.
+    - **Dramatic Presence**: Increased bar thickness to \`w-[8px]\` (from 6px) and container height to \`h-12\` (from h-8) for a much more visible and dramatic presence on desktop.
+    - **Waiting State**: Restored the "Thinking/Waiting" animation (staggered pulse) when the agent is listening but not speaking. This ensures the interface never looks "frozen" or "off" during conversational pauses.
+
 ## [v2.628] - 2026-01-28
 - **Visibility Guarantee (Visualizer)**:
     - **Container Logic**: Updated `tech-demo.html` to remove `hidden lg:flex` from the Voice Visualizer wrapper, making it visible on ALL screen sizes (`flex` by default). This solves the issue of it vanishing on tablets or smaller viewports.
