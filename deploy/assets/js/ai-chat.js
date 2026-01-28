@@ -313,9 +313,11 @@ export class AmpereAIChat {
             statusText.className += " text-blue-400";
             dot.className += " " + colorClass + " shadow-[0_0_8px_rgba(96,165,250,0.6)]";
         } else if (state === 'disconnected') {
+            // v2.607: Removed the grey dot for Disconnected state to reduce clutter.
+            // Just text is enough.
             colorClass = "bg-slate-600";
             statusText.className += " text-slate-500";
-            dot.className += " " + colorClass;
+            // dot.className += " " + colorClass; // Not used
         } else if (state === 'error') {
             colorClass = "bg-red-500";
             statusText.className += " text-red-500";
@@ -324,7 +326,11 @@ export class AmpereAIChat {
         
         // Order: Text | Dot (Pill style)
         this.statusTarget.appendChild(statusText);
-        this.statusTarget.appendChild(dot);
+        
+        // Only append dot if NOT disconnected
+        if (state !== 'disconnected') {
+            this.statusTarget.appendChild(dot);
+        }
 
         // v2.602: Inject Visualizer into Pill if Connected/Connecting
         // This satisfies the "UV Meter" request for Mobile/Desktop Unified Pill

@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.607] - 2026-01-28
+- **UI Logic Update (Status Pill)**:
+    - **Cleaner Disconnected State**: Removed the grey status dot when the system is in the "DISCONNECTED" state. The text label alone provides sufficient context, reducing redundancy and visual clutter (especially for the "Load Screen" initial state).
+    - **Active States**: Connection and Connecting states retain their respective dots (Blue/Yellow) and animations.
+
 ## [v2.606] - 2026-01-28
 - **UI Refinement (Mobile Clipping Prevention)**:
     - **Hidden Label**: The "LIVE DEMO" text label is now hidden on Mobile (`hidden lg:block`). The Blue Pulse Dot remains, acting as the system indicator. This recovers significant horizontal space.
