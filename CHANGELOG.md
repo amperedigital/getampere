@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.570] - 2026-01-28
+- **Zen Mode (Mobile):** Removed closing animation on mobile devices. Cards now close instantly to prevent layout thrashing and "bounce" artifacts.
+- **Controller Logic:** Implemented auto-close for expanded cards when a new agent is selected via the ring slider.
+- **UI Polish:** Enforced a minimum height (500px) on all agent cards to ensure uniform alignment regardless of content length.
+
 ## [v2.567] - 2026-01-28
 - **Zen Mode (Fixed):**
     - **Universal Target**: Rewrote the target calculation to ignore the parent container's unpredictable scroll position on mobile. Now uses `window.innerHeight` and `window.innerWidth` with a fixed `16px` (1rem) safe area.
