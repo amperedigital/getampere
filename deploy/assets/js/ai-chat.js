@@ -326,12 +326,20 @@ export class AmpereAIChat {
             // 3. Inject Visualizer (If needed)
             // We only add the bars if we are connecting/connected AND they don't exist yet.
             if ((state === 'connecting' || state === 'connected') && !this.visualizer) {
+                // v2.619: Color Class 'bg-blue-400' is hardcoded here, ensuring visibility
                 const viz = this.createVisualizer('bg-blue-400');
+                
                 // Append to the Flex Container (Pill), preserving existing Dots
+                // Ensure we are appending to the right parent. 
+                // sceneContainer is the pill flexbox (.ampere-status-pill-mode)
                 sceneContainer.appendChild(viz);
                 this.visualizer = viz;
             } else if (state === 'disconnected') {
-                // Remove visualizer if exists
+                 // v2.619: KEEP VISUALIZER?
+                 // User says "We lost our voice UV... add it back to the pill... While she's talking"
+                 // This implies it should be there when active.
+                 // If we disconnect, we destroy it. This is correct as "Voice UV" shouldn't show if voice is off.
+                 
                 if (this.visualizer) {
                     this.visualizer.remove();
                     this.visualizer = null;

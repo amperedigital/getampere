@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.619] - 2026-01-28
+- **UI Logic Update (Default Standby)**:
+    - **Session End Behavior**: Updated `tech-demo.html` to transition the system to `STANDBY` (instead of `OFF`) when the voice session ends. This aligns the "Post-Call" state with the "Initial Load" state.
+    - **Status Text**: Updated `TechDemoScene.js` to display "STANDBY" (in Slate-400) when in Standby mode, and "DISCONNECTED" only if explicitly powered OFF. This ensures meaningful system status feedback.
+    - **Voice UV Integrity**: Reinforced the Voice Visualizer injection logic in `ai-chat.js` to ensure the audio bars (Voice UV) appear reliably alongside the System UV dots during the active session.
+
 ## [v2.618] - 2026-01-28
 - **Refinement (Persistent Status UI)**:
     - **Always-On Pill**: Updated `TechDemoScene.js` to force the Status Pill (System Status + UV Meter) to remain visible at all times in Pill Mode, regardless of system state (Active, Standby, or Off).

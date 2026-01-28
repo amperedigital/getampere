@@ -1585,7 +1585,7 @@
                     
                     // Dynamic Import of the isolated Scene logic
                     // Using CDN to ensure correct versioning and cache invalidation
-                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.618/deploy/assets/js/tech-demo-scene.js');
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.619/deploy/assets/js/tech-demo-scene.js');
                     const scene = new TechDemoScene(container);
                     
                     // Optional: Expose to window for debugging
@@ -1813,9 +1813,9 @@
                 }
             },
             onEnd: () => {
-                // Ensure Visuals Power Down
+                // Ensure Visuals Power Down to STANDBY (Request v2.619: Default State is Standby)
                 if (window.demoScene && window.demoScene.systemState === 'ACTIVE') {
-                    window.demoScene.setSystemState('OFF');
+                    window.demoScene.setSystemState('STANDBY');
                     // Also ensure window closes on power down if not already handled
                     const chatContainer = document.getElementById('ampere-ai-chat-container');
                     if(chatContainer) chatContainer.classList.add('hidden');

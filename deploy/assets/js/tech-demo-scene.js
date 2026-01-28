@@ -1614,11 +1614,16 @@ export class TechDemoScene {
                              }
                          } else {
                              // Powering Down / Standby Transition
-                             // v2.617: Unified Off/Standby Look
-                             // Always show DISCONNECTED if not active fallback
+                             // v2.619: Unified Off/Standby Look
+                             // If STANDBY, show STANDBY. If OFF (sim < 0.05), show DISCONNECTED (or if specifically set).
                              if (isPill) {
-                                 this.uiStatusText.innerText = 'DISCONNECTED';
-                                 this.uiStatusText.style.color = '#64748b'; // Slate 500
+                                 if (this.systemState === 'STANDBY') {
+                                     this.uiStatusText.innerText = 'STANDBY';
+                                     this.uiStatusText.style.color = '#94a3b8'; // Slate 400 (Standby)
+                                 } else {
+                                     this.uiStatusText.innerText = 'DISCONNECTED';
+                                     this.uiStatusText.style.color = '#64748b'; // Slate 500 (Off)
+                                 }
                              } else {
                                  this.uiStatusText.innerText = `POWER ${pct}%`;
                              }
