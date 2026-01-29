@@ -1,3 +1,9 @@
+## [v2.660] - 2026-01-29
+- **DMZ Layout Finalization**:
+    - **Width**: Increased Mini Controller width to `23rem` (was 12rem/w-48) for better breathing room.
+    - **Breakpoint**: Reverted to standard `md` (768px) breakpoint for the "Beside Header" transition, matching the user's manual adjustment.
+    - **Behavior**: Below 768px, sliders stack naturally below text (full width). Above 768px, they sit to the right of the header.
+
 ## [v2.659] - 2026-01-28
 - **DMZ Layout Tune**:
     - **Method**: Replicated the user's manual "Inspector Fix" for alignment.
