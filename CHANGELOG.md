@@ -1,3 +1,9 @@
+## [v2.664] - 2026-01-29
+- **CSS Cleanup (Critical)**:
+    - **Logic**: Removed legacy `position: absolute` overrides for `#mobile-sliders-container` in `src/input.css` (specifically within the 820px-1023px and 1024px-portrait media queries).
+    - **Impact**: These persistent CSS rules were overriding the HTML-level class changes, causing the sliders to jump to the top (or absolute bottom) of the viewport despite the DOM restructure.
+    - **Resolution**: The sliders now strictly follow the cleaner, relative DOM flow defined in `v2.663`.
+
 ## [v2.663] - 2026-01-29
 - **DMZ Layout Polish**:
     - **Positioning**: Removed all `absolute` and negative margin hacks. The controller now sits in the natural DOM flow (Relative) inside the Header block.
