@@ -101,9 +101,7 @@ class CardExpander {
         let targetTop, targetLeft, targetWidth, targetHeight, offsetTop, offsetLeft;
 
         // SCENARIO: DESKTOP (Unified In-Place Expansion)
-        // v2.684: Consolidated Logic & Height Fix.
-        // Problem: targetHeight was using 'window.innerHeight' which ignored scroll context and overshot.
-        // Fix: Use container-relative height target for Trapped elements, or viewport-aware for untrapped.
+        // Consolidated Logic: Use viewport-aware available height.
         
         if (window.innerWidth >= 1024) {
              safeGap = 0;
@@ -126,65 +124,12 @@ class CardExpander {
              targetTop = startRect.top + offsetTop;
              targetLeft = startRect.left + offsetLeft;
 
-             // 3. Size Matching (The "Equal Size" Fix)
-             // Instead of calculating a dynamic height that might differ from card to card based on Y-position,
-             // we should force the height to MATCH the visual height of the "large" card intent.
-             // BUT user says "large card is taller than the other cards - it should be equal size".
-             // This likely means the EXPANDED card in the screenshot (Booking Agent) was TALLER than the adjacent card.
-             // This happens if we calculate available height based on screen bottom.
-             // If cards are in a grid, and we want "In Place" expansion, maybe we just want it to fill the ROW?
-             // No, In-Place expansion usually grows down.
-             // If the user wants it "equal size", maybe they mean EQUAL TO ITS ORIGINAL SIZE? Like just "Selected" state?
-             // "Animation should grow not slide in" -> implies growth.
-             // "large card is taller... should be equal size... not extend beyond"
-             // This sounds like they DO NOT WANT it to grow in height? Or at least not ARBITRARILY?
-             // Let's constrain the height to the container bounds or a fixed max.
-             
-             // Check if targetHeight would push past the container bottom?
-             // Let's use the Container's Visual Bottom as the hard limit.
-             
+             // 3. Dynamic Height Calculation
+             // Calculate available vertical space from the card's top edge to the bottom of the viewport.
              const visualTop = startRect.top; // Real screen Y
              let availableHeight = window.innerHeight - visualTop - 16; // 16px bottom buffer
              
-             // v2.684: CLAMP HEIGHT to standard card height if user wants "Equal Size".
-             // If the user says "should be equal size", they might mean "Don't grow to fill the screen, just be the same size as the other cards".
-             // But then why click to expand?
-             // Maybe "Extend Beyond" refers to extending beyond the CONTAINER (overflow)?
-             
-             // Lets try to be safer:
-             // 1. Calculate height needed to reach bottom of CONTAINER (not window)
-             
-             if (isTrapped) {
-                 // Container Aware Height Limit
-                 // Distance from Card Top to Container Bottom
-                 // cardTopInContainer = targetTop (which is scrollY + relative offset)
-                 // containerHeight = container.scrollHeight (full) or clientHeight (view)
-                 
-                 // Let's try to match the adjacent card's height?
-                 // or just use 400px fixed?
-                 
-                 // If the request "should be equal size" refers to the screenshot where one card is huge and one is normal,
-                 // and the huge one is the active one...
-                 // Maybe the issue is that it GROWS too much.
-                 
-                 // Let's clamp it to a reasonable maximum that doesn't overflow.
-                 // Or, if "In-Place" was the request, maybe they just want the CONTENT to expand, not the card frame?
-                 // No, "grow".
-                 
-                 // Let's try limiting the height to the Container Bottom edge.
-                 // targetTop is relative to container top.
-                 // We want (targetTop + targetHeight) <= container.scrollHeight? 
-                 // Or simpler: Just set it to a fixed "Expanded" height that fits nicely.
-                 // e.g. 550px? 
-                 
-                 // User said "taller than the other cards". 
-                 // If the other cards are ~400px, and this one grows to 800px, it looks broken if it's "In Place".
-                 
-                 // Let's stick to the "Available Height" logic but CAP it so it doesn't look ridiculous.
-                 if (availableHeight > 600) availableHeight = 600;
-             }
-             
-             // Ensure it doesn't look smaller than start
+             // Ensure it doesn't look smaller than start (minimum expansion is the card's original size)
              if (availableHeight < startRect.height) availableHeight = startRect.height;
 
              targetHeight = availableHeight;

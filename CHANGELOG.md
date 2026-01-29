@@ -2384,3 +2384,7 @@
 ### Fixed
 - **Large Card Size**: Applied a height cap (600px) to expanded Desktop cards to prevent them from growing disproportionately tall relative to their neighbors or the container.
 - **In-Place Logic**: Maintained the "Grow Downwards" logic but with stricter bounds to satisfy the "Equal Size" visual requirement.
+- **v2.685.stable**
+  - **Height Logic**: Reverted hard cap limit. Card expansion now dynamically calculates height based on available viewport space (`window.innerHeight`) for true responsive design as requested.
+  - **Constraints**: Maintained bottom buffer (16px) and minimum height guard (original card height).
+
