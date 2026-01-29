@@ -1,3 +1,13 @@
+## [v2.651] - 2026-01-28
+- **Card Metadata Density**:
+    - **Spacing**: Reduced the vertical grid gap in the card detail view from `gap-y-5` (1.25rem) to `gap-y-2` (0.5rem). This tightens the "meta vertical spacing" on mobile/tablet cards, improving information density and reducing the need for scrolling.
+
+## [v2.650] - 2026-01-28
+- **iPad Pro Layout Polish (Vertical Alignment)**:
+    - **Logic Split**: Modified `#tech-demo-wrapper` vertical alignment logic to differentiate between iPad Pro and Desktop.
+    - **iPad Pro (1024px / lg)**: Now uses `lg:justify-center` instead of `justify-end`. This "raises" the Neural Net visualization to the vertical center of the screen, fixing the issue where it felt too low on tablet devices.
+    - **Desktop (1280px+ / xl)**: Applied `xl:justify-end` to ensure that on actual large monitors, the visualization remains successfully anchored to the bottom (the intended desktop aesthetic).
+
 ## [v2.649] - 2026-01-28
 - **Rollback & Alignment Fix**:
     - **Rollback**: Fully restored system state to **v2.644** (HTML, CSS, JS) to recover the correct iPad Pro (1024px) Two-Column layout which was broken by the `xl` breakpoint shift.
