@@ -1,3 +1,8 @@
+## [v2.678] - 2026-01-29
+- **UI Polish**:
+    - **Fix (Opacity)**: Applied the "Nuclear Option" (`display: none`) to the Expand Button when the card is expanded, guaranteeing it cannot be triggered by hover events.
+    - **Fix (Collapse Logic)**: Unified the "Trapped vs Untrapped" logic in the Collapse function to match the robust solution deployed in v2.676 (Expand). This prevents misalignment during the shrink animation on untrapped desktop layouts.
+
 ## [v2.677] - 2026-01-29
 - **UI Polish (Card Expansion)**:
     - **Fix**: Removed distracting "Ghost Button" on expanded cards.

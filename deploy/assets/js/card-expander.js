@@ -282,12 +282,12 @@ export class CardExpander {
         this.updateIcon(topRightBtn, 'close');
         
         // 5. Hide ALL Expand Triggers while expanded (opacity 0)
-        // v2.677: Fixed "Distracting Hover" bug where the expand button would appear 
-        // on hover (due to group-hover) even when the card was already expanded.
+        // v2.678: Forcefully hide buttons to prevent distraction
         const triggers = card.querySelectorAll('.expand-trigger');
         triggers.forEach(t => {
             t.style.opacity = '0';
             t.style.pointerEvents = 'none';
+            t.style.display = 'none'; // Nuclear option to prevent hover
         });
     }
 
@@ -301,29 +301,34 @@ export class CardExpander {
         // Measure where we want to go (The Spacer)
         const targetRect = this.spacer.getBoundingClientRect();
 
-        // v2.671: Trapped Layout Detection (Desktop Split / Transformed Parents)
-        // Must apply same coordinate correction as 'expand' to handle 'position: fixed' inside 'transform'
+        // v2.678: UNIFIED SCENARIO LOGIC (Match Expand Logic)
         const containerRect = container.getBoundingClientRect();
         const containerStyles = window.getComputedStyle(container);
         const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
 
-        // Default: Pure Viewport Coordinates
         let offsetTop = 0;
         let offsetLeft = 0;
 
-        // If Trapped, convert Viewport Coords -> Container Content Coords
-        if (isTrapped || window.innerWidth >= 1024) {
+        // SCENARIO 1: TRAPPED
+        if (isTrapped) {
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
              
-             // Formula: StyleTop = (ViewportY - ContainerViewportY) + ScrollTop
              offsetTop = scrollY - containerRect.top;
-             offsetLeft = -containerRect.left; // Usually 0 scrollX
+             offsetLeft = -containerRect.left;
         }
+        // SCENARIO 2: UNTRAPPED DESKTOP
+        // Note: Collapse logic uses DIFF arithmetic (TargetRect relative to Window => Converted).
+        // If we are Untrapped, TargetRect IS relative to Window. Offset is 0.
+        // BUT start position (CurrentRect) was set using 'targetTop' from expand logic.
+        // My expand logic for Untrapped sets `top = containerRect.top + Gap`.
+        // So `currentRect` returns `containerRect.top + Gap`.
+        // `targetRect` returns correct Window coords.
+        // So offset should remain 0.
+        // No explicit 'else if' needed, offset defaults to 0.
 
-        // v2.565: Use FIXED positioning for the return animation to avoid clipping by parent containers
-        // (like the mobile scroll track) which happens when using 'absolute'.
+        // v2.565/v2.678: Use FIXED positioning with Offsets correction
         const targetTop = targetRect.top + offsetTop;
         const targetLeft = targetRect.left + offsetLeft;
         const targetWidth = targetRect.width;
