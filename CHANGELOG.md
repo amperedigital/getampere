@@ -1,3 +1,9 @@
+## [v2.649] - 2026-01-28
+- **Rollback & Alignment Fix**:
+    - **Rollback**: Fully restored system state to **v2.644** (HTML, CSS, JS) to recover the correct iPad Pro (1024px) Two-Column layout which was broken by the `xl` breakpoint shift.
+    - **Mobile Refinement**: Applied `mt-0` (was `mt-12`) to the `#tech-demo-wrapper` on mobile/tablet breakpoints. This eliminates the top gap, pushing the Neural Net visualization closer to the button cluster as requested.
+    - **Dependencies**: Synced `styles.css`, `tech-demo-scene.js`, and `ai-chat.js` to ensure the restored HTML functions correctly without version mismatches.
+
 ## [v2.648] - 2026-01-28
 - **Desktop/Tablet Layout Refinement**:
     - **Desktop Rule (1025px+)**: Changed `tech-demo-wrapper` alignment from `xl:justify-center` to `xl:justify-end`. This ensures the Neural Net scene correctly anchors to the bottom of the container on large screens/Desktop, correcting the "pushed too high" regression.
