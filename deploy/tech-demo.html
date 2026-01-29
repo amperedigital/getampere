@@ -22,79 +22,7 @@
     
     <link rel="stylesheet" href="./assets/css/styles.css?v=2.484">
 
-    <style>
-        /* Custom Responsive Logic - Strict Boundaries */
-        
-        /* 1. DEAD MAN ZONE & MOBILE (0px - 1023px) */
-        /* Strict enforcement of Mobile Vertical Stack */
-        @media (max-width: 1023px) {
-            #tech-demo-master {
-                flex-direction: column !important;
-                height: auto !important;
-                overflow: visible !important;
-            }
-            #tech-demo-left-column, #tech-demo-right-column {
-                width: 100% !important;
-                height: auto !important;
-                display: block !important;
-            }
-            #mobile-sliders-container {
-                display: flex !important;
-            }
-            /* DMZ: Reposition Controls to Top Right (Mini Mode) */
-            /* v2.658: Removed media query as layout moved to DOM structure in Header */
 
-            /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
-            /* We use a specific class target or ID context to be safe */
-            .aspect-square-mobile-override {
-                height: 50vh !important;
-                min-height: 350px !important;
-                max-height: 600px !important;
-                /* v2.655: Removed margin/position override as sliders are now moved to Header */
-                /* margin-bottom: 2rem !important; */
-                /* position: relative !important; */
-            }
-        }
-
-        /* 3. iPAD PRO SPECIFIC FIX (1024px Exact - Portrait) */
-        /* Targets iPad Pro specifically to handle vertical spacing */
-        @media only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait) {
-            
-            /* 1. Push Neural Net Down (Clear Header) */
-            #tech-demo-scene-container {
-                position: relative !important;
-                width: 100% !important;
-                margin-top: 35rem !important; 
-                margin-bottom: 0 !important;
-                
-                /* Reset Absolute Positioning */
-                top: auto !important;
-                bottom: auto !important;
-                left: auto !important;
-                right: auto !important;
-            }
-
-            /* 2. Position Mobile Sliders (Bottom Anchor) */
-            #mobile-sliders-container {
-                display: flex !important;
-                margin-top: 10rem !important;
-                position: absolute !important;
-                bottom: 2rem !important;
-                left: 0 !important;
-                right: 0 !important;
-                z-index: 60 !important;
-                background: transparent !important;
-            }
-        }
-
-        /* 2. iPAD PRO / DESKTOP ALIGNMENT (1024px+) */
-        /* Handles the specific 1025px Desktop divergence from iPad Pro (1024px) */
-        @media (min-width: 1025px) {
-            #tech-demo-wrapper {
-                justify-content: flex-end !important;
-            }
-        }
-    </style>
 </head>
 <body class="tech-demo-page bg-[#05060f] text-white lg:overflow-hidden">
 

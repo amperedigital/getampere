@@ -1,3 +1,9 @@
+## [v2.707] - 2026-01-29
+### Changed
+- **Code Cleanliness (CSS)**: Migrated the iPad Pro layout fix from inline HTML styles to the core `src/input.css` file.
+    - **Architecture**: Moved 1024px-specific media queries into the proper Tailwind input file to maintain a clean repo and avoid inline `<style>` blocks in `tech-demo.html`.
+    - **Logic**: Preserved exact functionality (Neural Net push down + Slider bottom anchor) but now integrated into the build pipeline.
+
 ## [v2.700] - 2026-01-29
 - **Refactor (Card Expansion)**:
     - **Logic Update**: Implemented "Strict Priority" rendering for Zen Mode coordinates.
