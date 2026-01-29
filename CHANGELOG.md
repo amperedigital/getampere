@@ -1,3 +1,8 @@
+## [v2.661] - 2026-01-29
+- **DMZ Layout Revert**:
+    - **Tablet Strategy**: Removed the manual "Beside Header" positioning (negative margins) for the 768px-1023px range.
+    - **Result**: The layout now remains in "Mobile Mode" (Stacked, Full Width) up to 1023px, ensuring consistent placement below the text without vertical alignment glitches at specific viewports (e.g., 820px).
+
 ## [v2.660] - 2026-01-29
 - **DMZ Layout Finalization**:
     - **Width**: Increased Mini Controller width to `23rem` (was 12rem/w-48) for better breathing room.
