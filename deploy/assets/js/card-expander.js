@@ -25,7 +25,6 @@ class CardExpander {
         
         // Bind context
         this.handleClick = this.handleClick.bind(this);
-        this.handleTransitionEnd = this.handleTransitionEnd.bind(this);
     }
 
     init() {

@@ -2391,3 +2391,6 @@
 - **v2.686.stable**
   - **Hotfix**: Updated `tech-demo.html` to correctly import and initialize the Card Expander system using the `initCardExpander` factory function, resolving a `SyntaxError` due to a mismatch in export definitions.
 
+- **v2.687.stable**
+  - **Hotfix**: Removed invalid binding of `handleTransitionEnd` in `card-expander.js` constructor, which was causing a `TypeError` on initialization because the method does not exist (event handling is done via local callbacks).
+
