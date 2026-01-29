@@ -130,7 +130,11 @@ class CardExpander {
              // Respect both viewport and container boundaries
              const viewportBottom = window.innerHeight;
              const containerBottom = containerRect.bottom;
-             const effectiveBottom = Math.min(viewportBottom, containerBottom);
+             const trackRect = this.track.getBoundingClientRect();
+             const trackBottom = trackRect.bottom;
+             
+             // Use the most restrictive bottom edge to prevent overflow
+             const effectiveBottom = Math.min(viewportBottom, containerBottom, trackBottom);
 
              let availableHeight = effectiveBottom - visualTop - 16; // 16px bottom buffer
              

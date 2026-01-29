@@ -2406,3 +2406,8 @@
   - **Height Logic Refinement**: Updated `card-expander.js` to respect both viewport height (`window.innerHeight`) AND container boundaries (`containerRect.bottom`).
   - **Behavior**: The card will expand to fill available space but will now strictly stop at the container's bottom edge, preventing it from overflowing the layout flow as per user requirements.
 
+- **v2.691.stable**
+  - **Height Logic**: Added stricter containment for expanded cards.
+  - **New Constraint**: The card height is now calculated against the minimum of `Viewport Bottom`, `Container Bottom`, AND `Track Bottom`.
+  - **Result**: This ensures the expanded card never extends vertically beyond the grid track itself, maintaining visual parity with the surrounding layout elements as requested ("equal size" interpretation).
+
