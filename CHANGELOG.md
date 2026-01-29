@@ -1,3 +1,12 @@
+## [v2.653] - 2026-01-28
+- **Dead Man Zone (Visibility Fix)**:
+    - **Issue**: The previous `height: auto` override caused the Neural Net container to collapse to 0 height because the internal content relies on absolute positioning/height-inheritance.
+    - **Fix**: Updated the `.aspect-square-mobile-override` CSS to enforce a responsive fixed height.
+    - **Logic**: `height: 50vh` (Half viewport height) with safety clamps:
+        - `min-height: 350px` (Ensures usability on small mobiles).
+        - `max-height: 600px` (Prevents it from becoming gigantic on tall tablets).
+    - **Result**: The Neural Net is now visible and properly scaled across all Mobile and Tablet orientations (0-1023px).
+
 ## [v2.652] - 2026-01-28
 - **Dead Man Zone (1023px) Fix**:
     - **Issue**: The layout range <1024px was forcing fixed heights (`h-[350px]` or `md:h-[600px]`) which caused content clipping and overlap in the 820px-1023px zone.
