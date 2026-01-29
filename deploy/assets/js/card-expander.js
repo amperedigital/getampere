@@ -1,5 +1,5 @@
 // V-Amp 2.0 Card Expander Logic
-// Zen Mode Expansion - STRICT Column Constraint (v2.700)
+// Zen Mode Expansion - Column Constrained + Persistent Button
 
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
@@ -9,7 +9,11 @@ export function initCardExpander() {
 
     cards.forEach(card => {
         card.addEventListener('click', (e) => {
-             if(e.target.closest('button, a')) return;
+             // Ignore button clicks IF they are actual functional buttons (like "View Project")
+             // BUT, the expand button (corner bracket) is often the trigger itself or part of the card.
+             // If the user wants the button to be the closer, we usually attach logic there.
+             // For now, keeping generic card click toggling.
+             if(e.target.closest('a, button:not(.group\\/button-trigger)')) return;
              
              if(card.classList.contains('is-expanded')) {
                  collapseCard(card);
@@ -40,7 +44,7 @@ function expandCard(card) {
     document.body.appendChild(card);
 
     // 4. Set Initial Position (Fixed at Start)
-    // Use !important to override any CSS interference
+    // Use !important to guarantee overrides
     card.style.setProperty('position', 'fixed', 'important');
     card.style.setProperty('top', startRect.top + 'px', 'important');
     card.style.setProperty('left', startRect.left + 'px', 'important');
@@ -53,38 +57,37 @@ function expandCard(card) {
     void card.offsetWidth;
 
     // 5. Calculate Target (Container CLIENT Box)
-    const targetRect = container.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
     
-    // Precision Alignment:
-    // Left = Container Left + Container Border Left
-    // Width = Container Client Width (excludes scrollbar/border)
-    // Top = Container Top + Container Border Top
-    // Height = Container Client Height
-    
-    const targetLeft = targetRect.left + (container.clientLeft || 0);
-    const targetTop = targetRect.top + (container.clientTop || 0);
-    const targetWidth = container.clientWidth;
-    const targetHeight = container.clientHeight;
+    // Precision Alignment to the Visual Content Box of the Right Column
+    const targetLeft = containerRect.left + (container.clientLeft || 0);
+    const targetTop = containerRect.top + (container.clientTop || 0);
+    const targetWidth = container.clientWidth; // Excludes scrollbar
+    const targetHeight = container.clientHeight; // Excludes scrollbar
 
     // 6. Animate
     card.classList.add('is-expanded');
     card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
     
     requestAnimationFrame(() => {
+        // Enforce Target Coordinates
         card.style.setProperty('top', targetTop + 'px', 'important');
         card.style.setProperty('left', targetLeft + 'px', 'important');
         card.style.setProperty('width', targetWidth + 'px', 'important');
         card.style.setProperty('height', targetHeight + 'px', 'important');
-        card.style.removeProperty('border-radius'); // Allow CSS to control
+        
+        // Remove forced radius override, let CSS handle it
+        card.style.removeProperty('border-radius'); 
     });
 
-    // 7. Icon Hiding
-    requestAnimationFrame(() => {
-        const btn = card.querySelector('.group\\/button-trigger');
-        if(btn) {
-            btn.style.setProperty('display', 'none', 'important');
-        }
-    });
+    // 7. Ensure Button is VISIBLE (User Request)
+    // We explicitly ensure it is not hidden
+    const btn = card.querySelector('.group\\/button-trigger');
+    if(btn) {
+        btn.style.opacity = '1';
+        btn.style.display = 'flex'; // Or whatever flex layout it had
+        btn.style.pointerEvents = 'auto';
+    }
 }
 
 function collapseCard(card) {
@@ -96,14 +99,7 @@ function collapseCard(card) {
     
     const endRect = placeholder.getBoundingClientRect();
     
-    // Restore Button
-    const btn = card.querySelector('.group\\/button-trigger');
-    if(btn) {
-        btn.style.setProperty('display', '', '');
-        btn.style.opacity = '';
-    }
-
-    // Animate
+    // Animate Back
     card.style.setProperty('top', endRect.top + 'px', 'important');
     card.style.setProperty('left', endRect.left + 'px', 'important');
     card.style.setProperty('width', endRect.width + 'px', 'important');
@@ -113,9 +109,10 @@ function collapseCard(card) {
     const cleanup = () => {
         if(card.classList.contains('is-expanded')) return;
 
-        // Clear all inline styles to return to CSS control
+        // Reset Styles
         card.style.cssText = ''; 
         
+        // Return to DOM
         if(placeholder.parentNode) {
             placeholder.parentNode.insertBefore(card, placeholder);
             placeholder.remove();
