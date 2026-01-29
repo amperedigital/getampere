@@ -287,53 +287,15 @@ export class CardExpander {
         document.body.classList.remove('card-expanded-mode');
         container.classList.remove('has-active-card');
         
-        // MOBILE OPTIMIZATION: Skip animation on mobile to avoid "jerkiness" or artifacts (v2.568)
-        const isMobile = window.innerWidth <= 768; // Standard tablet/mobile breakpoint
-        
-        if (isMobile) {
-            // v2.570: Force transition disable to prevent base-class animations from firing during reset
-            card.style.transition = 'none !important';
-            void card.offsetWidth; // Force Reflow
+        // Unified Animation Logic (v2.673: Restored Full Animation on Mobile)
+        // User requested restoration of "Zen Mode" growth/shrink animation on all interaction paths.
+        // Removed the "Mobile Optimization" block that forced instantaneous transitions.
 
-            // IMMEDIATE CLEANUP (No Animation)
-             if (this.spacer.parentNode) {
-                this.spacer.parentNode.removeChild(this.spacer);
-            }
-            // Reset styles immediately
-            card.style.position = '';
-            card.style.top = '';
-            card.style.left = '';
-            card.style.right = '';
-            card.style.bottom = '';
-            card.style.width = '';
-            card.style.height = '';
-            card.style.minHeight = ''; // Clear overrides from expand
-            card.style.maxHeight = ''; // Clear overrides from expand
-            card.style.transform = ''; // Clear center transform
-            card.style.overflowY = ''; // Clear overflow
-            
-            card.style.zIndex = '';
-            card.style.margin = '';
-            // keep transition disabled for this frame
-            card.style.transition = 'none';
-            
-            // v2.573: Re-apply Equalizer immediately if needed
-            this.equalizeHeights();
-            
-            this.activeCard = null;
-            
-            // Icon Updates
-            const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
-            this.updateIcon(topRightBtn, 'expand');
-            
-            const triggers = card.querySelectorAll('.expand-trigger');
-            triggers.forEach(t => {
-                t.style.opacity = '';
-                t.style.pointerEvents = '';
-            });
-            
-            return;
-        }
+        /*
+        const isMobile = window.innerWidth <= 768; 
+        if (isMobile) { ... } // REMOVED
+        */
+
 
         // Lock to current visual state using FIXED position
         card.style.position = 'fixed'; // Keep it fixed!

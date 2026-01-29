@@ -1,3 +1,8 @@
+## [v2.673] - 2026-01-29
+- **Animation Polish (Collapse)**:
+    - **Fix (Card Collapse)**: Restored the smooth "Shrink" animation on all devices, including mobile and small window sizes.
+    - **Reversion**: Removed the "Mobile Optimization" block that forced an instantaneous snap-to-closed state to avoid suspected artifacts. The user confirmed the standard FLIP animation provides a superior "Zen" experience.
+
 ## [v2.672] - 2026-01-29
 - **Animation Polish**:
     - **Fix (Card Expansion)**: Solved the "Flash to Big" issue where the card would momentarily disappear or jump to its final size before animating.
