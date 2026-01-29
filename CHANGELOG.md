@@ -2379,3 +2379,8 @@
 - **Desktop Expansion Logic**: Consolidated "Trapped" (3D Container) and "Standard" logic into a single "In-Place" block.
 - **Stacking Anomaly**: Fixed z-index and coordinate space calculations to prevent expanded cards from being clipped or covered in complex layouts.
 - **Overflow Prevention**: Replaced hardcoded height with dynamic viewport-aware height calculation to prevent container blowout.
+
+## [v2.684.stable] - 2026-01-17
+### Fixed
+- **Large Card Size**: Applied a height cap (600px) to expanded Desktop cards to prevent them from growing disproportionately tall relative to their neighbors or the container.
+- **In-Place Logic**: Maintained the "Grow Downwards" logic but with stricter bounds to satisfy the "Equal Size" visual requirement.

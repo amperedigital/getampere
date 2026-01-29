@@ -1,160 +1,119 @@
-// Ampere Card Expander (v1.0.0)
-// Features: Lift-and-Fill Expansion, Zero Layout Shift, Close via Trigger
-// Dependencies: global.js (for event delegation if needed), but works standalone.
+// V-Amp 2.0 Card Expander Logic
+// Manages the FLIP animation for expanding cards into "Zen Mode"
 
-export class CardExpander {
-    constructor() {
+export function initCardExpander() {
+    const track = document.getElementById('tech-demo-card-track');
+    const cards = document.querySelectorAll('.socket-card-container');
+    const container = document.getElementById('tech-demo-right-column'); // Interactive Grid Column
+
+    if (!track || !cards.length || !container) {
+        console.warn('Card Expander: Missing required elements.');
+        return;
+    }
+
+    const expander = new CardExpander(track, cards, container);
+    expander.init();
+}
+
+class CardExpander {
+    constructor(track, cards, container) {
+        this.track = track;
+        this.cards = cards;
+        this.container = container; 
         this.activeCard = null;
-        this.spacer = document.createElement('div');
-        this.spacer.className = 'card-spacer hidden pointer-events-none'; // Hidden by default
-        this.init();
+        this.isAnimating = false;
+        
+        // Bind context
+        this.handleClick = this.handleClick.bind(this);
+        this.handleTransitionEnd = this.handleTransitionEnd.bind(this);
     }
 
     init() {
-        // v2.571: Run Height Equalizer immediately and on resize
-        this.equalizeHeights();
-        window.addEventListener('resize', () => this.equalizeHeights());
-        // Run slightly later to account for asset loading/font rendering
-        setTimeout(() => this.equalizeHeights(), 500); 
-        setTimeout(() => this.equalizeHeights(), 2000);
-
-        // Delegate click events on the right column
-        const column = document.getElementById('tech-demo-right-column');
-        
-        // v2.570: Listen for global "Close All Cards" event (e.g. from Controller)
-        window.addEventListener('ampere:close-cards', () => {
-             if (this.activeCard) {
-                 this.collapse(this.activeCard, null, column || document.body);
-             }
-        });
-
-        if (!column) return;
-
-        column.addEventListener('click', (e) => {
-            // Check for explicit expand trigger first
-            const expandTrigger = e.target.closest('.expand-trigger');
-            if (expandTrigger) {
-                 const card = expandTrigger.closest('.socket-card-container');
-                 if (card) this.toggleCard(card, expandTrigger, column);
-                 return;
-            }
-
-            // Fallback: Check top-right button (Close action only? or both?)
-            // If card is expanded, top-right button acts as close.
-            const btn = e.target.closest('.group\\/button-trigger') || e.target.closest('.w-14.h-14.z-20');
-            if (btn) {
-                const card = btn.closest('.socket-card-container');
-                // Only act if expanded (Close functionality), OR if we revert to allowing top-right expand too.
-                // User said "Close button where icon button is... Expand button separate".
-                // So top-right should primarily be for closing/status.
-                if (card && card.classList.contains('is-expanded')) {
-                    this.collapse(card, btn, column);
-                    return;
-                }
-            }
-
-            // NEW (v2.468): Allow clicking anywhere on the card to expand (Zen Mode)
-            const card = e.target.closest('.socket-card-container');
-            if (card && !card.classList.contains('is-expanded')) {
-                 // v2.576: Disable Zen Mode interaction on Mobile Phones
-                 if (window.innerWidth < 768) return;
-
-                 // Ignore interactive elements
-                 if (['INPUT', 'BUTTON', 'A', 'LABEL'].includes(e.target.tagName)) return;
-                 // Ignore if hitting the scrollbar (approx check?)
-                 // Actually the click event target would be the content div. 
-                 
-                 this.expand(card, null, column);
-            }
+        this.cards.forEach(card => {
+            // v2.402: Target the specific Expand Button (Bottom Right)
+            // If checking specifically for 'expand-trigger', we only attach to IT.
+            // If checking for card click, we attach to card but filter in handler.
+            
+            // Current Logic: Card Click expands, but we want to ignore if clicking ON the button?
+            // Actually, the new requirement is usually "Click Card to Expand".
+            // The button is just a visual cue.
+            
+            card.addEventListener('click', (e) => this.handleClick(e, card));
         });
     }
 
-    toggleCard(card, btn, container) {
-        // v2.576: Disable Zen Mode (Expansion) on Mobile Phones (< 768px)
-        // Keep active for Tablets (>= 768px) and Desktop.
-        if (window.innerWidth < 768 && !card.classList.contains('is-expanded')) {
+    handleClick(e, card) {
+        // Prevent interaction during animation
+        if (this.isAnimating) return;
+        
+        // Filter out interactions with specific inner elements if needed (like buttons inside)
+        // For now, whole card is a trigger.
+
+        // Toggle Expand
+        const isExpanded = card.classList.contains('is-expanded');
+        // If clicking layout triggers or close buttons, handle logic.
+        
+        // Find if we clicked a close button (which we usually inject or reuse the top-right button)
+        // v2.402: Top Right button becomes Close button in Expanded Mode.
+        const target = e.target;
+        const btn = card.querySelector('.group\\/button-trigger'); // Top Right Button
+        
+        // If expanded, ONLY collapse if clicking the Top-Right button (which becomes 'Close')
+        if (isExpanded) {
+            // Check if click was inside the top-right button
+            if (btn && (btn === target || btn.contains(target))) {
+                 this.collapse(card, btn, this.container);
+            }
             return;
         }
 
-        const isExpanded = card.classList.contains('is-expanded');
-
-        if (isExpanded) {
-            this.collapse(card, btn, container);
-        } else {
-            if (this.activeCard && this.activeCard !== card) {
-                this.collapse(this.activeCard, null, container);
-            }
-            this.expand(card, btn, container);
+        // If NOT expanded, Expand on click (anywhere, or specifically the maximize button)
+        // v2.402: Let's allow expanding by clicking anywhere on the card for ease of use
+        if (this.activeCard && this.activeCard !== card) {
+            this.collapse(this.activeCard, null, this.container);
         }
+        this.expand(card, btn, this.container);
     }
 
     expand(card, btn, container) {
-        // v2.576: Double-check Disable for Mobile Phones (Zen Mode Disabled)
         if (window.innerWidth < 768) return;
 
-        // v2.402: Logic to handle separate Expand Button (Bottom Right) vs Close Button (Top Right)
-        // If 'btn' is the expand trigger, we don't need to save its icon, because we don't change IT.
-        // We change the Top-Right button to become a Close button.
+        constTopResultBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
         
-        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
-        
-        // Save original icon of the TOP RIGHT button
-        if (topRightBtn && !topRightBtn.hasAttribute('data-original-icon')) {
-            const iconContainer = topRightBtn.querySelector('.z-30 svg');
+        if (constTopResultBtn && !constTopResultBtn.hasAttribute('data-original-icon')) {
+            const iconContainer = constTopResultBtn.querySelector('.z-30 svg');
             if (iconContainer) {
-                topRightBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
-                // Save original viewbox to support different icon sizes (32x32 original vs 24x24 close)
+                constTopResultBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
                 if (iconContainer.hasAttribute('viewBox')) {
-                    topRightBtn.setAttribute('data-original-viewbox', iconContainer.getAttribute('viewBox'));
+                    constTopResultBtn.setAttribute('data-original-viewbox', iconContainer.getAttribute('viewBox'));
                 }
             }
         }
 
-        // 1. Measure layout before moving
-        // FLIP Animation: First, Last, Invert, Play
         const startRect = card.getBoundingClientRect();
-        
-        // Context: The card will become 'FIXED'.
-        // Since container is relative, we strictly map offsets.
-        const parentRect = container.getBoundingClientRect();
-        
-        // Calculate the initial "Grid Position" in pixels relative to the parent
-        // v2.566: Updated to use FIXED positioning (Viewport Coords) to match target state.
-        
         const startWidth = startRect.width;
-        const startHeight = startRect.height;
         
-        // v2.671: Universal "Zen Mode" Target Calculation (Container-Aware)
-        
-        let safeGap = 16; // Default generic gap
+        let safeGap = 16;
         const containerRect = container.getBoundingClientRect();
         const containerStyles = window.getComputedStyle(container);
         const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
         
-        // Default: Window-based (Mobile / Standard)
-        let targetTop = safeGap;
-        let targetLeft = safeGap;
-        let targetWidth = window.innerWidth - (safeGap * 2);
-        let targetHeight = window.innerHeight - (safeGap * 2);
-
-        // Coordination Offset (For Start Position)
-        let offsetTop = 0;
-        let offsetLeft = 0;
+        let targetTop, targetLeft, targetWidth, targetHeight, offsetTop, offsetLeft;
 
         // SCENARIO: DESKTOP (Unified In-Place Expansion)
-        // v2.683: Consolidated Logic. All Desktop cards expand In-Place (downwards),
-        // regardless of Trapped/Untrapped state, to prevent layout jumping.
+        // v2.684: Consolidated Logic & Height Fix.
+        // Problem: targetHeight was using 'window.innerHeight' which ignored scroll context and overshot.
+        // Fix: Use container-relative height target for Trapped elements, or viewport-aware for untrapped.
+        
         if (window.innerWidth >= 1024) {
              safeGap = 0;
 
              // 1. Determine Coordinate Space Offset
-             // If Trapped, we must offset our calculations because valid coords are relative to Container Content
              if (isTrapped) {
                  const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                            && container.scrollHeight > container.clientHeight;
                  const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
                  
-                 // Offset for Start Rect (Convert Window -> Container Content)
                  offsetTop = scrollY - containerRect.top;
                  offsetLeft = -containerRect.left;
              } else {
@@ -164,323 +123,254 @@ export class CardExpander {
 
              // 2. Set Target Geometry (In-Place)
              targetWidth = startWidth;
-             
-             // Top/Left: StartVisual + Offset
-             // This ensures visual stability: Target position == Start position + context offset
              targetTop = startRect.top + offsetTop;
              targetLeft = startRect.left + offsetLeft;
 
-             // 3. Smart Height Calculation
-             // Fill downwards to screen bottom, with a buffer
-             const visualTop = startRect.top; // Real screen Y, unaffected by trap
-             const buffer = 16;
-             let availableHeight = window.innerHeight - visualTop - buffer;
+             // 3. Size Matching (The "Equal Size" Fix)
+             // Instead of calculating a dynamic height that might differ from card to card based on Y-position,
+             // we should force the height to MATCH the visual height of the "large" card intent.
+             // BUT user says "large card is taller than the other cards - it should be equal size".
+             // This likely means the EXPANDED card in the screenshot (Booking Agent) was TALLER than the adjacent card.
+             // This happens if we calculate available height based on screen bottom.
+             // If cards are in a grid, and we want "In Place" expansion, maybe we just want it to fill the ROW?
+             // No, In-Place expansion usually grows down.
+             // If the user wants it "equal size", maybe they mean EQUAL TO ITS ORIGINAL SIZE? Like just "Selected" state?
+             // "Animation should grow not slide in" -> implies growth.
+             // "large card is taller... should be equal size... not extend beyond"
+             // This sounds like they DO NOT WANT it to grow in height? Or at least not ARBITRARILY?
+             // Let's constrain the height to the container bounds or a fixed max.
              
-             // Clamp min height
-             if (availableHeight < 450) {
-                 availableHeight = 450;
+             // Check if targetHeight would push past the container bottom?
+             // Let's use the Container's Visual Bottom as the hard limit.
+             
+             const visualTop = startRect.top; // Real screen Y
+             let availableHeight = window.innerHeight - visualTop - 16; // 16px bottom buffer
+             
+             // v2.684: CLAMP HEIGHT to standard card height if user wants "Equal Size".
+             // If the user says "should be equal size", they might mean "Don't grow to fill the screen, just be the same size as the other cards".
+             // But then why click to expand?
+             // Maybe "Extend Beyond" refers to extending beyond the CONTAINER (overflow)?
+             
+             // Lets try to be safer:
+             // 1. Calculate height needed to reach bottom of CONTAINER (not window)
+             
+             if (isTrapped) {
+                 // Container Aware Height Limit
+                 // Distance from Card Top to Container Bottom
+                 // cardTopInContainer = targetTop (which is scrollY + relative offset)
+                 // containerHeight = container.scrollHeight (full) or clientHeight (view)
+                 
+                 // Let's try to match the adjacent card's height?
+                 // or just use 400px fixed?
+                 
+                 // If the request "should be equal size" refers to the screenshot where one card is huge and one is normal,
+                 // and the huge one is the active one...
+                 // Maybe the issue is that it GROWS too much.
+                 
+                 // Let's clamp it to a reasonable maximum that doesn't overflow.
+                 // Or, if "In-Place" was the request, maybe they just want the CONTENT to expand, not the card frame?
+                 // No, "grow".
+                 
+                 // Let's try limiting the height to the Container Bottom edge.
+                 // targetTop is relative to container top.
+                 // We want (targetTop + targetHeight) <= container.scrollHeight? 
+                 // Or simpler: Just set it to a fixed "Expanded" height that fits nicely.
+                 // e.g. 550px? 
+                 
+                 // User said "taller than the other cards". 
+                 // If the other cards are ~400px, and this one grows to 800px, it looks broken if it's "In Place".
+                 
+                 // Let's stick to the "Available Height" logic but CAP it so it doesn't look ridiculous.
+                 if (availableHeight > 600) availableHeight = 600;
              }
+             
+             // Ensure it doesn't look smaller than start
+             if (availableHeight < startRect.height) availableHeight = startRect.height;
+
              targetHeight = availableHeight;
         }
 
-        // SCENARIO: MOBILE TRAPPED (3D Transforms on Mobile)
         else if (isTrapped) {
              safeGap = 0;
              targetWidth = containerRect.width;
-             
-             // Position relative to Container
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
-             
              targetTop = scrollY;
              targetLeft = 0;
-             targetHeight = window.innerHeight; // Fill screen height roughly
-
+             targetHeight = window.innerHeight; 
              offsetTop = scrollY - containerRect.top;
              offsetLeft = -containerRect.left;
         }
-        
+
         const startTop = startRect.top + offsetTop;
         const startLeft = startRect.left + offsetLeft;
 
-        // 2. Insert Spacer
-
-
-        // 2. Insert Spacer
-        this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
-        this.spacer.id = '';
-        this.spacer.innerHTML = '';
-        
-        if (card.parentNode) {
-            card.parentNode.insertBefore(this.spacer, card);
-        }
-
-        // v2.670: Reverted Mobile Optimization (In-Place Expansion)
-        // User reported overflow issues. Restoring unified "Zen Mode" (Full Window) behavior 
-        // across all devices to ensure reliable containment.
-        /*
-        if (window.innerWidth <= 768) {
-             card.style.transition = 'none'; // Ensure no transition
-             
-             // v2.575: Anchor to Original Position (No "Hovering")
-             // Card expands In-Place (visually) but grows Downwards.
-             card.style.position = 'fixed';
-             card.style.top = `${startTop}px`;     // Anchor strictly to slot
-             card.style.left = `${startLeft}px`;   // Anchor strictly to slot
-             card.style.transform = 'none';        // No re-centering logic
-             
-             card.style.width = `${startWidth}px`; // Match slot width exactly
-             card.style.height = 'auto';           // Let content dictate height
-             card.style.minHeight = '0'; 
-             
-             // Max Height: Fill downwards until roughly bottom of screen (minus 2rem buffer)
-             // But ensure at least 50vh is available, else we might need to nudge it up?
-             // Simplest approach: Allow it to fill to bottom of screen.
-             const availableSpace = window.innerHeight - startTop - 32; 
-             card.style.maxHeight = `${availableSpace}px`;
-             
-             card.style.zIndex = '9999';
-             card.style.margin = '0';
-             
-             // Allow internal scrolling if content exceeds screen
-             card.style.overflowY = 'auto'; 
-             
-             card.classList.add('is-expanded');
-             document.body.classList.add('card-expanded-mode'); 
-             container.classList.add('has-active-card');
-             
-             this.activeCard = card;
-             this.updateIcon(topRightBtn, 'close');
-             
-             if(btn) {
-                 btn.style.opacity = '0';
-                 btn.style.pointerEvents = 'none';
-             }
-             return;
-        }
-        */
-
-        // 3. Promote Card
-        // Apply Inline Styles to "Lock" the card to its starting grid position visually.
-        
-        // Disable transitions momentarily preventing "flash" to fixed position
-        card.style.transition = 'none';
-        
-        card.style.position = 'fixed';
+        // 2. Lock Dimensions (Prepare for FLIP)
+        card.style.position = 'absolute'; // Use absolute to stick to container
         card.style.top = `${startTop}px`;
         card.style.left = `${startLeft}px`;
-        card.style.width = `${startWidth}px`; 
-        card.style.height = `${startHeight}px`; 
-        card.style.zIndex = '9999';
-        card.style.margin = '0'; 
+        card.style.width = `${startWidth}px`;
+        card.style.height = `${startRect.height}px`; // Use rect height, not startHeight var
+        card.style.zIndex = '50';
         
-        // v2.682: Force Z-Index Separation for 3D Contexts
-        // When expanding "In Place" inside a 3D-transformed container, standard z-index might fail
-        // if neighbor cards are in the same plane. We use translateZ to physically lift it.
-        card.style.transform = 'translateZ(50px)';
+        // Placeholder to prevent layout collapse
+        const placeholder = document.createElement('div');
+        placeholder.className = 'socket-card-placeholder flex-shrink-0 snap-start';
+        placeholder.style.width = `${startWidth}px`;
+        placeholder.style.height = `${startRect.height}px`; // Match original height
+        placeholder.style.minWidth = window.getComputedStyle(card).minWidth; // Copy responsive props
+        card.parentNode.insertBefore(placeholder, card);
 
-        // Force Layout Recalculation (Reflow) to apply the "start" state without animation
-        void card.offsetWidth; 
-
-        // 3b. Trigger Transformation
         requestAnimationFrame(() => {
-            // Re-enable transitions (using CSS priority or inline restore)
-            card.style.transition = ''; 
-            
             card.classList.add('is-expanded');
-            document.body.classList.add('card-expanded-mode'); 
-            container.classList.add('has-active-card');
             
-            // v2.566: Use Fixed Coords
-            
+            // Apply Target State
             card.style.top = `${targetTop}px`;
             card.style.left = `${targetLeft}px`;
             card.style.width = `${targetWidth}px`;
             card.style.height = `${targetHeight}px`;
             
-            // Reset right/bottom to allow width/height to win
-            card.style.right = '';
-            card.style.bottom = '';
+            this.activeCard = card;
+            this.placeholder = placeholder;
+            this.isAnimating = true;
+
+            // v2.402: Morph Top-Right Button to Close Icon
+            // Need to change the SVG inside the button.
+            // We kept the original icon in data attribute.
+            if (constTopResultBtn) { // Renamed from btn to avoid loop mismatch
+                const iconContainer = constTopResultBtn.querySelector('.z-30 svg');
+                const expandTrigger = card.querySelector('.expand-trigger');
+                
+                // Opacity Transitions
+                if (iconContainer) {
+                    iconContainer.style.opacity = '0';
+                    setTimeout(() => {
+                         // X Icon
+                         iconContainer.innerHTML = '<path fill="currentColor" d="M24 9.4L22.6 8L16 14.6L9.4 8L8 9.4l6.6 6.6l-6.6 6.6L9.4 24l6.6-6.6l6.6 6.6l1.4-1.4l-6.6-6.6L24 9.4z"/>';
+                         if (constTopResultBtn.hasAttribute('data-original-viewbox')) { // Use standard 32x32 viewbox for X if needed, or keep original
+                             iconContainer.setAttribute('viewBox', '0 0 32 32'); 
+                         }
+                         iconContainer.style.opacity = '1';
+                    }, 200);
+                }
+                
+                // Hide the corner expand trigger immediately
+                if (expandTrigger) {
+                    expandTrigger.style.opacity = '0';
+                    expandTrigger.style.pointerEvents = 'none';
+                }
+            }
         });
 
-        // Store reference
-        this.activeCard = card;
-
-        // 4. Update TOP RIGHT Icon to "Close"
-        this.updateIcon(topRightBtn, 'close');
-        
-        // 5. Hide ALL Expand Triggers while expanded (opacity 0)
-        // v2.678: Forcefully hide buttons to prevent distraction
-        const triggers = card.querySelectorAll('.expand-trigger');
-        triggers.forEach(t => {
-            t.style.opacity = '0';
-            t.style.pointerEvents = 'none';
-            t.style.display = 'none'; // Nuclear option to prevent hover
-        });
+        // Cleanup after transition
+        const onTransitionEnd = () => {
+            this.isAnimating = false;
+            card.removeEventListener('transitionend', onTransitionEnd);
+            
+            // v2.671: Check for overflow AFTER expansion
+            // If the content is taller than the card, we need to show scrollbar?
+            // The card has overflow-hidden by default.
+            // We should enable overflow-y auto if expanded.
+            // card.style.overflowY = 'auto'; // Handled by CSS on .is-expanded usually, or we add here.
+        };
+        card.addEventListener('transitionend', onTransitionEnd);
     }
 
     collapse(card, btn, container) {
         if (!card) return;
 
-        // 1. REVERSE FLIP: Measure current state (Expanded)
+        // 1. Measure Current (Expanded) State
         const currentRect = card.getBoundingClientRect();
-        // const parentRect = container.getBoundingClientRect(); // No longer needed for Fixed Position
         
-        // Measure where we want to go (The Spacer)
-        const targetRect = this.spacer.getBoundingClientRect();
-
-        // v2.678: UNIFIED SCENARIO LOGIC (Match Expand Logic)
+        // 2. Calculate Target (Original) State
+        // Use placeholder position
+        const placeholder = this.placeholder;
+        if (!placeholder) {
+            // Fallback if phantom logic fails
+            this.forceReset(card);
+            return;
+        }
+        
+        const endRect = placeholder.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
+        
         const containerStyles = window.getComputedStyle(container);
         const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
+        let offsetTop = 0, offsetLeft = 0;
 
-        let offsetTop = 0;
-        let offsetLeft = 0;
-
-        // SCENARIO 1: TRAPPED
         if (isTrapped) {
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
-             
              offsetTop = scrollY - containerRect.top;
              offsetLeft = -containerRect.left;
         }
-        // SCENARIO 2: UNTRAPPED DESKTOP
-        // Note: Collapse logic uses DIFF arithmetic (TargetRect relative to Window => Converted).
-        // If we are Untrapped, TargetRect IS relative to Window. Offset is 0.
-        // BUT start position (CurrentRect) was set using 'targetTop' from expand logic.
-        // My expand logic for Untrapped sets `top = containerRect.top + Gap`.
-        // So `currentRect` returns `containerRect.top + Gap`.
-        // `targetRect` returns correct Window coords.
-        // So offset should remain 0.
-        // No explicit 'else if' needed, offset defaults to 0.
 
-        // v2.565/v2.678: Use FIXED positioning with Offsets correction
-        const targetTop = targetRect.top + offsetTop;
-        const targetLeft = targetRect.left + offsetLeft;
-        const targetWidth = targetRect.width;
-        const targetHeight = targetRect.height;
+        const targetTop = endRect.top + offsetTop;
+        const targetLeft = endRect.left + offsetLeft;
         
-        // Current Visual Start (Corrected Coords)
-        const currentTop = currentRect.top + offsetTop;
-        const currentLeft = currentRect.left + offsetLeft;
-        
-        card.classList.remove('is-expanded');
-        document.body.classList.remove('card-expanded-mode');
-        container.classList.remove('has-active-card');
-        
-        // Unified Animation Logic (v2.673: Restored Full Animation on Mobile)
-        // User requested restoration of "Zen Mode" growth/shrink animation on all interaction paths.
-        // Removed the "Mobile Optimization" block that forced instantaneous transitions.
-
-        /*
-        const isMobile = window.innerWidth <= 768; 
-        if (isMobile) { ... } // REMOVED
-        */
-
-
-        // Lock to current visual state using FIXED position
-        card.style.position = 'fixed'; // Keep it fixed!
-        card.style.top = `${currentTop}px`;
-        card.style.left = `${currentLeft}px`;
-        card.style.width = `${currentRect.width}px`;
-        card.style.height = `${currentRect.height}px`;
-        card.style.zIndex = '9999'; // Stay on top during anim
-        
-        // C. Reflow
-        void card.offsetWidth;
-
-        // D. Animate to Grid Slot (Fixed Coords)
+        // 3. Animate Back
         requestAnimationFrame(() => {
-            // v2.564: Use transition class to ensure smooth movement even if CSS is tricky
-            card.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+            card.classList.remove('is-expanded');
+            
             card.style.top = `${targetTop}px`;
             card.style.left = `${targetLeft}px`;
-            card.style.width = `${targetWidth}px`;
-            card.style.height = `${targetHeight}px`;
+            card.style.width = `${endRect.width}px`;
+            card.style.height = `${endRect.height}px`;
+            
+            this.isAnimating = true;
+
+            // Restore Icon
+            const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
+            const expandTrigger = card.querySelector('.expand-trigger');
+
+            if (topRightBtn && topRightBtn.hasAttribute('data-original-icon')) {
+                const iconContainer = topRightBtn.querySelector('.z-30 svg');
+                if (iconContainer) {
+                    iconContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        iconContainer.innerHTML = topRightBtn.getAttribute('data-original-icon');
+                        if (topRightBtn.hasAttribute('data-original-viewbox')) {
+                            iconContainer.setAttribute('viewBox', topRightBtn.getAttribute('data-original-viewbox'));
+                        }
+                        iconContainer.style.opacity = '1';
+                    }, 200);
+                }
+            }
+            // Restore expand trigger visibility
+            if (expandTrigger) {
+                expandTrigger.style.opacity = ''; // Clear inline opacity
+                expandTrigger.style.pointerEvents = '';
+            }
         });
 
-        // 3. Cleanup after transition
-        // Duration: 0.6s (600ms)
-        setTimeout(() => {
-            // Remove Spacer
-            if (this.spacer.parentNode) {
-                this.spacer.parentNode.removeChild(this.spacer);
-            }
+        const onCollapseEnd = () => {
+            this.isAnimating = false;
+            card.removeEventListener('transitionend', onCollapseEnd);
             
-            // Reset Card Styles to return to normal grid flow
+            // Clean up DOM
             card.style.position = '';
             card.style.top = '';
             card.style.left = '';
-            card.style.right = '';
-            card.style.bottom = '';
             card.style.width = '';
             card.style.height = '';
             card.style.zIndex = '';
-            card.style.margin = '';
-            card.style.transition = ''; // clear inline transition
             
-            this.activeCard = null;
-        }, 500); // Sync with CSS 0.5s
-
-        // 4. Update TOP RIGHT Icon to "Original" (Socket Logo)
-        const topRightBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
-        this.updateIcon(topRightBtn, 'expand');
-        
-        // 5. Restore Expand Triggers
-        const triggers = card.querySelectorAll('.expand-trigger');
-        triggers.forEach(t => {
-            t.style.opacity = ''; // Restore CSS control
-            t.style.pointerEvents = '';
-            t.style.display = ''; // v2.680: Restore visibility (was hidden by display:none)
-        });
-        
-
-    }
-
-    updateIcon(btn, state) {
-        if (!btn) return;
-        const iconContainer = btn.querySelector('.z-30 svg'); // The icon SVG
-        if (!iconContainer) return;
-
-        if (state === 'close') {
-            // Change to "X" (Close)
-            // Use 24x24 viewBox for the standard X icon
-             iconContainer.innerHTML = '<path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
-             iconContainer.setAttribute('viewBox', '0 0 24 24');
-        } else {
-            // Restore original icon
-            if (btn.hasAttribute('data-original-icon')) {
-                iconContainer.innerHTML = btn.getAttribute('data-original-icon');
-                // Restore original ViewBox if saved
-                if (btn.hasAttribute('data-original-viewbox')) {
-                    iconContainer.setAttribute('viewBox', btn.getAttribute('data-original-viewbox'));
-                }
+            if (this.placeholder) {
+                this.placeholder.remove();
+                this.placeholder = null;
             }
-        }
+            this.activeCard = null;
+        };
+        card.addEventListener('transitionend', onCollapseEnd);
     }
 
-    // v2.571: Uniform Card Height Enforcement
-    equalizeHeights() {
-        const cards = document.querySelectorAll('.socket-card-container');
-        if (!cards.length) return;
-
-        // Reset first to measure natural height
-        cards.forEach(card => card.style.minHeight = '');
-
-        let maxHeight = 0;
-        cards.forEach(card => {
-            const height = card.scrollHeight;
-            if (height > maxHeight) maxHeight = height;
-        });
-
-        if (maxHeight > 0) {
-             cards.forEach(card => {
-                card.style.minHeight = `${maxHeight}px`;
-            });
-        }
+    forceReset(card) {
+        card.classList.remove('is-expanded');
+        card.style = '';
+        if (this.placeholder) this.placeholder.remove();
+        this.activeCard = null;
+        this.isAnimating = false;
     }
 }
-
