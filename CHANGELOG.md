@@ -4,6 +4,10 @@
     - **Technical**: All position/dimension styles (`top`, `left`, `width`, `height`) are now applied via `setProperty(..., 'important')`. This guarantees that the calculated bonding box of the right column overrides any conflicting CSS rules (like `width: auto` or default insets) that were causing the card to expand to full screen.
     - **Precision**: Updated coordinate math to account for `clientLeft` (border width) to ensure pixel-perfect alignment inside the container.
 
+## [v2.704] - 2026-01-29
+### Changed
+- **Code Cleanliness**: Removed verbose console logs from `ai-chat.js` related to visualizer DOM moves and updates. The logic remains active but silent.
+
 ## [v2.703] - 2026-01-29
 ### Fixed
 - **Zen Mode Close Button**: Corrected the selector for the expand/close button (`.expand-trigger`), ensuring the Close (X) icon appears and stays visible when the card is expanded.

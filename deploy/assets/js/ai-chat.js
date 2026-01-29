@@ -300,7 +300,6 @@ export class AmpereAIChat {
         const sceneContainer = this.statusTarget.querySelector('.ampere-status-pill-mode') || this.statusTarget;
 
         if (sceneText) {
-            console.log('[AI-Chat] Non-Destructive Update path active.');
             // 1. Update Text
             sceneText.innerText = message;
             
@@ -330,7 +329,6 @@ export class AmpereAIChat {
                 
                 // Location Check (Migration)
                 if (this.visualizer && this.visualizer.parentNode !== desiredTarget) {
-                    console.log(`[AI-Chat] Visualizer in wrong location. Moving to:`, desiredTarget);
                     // Detach from wrong parent
                     if (this.visualizer.parentNode) this.visualizer.parentNode.removeChild(this.visualizer);
                     
@@ -342,7 +340,6 @@ export class AmpereAIChat {
                 }
                 
                 if (needsInjection) {
-                    console.log(`[AI-Chat] Creating New Visualizer for:`, desiredTarget);
                     // v2.619: Color Class 'bg-blue-400' is hardcoded here
                     const viz = this.createVisualizer('bg-blue-400');
                     desiredTarget.appendChild(viz);
