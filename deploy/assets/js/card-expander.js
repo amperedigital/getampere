@@ -15,7 +15,7 @@ export function initCardExpander() {
     cards.forEach(card => {
         card.addEventListener('click', (e) => {
              // Allow clicks on our expand button
-             if(e.target.closest('a, button:not(.group\\/button-trigger)')) return;
+             if(e.target.closest('a, button') && !e.target.closest('.expand-trigger')) return;
              
              if(card.classList.contains('is-expanded')) {
                  collapseCard(card);
@@ -87,7 +87,7 @@ function expandCard(card) {
     });
 
     // 7. Swap Icon & Ensure Visibility
-    const btn = card.querySelector('.group\\/button-trigger');
+    const btn = card.querySelector('.expand-trigger');
     if(btn) {
         btn.style.opacity = '1';
         btn.style.display = 'flex';
@@ -123,10 +123,16 @@ function collapseCard(card) {
     card.classList.remove('is-expanded');
 
     // Restore Icon
-    const btn = card.querySelector('.group\\/button-trigger');
+    const btn = card.querySelector('.expand-trigger');
     if(btn && btn.dataset.originalIcon) {
         const svg = btn.querySelector('svg');
         if(svg) svg.innerHTML = btn.dataset.originalIcon;
+        // Revert opacity/display as well if needed? 
+        // For now, removing 'is-expanded' class usually handles CSS, but we set inline styles.
+        // We should clear the inline styles we set in expandCard.
+        btn.style.opacity = '';
+        btn.style.display = '';
+        btn.style.pointerEvents = '';
     }
 
     const cleanup = () => {

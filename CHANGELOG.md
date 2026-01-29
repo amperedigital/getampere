@@ -4,6 +4,11 @@
     - **Technical**: All position/dimension styles (`top`, `left`, `width`, `height`) are now applied via `setProperty(..., 'important')`. This guarantees that the calculated bonding box of the right column overrides any conflicting CSS rules (like `width: auto` or default insets) that were causing the card to expand to full screen.
     - **Precision**: Updated coordinate math to account for `clientLeft` (border width) to ensure pixel-perfect alignment inside the container.
 
+## [v2.703] - 2026-01-29
+### Fixed
+- **Zen Mode Close Button**: Corrected the selector for the expand/close button (`.expand-trigger`), ensuring the Close (X) icon appears and stays visible when the card is expanded.
+- **Interaction Logic**: Updated click handlers to allow interaction with the close button specifically, fixing issues where clicks were ignored or invisible.
+
 ## [v2.702] - 2026-01-29
 ### Fixed
 - **Zen Mode Precision**: Updated `card-expander.js` to strictly respect container padding (Content Box alignment), resolving visual bleed into scrollbars/margins.
