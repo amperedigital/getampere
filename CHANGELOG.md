@@ -1,3 +1,9 @@
+## [v2.681] - 2026-01-29
+- **UI Polish (Desktop Zen Mode)**:
+    - **Fix (Interaction)**: Implemented "In-Place Expansion" for Desktop cards.
+    - **Issue**: Users found the lateral movement (jumping to the left edge of the column) disorienting when clicking right-side cards. The previous "Fill Container" logic forced a coordinate shift.
+    - **Resolution**: The expanded card now strictly respects its original Top and Left coordinates on Desktop. It simply "grows downwards" (increasing height) while maintaining its width and horizontal position, providing a true "Accordion-style" expansion without any layout shift or jumps.
+
 ## [v2.680] - 2026-01-29
 - **UI Polish (Desktop Expansion)**:
     - **Fix (Interaction)**: Solved the "One-Time Click" bug where the Expand Button (corner brackets) vanished permanently after the first expansion cycle. Updated `collapse()` to explicitly clear the `display: none` override added in v2.678.

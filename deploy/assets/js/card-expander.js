@@ -169,15 +169,28 @@ export class CardExpander {
         // We want to fill the Column visually, but using Window Coordinates.
         // v2.676: Fixed alignment bug where we used Trapped logic for Untrapped elements.
         else if (window.innerWidth >= 1024) {
-             // v2.680: Flush Alignment here too
+             // v2.681: "In-Place" Expansion Logic (No Layout Shift)
+             // User requested "Just Grow" behavior: Card should NOT move Left/Right or Top relative to its slot.
+             // It should simply expand downwards (and upwards if needed for height) without changing X-axis or Top anchor.
+             
              safeGap = 0;
 
-             // Size: Fill Visible Container
-             targetWidth = containerRect.width - (safeGap * 2);
+             // Size: Match Start Width (Do NOT fill container width if it means moving)
+             targetWidth = startWidth; 
              
-             // Position: Relative to Window (Match Container Position)
-             targetTop = containerRect.top + safeGap;
-             targetLeft = containerRect.left + safeGap;
+             // Position: Keep Start Left
+             targetLeft = startRect.left; 
+             
+             // Position: Keep Start Top (Visually)
+             // But we need to account for scrolling if we want it to stay fixed on screen while expanding?
+             // Actually, if we use 'position: fixed' and set top = startRect.top, it STAYS at that viewport position.
+             // So it won't scroll with the page (which is correct for expanded modal).
+             targetTop = startRect.top;
+
+             // Height: Fill Height (Zen Mode)
+             // We allow height to expand to fill most of the screen downwards
+             targetHeight = window.innerHeight - targetTop - safeGap;
+             if (targetHeight < 400) targetHeight = 400; // Min Safe Height
              
              // Offset: None (StartRect is already Window Relative)
              offsetTop = 0;
