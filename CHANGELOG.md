@@ -1,3 +1,9 @@
+## [v2.674] - 2026-01-29
+- **Animation Polish (Desktop Collapse)**:
+    - **Fix**: Solved a coordinate mismatch bug during card collapse on Desktop (Split View).
+    - **Issue**: The collapse animation was using raw Viewport Coordinates, but the Desktop layout uses a verified "Trapped" coordinate system (due to 3D transforms). This caused the card to teleport instantly to the wrong position (often Y=0 or off-origin) before snapping back, creating a "disappearing/flashing" effect.
+    - **Resolution**: Ported the "Trapped Coordinate" logic from the Expansion function to the Collapse function, ensuring `scrollTop` and Container Offsets are correctly applied to the reverse animation.
+
 ## [v2.673] - 2026-01-29
 - **Animation Polish (Collapse)**:
     - **Fix (Card Collapse)**: Restored the smooth "Shrink" animation on all devices, including mobile and small window sizes.

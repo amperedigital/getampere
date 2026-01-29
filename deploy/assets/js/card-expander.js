@@ -272,16 +272,37 @@ export class CardExpander {
         // Measure where we want to go (The Spacer)
         const targetRect = this.spacer.getBoundingClientRect();
 
+        // v2.671: Trapped Layout Detection (Desktop Split / Transformed Parents)
+        // Must apply same coordinate correction as 'expand' to handle 'position: fixed' inside 'transform'
+        const containerRect = container.getBoundingClientRect();
+        const containerStyles = window.getComputedStyle(container);
+        const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
+
+        // Default: Pure Viewport Coordinates
+        let offsetTop = 0;
+        let offsetLeft = 0;
+
+        // If Trapped, convert Viewport Coords -> Container Content Coords
+        if (isTrapped || window.innerWidth >= 1024) {
+             const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
+                                       && container.scrollHeight > container.clientHeight;
+             const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
+             
+             // Formula: StyleTop = (ViewportY - ContainerViewportY) + ScrollTop
+             offsetTop = scrollY - containerRect.top;
+             offsetLeft = -containerRect.left; // Usually 0 scrollX
+        }
+
         // v2.565: Use FIXED positioning for the return animation to avoid clipping by parent containers
         // (like the mobile scroll track) which happens when using 'absolute'.
-        const targetTop = targetRect.top;
-        const targetLeft = targetRect.left;
+        const targetTop = targetRect.top + offsetTop;
+        const targetLeft = targetRect.left + offsetLeft;
         const targetWidth = targetRect.width;
         const targetHeight = targetRect.height;
         
-        // Current Visual Start (Fixed Viewport Coords)
-        const currentTop = currentRect.top;
-        const currentLeft = currentRect.left;
+        // Current Visual Start (Corrected Coords)
+        const currentTop = currentRect.top + offsetTop;
+        const currentLeft = currentRect.left + offsetLeft;
         
         card.classList.remove('is-expanded');
         document.body.classList.remove('card-expanded-mode');
