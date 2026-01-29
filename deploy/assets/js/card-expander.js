@@ -120,9 +120,7 @@ export class CardExpander {
         
         // Calculate the initial "Grid Position" in pixels relative to the parent
         // v2.566: Updated to use FIXED positioning (Viewport Coords) to match target state.
-        // This prevents the "drop" effect on mobile when scrollTop was included on absolute elements.
-        const startTop = startRect.top;
-        const startLeft = startRect.left;
+        
         const startWidth = startRect.width;
         const startHeight = startRect.height;
         
@@ -142,6 +140,11 @@ export class CardExpander {
         let targetWidth = window.innerWidth - (safeGap * 2);
         let targetHeight = window.innerHeight - (safeGap * 2);
 
+        // v2.675: Trapped Coordinate Correction for Start Position
+        // Must apply same offset logic to start position if trapped.
+        let offsetTop = 0;
+        let offsetLeft = 0;
+
         // Trap Override: Column-based (Desktop Split) OR Trapped Mobile
         if (isTrapped || window.innerWidth >= 1024) {
              // Width: Constrain to Column/Container
@@ -157,7 +160,18 @@ export class CardExpander {
              
              targetTop = scrollY + safeGap;
              targetLeft = safeGap;
+             
+             // Calculate Offsets for Start Position (v2.675)
+             // Formula: StyleTop = (ViewportY - ContainerViewportY) + ScrollTop
+             offsetTop = scrollY - containerRect.top;
+             offsetLeft = -containerRect.left;
         }
+
+        const startTop = startRect.top + offsetTop;
+        const startLeft = startRect.left + offsetLeft;
+
+        // 2. Insert Spacer
+
 
         // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 

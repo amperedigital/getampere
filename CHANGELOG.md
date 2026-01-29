@@ -1,3 +1,9 @@
+## [v2.675] - 2026-01-29
+- **Animation Polish (Desktop Expand)**:
+    - **Fix**: Solved a coordinate mismatch bug during card expansion on Desktop (Split View).
+    - **Issue**: Similar to the collapse issue, the "Start Position" (where the card lifts from) was being calculated using raw Viewport Coordinates, but the "Trapped" container requires coordinates relative to itself. This caused the card to visually jump to the right (e.g., from 800px to 1500px) instantly upon click, and then "slide in from the right" to the correct target.
+    - **Resolution**: Applied the same "Trapped Coordinate Correction" logic to the Start Position calculation. Now the card stays visually perfectly still ("Zen") for the first frame before expanding smoothly.
+
 ## [v2.674] - 2026-01-29
 - **Animation Polish (Desktop Collapse)**:
     - **Fix**: Solved a coordinate mismatch bug during card collapse on Desktop (Split View).
