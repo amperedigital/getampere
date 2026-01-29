@@ -1,4 +1,4 @@
-## [v2.678] - 2026-01-29
+## [v2.679] - 2026-01-29
 - **UI Polish (Zen Mode)**:
     - **Fix (Card Opacity)**: Solved issue where expanded "Standby" cards (Demo Guide) became translucent when hovering outside of them. Added CSS override (`opacity: 1 !important`) to the `.is-expanded` state to ignore the default `standby` transparency rules.
     - **Fix (Buttons)**: Applied the "Nuclear Option" (`display: none`) to the Expand Button when the card is expanded, guaranteeing it cannot be triggered by hover events.
