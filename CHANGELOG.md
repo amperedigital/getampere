@@ -1,3 +1,7 @@
+## [v2.710] - 2026-01-29
+### Fixed
+- **iPad Pro Layout**: Resolved visual overlap issue on iPad Pro Portrait mode (1024px) by forcing `#mobile-sliders-container` to relative positioning and adding vertical spacing below the 3D scene.
+
 ## [v2.709] - 2026-01-29
 ### Changed
 - **Code Cleanliness (Refactor)**: Completely removed inline JavaScript from `tech-demo.html` ("Shotgun.js approach") and consolidated all logic into a new modular controller `deploy/assets/js/tech-demo-main.js`.
