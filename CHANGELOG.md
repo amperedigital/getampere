@@ -1,3 +1,10 @@
+## [v2.645] - 2026-01-28
+- **iPad Pro & Layout Improvements**:
+    - **Visual Center**: Changed `tech-demo-wrapper` alignment from `justify-end` to `justify-center`. This moves the main Neural Net ring up into the visual center on iPad Pro and Desktop, fixing the layout gap.
+    - **Card Metadata Spacing**: Reduced grid gap from `gap-y-5` (20px) to `gap-y-2` (8px) in the card details to fix excessive spacing and improve information density.
+- **Documentation**:
+    - **Ampere AI Chat**: Added comprehensive reconstruction specifications for the Voice/Chat interface in `context.md` (v2.644), including dependency mapping and status pill logic.
+
 ## [v2.643] - 2026-01-28
 - **Power Button FOUC Fix**:
     - **Issue**: The Power Button's default HTML class was `text-amber-300`, causing it to appear Orange momentarily (or permanently if JS fails) before the JavaScript state manager takes over.
