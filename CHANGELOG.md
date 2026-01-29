@@ -1,3 +1,10 @@
+## [v2.671] - 2026-01-29
+- **Expander Logic (Overflow Fix)**:
+    - **Issue**: Desktop/Desktop-Like layouts caused expanded cards to overflow horizontally because they were sized to `window.innerWidth` (100vw) while being contained inside a 50% width column (due to `transform: preserve-3d` creating a containing block).
+    - **Fix**: Updated `card-expander.js` to detect "Layout Traps" (transforms) and containing blocks.
+        - **Width**: Now sizes the card relative to its parent container (`containerRect.width`) instead of the window, ensuring it respects the column bounds (e.g., 50% width on split view).
+        - **Positioning**: Calculates `Top` offset dynamically based on scroll context (`container.scrollTop` vs `window.scrollY`) to simulate "Fixed Viewport" placement even when physically trapped inside a scrolling container.
+
 ## [v2.670] - 2026-01-29
 - **Zen Mode Restoration (Mobile)**:
     - **Reversion**: Disabled the "In-Place" card expansion logic for mobile devices (added in v2.572).

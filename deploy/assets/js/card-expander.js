@@ -126,19 +126,38 @@ export class CardExpander {
         const startWidth = startRect.width;
         const startHeight = startRect.height;
         
-        // v2.567: Universal "Zen Mode" Target Calculation
-        // Ignoring parent container position/dimensions and filling the Viewport directly.
-        // This ensures the card is always centered and maximized on screen, preventing "drop" issues.
-        const viewportW = window.innerWidth;
-        const viewportH = window.innerHeight;
+        // v2.671: Universal "Zen Mode" Target Calculation (Container-Aware)
+        // We use the passed container (Right Column) to determine boundaries.
+        // This solves the Desktop issue where 'position: fixed' is trapped by 
+        // the 'preserve-3d' transform on the column, causing Window-based sizing to overflow.
         
-        // Target Gap/Padding (1rem = 16px usually, but let's be dynamic or fixed safe area)
-        const safeGap = 16; 
+        const safeGap = 16;
+        const containerRect = container.getBoundingClientRect();
+        const containerStyles = window.getComputedStyle(container);
+        const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
         
-        const targetTop = safeGap;
-        const targetLeft = safeGap;
-        const targetWidth = viewportW - (safeGap * 2);
-        const targetHeight = viewportH - (safeGap * 2);
+        // Default: Window-based (Mobile / Standard)
+        let targetTop = safeGap;
+        let targetLeft = safeGap;
+        let targetWidth = window.innerWidth - (safeGap * 2);
+        let targetHeight = window.innerHeight - (safeGap * 2);
+
+        // Trap Override: Column-based (Desktop Split) OR Trapped Mobile
+        if (isTrapped || window.innerWidth >= 1024) {
+             // Width: Constrain to Column/Container
+             targetWidth = containerRect.width - (safeGap * 2);
+             
+             // Top: Offset by scroll position
+             // If container handles its own scroll (Desktop), use container.scrollTop.
+             // If container flows with body scroll (Mobile), use window.scrollY.
+             const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
+                                       && container.scrollHeight > container.clientHeight;
+             
+             const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
+             
+             targetTop = scrollY + safeGap;
+             targetLeft = safeGap;
+        }
 
         // 2. Insert Spacer
         this.spacer.className = card.className.replace('socket-card-container', 'card-spacer pointer-events-none opacity-0').replace('is-expanded', ''); 
