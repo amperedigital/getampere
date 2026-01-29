@@ -1,3 +1,8 @@
+## [v2.672] - 2026-01-29
+- **Animation Polish**:
+    - **Fix (Card Expansion)**: Solved the "Flash to Big" issue where the card would momentarily disappear or jump to its final size before animating.
+    - **Implementation**: Explicitly disabled CSS transitions (`transition: none`) during the initial "promotion" phase (swapping from relative to fixed positioning). This ensures the browser paints the card in its original "start" location instantly before enabling the transition to expand it.
+
 ## [v2.671] - 2026-01-29
 - **Expander Logic (Overflow Fix)**:
     - **Issue**: Desktop/Desktop-Like layouts caused expanded cards to overflow horizontally because they were sized to `window.innerWidth` (100vw) while being contained inside a 50% width column (due to `transform: preserve-3d` creating a containing block).

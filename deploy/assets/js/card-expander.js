@@ -215,6 +215,10 @@ export class CardExpander {
 
         // 3. Promote Card
         // Apply Inline Styles to "Lock" the card to its starting grid position visually.
+        
+        // Disable transitions momentarily preventing "flash" to fixed position
+        card.style.transition = 'none';
+        
         card.style.position = 'fixed';
         card.style.top = `${startTop}px`;
         card.style.left = `${startLeft}px`;
@@ -223,11 +227,14 @@ export class CardExpander {
         card.style.zIndex = '9999';
         card.style.margin = '0'; 
         
-        // Force Layout Recalculation (Reflow)
+        // Force Layout Recalculation (Reflow) to apply the "start" state without animation
         void card.offsetWidth; 
 
         // 3b. Trigger Transformation
         requestAnimationFrame(() => {
+            // Re-enable transitions (using CSS priority or inline restore)
+            card.style.transition = ''; 
+            
             card.classList.add('is-expanded');
             document.body.classList.add('card-expanded-mode'); 
             container.classList.add('has-active-card');
