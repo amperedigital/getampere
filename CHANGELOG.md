@@ -1,6 +1,7 @@
-## [v2.713] - 2026-01-29
+## [v2.714] - 2026-01-29
 ### Fixed
 - **iPad Pro Aesthetic**: Removed unwanted border from `#tech-demo-scene-container` on iPad Pro to create a seamless, integrated layout between controls and scene, eliminating the "mobile stack" appearance.
+- **Deployment**: Fixed asset versioning logic to correctly update `tech-demo.html` links.
 
 ## [v2.711] - 2026-01-29
 ### Fixed
