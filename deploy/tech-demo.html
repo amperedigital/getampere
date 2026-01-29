@@ -56,6 +56,24 @@
             }
         }
 
+        /* 3. iPAD PRO SPECIFIC FIX (1024px Exact) */
+        /* Pushes the Neural Net down to clear the absolute header on Tablet Portrait */
+        @media (width: 1024px) {
+            #tech-demo-scene-container {
+                position: relative !important;
+                width: 100% !important;
+                /* Push down from top (Clearance) */
+                margin-top: 35rem !important; 
+                margin-bottom: 0 !important;
+                
+                /* Reset Absolute Positioning triggers */
+                top: auto !important;
+                bottom: auto !important;
+                left: auto !important;
+                right: auto !important;
+            }
+        }
+
         /* 2. iPAD PRO / DESKTOP ALIGNMENT (1024px+) */
         /* Handles the specific 1025px Desktop divergence from iPad Pro (1024px) */
         @media (min-width: 1025px) {
