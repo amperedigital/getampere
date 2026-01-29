@@ -1,3 +1,9 @@
+## [v2.663] - 2026-01-29
+- **DMZ Layout Polish**:
+    - **Positioning**: Removed all `absolute` and negative margin hacks. The controller now sits in the natural DOM flow (Relative) inside the Header block.
+    - **Sizing**: Applied `md:w-[23rem]` to maintain the preferred width on Tablet/Desktop, while keeping `w-full` on mobile.
+    - **Fix**: Resolves the "Top of Screen" jump bug by strictly adhering to block layout.
+
 ## [v2.661] - 2026-01-29
 - **DMZ Layout Revert**:
     - **Tablet Strategy**: Removed the manual "Beside Header" positioning (negative margins) for the 768px-1023px range.
