@@ -4,6 +4,13 @@
     - **Technical**: All position/dimension styles (`top`, `left`, `width`, `height`) are now applied via `setProperty(..., 'important')`. This guarantees that the calculated bonding box of the right column overrides any conflicting CSS rules (like `width: auto` or default insets) that were causing the card to expand to full screen.
     - **Precision**: Updated coordinate math to account for `clientLeft` (border width) to ensure pixel-perfect alignment inside the container.
 
+## [v2.706] - 2026-01-29
+### Fixed
+- **iPad Pro Layout (Precise)**: Updated the media query to strictly target `only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait)`.
+- **Layout Logic**:
+    - **Neural Net**: Pushed down by `35rem` (relative) to clear the header area.
+    - **Controllers**: Anchored to `bottom: 2rem` (absolute) to sit below the scene, ensuring no overlap in the portrait viewport.
+
 ## [v2.705] - 2026-01-29
 ### Fixed
 - **iPad Pro Layout (1024px)**: Applied specific CSS override for iPad Pro Portrait (`width: 1024px`) to switch the 3D Scene Container to `relative` positioning and push it down (`35rem`) to clear the header text/controls, resolving overlap issues.
