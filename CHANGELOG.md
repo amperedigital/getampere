@@ -1,3 +1,9 @@
+## [v2.697] - 2026-01-29
+- **Refactor (Card Expansion)**:
+    - **Logic Standard**: Restored the robust "Zen Mode" expansion logic by moving the card to the `<body>` element during expansion ("DOM Reparenting").
+    - **Why**: This bypasses `transform-style: preserve-3d` and other CSS filters on the dashboard container that were "trapping" the card and breaking `position: fixed` coordinates.
+    - **Result**: Cards now reliably expand to full viewport size (100vw/100vh) without lateral offsets or overflow clipping.
+
 ## [v2.696] - 2026-01-29
 - **UI Polish (Zen Mode Expansion)**:
     - **Resolution**: Refactoring expansion logic to use `position: fixed`. This ensures that expanded cards reliably fill the entire interactive column viewport, regardless of scrolling, stacking contexts, or relative offsets.
