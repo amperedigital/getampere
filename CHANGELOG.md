@@ -1,3 +1,10 @@
+## [v2.718] - 2026-01-29
+### Changed
+- **iPad Pro Layout (Refactor)**: Completely changed the layout strategy for 1024px Portrait mode based on user feedback.
+    - **Header Flow**: Slider controls now sit naturally in the document flow directly underneath the "Start Conversation" button, rather than being absolutely positioned at the bottom of the screen.
+    - **Scene Positioning**: The Neural Net container (`#tech-demo-scene-container`) has been pushed down (`top: 35rem`) to clear the header area, creating a vertical stack: Header -> Controls -> Neural Net.
+    - **Cleanup**: Deleted a duplicate styling block in `src/input.css` that was causing CSS conflicts.
+
 ## [v2.717] - 2026-01-29
 ### Changed
 - **CSS Architecture (Refactor)**: Performed a major cleanup of `src/input.css` to eliminate duplicate and conflicting media queries targeting iPad Pro (1024px).

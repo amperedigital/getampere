@@ -18,7 +18,7 @@
         }
     }
     </script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.717/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.718/deploy/assets/css/styles.css">
     <style>
         html, body {
             margin: 0;
@@ -94,13 +94,6 @@
         <span class="mobile-text">Drag to Rotate • Pinch to Zoom<br>Single Tap: Power Up • Double Tap: Power Down</span>
     </div>
 
-    <script type="module">
-        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.135';
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('canvas-container');
-            new IcosahedronScene(container);
-        });
-    </script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.718/deploy/assets/js/init-icosahedron.js"></script>
 </body>
 </html>
