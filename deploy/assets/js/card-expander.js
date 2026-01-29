@@ -281,9 +281,14 @@ export class CardExpander {
         // 4. Update TOP RIGHT Icon to "Close"
         this.updateIcon(topRightBtn, 'close');
         
-        // 5. Hide the Expand Trigger while expanded (opacity 0)
-        if(btn) btn.style.opacity = '0';
-        if(btn) btn.style.pointerEvents = 'none';
+        // 5. Hide ALL Expand Triggers while expanded (opacity 0)
+        // v2.677: Fixed "Distracting Hover" bug where the expand button would appear 
+        // on hover (due to group-hover) even when the card was already expanded.
+        const triggers = card.querySelectorAll('.expand-trigger');
+        triggers.forEach(t => {
+            t.style.opacity = '0';
+            t.style.pointerEvents = 'none';
+        });
     }
 
     collapse(card, btn, container) {

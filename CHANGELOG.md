@@ -1,3 +1,9 @@
+## [v2.677] - 2026-01-29
+- **UI Polish (Card Expansion)**:
+    - **Fix**: Removed distracting "Ghost Button" on expanded cards.
+    - **Issue**: When a card was expanded via "Zen Mode" (body click), the dedicated "Expand" button (corner brackets) was not explicitly hidden. Since the card uses `group-hover` logic, hovering anywhere on the large expanded card caused the Expand button to reappear at full opacity, distracting the user.
+    - **Resolution**: Updated `card-expander.js` to systematically hide *all* `.expand-trigger` elements inside the active card upon expansion, regardless of how the expansion was triggered.
+
 ## [v2.676] - 2026-01-29
 - **Animation Polish (Desktop Layout)**:
     - **Fix**: Corrected the final "Zen Mode" position and animation logic for Desktop.
