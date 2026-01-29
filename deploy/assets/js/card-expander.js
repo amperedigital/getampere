@@ -1,5 +1,5 @@
 // V-Amp 2.0 Card Expander Logic
-// Zen Mode Expansion - Contained within Column (Corrected Offset Logic & Button Fix)
+// Zen Mode Expansion - STRICT Column Constraint (v2.700)
 
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
@@ -36,58 +36,53 @@ function expandCard(card) {
     card.parentNode.insertBefore(placeholder, card);
     card._placeholder = placeholder;
 
-    // 3. Move to Body to ESCAPE transforms
+    // 3. Move to Body (Escape Trap)
     document.body.appendChild(card);
 
     // 4. Set Initial Position (Fixed at Start)
-    card.style.position = 'fixed';
-    card.style.top = startRect.top + 'px';
-    card.style.left = startRect.left + 'px';
-    card.style.width = startRect.width + 'px';
-    card.style.height = startRect.height + 'px';
+    // Use !important to override any CSS interference
+    card.style.setProperty('position', 'fixed', 'important');
+    card.style.setProperty('top', startRect.top + 'px', 'important');
+    card.style.setProperty('left', startRect.left + 'px', 'important');
+    card.style.setProperty('width', startRect.width + 'px', 'important');
+    card.style.setProperty('height', startRect.height + 'px', 'important');
     card.style.zIndex = '9999';
     card.style.margin = '0';
     
     // Force Layout
     void card.offsetWidth;
 
-    // 5. Calculate Target (Visual Bounds of Right Column)
-    // We EXCLUDE the scrollbar width to prevent "under-scrollbar" rendering if possible
+    // 5. Calculate Target (Container CLIENT Box)
     const targetRect = container.getBoundingClientRect();
     
-    // Check if vertical scrollbar is visible
-    const hasScrollbar = container.scrollHeight > container.clientHeight;
-    // Basic approximate scrollbar width safety (typically 6px in this design logic)
-    // But getBoundingClientRect includes borders/scrollbars.
-    // If we want to align EXACTLY to the content box:
-    // We should compute clientWidth (which excludes scrollbar) 
-    // and derive the width from that.
+    // Precision Alignment:
+    // Left = Container Left + Container Border Left
+    // Width = Container Client Width (excludes scrollbar/border)
+    // Top = Container Top + Container Border Top
+    // Height = Container Client Height
     
-    const computedWidth = container.clientWidth; // Excludes scrollbar
-    // The left offset must match the container's visual left + border-left (if any)
-    const computedLeft = targetRect.left + container.clientLeft; 
-    
+    const targetLeft = targetRect.left + (container.clientLeft || 0);
+    const targetTop = targetRect.top + (container.clientTop || 0);
+    const targetWidth = container.clientWidth;
+    const targetHeight = container.clientHeight;
+
     // 6. Animate
     card.classList.add('is-expanded');
     card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
     
     requestAnimationFrame(() => {
-        card.style.top = targetRect.top + 'px';
-        card.style.left = computedLeft + 'px';
-        card.style.width = computedWidth + 'px'; // Confined to content width
-        card.style.height = targetRect.height + 'px';
-        // card.style.borderRadius = '0'; // Removing this to keep corners rounded (Feedback imply)
-        card.style.borderRadius = ''; // Let CSS dictate (usually 2rem)
+        card.style.setProperty('top', targetTop + 'px', 'important');
+        card.style.setProperty('left', targetLeft + 'px', 'important');
+        card.style.setProperty('width', targetWidth + 'px', 'important');
+        card.style.setProperty('height', targetHeight + 'px', 'important');
+        card.style.removeProperty('border-radius'); // Allow CSS to control
     });
 
-    // 7. Icon Hiding (Specific fix for .group\/button-trigger)
-    // Use requestAnimationFrame to ensure we catch it after reparenting
+    // 7. Icon Hiding
     requestAnimationFrame(() => {
         const btn = card.querySelector('.group\\/button-trigger');
         if(btn) {
-            btn.style.opacity = '0';
-            btn.style.pointerEvents = 'none'; // Ensure it's not clickable
-            btn.style.display = 'none'; // Force hide to be sure
+            btn.style.setProperty('display', 'none', 'important');
         }
     });
 }
@@ -101,33 +96,25 @@ function collapseCard(card) {
     
     const endRect = placeholder.getBoundingClientRect();
     
-    // Restore Button Visibility Immediately on collapse start
+    // Restore Button
     const btn = card.querySelector('.group\\/button-trigger');
     if(btn) {
+        btn.style.setProperty('display', '', '');
         btn.style.opacity = '';
-        btn.style.pointerEvents = '';
-        btn.style.display = '';
     }
 
     // Animate
-    card.style.top = endRect.top + 'px';
-    card.style.left = endRect.left + 'px';
-    card.style.width = endRect.width + 'px';
-    card.style.height = endRect.height + 'px';
+    card.style.setProperty('top', endRect.top + 'px', 'important');
+    card.style.setProperty('left', endRect.left + 'px', 'important');
+    card.style.setProperty('width', endRect.width + 'px', 'important');
+    card.style.setProperty('height', endRect.height + 'px', 'important');
     card.classList.remove('is-expanded');
 
     const cleanup = () => {
         if(card.classList.contains('is-expanded')) return;
 
-        card.style.position = '';
-        card.style.top = '';
-        card.style.left = '';
-        card.style.width = '';
-        card.style.height = '';
-        card.style.zIndex = '';
-        card.style.margin = '';
-        card.style.transition = '';
-        card.style.borderRadius = '';
+        // Clear all inline styles to return to CSS control
+        card.style.cssText = ''; 
         
         if(placeholder.parentNode) {
             placeholder.parentNode.insertBefore(card, placeholder);
