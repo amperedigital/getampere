@@ -1,3 +1,9 @@
+## [v2.669] - 2026-01-29
+- **Mobile Sticky Top Controller (<820px)**:
+    - **Architecture**: Implemented `display: contents` for the Header and Left Column wrappers on mobile. This "flattens" the DOM hierarchy, promoting the Sliders to be direct siblings of the Page/Scene content.
+    - **Behavior**: Changed Controller positioning to `sticky` + `top: 0`. The controls now scroll naturally with the page until they hit the top of the viewport, then stick there, allowing users to reference them while reading deep content.
+    - **Styling**: Added a solid glass backdrop (`rgba` + `backdrop-filter`) to the stuck header to prevent content bleed-through.
+
 ## [v2.668] - 2026-01-29
 - **Mobile Sticky Controller (<820px)**:
     - **Behavior**: Restored "Sticky/Fixed Bottom" behavior for the Mobile Sliders on screens narrower than 820px.
