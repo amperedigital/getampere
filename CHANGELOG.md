@@ -1,3 +1,9 @@
+## [v2.654] - 2026-01-28
+- **Dead Man Zone (Overlap Fix)**:
+    - **Issue**: The Neural Net container wasn't pushing the sliders down, causing them to float in the middle of the visualization.
+    - **Fix**: Increased `min-height` to `480px` and enforced `margin-bottom: 2rem` and `position: relative` on the `.aspect-square-mobile-override` class.
+    - **Result**: This ensures the container physically occupies space in the document flow, forcing the sliders to render BELOW the Neural Net rather than overlapping it.
+
 ## [v2.653] - 2026-01-28
 - **Dead Man Zone (Visibility Fix)**:
     - **Issue**: The previous `height: auto` override caused the Neural Net container to collapse to 0 height because the internal content relies on absolute positioning/height-inheritance.
