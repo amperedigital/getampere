@@ -2388,3 +2388,6 @@
   - **Height Logic**: Reverted hard cap limit. Card expansion now dynamically calculates height based on available viewport space (`window.innerHeight`) for true responsive design as requested.
   - **Constraints**: Maintained bottom buffer (16px) and minimum height guard (original card height).
 
+- **v2.686.stable**
+  - **Hotfix**: Updated `tech-demo.html` to correctly import and initialize the Card Expander system using the `initCardExpander` factory function, resolving a `SyntaxError` due to a mismatch in export definitions.
+
