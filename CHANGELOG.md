@@ -1,3 +1,7 @@
+## [v2.667] - 2026-01-29
+- **Vertical Tightening**:
+    - **Visuals Wrapper**: Removed `py-2` padding from the flex-grow container surrounding the main visualization ring. This removes approximately 1rem of vertical whitespace, allowing the visualization to sit as tight as possible against its container boundaries.
+
 ## [v2.666] - 2026-01-29
 - **Mobile Spacing Polish (<820px)**:
     - **Header Gap Increase**: Bumped `#mobile-sliders-container` top spacing from `mt-6` to `mt-12`. This creates more clearance between the "Start Conversation" button and the slider labels.
