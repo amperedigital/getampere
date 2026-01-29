@@ -1,3 +1,8 @@
+## [v2.648] - 2026-01-28
+- **Desktop/Tablet Layout Refinement**:
+    - **Desktop Rule (1025px+)**: Changed `tech-demo-wrapper` alignment from `xl:justify-center` to `xl:justify-end`. This ensures the Neural Net scene correctly anchors to the bottom of the container on large screens/Desktop, correcting the "pushed too high" regression.
+    - **Tablet Safety**: Enforced `h-auto` on the wrapper for mobile/tablet screens to prevent vertical stacking crashes, while restoring `xl:h-full` for Desktop to maintain the 2-column height balance.
+
 ## [v2.647] - 2026-01-28
 - **iPad Pro & Mobile Layout (Final Fluid Fix)**:
     - **Issue**: "Dead Man Zone" persisted because hardcoded heights (`h-[350px]`, `min-h-[420px]`) and hidden controls prevented the layout from being truly fluid on tablets.

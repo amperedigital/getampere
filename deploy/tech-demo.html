@@ -205,7 +205,10 @@
                 <!-- WRAPPER: Width constrains and centers column -->
                 <!-- v2.589: Restored h-full to container, applied justify-end to anchor content bottom. -->
                 <!-- v2.645: Changed xl:justify-end to xl:justify-center to move Neural Net UP on iPad Pro/Desktop. -->
-                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center xl:justify-center mx-auto mt-12 xl:mt-0">
+                <!-- v2.648: Changed from h-full to h-auto to prevent "Stacking Crash" on mobile/tablet. -->
+                <!-- v2.648 Fix: Restored xl:h-full to prevent desktop layout from breaking (pushed too high). -->
+                <!-- v2.649: Changed xl:justify-center to xl:justify-end. Desktop Rule: Scene must anchor to bottom. -->
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-auto xl:h-full flex flex-col items-center justify-center xl:justify-end mx-auto mt-12 xl:mt-0">
                     
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
                     <!-- v2.589: Added aspect-square to force intrinsic height based on width (preventing collapse). -->
