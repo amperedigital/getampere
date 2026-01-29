@@ -1,3 +1,12 @@
+## [v2.717] - 2026-01-29
+### Changed
+- **CSS Architecture (Refactor)**: Performed a major cleanup of `src/input.css` to eliminate duplicate and conflicting media queries targeting iPad Pro (1024px).
+- **iPad Pro Layout**:
+    - **Positioning**: Moved slider controls to verify they sit strictly below the neural net visualization.
+    - **Visuals**: Restored the missing border/container styling for the 3D Scene (`#tech-demo-scene-container`) by removing an incorrect override.
+- **Mobile UI**: Removed an unwanted explicit `border-bottom` on the mobile slider container.
+- **Code Cleanliness**: Removed legacy negative margins (`md:-mt-52`) from `tech-demo.html` to rely on clean CSS flow.
+
 ## [v2.716] - 2026-01-29
 ### Fixed
 - **iPad Pro Aesthetic**: Removed unwanted border from `#tech-demo-scene-container` on iPad Pro to create a seamless, integrated layout between controls and scene, eliminating the "mobile stack" appearance.
