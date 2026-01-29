@@ -42,39 +42,8 @@
                 display: flex !important;
             }
             /* DMZ: Reposition Controls to Top Right (Mini Mode) */
-            @media (min-width: 820px) and (max-width: 1023px) {
-                #mobile-sliders-container {
-                    /* v2.657: Changed to absolute so it scrolls with the header and doesn't float over the net */
-                    position: absolute !important;
-                    /* Align roughly with the Heading baseline (top padding 96px + text) */
-                    top: 104px !important; 
-                    right: 48px !important; 
-                    bottom: auto !important;
-                    left: auto !important;
-                    transform: none !important;
-                    margin: 0 !important;
-                    
-                    /* Mini Compression - No Background */
-                    width: 200px !important;
-                    padding: 0 !important;
-                    align-items: flex-end !important;
-                    background: transparent !important;
-                    backdrop-filter: none !important;
-                    border: none !important;
-                    border-radius: 0 !important;
-                    z-index: 50 !important; /* Standard z-index */
-                }
-                #mobile-sliders-container span {
-                    text-align: right;
-                    width: 100%;
-                    font-size: 0.65rem !important;
-                    text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Stronger shadow */
-                    letter-spacing: 0.1em !important;
-                }
-                #mobile-sliders-container .flex-col.gap-2 {
-                    gap: 0.35rem !important; /* Slightly more breathe */
-                }
-            }
+            /* v2.658: Removed media query as layout moved to DOM structure in Header */
+
             /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
             /* We use a specific class target or ID context to be safe */
             .aspect-square-mobile-override {
@@ -125,8 +94,9 @@
                     <span class="text-blue-400 font-semibold drop-shadow-[0_0_10px_rgba(96,165,250,0.4)]">V-Amp 2.0</span>
                 </div>
 
+
                 <!-- Row: Heading + Mobile Controls -->
-                <div class="flex justify-between items-start w-full lg:block lg:w-auto">
+                <div class="flex flex-wrap md:flex-nowrap justify-between items-start w-full lg:block lg:w-auto">
                     <div class="max-w-md pt-2">
                         <!-- v2.502: Increased base size to text-5xl for mobile robustness -->
                         <h1 class="text-5xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
@@ -171,8 +141,51 @@
                     </div>
 
                     <!-- Mobile Control Cluster (Top Right) -->
-                    <!-- v2.655: Mini Sliders Cluster -->
-                         <!-- Mini Slider 2: Active Agent --><!-- Reverted Mini Slider Logic: Using Existing Container via CSS -->
+                    <!-- v2.658: Unified Sliders (Two Column Layout for Tablet) -->
+                    <div id="mobile-sliders-container" class="flex lg:hidden relative w-full md:w-56 mt-6 md:mt-2 flex-col gap-4 z-50 pointer-events-auto bg-transparent">
+                         
+                         <!-- Outer Ring Control (Blue) -->
+                         <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-baseline">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">System Function</span>
+                                <span id="label-slider-outer" class="text-[10px] font-mono text-blue-400 font-bold tracking-wider">MEMORY</span>
+                            </div>
+                            <div class="relative w-full h-4 flex items-center">
+                                <!-- Ticks -->
+                                <div class="absolute inset-x-1 flex justify-between pointer-events-none z-0 opacity-30">
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                </div>
+                                <input type="range" id="mobile-ring-slider-outer" min="0" max="5" step="1" value="0" 
+                                       class="relative z-10 w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none hover:accent-blue-400 transition-all">
+                            </div>
+                         </div>
+                         
+                         <!-- Inner Ring Control (Slate) -->
+                         <div class="flex flex-col gap-1">
+                            <div class="flex justify-between items-baseline">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Active Agent</span>
+                                <span id="label-slider-inner" class="text-[10px] font-mono text-slate-300 font-bold tracking-wider">FRONT DOOR</span>
+                            </div>
+                            <div class="relative w-full h-4 flex items-center">
+                                <!-- Ticks -->
+                                <div class="absolute inset-x-1 flex justify-between pointer-events-none z-0 opacity-30">
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                    <div class="w-0.5 h-0.5 rounded-full bg-slate-400"></div>
+                                </div>
+                                <input type="range" id="mobile-ring-slider-inner" min="0" max="5" step="1" value="0" 
+                                       class="relative z-10 w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer accent-emerald-500 outline-none hover:accent-emerald-400 transition-all">
+                            </div>
+                         </div>
+                    </div>
                 </div>
             </div>
 
@@ -417,52 +430,9 @@
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
                 <!-- v2.363: Reverted to bg-transparent as requested. Overlaps handled by better positioning logic. -->
-                <div id="mobile-sliders-container" class="flex lg:hidden relative w-full px-6 pb-6 mt-4 flex-col gap-5 z-50 pointer-events-auto bg-transparent">
-                     
-                     <!-- Outer Ring Control (Blue) -->
-                     <div class="flex flex-col gap-2">
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">System Function</span>
-                            <span id="label-slider-outer" class="text-xs font-mono text-blue-400 font-bold tracking-wider">MEMORY FUNCTION</span>
-                        </div>
-                        <div class="relative w-full h-6 flex items-center">
-                            <!-- Ticks (Absolute Background) -->
-                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                            </div>
-                            <!-- Slider (Z-10) -->
-                            <input type="range" id="mobile-ring-slider-outer" min="0" max="5" step="1" value="0" 
-                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none hover:accent-blue-400 transition-all">
-                        </div>
-                     </div>
-                     
-                     <!-- Inner Ring Control (Slate) -->
-                     <div class="flex flex-col gap-2">
-                        <div class="flex justify-between items-baseline">
-                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Active Agent</span>
-                            <span id="label-slider-inner" class="text-xs font-mono text-slate-300 font-bold tracking-wider">FRONT DOOR AGENT</span>
-                        </div>
-                        <div class="relative w-full h-6 flex items-center">
-                            <!-- Ticks -->
-                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
-                            </div>
-                            <input type="range" id="mobile-ring-slider-inner" min="0" max="5" step="1" value="0" 
-                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-emerald-500 outline-none hover:accent-emerald-400 transition-all">
-                        </div>
-                     </div>
 
-                </div>
+                <!-- v2.658: Mobile Sliders moved to Header for Tablet Two-Column Layout -->
+
 
                 <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
 

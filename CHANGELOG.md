@@ -1,3 +1,9 @@
+## [v2.658] - 2026-01-28
+- **DMZ Layout Structure**:
+    - **Architecture**: Moved `#mobile-sliders-container` DOM element into the Header flex container. This creates a native "Two Column" layout on Tablet (Text Left, Sliders Right) without relying on fragile absolute positioning.
+    - **Optimization**: Added `flex-wrap` to the header container to ensure graceful degradation on smaller mobile devices.
+    - **Cleanup**: Removed the temporary CSS overrides for positioning; now relies on standard utility classes.
+
 ## [v2.657] - 2026-01-28
 - **DMZ Layout Polish**:
     - **Positioning**: Changed Mini Controller from `fixed` to `absolute`. This ensures it acts as part of the header "beside the heading" and scrolls with the page, rather than floating awkwardly over content when scrolling.
