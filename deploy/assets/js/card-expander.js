@@ -141,70 +141,64 @@ export class CardExpander {
         let offsetTop = 0;
         let offsetLeft = 0;
 
-        // SCENARIO 1: TRAPPED (Container is Coordinate Root)
-        // 'position: fixed' behaves like absolute relative to container content
-        if (isTrapped) {
-             // v2.682: In-Place Expansion for Trapped Containers too
+        // SCENARIO: DESKTOP (Unified In-Place Expansion)
+        // v2.683: Consolidated Logic. All Desktop cards expand In-Place (downwards),
+        // regardless of Trapped/Untrapped state, to prevent layout jumping.
+        if (window.innerWidth >= 1024) {
              safeGap = 0;
 
-             // Size: Match Start Width (No Layout Shift)
-             targetWidth = startWidth; 
+             // 1. Determine Coordinate Space Offset
+             // If Trapped, we must offset our calculations because valid coords are relative to Container Content
+             if (isTrapped) {
+                 const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
+                                           && container.scrollHeight > container.clientHeight;
+                 const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
+                 
+                 // Offset for Start Rect (Convert Window -> Container Content)
+                 offsetTop = scrollY - containerRect.top;
+                 offsetLeft = -containerRect.left;
+             } else {
+                 offsetTop = 0;
+                 offsetLeft = 0;
+             }
+
+             // 2. Set Target Geometry (In-Place)
+             targetWidth = startWidth;
              
-             // Position: Relative to Container Content Origin
+             // Top/Left: StartVisual + Offset
+             // This ensures visual stability: Target position == Start position + context offset
+             targetTop = startRect.top + offsetTop;
+             targetLeft = startRect.left + offsetLeft;
+
+             // 3. Smart Height Calculation
+             // Fill downwards to screen bottom, with a buffer
+             const visualTop = startRect.top; // Real screen Y, unaffected by trap
+             const buffer = 16;
+             let availableHeight = window.innerHeight - visualTop - buffer;
+             
+             // Clamp min height
+             if (availableHeight < 450) {
+                 availableHeight = 450;
+             }
+             targetHeight = availableHeight;
+        }
+
+        // SCENARIO: MOBILE TRAPPED (3D Transforms on Mobile)
+        else if (isTrapped) {
+             safeGap = 0;
+             targetWidth = containerRect.width;
+             
+             // Position relative to Container
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
              
-             // Top Correction: 
-             // startRect.top is viewport relative. 
-             // styleTop = (viewportTop - containerRect.top) + scrollY
-             const computedTop = (startRect.top - containerRect.top) + scrollY;
+             targetTop = scrollY;
+             targetLeft = 0;
+             targetHeight = window.innerHeight; // Fill screen height roughly
 
-             targetTop = computedTop;
-             
-             // Left: Relative to container left
-             // styleLeft = viewportLeft - containerRect.left
-             targetLeft = startRect.left - containerRect.left;
-             
-             // Height: Fill downwards, but respect viewport bottom for sanity?
-             // Since it's trapped in a scroll wrapper, we can just make it tall.
-             targetHeight = 600; // Default nice height
-             
-             // Offset for Start Rect (Convert Window -> Container Content)
              offsetTop = scrollY - containerRect.top;
              offsetLeft = -containerRect.left;
-        }
-
-        // SCENARIO 2: UNTRAPPED DESKTOP (Window is Coordinate Root)
-        // We want to fill the Column visually, but using Window Coordinates.
-        // v2.676: Fixed alignment bug where we used Trapped logic for Untrapped elements.
-        else if (window.innerWidth >= 1024) {
-             // v2.681: "In-Place" Expansion Logic (No Layout Shift)
-             // User requested "Just Grow" behavior: Card should NOT move Left/Right or Top relative to its slot.
-             // It should simply expand downwards (and upwards if needed for height) without changing X-axis or Top anchor.
-             
-             safeGap = 0;
-
-             // Size: Match Start Width (Do NOT fill container width if it means moving)
-             targetWidth = startWidth; 
-             
-             // Position: Keep Start Left
-             targetLeft = startRect.left; 
-             
-             // Position: Keep Start Top (Visually)
-             // But we need to account for scrolling if we want it to stay fixed on screen while expanding?
-             // Actually, if we use 'position: fixed' and set top = startRect.top, it STAYS at that viewport position.
-             // So it won't scroll with the page (which is correct for expanded modal).
-             targetTop = startRect.top;
-
-             // Height: Fill Height (Zen Mode)
-             // We allow height to expand to fill most of the screen downwards
-             targetHeight = window.innerHeight - targetTop - safeGap;
-             if (targetHeight < 400) targetHeight = 400; // Min Safe Height
-             
-             // Offset: None (StartRect is already Window Relative)
-             offsetTop = 0;
-             offsetLeft = 0;
         }
         
         const startTop = startRect.top + offsetTop;

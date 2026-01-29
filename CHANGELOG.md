@@ -2373,3 +2373,9 @@
 ## [v2.193] - 2026-01-17
 ### Added
 - Initial markers implementation.
+
+## [v2.683.stable] - 2026-01-17
+### Fixed
+- **Desktop Expansion Logic**: Consolidated "Trapped" (3D Container) and "Standard" logic into a single "In-Place" block.
+- **Stacking Anomaly**: Fixed z-index and coordinate space calculations to prevent expanded cards from being clipped or covered in complex layouts.
+- **Overflow Prevention**: Replaced hardcoded height with dynamic viewport-aware height calculation to prevent container blowout.
