@@ -44,9 +44,11 @@
             /* DMZ: Reposition Controls to Top Right (Mini Mode) */
             @media (min-width: 820px) and (max-width: 1023px) {
                 #mobile-sliders-container {
-                    position: fixed !important;
-                    top: 108px !important; /* Align with H1 (pt-24 + pt-2 = ~104px) */
-                    right: 40px !important; /* Give it space */
+                    /* v2.657: Changed to absolute so it scrolls with the header and doesn't float over the net */
+                    position: absolute !important;
+                    /* Align roughly with the Heading baseline (top padding 96px + text) */
+                    top: 104px !important; 
+                    right: 48px !important; 
                     bottom: auto !important;
                     left: auto !important;
                     transform: none !important;
@@ -60,16 +62,17 @@
                     backdrop-filter: none !important;
                     border: none !important;
                     border-radius: 0 !important;
-                    z-index: 9999 !important;
+                    z-index: 50 !important; /* Standard z-index */
                 }
                 #mobile-sliders-container span {
                     text-align: right;
                     width: 100%;
-                    font-size: 0.65rem !important; /* Slightly larger for readability without bg */
-                    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* contrast boost */
+                    font-size: 0.65rem !important;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Stronger shadow */
+                    letter-spacing: 0.1em !important;
                 }
                 #mobile-sliders-container .flex-col.gap-2 {
-                    gap: 0.25rem !important;
+                    gap: 0.35rem !important; /* Slightly more breathe */
                 }
             }
             /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */

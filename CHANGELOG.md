@@ -1,3 +1,9 @@
+## [v2.657] - 2026-01-28
+- **DMZ Layout Polish**:
+    - **Positioning**: Changed Mini Controller from `fixed` to `absolute`. This ensures it acts as part of the header "beside the heading" and scrolls with the page, rather than floating awkwardly over content when scrolling.
+    - **Refinement**: Increased label tracking and shadow for premium feel against the deep background.
+    - **Alignment**: Tuned `top` offset to 104px to better match the optical center of the heading text.
+
 ## [v2.656] - 2026-01-28
 - **DMZ Polish**:
     - **Style**: Removed the background, blur, and border from the DMZ Mini Controller as requested. It now floats cleanly.
