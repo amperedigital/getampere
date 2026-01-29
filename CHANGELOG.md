@@ -1,3 +1,15 @@
+## [v2.709] - 2026-01-29
+### Changed
+- **Code Cleanliness (Refactor)**: Completely removed inline JavaScript from `tech-demo.html` ("Shotgun.js approach") and consolidated all logic into a new modular controller `deploy/assets/js/tech-demo-main.js`.
+    - **Architecture**: `tech-demo.html` now contains zero logic, only structural markup and a single entry point script tag.
+    - **Modules**:
+        - `initCardExpander` (Zen Mode)
+        - `initAllSockets` (Glass UI)
+        - `AmpereAIChat` (Chat Widget)
+        - `TechDemoScene` (3D Visualization)
+        - Mobile UI Logic (Sliders/Toggles/Observers)
+      are now all imported and initialized cleanly in `tech-demo-main.js`.
+
 ## [v2.708] - 2026-01-29
 ### Fixed
 - **Cache Busting**: Updated the CSS version query string in `tech-demo.html` to `v2.708` to ensure the new iPad Pro layout fixes are served immediately to all clients.

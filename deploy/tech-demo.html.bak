@@ -1581,6 +1581,283 @@
 
 <!-- Init Script -->
 
-<script type="module" src="./assets/js/tech-demo-main.js?v=2.709"></script>
+<script type="module">
+        /* v2.346: Cleanup - Removed unused IcosahedronScene import to reduce request count */
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tech-demo-scene');
+            
+            // v2.265: Mobile Config Override before Init
+            // Reduce camera distance to make Neural Net appear larger on mobile
+            // v2.266: Reduced further to 4.5.
+            if (window.innerWidth < 1024 && container) {
+                container.setAttribute('data-camera-distance', '4.5'); 
+            }
+
+            if(container) {
+                // Initialize Scene with a slight delay to ensure layout stability
+                // This prevents 0x0 canvas issues in the new grid layout
+                setTimeout(async () => {
+                    console.log('Initializing Tech Demo...');
+                    
+                    // Dynamic Import of the isolated Scene logic
+                    // Using CDN to ensure correct versioning and cache invalidation
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.642/deploy/assets/js/tech-demo-scene.js');
+                    const scene = new TechDemoScene(container);
+                    
+                    // Optional: Expose to window for debugging
+                    window.demoScene = scene;
+
+                    // v2.264: Mobile Slider Logic
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    
+                    // v2.265: Explicit Label Mapping to match Ring Indices
+                    const outerTitles = [
+                        "MEMORY FUNCTION",     // Index 0
+                        "HUMAN HANDOFF",       // Index 2 (Step 1)
+                        "AGENT TRANSFER",      // Index 4
+                        "OTP AUTHORIZATION",   // Index 6
+                        "IDENTITY & HANDOFF",  // Index 8
+                        "CALENDAR BOOKING"     // Index 10
+                    ];
+                    
+                    const innerTitles = [
+                        "FRONT DOOR AGENT",    // Index 1
+                        "DEMO GUIDE",          // Index 3 (Step 1)
+                        "ONBOARDING",          // Index 5
+                        "TECH SPECIALIST",     // Index 7
+                        "SALES ADVISOR",       // Index 9
+                        "BOOKING AGENT"        // Index 11
+                    ];
+
+                    const updateRing = (type, slider, label, titles) => {
+                        const step = parseInt(slider.value); // 0 to 5
+                        const title = titles[step];
+                        
+                        // Update Label
+                        if(label) label.innerText = title;
+                        
+                        // Calculate Rotation
+                        // Step 0 -> 0 deg. Step 1 -> -60 deg (move next item to top).
+                        const targetDeg = step * -60;
+                        
+                        const rotator = (type === 'outer') ? window.demoScene.rotatorOuter : window.demoScene.rotatorInner;
+                        if(rotator) {
+                            rotator.targetRotation = targetDeg;
+                            rotator.isDragging = false; // Let it snap/lerp
+                        }
+
+                        // v2.561: Scroll Sync with buttery easing (Inner Ring ONLY)
+                        if (type === 'inner') {
+                             // v2.570: Auto-close any open Zen Mode card when controller is used
+                             window.dispatchEvent(new CustomEvent('ampere:close-cards'));
+
+                             const track = document.getElementById('tech-demo-card-track');
+                             if (track) {
+                                  const cards = track.querySelectorAll('.socket-card-container');
+                                  if (cards[step]) {
+                                      // center the card in the viewport with smooth behavior
+                                      cards[step].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                                  }
+                             }
+                        }
+                    };
+
+                    if (sliderOuter) {
+                        sliderOuter.addEventListener('input', (e) => updateRing('outer', e.target, labelOuter, outerTitles));
+                    }
+                    if (sliderInner) {
+                        sliderInner.addEventListener('input', (e) => updateRing('inner', e.target, labelInner, innerTitles));
+                    }
+
+                    // Toggle Helper for Mobile Power Button
+                    // v2.595: Unified Power Architecture
+                    // This button now controls BOTH the visual scene (lighting/rings) AND the AI Agent.
+                    window.toggleMobilePower = () => {
+                        if (!window.demoScene) return;
+                        const current = window.demoScene.systemState;
+                        // v2.620: "Power Off" is now "Standby". There is no OFF state for the user.
+                        const next = (current === 'ACTIVE') ? 'STANDBY' : 'ACTIVE';
+                        
+                        // 1. Trigger Visuals
+                        window.demoScene.setSystemState(next);
+                        
+                        // 2. Trigger AI (if available)
+                        if (window.ampereAI) {
+                            if (next === 'ACTIVE') {
+                                // Only start if not already connected
+                                if (!window.ampereAI.isConnected && !window.ampereAI.isConnecting) {
+                                    window.ampereAI.startSession();
+                                }
+                            } else {
+                                // Turn OFF
+                                window.ampereAI.endSession();
+                            }
+                        }
+                    };
+
+                    // --- Mobile UI State Observer ---
+                    const obs = new MutationObserver((mutations) => {
+                        for(const m of mutations) {
+                            if(m.type === 'attributes' && m.attributeName === 'data-system-state') {
+                                const state = document.body.getAttribute('data-system-state');
+                                updateMobileDisplay(state);
+
+                                // v2.596: Global State Enforcement for AI
+                                // If system enters STANDBY or OFF (manually or automatically), kill AI and hide window.
+                                if (state !== 'ACTIVE') {
+                                     const chatContainer = document.getElementById('ampere-ai-chat-container');
+                                     
+                                     // 1. Hide Window Immediately
+                                     if(chatContainer) chatContainer.classList.add('hidden');
+                                     
+                                     // 2. Terminate Session if running
+                                     if (window.ampereAI && (window.ampereAI.isConnected || window.ampereAI.isConnecting)) {
+                                         window.ampereAI.endSession();
+                                     }
+                                }
+                            }
+                        }
+                    });
+                    obs.observe(document.body, { attributes: true });
+
+                    // v2.269: Observe Standby Warning Changes
+                    // The TechDemoScene updates #ampere-standby-warning text. We monitor it and copy to mobile pill.
+                    const observerWarning = new MutationObserver((mutations) => {
+                         const warningEl = document.getElementById('ampere-standby-warning');
+                         const mobileTimer = document.getElementById('mobile-standby-timer');
+                         if(warningEl && mobileTimer) {
+                             const text = warningEl.innerText;
+                             const opacity = window.getComputedStyle(warningEl).opacity;
+                             
+                             if (opacity > 0 && text.includes('STANDBY IN')) {
+                                 // Show on Mobile
+                                 mobileTimer.classList.remove('hidden');
+                                 // Format: "STBY IN 30s" -> "STBY IN 30S" (Uniform uppercase)
+                                 const match = text.match(/\d+s/);
+                                 if(match) mobileTimer.innerText = "STBY IN " + match[0].toUpperCase();
+                             } else {
+                                 mobileTimer.classList.add('hidden');
+                             }
+                         }
+                    });
+                    // Wait for warning element to be created by JS
+                    setTimeout(() => {
+                        const warningEl = document.getElementById('ampere-standby-warning');
+                        if(warningEl) {
+                             // Hide the original overlay on mobile via CSS? Or just let it be hidden by z-index/position override?
+                             // Better to hide it explicitly via CSS style injection
+                             warningEl.classList.add('lg:block', 'hidden'); // Force hide on mobile via classes if possible
+                             observerWarning.observe(warningEl, { childList: true, characterData: true, subtree: true, attributes: true });
+                        }
+                    }, 1000);
+
+                }, 50);
+
+                function updateMobileDisplay(state) {
+                    // v2.600: Mobile Status Elements Removed. Only updating Sliders and Toggles below.
+                    // v2.528: Target ALL power toggle buttons (Mobile and Desktop)
+                    const btns = document.querySelectorAll('.power-toggle-btn');
+                    
+                    // v2.267: Slider Elements for Power State Management
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    // Parent containers for opacity control
+                    // v2.349: Use ID selector exclusively to ensure targeting regardless of responsive visibility classes (lg:hidden vs xl:hidden)
+                    const inputsToToggle = document.querySelectorAll('#mobile-sliders-container input[type="range"]');
+                    inputsToToggle.forEach(input => {
+                         // Find the visual parent (div with flex col)
+                         const parent = input.closest('.flex-col');
+                         if(parent) {
+                             if (state === 'ACTIVE') {
+                                 parent.classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = false;
+                             } else {
+                                 parent.classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = true;
+                             }
+                         }
+                    });
+
+                    // v2.599: Transcript Toggle Visibility (Only visible when ON)
+                    const transcriptBtns = document.querySelectorAll('.transcript-toggle-btn');
+                    transcriptBtns.forEach(btn => {
+                        if (state === 'ACTIVE') {
+                            btn.classList.remove('opacity-0', 'pointer-events-none');
+                        } else {
+                            btn.classList.add('opacity-0', 'pointer-events-none');
+                        }
+                    });
+
+                    // v2.600: Removed Legacy Mobile Status Logic
+                    // The main pill handles status for both mobile and desktop via 'Live Demo' indicator and AI overrides.
+                    // Sliders update below:
+                }
+            }
+        });
+    </script>
+    <!-- v2.400: Card Expander System -->
+    <script type="module">
+        import { initCardExpander } from "./assets/js/card-expander.js?v=2.695";
+        initCardExpander();
+    </script>
+
+    <!-- Initialize Shared Glass Socket Script -->
+    <script type="module">
+        import { initAllSockets } from './assets/js/glass-socket.js?v=2.483';
+        initAllSockets('.socket-card-container');
+    </script>
+    <!-- Initialize Ampere AI Chat (v2.580) -->
+    <script type="module">
+        import { AmpereAIChat } from './assets/js/ai-chat.js?v=2.629';
+        
+        // Initialize with Container ID, Agent ID, and UI Options
+        // v2.595: Added Power Sync Callbacks. 
+        // Any AI start/end event (via buttons or otherwise) will sync the visual Power State.
+        window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
+            startBtnId: 'btn-start-voice',
+            endBtnId: 'btn-end-voice',
+            // textChatBtnId: Removed. Manually handled below for multiple context-aware buttons.
+            statusTargetId: 'status-injection-target',
+            onStart: () => {
+                // Ensure Visuals Power Up
+                if (window.demoScene && window.demoScene.systemState !== 'ACTIVE') {
+                    window.demoScene.setSystemState('ACTIVE');
+                }
+            },
+            onEnd: () => {
+                // Ensure Visuals Power Down to STANDBY (Request v2.619: Default State is Standby)
+                if (window.demoScene && window.demoScene.systemState === 'ACTIVE') {
+                    window.demoScene.setSystemState('STANDBY');
+                    // Also ensure window closes on power down if not already handled
+                    const chatContainer = document.getElementById('ampere-ai-chat-container');
+                    if(chatContainer) chatContainer.classList.add('hidden');
+                }
+            }
+        });
+
+        // v2.599: Manual Wiring for Transcript Toggles (Desktop & Mobile)
+        // These buttons are now context-aware (only visible when Power is ON)
+        document.querySelectorAll('.transcript-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle Container Visibility
+                const container = document.getElementById('ampere-ai-chat-container');
+                if(container) {
+                    container.classList.toggle('hidden');
+                    // Focus input if opening (nice to have)
+                    const input = container.querySelector('input');
+                    if(!container.classList.contains('hidden') && input) input.focus();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
