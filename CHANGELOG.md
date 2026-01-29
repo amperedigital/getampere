@@ -1,3 +1,9 @@
+## [v2.665] - 2026-01-29
+- **DMZ Layout Tune**:
+    - **Width**: Adjusted Controller width to `50%` (`md:w-1/2`) at the tablet breakpoint to ensure it scales responsively rather than being fixed.
+    - **Alignment**: Applied `md:ml-auto` to strictly clamp the controls to the right column.
+    - **Verticality**: Introduced `md:-mt-52` negative margin to pull the control block up beside the header text, creating the requested "Two Column" feel without absolute positioning risks.
+
 ## [v2.664] - 2026-01-29
 - **CSS Cleanup (Critical)**:
     - **Logic**: Removed legacy `position: absolute` overrides for `#mobile-sliders-container` in `src/input.css` (specifically within the 820px-1023px and 1024px-portrait media queries).
