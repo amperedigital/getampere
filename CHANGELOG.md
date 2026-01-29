@@ -1,3 +1,8 @@
+## [v2.666] - 2026-01-29
+- **Mobile Spacing Polish (<820px)**:
+    - **Header Gap Increase**: Bumped `#mobile-sliders-container` top spacing from `mt-6` to `mt-12`. This creates more clearance between the "Start Conversation" button and the slider labels.
+    - **Scene Lift**: Reduced `#tech-demo-scene-container` top margin from `mt-4` to `mt-0`. This removes double-gap inefficiency and tightens the relationship between the controls and the visualization below them.
+
 ## [v2.665] - 2026-01-29
 - **DMZ Layout Tune**:
     - **Width**: Adjusted Controller width to `50%` (`md:w-1/2`) at the tablet breakpoint to ensure it scales responsively rather than being fixed.

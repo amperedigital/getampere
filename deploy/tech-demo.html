@@ -143,8 +143,8 @@
                     </div>
 
                     <!-- Mobile Control Cluster (Top Right) -->
-                    <!-- v2.665: Tablet Layout (768px+) - 50% Width, Right Aligned, Pulled up beside Header -->
-                    <div id="mobile-sliders-container" class="flex lg:hidden relative w-full md:w-1/2 md:ml-auto md:-mt-52 mt-6 flex-col gap-4 z-50 pointer-events-auto bg-transparent">
+                    <!-- v2.666: Mobile Top Spacing increased (mt-12) as requested. -->
+                    <div id="mobile-sliders-container" class="flex lg:hidden relative w-full md:w-1/2 md:ml-auto md:-mt-52 mt-12 flex-col gap-4 z-50 pointer-events-auto bg-transparent">
                          
                          <!-- Outer Ring Control (Blue) -->
                          <div class="flex flex-col gap-1">
@@ -277,7 +277,8 @@
             <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end. -->
             <!-- v2.588: Reverted to justify-center here, moving alignment logic to the wrapper to prevent collapse. -->
             <!-- v2.590: Removed lg:pb-32 (8rem padding) to allow the visual content to sit flush at the bottom of the card. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-0 md:min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
+            <!-- v2.666: Reduced Mobile Top Margin (mt-4 -> mt-0) to decouple spacing. Spacing now handled by Header content flow. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-0 md:min-h-[420px] mt-0 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
                 
                 <!-- v2.601: Legacy Mobile Controls Removed (Use Global HUD) -->
                 <!-- Previously located here: btn-mobile-power + transcript-toggle -->
