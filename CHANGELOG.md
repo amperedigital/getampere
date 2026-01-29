@@ -2402,3 +2402,7 @@
   - **Correction**: Completely rebuilt `card-expander.js` to fix the `SyntaxError` caused by incorrect variable usage (`const` inside if-condition) introduced in the previous hotfix.
   - **Status**: Height logic, bindings, and variable references are now fully stabilized.
 
+- **v2.690.stable**
+  - **Height Logic Refinement**: Updated `card-expander.js` to respect both viewport height (`window.innerHeight`) AND container boundaries (`containerRect.bottom`).
+  - **Behavior**: The card will expand to fill available space but will now strictly stop at the container's bottom edge, preventing it from overflowing the layout flow as per user requirements.
+

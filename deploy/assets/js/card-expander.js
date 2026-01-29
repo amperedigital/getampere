@@ -124,9 +124,15 @@ class CardExpander {
              targetLeft = startRect.left + offsetLeft;
 
              // 3. Dynamic Height Calculation
-             // Calculate available vertical space from the card's top edge to the bottom of the viewport.
+             // Calculate available vertical space from the card's top edge to the bottom of the viewport AND container.
              const visualTop = startRect.top; // Real screen Y
-             let availableHeight = window.innerHeight - visualTop - 16; // 16px bottom buffer
+             
+             // Respect both viewport and container boundaries
+             const viewportBottom = window.innerHeight;
+             const containerBottom = containerRect.bottom;
+             const effectiveBottom = Math.min(viewportBottom, containerBottom);
+
+             let availableHeight = effectiveBottom - visualTop - 16; // 16px bottom buffer
              
              // Ensure it doesn't look smaller than start (minimum expansion is the card's original size)
              if (availableHeight < startRect.height) availableHeight = startRect.height;
