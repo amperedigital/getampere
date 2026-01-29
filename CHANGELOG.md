@@ -1,3 +1,7 @@
+## [v2.708] - 2026-01-29
+### Fixed
+- **Cache Busting**: Updated the CSS version query string in `tech-demo.html` to `v2.708` to ensure the new iPad Pro layout fixes are served immediately to all clients.
+
 ## [v2.707] - 2026-01-29
 ### Changed
 - **Code Cleanliness (CSS)**: Migrated the iPad Pro layout fix from inline HTML styles to the core `src/input.css` file.
