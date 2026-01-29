@@ -21,6 +21,43 @@
     </script>
     
     <link rel="stylesheet" href="./assets/css/styles.css?v=2.484">
+
+    <style>
+        /* Custom Responsive Logic - Strict Boundaries */
+        
+        /* 1. DEAD MAN ZONE & MOBILE (0px - 1023px) */
+        /* Strict enforcement of Mobile Vertical Stack */
+        @media (max-width: 1023px) {
+            #tech-demo-master {
+                flex-direction: column !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            #tech-demo-left-column, #tech-demo-right-column {
+                width: 100% !important;
+                height: auto !important;
+                display: block !important;
+            }
+            #mobile-sliders-container {
+                display: flex !important;
+            }
+            /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
+            /* We use a specific class target or ID context to be safe */
+            .aspect-square-mobile-override {
+                height: auto !important;
+                max-height: 50vh !important;
+                min-height: 0 !important;
+            }
+        }
+
+        /* 2. iPAD PRO / DESKTOP ALIGNMENT (1024px+) */
+        /* Handles the specific 1025px Desktop divergence from iPad Pro (1024px) */
+        @media (min-width: 1025px) {
+            #tech-demo-wrapper {
+                justify-content: flex-end !important;
+            }
+        }
+    </style>
 </head>
 <body class="tech-demo-page bg-[#05060f] text-white lg:overflow-hidden">
 
@@ -189,7 +226,7 @@
             <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end. -->
             <!-- v2.588: Reverted to justify-center here, moving alignment logic to the wrapper to prevent collapse. -->
             <!-- v2.590: Removed lg:pb-32 (8rem padding) to allow the visual content to sit flush at the bottom of the card. -->
-            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-0 md:min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
                 
                 <!-- v2.601: Legacy Mobile Controls Removed (Use Global HUD) -->
                 <!-- Previously located here: btn-mobile-power + transcript-toggle -->
@@ -210,7 +247,7 @@
                     <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
                     <!-- v2.589: Added aspect-square to force intrinsic height based on width (preventing collapse). -->
                     <!-- Removed lg:h-auto dependency that caused zero-height structure. -->
-                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto lg:aspect-square flex flex-col items-center justify-between pointer-events-none">
+                    <div class="aspect-square-mobile-override relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto lg:aspect-square flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
                     <!-- VISUALS WRAPPER (Flex Grow) -->

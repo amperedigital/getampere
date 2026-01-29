@@ -1,3 +1,10 @@
+## [v2.652] - 2026-01-28
+- **Dead Man Zone (1023px) Fix**:
+    - **Issue**: The layout range <1024px was forcing fixed heights (`h-[350px]` or `md:h-[600px]`) which caused content clipping and overlap in the 820px-1023px zone.
+    - **Fix**: Implemented strict CSS override for `.aspect-square-mobile-override` in the critical 0-1023px range.
+    - **Override**: Forces `height: auto` and `max-height: 50vh`, allowing the Neural Net sphere to scale naturally without pushing the controls off-screen or creating massive vertical gaps.
+    - **Min-Height**: Removed the strict `min-h-[420px]` on the container for mobile to allow it to shrink if needed.
+
 ## [v2.651] - 2026-01-28
 - **Card Metadata Density**:
     - **Spacing**: Reduced the vertical grid gap in the card detail view from `gap-y-5` (1.25rem) to `gap-y-2` (0.5rem). This tightens the "meta vertical spacing" on mobile/tablet cards, improving information density and reducing the need for scrolling.
