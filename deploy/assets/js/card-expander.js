@@ -1,5 +1,5 @@
 // V-Amp 2.0 Card Expander Logic
-// Zen Mode Expansion - DOM Reparenting Strategy to escape CSS Transforms
+// Zen Mode Expansion - Constrained to Column (Escape Trap Strategy)
 
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
@@ -9,9 +9,8 @@ export function initCardExpander() {
 
     cards.forEach(card => {
         card.addEventListener('click', (e) => {
-             // Ignore button clicks or link clicks
+             // Ignore button clicks
              if(e.target.closest('button, a')) return;
-             
              if(card.classList.contains('is-expanded')) {
                  collapseCard(card);
              } else {
@@ -22,28 +21,28 @@ export function initCardExpander() {
 }
 
 function expandCard(card) {
-    if (window.innerWidth < 1024) return; // Desktop/Zen Mode only
+    if (window.innerWidth < 1024) return;
+    
+    // Target Container: The Right Column
+    const container = document.getElementById('tech-demo-right-column');
     
     // 1. Measure BEFORE moving
     const startRect = card.getBoundingClientRect();
     
-    // 2. Create Placeholder to hold the space
+    // 2. Create Placeholder
     const placeholder = document.createElement('div');
     placeholder.style.width = startRect.width + 'px';
     placeholder.style.height = startRect.height + 'px';
     placeholder.className = 'socket-card-placeholder flex-shrink-0 snap-start';
-    
-    // Insert placeholder before the card
     card.parentNode.insertBefore(placeholder, card);
-    
-    // Save reference for collapse
     card._placeholder = placeholder;
 
-    // 3. Move Card to Body to escape 'transform-style: preserve-3d' of the container
-    // This ensures position: fixed is actually relative to the Viewport
+    // 3. Move to Body to ESCAPE the column's transform trap
+    // This allows us to use position: fixed relative to the screen, but we will
+    // strictly size/position it to match the column.
     document.body.appendChild(card);
 
-    // 4. Set Initial Position (Fixed at original location)
+    // 4. Set Initial Position (Fixed at Start)
     card.style.position = 'fixed';
     card.style.top = startRect.top + 'px';
     card.style.left = startRect.left + 'px';
@@ -52,23 +51,29 @@ function expandCard(card) {
     card.style.zIndex = '9999';
     card.style.margin = '0';
     
-    // Force Layout/Repaint
+    // Force Layout
     void card.offsetWidth;
 
-    // 5. Animate to Full Screen
+    // 5. Calculate Target (The Visual Bounds of the Right Column)
+    // We want to fill the column, but exist on the Body layer.
+    const targetRect = container.getBoundingClientRect();
+
+    // 6. Animate to Fill Column
     card.classList.add('is-expanded');
-    // Using a specific transition for that "snap" feel
     card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
     
     requestAnimationFrame(() => {
-        card.style.top = '0';
-        card.style.left = '0';
-        card.style.width = '100vw'; // Use vw/vh to be sure
-        card.style.height = '100vh';
-        card.style.borderRadius = '0'; 
+        card.style.top = targetRect.top + 'px';
+        card.style.left = targetRect.left + 'px';
+        card.style.width = targetRect.width + 'px';
+        card.style.height = targetRect.height + 'px';
+        
+        // Optional: Reset border radius to 0 to look like a full pane, 
+        // or keep standard if preference differs. 
+        // Zen mode usually implies full fill.
+        card.style.borderRadius = '0';
     });
 
-    // Hide the icon button if needed
     const btn = card.querySelector('.group\\/button-trigger');
     if(btn) btn.style.opacity = '0';
 }
@@ -76,28 +81,25 @@ function expandCard(card) {
 function collapseCard(card) {
     const placeholder = card._placeholder;
     if(!placeholder) {
-        // Fallback if something went wrong
         card.classList.remove('is-expanded');
         return;
     }
     
-    // 1. Measure where it needs to go back to
+    // 1. Measure where to go back to (Placeholder acts as beacon)
     const endRect = placeholder.getBoundingClientRect();
     
-    // 2. Animate back
+    // 2. Animate
     card.style.top = endRect.top + 'px';
     card.style.left = endRect.left + 'px';
     card.style.width = endRect.width + 'px';
     card.style.height = endRect.height + 'px';
-    card.style.borderRadius = ''; // Reset to default (CSS defined)
+    card.style.borderRadius = ''; 
     card.classList.remove('is-expanded');
 
-    // 3. Cleanup after animation
+    // 3. Cleanup
     const cleanup = () => {
-        // If user cancelled/re-expanded mid-transition (edge case)
         if(card.classList.contains('is-expanded')) return;
 
-        // Reset inline styles
         card.style.position = '';
         card.style.top = '';
         card.style.left = '';
@@ -107,13 +109,12 @@ function collapseCard(card) {
         card.style.margin = '';
         card.style.transition = '';
         card.style.borderRadius = '';
-
-        // Move back to DOM
+        
+        // Return to original DOM position
         if(placeholder.parentNode) {
             placeholder.parentNode.insertBefore(card, placeholder);
             placeholder.remove();
         }
-        
         card._placeholder = null;
         
         const btn = card.querySelector('.group\\/button-trigger');

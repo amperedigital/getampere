@@ -1,3 +1,9 @@
+## [v2.698] - 2026-01-29
+- **Refactor (Card Expansion)**:
+    - **Logic Update**: Switched to "Body Reparenting with Column Constraint".
+    - **Behavior**: The card is still moved to the `<body>` element to escape CSS transforms (which caused the overflow bug), BUT its expansion target is now strictly calculated to match the bounding box of the right column (`#tech-demo-right-column`).
+    - **Result**: The card expands to fill the Right Column only, leaving the Left 3D Scene visible, fulfilling the "Zen Mode inside Column" request while avoiding the `position: fixed` offset trap.
+ 
 ## [v2.697] - 2026-01-29
 - **Refactor (Card Expansion)**:
     - **Logic Standard**: Restored the robust "Zen Mode" expansion logic by moving the card to the `<body>` element during expansion ("DOM Reparenting").
