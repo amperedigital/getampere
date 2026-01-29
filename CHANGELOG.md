@@ -1,3 +1,7 @@
+## [v2.721] - 2026-01-29
+### Fixed
+- **iPad Pro Layout (Border Restoration)**: Reverted the "Flow Layout" for the Scene Container back to `absolute` positioning to ensure the visual border frames the entire Left Column correctly. Content inside the container (`#tech-demo-wrapper`) is now pushed down cleanly using `margin-top: 35rem` to clear the header, solving the "floating border" issue while keeping elements separate.
+
 ## [v2.720] - 2026-01-29
 ### Fixed
 - **iPad Pro Layout (Refined)**: Completely removed absolute positioning for the iPad Pro portrait layout (1024px). The layout now uses a standard document flow strategy (Header -> Sliders -> Scene) with `position: relative`. This ensures the border box correctly wraps the scene content without creating massive empty spaces or overlay issues.
