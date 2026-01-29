@@ -1,4 +1,10 @@
 ## [v2.654] - 2026-01-28
+- **Dead Man Zone (Overlap Fix - Final)**:
+    - **Removal**: Removed `md:h-[600px]` from the responsive ring container. This class was forcing a fixed 600px height on tablets (768px+), which conflicted with the "Mobile Stack" logic desired for the 820px-1023px range.
+    - **Styling**: Ensured the `.aspect-square-mobile-override` class applies `margin-bottom: 2rem` and `position: relative` to force the slider cluster downwards in the document flow, preventing overlay.
+    - **Uniformity**: Now, the Dead Man Zone (820-1023px) behaves exactly like Mobile (Vertical Stack, Controlled Height), consistent with the user's requirement.
+
+## [v2.654] - 2026-01-28
 - **Dead Man Zone (Overlap Fix)**:
     - **Issue**: The Neural Net container wasn't pushing the sliders down, causing them to float in the middle of the visualization.
     - **Fix**: Increased `min-height` to `480px` and enforced `margin-bottom: 2rem` and `position: relative` on the `.aspect-square-mobile-override` class.
