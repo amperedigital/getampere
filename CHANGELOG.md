@@ -1,3 +1,6 @@
+## [v2.696] - 2026-01-29
+- **UI Polish (Zen Mode Expansion)**:
+    - **Resolution**: Refactoring expansion logic to use `position: fixed`. This ensures that expanded cards reliably fill the entire interactive column viewport, regardless of scrolling, stacking contexts, or relative offsets.
 ## [v2.682] - 2026-01-29
 - **UI Polish (Desktop Expansion)**:
     - **Fix (Interaction)**: Implemented "In-Place Expansion" for Trapped Containers (Split View/Desktop) as well. The previous fix only applied to Untrapped layouts. Now, regardless of layout mode, cards will "Just Grow" downwards from their current position without lateral shifts.
