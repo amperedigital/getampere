@@ -4,7 +4,7 @@
     - **Technical**: All position/dimension styles (`top`, `left`, `width`, `height`) are now applied via `setProperty(..., 'important')`. This guarantees that the calculated bonding box of the right column overrides any conflicting CSS rules (like `width: auto` or default insets) that were causing the card to expand to full screen.
     - **Precision**: Updated coordinate math to account for `clientLeft` (border width) to ensure pixel-perfect alignment inside the container.
 
-## [v2.700] - 2026-01-29
+## [v2.701] - 2026-01-29
 - **Refactor (Card Expansion)**:
     - **Logic Update**: Implemented "Strict Priority" rendering for Zen Mode coordinates.
     - **Technical**: All position/dimension styles (`top`, `left`, `width`, `height`) are now applied via `setProperty(..., 'important')`. This guarantees that the calculated bounding box of the right column overrides any conflicting CSS rules.
