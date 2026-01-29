@@ -149,8 +149,10 @@ export class CardExpander {
             card.parentNode.insertBefore(this.spacer, card);
         }
 
-        // v2.572: Mobile Optimization - Instant Expansion
-        // Skip FLIP animation on mobile to avoid translation artifacts.
+        // v2.670: Reverted Mobile Optimization (In-Place Expansion)
+        // User reported overflow issues. Restoring unified "Zen Mode" (Full Window) behavior 
+        // across all devices to ensure reliable containment.
+        /*
         if (window.innerWidth <= 768) {
              card.style.transition = 'none'; // Ensure no transition
              
@@ -190,6 +192,7 @@ export class CardExpander {
              }
              return;
         }
+        */
 
         // 3. Promote Card
         // Apply Inline Styles to "Lock" the card to its starting grid position visually.

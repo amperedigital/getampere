@@ -1,3 +1,8 @@
+## [v2.670] - 2026-01-29
+- **Zen Mode Restoration (Mobile)**:
+    - **Reversion**: Disabled the "In-Place" card expansion logic for mobile devices (added in v2.572).
+    - **Unified Behavior**: All devices now use the standard "Zen Mode" logic, where the card animates to fill the entire viewport (with 1rem margins). This resolves issues where cards would overflow or expand behave inconsistently on mobile screens.
+
 ## [v2.669] - 2026-01-29
 - **Mobile Sticky Top Controller (<820px)**:
     - **Architecture**: Implemented `display: contents` for the Header and Left Column wrappers on mobile. This "flattens" the DOM hierarchy, promoting the Sliders to be direct siblings of the Page/Scene content.
