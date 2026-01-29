@@ -1,3 +1,7 @@
+## [v2.719] - 2026-01-29
+### Fixed
+- **iPad Pro Layout (Refined)**: Changed the mechanism for positioning the Neural Net on 1024px devices. Instead of moving the entire container (which shifted the border box), we now use `padding-top` to push only the internal content down. The border frame now correctly spans the full height of the column.
+
 ## [v2.718] - 2026-01-29
 ### Changed
 - **iPad Pro Layout (Refactor)**: Completely changed the layout strategy for 1024px Portrait mode based on user feedback.
