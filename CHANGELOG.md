@@ -1,3 +1,9 @@
+## [v2.699] - 2026-01-29
+- **Refactor (Card Expansion)**:
+    - **Visual Fix (Buttons)**: Added aggressive hiding (`display: none`, `pointer-events: none`) to the Expand Button during `zen-mode` to ensure it vanishes completely on all browsers.
+    - **Visual Fix (Width)**: Updated width calculation to use `container.clientWidth` instead of `getBoundingClientRect().width`. This ensures the expanded card respects the container's scrollbar width and doesn't render underneath it.
+    - **Visual Fix (Radius)**: Removed the forced `border-radius: 0` override, allowing the card to maintain its natural rounded corners even when expanded, matching the "Zen Mode" aesthetic better.
+
 ## [v2.698] - 2026-01-29
 - **Refactor (Card Expansion)**:
     - **Logic Update**: Switched to "Body Reparenting with Column Constraint".
