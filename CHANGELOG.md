@@ -1,3 +1,9 @@
+## [v2.656] - 2026-01-28
+- **DMZ Polish**:
+    - **Style**: Removed the background, blur, and border from the DMZ Mini Controller as requested. It now floats cleanly.
+    - **Position**: Adjusted vertical alignment (`top: 108px`) to visually align with the "AI Neural Architecture" heading baseline.
+    - **Readability**: Added text shadow to labels for better contrast against the deep space background.
+
 ## [v2.655] - 2026-01-28
 - **DMZ Layout (Mini Controller)**:
     - **Concept**: For the Tablet Portrait / "Dead Man Zone" (820px-1023px), we moved the slider controls from the bottom of the screen to the top right header area.

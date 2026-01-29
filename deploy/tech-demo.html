@@ -45,27 +45,28 @@
             @media (min-width: 820px) and (max-width: 1023px) {
                 #mobile-sliders-container {
                     position: fixed !important;
-                    top: 100px !important; /* Clear pill (top-8 + height) */
-                    right: 28px !important; /* Inset from edge */
+                    top: 108px !important; /* Align with H1 (pt-24 + pt-2 = ~104px) */
+                    right: 40px !important; /* Give it space */
                     bottom: auto !important;
                     left: auto !important;
                     transform: none !important;
                     margin: 0 !important;
                     
-                    /* Mini Compression */
-                    width: 220px !important;
-                    padding: 0.75rem !important;
+                    /* Mini Compression - No Background */
+                    width: 200px !important;
+                    padding: 0 !important;
                     align-items: flex-end !important;
-                    background: rgba(15, 23, 42, 0.75) !important;
-                    backdrop-filter: blur(10px) !important;
-                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                    border-radius: 12px !important;
+                    background: transparent !important;
+                    backdrop-filter: none !important;
+                    border: none !important;
+                    border-radius: 0 !important;
                     z-index: 9999 !important;
                 }
                 #mobile-sliders-container span {
                     text-align: right;
                     width: 100%;
-                    font-size: 0.6rem !important;
+                    font-size: 0.65rem !important; /* Slightly larger for readability without bg */
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* contrast boost */
                 }
                 #mobile-sliders-container .flex-col.gap-2 {
                     gap: 0.25rem !important;
