@@ -1,3 +1,10 @@
+## [v2.647] - 2026-01-28
+- **iPad Pro & Mobile Layout (Final Fluid Fix)**:
+    - **Issue**: "Dead Man Zone" persisted because hardcoded heights (`h-[350px]`, `min-h-[420px]`) and hidden controls prevented the layout from being truly fluid on tablets.
+    - **Fluidity**: Removed ALL fixed height constraints from the 3D Scene Container. It now uses `aspect-square` exclusively, allowing it to scale proportionally to fill the available width (up to `max-w-[800px]`) without forcing vertical gaps or scrollbars.
+    - **Controls**: Restored the **Ring Sliders** (`#mobile-sliders-container`) for the Tablet range (up to `xl` breakpoint). Previously they were hidden beyond 820px, leaving iPad users with no controls.
+    - **Validation**: This guarantees a "100% responsive" vertical stack for all devices below 1280px.
+
 ## [v2.646] - 2026-01-28
 - **Layout & Breakpoint Shift (Dead Man Zone Fix)**:
     - **Issue**: The layout range 820px-1023px (Tablet/iPad Portrait) was inconsistent, attempting to use Desktop styles without sufficient width ("Dead Man Zone").

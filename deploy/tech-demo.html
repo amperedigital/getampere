@@ -211,7 +211,8 @@
                     <!-- v2.589: Added aspect-square to force intrinsic height based on width (preventing collapse). -->
                     <!-- Removed xl:h-auto dependency that caused zero-height structure. -->
                     <!-- v2.646: Removed md:h-[600px] override. This forces the Dead Man Zone (820-1023px) to behave like mobile (h-[350px]) until LG takes over. -->
-                    <div class="relative w-full h-[350px] xl:w-full xl:h-auto xl:aspect-square flex flex-col items-center justify-between pointer-events-none">
+                    <!-- v2.647: Removed ALL fixed heights (h-[350px]) to allow full fluid response. Added aspect-square to base. -->
+                    <div class="relative w-full aspect-square xl:w-full xl:aspect-square flex flex-col items-center justify-between pointer-events-none">
                     
                     <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
                     <!-- VISUALS WRAPPER (Flex Grow) -->
@@ -346,7 +347,8 @@
                 <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
                 <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
                 <!-- v2.363: Reverted to bg-transparent as requested. Overlaps handled by better positioning logic. -->
-                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
+                <!-- v2.647: Restore visibility for Tablet/Mobile (flex xl:hidden). -->
+                <div id="mobile-sliders-container" class="flex xl:hidden relative w-full px-6 pb-6 mt-4 flex-col gap-5 z-50 pointer-events-auto bg-transparent">
                      
                      <!-- Outer Ring Control (Blue) -->
                      <div class="flex flex-col gap-2">
