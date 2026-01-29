@@ -1,3 +1,8 @@
+## [v2.680] - 2026-01-29
+- **UI Polish (Desktop Expansion)**:
+    - **Fix (Interaction)**: Solved the "One-Time Click" bug where the Expand Button (corner brackets) vanished permanently after the first expansion cycle. Updated `collapse()` to explicitly clear the `display: none` override added in v2.678.
+    - **Fix (Alignment)**: Switched from "Floating Zen Mode" (`safeGap = 16px`) to "Flush Fill Mode" (`safeGap = 0px`) for Desktop and Split-View layouts. This ensures the expanded card aligns perfectly with the container's edges, eliminating visually distracting gaps or offsets relative to the column bounds.
+
 ## [v2.679] - 2026-01-29
 - **UI Polish (Zen Mode)**:
     - **Fix (Card Opacity)**: Solved issue where expanded "Standby" cards (Demo Guide) became translucent when hovering outside of them. Added CSS override (`opacity: 1 !important`) to the `.is-expanded` state to ignore the default `standby` transparency rules.

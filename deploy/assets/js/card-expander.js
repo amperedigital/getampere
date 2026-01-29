@@ -126,7 +126,7 @@ export class CardExpander {
         
         // v2.671: Universal "Zen Mode" Target Calculation (Container-Aware)
         
-        const safeGap = 16;
+        let safeGap = 16; // Default generic gap
         const containerRect = container.getBoundingClientRect();
         const containerStyles = window.getComputedStyle(container);
         const isTrapped = containerStyles.transformStyle === 'preserve-3d' || containerStyles.transform !== 'none' || containerStyles.containerType !== 'normal';
@@ -144,6 +144,10 @@ export class CardExpander {
         // SCENARIO 1: TRAPPED (Container is Coordinate Root)
         // 'position: fixed' behaves like absolute relative to container content
         if (isTrapped) {
+             // v2.680: Flush Alignment (0px Gap) for Trapped/Split View
+             // User requested "Aligned with container". Removing floating margins.
+             safeGap = 0;
+
              // Size: Fill Container
              targetWidth = containerRect.width - (safeGap * 2);
              // targetHeight = containerRect.height - (safeGap * 2); // Optional: constrain height to container
@@ -165,6 +169,9 @@ export class CardExpander {
         // We want to fill the Column visually, but using Window Coordinates.
         // v2.676: Fixed alignment bug where we used Trapped logic for Untrapped elements.
         else if (window.innerWidth >= 1024) {
+             // v2.680: Flush Alignment here too
+             safeGap = 0;
+
              // Size: Fill Visible Container
              targetWidth = containerRect.width - (safeGap * 2);
              
@@ -405,6 +412,7 @@ export class CardExpander {
         triggers.forEach(t => {
             t.style.opacity = ''; // Restore CSS control
             t.style.pointerEvents = '';
+            t.style.display = ''; // v2.680: Restore visibility (was hidden by display:none)
         });
         
 
