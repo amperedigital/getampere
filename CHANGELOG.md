@@ -2394,3 +2394,11 @@
 - **v2.687.stable**
   - **Hotfix**: Removed invalid binding of `handleTransitionEnd` in `card-expander.js` constructor, which was causing a `TypeError` on initialization because the method does not exist (event handling is done via local callbacks).
 
+- **v2.688.stable**
+  - **Hotfix**: Corrected a variable declaration typo (`constTopResultBtn` -> `const topResultBtn`) in `card-expander.js` that caused a `ReferenceError`.
+  - **Explanation**: This error bypassed the build system's syntax check because implicit global variable creation (omitting `const`/`let`) is technically valid JavaScript in non-strict environments, but fails in ES Modules (which are Strict Mode by default).
+
+- **v2.689.stable**
+  - **Correction**: Completely rebuilt `card-expander.js` to fix the `SyntaxError` caused by incorrect variable usage (`const` inside if-condition) introduced in the previous hotfix.
+  - **Status**: Height logic, bindings, and variable references are now fully stabilized.
+

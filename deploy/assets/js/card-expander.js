@@ -77,14 +77,14 @@ class CardExpander {
     expand(card, btn, container) {
         if (window.innerWidth < 768) return;
 
-        constTopResultBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
+        const topResultBtn = card.querySelector('.group\\/button-trigger') || card.querySelector('.w-14.h-14.z-20');
         
-        if (constTopResultBtn && !constTopResultBtn.hasAttribute('data-original-icon')) {
-            const iconContainer = constTopResultBtn.querySelector('.z-30 svg');
+        if (topResultBtn && !topResultBtn.hasAttribute('data-original-icon')) {
+            const iconContainer = topResultBtn.querySelector('.z-30 svg');
             if (iconContainer) {
-                constTopResultBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
+                topResultBtn.setAttribute('data-original-icon', iconContainer.innerHTML);
                 if (iconContainer.hasAttribute('viewBox')) {
-                    constTopResultBtn.setAttribute('data-original-viewbox', iconContainer.getAttribute('viewBox'));
+                    topResultBtn.setAttribute('data-original-viewbox', iconContainer.getAttribute('viewBox'));
                 }
             }
         }
@@ -182,8 +182,8 @@ class CardExpander {
             // v2.402: Morph Top-Right Button to Close Icon
             // Need to change the SVG inside the button.
             // We kept the original icon in data attribute.
-            if (constTopResultBtn) { // Renamed from btn to avoid loop mismatch
-                const iconContainer = constTopResultBtn.querySelector('.z-30 svg');
+            if (topResultBtn) { // Renamed from btn to avoid loop mismatch
+                const iconContainer = topResultBtn.querySelector('.z-30 svg');
                 const expandTrigger = card.querySelector('.expand-trigger');
                 
                 // Opacity Transitions
@@ -192,7 +192,7 @@ class CardExpander {
                     setTimeout(() => {
                          // X Icon
                          iconContainer.innerHTML = '<path fill="currentColor" d="M24 9.4L22.6 8L16 14.6L9.4 8L8 9.4l6.6 6.6l-6.6 6.6L9.4 24l6.6-6.6l6.6 6.6l1.4-1.4l-6.6-6.6L24 9.4z"/>';
-                         if (constTopResultBtn.hasAttribute('data-original-viewbox')) { // Use standard 32x32 viewbox for X if needed, or keep original
+                         if (topResultBtn.hasAttribute('data-original-viewbox')) { // Use standard 32x32 viewbox for X if needed, or keep original
                              iconContainer.setAttribute('viewBox', '0 0 32 32'); 
                          }
                          iconContainer.style.opacity = '1';
