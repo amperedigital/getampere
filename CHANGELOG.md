@@ -1,3 +1,10 @@
+## [v2.646] - 2026-01-28
+- **Layout & Breakpoint Shift (Dead Man Zone Fix)**:
+    - **Issue**: The layout range 820px-1023px (Tablet/iPad Portrait) was inconsistent, attempting to use Desktop styles without sufficient width ("Dead Man Zone").
+    - **Fix**: Shifted the primary Desktop breakpoint from `lg` (1024px) to `xl` (1280px) across `tech-demo.html`.
+    - **Result**: Devices between 820px and 1279px will now strictly use the **Mobile Layout** (Vertical Stack, Scrollable Cards), ensuring a consistent "Universal Compact" experience corresponding to user requirements.
+    - **Cleanup**: Removed the legacy `md:h-[600px]` override on the 3D ring container to allow organic mobile sizing in this range.
+
 ## [v2.645] - 2026-01-28
 - **iPad Pro & Layout Improvements**:
     - **Visual Center**: Changed `tech-demo-wrapper` alignment from `justify-end` to `justify-center`. This moves the main Neural Net ring up into the visual center on iPad Pro and Desktop, fixing the layout gap.
