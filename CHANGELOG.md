@@ -1,3 +1,7 @@
+## [v2.712] - 2026-01-29
+### Fixed
+- **iPad Pro Aesthetic**: Removed unwanted border from `#tech-demo-scene-container` on iPad Pro to create a seamless, integrated layout between controls and scene, eliminating the "mobile stack" appearance.
+
 ## [v2.711] - 2026-01-29
 ### Fixed
 - **iPad Pro Layout (Correction)**: Reverted destructive layout changes to `#tech-demo-scene-container` that broke the bordered box alignment. Sliders are now positioned absolutely at the bottom of the column via a full-height header overlay, preserving the scene container's original structure.

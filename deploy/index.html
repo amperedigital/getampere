@@ -12,33 +12,13 @@
   
   <title>Get Ampere AI - AI Voice Agents</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.711/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.712/deploy/assets/css/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v1.885/deploy/assets/css/components.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <script>
-    // Dynamically inject styles to hide modal content on live site
-    // This allows visual editors (which often don't run inline JS) to see the content
-    (function() {
-      try {
-        // Only hide modal content on known live environments
-        // This ensures it remains visible in all editors, previews, and local dev
-        const hostname = window.location.hostname;
-        const isLive = hostname.includes('workers.dev') || 
-                       hostname === 'getampere.ai' || 
-                       hostname.endsWith('.getampere.ai') ||
-                       hostname.includes('amperedigital.github.io');
-        
-        if (!isLive) return;
-        
-        var style = document.createElement('style');
-        // Split selector to prevent static analysis tools from stripping it
-        style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
-        document.head.appendChild(style);
-      } catch (e) {}
-    })();
-  </script>
+  <!-- Inline patches moved to external file -->
+  <script src="./assets/js/index-patches.js"></script>
 
 
 
@@ -66,9 +46,7 @@
   <div class="aura-background-component top-0 w-full h-screen -z-10 absolute invert-0 brightness-[1.05] lg:brightness-120 opacity-70 hue-rotate-15 pointer-events-none" data-alpha-mask="1" style="; mask-image: linear-gradient(to bottom, transparent, black 0%, black 1%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 0%, black 1%, transparent)">
     <div class="aura-background-component top-0 w-full -z-10 absolute h-full pointer-events-none">
       <div data-us-project="qpSlPSWA2bdkUAYztz8z" class="absolute w-full h-full left-0 top-0 -z-10 pointer-events-none"></div>
-      <script type="text/javascript">
-        !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
-      </script>
+
     </div>
   </div>
   <div id="mobile-menu" class="fixed inset-0 bg-[#0a0b14]/95 backdrop-blur-xl z-[40] transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center gap-8">
@@ -1455,17 +1433,7 @@
             <div id="expertise-gradients" data-reveal-bg data-us-project="dpD006WOWWQALxqKpHFZ" class="absolute w-full h-full left-0 top-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-20 transition-opacity duration-1000 ease-in-out">
             </div>
             
-            <script>
-                // Force check for Unicorn Studio in case it initialized before this element was ready
-                // Only init if the function actually exists (loaded). If not, the script loader onload will handle it.
-                if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') {
-                    window.UnicornStudio.init();
-                } else {
-                    window.addEventListener('load', () => {
-                         if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') window.UnicornStudio.init();
-                    });
-                }
-            </script>
+
             
             <!-- "Four Corner" Grid Lines Background -->
             <div class="absolute inset-0 z-0 pointer-events-none">
@@ -2387,21 +2355,7 @@
 <!-- ========================================== -->
 <!-- ========================================== -->
 
-    <script>
-      function toggleMenu(trigger) {
-        const menu = document.getElementById("mobile-menu");
-        if (!menu) return;
-        menu.classList.toggle("translate-x-full");
-        const nowOpen = !menu.classList.contains("translate-x-full");
-        const button =
-          trigger?.classList?.contains("amp-hamburger") ?
-            trigger :
-            document.querySelector(".amp-hamburger[data-role='toggle']");
-        if (button) {
-          button.classList.toggle("is-open", nowOpen);
-        }
-      }
-    </script>
+
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
 <!--Modal-->
 <section>
