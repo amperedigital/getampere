@@ -2411,3 +2411,7 @@
   - **New Constraint**: The card height is now calculated against the minimum of `Viewport Bottom`, `Container Bottom`, AND `Track Bottom`.
   - **Result**: This ensures the expanded card never extends vertically beyond the grid track itself, maintaining visual parity with the surrounding layout elements as requested ("equal size" interpretation).
 
+- **v2.692.stable**
+  - **Height Calc Fix**: Removed the `trackBottom` constraint which was causing bottom-row cards to not expand at all ("shorter").
+  - **Refinement**: Switched to a precise `Container Content Bottom` calculation (`rect.bottom - paddingBottom`) to ensure the card expands exactly to the visual edge of the container without overflowing into the padding or viewport.
+

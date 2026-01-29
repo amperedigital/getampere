@@ -129,14 +129,16 @@ class CardExpander {
              
              // Respect both viewport and container boundaries
              const viewportBottom = window.innerHeight;
-             const containerBottom = containerRect.bottom;
-             const trackRect = this.track.getBoundingClientRect();
-             const trackBottom = trackRect.bottom;
+             
+             // Calculate precise container content bottom to avoid padding overlap
+             const containerPaddingBottom = parseFloat(containerStyles.paddingBottom) || 0;
+             const containerContentBottom = containerRect.bottom - containerPaddingBottom;
              
              // Use the most restrictive bottom edge to prevent overflow
-             const effectiveBottom = Math.min(viewportBottom, containerBottom, trackBottom);
+             // We removed trackBottom because it's too restrictive for bottom-row cards
+             const effectiveBottom = Math.min(viewportBottom, containerContentBottom);
 
-             let availableHeight = effectiveBottom - visualTop - 16; // 16px bottom buffer
+             let availableHeight = effectiveBottom - visualTop; // Use exact calculated bottom
              
              // Ensure it doesn't look smaller than start (minimum expansion is the card's original size)
              if (availableHeight < startRect.height) availableHeight = startRect.height;
