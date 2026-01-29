@@ -1,3 +1,9 @@
+## [v2.682] - 2026-01-29
+- **UI Polish (Desktop Expansion)**:
+    - **Fix (Interaction)**: Implemented "In-Place Expansion" for Trapped Containers (Split View/Desktop) as well. The previous fix only applied to Untrapped layouts. Now, regardless of layout mode, cards will "Just Grow" downwards from their current position without lateral shifts.
+    - **Fix (Stacking Anomaly)**: Solved a Z-Index issue where expanded cards in 3D-transformed containers could appear "below" or interleaved with neighbors. Added `translateZ(50px)` to physically lift the active card out of the 3D plane.
+    - **Fix (Overflow)**: Corrected the target height calculation for Trapped Containers to use a safer default (`600px` or fill remaining height) instead of potentially forcing weird overflows.
+
 ## [v2.681] - 2026-01-29
 - **UI Polish (Desktop Zen Mode)**:
     - **Fix (Interaction)**: Implemented "In-Place Expansion" for Desktop cards.

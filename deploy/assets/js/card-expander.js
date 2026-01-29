@@ -144,21 +144,31 @@ export class CardExpander {
         // SCENARIO 1: TRAPPED (Container is Coordinate Root)
         // 'position: fixed' behaves like absolute relative to container content
         if (isTrapped) {
-             // v2.680: Flush Alignment (0px Gap) for Trapped/Split View
-             // User requested "Aligned with container". Removing floating margins.
+             // v2.682: In-Place Expansion for Trapped Containers too
              safeGap = 0;
 
-             // Size: Fill Container
-             targetWidth = containerRect.width - (safeGap * 2);
-             // targetHeight = containerRect.height - (safeGap * 2); // Optional: constrain height to container
+             // Size: Match Start Width (No Layout Shift)
+             targetWidth = startWidth; 
              
              // Position: Relative to Container Content Origin
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
              
-             targetTop = scrollY + safeGap;
-             targetLeft = safeGap; 
+             // Top Correction: 
+             // startRect.top is viewport relative. 
+             // styleTop = (viewportTop - containerRect.top) + scrollY
+             const computedTop = (startRect.top - containerRect.top) + scrollY;
+
+             targetTop = computedTop;
+             
+             // Left: Relative to container left
+             // styleLeft = viewportLeft - containerRect.left
+             targetLeft = startRect.left - containerRect.left;
+             
+             // Height: Fill downwards, but respect viewport bottom for sanity?
+             // Since it's trapped in a scroll wrapper, we can just make it tall.
+             targetHeight = 600; // Default nice height
              
              // Offset for Start Rect (Convert Window -> Container Content)
              offsetTop = scrollY - containerRect.top;
@@ -271,6 +281,11 @@ export class CardExpander {
         card.style.zIndex = '9999';
         card.style.margin = '0'; 
         
+        // v2.682: Force Z-Index Separation for 3D Contexts
+        // When expanding "In Place" inside a 3D-transformed container, standard z-index might fail
+        // if neighbor cards are in the same plane. We use translateZ to physically lift it.
+        card.style.transform = 'translateZ(50px)';
+
         // Force Layout Recalculation (Reflow) to apply the "start" state without animation
         void card.offsetWidth; 
 
