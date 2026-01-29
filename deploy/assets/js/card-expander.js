@@ -1,5 +1,10 @@
 // V-Amp 2.0 Card Expander Logic
-// Zen Mode Expansion - Column Constrained + Persistent Button
+// Zen Mode Expansion - Column Constrained + Persistent Button + Interactable
+
+// Icons
+const ICON_EXPAND = `<path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />`;
+const ICON_COLLAPSE = `<path d="M4 14h6v6" /><path d="M20 10h-6V4" /><path d="M14 10l7-7" /><path d="M10 21l-7-7" />`; // Approximate inward or just use X
+const ICON_CLOSE = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`;
 
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
@@ -9,10 +14,7 @@ export function initCardExpander() {
 
     cards.forEach(card => {
         card.addEventListener('click', (e) => {
-             // Ignore button clicks IF they are actual functional buttons (like "View Project")
-             // BUT, the expand button (corner bracket) is often the trigger itself or part of the card.
-             // If the user wants the button to be the closer, we usually attach logic there.
-             // For now, keeping generic card click toggling.
+             // Allow clicks on our expand button
              if(e.target.closest('a, button:not(.group\\/button-trigger)')) return;
              
              if(card.classList.contains('is-expanded')) {
@@ -44,7 +46,6 @@ function expandCard(card) {
     document.body.appendChild(card);
 
     // 4. Set Initial Position (Fixed at Start)
-    // Use !important to guarantee overrides
     card.style.setProperty('position', 'fixed', 'important');
     card.style.setProperty('top', startRect.top + 'px', 'important');
     card.style.setProperty('left', startRect.left + 'px', 'important');
@@ -56,37 +57,52 @@ function expandCard(card) {
     // Force Layout
     void card.offsetWidth;
 
-    // 5. Calculate Target (Container CLIENT Box)
+    // 5. Calculate Target (Container CONTENT Box)
     const containerRect = container.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(container);
     
-    // Precision Alignment to the Visual Content Box of the Right Column
-    const targetLeft = containerRect.left + (container.clientLeft || 0);
-    const targetTop = containerRect.top + (container.clientTop || 0);
-    const targetWidth = container.clientWidth; // Excludes scrollbar
-    const targetHeight = container.clientHeight; // Excludes scrollbar
+    const pLeft = parseFloat(computedStyle.paddingLeft) || 0;
+    const pRight = parseFloat(computedStyle.paddingRight) || 0;
+    const pTop = parseFloat(computedStyle.paddingTop) || 0;
+    const pBottom = parseFloat(computedStyle.paddingBottom) || 0;
+    const bLeft = parseFloat(computedStyle.borderLeftWidth) || 0;
+    const bTop = parseFloat(computedStyle.borderTopWidth) || 0;
 
-    // 6. Animate
+    // Constrain to the padding box (visual content area) to avoid bleeding into scrollbars/gutters
+    const targetLeft = containerRect.left + bLeft + pLeft;
+    const targetTop = containerRect.top + bTop + pTop;
+    const targetWidth = container.clientWidth - pLeft - pRight;
+    const targetHeight = container.clientHeight - pTop - pBottom;
+
+    // 6. Animate expansion
     card.classList.add('is-expanded');
     card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
     
     requestAnimationFrame(() => {
-        // Enforce Target Coordinates
         card.style.setProperty('top', targetTop + 'px', 'important');
         card.style.setProperty('left', targetLeft + 'px', 'important');
         card.style.setProperty('width', targetWidth + 'px', 'important');
         card.style.setProperty('height', targetHeight + 'px', 'important');
-        
-        // Remove forced radius override, let CSS handle it
         card.style.removeProperty('border-radius'); 
     });
 
-    // 7. Ensure Button is VISIBLE (User Request)
-    // We explicitly ensure it is not hidden
+    // 7. Swap Icon & Ensure Visibility
     const btn = card.querySelector('.group\\/button-trigger');
     if(btn) {
         btn.style.opacity = '1';
-        btn.style.display = 'flex'; // Or whatever flex layout it had
+        btn.style.display = 'flex';
         btn.style.pointerEvents = 'auto';
+        
+        // Find SVG and swap path
+        const svg = btn.querySelector('svg');
+        if(svg) {
+            // Store original
+            if(!btn.dataset.originalIcon) {
+                btn.dataset.originalIcon = svg.innerHTML;
+            }
+            // Swap to Close (X)
+            svg.innerHTML = ICON_CLOSE; 
+        }
     }
 }
 
@@ -106,6 +122,13 @@ function collapseCard(card) {
     card.style.setProperty('height', endRect.height + 'px', 'important');
     card.classList.remove('is-expanded');
 
+    // Restore Icon
+    const btn = card.querySelector('.group\\/button-trigger');
+    if(btn && btn.dataset.originalIcon) {
+        const svg = btn.querySelector('svg');
+        if(svg) svg.innerHTML = btn.dataset.originalIcon;
+    }
+
     const cleanup = () => {
         if(card.classList.contains('is-expanded')) return;
 
@@ -118,7 +141,6 @@ function collapseCard(card) {
             placeholder.remove();
         }
         card._placeholder = null;
-        
         card.removeEventListener('transitionend', cleanup);
     };
     
