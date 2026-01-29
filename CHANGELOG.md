@@ -1,3 +1,7 @@
+## [v2.711] - 2026-01-29
+### Fixed
+- **iPad Pro Layout (Correction)**: Reverted destructive layout changes to `#tech-demo-scene-container` that broke the bordered box alignment. Sliders are now positioned absolutely at the bottom of the column via a full-height header overlay, preserving the scene container's original structure.
+
 ## [v2.710] - 2026-01-29
 ### Fixed
 - **iPad Pro Layout**: Resolved visual overlap issue on iPad Pro Portrait mode (1024px) by forcing `#mobile-sliders-container` to relative positioning and adding vertical spacing below the 3D scene.
