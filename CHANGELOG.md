@@ -1,3 +1,9 @@
+## [v2.659] - 2026-01-28
+- **DMZ Layout Tune**:
+    - **Method**: Replicated the user's manual "Inspector Fix" for alignment.
+    - **Header**: Reverted to `block` layout (removed `flex`).
+    - **Sliders**: Applied specific width (`w-48`), negative top margin (`-mt-32`), and right alignment (`ml-auto`) to pull the controls up beside the heading without relying on absolute positioning or flex column behavior.
+
 ## [v2.658] - 2026-01-28
 - **DMZ Layout Structure**:
     - **Architecture**: Moved `#mobile-sliders-container` DOM element into the Header flex container. This creates a native "Two Column" layout on Tablet (Text Left, Sliders Right) without relying on fragile absolute positioning.
