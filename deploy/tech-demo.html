@@ -140,9 +140,10 @@
             <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
             <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
             <!-- v2.632: Added ID for easier targeting. Changed text color logic (handled in JS). -->
+            <!-- v2.643: Changed default text class to text-slate-500 (Off) to prevent FOUC (Orange) before JS loads. -->
             <button id="tech-demo-toggle-btn"
                     onclick="window.toggleMobilePower && window.toggleMobilePower()" 
-                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
+                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-slate-500 active:scale-95 transition-all power-toggle-btn"
                     aria-label="Power & Standby Control"
                     aria-pressed="false">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,3 +1,8 @@
+## [v2.643] - 2026-01-28
+- **Power Button FOUC Fix**:
+    - **Issue**: The Power Button's default HTML class was `text-amber-300`, causing it to appear Orange momentarily (or permanently if JS fails) before the JavaScript state manager takes over.
+    - **Fix**: Updated `tech-demo.html` to default to `text-slate-500` (Off/Neutral). This ensures the button starts neutral, and only turns Orange (Standby) or Green (Active) when the application logic explicitly sets that state.
+
 ## [v2.642] - 2026-01-28
 - **Power Button Visuals (Urgent Fix)**:
     - **Issue**: The active state green color was not applying due to a specificity conflict with the default Tailwind `text-amber-300` class in the HTML.
