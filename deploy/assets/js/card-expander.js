@@ -125,9 +125,6 @@ export class CardExpander {
         const startHeight = startRect.height;
         
         // v2.671: Universal "Zen Mode" Target Calculation (Container-Aware)
-        // We use the passed container (Right Column) to determine boundaries.
-        // This solves the Desktop issue where 'position: fixed' is trapped by 
-        // the 'preserve-3d' transform on the column, causing Window-based sizing to overflow.
         
         const safeGap = 16;
         const containerRect = container.getBoundingClientRect();
@@ -140,33 +137,46 @@ export class CardExpander {
         let targetWidth = window.innerWidth - (safeGap * 2);
         let targetHeight = window.innerHeight - (safeGap * 2);
 
-        // v2.675: Trapped Coordinate Correction for Start Position
-        // Must apply same offset logic to start position if trapped.
+        // Coordination Offset (For Start Position)
         let offsetTop = 0;
         let offsetLeft = 0;
 
-        // Trap Override: Column-based (Desktop Split) OR Trapped Mobile
-        if (isTrapped || window.innerWidth >= 1024) {
-             // Width: Constrain to Column/Container
+        // SCENARIO 1: TRAPPED (Container is Coordinate Root)
+        // 'position: fixed' behaves like absolute relative to container content
+        if (isTrapped) {
+             // Size: Fill Container
              targetWidth = containerRect.width - (safeGap * 2);
+             // targetHeight = containerRect.height - (safeGap * 2); // Optional: constrain height to container
              
-             // Top: Offset by scroll position
-             // If container handles its own scroll (Desktop), use container.scrollTop.
-             // If container flows with body scroll (Mobile), use window.scrollY.
+             // Position: Relative to Container Content Origin
              const isContainerScroll = (containerStyles.overflowY === 'auto' || containerStyles.overflowY === 'scroll') 
                                        && container.scrollHeight > container.clientHeight;
-             
              const scrollY = isContainerScroll ? container.scrollTop : window.scrollY;
              
              targetTop = scrollY + safeGap;
-             targetLeft = safeGap;
+             targetLeft = safeGap; 
              
-             // Calculate Offsets for Start Position (v2.675)
-             // Formula: StyleTop = (ViewportY - ContainerViewportY) + ScrollTop
+             // Offset for Start Rect (Convert Window -> Container Content)
              offsetTop = scrollY - containerRect.top;
              offsetLeft = -containerRect.left;
         }
 
+        // SCENARIO 2: UNTRAPPED DESKTOP (Window is Coordinate Root)
+        // We want to fill the Column visually, but using Window Coordinates.
+        // v2.676: Fixed alignment bug where we used Trapped logic for Untrapped elements.
+        else if (window.innerWidth >= 1024) {
+             // Size: Fill Visible Container
+             targetWidth = containerRect.width - (safeGap * 2);
+             
+             // Position: Relative to Window (Match Container Position)
+             targetTop = containerRect.top + safeGap;
+             targetLeft = containerRect.left + safeGap;
+             
+             // Offset: None (StartRect is already Window Relative)
+             offsetTop = 0;
+             offsetLeft = 0;
+        }
+        
         const startTop = startRect.top + offsetTop;
         const startLeft = startRect.left + offsetLeft;
 

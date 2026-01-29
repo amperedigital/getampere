@@ -1,3 +1,11 @@
+## [v2.676] - 2026-01-29
+- **Animation Polish (Desktop Layout)**:
+    - **Fix**: Corrected the final "Zen Mode" position and animation logic for Desktop.
+    - **Issue**: The code was treating all Desktop layouts as "Trapped" (inside a 3D transform), applying container-relative coordinates (`left: 16px`) to window-relative elements. This caused the expanded card to jump to the left side of the screen (Left Column area) instead of centering within the Right Column.
+    - **Resolution**: Split the logic into two distinct scenarios:
+        1.  **Trapped (3D)**: Uses Container-Relative coordinates (offsets + scroll).
+        2.  **Untrapped (Standard)**: Uses Window-Relative coordinates, setting the target position to match the Container's screen position (`containerRect.left`). This ensures the card expands perfectly to fill the Right Column without jumping.
+
 ## [v2.675] - 2026-01-29
 - **Animation Polish (Desktop Expand)**:
     - **Fix**: Solved a coordinate mismatch bug during card expansion on Desktop (Split View).
