@@ -41,14 +41,45 @@
             #mobile-sliders-container {
                 display: flex !important;
             }
+            /* DMZ: Reposition Controls to Top Right (Mini Mode) */
+            @media (min-width: 820px) and (max-width: 1023px) {
+                #mobile-sliders-container {
+                    position: fixed !important;
+                    top: 100px !important; /* Clear pill (top-8 + height) */
+                    right: 28px !important; /* Inset from edge */
+                    bottom: auto !important;
+                    left: auto !important;
+                    transform: none !important;
+                    margin: 0 !important;
+                    
+                    /* Mini Compression */
+                    width: 220px !important;
+                    padding: 0.75rem !important;
+                    align-items: flex-end !important;
+                    background: rgba(15, 23, 42, 0.75) !important;
+                    backdrop-filter: blur(10px) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                    border-radius: 12px !important;
+                    z-index: 9999 !important;
+                }
+                #mobile-sliders-container span {
+                    text-align: right;
+                    width: 100%;
+                    font-size: 0.6rem !important;
+                }
+                #mobile-sliders-container .flex-col.gap-2 {
+                    gap: 0.25rem !important;
+                }
+            }
             /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
             /* We use a specific class target or ID context to be safe */
             .aspect-square-mobile-override {
                 height: 50vh !important;
-                min-height: 480px !important; 
+                min-height: 350px !important;
                 max-height: 600px !important;
-                margin-bottom: 2rem !important; /* Force spacing below */
-                position: relative !important; /* Ensure it takes up space in flow */
+                /* v2.655: Removed margin/position override as sliders are now moved to Header */
+                /* margin-bottom: 2rem !important; */
+                /* position: relative !important; */
             }
         }
 
@@ -136,10 +167,8 @@
                     </div>
 
                     <!-- Mobile Control Cluster (Top Right) -->
-                    <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
-                    <div class="xl:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
-                     <!-- Controls Moved Down to Scene Container v2.258 -->
-                    </div>
+                    <!-- v2.655: Mini Sliders Cluster -->
+                         <!-- Mini Slider 2: Active Agent --><!-- Reverted Mini Slider Logic: Using Existing Container via CSS -->
                 </div>
             </div>
 

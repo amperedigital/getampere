@@ -1,5 +1,11 @@
-## [v2.654] - 2026-01-28
-- **Dead Man Zone (Overlap Fix - Final)**:
+## [v2.655] - 2026-01-28
+- **DMZ Layout (Mini Controller)**:
+    - **Concept**: For the Tablet Portrait / "Dead Man Zone" (820px-1023px), we moved the slider controls from the bottom of the screen to the top right header area.
+    - **Implementation**: Instead of creating duplicate DOM elements, we used CSS to reposition the existing `#mobile-sliders-container`.
+    - **Styling**: Applied specific "Mini Mode" styling (compressed width, smaller font, blurred background) only in this media query range.
+    - **Fix**: Prevents the controls from overlapping the Neural Net visualization in the center of the screen.
+
+## [v2.654-failed] - 2026-01-28
     - **Removal**: Removed `md:h-[600px]` from the responsive ring container. This class was forcing a fixed 600px height on tablets (768px+), which conflicted with the "Mobile Stack" logic desired for the 820px-1023px range.
     - **Styling**: Ensured the `.aspect-square-mobile-override` class applies `margin-bottom: 2rem` and `position: relative` to force the slider cluster downwards in the document flow, preventing overlay.
     - **Uniformity**: Now, the Dead Man Zone (820-1023px) behaves exactly like Mobile (Vertical Stack, Controlled Height), consistent with the user's requirement.
