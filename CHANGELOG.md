@@ -1,3 +1,10 @@
+## [v2.668] - 2026-01-29
+- **Mobile Sticky Controller (<820px)**:
+    - **Behavior**: Restored "Sticky/Fixed Bottom" behavior for the Mobile Sliders on screens narrower than 820px.
+    - **CSS**: Applied `position: fixed` to `#mobile-sliders-container` (scoped to `max-width: 819px`). This ensures the controls remain accessible at the bottom of the viewport while scrolling through the long "Right Column" content (Use Cases, Cards).
+    - **Visual**: Added a subtle dark gradient backdrop to the fixed container to ensure legibility when overlaying scrolling content.
+    - **Tablet**: Preserved the "Side-by-Side" relative layout for 820px+ (Tablet/Desktop).
+
 ## [v2.667] - 2026-01-29
 - **Vertical Tightening**:
     - **Visuals Wrapper**: Removed `py-2` padding from the flex-grow container surrounding the main visualization ring. This removes approximately 1rem of vertical whitespace, allowing the visualization to sit as tight as possible against its container boundaries.
