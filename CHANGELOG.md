@@ -2861,3 +2861,7 @@
 
 ## [v2.772] - 2026-01-30
 - **Visuals**: Further reduced "Listening Phase" breathing pulse speed (1.0x -> 0.35x) to achieve a ~20s cycle for Deep Listening.
+
+## [v2.773] - 2026-01-30
+- **Visuals**: Disabled "Circuit Path Flashing" for electrons. Data now moves as isolated dots without lighting up the tracks, reducing visual noise.
+- **Visuals**: Reduced electron movement speed by 90% during the "Listening Phase" to create a calm, thinking state vs active calculation.

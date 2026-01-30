@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.772 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.773 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2084,6 +2084,12 @@ export class TechDemoScene {
                                 // Accelerate electrons during speech bursts
                                 let computedSpeed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03) + (voiceBoost * 0.05); 
                                 
+                                // v2.773: Deep Listening Slow Down
+                                // If connected but just listening (not processing/speaking), slow data to a crawl.
+                                if (this.voiceConnected && !this.voiceActive && !this.processingState) {
+                                     computedSpeed *= 0.1; // 10% speed
+                                }
+
                                 // v2.762: Processing Speed Boost
                                 if (this.processingState) {
                                     computedSpeed *= 2.5; // High velocity data
@@ -2096,7 +2102,10 @@ export class TechDemoScene {
                     }
                     if (e.active) {
                         const pathId = e.pathIndex;
-                        if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
+                        // v2.773: Disable Line Flash (Dots Only)
+                        // User Request: "Show them as dots rather than lines"
+                        // if (this.circuitMeshes && this.circuitMeshes[pathId]) this.circuitMeshes[pathId].userData.intensity = 1.0;
+                        
                         e.t += e.speed;
                         if (e.t >= 1.0) { e.active = false; e.mesh.visible = false; e.delay = Math.random() * 30; }
                         else {
