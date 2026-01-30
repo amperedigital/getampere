@@ -1,3 +1,7 @@
+## [v2.723] - 2026-01-29
+### Fixed
+- **Mobile Layout**: Centered the `#mobile-sliders-container` properly in the left column on mobile/tablet views (removed `md:ml-auto` / `md:w-1/2` offset) and ensured it has correct vertical spacing (`mt-12`) from the content above.
+
 ## [v2.722] - 2026-01-29
 ### Changed
 - **Tech Demo Layout (Symmetry)**: Reverted card grid to `gap-4` (1rem) and adjusted the central column gutter (Left Header / Right Column) to match exactly (0.5rem padding on each side for a 1rem total gutter), ensuring perfect visual alignment between the grid and the main layout seam.
