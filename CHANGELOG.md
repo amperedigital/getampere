@@ -2888,3 +2888,9 @@
   - **Core Rotation**: Reduced spin speed boost from 4.0x to 1.5x.
   - **Electron Swarm Speed**: Reduced from 2.5x (frenzied) to 0.8x (slower than baseline).
   - **Swarm Density**: Halved the spawn probability (0.8 -> 0.4) for a cleaner look.
+
+## [v2.778] - 2026-01-30
+### Changed
+- **Neutral Computation State**: Reset visual multipliers for 'Processing' state to exactly 1.0x as requested.
+  - **Core Rotation**: Set to 1.0x (was 1.5x).
+  - **Electron Speed**: Set to 1.0x (was 0.8x).

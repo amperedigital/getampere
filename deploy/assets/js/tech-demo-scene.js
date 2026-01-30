@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.777 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.778 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1982,8 +1982,10 @@ export class TechDemoScene {
              let shellRotation = currentSpeed;
 
              if (this.processingState) {
-                 // v2.777: Calm Computation - Reduced from 4.0 -> 1.5 to eliminate "buzzing"
-                 coreRotation *= 1.5;
+                 // v2.778: True Neutral Computation
+                 // User Request: "Let's take it to 1x"
+                 // Reset multiplier to 1.0 (Baseline)
+                 coreRotation *= 1.0;
                  // Shell stays at 1.0x (or maybe slight boost 1.2x if needed, but keeping calm for now)
              }
 
@@ -2101,9 +2103,10 @@ export class TechDemoScene {
 
                                 // v2.762: Processing Speed Boost
                                 if (this.processingState) {
-                                    // v2.777: Calm Computation - Reduced from 2.5 -> 0.8 (Slower than baseline)
-                                    // Gentle "flow" of thought, not a data storm.
-                                    computedSpeed *= 0.8; 
+                                    // v2.778: True Neutral Computation
+                                    // User Request: "Let's take it to 1x"
+                                    // Reset multiplier to 1.0 (Baseline)
+                                    computedSpeed *= 1.0; 
                                 }
 
                                 e.speed = computedSpeed;
