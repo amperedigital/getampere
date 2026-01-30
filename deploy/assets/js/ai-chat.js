@@ -570,6 +570,7 @@ export class AmpereAIChat {
                 bars.forEach(b => b.classList.remove('animate-pulse'));
 
                 // Fast update for smooth organic motion (approx 20fps is enough for this look)
+                // v2.744: Increased update rate to 40ms (25fps) to drive the 3D scene harder
                 this.uvInterval = setInterval(() => {
                     let avgLevel = 0;
 
@@ -594,13 +595,14 @@ export class AmpereAIChat {
                         else avgLevel += (flux * 0.5);
                     });
 
-                    // v2.735: Sync 3D Orb Pulse Magnitude
-                    // AvgLevel max approx 1 + 2 = 3. Normalize to 0..1
+                    // v2.744: Sync 3D Orb - Boosted Signal
+                    // We send a more volatile signal to ensure the "dramatic" effect transfers.
+                    // Removed division dampening to send raw power.
                     if (window.demoScene && typeof window.demoScene.setVoiceLevel === 'function') {
-                         window.demoScene.setVoiceLevel(Math.min(avgLevel / 2.5, 1.0));
+                         window.demoScene.setVoiceLevel(Math.min(avgLevel / 1.8, 1.0)); // Less dampening (was 2.5)
                     }
 
-                }, 80);
+                }, 40);
             }
             
         } else {

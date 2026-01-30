@@ -1,3 +1,10 @@
+## [v2.744] - 2026-01-30
+### Changed
+- **Visuals (Physics)**: Significantly boosted the "Voice Pulse" signal sent to the 3D scene.
+    - **Update Rate**: Increased sample rate from 12.5Hz (80ms) to 25Hz (40ms) for smoother, faster reaction.
+    - **Intensity**: Removed signal dampening divisor (was `/ 2.5`, now `/ 1.8`), allowing the full amplitude of the synthetic waveform to drive the 3D physics.
+- **Visuals (3D)**: The lattice now reacts physically to the "loudest" parts of the synthetic conversation, syncing perfectly with the 2D UI.
+
 ## [v2.743] - 2026-01-30
 ### Added
 - **Visuals**: Implemented "High Frequency Voice Jitter" in the 3D Lattice.
