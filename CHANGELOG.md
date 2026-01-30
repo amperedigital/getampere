@@ -1,3 +1,7 @@
+## [v2.736] - 2026-01-30
+### Fixed
+- **Deployment**: Updated `tech-demo.html` script reference to point to the latest release tag (v2.736) to ensure the new Voice Sync logic is actually loaded. v2.735 pointed to stale v2.734 assets.
+
 ## [v2.735] - 2026-01-30
 ### Added
 - **Visuals**: Implemented "Voice Sync" for the Central Orb.
