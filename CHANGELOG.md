@@ -2855,3 +2855,6 @@
 ## [v2.742] - 2026-01-30
 - **Fix**: Updated HTML cache-busting entry point for `tech-demo-main.js` to ensure `tech-demo-scene.js` v2.741 is loaded.
 - **Maintenance**: Manual dependency bump for Tech Demo.
+
+## [v2.771] - 2026-01-30
+- **Visuals**: Reduced "Listening Phase" breathing pulse speed by 33% (1.5x -> 1.0x) for a calmer attention state as requested.
