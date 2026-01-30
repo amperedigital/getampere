@@ -2613,3 +2613,9 @@
 - **Visuals**: Transferred Voice Sync Color Modulation from Central Orb to Lattice Nodes per user feedback ("Pulse Beams").
 - **Visuals**: Nodes now flash Bright Green when Voice Agent speaks.
 - **Visuals**: Reverted Central Orb color logic to Static Blue, retaining intensity pulse.
+## [v2.742] - 2026-01-30
+- **Fix**: Updated HTML cache-busting entry point for  to ensure  v2.741 is loaded.
+- **Maintenance**: Manual dependency bump for Tech Demo.
+## [v2.742] - 2026-01-30
+- **Fix**: Updated HTML cache-busting entry point for `tech-demo-main.js` to ensure `tech-demo-scene.js` v2.741 is loaded.
+- **Maintenance**: Manual dependency bump for Tech Demo.
