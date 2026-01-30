@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.761 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.762 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -736,12 +736,39 @@ export class TechDemoScene {
     setVoiceState(isActive) {
         console.log('[TechDemo] setVoiceState:', isActive);
         this.voiceActive = isActive;
+        
+        // v2.762: Processing State Reset
+        // If we are setting a voice state (Speaking or Listening), we MUST clear the "Thinking" override.
+        if (this.processingState) {
+            this.setProcessingState(false);
+        }
+
         if (isActive) {
              // Talking: Green (Emergency Override)
              this.targetCoreColor.copy(this.voiceColorTalking);
         } else {
              // Thinking/Idle: Blue
              this.targetCoreColor.copy(this.voiceColorThinking);
+        }
+    }
+
+    // v2.762: Neural Acceleration State (Thinking)
+    // "Thinking" is the gap between User Silence and Agent Speech.
+    // Visuals: White Core, Hyper-Rotation, Electron Swarm.
+    setProcessingState(isProcessing) {
+        console.log('[TechDemo] setProcessingState:', isProcessing);
+        this.processingState = isProcessing;
+
+        if (isProcessing) {
+            // override colors to White/Violet for "Hot Computation"
+            this.targetCoreColor.setHex(0xffffff);
+        } else {
+            // revert to standard state logic (handled by setVoiceState/animate)
+             if (this.voiceActive) {
+                 this.targetCoreColor.copy(this.voiceColorTalking);
+             } else {
+                 this.targetCoreColor.copy(this.voiceColorThinking);
+             }
         }
     }
 
@@ -1894,8 +1921,16 @@ export class TechDemoScene {
              // The Sphere has rotation.x = 90deg (PI/2).
              // This maps local Z axis to World -Y axis (pointing down).
              // To spin like a top (around World Y), we rotate around Local Z.
-             if (currentSpeed > 0.0001) {
-                 this.centralSphere.rotateZ(currentSpeed);
+             
+             // v2.762: Processing Turbo-Spin
+             // If processing, multiple speed by 4.0 for "Thinking" visual.
+             let rotationOutput = currentSpeed;
+             if (this.processingState) {
+                 rotationOutput *= 4.0;
+             }
+
+             if (rotationOutput > 0.0001) {
+                 this.centralSphere.rotateZ(rotationOutput);
                  
                  // --- OUTER SHELL ROTATION (Contra-Rotation + Biaxial) ---
                  // Rotate the lattice structure in the opposite direction
@@ -1908,11 +1943,11 @@ export class TechDemoScene {
                      // Wait, previous code was -0.5. 
                      // User asked to "Reverse the outer sphere's axial rotation".
                      // So we change sign from - to +.
-                     this.outerShell.rotateY(currentSpeed * 0.30); 
+                     this.outerShell.rotateY(rotationOutput * 0.30); 
                      
                      // 2. Secondary Axis: Tumble (Biaxial)
                      // Adding X-axis rotation creates a complex gyroscopic tumble ("Gimbal" feel)
-                     this.outerShell.rotateX(currentSpeed * 0.15); 
+                     this.outerShell.rotateX(rotationOutput * 0.15); 
                  }
              }
         }
@@ -1983,14 +2018,27 @@ export class TechDemoScene {
                              // v2.761: Sync Electron Spawning with Voice Pulses
                              // Inject voiceLevel (via pulseVal) into the probability
                              const voiceBoost = (this.pulseVal || 0) * 0.5;
-                             const spawnChance = (0.01 + (activityLevel * 0.1) + voiceBoost) * this.simIntensity;
+                             let spawnChance = (0.01 + (activityLevel * 0.1) + voiceBoost) * this.simIntensity;
+                             
+                             // v2.762: Processing Swarm Override
+                             if (this.processingState) {
+                                 spawnChance = 0.8; // Almost guarantee spawn (High Traffic)
+                             }
 
                              if (this.simIntensity > 0.1 && Math.random() < spawnChance) {
                                 e.active = true;
                                 e.pathIndex = Math.floor(Math.random() * this.paths.length);
                                 e.t = 0; 
+                                
                                 // Accelerate electrons during speech bursts
-                                e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03) + (voiceBoost * 0.05); 
+                                let computedSpeed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03) + (voiceBoost * 0.05); 
+                                
+                                // v2.762: Processing Speed Boost
+                                if (this.processingState) {
+                                    computedSpeed *= 2.5; // High velocity data
+                                }
+
+                                e.speed = computedSpeed;
                                 e.mesh.visible = true;
                              }
                         }

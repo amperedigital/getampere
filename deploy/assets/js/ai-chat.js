@@ -276,6 +276,15 @@ export class AmpereAIChat {
         if (props && props.message) {
             const role = (props.source === 'user') ? 'user' : 'agent';
             this.addMessage(props.message, role);
+
+            // v2.762: Trigger "Thinking" State on User Input Finalization
+            if (role === 'user') {
+                if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                    window.demoScene.setProcessingState(true);
+                }
+                // Update Status Pill
+                this.updateStatusUI('connected', 'Computing...');
+            }
         }
     }
 
@@ -548,13 +557,17 @@ export class AmpereAIChat {
 
     handleModeChange(modeData) {
         const isSpeaking = modeData.mode === 'speaking';
+        
+        // v2.762: Reset Thinking State Override
+        // If the mode changes (either to Speaking OR Listening), we exit the "Thinking" state.
+        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+            window.demoScene.setProcessingState(false);
+        }
+
         // v2.593: Fixed null reference to statusText. Using updateStatusUI or direct modification if needed.
         // Actually, let's just update the Pill Text if connected.
         if (this.isConnected) {
              const statusMsg = isSpeaking ? "Agent Speaking" : "Listening...";
-             // We can't easily change just the text in the pill without rebuilding it or storing a ref.
-             // For now, let's stick to 'Secure Connection' or generic status to avoid flickering, 
-             // OR rebuild the pill status.
              this.updateStatusUI('connected', statusMsg);
         }
         

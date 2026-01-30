@@ -1,3 +1,14 @@
+## [v2.762] - 2026-01-30
+### Added
+- **Visuals (3D)**: "Thinking Mode" (Processing State).
+    - **Trigger**: Activates immediately when the User Transcript is finalized (before Agent Audio starts).
+    - **Visual**:
+        - **Rotation**: Core spins at 4.0x velocity.
+        - **Data Swarm**: Electron spawn rate forced to 80% (High Traffic).
+        - **Color**: Core turns bright White (Logic overridden via `tech-demo-scene.js`).
+    - **Reset**: Deactivates automatically when SDK signals a Mode Change (to Speaking or Listening).
+    - **UI**: Status Pill updates to "Computing..." during this inference gap.
+
 ## [v2.761] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: Synchronized Lighting Systems (Voice Sync).
