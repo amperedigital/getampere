@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.767 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.768 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2121,8 +2121,8 @@ export class TechDemoScene {
                 let target = Math.max(0.2, Math.min(rawInput, 1.0));
 
                 if (target > this.pulseVal) {
-                    // Attack: Fast (0.4) for sharp syllable onset (The "Flash").
-                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.4);
+                    // Attack: Reduced to 0.2 (was 0.4) to "slow down" the light show (v2.768)
+                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.2);
                 } else {
                     // Decay: Tuned (0.04) to glide down to the 0.2 floor.
                     // Fast enough to show separation, slow enough to look "decayed" not cut.
@@ -2227,11 +2227,11 @@ export class TechDemoScene {
                          // Color Snap (Green) logic preserved
                          effectiveColor = this.voiceColorTalking;
                          
-                         // Intensity: Proportional boost (up to +35)
-                         finalIntensity += (voiceDrive * 35.0);
+                         // Intensity: Reduced by 50% (35.0 -> 17.5) for less "flashbang" (v2.768)
+                         finalIntensity += (voiceDrive * 17.5);
                          
-                         // Physical Kick: Proportional
-                         voiceScaleImpact = voiceDrive * 0.7;
+                         // Physical Kick: Reduced by 50% (0.7 -> 0.35)
+                         voiceScaleImpact = voiceDrive * 0.35;
                     }
                 }
                 

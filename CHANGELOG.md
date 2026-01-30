@@ -1,3 +1,13 @@
+## [v2.768] - 2026-01-30
+### Tuning
+- **Visuals (3D)**: "Stealth Mode" Light Show Calibration.
+    - **Issue**: The restored "Speaker Cone" (Outer Lattice) effect was too intense/distracting.
+    - **Fix**: Slowed down and softened the light emission logic.
+        - **Intensity**: Reduced Peak Emission Multiplier by 50% (`35.0` -> `17.5`).
+        - **Attack Speed**: Slowed down the "Flash" onset by 50% (`0.4` -> `0.2` Lerp) for a smoother pulse.
+        - **Physical Scale**: Reduced the node expansion kick by 50% (`0.7` -> `0.35`).
+    - **Result**: The outer lights still indicate voice activity, but gently pulse rather than strobe.
+
 ## [v2.767] - 2026-01-30
 ### Fixed
 - **Visuals (3D)**: "Speaker Cone" Visibility Restoration.
