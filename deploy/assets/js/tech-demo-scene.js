@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.745 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.746 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2076,3 +2076,4 @@ export class TechDemoScene {
         this.renderer.render(this.scene, this.camera);
     }
 }
+// Force update v2.746

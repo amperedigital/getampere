@@ -1,3 +1,8 @@
+## [v2.746] - 2026-01-30
+### Fixed
+- **Deployment**: Patched `scripts/publish.sh` to correctly trigger `tech-demo.html` updates when `tech-demo-scene.js` is modified (dependency chaining).
+- **Visuals**: Ensured the v2.745 Color Update (Amber/Blue) is actually propagated to the live site.
+
 ## [v2.745] - 2026-01-30
 ### Changed
 - **Visuals**: Updated 3D Agent color palette to match Ampere brand identity.
