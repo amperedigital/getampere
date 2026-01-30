@@ -317,8 +317,26 @@ export class AmpereAIChat {
                 sceneText.classList.add('text-red-500');
                 sceneText.style.color = '#ef4444'; 
             }
+        } else {
+             // v2.747: Auto-Injection of Status Text if missing (Fixes "Display Missing" bug)
+             console.log('[AI-Chat] Status Text element missing. Injecting...');
+             const span = document.createElement('span');
+             span.className = 'ampere-status-text text-[10px] uppercase text-slate-500 tracking-widest font-mono transition-colors duration-300';
+             span.innerText = message;
+             
+             // Apply initial state
+             if (state === 'connecting') {
+                span.classList.add('text-yellow-400', 'animate-pulse');
+                span.style.color = '#facc15'; 
+             } else if (state === 'connected') {
+                span.classList.add('text-blue-400');
+                span.style.color = '#60a5fa'; 
+             }
+             
+             this.statusTarget.appendChild(span);
+        }
 
-            // 3. Inject Visualizer (If needed)
+        // 3. Inject Visualizer (If needed)
             if (state === 'connecting' || state === 'connected') {
                 // v2.625: Enforce Correct Location Logic
                 const explicitContainer = document.getElementById('voice-visualizer-container');
@@ -363,7 +381,6 @@ export class AmpereAIChat {
             }
             
             return; // EXIT: Do not run legacy destructive code
-        }
         
         console.log('[AI-Chat] Destructive Update path active (No sceneText found).');
         // We inject into the Pill (Text | Dots | Visualizer)

@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.746 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.747 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1814,8 +1814,8 @@ export class TechDemoScene {
                 if (this.voiceActive) {
                      if (this.voiceLevel > 0) {
                           // Talking: Green Flash (Level 0..1)
-                          // Major intensity boost
-                          currentCore += (this.voiceLevel * 1.2); 
+                          // v2.747: Amp up core intensity
+                          currentCore += (this.voiceLevel * 2.5); 
                      }
                 } else if (this.systemState === 'ACTIVE') {
                      // Thinking/Active Idle (Only when Connected)
@@ -2037,11 +2037,13 @@ export class TechDemoScene {
                     const activeLevel = this.voiceLevel * jitter;
 
                     // 2. Color Snap (Rapid response)
-                    const voiceFactor = Math.min(1.0, activeLevel * 3.0); 
+                    // v2.747: Adjusted for smoother color gradient at low volume
+                    const voiceFactor = Math.min(1.0, activeLevel * 2.0); 
                     effectiveColor = data.baseColor.clone().lerp(this.voiceColorTalking, voiceFactor);
                     
                     // 3. Intensity Pulse (Brightness)
-                    finalIntensity += (activeLevel * 2.5);
+                    // v2.747: Amp up node intensity (2.5 -> 5.0)
+                    finalIntensity += (activeLevel * 5.0);
 
                     // 4. Physical Pulse (Scale)
                     voiceScaleImpact = activeLevel * 0.7; 

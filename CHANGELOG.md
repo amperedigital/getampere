@@ -1,3 +1,12 @@
+## [v2.747] - 2026-01-30
+### Fixed
+- **UI**: Added robust fallbacks for the Status Monitor text (`Agent Listening` / `Agent Speaking`). If the element (`.ampere-status-text`) is missing from the DOM (e.g., during animations or redraws), the controller now auto-injects it to prevent the "disappearing text" bug.
+
+### Changed
+- **Visuals**: "Amped Up" the 3D Light Intensity.
+    - **Core Light**: Increased voice reaction multiplier from 1.2x to 2.5x.
+    - **Node Grid**: Doubled intensity pulse (2.5x -> 5.0x) and tuned color interpolation for smoother gradients.
+
 ## [v2.746] - 2026-01-30
 ### Fixed
 - **Deployment**: Patched `scripts/publish.sh` to correctly trigger `tech-demo.html` updates when `tech-demo-scene.js` is modified (dependency chaining).
