@@ -1,16 +1,6 @@
 ## [v2.731] - 2026-01-30
-### Fixed
-- **Tech Demo Scene**: Updated `initCircuitryPaths` in `TechDemoScene` to use the dynamic `this.config.sphereRadius` instead of hardcoded legacy values. This fixes the issue where circuit paths and pads were rendering inside the newly enlarged orb because their `surfaceRadius` calculation was based on smaller, hardcoded dimensions.
-
-## [v2.730] - 2026-01-30
-### Changed
-- **Visuals**: Increased the central orb diameter by 20% across all devices. Updated base `data-sphere-radius` to `1.037` (Desktop) and mobile override to `1.244` (Mobile).
-
-## [v2.729] - 2026-01-30
-### Changed
-- **Tech Demo Architecture**: Refactored the Central Orb Radius logic in `TechDemoScene` to use a data attribute (`data-sphere-radius`) instead of hardcoded magic numbers.
-- **Configuration**: Added `data-sphere-radius="0.864"` to the `tech-demo.html` scene container as the source of truth for the orb size.
-- **Responsiveness**: Updated `tech-demo-main.js` to dynamically override the radius to `1.037` on mobile devices, preserving the larger visual appearance for small screens while maintaining a cleaner codebase.
+### Reverted
+- **Tech Demo**: Reverted orb size changes (v2.729, v2.730) due to animation breakage. The system is back to the stable state (0.864/1.037 radius).
 
 ## [v2.728] - 2026-01-29
 ### Changed
