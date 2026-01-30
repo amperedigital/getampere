@@ -1,3 +1,13 @@
+## [v2.765] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Stealth Core" Material Transition (Refined Ghost Mode).
+    - **Concept**: Switched from "Transparency Fade" to "Lights Out / Matte Fade".
+    - **Reason**: Transparency caused refraction/reflection artifacts ("animated glass") that were still distracting.
+    - **Implementation**:
+        - **Material**: Transitions from **Glossy Black** (Standby) to **Matte Black** (Roughness 1.0, Clearcoat 0.0) during Speaking/Thinking.
+        - **Lighting**: Internal `coreLight` intensity dimmed to 0.0 using a dedicated lerp damper.
+    - **Result**: The core effectively becomes a "Black Hole" or void during activity, obscuring distractions without the business of a refractive glass shader.
+
 ## [v2.764] - 2026-01-30
 ### Fixed
 - **Visuals (3D)**: "Thinking Mode" Rotation Decoupling.

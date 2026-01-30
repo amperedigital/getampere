@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.764 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.765 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1876,6 +1876,20 @@ export class TechDemoScene {
                 }
             }
 
+            // v2.765: Compute Core Dimmer for Stealth Mode
+            // When talking/thinking, we dim the lights to reduce distraction.
+            // Using a persistent lerp value on the instance.
+            if (this.coreDimmer === undefined) this.coreDimmer = 1.0;
+            
+            let targetDimmer = 1.0;
+            if (this.voiceConnected && (this.voiceActive || this.processingState)) {
+                 targetDimmer = 0.0;
+            }
+            this.coreDimmer = THREE.MathUtils.lerp(this.coreDimmer, targetDimmer, 0.1);
+            
+            // Apply dimmer to calculated intensity
+            currentCore *= this.coreDimmer;
+
             if (this.coreLight) {
                  this.coreLight.intensity = currentCore;
                  
@@ -1919,30 +1933,30 @@ export class TechDemoScene {
                  this.outerShell.scale.set(newScale, newScale, newScale);
              }
              
-             // v2.763: Hide Central Orb during Intense Activity (Talking/Thinking)
+             // v2.765: Stealth Mode Mechanism (Matte Black Transition)
+             // Instead of fading to transparency (which causes ghosting), we "Turn Off The Lights".
+             // We transition the material to be fully matte and non-reflective, creating a "Black Hole" effect.
              if (this.centralSphere && this.centralSphere.material) {
-                 let targetOpacity = 1.0;
-                 if (this.voiceConnected) {
-                     // If Speaking OR Thinking -> Hide Orb (Ghost Mode)
-                     // Allow electrons (data) to be the primary visual
-                     if (this.voiceActive || this.processingState) {
-                         targetOpacity = 0.0;
-                     }
-                 }
-                 const currentOpacity = this.centralSphere.material.opacity;
-                 // v2.764: Faster Fade (0.1) + Depth Management
-                 this.centralSphere.material.opacity = THREE.MathUtils.lerp(currentOpacity, targetOpacity, 0.1);
+                 let targetRoughness = 0.15; // Default Glossy
+                 let targetClearcoat = 1.0;  // Default Glass
                  
-                 // Handle Depth Write to prevent "Ghost Glass" occlusion when fading
-                 if (this.centralSphere.material.opacity < 0.9) {
-                     this.centralSphere.material.depthWrite = false;
-                     this.centralSphere.material.transparent = true; // Ensure transparent is set
-                 } else {
-                     this.centralSphere.material.depthWrite = true;
+                 // If Talking or Thinking -> Go Matte Black (Stealth)
+                 if (this.voiceConnected && (this.voiceActive || this.processingState)) {
+                     targetRoughness = 1.0;
+                     targetClearcoat = 0.0;
                  }
+                 
+                 // Smooth Material Transition
+                 const currentRough = this.centralSphere.material.roughness;
+                 const currentClear = this.centralSphere.material.clearcoat;
+                 
+                 this.centralSphere.material.roughness = THREE.MathUtils.lerp(currentRough, targetRoughness, 0.1);
+                 this.centralSphere.material.clearcoat = THREE.MathUtils.lerp(currentClear, targetClearcoat, 0.1);
 
-                 // Optimization & Final Hiding
-                 this.centralSphere.material.visible = (this.centralSphere.material.opacity > 0.001);
+                 // Reset v2.763 Transparency Logic (Ensure Solid)
+                 this.centralSphere.material.opacity = 1.0;
+                 this.centralSphere.material.depthWrite = true;
+                 this.centralSphere.material.visible = true;
              }
              
              // Rotation Axis: World Y (Vertical Spin)
