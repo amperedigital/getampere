@@ -2881,3 +2881,10 @@
   - **Electron Speed**: Reduced to 15% of baseline (was 40%).
   - **Core Flash Intensity**: Reduced max multiplier from 4.5x to 2.0x.
   - **Pulse Attack**: Slowed Lerp from 0.1 to 0.06 for very soft swells.
+
+## [v2.777] - 2026-01-30
+### Changed
+- **Computing/Thinking State Calm**: Drastically reduced visual activity during the 'Processing' signal (Thinking) to match the new 'Gentle' philosophy.
+  - **Core Rotation**: Reduced spin speed boost from 4.0x to 1.5x.
+  - **Electron Swarm Speed**: Reduced from 2.5x (frenzied) to 0.8x (slower than baseline).
+  - **Swarm Density**: Halved the spawn probability (0.8 -> 0.4) for a cleaner look.
