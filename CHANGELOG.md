@@ -1,4 +1,4 @@
-## [v2.731] - 2026-01-30
+## [v2.732] - 2026-01-30
 ### Reverted
 - **Tech Demo**: Reverted orb size changes (v2.729, v2.730) due to animation breakage. The system is back to the stable state (0.864/1.037 radius).
 
