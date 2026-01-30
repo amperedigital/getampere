@@ -1,3 +1,11 @@
+## [v2.770] - 2026-01-30
+### Tuning
+- **Active State Calibration**: Reduced the visual intensity of the "Idle/Thinking" state (when not speaking) by ~30% to reduce distraction.
+    - **Firing Rate**: Reduced flash probability from `0.02` to `0.014`.
+    - **Flash Duration**: Increased cooldown period (slower cycle) from `20-80` frames to `30-100` frames.
+    - **Flash Intensity**: Reduced max brightness multiplier from `0.8` to `0.56`.
+    - **Proximity Flare**: Reduced the highlight intensity as nodes pass the center from `1.0` to `0.7`.
+
 ## [v2.769] - 2026-01-30
 ### Tuning
 - **Stealth Mode Latency**: Implemented "Instant Attack" for the transition to darkness.

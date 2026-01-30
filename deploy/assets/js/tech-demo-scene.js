@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.769 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.770 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2167,10 +2167,11 @@ export class TechDemoScene {
                         data.fireCooldown -= 1; 
                     } else {
                         // Only fire if simIntensity is high enough to trigger
-                        // Using '1.0' as probability baseline.
-                        if (Math.random() < 0.02 * this.simIntensity) {
+                        // v2.770: Reduced Probability by 30% (0.02 -> 0.014) for calmer idle state
+                        if (Math.random() < 0.014 * this.simIntensity) {
                             data.firingState = 1.0; 
-                            data.fireCooldown = 20 + Math.random() * 60; 
+                            // v2.770: Slower Cadence (Increased Cooldown)
+                            data.fireCooldown = 30 + Math.random() * 70; 
                         }
                     }
                 } else {
@@ -2186,13 +2187,13 @@ export class TechDemoScene {
                     tempV.project(this.camera);
                     const dist = Math.sqrt(tempV.x * tempV.x + tempV.y * tempV.y);
                     const factor = 1 - (dist / maxDist);
-                    // Reduced proximity flare (was * 2.0)
-                    proximityIntensity = Math.pow(factor, 2) * 1.0; 
+                    // Reduced proximity flare (was * 2.0, then 1.0, now 0.7 for v2.770)
+                    proximityIntensity = Math.pow(factor, 2) * 0.7; 
                     proximityScale = factor * 0.4;
                 }
 
-                // Base Chaos Intensity (Significantly reduced firing multiplier to 0.8)
-                let chaosIntensity = Math.max(proximityIntensity, data.firingState * 0.8);
+                // Base Chaos Intensity (Reduced by 30% from 0.8 -> 0.56 for v2.770)
+                let chaosIntensity = Math.max(proximityIntensity, data.firingState * 0.56);
                 
                 // v2.748: Suppress Background Chaos when Speaking
                 // We want the voice pulses to emerge from "darkness", not a busy background.
