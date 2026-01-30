@@ -1,3 +1,7 @@
+## [v2.728] - 2026-01-29
+### Changed
+- **iPad Pro Layout (Width)**: Removed the `max-width: 24rem` constraint from the mobile sliders container in the iPad Pro (1024px) media query. This allows the sliders to expand to their natural full width (with standard padding), responding to the user's request to "unrestrict" the width for this breakpoint.
+
 ## [v2.727] - 2026-01-29
 ### Changed
 - **iPad Pro Layout**: Changed `#tech-demo-header` positioning from `absolute` to `relative` in the 1024px media query. This resolves stacking issues where the header was overlapping the slider controls, allowing them to stack naturally in the document flow.
