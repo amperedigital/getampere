@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.758 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.759 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1861,23 +1861,26 @@ export class TechDemoScene {
                  currentSpeed = 0;
              }
 
-             // v2.757: Dynamic Lattice Expansion (Breathing Speaker Cone)
-             // Logic: Speak = Expansion (1.0), Silence = Contraction/Pause (0.85)
-             // Separation driven by smooth lerp (snappy attack, smooth release)
+             // v2.759: Dynamic Lattice Expansion (Breathing Speaker Cone)
+             // Logic: Speak = Expansion (0.85 -> 1.15 depending on volume), Silence = Contract (0.85)
+             // This creates the "out-in" pumping effect synchronized with voice energy
              if (this.outerShell) {
                  let targetScale = 1.0; 
                  if (this.voiceConnected) {
                      if (this.voiceActive) {
-                         targetScale = 1.0; 
+                         // Speaker Cone Effect: Map volume to scale
+                         // Base: 0.85 (Contracted)
+                         // Max: 1.15 (Expanded)
+                         const volumeKick = Math.pow(this.voiceLevel || 0, 0.8); // Mild curve to keep it responsive
+                         targetScale = 0.85 + (volumeKick * 0.3); 
                      } else {
-                         // Pause: Contract inwards but do not clip inner sphere (1.5 -> 1.05 limit)
-                         // 0.85 provides a visible "in-breath" standby state
+                         // Silence: Contract inwards
                          targetScale = 0.85; 
                      }
                  }
                  const currentScale = this.outerShell.scale.x;
-                 // Lerp Speed: 10% per frame for organic "lung" feel
-                 const newScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+                 // Lerp Speed: 0.2 for snappy "Kick" response (was 0.1)
+                 const newScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.2);
                  this.outerShell.scale.set(newScale, newScale, newScale);
              }
              

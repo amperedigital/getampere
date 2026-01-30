@@ -1,3 +1,13 @@
+## [v2.759] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Dynamic Speaker Cone Physics (Volume Sync).
+    - **Issue**: Previous "Expansion" (v2.758) was a static boolean state (Open/Closed), leading to a rigid look.
+    - **Fix**: The Lattice expansion is now driven by `voiceLevel` magnitude.
+    - **Mechanic**:
+        - **Silence**: Scale 0.85.
+        - **Speaking**: Scale varies dynamically from 0.85 to 1.15 based on volume.
+    - **Physics**: Increased Lerp speed (0.1 -> 0.2) for snappier "Subwoofer-style" kick response.
+
 ## [v2.758] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Breathing Lattice" Expansion.
