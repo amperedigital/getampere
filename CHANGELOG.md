@@ -1,3 +1,7 @@
+## [v2.730] - 2026-01-30
+### Changed
+- **Visuals**: Increased the central orb diameter by 20% across all devices. Updated base `data-sphere-radius` to `1.037` (Desktop) and mobile override to `1.244` (Mobile).
+
 ## [v2.729] - 2026-01-30
 ### Changed
 - **Tech Demo Architecture**: Refactored the Central Orb Radius logic in `TechDemoScene` to use a data attribute (`data-sphere-radius`) instead of hardcoded magic numbers.
