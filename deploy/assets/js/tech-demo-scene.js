@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.737 (Voice Sync Enabled)");
+        console.log("Tech Demo Scene Initialized - v2.738 (Voice Sync Enabled)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -717,15 +717,17 @@ export class TechDemoScene {
 
     // v2.735: Voice Sync Methods
     setVoiceConnected(isConnected) {
+        console.log('[TechDemo] setVoiceConnected:', isConnected);
         this.voiceConnected = isConnected;
         if (!isConnected) {
-            // Reset to default Active color (Blue) immediately
+             // Reset to default Active color (Blue) immediately
              this.targetCoreColor.setHex(0x0088ff);
              this.voiceActive = false;
         }
     }
 
     setVoiceState(isActive) {
+        console.log('[TechDemo] setVoiceState:', isActive);
         this.voiceActive = isActive;
         if (isActive) {
              // Talking: Green (Emergency Override)
@@ -738,6 +740,7 @@ export class TechDemoScene {
 
     setVoiceLevel(level) {
         // level: 0.0 to 1.0 (from visualizer)
+        // console.log('[TechDemo] Level:', level); // Too noisy
         this.voiceLevel = level;
     }
 

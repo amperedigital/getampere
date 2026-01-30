@@ -457,8 +457,11 @@ export class AmpereAIChat {
         this.isConnected = true;
         
         // v2.735: Sync 3D Scene Connection State
+        console.log('[AmpereChat] Connected (Bridge Attempt)');
         if (window.demoScene && typeof window.demoScene.setVoiceConnected === 'function') {
             window.demoScene.setVoiceConnected(true);
+        } else {
+             console.warn('[AmpereChat] Bridge Failed: window.demoScene not found');
         }
 
         this.updateStatusUI('connected', 'Secure Connection');
@@ -549,6 +552,8 @@ export class AmpereAIChat {
         // v2.735: Sync 3D Scene Voice State
         if (window.demoScene && typeof window.demoScene.setVoiceState === 'function') {
             window.demoScene.setVoiceState(isActive);
+        } else {
+            console.warn('[AmpereChat] Bridge Failed: window.demoScene not found or missing setVoiceState');
         }
         
         const bars = this.visualizer.querySelectorAll('.uv-bar');

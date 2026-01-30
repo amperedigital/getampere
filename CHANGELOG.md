@@ -1,3 +1,8 @@
+## [v2.738] - 2026-01-30
+### Debugging
+- **Logs**: Injected console logs into `TechDemoScene` (Bridge) and `AmpereAIChat` to trace the Voice Sync connection failure.
+- **Diagnostics**: Added specific warnings if `window.demoScene` is missing when the chat agent attempts to connect.
+
 ## [v2.737] - 2026-01-30
 ### Fixed
 - **Deployment**: Bumped version to v2.737 to resolve git tag conflict and ensure clean cache break for the Voice Sync assets.
