@@ -1,3 +1,9 @@
+## [v2.733] - 2026-01-30
+### Changed
+- **Visuals**: Increased the central orb diameter by 20% across all devices (Desktop: 1.037, Mobile: 1.244).
+- **Architecture**: Refactored `TechDemoScene` to strictly use `data-sphere-radius` from the configuration for both the central sphere geometry AND the circuitry path generation. This prevents the "Dead Orb" issue (v2.730 regression) where mismatched radii caused the animated circuits to be drawn inside the sphere.
+- **Source of Truth**: Added explicit `data-sphere-radius="1.037"` to `tech-demo.html` to guarantee a valid default value is available before any Javascript executes.
+
 ## [v2.732] - 2026-01-30
 ### Reverted
 - **Tech Demo**: Reverted orb size changes (v2.729, v2.730) due to animation breakage. The system is back to the stable state (0.864/1.037 radius).

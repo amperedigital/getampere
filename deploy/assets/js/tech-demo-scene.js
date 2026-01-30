@@ -48,7 +48,8 @@ export class TechDemoScene {
             lerpSpeed: 0.05,       // v2.617: Increased Speed (was 0.015) for faster Power Up Sequence
             minVelocity: 0.01,      // v2.617: Increased Min Velocity (was 0.0025) to prevent stalling
             rotationRPM: 0.17,      // Revs per second (approx) (data-rotation-rpm)
-            cameraDistance: 5.0     // Z-Distance (Zoom) (data-camera-distance)
+            cameraDistance: 5.0,    // Z-Distance (Zoom) (data-camera-distance)
+            sphereRadius: 1.037     // Central Orb Radius (data-sphere-radius). Default updated v2.733
         };
         this.parseConfig();
         
@@ -175,6 +176,7 @@ export class TechDemoScene {
         this.config.minVelocity = getFloat('data-min-velocity', 0.0025);
         this.config.rotationRPM = getFloat('data-rotation-rpm', 0.17);
         this.config.cameraDistance = getFloat('data-camera-distance', 5.0);
+        this.config.sphereRadius = getFloat('data-sphere-radius', 1.037);
         
         console.log("Icosahedron Config Loaded:", this.config);
     }
@@ -790,7 +792,8 @@ export class TechDemoScene {
     addCentralSphere() {
         // Obsidian Black Glass Orb
         // v2.540: Increased scale to 120% (Desktop: 0.864, Mobile: 1.037)
-        const radius = this.isMobile ? 1.037 : 0.864;
+        // v2.733: Now strictly controlled via config (Default 1.037/1.244)
+        const radius = this.config.sphereRadius;
         const geometry = new THREE.SphereGeometry(radius, 64, 64);
         const material = new THREE.MeshPhysicalMaterial({
             color: 0x000000,
@@ -828,8 +831,9 @@ export class TechDemoScene {
         this.paths = []; 
         this.pads = []; 
 
-        // v2.540: Match surface radius to sphere size (120% scale)
-        const sphereRadius = this.isMobile ? 1.037 : 0.864;
+        // v2.733: Match surface radius to Configured Sphere Radius
+        // We use config.sphereRadius strictly to ensure pads sit exactly on the surface, regardless of platform override.
+        const sphereRadius = this.config.sphereRadius;
         const surfaceRadius = sphereRadius + 0.005; 
         
         const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
