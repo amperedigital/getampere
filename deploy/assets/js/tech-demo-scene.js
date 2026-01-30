@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.760 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.761 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1979,11 +1979,20 @@ export class TechDemoScene {
                         // Remove strict 'systemState === ACTIVE' check.
                         // Allow electrons to spawn as long as simIntensity is > 0.1.
                         // This allows activity to "wind down" gracefully during Power Down/Standby transitions.
-                        else if (this.simIntensity > 0.1 && Math.random() < (0.01 + activityLevel * 0.1) * this.simIntensity) {
-                             e.active = true;
-                             e.pathIndex = Math.floor(Math.random() * this.paths.length);
-                             e.t = 0; e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03); 
-                             e.mesh.visible = true;
+                        else {
+                             // v2.761: Sync Electron Spawning with Voice Pulses
+                             // Inject voiceLevel (via pulseVal) into the probability
+                             const voiceBoost = (this.pulseVal || 0) * 0.5;
+                             const spawnChance = (0.01 + (activityLevel * 0.1) + voiceBoost) * this.simIntensity;
+
+                             if (this.simIntensity > 0.1 && Math.random() < spawnChance) {
+                                e.active = true;
+                                e.pathIndex = Math.floor(Math.random() * this.paths.length);
+                                e.t = 0; 
+                                // Accelerate electrons during speech bursts
+                                e.speed = 0.01 + Math.random() * 0.04 + (activityLevel * 0.03) + (voiceBoost * 0.05); 
+                                e.mesh.visible = true;
+                             }
                         }
                     }
                     if (e.active) {
@@ -2111,25 +2120,22 @@ export class TechDemoScene {
                 let voiceScaleImpact = 0;
 
                 // If Voice is Active, blend towards Green with high-frequency "Digital Strobe"
-                // v2.753: Consuming Global Pulse State (Debounced)
-                // The heavy lifting is done in the State Machine at the top of the loop.
-                if (this.pulseVal > 0.5) {
+                // v2.761: Analog Voice Sync
+                // Replaced binary 0.5 threshold with analog mapping to prevent "random/out-of-sync" feeling.
+                if (this.voiceActive && this.pulseVal > 0.15) {
+                    // Map 0.15 -> 1.0 range to 0.0 -> 1.0 drive
+                    const voiceDrive = Math.min(1.0, (this.pulseVal - 0.15) * 1.2);
                     
-                    // 1. Gate is OPEN (Held by State Machine)
-                     
-                    // 2. Safety Shutter (Texture)
-                    // Reduced dropout from 15% to 5% because the State Machine handles the spacing now.
-                    // We just want a tiny bit of "living" noise.
-                    if (Math.random() > 0.05) { 
-                        
-                        // 3. Color Snap
-                        effectiveColor = this.voiceColorTalking;
-                        
-                        // 4. Intensity Pulse (Maximized)
-                        finalIntensity += 30.0;
-
-                        // 5. Physical Kick
-                        voiceScaleImpact = 0.6;
+                    // Only trigger if drive is meaningful
+                    if (voiceDrive > 0.05) {
+                         // Color Snap (Green) logic preserved
+                         effectiveColor = this.voiceColorTalking;
+                         
+                         // Intensity: Proportional boost (up to +35)
+                         finalIntensity += (voiceDrive * 35.0);
+                         
+                         // Physical Kick: Proportional
+                         voiceScaleImpact = voiceDrive * 0.7;
                     }
                 }
                 

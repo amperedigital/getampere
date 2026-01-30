@@ -1,3 +1,13 @@
+## [v2.761] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Synchronized Lighting Systems (Voice Sync).
+    - **Issue**: Inner Circuitry (Electrons) and Outer Nodes (Lights) fired randomly/independently, feeling disconnected from the voice (and each other).
+    - **Fix**: Both systems now consume `voiceDrive` (mapped from `pulseVal`) as their primary trigger.
+    - **Mechanic**:
+        - **Electrons**: Spawn probability and speed now boosted by voice volume. Loud = Swarm.
+        - **Nodes**: Replaced binary "Strobe" (>0.5) with analog intensity mapping (>0.15). Brighter/greener/bigger proportionally to volume.
+    - **Result**: A unified "surge" of activity across all layers when the agent speaks.
+
 ## [v2.760] - 2026-01-30
 ### Fixed
 - **System**: Standby Inhibitor during Voice Calls.
