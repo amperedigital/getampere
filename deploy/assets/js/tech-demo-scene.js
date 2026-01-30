@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.773 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.774 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2089,6 +2089,12 @@ export class TechDemoScene {
                                 if (this.voiceConnected && !this.voiceActive && !this.processingState) {
                                      computedSpeed *= 0.1; // 10% speed
                                 }
+                                
+                                // v2.774: Reduce Active Conversation Speed
+                                // User Request: "Reduce the light show speed by 40%" during conversation.
+                                if (this.voiceConnected && this.voiceActive) {
+                                     computedSpeed *= 0.6; 
+                                }
 
                                 // v2.762: Processing Speed Boost
                                 if (this.processingState) {
@@ -2143,9 +2149,9 @@ export class TechDemoScene {
                     // Attack: Reduced to 0.2 (was 0.4) to "slow down" the light show (v2.768)
                     this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.2);
                 } else {
-                    // Decay: Tuned (0.04) to glide down to the 0.2 floor.
+                    // Decay: Tuned (0.04 -> 0.025 v2.774) to glide down to the 0.2 floor.
                     // Fast enough to show separation, slow enough to look "decayed" not cut.
-                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.04);
+                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.025);
                 }
             } else {
                 // Silence (Agent Done) -> Fade to Black

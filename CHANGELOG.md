@@ -2865,3 +2865,7 @@
 ## [v2.773] - 2026-01-30
 - **Visuals**: Disabled "Circuit Path Flashing" for electrons. Data now moves as isolated dots without lighting up the tracks, reducing visual noise.
 - **Visuals**: Reduced electron movement speed by 90% during the "Listening Phase" to create a calm, thinking state vs active calculation.
+
+## [v2.774] - 2026-01-30
+- **Visuals**: Reduced electron swarm velocity by 40% during active conversation to reduce distraction.
+- **Visuals**: Slowed "Light Show" pulse decay (0.04 -> 0.025) to smooth out strobe effects while maintaining fast attack response.
