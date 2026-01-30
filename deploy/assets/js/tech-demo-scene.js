@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.762 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.763 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -873,7 +873,9 @@ export class TechDemoScene {
             metalness: 0.5,
             clearcoat: 1.0,
             clearcoatRoughness: 0.1,
-            emissive: 0x000000
+            emissive: 0x000000,
+            transparent: true,
+            opacity: 1.0
         });
 
         this.centralSphere = new THREE.Mesh(geometry, material);
@@ -1915,6 +1917,23 @@ export class TechDemoScene {
                  // Lerp Speed: 0.2 for snappy "Kick" response (was 0.1)
                  const newScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.2);
                  this.outerShell.scale.set(newScale, newScale, newScale);
+             }
+             
+             // v2.763: Hide Central Orb during Intense Activity (Talking/Thinking)
+             if (this.centralSphere && this.centralSphere.material) {
+                 let targetOpacity = 1.0;
+                 if (this.voiceConnected) {
+                     // If Speaking OR Thinking -> Hide Orb (Ghost Mode)
+                     // Allow electrons (data) to be the primary visual
+                     if (this.voiceActive || this.processingState) {
+                         targetOpacity = 0.0;
+                     }
+                 }
+                 const currentOpacity = this.centralSphere.material.opacity;
+                 // Smooth Fade (0.05 lerp)
+                 this.centralSphere.material.opacity = THREE.MathUtils.lerp(currentOpacity, targetOpacity, 0.05);
+                 // Optimization: Toggle visibility to save draw calls if fully invisible
+                 this.centralSphere.material.visible = (this.centralSphere.material.opacity > 0.01);
              }
              
              // Rotation Axis: World Y (Vertical Spin)

@@ -1,3 +1,13 @@
+## [v2.763] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Ghost Core" Behavior (Distraction Reduction).
+    - **Issue**: The solid black Central Orb was found to be visually distracting during intense computing/speaking sessions.
+    - **Fix**: The Central Orb (Geometry/Material) now fades to 0% Opacity (Invisible) during "Active" states.
+    - **Logic**: 
+        - **Visible**: Standby, Listening (Passive).
+        - **Hidden**: Thinking (Processing), Speaking (Voice Active).
+    - **Result**: During conversation, the sphere vanishes, leaving only the floating electron data swarm and circuit lines as a "Holographic" projection.
+
 ## [v2.762] - 2026-01-30
 ### Added
 - **Visuals (3D)**: "Thinking Mode" (Processing State).
