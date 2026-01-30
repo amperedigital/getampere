@@ -1,3 +1,10 @@
+## [v2.752] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Tuned "Off-On" Gate Sensitivity.
+    - **Adjustment**: Raised the Binary Gate threshold from **12%** to **35%**.
+    - **Reasoning**: The previous threshold was too low, causing the light to stay energized during entire sentences. The new 35% floor ensures the light cuts out completely between words and during softer consonants.
+    - **Texture**: Added a 15% random dropout (Safety Shutter) to the "ON" state to prevent long vowels from looking like frozen glitches, maintaining a dynamic "data stream" aesthetic.
+
 ## [v2.751] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Off-On" Binary Audio Gate.

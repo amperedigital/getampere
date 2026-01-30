@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.751 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.752 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2044,24 +2044,29 @@ export class TechDemoScene {
                 let voiceScaleImpact = 0;
 
                 // If Voice is Active, blend towards Green with high-frequency "Digital Strobe"
-                // v2.750: Binary Audio Gate ("Off-On" Pulse)
-                // Hard thresholding to create distinct "One Tone" pulses per syllable.
-                // Replaces random noise with clean, telegraphic switching.
-                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.12) {
+                // v2.752: Adjusted Binary Gate Threshold
+                // User reported "Always On" at 0.12. Raising to 0.35 (35%) to force gaps between words.
+                // Also adding a "Safety Shutter" (Probabilistic Dropout) to break up long vowels.
+                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.35) {
                     
-                    // 1. Hard Gate (Binary)
-                    // If volume > 12%, fully ON (Fixed "One Tone"). Otherwise OFF.
-                    const gate = 1.0; 
-
-                    // 2. Color Snap (Instant Blue)
-                    effectiveColor = this.voiceColorTalking;
+                    // 1. Hard Gate (Active High)
+                    // High threshold ensures we only fire on PEAKS (syllables).
                     
-                    // 3. Intensity Pulse (Fixed High Brightness)
-                    // No gradients. Strictly Off or On (25.0).
-                    finalIntensity += 25.0;
+                    // 2. Safety Shutter (Break up long tones)
+                    // If the vowel is held, this 15% dropout chance creates a "texture" 
+                    // that prevents it from looking like a frozen glitch.
+                    if (Math.random() > 0.15) {
+                        
+                        // 3. Color Snap
+                        effectiveColor = this.voiceColorTalking;
+                        
+                        // 4. Intensity Pulse (Maximized)
+                        // "One Tone" = Max Brightness.
+                        finalIntensity += 30.0;
 
-                    // 4. Physical Pulse (Fixed Scale Kick)
-                    voiceScaleImpact = 0.5; 
+                        // 5. Physical Kick
+                        voiceScaleImpact = 0.6;
+                    }
                 }
                 
                 // Apply Final Intensity
