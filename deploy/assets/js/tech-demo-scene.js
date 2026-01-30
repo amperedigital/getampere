@@ -2044,30 +2044,24 @@ export class TechDemoScene {
                 let voiceScaleImpact = 0;
 
                 // If Voice is Active, blend towards Green with high-frequency "Digital Strobe"
-                // v2.750: Implemented "Off-On" Strobe Logic requested by user.
-                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.01) {
+                // v2.750: Binary Audio Gate ("Off-On" Pulse)
+                // Hard thresholding to create distinct "One Tone" pulses per syllable.
+                // Replaces random noise with clean, telegraphic switching.
+                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.12) {
                     
-                    // 1. Digital Strobe (Off-On Texture)
-                    // Instead of smooth noise, we use a binary-weighted gate.
-                    // This creates a "flicker" effect that makes the light feel like raw energy.
-                    // 70% chance of transmission, 30% dropout.
-                    const strobe = (Math.random() > 0.3) ? 1.0 : 0.0; 
-                    
-                    // Apply Strobe to Level
-                    const activeLevel = this.voiceLevel * strobe;
+                    // 1. Hard Gate (Binary)
+                    // If volume > 12%, fully ON (Fixed "One Tone"). Otherwise OFF.
+                    const gate = 1.0; 
 
-                    // 2. Color Snap (Instant)
-                    const voiceFactor = Math.min(1.0, activeLevel * 4.0); 
-                    effectiveColor = data.baseColor.clone().lerp(this.voiceColorTalking, voiceFactor);
+                    // 2. Color Snap (Instant Blue)
+                    effectiveColor = this.voiceColorTalking;
                     
-                    // 3. Intensity Pulse (Brightness)
-                    // High gain, but GATED by the strobe.
-                    // If strobe is 0, this adds nothing (OFF).
-                    // If strobe is 1, this adds massive light (ON).
-                    finalIntensity += (activeLevel * 20.0);
+                    // 3. Intensity Pulse (Fixed High Brightness)
+                    // No gradients. Strictly Off or On (25.0).
+                    finalIntensity += 25.0;
 
-                    // 4. Physical Pulse (Scale)
-                    voiceScaleImpact = activeLevel * 0.8; 
+                    // 4. Physical Pulse (Fixed Scale Kick)
+                    voiceScaleImpact = 0.5; 
                 }
                 
                 // Apply Final Intensity

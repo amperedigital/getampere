@@ -1,9 +1,10 @@
 ## [v2.750] - 2026-01-30
 ### Changed
-- **Visuals (3D)**: "Off-On" Digital Strobe Effect.
-    - **Logic**: Replaced smooth analog jitter with a binary "Strobe Gate".
-    - **Effect**: During speech, the lattice nodes now have a 30% chance per frame to "drop out" (go dark) even if volume is high. This creates a high-frequency flickering effect ("Off-On") that simulates raw, unstable energy rather than a smooth dimmer.
-    - **Intensity**: Boosted peak flash intensity (15.0 -> 20.0) to compensate for the dropouts, creating extreme contrast.
+- **Visuals (3D)**: "Off-On" Binary Audio Gate.
+    - **Logic**: Replaced smooth analog gradients with a strict "Binary Gate" (Threshold: 12%).
+    - **Effect**: The visualization strictly toggles between OFF (0) and ON (MAX) states based on voice presence ("One Tone").
+    - **Result**: Creates distinctly separated pulses for each syllable/word (approx 1 pulse per phoneme cluster) instead of continuous shimmering.
+    - **Intensity**: Locked at maximum (25.0) when active.
 
 ## [v2.749] - 2026-01-30
 ### Changed
