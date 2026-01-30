@@ -1,3 +1,17 @@
+## [v2.743] - 2026-01-30
+### Added
+- **Visuals**: Implemented "High Frequency Voice Jitter" in the 3D Lattice.
+    - **Tone Emulation**: The lattice visualizer now applies 60Hz randomization to the voice level signal to simulate "texture" (pitch/tone) rather than just volume.
+    - **Physical Impact**: High volume speech now triggers a "Physical Pulse" that expands the scale of the lattice nodes, creating a bass-kick effect.
+
+## [v2.742] - 2026-01-30
+### Fixed
+- **Deployment**: Updated `tech-demo.html` to point to the correct JS version to bust cache.
+
+## [v2.741] - 2026-01-30
+### Changed
+- **Visuals**: Transferred Voice Sync effects from Central Orb to Lattice Nodes.
+
 ## [v2.740] - 2026-01-30
 ### Fixed
 - **Visuals**: Changed Voice Talking Color from Emerald (`0x10b981`) to High Contrast Green (`0x00ff00`) to aid debugging visibility.
