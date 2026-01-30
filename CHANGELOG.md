@@ -1,3 +1,7 @@
+## [v2.722] - 2026-01-29
+### Changed
+- **Tech Demo Layout (Symmetry)**: Reverted card grid to `gap-4` (1rem) and adjusted the central column gutter (Left Header / Right Column) to match exactly (0.5rem padding on each side for a 1rem total gutter), ensuring perfect visual alignment between the grid and the main layout seam.
+
 ## [v2.721] - 2026-01-29
 ### Fixed
 - **iPad Pro Layout (Border Restoration)**: Reverted the "Flow Layout" for the Scene Container back to `absolute` positioning to ensure the visual border frames the entire Left Column correctly. Content inside the container (`#tech-demo-wrapper`) is now pushed down cleanly using `margin-top: 35rem` to clear the header, solving the "floating border" issue while keeping elements separate.
