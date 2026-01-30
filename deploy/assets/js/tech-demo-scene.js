@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.771 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.772 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1870,8 +1870,8 @@ export class TechDemoScene {
                 } else if (this.systemState === 'ACTIVE') {
                      // Thinking/Active Idle (Only when Connected)
                      // Gentle breathe to show "Listening/Thinking"
-                     // 1.0x speed (Reduced from 1.5x) = Focused but Calm Attention (User req -30%)
-                     const thinkPulse = (Math.sin(this.standbyPulseTimer * 1.0) * 0.5 + 0.5); 
+                     // 0.35x speed (~20s cycle) = Deep Listening State (User req 20s)
+                     const thinkPulse = (Math.sin(this.standbyPulseTimer * 0.35) * 0.5 + 0.5); 
                      currentCore += (thinkPulse * 0.25);
                 }
             }

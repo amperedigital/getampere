@@ -2858,3 +2858,6 @@
 
 ## [v2.771] - 2026-01-30
 - **Visuals**: Reduced "Listening Phase" breathing pulse speed by 33% (1.5x -> 1.0x) for a calmer attention state as requested.
+
+## [v2.772] - 2026-01-30
+- **Visuals**: Further reduced "Listening Phase" breathing pulse speed (1.0x -> 0.35x) to achieve a ~20s cycle for Deep Listening.
