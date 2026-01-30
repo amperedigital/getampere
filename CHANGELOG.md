@@ -1,3 +1,7 @@
+## [v2.734] - 2026-01-30
+### Changed
+- **Mobile Visuals**: Reverted mobile sphere radius to original `1.037` (was `1.244` in v2.733) per user request. Desktop remains at the increased `1.037`. Logic simplified as both platforms now share the same base radius.
+
 ## [v2.733] - 2026-01-30
 ### Changed
 - **Visuals**: Increased the central orb diameter by 20% across all devices (Desktop: 1.037, Mobile: 1.244).

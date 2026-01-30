@@ -46,8 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reduce camera distance to make Neural Net appear larger on mobile
     if (window.innerWidth < 1024 && container) {
         container.setAttribute('data-camera-distance', '4.5');
-        // v2.733: Mobile Sphere Radius (+20% from old base 1.037 -> 1.244)
-        container.setAttribute('data-sphere-radius', '1.244');
     }
 
     if(container) {
