@@ -1,3 +1,11 @@
+## [v2.748] - 2026-01-30
+### Changed
+- **Visuals (3D)**: High Dynamic Range (HDR) Update.
+    - **Logic**: Implemented "Dark Floor" logic for the Speaking state.
+    - **Core**: When the agent speaks, the base intensity drops from 40% to 5%, allowing the voice pulses to flash dramatically from darkness.
+    - **Lattice**: Suppresses random "chaos" network firing by 90% during speech to ensure the voice signal determines the visual state entirely.
+    - **Effect**: Creates a "Dim then Bright" decay effect, preventing the "always on" look.
+
 ## [v2.747] - 2026-01-30
 ### Fixed
 - **UI**: Added robust fallbacks for the Status Monitor text (`Agent Listening` / `Agent Speaking`). If the element (`.ampere-status-text`) is missing from the DOM (e.g., during animations or redraws), the controller now auto-injects it to prevent the "disappearing text" bug.

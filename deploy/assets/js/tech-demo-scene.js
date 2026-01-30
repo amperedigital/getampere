@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.747 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.748 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1812,9 +1812,14 @@ export class TechDemoScene {
             // v2.735: Voice Sync Modulation
             if (this.voiceConnected) {
                 if (this.voiceActive) {
+                     // v2.748: Drop Noise Floor for High Contrast
+                     // Instead of adding to activeCore (0.4), we reset baseline to near-zero (0.05)
+                     // This creates the "dim then bright" flash effect requested.
+                     currentCore = 0.05; 
+
                      if (this.voiceLevel > 0) {
                           // Talking: Green Flash (Level 0..1)
-                          // v2.747: Amp up core intensity
+                          // v2.747: Amp up core intensity (2.5)
                           currentCore += (this.voiceLevel * 2.5); 
                      }
                 } else if (this.systemState === 'ACTIVE') {
@@ -2009,6 +2014,13 @@ export class TechDemoScene {
 
                 // Base Chaos Intensity (Significantly reduced firing multiplier to 0.8)
                 let chaosIntensity = Math.max(proximityIntensity, data.firingState * 0.8);
+                
+                // v2.748: Suppress Background Chaos when Speaking
+                // We want the voice pulses to emerge from "darkness", not a busy background.
+                if (this.voiceActive) {
+                    chaosIntensity *= 0.1; 
+                }
+
                 // Apply Global Fader
                 chaosIntensity *= this.simIntensity;
 
