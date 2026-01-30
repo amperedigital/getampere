@@ -1,3 +1,13 @@
+## [v2.766] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Stealth Core" - Full Blackout Mode.
+    - **Issue**: Even with the core material turning matte black (v2.765), the surface "Data Swarm" (Nodes/Electrons) and Circuit Lines were still glowing brightly, reacting to voice/logic and looking like a "light show".
+    - **Fix**: Extended the `coreDimmer` logic to universally suppress **ALL** emissions from the sphere assembly.
+        - **Nodes**: Emission Intensity * Dimmer (Forces 0.0 when active).
+        - **Electrons**: Opacity * Dimmer.
+        - **Circuits**: Opacity * Dimmer.
+    - **Result**: When Thinking or Speaking, the sphere becomes a completely dark, silent matte black object ("Radio Silence"), removing all distraction as requested.
+
 ## [v2.765] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Stealth Core" Material Transition (Refined Ghost Mode).

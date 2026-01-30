@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.765 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.766 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2043,7 +2043,8 @@ export class TechDemoScene {
                         // Base opacity 0.05 fades to 0
                         // Active opacity fades proportionally
                         const baseOpacity = 0.05 + (0.95 * intensity);
-                        mesh.material.opacity = baseOpacity * this.simIntensity;
+                        // v2.766: Stealth Mode - Apply Core Dimmer to Circuit Lines
+                        mesh.material.opacity = baseOpacity * this.simIntensity * (this.coreDimmer !== undefined ? this.coreDimmer : 1.0);
                         // Determine visibility to save draw calls if fully transparent
                         mesh.visible = (mesh.material.opacity > 0.001);
                     });
@@ -2096,7 +2097,8 @@ export class TechDemoScene {
                                 const pos = this.getPos(currentPhi, currentTheta, path.radius);
                                 e.mesh.position.copy(pos);
                                 // Fade electron trail based on SimIntensity
-                                e.mesh.material.opacity = this.simIntensity; 
+                                // v2.766: Stealth Mode - Apply Core Dimmer to Electrons (Data Swarm)
+                                e.mesh.material.opacity = this.simIntensity * (this.coreDimmer !== undefined ? this.coreDimmer : 1.0); 
                             }
                         }
                     }
@@ -2191,6 +2193,12 @@ export class TechDemoScene {
                 // Apply Global Fader
                 chaosIntensity *= this.simIntensity;
 
+                // v2.766: Stealth Mode - Apply Core Dimmer to Node Intensity
+                // This ensures the "Surface Lights" (Nodes) also go dark when the core goes dark.
+                if (this.coreDimmer !== undefined) {
+                    chaosIntensity *= this.coreDimmer;
+                }
+
                 // --- 2. COMBINE WITH STANDBY ---
                 
                 let finalIntensity = chaosIntensity;
@@ -2225,6 +2233,12 @@ export class TechDemoScene {
                          // Physical Kick: Proportional
                          voiceScaleImpact = voiceDrive * 0.7;
                     }
+                }
+                
+                // v2.766: Stealth Mode - Final Intensity Clamp
+                // Even with Voice Drive boosting intensity, we must enforce the Dimmer.
+                if (this.coreDimmer !== undefined) {
+                    finalIntensity *= this.coreDimmer;
                 }
                 
                 // Apply Final Intensity
