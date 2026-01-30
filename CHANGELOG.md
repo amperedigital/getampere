@@ -1,3 +1,9 @@
+## [v2.729] - 2026-01-30
+### Changed
+- **Tech Demo Architecture**: Refactored the Central Orb Radius logic in `TechDemoScene` to use a data attribute (`data-sphere-radius`) instead of hardcoded magic numbers.
+- **Configuration**: Added `data-sphere-radius="0.864"` to the `tech-demo.html` scene container as the source of truth for the orb size.
+- **Responsiveness**: Updated `tech-demo-main.js` to dynamically override the radius to `1.037` on mobile devices, preserving the larger visual appearance for small screens while maintaining a cleaner codebase.
+
 ## [v2.728] - 2026-01-29
 ### Changed
 - **iPad Pro Layout (Width)**: Removed the `max-width: 24rem` constraint from the mobile sliders container in the iPad Pro (1024px) media query. This allows the sliders to expand to their natural full width (with standard padding), responding to the user's request to "unrestrict" the width for this breakpoint.
