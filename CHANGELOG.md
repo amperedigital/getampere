@@ -2869,3 +2869,8 @@
 ## [v2.774] - 2026-01-30
 - **Visuals**: Reduced electron swarm velocity by 40% during active conversation to reduce distraction.
 - **Visuals**: Slowed "Light Show" pulse decay (0.04 -> 0.025) to smooth out strobe effects while maintaining fast attack response.
+
+## [v2.775] - 2026-01-30
+- **Visuals**: Further reduced electron swarm velocity by 30% (Total ~60% reduction vs baseline) during active conversation for a calmer, less "manic" feel.
+- **Visuals**: Reduced Core Light max intensity by 45% (8.0 -> 4.5) to create a "gentle glow" rather than a bright flash.
+- **Visuals**: Slowed Light Pulse attack speed (0.2 -> 0.1) to make the glow swell gently instead of snapping on.

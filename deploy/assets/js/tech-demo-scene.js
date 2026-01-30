@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.774 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.775 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1865,7 +1865,7 @@ export class TechDemoScene {
                           // Using power of 2.5 to compress low volumes and exaggerate peaks.
                           // This creates the "Pulse" / "Flash" effect vs just "On".
                           const nonlinearLevel = Math.pow(this.voiceLevel, 2.5);
-                          currentCore += (nonlinearLevel * 8.0); 
+                          currentCore += (nonlinearLevel * 4.5); 
                      }
                 } else if (this.systemState === 'ACTIVE') {
                      // Thinking/Active Idle (Only when Connected)
@@ -2090,10 +2090,10 @@ export class TechDemoScene {
                                      computedSpeed *= 0.1; // 10% speed
                                 }
                                 
-                                // v2.774: Reduce Active Conversation Speed
-                                // User Request: "Reduce the light show speed by 40%" during conversation.
+                                // v2.775: Reduce Active Conversation Speed
+                                // User Request: "Reduce the light show speed by another 30%" (0.6 -> 0.4)
                                 if (this.voiceConnected && this.voiceActive) {
-                                     computedSpeed *= 0.6; 
+                                     computedSpeed *= 0.4; 
                                 }
 
                                 // v2.762: Processing Speed Boost
@@ -2146,8 +2146,8 @@ export class TechDemoScene {
                 let target = Math.max(0.2, Math.min(rawInput, 1.0));
 
                 if (target > this.pulseVal) {
-                    // Attack: Reduced to 0.2 (was 0.4) to "slow down" the light show (v2.768)
-                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.2);
+                    // Attack: Reduced to 0.1 (was 0.2) for a "gentle glow" swell
+                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.1);
                 } else {
                     // Decay: Tuned (0.04 -> 0.025 v2.774) to glide down to the 0.2 floor.
                     // Fast enough to show separation, slow enough to look "decayed" not cut.
