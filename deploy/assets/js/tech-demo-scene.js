@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.744 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.745 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -63,10 +63,10 @@ export class TechDemoScene {
         this.voiceConnected = false; // Is the AI session active?
         this.voiceActive = false;    // Is the AI speaking?
         this.voiceLevel = 0.0;
-        this.voiceColorThinking = new THREE.Color(0x0088ff); // Blue
-        this.voiceColorTalking = new THREE.Color(0x00ff00);  // High Contrast Green (Debug)
-        this.currentCoreColor = new THREE.Color(0x0088ff);
-        this.targetCoreColor = new THREE.Color(0x0088ff);
+        this.voiceColorThinking = new THREE.Color(0xf59e0b); // Amber (Thinking)
+        this.voiceColorTalking = new THREE.Color(0x22d3ee);  // Electric Blue (Talking)
+        this.currentCoreColor = new THREE.Color(0xf59e0b);
+        this.targetCoreColor = new THREE.Color(0xf59e0b);
         // Pre-fill lightTargets to ensure update loop has data immediately
         this.lightTargets = { ambient: 0.05, core: 0.2 };
 
@@ -720,8 +720,8 @@ export class TechDemoScene {
         console.log('[TechDemo] setVoiceConnected:', isConnected);
         this.voiceConnected = isConnected;
         if (!isConnected) {
-             // Reset to default Active color (Blue) immediately
-             this.targetCoreColor.setHex(0x0088ff);
+             // Reset to default Active color (Amber) immediately
+             this.targetCoreColor.setHex(0xf59e0b);
              this.voiceActive = false;
         }
     }
@@ -851,7 +851,7 @@ export class TechDemoScene {
         
         this.initCircuitryPaths();
 
-        this.coreLight = new THREE.PointLight(0x0088ff, 0.4, 8);
+        this.coreLight = new THREE.PointLight(0xf59e0b, 0.4, 8);
         this.centralSphere.add(this.coreLight);
     }
 
@@ -1080,9 +1080,9 @@ export class TechDemoScene {
             if (isUnique) {
                 uniquePoints.push(vertex.clone());
 
-                // Monotone Blue/Cyan Scheme (No Christmas Vibe)
-                // Restrict hue to Cyan-Blue range (approx 0.55 - 0.65)
-                const hue = 0.55 + (Math.random() * 0.1); 
+                // Amber/Gold Scheme (Thinking State)
+                // Restrict hue to Amber range (approx 0.08 - 0.12)
+                const hue = 0.08 + (Math.random() * 0.04); 
                 const nodeColor = new THREE.Color().setHSL(hue, 0.9, 0.7);
 
                 // Nodes are small bulbs
@@ -1829,11 +1829,8 @@ export class TechDemoScene {
             if (this.coreLight) {
                  this.coreLight.intensity = currentCore;
                  
-                 // v2.741: Color Sync REMOVED from Core (Moved to Nodes per User Request)
-                 // We keep the intensity pulse, but the core stays Blue (0x0088ff) to serve as a consistent anchor.
-                 if (this.coreLight.color.getHex() !== 0x0088ff) {
-                     this.coreLight.color.setHex(0x0088ff);
-                 }
+                 // v2.745: Color Sync Restored - Core follows Target Color (Thinking=Amber, Talking=Cyan)
+                 this.coreLight.color.lerp(this.targetCoreColor, 0.1);
             }
         }
 

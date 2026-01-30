@@ -1,3 +1,10 @@
+## [v2.745] - 2026-01-30
+### Changed
+- **Visuals**: Updated 3D Agent color palette to match Ampere brand identity.
+    - **Talking State**: Now pulses with Electric Blue/Cyan (`#22d3ee`) to match the 2D UI visualizer.
+    - **Thinking State**: Defaults to a warm Amber (`#f59e0b`) to provide clear visual separation between "Listening/Thinking" and "Speaking".
+    - **Core Light**: Restored dynamic color synchronization, allowing the central core to shift from Amber to Cyan during speech.
+
 ## [v2.744] - 2026-01-30
 ### Changed
 - **Visuals (Physics)**: Significantly boosted the "Voice Pulse" signal sent to the 3D scene.
