@@ -831,8 +831,9 @@ export class TechDemoScene {
         this.paths = []; 
         this.pads = []; 
 
-        // v2.540: Match surface radius to sphere size (120% scale)
-        const sphereRadius = this.isMobile ? 1.037 : 0.864;
+        // v2.730: Match surface radius to Configured Sphere Radius
+        // FIXED: Was hardcoded to old values (1.037/0.864) which caused pads to float inside the new larger orb
+        const sphereRadius = this.config.sphereRadius;
         const surfaceRadius = sphereRadius + 0.005; 
         
         const padGeometry = new THREE.CircleGeometry(0.0084, 8); 
