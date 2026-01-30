@@ -1,3 +1,8 @@
+## [v2.725] - 2026-01-29
+### Changed
+- **Mobile Layout**: Significantly increased the top margin of `#mobile-sliders-container` from `3rem` (mt-12) to `6rem` (mt-24) on both Mobile/Tablet and iPad Pro layouts. This creates substantial vertical separation between the "Start Conversation" button and the slider controls as requested.
+- **iPad Pro Layout**: Updated the `src/input.css` override to match the new `6rem` spacing (`margin-top: 6rem !important`), ensuring consistent positioning across devices.
+
 ## [v2.724] - 2026-01-29
 ### Fixed
 - **iPad Pro CSS Cleanup**: Removed the hardcoded `#tech-demo-scene-container` style block in `src/input.css` (iPad Pro media query) that was forcing absolute positioning and improper margins, conflicting with the desired relative layout.
