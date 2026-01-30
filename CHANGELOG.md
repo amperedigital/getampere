@@ -1,3 +1,8 @@
+## [v2.727] - 2026-01-29
+### Changed
+- **iPad Pro Layout**: Changed `#tech-demo-header` positioning from `absolute` to `relative` in the 1024px media query. This resolves stacking issues where the header was overlapping the slider controls, allowing them to stack naturally in the document flow.
+- **Visuals**: Confirmed that the `35rem` top margin on the visual ring wrapper provides sufficient clearance for the new relative header stack.
+
 ## [v2.726] - 2026-01-29
 ### Changed
 - **Mobile Layout & Symmetry**: Moved the `#mobile-sliders-container` OUT of the `#tech-demo-header` entirely, placing it as a direct sibling in the main column flow. This eliminates interference from the header's paddings/margins which were causing the sliders to appear "pushed to the right" (offset).
