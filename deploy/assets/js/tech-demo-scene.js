@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.756 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.757 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1859,6 +1859,26 @@ export class TechDemoScene {
              // User Request: "Pause the rotation during speech as a test" to better see emission changes.
              if (this.voiceConnected && this.voiceActive) {
                  currentSpeed = 0;
+             }
+
+             // v2.757: Dynamic Lattice Expansion (Breathing Speaker Cone)
+             // Logic: Speak = Expansion (1.0), Silence = Contraction/Pause (0.85)
+             // Separation driven by smooth lerp (snappy attack, smooth release)
+             if (this.outerShell) {
+                 let targetScale = 1.0; 
+                 if (this.voiceConnected) {
+                     if (this.voiceActive) {
+                         targetScale = 1.0; 
+                     } else {
+                         // Pause: Contract inwards but do not clip inner sphere (1.5 -> 1.05 limit)
+                         // 0.85 provides a visible "in-breath" standby state
+                         targetScale = 0.85; 
+                     }
+                 }
+                 const currentScale = this.outerShell.scale.x;
+                 // Lerp Speed: 10% per frame for organic "lung" feel
+                 const newScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+                 this.outerShell.scale.set(newScale, newScale, newScale);
              }
              
              // Rotation Axis: World Y (Vertical Spin)

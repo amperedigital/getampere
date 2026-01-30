@@ -1,3 +1,14 @@
+## [v2.757] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Breathing Lattice" Expansion.
+    - **Concept**: Simulate a speaker cone excursion synced with voice activity.
+    - **Logic**:
+        - **Speaking (Expansion)**: Lattice expands to full size (Scale 1.0) to "emit" the sound/data.
+        - **Silence (Contraction)**: Lattice contracts inwards (Scale 0.85) to a "recharge" or "pause" state.
+        - **Physics**: Smooth linear interpolation (lerp 0.1) creates an organic, lung-like feel.
+    - **Constraint**: Min scale limited to 0.85 to prevent clipping into the inner core sphere.
+    - **Combined**: Works in tandem with Rotation Freeze (v2.756) and Sustain Floor (v2.755) for a complete visual voice signature.
+
 ## [v2.756] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: Rotation Freeze During Speech.
