@@ -1,3 +1,8 @@
+## [v2.737] - 2026-01-30
+### Fixed
+- **Deployment**: Bumped version to v2.737 to resolve git tag conflict and ensure clean cache break for the Voice Sync assets.
+- **Verification**: `TechDemoScene` now logs `v2.737 (Voice Sync Enabled)` to the console for easy verification.
+
 ## [v2.736] - 2026-01-30
 ### Fixed
 - **Deployment**: Updated `tech-demo.html` script reference to point to the latest release tag (v2.736) to ensure the new Voice Sync logic is actually loaded. v2.735 pointed to stale v2.734 assets.
