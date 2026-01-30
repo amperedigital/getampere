@@ -1,3 +1,8 @@
+## [v2.739] - 2026-01-30
+### Fixed
+- **Deployment**: Updated `tech-demo.html` script reference to point to `v2.739` to ensure the Voice Sync code is explicitly loaded.
+- **Verification**: `TechDemoScene` log updated to `v2.739 (Voice Sync + Debug)`.
+
 ## [v2.738] - 2026-01-30
 ### Debugging
 - **Logs**: Injected console logs into `TechDemoScene` (Bridge) and `AmpereAIChat` to trace the Voice Sync connection failure.
