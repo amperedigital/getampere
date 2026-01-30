@@ -1,3 +1,10 @@
+## [v2.735] - 2026-01-30
+### Added
+- **Visuals**: Implemented "Voice Sync" for the Central Orb.
+    - **Listening Mode**: When the AI Agent is connected but silent, the orb enters a "Focused Breathing" state (Blue, 1.5x pulse speed) to indicate active attention.
+    - **Talking Mode**: When the AI Agent speaks, the orb turns Emerald Green (`0x10b981`) and modulates its brightness intensity in real-time based on the voice waveform.
+- **Architecture**: Created a bridge between `AmpereAIChat` (2D UI) and `TechDemoScene` (3D Canvas) to share connection status and volume data.
+
 ## [v2.734] - 2026-01-30
 ### Changed
 - **Mobile Visuals**: Reverted mobile sphere radius to original `1.037` (was `1.244` in v2.733) per user request. Desktop remains at the increased `1.037`. Logic simplified as both platforms now share the same base radius.

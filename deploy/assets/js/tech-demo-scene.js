@@ -58,6 +58,15 @@ export class TechDemoScene {
         this.targetSimIntensity = 0.0;
         this.standbyMix = 1.0;
         this.targetStandbyMix = 1.0;
+
+        // v2.735: Voice Synthesis Sync
+        this.voiceConnected = false; // Is the AI session active?
+        this.voiceActive = false;    // Is the AI speaking?
+        this.voiceLevel = 0.0;
+        this.voiceColorThinking = new THREE.Color(0x0088ff); // Blue
+        this.voiceColorTalking = new THREE.Color(0x10b981);  // Emerald Green
+        this.currentCoreColor = new THREE.Color(0x0088ff);
+        this.targetCoreColor = new THREE.Color(0x0088ff);
         // Pre-fill lightTargets to ensure update loop has data immediately
         this.lightTargets = { ambient: 0.05, core: 0.2 };
 
@@ -704,6 +713,32 @@ export class TechDemoScene {
             this.targetSimIntensity = 0.0; // Fade out Chaos
             this.targetStandbyMix = 0.0;   // Fade out Standby Pulse
         }
+    }
+
+    // v2.735: Voice Sync Methods
+    setVoiceConnected(isConnected) {
+        this.voiceConnected = isConnected;
+        if (!isConnected) {
+            // Reset to default Active color (Blue) immediately
+             this.targetCoreColor.setHex(0x0088ff);
+             this.voiceActive = false;
+        }
+    }
+
+    setVoiceState(isActive) {
+        this.voiceActive = isActive;
+        if (isActive) {
+             // Talking: Green (Emergency Override)
+             this.targetCoreColor.copy(this.voiceColorTalking);
+        } else {
+             // Thinking/Idle: Blue
+             this.targetCoreColor.copy(this.voiceColorThinking);
+        }
+    }
+
+    setVoiceLevel(level) {
+        // level: 0.0 to 1.0 (from visualizer)
+        this.voiceLevel = level;
     }
 
     clearElectrons() {
@@ -1769,10 +1804,34 @@ export class TechDemoScene {
             // Or keep it for extra smoothness. Let's keep it simple first.
             const standbyPulseVal = 0.05 + (pulse * 0.35); 
             
-            const currentCore = (this.simIntensity * activeCore) + (this.standbyMix * standbyPulseVal);
+            let currentCore = (this.simIntensity * activeCore) + (this.standbyMix * standbyPulseVal);
+
+            // v2.735: Voice Sync Modulation
+            if (this.voiceConnected) {
+                if (this.voiceActive) {
+                     if (this.voiceLevel > 0) {
+                          // Talking: Green Flash (Level 0..1)
+                          // Major intensity boost
+                          currentCore += (this.voiceLevel * 1.2); 
+                     }
+                } else if (this.systemState === 'ACTIVE') {
+                     // Thinking/Active Idle (Only when Connected)
+                     // Gentle breathe to show "Listening/Thinking"
+                     // 1.5x speed = Focused Attention
+                     const thinkPulse = (Math.sin(this.standbyPulseTimer * 1.5) * 0.5 + 0.5); 
+                     currentCore += (thinkPulse * 0.25);
+                }
+            }
 
             if (this.coreLight) {
                  this.coreLight.intensity = currentCore;
+                 
+                 // v2.735: Color Sync (Thinking -> Talking)
+                 // Only animate color if we are actually in a voice session or just exiting
+                 if (this.currentCoreColor && this.targetCoreColor) {
+                      this.currentCoreColor.lerp(this.targetCoreColor, 0.1); 
+                      this.coreLight.color.copy(this.currentCoreColor);
+                 }
             }
         }
 

@@ -456,6 +456,11 @@ export class AmpereAIChat {
         this.isConnecting = false;
         this.isConnected = true;
         
+        // v2.735: Sync 3D Scene Connection State
+        if (window.demoScene && typeof window.demoScene.setVoiceConnected === 'function') {
+            window.demoScene.setVoiceConnected(true);
+        }
+
         this.updateStatusUI('connected', 'Secure Connection');
         
         // Swap Buttons
@@ -475,6 +480,11 @@ export class AmpereAIChat {
     handleDisconnect() {
         this.isConnected = false;
         this.isConnecting = false;
+
+        // v2.735: Sync 3D Scene Connection State
+        if (window.demoScene && typeof window.demoScene.setVoiceConnected === 'function') {
+            window.demoScene.setVoiceConnected(false);
+        }
 
         this.updateStatusUI('disconnected', 'Disconnected');
 
@@ -498,6 +508,11 @@ export class AmpereAIChat {
     handleError(err) {
         this.isConnecting = false;
         this.isConnected = false;
+        
+        // v2.735: Sync 3D Scene Connection State
+        if (window.demoScene && typeof window.demoScene.setVoiceConnected === 'function') {
+            window.demoScene.setVoiceConnected(false);
+        }
         
         this.updateStatusUI('error', 'Error');
 
@@ -530,6 +545,11 @@ export class AmpereAIChat {
 
     updateVisualizer(isActive) {
         if (!this.visualizer) return;
+
+        // v2.735: Sync 3D Scene Voice State
+        if (window.demoScene && typeof window.demoScene.setVoiceState === 'function') {
+            window.demoScene.setVoiceState(isActive);
+        }
         
         const bars = this.visualizer.querySelectorAll('.uv-bar');
 
@@ -546,6 +566,8 @@ export class AmpereAIChat {
 
                 // Fast update for smooth organic motion (approx 20fps is enough for this look)
                 this.uvInterval = setInterval(() => {
+                    let avgLevel = 0;
+
                     bars.forEach((bar, i) => {
                         // User wants "Highs and Lows". Center bars usually higher in speech.
                         // We simulate a center-heavy noise function.
@@ -561,7 +583,18 @@ export class AmpereAIChat {
                         const h = Math.max(20, Math.floor((flux * centerBias) * 100));
                         
                         bar.style.height = `${h}%`;
+
+                        // Accumulate for 3D Orb Sync
+                        if (i === 2) avgLevel += flux; // Center weight
+                        else avgLevel += (flux * 0.5);
                     });
+
+                    // v2.735: Sync 3D Orb Pulse Magnitude
+                    // AvgLevel max approx 1 + 2 = 3. Normalize to 0..1
+                    if (window.demoScene && typeof window.demoScene.setVoiceLevel === 'function') {
+                         window.demoScene.setVoiceLevel(Math.min(avgLevel / 2.5, 1.0));
+                    }
+
                 }, 80);
             }
             
@@ -574,6 +607,11 @@ export class AmpereAIChat {
             if (this.uvInterval) {
                 clearInterval(this.uvInterval);
                 this.uvInterval = null;
+            }
+
+            // Reset Scene Level
+            if (window.demoScene && typeof window.demoScene.setVoiceLevel === 'function') {
+                window.demoScene.setVoiceLevel(0.0);
             }
             
             // Return to "Breathing" / "Waiting" state
