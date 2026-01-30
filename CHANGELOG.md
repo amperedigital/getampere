@@ -1,3 +1,8 @@
+## [v2.724] - 2026-01-29
+### Fixed
+- **iPad Pro CSS Cleanup**: Removed the hardcoded `#tech-demo-scene-container` style block in `src/input.css` (iPad Pro media query) that was forcing absolute positioning and improper margins, conflicting with the desired relative layout.
+- **iPad Pro Alignment**: Explicitly added `margin-left: auto !important` and `margin-right: auto !important` to `#mobile-sliders-container` in the iPad Pro specific CSS to ensure the sliders are centered, overriding any potential inheritance issues.
+
 ## [v2.723] - 2026-01-29
 ### Fixed
 - **Mobile Layout**: Centered the `#mobile-sliders-container` properly in the left column on mobile/tablet views (removed `md:ml-auto` / `md:w-1/2` offset) and ensured it has correct vertical spacing (`mt-12`) from the content above.
