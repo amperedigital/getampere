@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.755 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.756 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1853,7 +1853,13 @@ export class TechDemoScene {
         if (this.centralSphere) {
              // Target Speed based on Config RPM
              const baseSpeed = (Math.PI * 2 * this.config.rotationRPM) / 60; // Rads per frame assuming 60fps
-             const currentSpeed = baseSpeed * this.simIntensity;
+             let currentSpeed = baseSpeed * this.simIntensity;
+
+             // v2.756: Freeze Rotation During Speech
+             // User Request: "Pause the rotation during speech as a test" to better see emission changes.
+             if (this.voiceConnected && this.voiceActive) {
+                 currentSpeed = 0;
+             }
              
              // Rotation Axis: World Y (Vertical Spin)
              // The Sphere has rotation.x = 90deg (PI/2).

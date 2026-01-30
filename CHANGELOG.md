@@ -1,3 +1,10 @@
+## [v2.756] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Rotation Freeze During Speech.
+    - **Issue**: Continuous rotation obscures the subtle "decay vs emission" lighting changes during speech.
+    - **Fix**: The 3D scene (Core + Outer Shell) now completely pauses its rotation while the agent is speaking.
+    - **Benefit**: Allows for precise observation of the lighting envelope and intensity floors without motion blur or geometric distraction.
+
 ## [v2.755] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Sustain Floor" Logic for Natural Speech Cadence.
