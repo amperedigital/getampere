@@ -1,4 +1,4 @@
-## [v2.750] - 2026-01-30
+## [v2.751] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Off-On" Binary Audio Gate.
     - **Logic**: Replaced smooth analog gradients with a strict "Binary Gate" (Threshold: 12%).
