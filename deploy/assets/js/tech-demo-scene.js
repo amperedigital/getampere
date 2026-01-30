@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.753 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.755 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1974,32 +1974,29 @@ export class TechDemoScene {
             // --- NEURAL ACTIVITY (Node Flashing) ---
             const dark = new THREE.Color(0x000000);
 
-            // v2.753: Global Pulse State Machine (Debouncing)
-            // This runs ONCE per frame to determine the global "Gate" state.
-            if (this.pulseTimer > 0) this.pulseTimer--;
+            // v2.755: Sustain Floor Implementation (Low Emission Pauses)
+            // Goal: "Every word would flash. Pauses between the words would be a decayed low emission."
+            
+            if (this.voiceConnected && this.voiceActive) {
+                // 1. Map Audio to Target (0.0 to 1.0)
+                // Input Floor 0.05 to ignore noise. Gain 1.5x for punch.
+                let rawInput = Math.max(0, (this.voiceLevel - 0.05) * 1.5);
+                
+                // 2. Apply Sustain Floor (The "Low Emission" between words)
+                // When Agent is speaking, never drop below 0.2 intensity, even in silence gaps.
+                let target = Math.max(0.2, Math.min(rawInput, 1.0));
 
-            if (this.pulseState === 'IDLE') {
-                // Trigger Condition: High Volume Peak
-                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.35) {
-                    this.pulseState = 'ACTIVE';
-                    this.pulseTimer = this.pulseMinDuration; // Hold ON
-                    this.pulseVal = 1.0;
+                if (target > this.pulseVal) {
+                    // Attack: Fast (0.4) for sharp syllable onset (The "Flash").
+                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.4);
                 } else {
-                    this.pulseVal = 0.0;
+                    // Decay: Tuned (0.04) to glide down to the 0.2 floor.
+                    // Fast enough to show separation, slow enough to look "decayed" not cut.
+                    this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, target, 0.04);
                 }
-            } else if (this.pulseState === 'ACTIVE') {
-                 // Hold ON state regardless of voice level drop (Debounce)
-                 this.pulseVal = 1.0;
-                 if (this.pulseTimer <= 0) {
-                     this.pulseState = 'COOLDOWN';
-                     this.pulseTimer = this.pulseCooldown; // Refractory Period
-                 }
-            } else if (this.pulseState === 'COOLDOWN') {
-                // Force OFF state regardless of voice level (Spacing)
-                this.pulseVal = 0.0;
-                if (this.pulseTimer <= 0) {
-                    this.pulseState = 'IDLE';
-                }
+            } else {
+                // Silence (Agent Done) -> Fade to Black
+                this.pulseVal = THREE.MathUtils.lerp(this.pulseVal, 0.0, 0.05);
             }
 
             // STANDBY PULSE CALCULATION (Global for all nodes)

@@ -1,3 +1,24 @@
+## [v2.755] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Sustain Floor" Logic for Natural Speech Cadence.
+    - **Issue**: Complete darkness between words felt disconnected ("flashing system").
+    - **Fix**: Implemented a "Low Emission Floor" (20% Intensity) that persists while the agent is speaking, even during silence gaps.
+    - **Logic**:
+        - **Active Speaking**: Minimum intensity pinned at 0.2.
+        - **Word Peaks**: Flash up to 1.0 (Attack 0.4).
+        - **Pauses**: Decay gracefully (0.04) back to the 0.2 floor, bridging the gap between words.
+    - **Result**: "Every word flashes" (Peak), but "pauses are decayed low emission" (Floor), creating a cohesive data stream look.
+
+## [v2.754] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Reverted Pulse Engine; Implemented "Smoothed Decay" Intensity.
+    - **Issue**: The rigid "Cooldown" in v2.753 caused the light to skip syllables, feeling "random" and unsynced during rapid speech.
+    - **Fix**: Removed the State Machine. Implemented a smoothed intensity curve with distinct Attack/Decay timing.
+    - **Logic**:
+        - **Attack**: Fast (0.3 lerp) - Ensures instant response to voice onset.
+        - **Decay**: Slow (0.02 lerp) - The "Increased Timing" requested. Allows the light to linger (fade out slowly) between syllables, smoothing the "strobe" effect while maintaining distinct peaks.
+    - **Result**: A breathing, organic pulse that tracks speech cadence without the harsh "strobing" artifacts of a purely binary system.
+
 ## [v2.753] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Pulse Engine" State Machine Implementation.
