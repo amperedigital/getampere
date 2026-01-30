@@ -1,3 +1,19 @@
+## [v2.750] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Off-On" Digital Strobe Effect.
+    - **Logic**: Replaced smooth analog jitter with a binary "Strobe Gate".
+    - **Effect**: During speech, the lattice nodes now have a 30% chance per frame to "drop out" (go dark) even if volume is high. This creates a high-frequency flickering effect ("Off-On") that simulates raw, unstable energy rather than a smooth dimmer.
+    - **Intensity**: Boosted peak flash intensity (15.0 -> 20.0) to compensate for the dropouts, creating extreme contrast.
+
+## [v2.749] - 2026-01-30
+### Changed
+- **Visuals (3D)**: Implemented Non-Linear Audio Response (Gamma Correction).
+    - **Issue**: Linear mapping of voice volume to light intensity resulted in a flat "always on" look during speech.
+    - **Fix**: Applied exponential power curves to the signal path.
+        - **Core Light**: Uses `pow(level, 2.5)` to compress shadowing and exaggerate peaks.
+        - **Lattice**: Uses `pow(level, 3.0)` for an aggressive "staccato" flash effect.
+    - **Result**: The visualization now "pulses" dynamically with the syllables of speech rather than just glowing.
+
 ## [v2.748] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: High Dynamic Range (HDR) Update.

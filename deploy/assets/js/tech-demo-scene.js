@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.748 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.750 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1819,8 +1819,11 @@ export class TechDemoScene {
 
                      if (this.voiceLevel > 0) {
                           // Talking: Green Flash (Level 0..1)
-                          // v2.747: Amp up core intensity (2.5)
-                          currentCore += (this.voiceLevel * 2.5); 
+                          // v2.749: Exponential Response (Gamma Correction). 
+                          // Using power of 2.5 to compress low volumes and exaggerate peaks.
+                          // This creates the "Pulse" / "Flash" effect vs just "On".
+                          const nonlinearLevel = Math.pow(this.voiceLevel, 2.5);
+                          currentCore += (nonlinearLevel * 8.0); 
                      }
                 } else if (this.systemState === 'ACTIVE') {
                      // Thinking/Active Idle (Only when Connected)
@@ -2040,25 +2043,31 @@ export class TechDemoScene {
                 let effectiveColor = data.baseColor;
                 let voiceScaleImpact = 0;
 
-                // If Voice is Active, blend towards Green with high-frequency jitter
+                // If Voice is Active, blend towards Green with high-frequency "Digital Strobe"
+                // v2.750: Implemented "Off-On" Strobe Logic requested by user.
                 if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.01) {
-                    // 1. Synthetic "Texture" (Jitter)
-                    // Adds 60Hz noise to vary the signal per-frame, simulating pitch/tone complexity
-                    // Range: 0.7 to 1.3 (+/- 30% Variance)
-                    const jitter = 0.7 + (Math.random() * 0.6); 
-                    const activeLevel = this.voiceLevel * jitter;
+                    
+                    // 1. Digital Strobe (Off-On Texture)
+                    // Instead of smooth noise, we use a binary-weighted gate.
+                    // This creates a "flicker" effect that makes the light feel like raw energy.
+                    // 70% chance of transmission, 30% dropout.
+                    const strobe = (Math.random() > 0.3) ? 1.0 : 0.0; 
+                    
+                    // Apply Strobe to Level
+                    const activeLevel = this.voiceLevel * strobe;
 
-                    // 2. Color Snap (Rapid response)
-                    // v2.747: Adjusted for smoother color gradient at low volume
-                    const voiceFactor = Math.min(1.0, activeLevel * 2.0); 
+                    // 2. Color Snap (Instant)
+                    const voiceFactor = Math.min(1.0, activeLevel * 4.0); 
                     effectiveColor = data.baseColor.clone().lerp(this.voiceColorTalking, voiceFactor);
                     
                     // 3. Intensity Pulse (Brightness)
-                    // v2.747: Amp up node intensity (2.5 -> 5.0)
-                    finalIntensity += (activeLevel * 5.0);
+                    // High gain, but GATED by the strobe.
+                    // If strobe is 0, this adds nothing (OFF).
+                    // If strobe is 1, this adds massive light (ON).
+                    finalIntensity += (activeLevel * 20.0);
 
                     // 4. Physical Pulse (Scale)
-                    voiceScaleImpact = activeLevel * 0.7; 
+                    voiceScaleImpact = activeLevel * 0.8; 
                 }
                 
                 // Apply Final Intensity
