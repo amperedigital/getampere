@@ -1,3 +1,14 @@
+## [v2.764] - 2026-01-30
+### Fixed
+- **Visuals (3D)**: "Thinking Mode" Rotation Decoupling.
+    - **Issue**: The Outer Shell (Lattice) inherited the "Turbo Spin" (4x speed) from the Core during Thinking Mode, creating a distracting gyroscope effect even when the Core was hidden.
+    - **Fix**: Decoupled rotation storage variables.
+        - **Core**: Spins at 4x speed (generating data swarms).
+        - **Shell**: Maintains base 1x speed (Stay calm).
+- **Visuals (3D)**: Ghost Core Occlusion.
+    - **Issue**: Fading the core without disabling `depthWrite` caused "Glass Ghost" artifacts where the invisible sphere still blocked the circuitry lines on its back face.
+    - **Fix**: Dynamically disable `depthWrite` when opacity drops below 0.9. Increases fade speed to 0.1 for snappier transitions.
+
 ## [v2.763] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Ghost Core" Behavior (Distraction Reduction).

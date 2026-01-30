@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.763 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.764 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1930,10 +1930,19 @@ export class TechDemoScene {
                      }
                  }
                  const currentOpacity = this.centralSphere.material.opacity;
-                 // Smooth Fade (0.05 lerp)
-                 this.centralSphere.material.opacity = THREE.MathUtils.lerp(currentOpacity, targetOpacity, 0.05);
-                 // Optimization: Toggle visibility to save draw calls if fully invisible
-                 this.centralSphere.material.visible = (this.centralSphere.material.opacity > 0.01);
+                 // v2.764: Faster Fade (0.1) + Depth Management
+                 this.centralSphere.material.opacity = THREE.MathUtils.lerp(currentOpacity, targetOpacity, 0.1);
+                 
+                 // Handle Depth Write to prevent "Ghost Glass" occlusion when fading
+                 if (this.centralSphere.material.opacity < 0.9) {
+                     this.centralSphere.material.depthWrite = false;
+                     this.centralSphere.material.transparent = true; // Ensure transparent is set
+                 } else {
+                     this.centralSphere.material.depthWrite = true;
+                 }
+
+                 // Optimization & Final Hiding
+                 this.centralSphere.material.visible = (this.centralSphere.material.opacity > 0.001);
              }
              
              // Rotation Axis: World Y (Vertical Spin)
@@ -1943,30 +1952,28 @@ export class TechDemoScene {
              
              // v2.762: Processing Turbo-Spin
              // If processing, multiple speed by 4.0 for "Thinking" visual.
-             let rotationOutput = currentSpeed;
+             // v2.764: Decoupled Core vs Shell rotation to reduce visual noise.
+             // Only the CORE (Data) should spin fast. The Shell (Cage) should remain calm.
+             let coreRotation = currentSpeed;
+             let shellRotation = currentSpeed;
+
              if (this.processingState) {
-                 rotationOutput *= 4.0;
+                 coreRotation *= 4.0;
+                 // Shell stays at 1.0x (or maybe slight boost 1.2x if needed, but keeping calm for now)
              }
 
-             if (rotationOutput > 0.0001) {
-                 this.centralSphere.rotateZ(rotationOutput);
+             if (currentSpeed > 0.0001) {
+                 this.centralSphere.rotateZ(coreRotation);
                  
                  // --- OUTER SHELL ROTATION (Contra-Rotation + Biaxial) ---
                  // Rotate the lattice structure in the opposite direction
-                 // Speed: 30% of the core speed (v2.116)
+                 // Speed: 30% of the BASE speed (calculated from shellRotation)
                  if (this.outerShell) {
                      // 1. Primary Axis: Lateral Spin (REVERSED vs Center + Slower)
-                     // Center rotates around local Z (World Y).
-                     // We want outer shell to rotate the OTHER way.
-                     // Center uses positive rotation. So we use negative? 
-                     // Wait, previous code was -0.5. 
-                     // User asked to "Reverse the outer sphere's axial rotation".
-                     // So we change sign from - to +.
-                     this.outerShell.rotateY(rotationOutput * 0.30); 
+                     this.outerShell.rotateY(shellRotation * 0.30); 
                      
                      // 2. Secondary Axis: Tumble (Biaxial)
-                     // Adding X-axis rotation creates a complex gyroscopic tumble ("Gimbal" feel)
-                     this.outerShell.rotateX(rotationOutput * 0.15); 
+                     this.outerShell.rotateX(shellRotation * 0.15); 
                  }
              }
         }
