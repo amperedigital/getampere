@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.740 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.741 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1829,11 +1829,10 @@ export class TechDemoScene {
             if (this.coreLight) {
                  this.coreLight.intensity = currentCore;
                  
-                 // v2.735: Color Sync (Thinking -> Talking)
-                 // Only animate color if we are actually in a voice session or just exiting
-                 if (this.currentCoreColor && this.targetCoreColor) {
-                      this.currentCoreColor.lerp(this.targetCoreColor, 0.2); 
-                      this.coreLight.color.copy(this.currentCoreColor);
+                 // v2.741: Color Sync REMOVED from Core (Moved to Nodes per User Request)
+                 // We keep the intensity pulse, but the core stays Blue (0x0088ff) to serve as a consistent anchor.
+                 if (this.coreLight.color.getHex() !== 0x0088ff) {
+                     this.coreLight.color.setHex(0x0088ff);
                  }
             }
         }
@@ -2028,15 +2027,23 @@ export class TechDemoScene {
                 
                 finalIntensity += standbyIntensity;
 
-                // Color Mixing
-                // Chaos uses 'Base Color'. Standby uses 'Base Color @ 50% Saturation'.
-                // If detailed transition needed, we'd lerp saturation.
-                // For now, let's just stick to Base Color which is close enough.
-                // Or if standby is dominant, use slightly desaturated?
-                // Let's keep it simple: Use Base Color.
+                // v2.741: Voice Sync Color Logic (Target: Spinning Lattice Nodes)
+                let effectiveColor = data.baseColor;
+                
+                // If Voice is Active, blend towards Green (High Contrast for visibility)
+                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.01) {
+                    // Amplify the effect so it's visible even at low volume
+                    const voiceFactor = Math.min(1.0, this.voiceLevel * 2.5); 
+                    
+                    // Blend baseColor (Cyan) -> voiceColorTalking (Green)
+                    effectiveColor = data.baseColor.clone().lerp(this.voiceColorTalking, voiceFactor);
+                    
+                    // Boost intensity significantly when talking to ensure "Pop"
+                    finalIntensity += (this.voiceLevel * 2.0);
+                }
                 
                 // Apply Final Intensity
-                node.material.emissive.lerpColors(dark, data.baseColor, Math.min(1.0, finalIntensity));
+                node.material.emissive.lerpColors(dark, effectiveColor, Math.min(1.0, finalIntensity));
                 node.material.emissiveIntensity = finalIntensity;
 
                 // Update Halo Opacity 

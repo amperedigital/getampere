@@ -2609,3 +2609,7 @@
   - **Height Calc Fix**: Removed the `trackBottom` constraint which was causing bottom-row cards to not expand at all ("shorter").
   - **Refinement**: Switched to a precise `Container Content Bottom` calculation (`rect.bottom - paddingBottom`) to ensure the card expands exactly to the visual edge of the container without overflowing into the padding or viewport.
 
+## [v2.741] - 2026-01-30
+- **Visuals**: Transferred Voice Sync Color Modulation from Central Orb to Lattice Nodes per user feedback ("Pulse Beams").
+- **Visuals**: Nodes now flash Bright Green when Voice Agent speaks.
+- **Visuals**: Reverted Central Orb color logic to Static Blue, retaining intensity pulse.
