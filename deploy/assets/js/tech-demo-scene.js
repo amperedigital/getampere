@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.768 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.769 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1882,10 +1882,16 @@ export class TechDemoScene {
             if (this.coreDimmer === undefined) this.coreDimmer = 1.0;
             
             let targetDimmer = 1.0;
+            let dimmerSpeed = 0.1;
+
             if (this.voiceConnected && (this.voiceActive || this.processingState)) {
                  targetDimmer = 0.0;
+                 // v2.769: Instant Attack for Stealth Mode
+                 // If we are entering Stealth Mode (Talking/Thinking), snap to black much faster (0.5)
+                 // This prevents the "Transition" artifact user reported.
+                 dimmerSpeed = 0.5;
             }
-            this.coreDimmer = THREE.MathUtils.lerp(this.coreDimmer, targetDimmer, 0.1);
+            this.coreDimmer = THREE.MathUtils.lerp(this.coreDimmer, targetDimmer, dimmerSpeed);
             
             // Apply dimmer to calculated intensity
             currentCore *= this.coreDimmer;
@@ -1939,19 +1945,23 @@ export class TechDemoScene {
              if (this.centralSphere && this.centralSphere.material) {
                  let targetRoughness = 0.15; // Default Glossy
                  let targetClearcoat = 1.0;  // Default Glass
+                 let matSpeed = 0.1; // Default Smooth Transition
                  
                  // If Talking or Thinking -> Go Matte Black (Stealth)
                  if (this.voiceConnected && (this.voiceActive || this.processingState)) {
                      targetRoughness = 1.0;
                      targetClearcoat = 0.0;
+                     // v2.769: Instant Material Transition
+                     // Snap to Matte Black instantly (0.5) to avoid visible glossy fade-out.
+                     matSpeed = 0.5;
                  }
                  
                  // Smooth Material Transition
                  const currentRough = this.centralSphere.material.roughness;
                  const currentClear = this.centralSphere.material.clearcoat;
                  
-                 this.centralSphere.material.roughness = THREE.MathUtils.lerp(currentRough, targetRoughness, 0.1);
-                 this.centralSphere.material.clearcoat = THREE.MathUtils.lerp(currentClear, targetClearcoat, 0.1);
+                 this.centralSphere.material.roughness = THREE.MathUtils.lerp(currentRough, targetRoughness, matSpeed);
+                 this.centralSphere.material.clearcoat = THREE.MathUtils.lerp(currentClear, targetClearcoat, matSpeed);
 
                  // Reset v2.763 Transparency Logic (Ensure Solid)
                  this.centralSphere.material.opacity = 1.0;

@@ -1,3 +1,10 @@
+## [v2.769] - 2026-01-30
+### Tuning
+- **Stealth Mode Latency**: Implemented "Instant Attack" for the transition to darkness.
+    - **Issue**: The fade-out to black (Stealth Mode) was too slow (`0.1` Lerp), creating a visible transition artifact *during* the start of speech.
+    - **Fix**: Increased the transition speed by 5x (`0.5` Lerp) specifically for the "Lights Out" event. The Orb now snaps to Matte Black almost instantly when Voice or Thinking state begins, ensuring it is already dark before the Speaker Cone animates.
+    - **Note**: The transition *back* to normal mode remains smooth (`0.1`) for a gentle release.
+
 ## [v2.768] - 2026-01-30
 ### Tuning
 - **Visuals (3D)**: "Stealth Mode" Light Show Calibration.
