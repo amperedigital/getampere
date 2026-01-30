@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.766 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.767 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2194,10 +2194,10 @@ export class TechDemoScene {
                 chaosIntensity *= this.simIntensity;
 
                 // v2.766: Stealth Mode - Apply Core Dimmer to Node Intensity
-                // This ensures the "Surface Lights" (Nodes) also go dark when the core goes dark.
-                if (this.coreDimmer !== undefined) {
-                    chaosIntensity *= this.coreDimmer;
-                }
+                // REVERTED v2.767: Nodes are Outer Shell components, they must remain visible.
+                // if (this.coreDimmer !== undefined) {
+                //    chaosIntensity *= this.coreDimmer;
+                // }
 
                 // --- 2. COMBINE WITH STANDBY ---
                 
@@ -2236,10 +2236,14 @@ export class TechDemoScene {
                 }
                 
                 // v2.766: Stealth Mode - Final Intensity Clamp
-                // Even with Voice Drive boosting intensity, we must enforce the Dimmer.
-                if (this.coreDimmer !== undefined) {
-                    finalIntensity *= this.coreDimmer;
-                }
+                // REVERTED v2.767: We do NOT clamp the Node Intensity for Stealth Mode.
+                // The Nodes are on the OUTER SPHERE (Lattice) and form the "Speaker Cone" effect.
+                // Only the CENTRAL CORE (Sphere + Circuits + Electrons) should go dark.
+                // The Outer Nodes must remain active to visualize Voice Pulse.
+                
+                // if (this.coreDimmer !== undefined) {
+                //    finalIntensity *= this.coreDimmer;
+                // }
                 
                 // Apply Final Intensity
                 node.material.emissive.lerpColors(dark, effectiveColor, Math.min(1.0, finalIntensity));

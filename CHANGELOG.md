@@ -1,3 +1,12 @@
+## [v2.767] - 2026-01-30
+### Fixed
+- **Visuals (3D)**: "Speaker Cone" Visibility Restoration.
+    - **Issue**: v2.766 inadvertently suppressed the emission of the **Outer Lattice Nodes** because the "Stealth Mode" dimmer was applied to all `nodes`. This killed the "Digital Strobe" effect that syncs with voice.
+    - **Fix**: Reverted the dimmer logic for **Nodes**.
+        - **Central Core**: Goes dark (Matte Black, No Circuitry, No Electrons).
+        - **Outer Shell**: Remains active (Lattice Visible, Nodes Firing, Speaker Pulse Active).
+    - **Result**: "The Dark Orb" sits inside a "Living Cage" of light. The core is silent, but the outer shell visualizes the voice output.
+
 ## [v2.766] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Stealth Core" - Full Blackout Mode.
