@@ -1,4 +1,4 @@
-## [v2.757] - 2026-01-30
+## [v2.758] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: "Breathing Lattice" Expansion.
     - **Concept**: Simulate a speaker cone excursion synced with voice activity.
