@@ -1,3 +1,8 @@
+## [v2.726] - 2026-01-29
+### Changed
+- **Mobile Layout & Symmetry**: Moved the `#mobile-sliders-container` OUT of the `#tech-demo-header` entirely, placing it as a direct sibling in the main column flow. This eliminates interference from the header's paddings/margins which were causing the sliders to appear "pushed to the right" (offset).
+- **Control Insets**: Added `px-8` to the slider container to ensure correct "breathing room" from the screen edges on mobile, maintaining the project's visual design standards while guaranteeing perfect horizontal centering relative to the Neural Net scene.
+
 ## [v2.725] - 2026-01-29
 ### Changed
 - **Mobile Layout**: Significantly increased the top margin of `#mobile-sliders-container` from `3rem` (mt-12) to `6rem` (mt-24) on both Mobile/Tablet and iPad Pro layouts. This creates substantial vertical separation between the "Start Conversation" button and the slider controls as requested.
