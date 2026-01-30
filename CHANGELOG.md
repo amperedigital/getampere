@@ -2874,3 +2874,10 @@
 - **Visuals**: Further reduced electron swarm velocity by 30% (Total ~60% reduction vs baseline) during active conversation for a calmer, less "manic" feel.
 - **Visuals**: Reduced Core Light max intensity by 45% (8.0 -> 4.5) to create a "gentle glow" rather than a bright flash.
 - **Visuals**: Slowed Light Pulse attack speed (0.2 -> 0.1) to make the glow swell gently instead of snapping on.
+
+## [v2.776] - 2026-01-30
+### Changed
+- **Active State Calming II**: Radical reduction in active state energy to eliminate "buzzing".
+  - **Electron Speed**: Reduced to 15% of baseline (was 40%).
+  - **Core Flash Intensity**: Reduced max multiplier from 4.5x to 2.0x.
+  - **Pulse Attack**: Slowed Lerp from 0.1 to 0.06 for very soft swells.
