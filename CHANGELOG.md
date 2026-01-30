@@ -1,3 +1,13 @@
+## [v2.753] - 2026-01-30
+### Changed
+- **Visuals (3D)**: "Pulse Engine" State Machine Implementation.
+    - **Issue**: Previous "flicker" was too fast ("starlight") and didn't map to distinct syllables.
+    - **Fix**: Implemented a Global Pulse State Machine with Debouncing and Refractory Periods.
+    - **Logic**:
+        - **Hold (Active)**: Minimum 8 frames (~130ms). Ensures every trigger is a visible "dash", not just a spark.
+        - **Cooldown**: Minimum 12 frames (~200ms). Enforces "Negative Space" between pulses to separate words/syllables.
+    - **Result**: The visualization now behaves like a telegraph key (Morse Code style) rather than a flickering light bulb.
+
 ## [v2.752] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: Tuned "Off-On" Gate Sensitivity.

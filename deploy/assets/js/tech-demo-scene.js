@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.752 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.753 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -70,6 +70,13 @@ export class TechDemoScene {
         // Pre-fill lightTargets to ensure update loop has data immediately
         this.lightTargets = { ambient: 0.05, core: 0.2 };
 
+        // v2.753: Pulse Engine State (Debouncing & Refractory Period)
+        this.pulseState = 'IDLE'; // IDLE, ACTIVE, COOLDOWN
+        this.pulseTimer = 0;
+        this.pulseVal = 0.0; // The actual value used by nodes
+        this.pulseMinDuration = 8; // Frames (~130ms)
+        this.pulseCooldown = 12; // Frames (~200ms) - Enforces spacing
+        
         this.initScene();
         this.initLights();
         this.initGeometry();
@@ -1967,6 +1974,34 @@ export class TechDemoScene {
             // --- NEURAL ACTIVITY (Node Flashing) ---
             const dark = new THREE.Color(0x000000);
 
+            // v2.753: Global Pulse State Machine (Debouncing)
+            // This runs ONCE per frame to determine the global "Gate" state.
+            if (this.pulseTimer > 0) this.pulseTimer--;
+
+            if (this.pulseState === 'IDLE') {
+                // Trigger Condition: High Volume Peak
+                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.35) {
+                    this.pulseState = 'ACTIVE';
+                    this.pulseTimer = this.pulseMinDuration; // Hold ON
+                    this.pulseVal = 1.0;
+                } else {
+                    this.pulseVal = 0.0;
+                }
+            } else if (this.pulseState === 'ACTIVE') {
+                 // Hold ON state regardless of voice level drop (Debounce)
+                 this.pulseVal = 1.0;
+                 if (this.pulseTimer <= 0) {
+                     this.pulseState = 'COOLDOWN';
+                     this.pulseTimer = this.pulseCooldown; // Refractory Period
+                 }
+            } else if (this.pulseState === 'COOLDOWN') {
+                // Force OFF state regardless of voice level (Spacing)
+                this.pulseVal = 0.0;
+                if (this.pulseTimer <= 0) {
+                    this.pulseState = 'IDLE';
+                }
+            }
+
             // STANDBY PULSE CALCULATION (Global for all nodes)
             // Driven by this.standbyMix (0.0 to 1.0)
             let standbyIntensity = 0;
@@ -2044,24 +2079,21 @@ export class TechDemoScene {
                 let voiceScaleImpact = 0;
 
                 // If Voice is Active, blend towards Green with high-frequency "Digital Strobe"
-                // v2.752: Adjusted Binary Gate Threshold
-                // User reported "Always On" at 0.12. Raising to 0.35 (35%) to force gaps between words.
-                // Also adding a "Safety Shutter" (Probabilistic Dropout) to break up long vowels.
-                if (this.voiceConnected && this.voiceActive && this.voiceLevel > 0.35) {
+                // v2.753: Consuming Global Pulse State (Debounced)
+                // The heavy lifting is done in the State Machine at the top of the loop.
+                if (this.pulseVal > 0.5) {
                     
-                    // 1. Hard Gate (Active High)
-                    // High threshold ensures we only fire on PEAKS (syllables).
-                    
-                    // 2. Safety Shutter (Break up long tones)
-                    // If the vowel is held, this 15% dropout chance creates a "texture" 
-                    // that prevents it from looking like a frozen glitch.
-                    if (Math.random() > 0.15) {
+                    // 1. Gate is OPEN (Held by State Machine)
+                     
+                    // 2. Safety Shutter (Texture)
+                    // Reduced dropout from 15% to 5% because the State Machine handles the spacing now.
+                    // We just want a tiny bit of "living" noise.
+                    if (Math.random() > 0.05) { 
                         
                         // 3. Color Snap
                         effectiveColor = this.voiceColorTalking;
                         
                         // 4. Intensity Pulse (Maximized)
-                        // "One Tone" = Max Brightness.
                         finalIntensity += 30.0;
 
                         // 5. Physical Kick
