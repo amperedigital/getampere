@@ -1,3 +1,8 @@
+## [v2.740] - 2026-01-30
+### Fixed
+- **Visuals**: Changed Voice Talking Color from Emerald (`0x10b981`) to High Contrast Green (`0x00ff00`) to aid debugging visibility.
+- **Animation**: Increased color Lerp speed from 0.1 to 0.2 for snappier response to voice state changes.
+
 ## [v2.739] - 2026-01-30
 ### Fixed
 - **Deployment**: Updated `tech-demo.html` script reference to point to `v2.739` to ensure the Voice Sync code is explicitly loaded.

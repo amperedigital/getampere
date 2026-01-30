@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.739 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.740 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -64,7 +64,7 @@ export class TechDemoScene {
         this.voiceActive = false;    // Is the AI speaking?
         this.voiceLevel = 0.0;
         this.voiceColorThinking = new THREE.Color(0x0088ff); // Blue
-        this.voiceColorTalking = new THREE.Color(0x10b981);  // Emerald Green
+        this.voiceColorTalking = new THREE.Color(0x00ff00);  // High Contrast Green (Debug)
         this.currentCoreColor = new THREE.Color(0x0088ff);
         this.targetCoreColor = new THREE.Color(0x0088ff);
         // Pre-fill lightTargets to ensure update loop has data immediately
@@ -1832,7 +1832,7 @@ export class TechDemoScene {
                  // v2.735: Color Sync (Thinking -> Talking)
                  // Only animate color if we are actually in a voice session or just exiting
                  if (this.currentCoreColor && this.targetCoreColor) {
-                      this.currentCoreColor.lerp(this.targetCoreColor, 0.1); 
+                      this.currentCoreColor.lerp(this.targetCoreColor, 0.2); 
                       this.coreLight.color.copy(this.currentCoreColor);
                  }
             }
