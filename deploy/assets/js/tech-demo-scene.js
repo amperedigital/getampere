@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.759 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.760 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1614,7 +1614,13 @@ export class TechDemoScene {
             const warningStart = standbyTimeout - warningDuration; 
 
             if (this.systemState === 'ACTIVE') {
-                 if (timeSinceInteraction > standbyTimeout) {
+                 // v2.760: Voice Activity inhibits Standby
+                 // Prevent shutdown during active calls even if no touch interaction occurs
+                 if (this.voiceConnected) {
+                     if (this.standbyWarning && this.standbyWarning.style.opacity !== '0') {
+                         this.standbyWarning.style.opacity = '0';
+                     }
+                 } else if (timeSinceInteraction > standbyTimeout) {
                      this.setSystemState('STANDBY');
                      if (this.standbyWarning) this.standbyWarning.style.opacity = '0';
                  } else if (timeSinceInteraction > warningStart) {

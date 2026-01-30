@@ -1,3 +1,10 @@
+## [v2.760] - 2026-01-30
+### Fixed
+- **System**: Standby Inhibitor during Voice Calls.
+    - **Issue**: System would enter Standby Mode (shutdown) after 2 minutes of no touch interaction, even if a voice call was active.
+    - **Fix**: Updated `TechDemoScene` loop to explicitly check `this.voiceConnected`.
+    - **Logic**: If Voice is connected, the Standby Timeout and Warning Countdown are completely bypassed, keeping the system indefinitely ACTIVE.
+
 ## [v2.759] - 2026-01-30
 ### Changed
 - **Visuals (3D)**: Dynamic Speaker Cone Physics (Volume Sync).
