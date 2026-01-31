@@ -2,6 +2,10 @@
 ## [v2.794] - 2026-01-31
 - **SystemLink**: Re-applying visual fixes from v2.793 (interrupted deploy).
 
+## [v2.796] - 2026-01-31
+### Changed
+- Inverted visualizer log direction: Newest logs now appear at the top (Top-Down streaming) to remain visible when the card is collapsed.
+
 ## [v2.795] - 2026-01-31
 ### Changed
 - Increased visualizer text truncation limit from 12 to 32 characters for better readability.

@@ -360,21 +360,21 @@ export class SystemLink {
         }
 
         span.textContent = "> ";
-        this.elements.streamWindow.appendChild(span);
-        this.scrollToBottom();
+        this.elements.streamWindow.prepend(span);
+        this.scrollToTop();
 
         for (let i = 0; i < text.length; i++) {
             span.textContent += text[i];
             if (i % 3 === 0) { // Update DOM every 3 chars to save layout thrashing
-                this.scrollToBottom();
+                this.scrollToTop();
                 await new Promise(r => setTimeout(r, speed));
             }
         }
-        this.scrollToBottom();
+        this.scrollToTop();
     }
 
-    scrollToBottom() {
-        this.elements.streamWindow.scrollTop = this.elements.streamWindow.scrollHeight;
+    scrollToTop() {
+        this.elements.streamWindow.scrollTop = 0;
     }
 
     log(text, type = 'data') {
@@ -389,13 +389,13 @@ export class SystemLink {
             span.className = "text-blue-400/80 hover:text-blue-300";
         }
         
-        this.elements.streamWindow.appendChild(span);
+        this.elements.streamWindow.prepend(span);
         
-        // Cleanup old lines
+        // Cleanup old (bottom) lines
         while (this.elements.streamWindow.children.length > this.maxLines) {
-            this.elements.streamWindow.removeChild(this.elements.streamWindow.firstChild);
+            this.elements.streamWindow.removeChild(this.elements.streamWindow.lastChild);
         }
         
-        this.scrollToBottom();
+        this.scrollToTop();
     }
 }
