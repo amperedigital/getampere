@@ -1157,6 +1157,11 @@ export class IcosahedronScene {
             // 2. Auto-Standby Mode (Configured Timeout)
             // If currently ACTIVE and idle for X, drift to STANDBY
             
+            // v2.797: Auto-Interaction (Prevent Standby) if AI Agent is Live
+            if (window.ampereAI && (window.ampereAI.isConnected || window.ampereAI.isConnecting)) {
+                this.lastInteractionTime = Date.now();
+            }
+
             const standbyTimeout = this.config.standbyTimeout * 1000;
             const warningDuration = this.config.standbyWarning * 1000;
             const warningStart = standbyTimeout - warningDuration; 
