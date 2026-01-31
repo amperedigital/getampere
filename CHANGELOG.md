@@ -1,3 +1,7 @@
+## [v2.780] - 2026-01-31
+- **Critical Fix**: Expanded mobile breakpoint definition from `< 1024px` to `<= 1024px`.
+  - ensures 1024px devices (iPad Pro Portrait) receive the correct mobile scaling logic (0.90 contraction) and layout adjustments.
+
 ## [v2.779] - 2026-01-31
 ### Tuning
 - **Mobile Contraction**: Increased the resting scale of the "Speaker Cone" (Outer Lattice) on **Mobile** devices from `0.85` to `0.90`.

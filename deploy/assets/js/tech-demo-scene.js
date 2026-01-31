@@ -14,9 +14,10 @@ export class TechDemoScene {
         // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
         // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
-        this.isMobile = (window.innerWidth < 1024);
+        // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
+        this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.779 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.780 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1372,7 +1373,8 @@ export class TechDemoScene {
             // If we use container width, a desktop split-screen < 1024 triggers mobile logic (backgrounds, zooms, etc).
             // Since the requirement is iPad Air (820px) = Mobile/Tablet Layout:
             // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
-            this.isMobile = (window.innerWidth < 1024);
+            // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
+            this.isMobile = (window.innerWidth <= 1024);
 
             // console.log(`[TechDemoScene] Resize triggered by: ${source || 'Unknown'}`);
             // console.log(`[TechDemoScene] Window: ${window.innerWidth}x${window.innerHeight}`);
