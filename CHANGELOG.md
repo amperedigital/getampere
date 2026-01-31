@@ -1,4 +1,9 @@
 
+## [v2.801] - 2026-01-31
+### Added
+- **Visualizer**: Added visual feedback for `identity_confirmed` events. The system link now displays "IDENTITY LOCKED" and the user email/phone/id when identity is verified.
+- **Frontend**: Updated `system-link.js` to handle the new broadcast type.
+
 ## [v2.800] - 2026-01-31
 ### Added
 - **Web Identity (Cookies)**: Implemented silent visitor identification via LocalStorage. The Agent now recognizes returning users without asking for email immediately.

@@ -199,6 +199,16 @@ export class SystemLink {
                         } else {
                             this.triggerInsert("DATA_PACKET");
                         }
+                    } else if (payload.type === 'identity_confirmed') {
+                        // v2.800: Visual feedback for identity lock
+                        this.log("IDENTITY LOCKED", "secure");
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("security");
+                        
+                        setTimeout(() => {
+                           if (payload.email) this.triggerInsert("USR: " + payload.email);
+                           else if (payload.phone) this.triggerInsert("PH: " + payload.phone);
+                           else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
+                        }, 500);
                     } else if (payload.type === 'memory_retrieved') {
                          
                          // TRIGGER HALO ROTATION -> MEMORY
