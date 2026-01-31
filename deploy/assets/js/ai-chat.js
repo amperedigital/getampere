@@ -209,7 +209,22 @@ export class AmpereAIChat {
                 onError: (err) => this.handleError(err),
                 onModeChange: (mode) => this.handleModeChange(mode),
                 // v2.594: Handle incoming text messages (transcriptions)
-                onMessage: (props) => this.handleMessage(props)
+                onMessage: (props) => this.handleMessage(props),
+                // v2.800: Client Tool for Web Visitor ID (Cookies)
+                clientTools: {
+                    get_web_visitor_id: () => {
+                        let id = localStorage.getItem('ampere_visitor_id');
+                        if (!id) {
+                            if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+                                id = crypto.randomUUID();
+                            } else {
+                                id = 'v-' + Math.random().toString(36).substring(2, 15);
+                            }
+                            localStorage.setItem('ampere_visitor_id', id);
+                        }
+                        return id;
+                    }
+                }
             });
 
         } catch (error) {

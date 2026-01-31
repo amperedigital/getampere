@@ -1,4 +1,10 @@
 
+## [v2.800] - 2026-01-31
+### Added
+- **Web Identity (Cookies)**: Implemented silent visitor identification via LocalStorage. The Agent now recognizes returning users without asking for email immediately.
+- **Frontend**: Added `get_web_visitor_id` client tool to `ai-chat.js`.
+- **Backend**: Updated `identity_validate` to accept and broadcast `visitor_id`.
+
 ## [v2.794] - 2026-01-31
 - **SystemLink**: Re-applying visual fixes from v2.793 (interrupted deploy).
 
