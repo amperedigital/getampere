@@ -1,3 +1,7 @@
+## [v2.782] - 2026-01-31
+- **Tuning**: Increased mobile contraction baseline again from `0.90` to `0.95`.
+  - Goal: Further reduce empty space in the ring on mobile/tablet devices.
+
 ## [v2.781] - 2026-01-31
 - **Critical Fix**: Expanded mobile breakpoint definition from `< 1024px` to `<= 1024px`.
   - ensures 1024px devices (iPad Pro Portrait) receive the correct mobile scaling logic (0.90 contraction) and layout adjustments.
