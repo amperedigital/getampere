@@ -2,6 +2,10 @@
 ## [v2.794] - 2026-01-31
 - **SystemLink**: Re-applying visual fixes from v2.793 (interrupted deploy).
 
+## [v2.798] - 2026-01-31
+### Changed
+- Updated Front Door Agent prompt to prioritize email capture for Web/Chat users.
+
 ## [v2.797] - 2026-01-31
 ### Fixed
 - Prevented system from entering Standby mode while AI Agent is connected or connecting.
