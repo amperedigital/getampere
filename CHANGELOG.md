@@ -1,4 +1,9 @@
 
+## [v2.794] - 2026-01-31
+- **SystemLink**: Re-applying visual fixes from v2.793 (interrupted deploy).
+- **SystemLink**: Guaranteed LED activation via direct style overrides.
+
+
 ## [v2.793] - 2026-01-31
 - **SystemLink**: Replaced Tailwind class toggling with direct JS style manipulation for LEDs and Activity Bar to guarantee visual feedback during mode switching.
 
