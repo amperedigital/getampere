@@ -31,14 +31,15 @@ export class SystemLink {
         const workspaceString = urlParams.get('workspace') || "default";
 
         // Always auto-connect unless specifically disabled
-        // For now, let's Boot then Connect
-        this.runBootSequence().then(() => {
-             if (apiHost) {
-                 this.connectLoop(apiHost, workspaceString);
-             } else {
-                 this.setMode('SLEEP');
-             }
-        });
+        // Boot Sequence (Visual) - Fire and Forget (don't block connection)
+        this.runBootSequence();
+
+        // Connect immediately (Network)
+        if (apiHost) {
+             this.connectLoop(apiHost, workspaceString);
+        } else {
+             this.setMode('SLEEP');
+        }
     }
 
     async runBootSequence() {
@@ -54,23 +55,33 @@ export class SystemLink {
     delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     connectLoop(apiHost, workspace = 'default') {
-        let url = apiHost;
-        if (url.startsWith('http')) {
-            url = url.replace(/^http/, 'ws');
-        }
-        if (!url.startsWith('ws')) {
-            url = 'wss://' + url;
-        }
-        if (!url.includes('/memory/visualizer')) {
-                url = url.replace(/\/$/, '') + "/memory/visualizer";
-        }
-        
-        // Append workspace
-        if (workspace) {
-            url += `?workspace=${encodeURIComponent(workspace)}`;
-        }
+        try {
+            let urlStr = apiHost;
+            // Ensure protocol compatibility
+            if (urlStr.startsWith('http')) urlStr = urlStr.replace(/^http/, 'ws');
+            else if (!urlStr.startsWith('ws')) urlStr = 'wss://' + urlStr;
 
-        this.connectToWorker(url);
+            // Ensure path exists
+            if (!urlStr.includes('/memory/visualizer')) {
+                 if (urlStr.includes('?')) {
+                     const parts = urlStr.split('?');
+                     parts[0] = parts[0].replace(/\/$/, '') + "/memory/visualizer";
+                     urlStr = parts.join('?');
+                 } else {
+                     urlStr = urlStr.replace(/\/$/, '') + "/memory/visualizer";
+                 }
+            }
+
+            // Use URL object for clean param handling
+            const url = new URL(urlStr);
+            if (workspace) url.searchParams.set("workspace", workspace);
+            
+            this.connectToWorker(url.toString());
+        } catch(e) {
+            console.error("Connect Loop Error", e);
+            // Fallback for simple strings or invalid URL objects
+            this.connectToWorker(apiHost);
+        }
     }
 
     startAttractMode() {
@@ -180,7 +191,10 @@ export class SystemLink {
                         const items = payload.items || [];
                         if (items.length > 0) {
                             items.forEach((item, i) => {
-                                setTimeout(() => this.triggerInsert(item), i * 200);
+                                const activeText = typeof item === 'string' ? item : (item.fact || "DATA_PKT");
+                                // Truncate for UI
+                                const display = activeText.length > 12 ? activeText.substring(0,12) : activeText;
+                                setTimeout(() => this.triggerInsert(display), i * 200);
                             });
                         } else {
                             this.triggerInsert("DATA_PACKET");
@@ -194,7 +208,9 @@ export class SystemLink {
                          const items = payload.items || [];
                          if (items.length > 0) {
                              items.forEach((item, i) => {
-                                 setTimeout(() => this.triggerExtract(item), i * 200);
+                                 const activeText = typeof item === 'string' ? item : (item.fact || "QUERY_RES");
+                                 const display = activeText.length > 12 ? activeText.substring(0,12) : activeText;
+                                 setTimeout(() => this.triggerExtract(display), i * 200);
                              });
                          } else {
                              this.triggerExtract("QUERY_RESULT");

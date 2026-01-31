@@ -1,4 +1,10 @@
 
+## [v2.791] - 2026-01-31
+- **SystemLink**: Fixed initialization race condition where visual boot sequence blocked network connection.
+- **SystemLink**: Improved URL construction logic to prevent duplicate query parameters.
+- **SystemLink**: Added safe string handling for incoming object payloads (prevents `[object Object]` logs).
+
+
 ## [v2.790] - 2026-01-31
 - **SystemLink**: Enhanced WebSocket connection error logging to Data Stream window.
 - **BackendLink**: Verified handshake headers and added debug logging for connection failures.
