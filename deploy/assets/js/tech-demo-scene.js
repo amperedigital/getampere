@@ -16,7 +16,7 @@ export class TechDemoScene {
         // v2.640: Updated to < 1024 to exclude iPad Pro Portrait (1024px) from Mobile Zoom logic.
         this.isMobile = (window.innerWidth < 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.778 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.771 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1922,15 +1922,19 @@ export class TechDemoScene {
              if (this.outerShell) {
                  let targetScale = 1.0; 
                  if (this.voiceConnected) {
+                     // v2.766: Mobile Contraction Tweak (0.90 vs 0.85)
+                     // User Request: "Make it a little bit larger when it contracts on mobile"
+                     const baseContraction = (this.isMobile) ? 0.90 : 0.85;
+
                      if (this.voiceActive) {
                          // Speaker Cone Effect: Map volume to scale
                          // Base: 0.85 (Contracted)
                          // Max: 1.15 (Expanded)
                          const volumeKick = Math.pow(this.voiceLevel || 0, 0.8); // Mild curve to keep it responsive
-                         targetScale = 0.85 + (volumeKick * 0.3); 
+                         targetScale = baseContraction + (volumeKick * 0.3); 
                      } else {
                          // Silence: Contract inwards
-                         targetScale = 0.85; 
+                         targetScale = baseContraction; 
                      }
                  }
                  const currentScale = this.outerShell.scale.x;

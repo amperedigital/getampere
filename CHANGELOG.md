@@ -1,3 +1,9 @@
+## [v2.771] - 2026-01-31
+### Tuning
+- **Mobile Contraction**: Increased the resting scale of the "Speaker Cone" (Outer Lattice) on **Mobile** devices from `0.85` to `0.90`.
+    - **Reason**: The contraction on smaller screens felt too aggressive, leaving too much empty space within the dashed ring.
+    - **Desktop**: Remains at `0.85` for consistent scaling relative to larger viewports.
+
 ## [v2.770] - 2026-01-30
 ### Tuning
 - **Active State Calibration**: Reduced the visual intensity of the "Idle/Thinking" state (when not speaking) by ~30% to reduce distraction.
