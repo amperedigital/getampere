@@ -192,8 +192,8 @@ export class SystemLink {
                         if (items.length > 0) {
                             items.forEach((item, i) => {
                                 const activeText = typeof item === 'string' ? item : (item.fact || "DATA_PKT");
-                                // Truncate for UI
-                                const display = activeText.length > 12 ? activeText.substring(0,12) : activeText;
+                                // Truncate for UI - widened to 32 chars for readability
+                                const display = activeText.length > 32 ? activeText.substring(0,32) + ".." : activeText;
                                 setTimeout(() => this.triggerInsert(display), i * 200);
                             });
                         } else {
@@ -209,7 +209,7 @@ export class SystemLink {
                          if (items.length > 0) {
                              items.forEach((item, i) => {
                                  const activeText = typeof item === 'string' ? item : (item.fact || "QUERY_RES");
-                                 const display = activeText.length > 12 ? activeText.substring(0,12) : activeText;
+                                 const display = activeText.length > 32 ? activeText.substring(0,32) + ".." : activeText;
                                  setTimeout(() => this.triggerExtract(display), i * 200);
                              });
                          } else {
