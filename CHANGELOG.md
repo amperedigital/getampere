@@ -1,4 +1,8 @@
 
+## [v2.793] - 2026-01-31
+- **SystemLink**: Replaced Tailwind class toggling with direct JS style manipulation for LEDs and Activity Bar to guarantee visual feedback during mode switching.
+
+
 ## [v2.791] - 2026-01-31
 - **SystemLink**: Fixed initialization race condition where visual boot sequence blocked network connection.
 - **SystemLink**: Improved URL construction logic to prevent duplicate query parameters.
