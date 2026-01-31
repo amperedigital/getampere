@@ -1,3 +1,7 @@
+## [v2.788] - 2026-01-31
+### Fixes
+- **System Link**: Fixed connection logic to auto-connect to `memory-api` (workspace: "default") immediately after Boot Sequence. Previously stuck in "Sleep" unless URL param was present.
+
 ## [v2.787] - 2026-01-31
 ### Visual Polish
 - **System Link**: Implemented **Sleep Mode** to reduce visual noise when idle (dims console and slows pulse).

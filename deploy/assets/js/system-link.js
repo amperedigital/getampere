@@ -25,20 +25,17 @@ export class SystemLink {
         // Start the visual tick loop (handling graph animations)
         setInterval(() => this.tick(), 160);
         
-        // Check for WebSocket param
+        // Check for WebSocket param or default to Prod Worker
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
-        
-        const hasHost = !!urlParams.get('mem_api'); // Only connect if explicitly asked or we decide logic
+        const workspaceString = urlParams.get('workspace') || "default";
 
-        // Only auto-connect if we have a reason, otherwise Boot then Sleep
-        // For now, let's Boot then Sleep, and rely on externals to wake us or Attract Mode
+        // Always auto-connect unless specifically disabled
+        // For now, let's Boot then Connect
         this.runBootSequence().then(() => {
-             if (apiHost && hasHost) {
-                 this.connectLoop(apiHost);
+             if (apiHost) {
+                 this.connectLoop(apiHost, workspaceString);
              } else {
-                 // Default: Sleep Mode (Attract Mode disabled by default to reduce noise)
-                 // this.startAttractMode(); 
                  this.setMode('SLEEP');
              }
         });
@@ -56,7 +53,7 @@ export class SystemLink {
 
     delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    connectLoop(apiHost) {
+    connectLoop(apiHost, workspace = 'default') {
         let url = apiHost;
         if (url.startsWith('http')) {
             url = url.replace(/^http/, 'ws');
@@ -67,6 +64,12 @@ export class SystemLink {
         if (!url.includes('/memory/visualizer')) {
                 url = url.replace(/\/$/, '') + "/memory/visualizer";
         }
+        
+        // Append workspace
+        if (workspace) {
+            url += `?workspace=${encodeURIComponent(workspace)}`;
+        }
+
         this.connectToWorker(url);
     }
 
