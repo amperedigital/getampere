@@ -1,4 +1,4 @@
-## [v2.771] - 2026-01-31
+## [v2.779] - 2026-01-31
 ### Tuning
 - **Mobile Contraction**: Increased the resting scale of the "Speaker Cone" (Outer Lattice) on **Mobile** devices from `0.85` to `0.90`.
     - **Reason**: The contraction on smaller screens felt too aggressive, leaving too much empty space within the dashed ring.
