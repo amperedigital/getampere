@@ -1,3 +1,9 @@
+## [v2.787] - 2026-01-31
+### Visual Polish
+- **System Link**: Implemented **Sleep Mode** to reduce visual noise when idle (dims console and slows pulse).
+- **Boot Sequence**: Added bios-style typewriter initialization text on load.
+- **Visuals**: Enhanced LED decay (capacitor effect) and formatted data stream as Hex dumps for "Sci-Fi" feel.
+
 ## [v2.786] - 2026-01-31
 ### Fixes
 - **Tech Demo Scene**: Updated initial Halo Ring state to default to **Front Door Agent** (Index 1) and **Memory Function** (Index 0). Ensures the visual context matches the primary agent scenario on load.

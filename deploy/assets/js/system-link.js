@@ -20,32 +20,54 @@ export class SystemLink {
 
     init() {
         this.isRunning = true;
-        this.log("INITIALIZING SYSTEM LINK...", "system");
+        // this.log("INITIALIZING SYSTEM LINK...", "system"); // Moved to Boot Sequence
         
         // Start the visual tick loop (handling graph animations)
         setInterval(() => this.tick(), 160);
         
         // Check for WebSocket param
-        // Example: ?mem_api=https://my-worker.workers.dev
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
         
-        if (apiHost) {
-            let url = apiHost;
-            if (url.startsWith('http')) {
-                url = url.replace(/^http/, 'ws');
-            }
-            if (!url.startsWith('ws')) {
-                url = 'wss://' + url;
-            }
-            if (!url.includes('/memory/visualizer')) {
-                 url = url.replace(/\/$/, '') + "/memory/visualizer";
-            }
-            this.connectToWorker(url);
-        } else {
-            // Start "Attract Mode" (Random Simulation)
-            this.startAttractMode();
+        const hasHost = !!urlParams.get('mem_api'); // Only connect if explicitly asked or we decide logic
+
+        // Only auto-connect if we have a reason, otherwise Boot then Sleep
+        // For now, let's Boot then Sleep, and rely on externals to wake us or Attract Mode
+        this.runBootSequence().then(() => {
+             if (apiHost && hasHost) {
+                 this.connectLoop(apiHost);
+             } else {
+                 // Default: Sleep Mode (Attract Mode disabled by default to reduce noise)
+                 // this.startAttractMode(); 
+                 this.setMode('SLEEP');
+             }
+        });
+    }
+
+    async runBootSequence() {
+        await this.typewriterLog("SYS_INIT SEQUENCE...", "system");
+        await this.delay(400);
+        await this.typewriterLog("MEM_ALLOC 0x4000... OK", "system");
+        await this.delay(300);
+        await this.typewriterLog("H-LINK PROT... ESTABLISHED", "system");
+        await this.delay(600);
+        this.log("STANDBY_MONITOR_ACTIVE", "dim");
+    }
+
+    delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    connectLoop(apiHost) {
+        let url = apiHost;
+        if (url.startsWith('http')) {
+            url = url.replace(/^http/, 'ws');
         }
+        if (!url.startsWith('ws')) {
+            url = 'wss://' + url;
+        }
+        if (!url.includes('/memory/visualizer')) {
+                url = url.replace(/\/$/, '') + "/memory/visualizer";
+        }
+        this.connectToWorker(url);
     }
 
     startAttractMode() {
@@ -56,7 +78,8 @@ export class SystemLink {
     stopAttractMode() {
         this.attractModeActive = false;
         if (this.attractTimer) clearTimeout(this.attractTimer);
-        this.setMode('IDLE');
+        // Do not force IDLE if we are actually doing work, but usually good to reset
+        // this.setMode('IDLE');
     }
 
     scheduleNextAction() {
@@ -77,7 +100,7 @@ export class SystemLink {
         } else if (rand < 0.90) {
             this.setMode('EXTRACT');
         } else {
-            this.setMode('IDLE');
+            this.setMode('SLEEP');
         }
     }
 
@@ -89,13 +112,14 @@ export class SystemLink {
         this.setMode('INSERT');
         
         // Custom Log
-        const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-        const content = label || Math.random().toString(36).substring(7).toUpperCase();
-        this.log(`[0x${addr}] WRITE_OP <${content}>`);
+        // const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+        // const content = label || Math.random().toString(36).substring(7).toUpperCase();
+        const content = label || this.generateHexContent(4);
+        this.logCompact(`WRITE <${content}>`);
 
         // Return to IDLE after a short burst if in manual mode
         if (!this.attractModeActive) {
-            this.idleTimer = setTimeout(() => this.setMode('IDLE'), 2000);
+            this.idleTimer = setTimeout(() => this.setMode('SLEEP'), 1200);
         }
     }
 
@@ -104,12 +128,11 @@ export class SystemLink {
 
         this.setMode('EXTRACT');
         
-        const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-        const content = label || "DATA_SEGMENT";
-        this.log(`[0x${addr}] READ_OP <${content}>`);
+        const content = label || "DATA_SEG";
+        this.logCompact(`READ  <${content}>`);
 
         if (!this.attractModeActive) {
-            this.idleTimer = setTimeout(() => this.setMode('IDLE'), 2000);
+            this.idleTimer = setTimeout(() => this.setMode('SLEEP'), 1200);
         }
     }
 
@@ -207,6 +230,10 @@ export class SystemLink {
 
     setLedState(element, isOn, colorName) {
         if (!element) return;
+        
+        // Base transitions for fade out
+        element.style.transition = 'background-color 200ms ease-out, box-shadow 200ms ease-out';
+
         if (isOn) {
             element.classList.remove('bg-slate-800');
             // Ensure Tailwind classes exist or use style. This assumes standard palette.
@@ -226,10 +253,13 @@ export class SystemLink {
     tick() {
         if (!this.isRunning) return;
 
-        if (this.currentMode === 'IDLE') {
-            this.elements.activityBar.style.width = '0%';
+        if (this.currentMode === 'IDLE' || this.currentMode === 'SLEEP') {
+            const lowPulse = 2 + Math.sin(Date.now() / 800) * 2; // Breathing 0-4%
+            this.elements.activityBar.style.width = `${lowPulse}%`;
+            this.elements.activityBar.className = "h-full bg-slate-700 shadow-none transition-all duration-300 ease-out";
+            
             // Occasional keepalive ping
-            if (Math.random() > 0.95) this.log("IDLE_WAIT...", "dim");
+            if (Math.random() > 0.992) this.log("STANDBY...", "dim");
             return;
         }
 
@@ -244,27 +274,73 @@ export class SystemLink {
              
              // In attract mode, generate random logs. 
              // In manual mode, logs are generated by the trigger function, so skip here.
-             if (this.attractModeActive && Math.random() > 0.3) this.generateInsertLog();
+             if (this.attractModeActive && Math.random() > 0.6) this.generateInsertLog();
              
         } else {
              this.elements.activityBar.className = "h-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] transition-all duration-100 ease-out";
              
-             if (this.attractModeActive && Math.random() > 0.3) this.generateExtractLog();
+             if (this.attractModeActive && Math.random() > 0.6) this.generateExtractLog();
         }
     }
 
     generateInsertLog() {
-        const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-        // Random "data" snippet
-        const data = Math.random().toString(36).substring(7).toUpperCase(); 
-        this.log(`[0x${addr}] WRITE_BUF <${data}>`);
+        const addr = this.generateHexAddr();
+        const data = this.generateHexContent(3); 
+        this.logCompact(`[${addr}] WR <${data}>`);
     }
 
     generateExtractLog() {
-        const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-        const tasks = ["READ", "FETCH", "DECODE", "SYNC"];
+        const addr = this.generateHexAddr();
+        const tasks = ["READ", "SYNC"];
         const task = tasks[Math.floor(Math.random()*tasks.length)];
-        this.log(`[0x${addr}] ${task}_SEGMENT OK`);
+        this.logCompact(`[${addr}] ${task} OK`);
+    }
+
+    generateHexAddr() {
+        return "0x" + Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    generateHexContent(chunks=3) {
+        let s = "";
+        for(let i=0; i<chunks; i++) {
+            s += Math.floor(Math.random()*255).toString(16).toUpperCase().padStart(2,'0') + " ";
+        }
+        return s.trim();
+    }
+
+    logCompact(text) {
+        // Fast log sans typewriter for high-speed stuff, or maybe fast typewriter?
+        // Let's use direct append for high speed to avoid queue jam
+        this.log(text, 'data');
+    }
+
+    async typewriterLog(text, type='data', speed=10) {
+        const span = document.createElement('div');
+        
+        if (type === 'system') {
+            span.className = "text-slate-500 font-bold mb-1 mt-1 border-t border-white/5 pt-1";
+        } else if (type === 'dim') {
+            span.className = "text-slate-700 italic";
+        } else {
+            span.className = "text-blue-400/80 hover:text-blue-300";
+        }
+
+        span.textContent = "> ";
+        this.elements.streamWindow.appendChild(span);
+        this.scrollToBottom();
+
+        for (let i = 0; i < text.length; i++) {
+            span.textContent += text[i];
+            if (i % 3 === 0) { // Update DOM every 3 chars to save layout thrashing
+                this.scrollToBottom();
+                await new Promise(r => setTimeout(r, speed));
+            }
+        }
+        this.scrollToBottom();
+    }
+
+    scrollToBottom() {
+        this.elements.streamWindow.scrollTop = this.elements.streamWindow.scrollHeight;
     }
 
     log(text, type = 'data') {
@@ -286,7 +362,6 @@ export class SystemLink {
             this.elements.streamWindow.removeChild(this.elements.streamWindow.firstChild);
         }
         
-        // Scroll to bottom
-        this.elements.streamWindow.scrollTop = this.elements.streamWindow.scrollHeight;
+        this.scrollToBottom();
     }
 }
