@@ -1,3 +1,7 @@
+## [v2.786] - 2026-01-31
+### Fixes
+- **Tech Demo Scene**: Updated initial Halo Ring state to default to **Front Door Agent** (Index 1) and **Memory Function** (Index 0). Ensures the visual context matches the primary agent scenario on load.
+
 ## [v2.785] - 2026-01-31
 ### Features
 - **System Link**: Integrated `SystemLink` (formerly MemoryVisualizer) with `memory-api` Cloudflare Worker via WebSocket.

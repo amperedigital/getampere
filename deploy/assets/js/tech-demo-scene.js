@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.785 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.786 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -174,6 +174,15 @@ export class TechDemoScene {
                 ringClassIdle: 'stroke-slate-500/10',
                 ringClassHover: 'stroke-slate-500/50'
             });
+
+            // v2.786: Set Initial State (Front Door Agent + Memory Function)
+            // Ensure the starting position represents the "Primary" agent state.
+            // Inner Ring: Index 1 (Front Door)
+            // Outer Ring: Index 0 (Memory) - Default
+            setTimeout(() => {
+                if(this.rotatorInner) this.rotatorInner.setActiveIndex(1, false);
+                if(this.rotatorOuter) this.rotatorOuter.setActiveIndex(0, false);
+            }, 50);
 
         } else {
             console.warn('HaloRotator: SVG not found relative to container');
