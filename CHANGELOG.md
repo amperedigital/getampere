@@ -1,3 +1,7 @@
+## [v2.789] - 2026-01-31
+### Observability
+- **System Link**: Added explicit console logging (`[SystemLink] Received WS Data: ...`) to allow developer verification of WebSocket payloads in the browser inspector.
+
 ## [v2.788] - 2026-01-31
 ### Fixes
 - **System Link**: Fixed connection logic to auto-connect to `memory-api` (workspace: "default") immediately after Boot Sequence. Previously stuck in "Sleep" unless URL param was present.

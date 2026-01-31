@@ -156,6 +156,10 @@ export class SystemLink {
             this.socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    
+                    // Console Logging for Observability
+                    console.log("[SystemLink] Received WS Data:", data);
+
                     // Handle broadcast messages
                     if (data.type === 'connected') {
                          this.log("LINK ESTABLISHED", "system");
