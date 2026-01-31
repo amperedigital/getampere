@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.782 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.783 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1926,7 +1926,7 @@ export class TechDemoScene {
                  if (this.voiceConnected) {
                      // v2.766: Mobile Contraction Tweak (0.90 vs 0.85)
                      // User Request: "Make it a little bit larger when it contracts on mobile"
-                     const baseContraction = (this.isMobile) ? 0.95 : 0.85;
+                     const baseContraction = (this.isMobile) ? 0.93 : 0.85;
 
                      if (this.voiceActive) {
                          // Speaker Cone Effect: Map volume to scale

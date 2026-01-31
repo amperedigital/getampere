@@ -1,3 +1,6 @@
+## [v2.783] - 2026-01-31
+- **Tuning**: Adjusted mobile contraction baseline from `0.95` to `0.93` (User Preference).
+
 ## [v2.782] - 2026-01-31
 - **Tuning**: Increased mobile contraction baseline again from `0.90` to `0.95`.
   - Goal: Further reduce empty space in the ring on mobile/tablet devices.
