@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.783 (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.785 (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -145,6 +145,7 @@ export class TechDemoScene {
                 hitMin: 275, // Allow 5px intrusion into gap
                 hitMax: 400, // Reduced from 450
                 snapInterval: 60, // 6 items = 60 degrees
+                enableInteraction: false, // v2.700: Wired to Backend Only
                 // Tailwind Class Overrides (Blue Theme)
                 markerClassInactive: 'fill-blue-500',
                 markerClassActive: 'fill-emerald-500',
@@ -162,6 +163,7 @@ export class TechDemoScene {
                 hitMin: 180, // Allow 20px slop inside center
                 hitMax: 265, // Allow 5px into gap
                 snapInterval: 60, // 6 items = 60 degrees
+                enableInteraction: false, // v2.700: Wired to Backend Only
                 // Tailwind Class Overrides (Slate Theme)
                 markerClassInactive: 'fill-slate-400',
                 markerClassActive: 'fill-emerald-500', 
@@ -639,34 +641,6 @@ export class TechDemoScene {
                  // Off: No Glow
             }
 
-            // v2.632: Dynamic Color Update for Power Button(s)
-            // User Requirement: Green when Active, Amber when Standby.
-            // Also: "light green background should be much lighter" on active.
-            btns.forEach(btn => {
-                // Clean up previous states
-                btn.classList.remove('text-amber-300', 'text-emerald-400', 'text-slate-500', 'bg-emerald-500/20', 'bg-emerald-500/5');
-                
-                // Force Reset Inline Styles
-                btn.style.color = '';
-                btn.style.backgroundColor = '';
-                btn.style.textShadow = '';
-
-                if (newState === 'ACTIVE') {
-                    // Force Green with !important to guarantee override of default HTML class
-                    btn.classList.add('text-emerald-400');
-                    btn.style.setProperty('color', '#34d399', 'important'); // Emerald-400 hex
-                    btn.style.setProperty('background-color', 'rgba(16, 185, 129, 0.05)', 'important'); // Very light green (5%)
-                    btn.style.textShadow = '0 0 15px rgba(52, 211, 153, 0.6)';
-                } else if (newState === 'STANDBY') {
-                    btn.classList.add('text-amber-300');
-                    btn.style.setProperty('color', '#fcd34d', 'important'); // Amber-300 hex
-                    btn.style.textShadow = '0 0 10px rgba(253, 186, 116, 0.5)';
-                } else {
-                    btn.classList.add('text-slate-500'); // Off
-                    btn.style.setProperty('color', '#64748b', 'important'); // Slate-500 hex
-                    btn.style.textShadow = 'none';
-                }
-            });
             
             // v2.638: Update Live Demo Pill Dot Color
             const liveDot = document.getElementById('live-demo-dot');
@@ -720,6 +694,39 @@ export class TechDemoScene {
             this.lightTargets = { ambient: 0, core: 0 };
             this.targetSimIntensity = 0.0; // Fade out Chaos
             this.targetStandbyMix = 0.0;   // Fade out Standby Pulse
+        }
+    }
+
+    // Public API for Tool Selection
+    selectFunction(functionName) {
+        // Map function names to Ring Indices
+        // Outer Ring: 0=Memory, 2=Handoff, 4=Transfer, 6=OTP, 8=Identity, 10=Calendar
+        // Inner Ring: 1=FrontDoor, 3=Guide, 5=Onboarding, 7=Tech, 9=Sales, 11=Booking
+        
+        const map = {
+            'memory': { ring: 'outer', index: 0 },
+            'handoff': { ring: 'outer', index: 2 },
+            'transfer': { ring: 'outer', index: 4 },
+            'otp': { ring: 'outer', index: 6 },
+            'identity': { ring: 'outer', index: 8 },
+            'calendar': { ring: 'outer', index: 10 },
+            
+            'front_door': { ring: 'inner', index: 1 },
+            'guide': { ring: 'inner', index: 3 },
+            'onboarding': { ring: 'inner', index: 5 },
+            'tech': { ring: 'inner', index: 7 },
+            'sales': { ring: 'inner', index: 9 },
+            'booking': { ring: 'inner', index: 11 }
+        };
+        
+        const target = map[functionName.toLowerCase()];
+        if (target) {
+            console.log(`Selecting Function: ${functionName} -> Ring ${target.ring} Index ${target.index}`);
+            if (target.ring === 'outer' && this.rotatorOuter) {
+                this.rotatorOuter.setActiveIndex(target.index);
+            } else if (target.ring === 'inner' && this.rotatorInner) {
+                this.rotatorInner.setActiveIndex(target.index);
+            }
         }
     }
 

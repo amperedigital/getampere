@@ -2,6 +2,7 @@ import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
 import { AmpereAIChat } from './ai-chat.js';
+import { SystemLink } from './system-link.js';
 
 /* =========================================
    Tech Demo Main Controller
@@ -10,8 +11,27 @@ import { AmpereAIChat } from './ai-chat.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // 0. Initialize Scene (Before Viz so it can reference it)
+    const container = document.getElementById('tech-demo-scene');
+    
+    // v2.265: Mobile Config Override
+    // Reduce camera distance to make Neural Net appear larger on mobile
+    if (window.innerWidth < 1024 && container) {
+        container.setAttribute('data-camera-distance', '4.5');
+    }
+
+    if (container) {
+        console.log('Initializing Tech Demo Scene...');
+        window.demoScene = new TechDemoScene(container);
+        // Map legacy var just in case
+        window.techDemoScene = window.demoScene;
+    }
+    
     // 1. Initialize Card Expander (Zen Mode)
     initCardExpander();
+
+    // 1b. Initialize System Link (Backend Socket + Memory UI)
+    window.systemLink = new SystemLink();
 
     // 2. Initialize Shared Glass Socket Effects
     initAllSockets('.socket-card-container');
@@ -39,23 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4. Initialize 3D Scene & Mobile Logic
-    const container = document.getElementById('tech-demo-scene');
-    
-    // v2.265: Mobile Config Override
-    // Reduce camera distance to make Neural Net appear larger on mobile
-    if (window.innerWidth < 1024 && container) {
-        container.setAttribute('data-camera-distance', '4.5');
-    }
-
+    // 4. Initialize Mobile UI Logic
     if(container) {
         // Initialize Scene with a slight delay to ensure layout stability
         setTimeout(async () => {
-            console.log('Initializing Tech Demo Scene...');
+            // Scene already initialized at top level
             
-            const scene = new TechDemoScene(container);
-            window.demoScene = scene;
-
             // v2.264: Mobile Slider Logic
             const sliderOuter = document.getElementById('mobile-ring-slider-outer');
             const sliderInner = document.getElementById('mobile-ring-slider-inner');

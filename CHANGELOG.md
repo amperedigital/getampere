@@ -1,3 +1,20 @@
+## [v2.785] - 2026-01-31
+### Features
+- **System Link**: Integrated `SystemLink` (formerly MemoryVisualizer) with `memory-api` Cloudflare Worker via WebSocket.
+- **Live Triggers**: Frontend visualization now responds to real-time `memory_added` and `memory_retrieved` events from the backend.
+- **Halo Integration**: Automated Halo Ring rotation. When memory events occur, the ring automatically rotates to the "MEMORY FUNCTION" position.
+- **Interaction Change**: Disabled manual drag/scroll interaction on Halo Rings (now backend-driven only).
+
+## [v2.784] - 2026-01-31
+### Features
+- **Front Door Agent**: Implemented "Memory Function" visualization.
+  - Replaced static metrics grid with a real-time (simulated) **Memory Console**.
+  - **Components**:
+    - **Activity Graph**: 0-100% Bar visualization.
+    - **Data Stream**: Scrolling hex terminal viewing insertion/extraction segments.
+    - **Status LEDs**: Visual indicators for Read (Amber) vs Write (Emerald) operations.
+  - **Architecture**: Modular `MemoryVisualizer` class handling autonomous state cycling (Insert/Extract/Idle).
+
 ## [v2.783] - 2026-01-31
 - **Tuning**: Adjusted mobile contraction baseline from `0.95` to `0.93` (User Preference).
 
