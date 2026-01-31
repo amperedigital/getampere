@@ -205,17 +205,25 @@ export class SystemLink {
                 }
             };
             
-            this.socket.onclose = () => {
-                this.log("SOCKET LOST", "dim");
+            this.socket.onclose = (e) => {
+                this.log("SOCKET LOST " + (e.reason || ""), "dim");
                 // Fallback to attract mode after delay
                 setTimeout(() => {
                     if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
                         this.startAttractMode();
+                        // Retry connection periodically
+                        // this.init(); // Careful with recursion
                     }
                 }, 3000);
             };
+            
+            this.socket.onerror = (err) => {
+                console.error("WS Error", err);
+                this.log("WS_ERR: CONN_FAIL", "dim");
+            };
         } catch (e) {
              console.log("Socket init error", e);
+             this.log("INIT_ERR: " + e.message, "dim");
         }
     }
 

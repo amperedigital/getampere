@@ -1,3 +1,9 @@
+
+## [v2.790] - 2026-01-31
+- **SystemLink**: Enhanced WebSocket connection error logging to Data Stream window.
+- **BackendLink**: Verified handshake headers and added debug logging for connection failures.
+- **Observability**: Added explicit `WS_ERR` and `SOCKET LOST` statuses to frontend stream.
+
 ## [v2.789] - 2026-01-31
 ### Observability
 - **System Link**: Added explicit console logging (`[SystemLink] Received WS Data: ...`) to allow developer verification of WebSocket payloads in the browser inspector.
