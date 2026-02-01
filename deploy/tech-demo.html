@@ -20,7 +20,7 @@
     }
     </script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.809-enable-card-scrolling/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.814-odp-visuals/deploy/assets/css/styles.css">
 
 
 </head>
@@ -536,12 +536,24 @@
                                          <span class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Retr</span>
                                     </div>
 
+                                    <!-- ODP TX Indicator (Added v2.814) -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] ml-1 opacity-50">
+                                         <div id="odp-tx-led" class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200"></div>
+                                         <span class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Snd</span>
+                                    </div>
+
                                     <!-- Activity Graph (Bar) -->
-                                    <div class="flex-1 mx-3 lg:mx-4 flex flex-col justify-center gap-1">
+                                    <div class="flex-1 mx-2 lg:mx-3 flex flex-col justify-center gap-1">
                                          <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
                                              <!-- The bar itself -->
                                              <div id="mem-activity-bar" class="h-full w-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-100 ease-out"></div>
                                          </div>
+                                    </div>
+
+                                    <!-- ODP RX Indicator (Added v2.814) -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] mr-1 opacity-50">
+                                         <div id="odp-rx-led" class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200"></div>
+                                         <span class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Vrfy</span>
                                     </div>
 
                                     <!-- Insertion Indicator -->
@@ -1525,6 +1537,6 @@
 
 <!-- Init Script -->
 
-<script type="module" src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.813-clear-on-connect/deploy/assets/js/tech-demo-main.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.814-odp-visuals/deploy/assets/js/tech-demo-main.js"></script>
 </body>
 </html>

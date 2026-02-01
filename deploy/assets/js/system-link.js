@@ -3,6 +3,8 @@ export class SystemLink {
         this.elements = {
             extractLed: document.getElementById('mem-extract-led'),
             insertLed: document.getElementById('mem-insert-led'),
+            odpTxLed: document.getElementById('odp-tx-led'),
+            odpRxLed: document.getElementById('odp-rx-led'),
             activityBar: document.getElementById('mem-activity-bar'),
             streamWindow: document.getElementById('mem-data-stream')
         };
@@ -150,6 +152,36 @@ export class SystemLink {
         }
     }
 
+    triggerOdpTx() {
+        if (this.elements.odpTxLed) {
+            // Flash Orange
+            this.elements.odpTxLed.classList.remove('bg-slate-800', 'border-slate-600');
+            this.elements.odpTxLed.classList.add('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
+            
+            setTimeout(() => {
+                 if (this.elements.odpTxLed) {
+                    this.elements.odpTxLed.classList.add('bg-slate-800', 'border-slate-600');
+                    this.elements.odpTxLed.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
+                 }
+            }, 800);
+        }
+    }
+
+    triggerOdpRx() {
+        if (this.elements.odpRxLed) {
+            // Flash Emerald/Green
+            this.elements.odpRxLed.classList.remove('bg-slate-800', 'border-slate-600');
+            this.elements.odpRxLed.classList.add('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
+            
+            setTimeout(() => {
+                if (this.elements.odpRxLed) {
+                    this.elements.odpRxLed.classList.add('bg-slate-800', 'border-slate-600');
+                    this.elements.odpRxLed.classList.remove('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
+                }
+            }, 800);
+        }
+    }
+
     connectToWorker(url) {
         if (this.socket) {
             this.socket.close();
@@ -217,6 +249,29 @@ export class SystemLink {
                            else if (payload.phone) this.triggerInsert("PH: " + payload.phone);
                            else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
                         }, 500);
+                    } else if (payload.type === 'auth_req') {
+                        // ODP Challenge - Rotate Halo to Security
+                        this.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
+                        if (window.techDemoScene) {
+                            window.techDemoScene.selectFunction("security");
+                            // Optional: Make it pulse yellow if possible, but basic select is fine
+                        }
+                        this.triggerOdpTx();
+                        this.log(`AUTH_REQ [${payload.channel?.toUpperCase() || 'OTP'}]`, "system");
+
+                    } else if (payload.type === 'auth_verify') {
+                        // Success
+                        this.log("✅ IDENTITY: VERIFIED", "secure");
+                        this.log(`SECURE_CHANNEL: ${payload.contact || "ESTABLISHED"}`, "secure");
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("security");
+                        this.triggerOdpRx();
+
+                    } else if (payload.type === 'auth_fail') {
+                         this.log("🚫 AUTH_FAIL: " + (payload.reason || "INVALID"), "error");
+                         if (this.elements.extractLed) {
+                             this.elements.extractLed.classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
+                             setTimeout(() => this.elements.extractLed.classList.remove('bg-red-500', 'shadow-[0_0_10px_red]'), 500);
+                         }
                     } else if (payload.type === 'memory_retrieved') {
                          
                          // TRIGGER HALO ROTATION -> MEMORY

@@ -1,3 +1,7 @@
+## v2.814-odp-visuals
+- **Security**: Added ODP (One-Time Password) visualization support.
+- **UI**: Added 'Snd' (TX) and 'Vrfy' (RX) indicators to the memory panel.
+- **System Link**: Wired new `auth_req` and `auth_verify` broadcast events to the 3D Halo 'Security' mode.
 ## v2.813-clear-on-connect
 - **System Link**: Added explicit UI clearing on WebSocket connection to prevent stale data persistence between sessions.
 - **UX**: Visualizer now resets to a clean slate with 'STANDBY_MONITOR_ACTIVE' upon each new connection.
