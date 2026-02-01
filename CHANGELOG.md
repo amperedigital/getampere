@@ -1,3 +1,6 @@
+## v2.808-restore-card-scrollbar
+- **Fix**: Restored the visible scrollbar on the Front Door Agent card (Memory Data Stream) which was previously hidden by `scrollbar-none`.
+
 ## v2.807-suppress-json-leak
 - **Fix**: Added input filter to chat UI to suppress raw JSON strings (e.g. `{"visitor_id":""}`) from being displayed as chat bubbles. This handles cases where tool parameters leak into the conversational stream.
 
