@@ -1,3 +1,6 @@
+## v2.813-clear-on-connect
+- **System Link**: Added explicit UI clearing on WebSocket connection to prevent stale data persistence between sessions.
+- **UX**: Visualizer now resets to a clean slate with 'STANDBY_MONITOR_ACTIVE' upon each new connection.
 ## v2.812-backend-fix
 - **Backend**: Resolved WebSocket crash in `MemoryCacheDO` (removed hibernation API dependency).
 - **System Link**: Confirmed connection stability logs.

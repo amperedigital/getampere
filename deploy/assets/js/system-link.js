@@ -161,6 +161,14 @@ export class SystemLink {
             
             this.socket.onopen = () => {
                 this.log("SOCKET CONNECTED", "system");
+                
+                // v2.813: Cleanup previous session data
+                if (this.elements.streamWindow) {
+                    this.elements.streamWindow.innerHTML = '';
+                    this.log("SECURE_LINK [ESTABLISHED]", "success");
+                    this.log("STANDBY_MONITOR_ACTIVE", "dim");
+                }
+                
                 this.stopAttractMode(); 
             };
             
