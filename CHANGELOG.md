@@ -1,3 +1,8 @@
+## v2.806-calm-listening
+- **Config**: Stopped "Data Stream" visualization during active calls (Listening State).
+- **Config**: Removed "Thinking Pulse" (Amber breathing) during calls.
+- **Fix**: Agent now stays in "Calm Mode" (simIntensity 0.1) when listening, preventing visual distraction loops.
+
 ## [v2.805-stop-standby-loop] - 2026-02-01
 ### Fixed
 - **UI**: Patched `tech-demo-scene.js` to force the system state to `ACTIVE` when a voice call connects. This stops the "Standby Loop" visualization from playing during an active call.

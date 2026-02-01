@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.805-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.806-calm-listening-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -1843,7 +1843,12 @@ export class TechDemoScene {
                      }
                  }
             } else {
-                 this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
+                 // v2.806: Silence the Data Stream when listening (User Req: "Stop visualization loop")
+                 if (this.voiceConnected && !this.voiceActive && !this.processingState) {
+                     this.simIntensity = 0.1; // Minimal hum, no swarm
+                 } else {
+                     this.simIntensity = (this.systemState === 'ACTIVE') ? 1.0 : 0.0;
+                 }
             }
 
             // Lerp Standby Mix
@@ -1895,10 +1900,8 @@ export class TechDemoScene {
                      }
                 } else if (this.systemState === 'ACTIVE') {
                      // Thinking/Active Idle (Only when Connected)
-                     // Gentle breathe to show "Listening/Thinking"
-                     // 0.35x speed (~20s cycle) = Deep Listening State (User req 20s)
-                     const thinkPulse = (Math.sin(this.standbyPulseTimer * 0.35) * 0.5 + 0.5); 
-                     currentCore += (thinkPulse * 0.25);
+                     // v2.806: Removed Thinking Pulse per user request ("Stop visualization loop")
+                     // currentCore remains steady amber/base.
                 }
             }
 
