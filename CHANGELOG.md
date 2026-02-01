@@ -1,3 +1,6 @@
+## v2.810-fix-visualizer-workspace
+- **Config**: Updated `system-link.js` to default to `workspace=emily` ensuring the memory visualizer connects to the correct channel used by the demo agent.
+
 ## v2.809-enable-card-scrolling
 - **Fix**: Enabled vertical scrolling for the main content area of the Front Door Agent card to support future metadata expansion, matching the Demo Guide layout.
 

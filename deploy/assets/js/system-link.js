@@ -28,7 +28,7 @@ export class SystemLink {
         // Check for WebSocket param or default to Prod Worker
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
-        const workspaceString = urlParams.get('workspace') || "default";
+        const workspaceString = urlParams.get('workspace') || "emily";
 
         // Always auto-connect unless specifically disabled
         // Boot Sequence (Visual) - Fire and Forget (don't block connection)
