@@ -294,6 +294,14 @@ export class AmpereAIChat {
         // Expected props: { source: 'user' | 'ai', message: string }
         console.log("AmpereAIChat: Message received", props);
         if (props && props.message) {
+            // v2.807: Filter out internal JSON artifacts (Tool Call Leaks)
+            // If the message is purely a JSON object (starts with { and ends with }), suppress it.
+            const cleanMsg = props.message.trim();
+            if (cleanMsg.startsWith('{') && cleanMsg.endsWith('}')) {
+                console.warn("[AmpereAI] Suppressed Leaked Tool JSON:", cleanMsg);
+                return; 
+            }
+
             const role = (props.source === 'user') ? 'user' : 'agent';
             this.addMessage(props.message, role);
 
