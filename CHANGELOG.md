@@ -1,3 +1,7 @@
+## v2.812-backend-fix
+- **Backend**: Resolved WebSocket crash in `MemoryCacheDO` (removed hibernation API dependency).
+- **System Link**: Confirmed connection stability logs.
+- **Fix**: Front Door Agent card now successfully connects to memory visualizer stream.
 ## v2.811-disable-attract-mode
 - **Config**: Disabled the `system-link.js` Attract Mode (fake data loop) and random 'STANDBY' logs. The Memory UI now remains silent until actual data is processed.
 

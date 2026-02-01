@@ -233,8 +233,7 @@ export class SystemLink {
             
             this.socket.onclose = (e) => {
                 this.log("SOCKET LOST " + (e.reason || ""), "dim");
-                // v2.811: Disabled Attract Mode Auto-Start (User Request: No Fake Data)
-                // Fallback to attract mode after delay
+                // v2.812: Connection logic stable. Attract mode remains disabled.
                 /*
                 setTimeout(() => {
                     if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
