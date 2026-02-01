@@ -1,4 +1,4 @@
-import { Conversation } from 'https://esm.sh/@elevenlabs/client?bundle';
+import { Conversation } from 'https://esm.sh/@elevenlabs/client@latest?bundle';
 
 export class AmpereAIChat {
     constructor(containerId, agentId, options = {}) {
@@ -212,8 +212,8 @@ export class AmpereAIChat {
                 onMessage: (props) => this.handleMessage(props),
                 // v2.800: Client Tool for Web Visitor ID (Cookies)
                 clientTools: {
-                    get_web_visitor_id: () => {
-                        console.log("[AmpereAI] Client Tool 'get_web_visitor_id' invoked by Agent.");
+                    get_web_visitor_id: async (parameters) => {
+                        console.log("[AmpereAI] Client Tool 'get_web_visitor_id' invoked by Agent. Params:", parameters);
                         let id = localStorage.getItem('ampere_visitor_id');
                         if (!id) {
                             console.log("[AmpereAI] No Visitor ID found. Generating new UUID.");
@@ -226,7 +226,7 @@ export class AmpereAIChat {
                         } else {
                             console.log("[AmpereAI] Found existing Visitor ID:", id);
                         }
-                        return id;
+                        return id; // Return string directly
                     }
                 }
             });

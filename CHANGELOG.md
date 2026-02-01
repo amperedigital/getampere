@@ -2998,3 +2998,8 @@
 - **Neutral Computation State**: Reset visual multipliers for 'Processing' state to exactly 1.0x as requested.
   - **Core Rotation**: Set to 1.0x (was 1.5x).
   - **Electron Speed**: Set to 1.0x (was 0.8x).
+
+## [v2.802-debug-async] - 2026-02-01
+- Updated ElevenLabs SDK to @latest.
+- Converted client tool to async function.
+- Added param logging.
