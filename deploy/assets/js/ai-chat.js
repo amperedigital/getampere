@@ -223,6 +223,7 @@ export class AmpereAIChat {
                                 id = 'v-' + Math.random().toString(36).substring(2, 15);
                             }
                             localStorage.setItem('ampere_visitor_id', id);
+                            console.log("[AmpereAI] Generated new Visitor ID:", id);
                         } else {
                             console.log("[AmpereAI] Found existing Visitor ID:", id);
                         }

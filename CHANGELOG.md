@@ -1,3 +1,7 @@
+## [v2.804-visitor-id-logging] - 2026-02-01
+### Improved
+- **Logging**: Added explicit console log for the generated Visitor ID in `ai-chat.js`.
+
 
 ## [v2.803-silent-id] - 2026-02-01
 - Deployment fix for client tool.
