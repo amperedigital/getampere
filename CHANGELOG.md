@@ -1,3 +1,6 @@
+## v2.809-enable-card-scrolling
+- **Fix**: Enabled vertical scrolling for the main content area of the Front Door Agent card to support future metadata expansion, matching the Demo Guide layout.
+
 ## v2.808-restore-card-scrollbar
 - **Fix**: Restored the visible scrollbar on the Front Door Agent card (Memory Data Stream) which was previously hidden by `scrollbar-none`.
 
