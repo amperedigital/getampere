@@ -1,3 +1,6 @@
+## v2.816-enhanced-auth-logic
+- **Auth**: `requestOtp` now attempts to resolve missing contact details from session memory before failing. This helps when the agent "knows" the email/phone but forgets to pass it explicitly.
+- **Memory**: Refactored `memory_query` to return `protected_facts_available: true` when sensitive data is hidden. This allows the Agent to distinguish between "Doesn't exist" and "Locked", improving conversation flow ("I see that on file but need to verify you").
 ## v2.815-fix-auth-race
 - **Backend**: Patched race condition in `auth/request-otp` and `auth/verify-otp` where broadcast events were cancelled by the Worker runtime before dispatch. threaded `ctx.waitUntil` to ensure delivery.
 ## v2.814-odp-visuals
