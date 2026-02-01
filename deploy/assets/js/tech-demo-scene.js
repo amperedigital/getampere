@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.804-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.805-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -743,7 +743,15 @@ export class TechDemoScene {
     setVoiceConnected(isConnected) {
         console.log('[TechDemo] setVoiceConnected:', isConnected);
         this.voiceConnected = isConnected;
-        if (!isConnected) {
+        
+        if (isConnected) {
+            // v2.805: Force System State to ACTIVE when voice connects
+            // This stops the Standby Pulse loop ("visualization loop") immediately.
+            if (this.systemState !== 'ACTIVE') {
+                 console.log('[TechDemo] Voice Connected -> Waking System to ACTIVE');
+                 this.setSystemState('ACTIVE');
+            }
+        } else {
              // Reset to default Active color (Amber) immediately
              this.targetCoreColor.setHex(0xf59e0b);
              this.voiceActive = false;

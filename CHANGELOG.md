@@ -1,3 +1,7 @@
+## [v2.805-stop-standby-loop] - 2026-02-01
+### Fixed
+- **UI**: Patched `tech-demo-scene.js` to force the system state to `ACTIVE` when a voice call connects. This stops the "Standby Loop" visualization from playing during an active call.
+
 ## [v2.804-visitor-id-logging] - 2026-02-01
 ### Improved
 - **Logging**: Added explicit console log for the generated Visitor ID in `ai-chat.js`.
