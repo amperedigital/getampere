@@ -233,14 +233,15 @@ export class SystemLink {
             
             this.socket.onclose = (e) => {
                 this.log("SOCKET LOST " + (e.reason || ""), "dim");
+                // v2.811: Disabled Attract Mode Auto-Start (User Request: No Fake Data)
                 // Fallback to attract mode after delay
+                /*
                 setTimeout(() => {
                     if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
                         this.startAttractMode();
-                        // Retry connection periodically
-                        // this.init(); // Careful with recursion
                     }
                 }, 3000);
+                */
             };
             
             this.socket.onerror = (err) => {
@@ -304,7 +305,8 @@ export class SystemLink {
             this.elements.activityBar.style.boxShadow = '';
             this.elements.activityBar.className = "h-full bg-slate-700 shadow-none transition-all duration-300 ease-out";
             
-            if (Math.random() > 0.992) this.log("STANDBY...", "dim");
+            // v2.811: Removed random STANDBY logs
+            // if (Math.random() > 0.992) this.log("STANDBY...", "dim");
             return;
         }
 

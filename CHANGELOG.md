@@ -1,3 +1,6 @@
+## v2.811-disable-attract-mode
+- **Config**: Disabled the `system-link.js` Attract Mode (fake data loop) and random 'STANDBY' logs. The Memory UI now remains silent until actual data is processed.
+
 ## v2.810-fix-visualizer-workspace
 - **Config**: Updated `system-link.js` to default to `workspace=emily` ensuring the memory visualizer connects to the correct channel used by the demo agent.
 
