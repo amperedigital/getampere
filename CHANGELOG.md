@@ -1,3 +1,5 @@
+## v2.815-fix-auth-race
+- **Backend**: Patched race condition in `auth/request-otp` and `auth/verify-otp` where broadcast events were cancelled by the Worker runtime before dispatch. threaded `ctx.waitUntil` to ensure delivery.
 ## v2.814-odp-visuals
 - **Security**: Added ODP (One-Time Password) visualization support.
 - **UI**: Added 'Snd' (TX) and 'Vrfy' (RX) indicators to the memory panel.
