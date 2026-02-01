@@ -1,3 +1,6 @@
+## v2.817-prompt-otp-flow
+- **Prompt**: Updated `front-door-agent-prompt.md` with strict "Web/Chat Protocol" for OTP.
+- **Logic**: Explicitly instructs the Agent to *ask* for email/phone if missing before triggering `auth_request_otp`.
 ## v2.816-enhanced-auth-logic
 - **Auth**: `requestOtp` now attempts to resolve missing contact details from session memory before failing. This helps when the agent "knows" the email/phone but forgets to pass it explicitly.
 - **Memory**: Refactored `memory_query` to return `protected_facts_available: true` when sensitive data is hidden. This allows the Agent to distinguish between "Doesn't exist" and "Locked", improving conversation flow ("I see that on file but need to verify you").
