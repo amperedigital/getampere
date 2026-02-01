@@ -1,5 +1,7 @@
 
-## [v2.802-debug-async] - 2026-02-01
+## [v2.803-silent-id] - 2026-02-01
+- Deployment fix for client tool.
+
 - Updated ElevenLabs SDK to @latest.
 - Converted client tool to async function.
 - Added param logging.
