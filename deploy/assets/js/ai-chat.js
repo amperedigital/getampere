@@ -213,14 +213,18 @@ export class AmpereAIChat {
                 // v2.800: Client Tool for Web Visitor ID (Cookies)
                 clientTools: {
                     get_web_visitor_id: () => {
+                        console.log("[AmpereAI] Client Tool 'get_web_visitor_id' invoked by Agent.");
                         let id = localStorage.getItem('ampere_visitor_id');
                         if (!id) {
+                            console.log("[AmpereAI] No Visitor ID found. Generating new UUID.");
                             if (typeof crypto !== 'undefined' && crypto.randomUUID) {
                                 id = crypto.randomUUID();
                             } else {
                                 id = 'v-' + Math.random().toString(36).substring(2, 15);
                             }
                             localStorage.setItem('ampere_visitor_id', id);
+                        } else {
+                            console.log("[AmpereAI] Found existing Visitor ID:", id);
                         }
                         return id;
                     }

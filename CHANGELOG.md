@@ -1,4 +1,8 @@
 
+## [v2.801-debug] - 2026-02-01
+### Debugging
+- Added console logs to `get_web_visitor_id` to verify Agent tool invocation.
+
 ## [v2.801] - 2026-01-31
 ### Added
 - **Visualizer**: Added visual feedback for `identity_confirmed` events. The system link now displays "IDENTITY LOCKED" and the user email/phone/id when identity is verified.
