@@ -1,5 +1,9 @@
 
 
+
+## v2.877
+- **Fix**: Added support for backend event aliases `auth_request_otp`, `upsert`, and `memory_query` in `system-link.js` to ensure visual feedback (LEDs/Halo) triggers correctly during live sessions.
+
 ## v2.876
 - **Fix**: Resolved issue where OTP Halo Rotation failed due to incorrect SVG targeting. Added explicit ID `halo-master-svg`.
 - **Fix**: Resolved issue where Memory UI LEDs (Insert/Extract) appeared dim/inactive. Updated `system-link.js` to correctly override border colors during active states.

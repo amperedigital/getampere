@@ -233,7 +233,7 @@ export class SystemLink {
                     // Future: Add handlers for 'handoff', 'calendar', etc.
                     // For now, these are just illustrative of the universal link.
 
-                    if (payload.type === 'memory_added' || payload.type === 'insert_batch') {
+                    if (payload.type === 'memory_added' || payload.type === 'insert_batch' || payload.type === 'upsert') {
 
                         // TRIGGER HALO ROTATION -> MEMORY
                         if (window.demoScene) window.demoScene.selectFunction("memory");
@@ -264,7 +264,7 @@ export class SystemLink {
                             else if (payload.phone) this.triggerInsert("PH: " + payload.phone);
                             else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
                         }, 500);
-                    } else if (payload.type === 'auth_req') {
+                    } else if (payload.type === 'auth_req' || payload.type === 'auth_request_otp') {
                         // ODP Challenge - Rotate Halo to OTP (Index 6)
                         console.log("%c[SystemLink] 🔐 AUTH REQUESTED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         this.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
@@ -294,7 +294,7 @@ export class SystemLink {
                             this.elements.extractLed.classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
                             setTimeout(() => this.elements.extractLed.classList.remove('bg-red-500', 'shadow-[0_0_10px_red]'), 500);
                         }
-                    } else if (payload.type === 'memory_retrieved') {
+                    } else if (payload.type === 'memory_retrieved' || payload.type === 'memory_query') {
 
                         console.log("%c[SystemLink] 💾 MEMORY RETRIEVED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         // TRIGGER HALO ROTATION -> MEMORY
