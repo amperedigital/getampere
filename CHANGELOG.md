@@ -1,3 +1,8 @@
+## [v2.881] - 2026-02-02
+- **Fix (Tailwind v4)**: Completed migration by restoring missing @plugin and @theme blocks.
+- **Fix (CSS)**: Migrated legacy height-based breakpoints to the new v4 @custom-variant short syntax, resolving build warnings.
+- **Cleanup**: Removed stale metadata files and verified build performance (~230ms).
+
 
 
 
@@ -2631,6 +2636,7 @@
 
 ## [v2.282] - 2026-01-24
 - **v2.282**: Design Refresh (Applied "Organic Glass" aesthetic to all cards: Asymmetric corners (mirrored columns), gradient glass backgrounds, subtle borders, and circular action buttons. Maintained existing color palette).
+
 
 ## [v2.281] - 2026-01-24
 - **v2.281**: Layout Adjustment (Reduced desktop card grid gap from `gap-8` (2rem) to `gap-4` (1rem) as requested).
