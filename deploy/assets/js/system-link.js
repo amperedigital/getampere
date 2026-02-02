@@ -8,7 +8,7 @@ export class SystemLink {
             activityBar: document.getElementById('mem-activity-bar'),
             streamWindow: document.getElementById('mem-data-stream')
         };
-        
+
         // Configuration
         this.maxLines = 20;
         this.currentMode = 'IDLE'; // IDLE, INSERT, EXTRACT
@@ -23,10 +23,10 @@ export class SystemLink {
     init() {
         this.isRunning = true;
         // this.log("INITIALIZING SYSTEM LINK...", "system"); // Moved to Boot Sequence
-        
+
         // Start the visual tick loop (handling graph animations)
         setInterval(() => this.tick(), 160);
-        
+
         // Check for WebSocket param or default to Prod Worker
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
@@ -38,9 +38,9 @@ export class SystemLink {
 
         // Connect immediately (Network)
         if (apiHost) {
-             this.connectLoop(apiHost, workspaceString);
+            this.connectLoop(apiHost, workspaceString);
         } else {
-             this.setMode('SLEEP');
+            this.setMode('SLEEP');
         }
     }
 
@@ -65,21 +65,21 @@ export class SystemLink {
 
             // Ensure path exists
             if (!urlStr.includes('/memory/visualizer')) {
-                 if (urlStr.includes('?')) {
-                     const parts = urlStr.split('?');
-                     parts[0] = parts[0].replace(/\/$/, '') + "/memory/visualizer";
-                     urlStr = parts.join('?');
-                 } else {
-                     urlStr = urlStr.replace(/\/$/, '') + "/memory/visualizer";
-                 }
+                if (urlStr.includes('?')) {
+                    const parts = urlStr.split('?');
+                    parts[0] = parts[0].replace(/\/$/, '') + "/memory/visualizer";
+                    urlStr = parts.join('?');
+                } else {
+                    urlStr = urlStr.replace(/\/$/, '') + "/memory/visualizer";
+                }
             }
 
             // Use URL object for clean param handling
             const url = new URL(urlStr);
             if (workspace) url.searchParams.set("workspace", workspace);
-            
+
             this.connectToWorker(url.toString());
-        } catch(e) {
+        } catch (e) {
             console.error("Connect Loop Error", e);
             // Fallback for simple strings or invalid URL objects
             this.connectToWorker(apiHost);
@@ -126,7 +126,7 @@ export class SystemLink {
         if (this.idleTimer) clearTimeout(this.idleTimer);
 
         this.setMode('INSERT');
-        
+
         // Custom Log
         // const addr = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
         // const content = label || Math.random().toString(36).substring(7).toUpperCase();
@@ -143,7 +143,7 @@ export class SystemLink {
         if (this.idleTimer) clearTimeout(this.idleTimer);
 
         this.setMode('EXTRACT');
-        
+
         const content = label || "DATA_SEG";
         this.logCompact(`READ  <${content}>`);
 
@@ -157,12 +157,12 @@ export class SystemLink {
             // Flash Orange
             this.elements.odpTxLed.classList.remove('bg-slate-800', 'border-slate-600');
             this.elements.odpTxLed.classList.add('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
-            
+
             setTimeout(() => {
-                 if (this.elements.odpTxLed) {
+                if (this.elements.odpTxLed) {
                     this.elements.odpTxLed.classList.add('bg-slate-800', 'border-slate-600');
                     this.elements.odpTxLed.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
-                 }
+                }
             }, 800);
         }
     }
@@ -172,7 +172,7 @@ export class SystemLink {
             // Flash Emerald/Green
             this.elements.odpRxLed.classList.remove('bg-slate-800', 'border-slate-600');
             this.elements.odpRxLed.classList.add('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
-            
+
             setTimeout(() => {
                 if (this.elements.odpRxLed) {
                     this.elements.odpRxLed.classList.add('bg-slate-800', 'border-slate-600');
@@ -186,10 +186,10 @@ export class SystemLink {
     triggerRevertToDefault(delay = 5000) {
         if (this.revertTimer) clearTimeout(this.revertTimer);
         this.revertTimer = setTimeout(() => {
-             if (window.techDemoScene) {
-                 this.log("VISUALIZER: RETURN -> MEMORY", "dim");
-                 window.techDemoScene.selectFunction("memory");
-             }
+            if (window.techDemoScene) {
+                this.log("VISUALIZER: RETURN -> MEMORY", "dim");
+                window.techDemoScene.selectFunction("memory");
+            }
         }, delay);
     }
 
@@ -197,44 +197,44 @@ export class SystemLink {
         if (this.socket) {
             this.socket.close();
         }
-        
+
         console.log("MemoryViz: Connecting to " + url);
         try {
             this.socket = new WebSocket(url);
-            
+
             this.socket.onopen = () => {
                 this.log("SOCKET CONNECTED", "system");
-                
+
                 // v2.813: Cleanup previous session data
                 if (this.elements.streamWindow) {
                     this.elements.streamWindow.innerHTML = '';
                     this.log("SECURE_LINK [ESTABLISHED]", "success");
                     this.log("STANDBY_MONITOR_ACTIVE", "dim");
                 }
-                
-                this.stopAttractMode(); 
+
+                this.stopAttractMode();
             };
-            
+
             this.socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    
+
                     // Console Logging for Observability
                     console.log("[SystemLink] Received WS Data:", data);
 
                     // Handle broadcast messages
                     if (data.type === 'connected') {
-                         this.log("LINK ESTABLISHED", "system");
-                         return;
+                        this.log("LINK ESTABLISHED", "system");
+                        return;
                     }
-                    
-                    const payload = data; 
-                    
+
+                    const payload = data;
+
                     // Future: Add handlers for 'handoff', 'calendar', etc.
                     // For now, these are just illustrative of the universal link.
-                    
+
                     if (payload.type === 'memory_added' || payload.type === 'insert_batch') {
-                         
+
                         // TRIGGER HALO ROTATION -> MEMORY
                         if (window.demoScene) window.demoScene.selectFunction("memory");
                         else if (window.techDemoScene) window.techDemoScene.selectFunction("memory");
@@ -244,7 +244,7 @@ export class SystemLink {
                             items.forEach((item, i) => {
                                 const activeText = typeof item === 'string' ? item : (item.fact || "DATA_PKT");
                                 // Truncate for UI - widened to 32 chars for readability
-                                const display = activeText.length > 32 ? activeText.substring(0,32) + ".." : activeText;
+                                const display = activeText.length > 32 ? activeText.substring(0, 32) + ".." : activeText;
                                 setTimeout(() => this.triggerInsert(display), i * 200);
                             });
                         } else {
@@ -258,11 +258,11 @@ export class SystemLink {
                             window.techDemoScene.selectFunction("identity");
                             this.triggerRevertToDefault(4000);
                         }
-                        
+
                         setTimeout(() => {
-                           if (payload.email) this.triggerInsert("USR: " + payload.email);
-                           else if (payload.phone) this.triggerInsert("PH: " + payload.phone);
-                           else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
+                            if (payload.email) this.triggerInsert("USR: " + payload.email);
+                            else if (payload.phone) this.triggerInsert("PH: " + payload.phone);
+                            else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
                         }, 500);
                     } else if (payload.type === 'auth_req') {
                         // ODP Challenge - Rotate Halo to OTP (Index 6)
@@ -288,52 +288,52 @@ export class SystemLink {
                         this.triggerOdpRx();
 
                     } else if (payload.type === 'auth_fail') {
-                         console.log("%c[SystemLink] ❌ AUTH FAILED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
-                         this.log("🚫 AUTH_FAIL: " + (payload.reason || "INVALID"), "error");
-                         if (this.elements.extractLed) {
-                             this.elements.extractLed.classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
-                             setTimeout(() => this.elements.extractLed.classList.remove('bg-red-500', 'shadow-[0_0_10px_red]'), 500);
-                         }
+                        console.log("%c[SystemLink] ❌ AUTH FAILED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
+                        this.log("🚫 AUTH_FAIL: " + (payload.reason || "INVALID"), "error");
+                        if (this.elements.extractLed) {
+                            this.elements.extractLed.classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
+                            setTimeout(() => this.elements.extractLed.classList.remove('bg-red-500', 'shadow-[0_0_10px_red]'), 500);
+                        }
                     } else if (payload.type === 'memory_retrieved') {
-                         
-                         console.log("%c[SystemLink] 💾 MEMORY RETRIEVED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
-                         // TRIGGER HALO ROTATION -> MEMORY
-                         if (window.demoScene) window.demoScene.selectFunction("memory");
-                         else if (window.techDemoScene) window.techDemoScene.selectFunction("memory");
 
-                         const items = payload.items || [];
-                         if (items.length > 0) {
-                             items.forEach((item, i) => {
-                                 const activeText = typeof item === 'string' ? item : (item.fact || "QUERY_RES");
-                                 const display = activeText.length > 32 ? activeText.substring(0,32) + ".." : activeText;
-                                 setTimeout(() => this.triggerExtract(display), i * 200);
-                             });
-                         } else {
-                             this.triggerExtract("QUERY_RESULT");
-                         }
+                        console.log("%c[SystemLink] 💾 MEMORY RETRIEVED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
+                        // TRIGGER HALO ROTATION -> MEMORY
+                        if (window.demoScene) window.demoScene.selectFunction("memory");
+                        else if (window.techDemoScene) window.techDemoScene.selectFunction("memory");
+
+                        const items = payload.items || [];
+                        if (items.length > 0) {
+                            items.forEach((item, i) => {
+                                const activeText = typeof item === 'string' ? item : (item.fact || "QUERY_RES");
+                                const display = activeText.length > 32 ? activeText.substring(0, 32) + ".." : activeText;
+                                setTimeout(() => this.triggerExtract(display), i * 200);
+                            });
+                        } else {
+                            this.triggerExtract("QUERY_RESULT");
+                        }
                     } else if (payload.type === 'handoff') {
                         console.log("%c[SystemLink] 📡 HANDOFF: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         this.log("TRANSFER: " + (payload.reason || "AGENT_BRIDGE").toUpperCase(), "system");
                         // Trigger visual feedback (Green Pulse + Identity Mode)
                         if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
-                        this.triggerOdpRx(); 
+                        this.triggerOdpRx();
                         setTimeout(() => this.triggerExtract("HANDOFF_PKT"), 200);
                     }
                 } catch (e) {
                     console.error("Viz msg error", e);
                 }
             };
-            
+
             this.socket.onclose = (e) => {
                 this.log("SOCKET LOST " + (e.reason || ""), "dim");
                 // v2.825: CLEAR STREAM ON DISCONNECT
                 // Wipe the data stream window so it's fresh for the next user/session
                 setTimeout(() => {
-                     if (this.elements.streamWindow) {
-                         this.elements.streamWindow.innerHTML = '';
-                         this.log("DATA STREAM CLEARED", "system");
-                         this.log("READY FOR RESET", "dim");
-                     }
+                    if (this.elements.streamWindow) {
+                        this.elements.streamWindow.innerHTML = '';
+                        this.log("DATA STREAM CLEARED", "system");
+                        this.log("READY FOR RESET", "dim");
+                    }
                 }, 1500); // Small delay to let user see "SOCKET LOST"
 
                 /*
@@ -344,14 +344,14 @@ export class SystemLink {
                 }, 3000);
                 */
             };
-            
+
             this.socket.onerror = (err) => {
                 console.error("WS Error", err);
                 this.log("WS_ERR: CONN_FAIL", "dim");
             };
         } catch (e) {
-             console.log("Socket init error", e);
-             this.log("INIT_ERR: " + e.message, "dim");
+            console.log("Socket init error", e);
+            this.log("INIT_ERR: " + e.message, "dim");
         }
     }
 
@@ -359,7 +359,7 @@ export class SystemLink {
     setMode(mode) {
         // Debounce or just explicit set? Explicit set.
         this.currentMode = mode;
-        
+
         // Reset LEDs (Turn off)
         this.setLedState(this.elements.insertLed, false, 'emerald');
         this.setLedState(this.elements.extractLed, false, 'amber');
@@ -373,25 +373,28 @@ export class SystemLink {
 
     setLedState(element, isOn, colorName) {
         if (!element) return;
-        
+
         // Base transitions
-        element.style.transition = 'background-color 200ms ease-out, box-shadow 200ms ease-out';
+        element.style.transition = 'background-color 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out';
 
         if (isOn) {
-             if (colorName === 'emerald') {
+            if (colorName === 'emerald') {
                 element.style.backgroundColor = '#34d399'; // emerald-400
+                element.style.borderColor = '#6ee7b7';     // emerald-300
                 element.style.boxShadow = '0 0 12px rgba(52,211,153,0.9)';
-             } else {
+            } else {
                 element.style.backgroundColor = '#fbbf24'; // amber-400
+                element.style.borderColor = '#fcd34d';     // amber-300
                 element.style.boxShadow = '0 0 12px rgba(251,191,36,0.9)';
-             }
-             // Ensure slate is overridden
-             element.classList.remove('bg-slate-800');
+            }
+            // Ensure slate is overridden
+            element.classList.remove('bg-slate-800', 'border-slate-600');
         } else {
             // Reset
             element.style.backgroundColor = ''; // Revert to class or default
+            element.style.borderColor = '';
             element.style.boxShadow = '';
-            element.classList.add('bg-slate-800');
+            element.classList.add('bg-slate-800', 'border-slate-600');
         }
     }
 
@@ -402,44 +405,44 @@ export class SystemLink {
             const lowPulse = 2 + Math.sin(Date.now() / 800) * 2; // Breathing 0-4%
             this.elements.activityBar.style.width = `${lowPulse}%`;
             // Reset colors
-            this.elements.activityBar.style.backgroundColor = ''; 
+            this.elements.activityBar.style.backgroundColor = '';
             this.elements.activityBar.style.boxShadow = '';
             this.elements.activityBar.className = "h-full bg-slate-700 shadow-none transition-all duration-300 ease-out";
-            
+
             // v2.811: Removed random STANDBY logs
             // if (Math.random() > 0.992) this.log("STANDBY...", "dim");
             return;
         }
 
         // Active Mode Jitter
-        const activity = 20 + Math.random() * 80; 
+        const activity = 20 + Math.random() * 80;
         this.elements.activityBar.style.width = `${activity}%`;
-        
+
         // Force Colors via Style (Safety)
         if (this.currentMode === 'INSERT') {
-             this.elements.activityBar.style.backgroundColor = '#10b981'; // emerald-500
-             this.elements.activityBar.style.boxShadow = '0 0 15px rgba(16,185,129,0.8)';
-             
-             if (this.attractModeActive && Math.random() > 0.6) this.generateInsertLog();
-             
+            this.elements.activityBar.style.backgroundColor = '#10b981'; // emerald-500
+            this.elements.activityBar.style.boxShadow = '0 0 15px rgba(16,185,129,0.8)';
+
+            if (this.attractModeActive && Math.random() > 0.6) this.generateInsertLog();
+
         } else {
-             this.elements.activityBar.style.backgroundColor = '#f59e0b'; // amber-500
-             this.elements.activityBar.style.boxShadow = '0 0 15px rgba(245,158,11,0.8)';
-             
-             if (this.attractModeActive && Math.random() > 0.6) this.generateExtractLog();
+            this.elements.activityBar.style.backgroundColor = '#f59e0b'; // amber-500
+            this.elements.activityBar.style.boxShadow = '0 0 15px rgba(245,158,11,0.8)';
+
+            if (this.attractModeActive && Math.random() > 0.6) this.generateExtractLog();
         }
     }
 
     generateInsertLog() {
         const addr = this.generateHexAddr();
-        const data = this.generateHexContent(3); 
+        const data = this.generateHexContent(3);
         this.logCompact(`[${addr}] WR <${data}>`);
     }
 
     generateExtractLog() {
         const addr = this.generateHexAddr();
         const tasks = ["READ", "SYNC"];
-        const task = tasks[Math.floor(Math.random()*tasks.length)];
+        const task = tasks[Math.floor(Math.random() * tasks.length)];
         this.logCompact(`[${addr}] ${task} OK`);
     }
 
@@ -447,10 +450,10 @@ export class SystemLink {
         return "0x" + Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
     }
 
-    generateHexContent(chunks=3) {
+    generateHexContent(chunks = 3) {
         let s = "";
-        for(let i=0; i<chunks; i++) {
-            s += Math.floor(Math.random()*255).toString(16).toUpperCase().padStart(2,'0') + " ";
+        for (let i = 0; i < chunks; i++) {
+            s += Math.floor(Math.random() * 255).toString(16).toUpperCase().padStart(2, '0') + " ";
         }
         return s.trim();
     }
@@ -461,9 +464,9 @@ export class SystemLink {
         this.log(text, 'data');
     }
 
-    async typewriterLog(text, type='data', speed=10) {
+    async typewriterLog(text, type = 'data', speed = 10) {
         const span = document.createElement('div');
-        
+
         if (type === 'system') {
             span.className = "text-slate-500 font-bold mb-1 mt-1 border-t border-white/5 pt-1";
         } else if (type === 'dim') {
@@ -493,7 +496,7 @@ export class SystemLink {
     log(text, type = 'data') {
         const span = document.createElement('div');
         span.textContent = `> ${text}`;
-        
+
         if (type === 'system') {
             span.className = "text-slate-500 font-bold mb-1 mt-1 border-t border-white/5 pt-1";
         } else if (type === 'dim') {
@@ -501,14 +504,14 @@ export class SystemLink {
         } else {
             span.className = "text-blue-400/80 hover:text-blue-300";
         }
-        
+
         this.elements.streamWindow.prepend(span);
-        
+
         // Cleanup old (bottom) lines
         while (this.elements.streamWindow.children.length > this.maxLines) {
             this.elements.streamWindow.removeChild(this.elements.streamWindow.lastChild);
         }
-        
+
         this.scrollToTop();
     }
 }

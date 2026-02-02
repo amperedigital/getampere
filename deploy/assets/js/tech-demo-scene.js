@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.875-explicit-visitor-id-logging-fix-session-leak-and-backend-odp-dramatic-powerup-and-light-fix-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-otp-sms-clarity-prompt-otp-flow-enhanced-auth-logic-fix-auth-race-odp-visuals-clear-on-connect-backend-fix-disable-attract-mode-fix-visualizer-workspace-enable-card-scrolling-restore-card-scrollbar-suppress-json-leak-calm-listening-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.876-explicit-visitor-id-logging-fix-session-leak-and-backend-odp-dramatic-powerup-and-light-fix-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-otp-sms-clarity-prompt-otp-flow-enhanced-auth-logic-fix-auth-race-odp-visuals-clear-on-connect-backend-fix-disable-attract-mode-fix-visualizer-workspace-enable-card-scrolling-restore-card-scrollbar-suppress-json-leak-calm-listening-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -131,8 +131,8 @@ export class TechDemoScene {
 
     initHaloRotator() {
         // Initialize the Ring Rotators
-        // SVG is a sibling of the container (#tech-demo-scene), so we look at the parent
-        const svg = this.container.parentElement.querySelector('svg');
+        // SVG is a sibling of the container (#tech-demo-scene), but we added an ID v2.850 for robustness
+        const svg = document.getElementById('halo-master-svg') || this.container.parentElement.querySelector('svg');
         if (svg) {
             console.log('Initializing Halo Rotators (Dual Ring)...');
             

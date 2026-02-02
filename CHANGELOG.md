@@ -1,4 +1,9 @@
 
+
+## v2.876
+- **Fix**: Resolved issue where OTP Halo Rotation failed due to incorrect SVG targeting. Added explicit ID `halo-master-svg`.
+- **Fix**: Resolved issue where Memory UI LEDs (Insert/Extract) appeared dim/inactive. Updated `system-link.js` to correctly override border colors during active states.
+
 ## v2.875
 - **Visualizer (Latency)**: Implemented "Instant Feedback" for Agent Tool calls. `memory-api` (Backend) now broadcasts visualizer signals ("Searching...", "Upserting...", "Handoff") immediately upon receiving the request, rather than waiting for DB completion.
 - **Visualizer**: Added new `handoff` signal handling in `system-link.js` to trigger Green Pulse + Identity Mode during agent transfers.
