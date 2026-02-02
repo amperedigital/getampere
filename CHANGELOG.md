@@ -1,6 +1,6 @@
-## v2.821-frontend-viz-fix
-- **Visualizer**: Fixed broken link between Identity events and 3D Halo. `auth_req` now correctly triggers "OTP" slot, and `auth_verify` triggers "Identity" slot.
-- **System Link**: Patched logic to use correct Halo coordinate keys ("otp", "identity") instead of non-existent "security".
+## v2.825-fix-halo-memory-motion-and-clear-stream
+- **Visuals**: Updated `tech-demo-scene.js` to set the default Outer Ring position to "Transfer" (Index 4) instead of "Memory" (Index 0). This ensures that when Memory events occur (which select Index 0), the ring actually rotates, providing visual feedback.
+- **UX**: Updated `system-link.js` to clear the data stream window on socket disconnect/close. This ensures the next user doesn't see "leftover" data from a previous session.
 
 ## v2.821-frontend-viz-fix
 - **Visualizer**: Fixed broken link between Identity events and 3D Halo. `auth_req` now correctly triggers "OTP" slot, and `auth_verify` triggers "Identity" slot.

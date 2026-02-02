@@ -296,7 +296,16 @@ export class SystemLink {
             
             this.socket.onclose = (e) => {
                 this.log("SOCKET LOST " + (e.reason || ""), "dim");
-                // v2.812: Connection logic stable. Attract mode remains disabled.
+                // v2.825: CLEAR STREAM ON DISCONNECT
+                // Wipe the data stream window so it's fresh for the next user/session
+                setTimeout(() => {
+                     if (this.elements.streamWindow) {
+                         this.elements.streamWindow.innerHTML = '';
+                         this.log("DATA STREAM CLEARED", "system");
+                         this.log("READY FOR RESET", "dim");
+                     }
+                }, 1500); // Small delay to let user see "SOCKET LOST"
+
                 /*
                 setTimeout(() => {
                     if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
