@@ -1,4 +1,9 @@
 
+## v2.860
+- **Architecture**: Implemented "Context Push" for Web Mode.
+- **Frontend**: `ai-chat.js` now generates/retrieves Visitor ID *before* session start and passes it via `dynamic_variables` (`web_visitor_id`).
+- **Agent Logic**: Prompt updated to look for `{{web_visitor_id}}` and skip the `get_web_visitor_id` probe if present.
+
 ## v2.840
 - **AI Persona**: Enforced "Extreme Brevity" in `front-door-agent-prompt.md`. Agent now responds in <= 2 short sentences. Removed "Give me one sec" filler in favor of "Checking...".
 - **Visualizer**: Fixed `ai-chat.js` to explicitly trigger `setProcessingState(true)` (White Halo + Hyper-Rotation) when `get_web_visitor_id` is called, ensuring visual feedback during the initial identity check.

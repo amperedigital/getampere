@@ -202,8 +202,24 @@ export class AmpereAIChat {
             // We wait 1.8 seconds here (typical animation ramp up).
             await new Promise(resolve => setTimeout(resolve, 1800));
 
+            // v2.860: Identity Push. Retrieve ID here to push into dynamic_variables.
+            // This allows the Agent to know the ID immediately without "probing" callbacks.
+            let visitorId = localStorage.getItem('ampere_visitor_id');
+            if (!visitorId) {
+                if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+                    visitorId = crypto.randomUUID();
+                } else {
+                    visitorId = 'v-' + Math.random().toString(36).substring(2, 15);
+                }
+                localStorage.setItem('ampere_visitor_id', visitorId);
+            }
+
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
+                // v2.860: Push context immediately
+                dynamicVariables: {
+                    web_visitor_id: visitorId
+                },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
                 onError: (err) => this.handleError(err),
