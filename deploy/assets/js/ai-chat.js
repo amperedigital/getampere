@@ -220,6 +220,11 @@ export class AmpereAIChat {
             if (currentHour < 12) timeGreeting = "Good morning";
             else if (currentHour < 17) timeGreeting = "Good afternoon";
             else timeGreeting = "Good evening";
+            
+            console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
+                web_visitor_id: visitorId,
+                user_time_greeting: timeGreeting
+            });
 
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,

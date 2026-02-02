@@ -1,4 +1,8 @@
 
+## v2.872
+- **Agent Logic**: Explicitly blacklisted `+10000000000` in prompt's bootstrap step to prevent "Internal Error" from overriding push context.
+- **Diagnostics**: Added specific purple console log `[AmpereAI] 🚀 PUSHING CONTEXT` to client to verify visitor ID transmission.
+
 ## v2.871
 - **UX**: Implemented Time-of-Day Greeting.
 - **Frontend**: `ai-chat.js` calculates local time greeting ("Good morning/afternoon/evening") and pushes it to the agent via `dynamic_variables` (`user_time_greeting`) on connection.
