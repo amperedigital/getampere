@@ -1,3 +1,7 @@
+## v2.828-fix-session-leak-and-backend-odp
+- **Chat**: Patched `ai-chat.js` to strictly suppress "session_id" JSON leaks (`set_context` output) from appearing in the user chat stream.
+- **Backend/Visualizer**: Fixed `memory-api` bootstrap logic to consolidate broadcasts and ensure correct "retrieved" vs "added" signals are sent to the Visualizer on load.
+
 ## v2.827
 - **Backend**: Added broadcast events for `memory_query` (retrieval) and `upsert` (insertion) to ensure visualizer feedback during all memory operations.
 - **Visualizer**: Fixed workspace mismatch in `system-link.js` to ensure frontend listens to the correct backend channel (`default`).

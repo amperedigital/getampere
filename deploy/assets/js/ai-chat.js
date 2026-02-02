@@ -307,6 +307,12 @@ export class AmpereAIChat {
                  console.warn("[AmpereAI] Suppressed Leaked VISITOR_ID JSON:", cleanMsg);
                  return;
             }
+            
+            // v2.828: Strict suppression for Session ID tool leaks
+            if (cleanMsg.includes('session_id') && cleanMsg.includes('{')) {
+                 console.warn("[AmpereAI] Suppressed Leaked SESSION_ID JSON:", cleanMsg);
+                 return;
+            }
 
             const role = (props.source === 'user') ? 'user' : 'agent';
             this.addMessage(props.message, role);
