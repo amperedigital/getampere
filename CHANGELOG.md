@@ -1,6 +1,10 @@
 
 
 
+
+## v2.878
+- **Fix (Deployment)**: Patched `scripts/publish.sh` to correctly propagate `system-link.js` changes to `tech-demo-main.js`, ensuring `tech-demo.html` receives the latest version tag on deployment.
+
 ## v2.877
 - **Fix**: Added support for backend event aliases `auth_request_otp`, `upsert`, and `memory_query` in `system-link.js` to ensure visual feedback (LEDs/Halo) triggers correctly during live sessions.
 
