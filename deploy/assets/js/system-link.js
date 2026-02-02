@@ -311,7 +311,14 @@ export class SystemLink {
                          } else {
                              this.triggerExtract("QUERY_RESULT");
                          }
-                    } 
+                    } else if (payload.type === 'handoff') {
+                        console.log("%c[SystemLink] 📡 HANDOFF: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
+                        this.log("TRANSFER: " + (payload.reason || "AGENT_BRIDGE").toUpperCase(), "system");
+                        // Trigger visual feedback (Green Pulse + Identity Mode)
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
+                        this.triggerOdpRx(); 
+                        setTimeout(() => this.triggerExtract("HANDOFF_PKT"), 200);
+                    }
                 } catch (e) {
                     console.error("Viz msg error", e);
                 }

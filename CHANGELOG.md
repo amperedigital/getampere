@@ -1,4 +1,9 @@
 
+## v2.875
+- **Visualizer (Latency)**: Implemented "Instant Feedback" for Agent Tool calls. `memory-api` (Backend) now broadcasts visualizer signals ("Searching...", "Upserting...", "Handoff") immediately upon receiving the request, rather than waiting for DB completion.
+- **Visualizer**: Added new `handoff` signal handling in `system-link.js` to trigger Green Pulse + Identity Mode during agent transfers.
+- **Backend**: `auth_request_otp`, `upsert`, and `query` now all support early-broadcast to ensure the Halo Ring reacts instantly to "tools calling tools".
+
 ## v2.872
 - **Agent Logic**: Explicitly blacklisted `+10000000000` in prompt's bootstrap step to prevent "Internal Error" from overriding push context.
 - **Diagnostics**: Added specific purple console log `[AmpereAI] 🚀 PUSHING CONTEXT` to client to verify visitor ID transmission.
