@@ -1,3 +1,7 @@
+## v2.826-dramatic-powerup-and-light-fix
+- **Visuals**: Updated `tech-demo-scene.js` to implement a "Dramatic Power-Up" sequence. The Outer Ring now starts at "Memory" (Index 0) and then animates to "Transfer" (Index 4) on load, providing a visual system check.
+- **Lighting**: Verified LED logic for Insert/Extract operations to ensure valid UI feedback during backend events.
+
 ## v2.825-fix-halo-memory-motion-and-clear-stream
 - **Visuals**: Updated `tech-demo-scene.js` to set the default Outer Ring position to "Transfer" (Index 4) instead of "Memory" (Index 0). This ensures that when Memory events occur (which select Index 0), the ring actually rotates, providing visual feedback.
 - **UX**: Updated `system-link.js` to clear the data stream window on socket disconnect/close. This ensures the next user doesn't see "leftover" data from a previous session.

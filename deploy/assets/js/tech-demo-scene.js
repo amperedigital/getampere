@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.825-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-otp-sms-clarity-prompt-otp-flow-enhanced-auth-logic-fix-auth-race-odp-visuals-clear-on-connect-backend-fix-disable-attract-mode-fix-visualizer-workspace-enable-card-scrolling-restore-card-scrollbar-suppress-json-leak-calm-listening-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
+        console.log("Tech Demo Scene Initialized - v2.826-dramatic-powerup-and-light-fix-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-fix-halo-memory-motion-and-clear-stream-otp-sms-clarity-prompt-otp-flow-enhanced-auth-logic-fix-auth-race-odp-visuals-clear-on-connect-backend-fix-disable-attract-mode-fix-visualizer-workspace-enable-card-scrolling-restore-card-scrollbar-suppress-json-leak-calm-listening-stop-standby-loop-visitor-id-logging-silent-id-debug-async-debug-async-debug (Voice Sync + Debug)");
         
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -175,13 +175,18 @@ export class TechDemoScene {
                 ringClassHover: 'stroke-slate-500/50'
             });
 
-            // v2.786: Set Initial State (Front Door Agent + Memory Function)
-            // Ensure the starting position represents the "Primary" agent state.
-            // Inner Ring: Index 1 (Front Door)
-            // Outer Ring: Index 4 (Transfer/Network) - Default to Neutral so Memory (0) triggers rotation
+            // v2.826: Dramatic Power-Up Sequence
+            // Start at Memory (Index 0), then rotate to Transfer (Index 4) to show capability
             setTimeout(() => {
-                if(this.rotatorInner) this.rotatorInner.setActiveIndex(1, false);
-                if(this.rotatorOuter) this.rotatorOuter.setActiveIndex(4, false); // v2.825: Changed from 0 to 4 to force movement on Memory event
+                if(this.rotatorInner) this.rotatorInner.setActiveIndex(1, false); // Snap to Front Door
+                if(this.rotatorOuter) {
+                    this.rotatorOuter.setActiveIndex(0, false); // Snap to Memory initially
+                    
+                    // Rotate to Neutral (Transfer/4) after short delay
+                    setTimeout(() => {
+                         this.rotatorOuter.setActiveIndex(4, true); // Animate to Transfer
+                    }, 800);
+                }
             }, 50);
 
         } else {
