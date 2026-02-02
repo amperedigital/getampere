@@ -1,3 +1,6 @@
+## v2.818-otp-sms-clarity
+- **Prompt**: Refined `front-door-agent-prompt.md` to explicitly license SMS as a valid OTP channel for Web users.
+- **Protocol**: Updated script to ask "I can email it or text it..." to give the user a clear choice.
 ## v2.817-prompt-otp-flow
 - **Prompt**: Updated `front-door-agent-prompt.md` with strict "Web/Chat Protocol" for OTP.
 - **Logic**: Explicitly instructs the Agent to *ask* for email/phone if missing before triggering `auth_request_otp`.
