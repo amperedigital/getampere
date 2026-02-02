@@ -102,6 +102,16 @@ deploy/assets/js/tech-demo-main.js"
   fi
 fi
 
+# 1.3 SYSTEM LINK DEPENDENCY
+if echo "$CHANGED_FILES" | grep -q "system-link.js"; then
+  if ! echo "$CHANGED_FILES" | grep -q "tech-demo-main.js"; then
+     echo "   🔗 Dependency detected: system-link.js changed."
+     echo "   ⬆️  Forcing update of tech-demo-main.js (Entry Point)..."
+     CHANGED_FILES="${CHANGED_FILES}
+deploy/assets/js/tech-demo-main.js"
+  fi
+fi
+
 # 1.5. GENERIC VERSION INJECTION
 # Inject version number into ANY changed JS file that contains a console.log with a version string
 for FILE in $CHANGED_FILES; do

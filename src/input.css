@@ -1,29 +1,39 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer utilities {
-  .animate-letter-reveal {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(-100%);
-    clip-path: inset(0 0 100% 0);
-    animation: letterSlideIn 0.8s ease-out forwards;
-  }
+/* 
+@plugin "tailwind-scrollbar";
+@plugin "@tailwindcss/typography"; 
+*/
 
-  .bg-grid-blue-fade {
-    background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
+/*
+@theme {
+  --font-geist: "Geist", sans-serif;
+  --font-serif-italic: "Newsreader", serif;
 
-  .shadow-card-cyan {
-    box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px;
-  }
+  --breakpoint-short: (max-height: 850px);
+}
+*/
 
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+@utility animate-letter-reveal {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-100%);
+  clip-path: inset(0 0 100% 0);
+  animation: letterSlideIn 0.8s ease-out forwards;
+}
+
+@utility bg-grid-blue-fade {
+  background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@utility shadow-card-cyan {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px;
+}
+
+@utility animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes letterSlideIn {
@@ -32,10 +42,12 @@
     opacity: 0;
     clip-path: inset(0 0 100% 0);
   }
+
   50% {
     opacity: 0.5;
     clip-path: inset(0 0 50% 0);
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -181,6 +193,7 @@
 }
 
 @keyframes breathe {
+
   0%,
   100% {
     transform: translate(-50%, -50%) scale(1);
@@ -192,20 +205,24 @@
 }
 
 @layer components {
+
   /* Apple-like Glass Effect (2026 Revision: "Muted Pebble") */
   /* High opacity, dark solid feel with rotating border glints */
   .apple-glass {
     position: relative;
     /* Base: Darker, more solid "Pebble" look. No cloudy gradients. */
-    background-color: rgba(15, 15, 20, 0.7); 
-    backdrop-filter: blur(20px); /* KEPT: Essential for glass feel, but reduced intensity if needed */
+    background-color: rgba(15, 15, 20, 0.7);
+    backdrop-filter: blur(20px);
+    /* KEPT: Essential for glass feel, but reduced intensity if needed */
     -webkit-backdrop-filter: blur(20px);
-    
-    border: none !important; /* Managed by pseudo-element */
-    
+
+    border: none !important;
+    /* Managed by pseudo-element */
+
     /* Box Shadow: Removed per user request (v2.535) - "Too extreme" */
     /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 0 0.5px rgba(255, 255, 255, 0.05); */
-    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.05); /* Subtle rim Only */
+    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+    /* Subtle rim Only */
 
     isolation: isolate;
   }
@@ -216,29 +233,33 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    padding: 1.5px; /* Border Thickness */
-    
+    padding: 1.5px;
+    /* Border Thickness */
+
     /* Vertical Glints (Top Only) - Uniform lighting from Top */
     /* v2.535: Removed bottom glint to match top lighting source */
-    background: linear-gradient(to bottom, 
-      rgba(255, 255, 255, 0.8) 0%,    /* Hard Glint (Top - 12 o'clock) */
-      rgba(255, 255, 255, 0.4) 15%,   /* Soften Falloff */
-      rgba(255, 255, 255, 0.0) 35%,
-      rgba(255, 255, 255, 0.0) 100%   /* No Bottom Glint */
-    );
-    
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0.8) 0%,
+        /* Hard Glint (Top - 12 o'clock) */
+        rgba(255, 255, 255, 0.4) 15%,
+        /* Soften Falloff */
+        rgba(255, 255, 255, 0.0) 35%,
+        rgba(255, 255, 255, 0.0) 100%
+        /* No Bottom Glint */
+      );
+
     /* Masking magic to show only the border */
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
-    mask: 
-      linear-gradient(#fff 0 0) content-box, 
+    mask:
+      linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    
+
     pointer-events: none;
-    transition: none; 
+    transition: none;
     z-index: 10;
   }
 
@@ -246,15 +267,15 @@
   .apple-glass-interactive {
     cursor: pointer;
   }
-  
+
   /* v2.536: "Powered Up" State - Subtle Green Tint */
   /* Targeted via ARIA for strict state management */
   .power-toggle-btn[aria-pressed="true"] {
-      /* Maintains the dark "glass" weight (0.75 opacity) but tints it deep green */
-      background-color: rgba(6, 40, 25, 0.75) !important; 
-      
-      /* Very subtle Green-400 rim light */
-      box-shadow: inset 0 0 0 0.5px rgba(74, 222, 128, 0.2) !important; 
+    /* Maintains the dark "glass" weight (0.75 opacity) but tints it deep green */
+    background-color: rgba(6, 40, 25, 0.75) !important;
+
+    /* Very subtle Green-400 rim light */
+    box-shadow: inset 0 0 0 0.5px rgba(74, 222, 128, 0.2) !important;
   }
 
   /* Rotated (On) State: NO ROTATION (v2.535) */
@@ -262,14 +283,16 @@
   .apple-glass-rotated::after,
   .apple-glass-rotated:hover::after,
   .apple-glass-rotated:active::after {
-    transform: none; /* Was rotate(180deg) */
+    transform: none;
+    /* Was rotate(180deg) */
   }
-  
+
   .apple-glass-interactive:hover,
   .apple-glass-interactive:active,
   .apple-glass-rotated {
     transform: translateY(-1px);
-    /* box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); */ /* Removed extreme shadow */
+    /* box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); */
+    /* Removed extreme shadow */
   }
 
   .gradient-blur {
@@ -280,7 +303,7 @@
     pointer-events: none;
   }
 
-  .gradient-blur > div,
+  .gradient-blur>div,
   .gradient-blur::before,
   .gradient-blur::after {
     position: absolute;
@@ -298,7 +321,7 @@
         rgba(0, 0, 0, 0) 37.5%);
   }
 
-  .gradient-blur > div:nth-of-type(1) {
+  .gradient-blur>div:nth-of-type(1) {
     z-index: 2;
     backdrop-filter: blur(1px);
     mask: linear-gradient(to top,
@@ -308,7 +331,7 @@
         rgba(0, 0, 0, 0) 50%);
   }
 
-  .gradient-blur > div:nth-of-type(2) {
+  .gradient-blur>div:nth-of-type(2) {
     z-index: 3;
     backdrop-filter: blur(2px);
     mask: linear-gradient(to top,
@@ -318,7 +341,7 @@
         rgba(0, 0, 0, 0) 62.5%);
   }
 
-  .gradient-blur > div:nth-of-type(3) {
+  .gradient-blur>div:nth-of-type(3) {
     z-index: 4;
     backdrop-filter: blur(4px);
     mask: linear-gradient(to top,
@@ -328,7 +351,7 @@
         rgba(0, 0, 0, 0) 75%);
   }
 
-  .gradient-blur > div:nth-of-type(4) {
+  .gradient-blur>div:nth-of-type(4) {
     z-index: 5;
     backdrop-filter: blur(8px);
     mask: linear-gradient(to top,
@@ -338,7 +361,7 @@
         rgba(0, 0, 0, 0) 87.5%);
   }
 
-  .gradient-blur > div:nth-of-type(5) {
+  .gradient-blur>div:nth-of-type(5) {
     z-index: 6;
     backdrop-filter: blur(16px);
     mask: linear-gradient(to top,
@@ -348,7 +371,7 @@
         rgba(0, 0, 0, 0) 100%);
   }
 
-  .gradient-blur > div:nth-of-type(6) {
+  .gradient-blur>div:nth-of-type(6) {
     z-index: 7;
     backdrop-filter: blur(32px);
     mask: linear-gradient(to top,
@@ -367,19 +390,48 @@
 
 /* KEYFRAMES */
 @keyframes amp-ping {
-    75%, 100% { transform: scale(2); opacity: 0; }
+
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 @keyframes ping {
-    75%, 100% { transform: scale(2); opacity: 0; }
+
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 @keyframes arrow-pickup-drop {
-  0% { transform: translateY(0); opacity: 1; }
-  20% { transform: translateY(-15px); opacity: 1; }
-  40% { transform: translateY(25px); opacity: 0; }
-  50% { transform: translateY(-40px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateY(-15px);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @layer base {
@@ -389,6 +441,7 @@
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
   }
+
   ::selection {
     background: rgba(59, 130, 246, 0.2);
     color: white;
@@ -396,190 +449,309 @@
 }
 
 @layer utilities {
-    /* CRITICAL MOBILE OVERRIDES */
-    @media (max-width: 768px) {
-      .mobile-force-hidden { display: none !important; }
-      .mobile-force-auto-height { height: auto !important; max-height: none !important; overflow: visible !important; }
-      .mobile-force-block { display: block !important; }
-      .mobile-force-relative { position: relative !important; top: auto !important; left: auto !important; transform: none !important; }
-      .mobile-force-tight-spacing { margin-top: 2rem !important; margin-bottom: 2rem !important; padding-top: 2rem !important; padding-bottom: 2rem !important; }
-      .mobile-force-medium-spacing { margin-top: 5rem !important; margin-bottom: 5rem !important; padding-top: 2rem !important; padding-bottom: 2rem !important; }
-      .mobile-force-no-margin { margin: 0 !important; }
-      .mobile-card-gap { margin-bottom: 3rem !important; }
-      .mobile-card-gap:last-child { margin-bottom: 0 !important; }
+
+  /* CRITICAL MOBILE OVERRIDES */
+  @media (max-width: 768px) {
+    .mobile-force-hidden {
+      display: none !important;
     }
 
-    .font-serif-italic {
-      font-family: "Newsreader", serif;
-      font-style: italic;
+    .mobile-force-auto-height {
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
     }
 
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* Force Display Helper from Global.js */
-    .force-smil-display, .force-visible {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+    .mobile-force-block {
+      display: block !important;
     }
+
+    .mobile-force-relative {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+    }
+
+    .mobile-force-tight-spacing {
+      margin-top: 2rem !important;
+      margin-bottom: 2rem !important;
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+
+    .mobile-force-medium-spacing {
+      margin-top: 5rem !important;
+      margin-bottom: 5rem !important;
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+
+    .mobile-force-no-margin {
+      margin: 0 !important;
+    }
+
+    .mobile-card-gap {
+      margin-bottom: 3rem !important;
+    }
+
+    .mobile-card-gap:last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .font-serif-italic {
+    font-family: "Newsreader", serif;
+    font-style: italic;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Force Display Helper from Global.js */
+  .force-smil-display,
+  .force-visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
 
 @layer components {
-    /* SVG Distortion Grid Fallback (Mobile) */
-    .distortion-grid-fallback {
-      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-    }
 
-    /* Manual Active State for CRM Card */
-    .crm-animated-element, .crm-ping-element { display: none !important; }
+  /* SVG Distortion Grid Fallback (Mobile) */
+  .distortion-grid-fallback {
+    background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
 
-    [data-tab-card].active .crm-animated-element,
-    [data-tab-card].in-view .crm-animated-element,
-    [data-tab-card].active .crm-ping-element,
-    [data-tab-card].in-view .crm-ping-element,
-    [data-tab-card].active:hover .crm-animated-element,
-    [data-tab-card].active:hover .crm-ping-element {
-        display: block !important;
-        opacity: 1 !important;
-    }
+  /* Manual Active State for CRM Card */
+  .crm-animated-element,
+  .crm-ping-element {
+    display: none !important;
+  }
 
-    [data-tab-card].active .crm-ping-element,
-    [data-tab-card].in-view .crm-ping-element,
-    [data-tab-card].active:hover .crm-ping-element {
-        animation: amp-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
-    }
+  [data-tab-card].active .crm-animated-element,
+  [data-tab-card].in-view .crm-animated-element,
+  [data-tab-card].active .crm-ping-element,
+  [data-tab-card].in-view .crm-ping-element,
+  [data-tab-card].active:hover .crm-animated-element,
+  [data-tab-card].active:hover .crm-ping-element {
+    display: block !important;
+    opacity: 1 !important;
+  }
 
-    /* Smooth Carousel Transitions */
-    .carousel-card { transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  [data-tab-card].active .crm-ping-element,
+  [data-tab-card].in-view .crm-ping-element,
+  [data-tab-card].active:hover .crm-ping-element {
+    animation: amp-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+  }
 
-    /* Grid/List View Transitions */
-    #projects-container { transition: opacity 0.3s ease; }
+  /* Smooth Carousel Transitions */
+  .carousel-card {
+    transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
 
-    /* Hamburger */
-    .amp-hamburger {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      overflow: hidden;
-      transition: box-shadow 0.25s ease, transform 0.25s ease;
-    }
-    .amp-hamburger:focus-visible { outline: 2px solid rgba(37, 99, 235, 0.4); outline-offset: 2px; }
-    .amp-hamburger-line {
-      position: absolute;
-      width: 18px;
-      height: 2px;
-      border-radius: 999px;
-      background-color: #0F172A;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .amp-hamburger-line:first-child { transform: translateY(-5px); }
-    .amp-hamburger-line:last-child { transform: translateY(5px); }
-    .amp-hamburger.is-open .amp-hamburger-line:first-child { transform: rotate(45deg); }
-    .amp-hamburger.is-open .amp-hamburger-line:last-child { transform: rotate(-45deg); }
-    .amp-hamburger.is-open .amp-hamburger-line { background-color: #0F172A; }
+  /* Grid/List View Transitions */
+  #projects-container {
+    transition: opacity 0.3s ease;
+  }
 
-    /* Text Physics: Flip-In-Place */
-    .hover-flip-text .char {
-      display: inline-block;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transform-origin: center center;
-      will-change: transform;
-    }
-    .group:hover .hover-flip-text .char,
-    .hover-flip-text:hover .char { transform: rotateX(360deg); }
+  /* Hamburger */
+  .amp-hamburger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
 
-    /* Re-usable Mono Labels */
-    .tag-mono-label {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
+  .amp-hamburger:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.4);
+    outline-offset: 2px;
+  }
+
+  .amp-hamburger-line {
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background-color: #0F172A;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .amp-hamburger-line:first-child {
+    transform: translateY(-5px);
+  }
+
+  .amp-hamburger-line:last-child {
+    transform: translateY(5px);
+  }
+
+  .amp-hamburger.is-open .amp-hamburger-line:first-child {
+    transform: rotate(45deg);
+  }
+
+  .amp-hamburger.is-open .amp-hamburger-line:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .amp-hamburger.is-open .amp-hamburger-line {
+    background-color: #0F172A;
+  }
+
+  /* Text Physics: Flip-In-Place */
+  .hover-flip-text .char {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .group:hover .hover-flip-text .char,
+  .hover-flip-text:hover .char {
+    transform: rotateX(360deg);
+  }
+
+  /* Re-usable Mono Labels */
+  .tag-mono-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .uc-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #60a5fa;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+
+  .group:hover .uc-label,
+  .active .uc-label {
+    opacity: 1;
+  }
+
+  @media (min-width: 1024px) {
     .uc-label {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color: #60a5fa;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
+      font-size: 12px;
     }
-    .group:hover .uc-label, .active .uc-label { opacity: 1; }
-    @media (min-width: 1024px) { .uc-label { font-size: 12px; } }
+  }
 
-    /* Icon Physics */
-    .hover-push-down-parent {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hover-push-down {
-      display: inline-block;
-      transition: transform 0.4s linear, opacity 0.3s linear;
-      will-change: transform, opacity;
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: none;
-    }
-    .group:hover .hover-push-down { animation: arrow-pickup-drop 0.8s linear forwards; }
+  /* Icon Physics */
+  .hover-push-down-parent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    /* Standard Reveal Animations */
-    .fade-up-element { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
-    .fade-up-element.in-view { opacity: 1; transform: translateY(0); }
-    .reveal-heading { transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-    .reveal-content { transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .hover-push-down {
+    display: inline-block;
+    transition: transform 0.4s linear, opacity 0.3s linear;
+    will-change: transform, opacity;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: none;
+  }
 
-    /* Mobile Reveal Animation */
-    .mobile-reveal:not([data-tab-card data-observer]) {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-      filter: blur(10px);
-      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .mobile-reveal:not([data-tab-card data-observer]).in-view {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-    .mobile-reveal[data-tab-card data-observer] {
-      opacity: 0;
-      filter: blur(10px);
-      transition: opacity 0.8s ease, filter 0.8s ease;
-    }
-    .mobile-reveal[data-tab-card data-observer].in-view {
-      opacity: 1;
-      filter: blur(0);
-    }
+  .group:hover .hover-push-down {
+    animation: arrow-pickup-drop 0.8s linear forwards;
+  }
 
-    /* Precision 3D Card Stack & Interaction */
-    [data-tab-card data-observer] {
-      --stack-y: 0px;
-      --rot-y: 12deg;
-      --rot-x: 6deg;
-      transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
-      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
-      touch-action: manipulation;
-    }
-    [data-tab-card data-observer].stack-1 { --stack-y: -12px; z-index: 18 !important; }
-    [data-tab-card data-observer].stack-2 { --stack-y: -24px; z-index: 17 !important; }
-    [data-tab-card data-observer].stack-3 { --stack-y: -36px; z-index: 16 !important; }
+  /* Standard Reveal Animations */
+  .fade-up-element {
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: opacity, transform;
+  }
 
-    .group\/cards:hover [data-tab-card data-observer],
-    .group\/cards:active [data-tab-card data-observer],
-    [data-tab-card data-observer]:hover,
-    [data-tab-card data-observer]:active {
-      --rot-y: 0deg !important;
-      --rot-x: 6deg !important;
-    }
+  .fade-up-element.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-heading {
+    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .reveal-content {
+    transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Mobile Reveal Animation */
+  .mobile-reveal:not([data-tab-card][data-observer]) {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(10px);
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .mobile-reveal:not([data-tab-card][data-observer]).in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  .mobile-reveal[data-tab-card][data-observer] {
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 0.8s ease, filter 0.8s ease;
+  }
+
+  .mobile-reveal[data-tab-card][data-observer].in-view {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  /* Precision 3D Card Stack & Interaction */
+  [data-tab-card][data-observer] {
+    --stack-y: 0px;
+    --rot-y: 12deg;
+    --rot-x: 6deg;
+    transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
+    touch-action: manipulation;
+  }
+
+  [data-tab-card][data-observer].stack-1 {
+    --stack-y: -12px;
+    z-index: 18 !important;
+  }
+
+  [data-tab-card][data-observer].stack-2 {
+    --stack-y: -24px;
+    z-index: 17 !important;
+  }
+
+  [data-tab-card][data-observer].stack-3 {
+    --stack-y: -36px;
+    z-index: 16 !important;
+  }
+
+  .group\/cards:hover [data-tab-card][data-observer],
+  .group\/cards:active [data-tab-card][data-observer],
+  [data-tab-card][data-observer]:hover,
+  [data-tab-card][data-observer]:active {
+    --rot-y: 0deg !important;
+    --rot-x: 6deg !important;
+  }
 }
 
 /* Specific Fix for iPad Pro 1024px Portrait Layout */
 /* Overrides standard lg: negative positioning */
 @media only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait) {
   #tech-demo-controls-target {
-      bottom: 10rem !important;
+    bottom: 10rem !important;
   }
 }
 
@@ -597,63 +769,67 @@
 /* The expanded card at z-index 50 covers them. */
 /* We might want to dim them or fade them out to reduce paint cost. */
 .has-active-card .socket-card-container:not(.is-expanded) {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 /* Ensure the container preserves 3D space if needed */
 #tech-demo-right-column {
-    transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 /* --- v2.403 Container Query Engine --- */
 
 /* 1. Define the Context */
 .socket-card-container {
-    container-type: inline-size;
-    container-name: card;
+  container-type: inline-size;
+  container-name: card;
 }
 
 /* 2. Responsive Content Scalers */
 /* These styles only active when card width > 500px (Expanded Mode) */
 @container card (min-width: 500px) {
-    
-    /* Metrics: Switch from list to grid */
-    .cq-cols-3 {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 2rem !important;
-    }
-    
-    /* Typography: Scale up */
-    .cq-text-lg {
-        font-size: 1.125rem !important; /* text-lg */
-        line-height: 1.75rem !important;
-    }
-    .cq-title-xl {
-        font-size: 1.5rem !important; /* text-2xl */
-        margin-bottom: 1.5rem !important;
-    }
 
-    /* Charts: Full Height */
-    .cq-chart-h-full {
-        height: 100% !important;
-        min-height: 400px !important;
-    }
+  /* Metrics: Switch from list to grid */
+  .cq-cols-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2rem !important;
+  }
 
-    /* Layout: Show/Hide Helpers */
-    .cq-show {
-        display: block !important;
-        opacity: 1 !important;
-    }
-    .cq-hide {
-        display: none !important;
-    }
-    
-    /* Spacing: More breathing room */
-    .cq-p-8 {
-        padding: 2rem !important;
-    }
+  /* Typography: Scale up */
+  .cq-text-lg {
+    font-size: 1.125rem !important;
+    /* text-lg */
+    line-height: 1.75rem !important;
+  }
+
+  .cq-title-xl {
+    font-size: 1.5rem !important;
+    /* text-2xl */
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Charts: Full Height */
+  .cq-chart-h-full {
+    height: 100% !important;
+    min-height: 400px !important;
+  }
+
+  /* Layout: Show/Hide Helpers */
+  .cq-show {
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  .cq-hide {
+    display: none !important;
+  }
+
+  /* Spacing: More breathing room */
+  .cq-p-8 {
+    padding: 2rem !important;
+  }
 }
 
 /* --- Alignment Fixes --- */
@@ -675,303 +851,333 @@
 /* 1. Smooth Easing for Expansion (No Bounce) */
 /* Uses a standard exponential ease-out for a premium, solid feel without overshoot */
 .socket-card-container {
-    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1) !important; /* "Expo Ease Out" - Smooth, no bounce */
-    transition-property: all !important;
-    transition-duration: 0.6s !important;
+  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1) !important;
+  /* "Expo Ease Out" - Smooth, no bounce */
+  transition-property: all !important;
+  transition-duration: 0.6s !important;
 }
 
 /* 2. Top-Right Button Interaction Fix */
 /* Disable the group-hover scaling when expanded to prevent "stuck" state */
 .socket-card-container.is-expanded .group\/button-trigger {
-    transform: none !important;
+  transform: none !important;
 }
+
 .socket-card-container.is-expanded .group\/button-trigger:hover {
-    transform: scale(1.1) !important; /* Only scale on DIRECT hover when expanded */
-    background-color: rgba(255,255,255,0.2) !important;
+  transform: scale(1.1) !important;
+  /* Only scale on DIRECT hover when expanded */
+  background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* 3. Dark Scrollbars */
 /* Applied globally to scrollable areas */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-    background: #334155; /* Slate-700 */
-    border-radius: 9999px;
+  background: #334155;
+  /* Slate-700 */
+  border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-    background: #475569; /* Slate-600 */
+  background: #475569;
+  /* Slate-600 */
 }
 
 /* REBUILT EXPANDER RULES (v2.409) */
 /* Consolidation of scattered rules. Removed !important from positioning to allow JS FLIP physics. */
 
 .socket-card-container.is-expanded {
-    /* v2.559: Fixed positioning break-out for Mobile Scroll/Zen Mode */
-    position: fixed !important;
-    z-index: 9999 !important; /* Enforce top layer ABOVE sticky controls */
-    
-    /* Zen Mode Visuals */
-    background: rgba(10, 10, 15, 0.95); /* Deep dark background to hide underlying cards */
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border-radius: 2rem; /* Ensure radius matches the card shape */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow for lift */
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* v2.564: Smooth restoration */
-    
-    /* Default Insets (Fallback if JS fails) */
-    /* v2.559: Tighter insets for Mobile Fullscreen feel */
-    top: 1rem;
-    bottom: 1rem;
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-    height: auto;
+  /* v2.559: Fixed positioning break-out for Mobile Scroll/Zen Mode */
+  position: fixed !important;
+  z-index: 9999 !important;
+  /* Enforce top layer ABOVE sticky controls */
 
-    /* Styling & Stacking */
-    margin: 0 !important;
-    grid-column: auto !important;
-    grid-row: auto !important;
-    
-    /* Animation */
-    transition-duration: 0.6s !important;
+  /* Zen Mode Visuals */
+  background: rgba(10, 10, 15, 0.95);
+  /* Deep dark background to hide underlying cards */
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 2rem;
+  /* Ensure radius matches the card shape */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  /* Deep shadow for lift */
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  /* v2.564: Smooth restoration */
 
-    /* Override Standby Opacity (v2.678) */
-    /* Ensure card is fully opaque when expanded, regardless of 'standby' status */
-    opacity: 1 !important;
-    filter: none !important;
-    cursor: auto !important;
+  /* Default Insets (Fallback if JS fails) */
+  /* v2.559: Tighter insets for Mobile Fullscreen feel */
+  top: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  width: auto;
+  height: auto;
+
+  /* Styling & Stacking */
+  margin: 0 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+
+  /* Animation */
+  transition-duration: 0.6s !important;
+
+  /* Override Standby Opacity (v2.678) */
+  /* Ensure card is fully opaque when expanded, regardless of 'standby' status */
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: auto !important;
 }
 
 /* --- Tech Demo Specific Styles (Scoped) --- */
 /* Migrated from inline styles in tech-demo.html */
 
 @layer components {
-    /* Mobile/Tablet Mode Visuals (Up to 1024px) */
-    @media (max-width: 1024px) {
-        /* Hide Rings & Needle */
-        #tech-demo-master #halo-ring-outer, 
-        #tech-demo-master #halo-ring-inner, 
-        #tech-demo-master #static-needle {
-            display: none !important;
-        }
 
-        /* Dashed Ring Visibility */
-        #tech-demo-master #halo-ring-dashed {
-            stroke: #475569 !important;
-            opacity: 1 !important;
-            stroke-dasharray: 4 6; 
-        }
-        
-        /* Strict Containment */
-        #tech-demo-master #tech-demo-scene {
-            /* clip-path: circle(46% at center) !important; */
-             clip-path: circle(46% at center) !important; 
-        }
+  /* Mobile/Tablet Mode Visuals (Up to 1024px) */
+  @media (max-width: 1024px) {
 
-        /* Show Mobile Controls */
-        /* v2.557: Sticky Positioning for Mobile (<1024px) */
-        /* v2.558: Removed background/border as requested. */
-        /* v2.668: Restricting Sticky/Fixed Bottom behavior to < 820px */
-        /* For 820px+, it lives in the header (Two Column Layout) */
-    
+    /* Hide Rings & Needle */
+    #tech-demo-master #halo-ring-outer,
+    #tech-demo-master #halo-ring-inner,
+    #tech-demo-master #static-needle {
+      display: none !important;
+    }
+
+    /* Dashed Ring Visibility */
+    #tech-demo-master #halo-ring-dashed {
+      stroke: #475569 !important;
+      opacity: 1 !important;
+      stroke-dasharray: 4 6;
+    }
+
+    /* Strict Containment */
+    #tech-demo-master #tech-demo-scene {
+      /* clip-path: circle(46% at center) !important; */
+      clip-path: circle(46% at center) !important;
+    }
+
+    /* Show Mobile Controls */
+    /* v2.557: Sticky Positioning for Mobile (<1024px) */
+    /* v2.558: Removed background/border as requested. */
+    /* v2.668: Restricting Sticky/Fixed Bottom behavior to < 820px */
+    /* For 820px+, it lives in the header (Two Column Layout) */
+
     @media (max-width: 819px) {
-        
-        /* v2.669: Sticky Top Navigation Strategy 
+
+      /* v2.669: Sticky Top Navigation Strategy 
            We use display: contents to flatten the DOM, allowing the Sliders 
            to stick relative to the entire page body (Master), not just the Header. */
-        
-        #tech-demo-master #tech-demo-left-column,
-        #tech-demo-master #tech-demo-header,
-        #tech-demo-master .group-header-wrapper {
-            display: contents !important;
-        }
 
-        /* Restore Spacing (Replicating Header Padding on Content) */
-        #tech-demo-master .group-header-wrapper > .max-w-md {
-            margin-top: 6rem !important; /* pt-24 */
-            margin-left: 2rem !important; /* p-8 */
-            margin-right: 2rem !important; /* p-8 */
-            margin-bottom: 2rem !important;
-        }
+      #tech-demo-master #tech-demo-left-column,
+      #tech-demo-master #tech-demo-header,
+      #tech-demo-master .group-header-wrapper {
+        display: contents !important;
+      }
 
-        #tech-demo-master #mobile-sliders-container {
-            display: flex !important;
-            position: sticky !important; /* Stick to top! */
-            top: 0 !important;
-            
-            z-index: 100 !important;
-            width: 100% !important;
-            
-            /* Visuals for Legibility */
-            background: rgba(5,6,15, 0.95) !important;
-            backdrop-filter: blur(12px) !important;
-            /* border-bottom removed v2.717 */
-            
-            /* Spacing */
-            padding: 1rem 1.5rem !important;
-            margin-top: 0 !important;
-            margin-left: 0 !important;
-            left: 0 !important;
-            
-            pointer-events: auto !important;
-        }
+      /* Restore Spacing (Replicating Header Padding on Content) */
+      #tech-demo-master .group-header-wrapper>.max-w-md {
+        margin-top: 6rem !important;
+        /* pt-24 */
+        margin-left: 2rem !important;
+        /* p-8 */
+        margin-right: 2rem !important;
+        /* p-8 */
+        margin-bottom: 2rem !important;
+      }
+
+      #tech-demo-master #mobile-sliders-container {
+        display: flex !important;
+        position: sticky !important;
+        /* Stick to top! */
+        top: 0 !important;
+
+        z-index: 100 !important;
+        width: 100% !important;
+
+        /* Visuals for Legibility */
+        background: rgba(5, 6, 15, 0.95) !important;
+        backdrop-filter: blur(12px) !important;
+        /* border-bottom removed v2.717 */
+
+        /* Spacing */
+        padding: 1rem 1.5rem !important;
+        margin-top: 0 !important;
+        margin-left: 0 !important;
+        left: 0 !important;
+
+        pointer-events: auto !important;
+      }
     }
 
-        /* Layout Flow Safety */
-        .tech-demo-page,
-        #tech-demo-master {
-            height: auto !important;
-            min-height: 100vh !important;
-            overflow-y: auto !important;
-        }
-        
-        #tech-demo-master #tech-demo-left-column, 
-        #tech-demo-master #tech-demo-right-column {
-            height: auto !important;
-            overflow-y: visible !important;
-            width: 100% !important;
-        }
+    /* Layout Flow Safety */
+    .tech-demo-page,
+    #tech-demo-master {
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-y: auto !important;
     }
 
-    /* Tablet/Desktop Range (820px - 1024px) */
-    @media (min-width: 820px) and (max-width: 1023px) {
-        /* Unlock Scrolling */
-        .tech-demo-page, 
-        #tech-demo-master {
-            overflow-y: auto !important;
-            height: auto !important;
-            min-height: 100vh !important;
-        }
+    #tech-demo-master #tech-demo-left-column,
+    #tech-demo-master #tech-demo-right-column {
+      height: auto !important;
+      overflow-y: visible !important;
+      width: 100% !important;
+    }
+  }
 
-        /* Adjust Column Balance (Stacked) */
-        #tech-demo-master #tech-demo-left-column { width: 100% !important; }
-        #tech-demo-master #tech-demo-right-column { width: 100% !important; padding-left: 2rem !important; padding-right: 2rem !important; }
+  /* Tablet/Desktop Range (820px - 1024px) */
+  @media (min-width: 820px) and (max-width: 1023px) {
 
-        /* Move Controls UP (Stacking Fix v2.556) */
-        #tech-demo-master #tech-demo-controls-target {
-            position: absolute !important;
-            bottom: 19rem !important;
-            width: 100% !important;
-            left: 0 !important;
-        }
-        
-        /* v2.664: Removed absolute positioning for Sliders in Tablet Range 
+    /* Unlock Scrolling */
+    .tech-demo-page,
+    #tech-demo-master {
+      overflow-y: auto !important;
+      height: auto !important;
+      min-height: 100vh !important;
+    }
+
+    /* Adjust Column Balance (Stacked) */
+    #tech-demo-master #tech-demo-left-column {
+      width: 100% !important;
+    }
+
+    #tech-demo-master #tech-demo-right-column {
+      width: 100% !important;
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+    }
+
+    /* Move Controls UP (Stacking Fix v2.556) */
+    #tech-demo-master #tech-demo-controls-target {
+      position: absolute !important;
+      bottom: 19rem !important;
+      width: 100% !important;
+      left: 0 !important;
+    }
+
+    /* v2.664: Removed absolute positioning for Sliders in Tablet Range 
            to allow natural DOM flow (relative) below header. */
 
-        /* Move Live Demo Pill */
-        #tech-demo-master #live-demo-pill {
-            top: 2rem !important;
-            right: 2rem !important;
-        }
-
-        /* Layout Adjustments */
-        #tech-demo-master #tech-demo-header { 
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            padding-top: 5rem !important;
-        }
-
-        /* Scene Container Box */
-        #tech-demo-master #tech-demo-scene-container {
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            margin-top: 2rem !important;
-            margin-bottom: 2rem !important;
-        }
+    /* Move Live Demo Pill */
+    #tech-demo-master #live-demo-pill {
+      top: 2rem !important;
+      right: 2rem !important;
     }
 
-
-    /* iPad Pro Specific (1024px Portrait) - CLEANED UP by merging into the V-AMP 2.0 Logic block at the end of file */
-    /* See "3. iPAD PRO SPECIFIC FIX" below */
-
-
-    /* System Power State Transitions (Scoped to #tech-demo-master) */
-    
-    /* Transition Base */
-    #tech-demo-master svg circle, 
-    #tech-demo-master svg path, 
-    #tech-demo-master svg text {
-        transition: all 1.5s ease;
-    }
-    
-    /* Dimmed State Overrides */
-    #tech-demo-master svg.halo-dimmed circle[fill^="#"], 
-    #tech-demo-master svg.halo-dimmed circle[class*="fill-"],
-    #tech-demo-master svg.halo-dimmed path[class*="fill-"] {
-        fill: #334155 !important;
-        filter: none !important;
-        opacity: 0.7;
-    }
-    
-    /* Text "Off" State */
-    #tech-demo-master svg.halo-dimmed text {
-        fill: #475569 !important;
-        text-shadow: none !important;
-        opacity: 0.8;
-    }
-    
-    #tech-demo-master svg.halo-dimmed circle[fill="none"],
-    #tech-demo-master svg.halo-dimmed path[fill="none"] {
-        stroke: #334155 !important;
-        opacity: 0.5;
-    }
-    
-    /* Hide Static Markers Glow */
-    #tech-demo-master svg.halo-dimmed .drop-shadow-\[0_0_8px_rgba\(96\,165\,250\,0\.6\)\] {
-        filter: none !important;
-        fill: #1e293b !important;
+    /* Layout Adjustments */
+    #tech-demo-master #tech-demo-header {
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+      padding-top: 5rem !important;
     }
 
-    /* Agent Power States */
-    #tech-demo-master [data-agent-status="standby"] {
-        opacity: 0.5;
-        filter: grayscale(100%) contrast(0.9);
-        transition: all 0.5s ease-out;
+    /* Scene Container Box */
+    #tech-demo-master #tech-demo-scene-container {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      margin-top: 2rem !important;
+      margin-bottom: 2rem !important;
     }
-    
-    #tech-demo-master [data-agent-status="standby"]:hover {
-        opacity: 0.9;
-        filter: grayscale(60%) contrast(1);
-        cursor: not-allowed;
-    }
-    
-    #tech-demo-master [data-agent-status="active"] {
-        opacity: 1;
-        filter: none;
-        transition: all 0.5s ease-out;
-        cursor: default;
-    }
+  }
 
-    /* v2.549: Zen Mode (Expanded Card) Typography Scaling 
+
+  /* iPad Pro Specific (1024px Portrait) - CLEANED UP by merging into the V-AMP 2.0 Logic block at the end of file */
+  /* See "3. iPAD PRO SPECIFIC FIX" below */
+
+
+  /* System Power State Transitions (Scoped to #tech-demo-master) */
+
+  /* Transition Base */
+  #tech-demo-master svg circle,
+  #tech-demo-master svg path,
+  #tech-demo-master svg text {
+    transition: all 1.5s ease;
+  }
+
+  /* Dimmed State Overrides */
+  #tech-demo-master svg.halo-dimmed circle[fill^="#"],
+  #tech-demo-master svg.halo-dimmed circle[class*="fill-"],
+  #tech-demo-master svg.halo-dimmed path[class*="fill-"] {
+    fill: #334155 !important;
+    filter: none !important;
+    opacity: 0.7;
+  }
+
+  /* Text "Off" State */
+  #tech-demo-master svg.halo-dimmed text {
+    fill: #475569 !important;
+    text-shadow: none !important;
+    opacity: 0.8;
+  }
+
+  #tech-demo-master svg.halo-dimmed circle[fill="none"],
+  #tech-demo-master svg.halo-dimmed path[fill="none"] {
+    stroke: #334155 !important;
+    opacity: 0.5;
+  }
+
+  /* Hide Static Markers Glow */
+  #tech-demo-master svg.halo-dimmed .drop-shadow-\[0_0_8px_rgba\(96\,165\,250\,0\.6\)\] {
+    filter: none !important;
+    fill: #1e293b !important;
+  }
+
+  /* Agent Power States */
+  #tech-demo-master [data-agent-status="standby"] {
+    opacity: 0.5;
+    filter: grayscale(100%) contrast(0.9);
+    transition: all 0.5s ease-out;
+  }
+
+  #tech-demo-master [data-agent-status="standby"]:hover {
+    opacity: 0.9;
+    filter: grayscale(60%) contrast(1);
+    cursor: not-allowed;
+  }
+
+  #tech-demo-master [data-agent-status="active"] {
+    opacity: 1;
+    filter: none;
+    transition: all 0.5s ease-out;
+    cursor: default;
+  }
+
+  /* v2.549: Zen Mode (Expanded Card) Typography Scaling 
        Ensures content grows to fill the larger container */
-    .socket-card-container.is-expanded h3 {
-        font-size: clamp(2rem, 5cqw, 3.5rem) !important; 
-        margin-bottom: 3.5rem !important; /* Move header up/away from metrics */
-    }
-    
-    .socket-card-container.is-expanded p {
-        font-size: clamp(1rem, 2cqw, 1.5rem) !important;
-        opacity: 0.8;
-    }
+  .socket-card-container.is-expanded h3 {
+    font-size: clamp(2rem, 5cqw, 3.5rem) !important;
+    margin-bottom: 3.5rem !important;
+    /* Move header up/away from metrics */
+  }
 
-    /* Scale the Grid Content Container */
-    .socket-card-container.is-expanded .grid {
-        font-size: clamp(1.25rem, 2cqw, 1.75rem) !important;
-        gap: 2rem !important; /* More breathing room */
-        padding-top: 2rem !important;
-        align-content: center;
-    }
-    
-    /* Boost the monospace values specifically */
-    .socket-card-container.is-expanded .grid .font-mono {
-         font-size: 1.3em; /* 30% larger than the label */
-    }
+  .socket-card-container.is-expanded p {
+    font-size: clamp(1rem, 2cqw, 1.5rem) !important;
+    opacity: 0.8;
+  }
+
+  /* Scale the Grid Content Container */
+  .socket-card-container.is-expanded .grid {
+    font-size: clamp(1.25rem, 2cqw, 1.75rem) !important;
+    gap: 2rem !important;
+    /* More breathing room */
+    padding-top: 2rem !important;
+    align-content: center;
+  }
+
+  /* Boost the monospace values specifically */
+  .socket-card-container.is-expanded .grid .font-mono {
+    font-size: 1.3em;
+    /* 30% larger than the label */
+  }
 }
 
 /* =========================================
@@ -982,86 +1188,94 @@
 /* 1. DEAD MAN ZONE & MOBILE (0px - 1023px) */
 /* Strict enforcement of Mobile Vertical Stack */
 @media (max-width: 1023px) {
-    #tech-demo-master {
-        flex-direction: column !important;
-        height: auto !important;
-        overflow: visible !important;
-    }
-    #tech-demo-left-column, #tech-demo-right-column {
-        width: 100% !important;
-        height: auto !important;
-        display: block !important;
-    }
-    #mobile-sliders-container {
-        display: flex !important;
-    }
-    /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
-    .aspect-square-mobile-override {
-        height: 50vh !important;
-        min-height: 350px !important;
-        max-height: 600px !important;
-    }
+  #tech-demo-master {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #tech-demo-left-column,
+  #tech-demo-right-column {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  #mobile-sliders-container {
+    display: flex !important;
+  }
+
+  /* Reset Ring Container Height to avoid the md:h-600 overlap if it persists */
+  .aspect-square-mobile-override {
+    height: 50vh !important;
+    min-height: 350px !important;
+    max-height: 600px !important;
+  }
 }
 
 /* 3. iPAD PRO SPECIFIC FIX (1024px Exact - Portrait) */
 /* Targets iPad Pro specifically to handle vertical spacing */
 /* REFACTOR v2.727: "True Flow" Layout. Header Relative to stack correctly with Sliders. */
 @media only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait) {
-    
-    /* 1. Header: Flow Mode (Fixed v2.727) */
-    /* Changed from absolute to relative to prevent stacking overlap with sliders */
-    #tech-demo-header {
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-        z-index: 20 !important;
-    }
 
-    /* 2. Mobile Sliders: Force Visible */
-    #mobile-sliders-container {
-        display: flex !important;
-        position: relative !important;
-        margin-top: 6rem !important;
-        width: 100% !important;
-        /* max-width removal requested v2.728 */
-        margin-left: auto !important; 
-        margin-right: auto !important;
-        pointer-events: auto !important;
-    }
+  /* 1. Header: Flow Mode (Fixed v2.727) */
+  /* Changed from absolute to relative to prevent stacking overlap with sliders */
+  #tech-demo-header {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    z-index: 20 !important;
+  }
 
-    /* 3. Scene Container: Fill Mode (The Border Box) */
-    /* Revert to Absolute fill to ensure the border frames the entire column */
-    /* REMOVED v2.724: This forced style was breaking layout logic. */
-    /* #tech-demo-scene-container block deleted */
+  /* 2. Mobile Sliders: Force Visible */
+  #mobile-sliders-container {
+    display: flex !important;
+    position: relative !important;
+    margin-top: 6rem !important;
+    width: 100% !important;
+    /* max-width removal requested v2.728 */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    pointer-events: auto !important;
+  }
 
-    /* 4. The Content Object (Ring): Pushed Down */
-    /* This pushes ONLY the ring down, keeping the border box at the top */
-    #tech-demo-wrapper {
-        margin-top: 35rem !important; /* Clear room for the Header/Sliders */
-        height: auto !important;
-        justify-content: flex-start !important;
-    }
+  /* 3. Scene Container: Fill Mode (The Border Box) */
+  /* Revert to Absolute fill to ensure the border frames the entire column */
+  /* REMOVED v2.724: This forced style was breaking layout logic. */
+  /* #tech-demo-scene-container block deleted */
 
-    /* 5. Controls Target */
-    #tech-demo-controls-target {
-        bottom: 4rem !important;
-    }
+  /* 4. The Content Object (Ring): Pushed Down */
+  /* This pushes ONLY the ring down, keeping the border box at the top */
+  #tech-demo-wrapper {
+    margin-top: 35rem !important;
+    /* Clear room for the Header/Sliders */
+    height: auto !important;
+    justify-content: flex-start !important;
+  }
+
+  /* 5. Controls Target */
+  #tech-demo-controls-target {
+    bottom: 4rem !important;
+  }
 
 
-    /* 5. Hide Zen Expand Button */
-    .expand-trigger {
-        display: none !important;
-    }
+  /* 5. Hide Zen Expand Button */
+  .expand-trigger {
+    display: none !important;
+  }
 }
 
 /* 2. iPAD PRO / DESKTOP ALIGNMENT (1024px+) */
 /* Handles the specific 1025px Desktop divergence from iPad Pro (1024px) */
 @media (min-width: 1025px) {
-    #tech-demo-wrapper {
-        justify-content: flex-end !important;
-    }
+  #tech-demo-wrapper {
+    justify-content: flex-end !important;
+  }
 }
+
 /* Force Rebuild v2.715 */
-#force-rebuild-v2716 { display: none; }
+#force-rebuild-v2716 {
+  display: none;
+}
