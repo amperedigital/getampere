@@ -3,6 +3,11 @@
 
 
 
+## v2.880
+- **Architecture**: Migrated CSS engine to Tailwind CSS v4.
+- **Performance**: Reduced build times significantly (~270ms) and removed legacy configuration files.
+- **Fix**: Upgraded `tailwind-scrollbar` to the latest version, resolving the build conflict that affected CI/CD.
+
 ## v2.879
 - **Fix (Identity)**: Added logic to migrate `ampere_visitor_id` from Cookies to LocalStorage. This resolves an issue where returning users (from v2.875 or older) lost their identity/history because the new code only checked LocalStorage.
 
