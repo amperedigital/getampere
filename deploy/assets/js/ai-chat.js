@@ -214,11 +214,19 @@ export class AmpereAIChat {
                 localStorage.setItem('ampere_visitor_id', visitorId);
             }
 
+            // v2.871: Pre-calculate Time Greeting (Client Side) for consistency
+            const currentHour = new Date().getHours();
+            let timeGreeting = "Hello";
+            if (currentHour < 12) timeGreeting = "Good morning";
+            else if (currentHour < 17) timeGreeting = "Good afternoon";
+            else timeGreeting = "Good evening";
+
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
-                // v2.860: Push context immediately
+                // v2.860+v2.871: Push context immediately (ID + Greeting)
                 dynamicVariables: {
-                    web_visitor_id: visitorId
+                    web_visitor_id: visitorId,
+                    user_time_greeting: timeGreeting
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),

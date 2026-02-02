@@ -1,4 +1,9 @@
 
+## v2.871
+- **UX**: Implemented Time-of-Day Greeting.
+- **Frontend**: `ai-chat.js` calculates local time greeting ("Good morning/afternoon/evening") and pushes it to the agent via `dynamic_variables` (`user_time_greeting`) on connection.
+- **Agent Logic**: Updated prompt to use `{{user_time_greeting}}` in the opening line if present, ensuring the agent matches the user's wall clock time.
+
 ## v2.860
 - **Architecture**: Implemented "Context Push" for Web Mode.
 - **Frontend**: `ai-chat.js` now generates/retrieves Visitor ID *before* session start and passes it via `dynamic_variables` (`web_visitor_id`).
