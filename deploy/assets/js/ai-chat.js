@@ -301,6 +301,12 @@ export class AmpereAIChat {
                 console.warn("[AmpereAI] Suppressed Leaked Tool JSON:", cleanMsg);
                 return; 
             }
+            
+            // v2.827: Strict suppression for Visitor ID tool leaks even if malformed/embedded
+            if (cleanMsg.includes('visitor_id') && cleanMsg.includes('{')) {
+                 console.warn("[AmpereAI] Suppressed Leaked VISITOR_ID JSON:", cleanMsg);
+                 return;
+            }
 
             const role = (props.source === 'user') ? 'user' : 'agent';
             this.addMessage(props.message, role);

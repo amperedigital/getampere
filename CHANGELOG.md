@@ -1,3 +1,8 @@
+## v2.827
+- **Backend**: Added broadcast events for `memory_query` (retrieval) and `upsert` (insertion) to ensure visualizer feedback during all memory operations.
+- **Visualizer**: Fixed workspace mismatch in `system-link.js` to ensure frontend listens to the correct backend channel (`default`).
+- **Chat**: Patched `ai-chat.js` to strictly suppress "visitor_id" JSON leaks from appearing in the user chat stream.
+
 ## v2.826-dramatic-powerup-and-light-fix
 - **Visuals**: Updated `tech-demo-scene.js` to implement a "Dramatic Power-Up" sequence. The Outer Ring now starts at "Memory" (Index 0) and then animates to "Transfer" (Index 4) on load, providing a visual system check.
 - **Lighting**: Verified LED logic for Insert/Extract operations to ensure valid UI feedback during backend events.
