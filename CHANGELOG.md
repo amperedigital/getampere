@@ -1,3 +1,12 @@
+## v2.821-frontend-viz-fix
+- **Visualizer**: Fixed broken link between Identity events and 3D Halo. `auth_req` now correctly triggers "OTP" slot, and `auth_verify` triggers "Identity" slot.
+- **System Link**: Patched logic to use correct Halo coordinate keys ("otp", "identity") instead of non-existent "security".
+
+## v2.821-frontend-viz-fix
+- **Visualizer**: Fixed broken link between Identity events and 3D Halo. `auth_req` now correctly triggers "OTP" slot, and `auth_verify` triggers "Identity" slot.
+- **System Link**: Patched logic to use correct Halo coordinate keys ("otp", "identity") instead of non-existent "security".
+- **Observability**: Added clearer console logging for visualizer trigger events.
+
 ## v2.818-otp-sms-clarity
 - **Prompt**: Refined `front-door-agent-prompt.md` to explicitly license SMS as a valid OTP channel for Web users.
 - **Protocol**: Updated script to ask "I can email it or text it..." to give the user a clear choice.

@@ -62,14 +62,14 @@ npm run build:css
 
 # 1. Identify changed files in deploy/
 # Check for uncommitted changes (staged or unstaged)
-CHANGED_UNCOMMITTED=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
+CHANGED_UNCOMMITTED=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}' || true)
 
 # Check the last commit as well, to catch cases where we committed but haven't published yet
 CHANGED_COMMITTED=$(git show --name-only --format="" HEAD | grep "^deploy/" | grep -v "index.html" || true)
 
 # Combine both sources to handle "Mixed State" (Committed + Uncommitted changes)
 CHANGED_FILES=$(echo "$CHANGED_UNCOMMITTED
-$CHANGED_COMMITTED" | sort | uniq | grep -v "^$")
+$CHANGED_COMMITTED" | sort | uniq | grep -v "^$" || true)
 
 if [ -z "$CHANGED_FILES" ]; then
   echo "⚠️  No changes detected in deploy/ (checked working tree and last commit)."
