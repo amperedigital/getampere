@@ -213,19 +213,19 @@ export class AmpereAIChat {
                 // v2.800: Client Tool for Web Visitor ID (Cookies)
                 clientTools: {
                     get_web_visitor_id: async (parameters) => {
-                        console.log("[AmpereAI] Client Tool 'get_web_visitor_id' invoked by Agent. Params:", parameters);
+                        console.log("%c[AmpereAI] 🔍 IDENTITY CHECK: Tool 'get_web_visitor_id' CALLED.", "color: #0ea5e9; font-weight: bold;");
                         let id = localStorage.getItem('ampere_visitor_id');
                         if (!id) {
-                            console.log("[AmpereAI] No Visitor ID found. Generating new UUID.");
+                            console.log("%c[AmpereAI] 👤 NEW VISITOR: Generating UUID...", "color: #f59e0b;");
                             if (typeof crypto !== 'undefined' && crypto.randomUUID) {
                                 id = crypto.randomUUID();
                             } else {
                                 id = 'v-' + Math.random().toString(36).substring(2, 15);
                             }
                             localStorage.setItem('ampere_visitor_id', id);
-                            console.log("[AmpereAI] Generated new Visitor ID:", id);
+                            console.log(`%c[AmpereAI] ✅ ID ASSIGNED: ${id}`, "color: #10b981; font-weight: bold;");
                         } else {
-                            console.log("[AmpereAI] Found existing Visitor ID:", id);
+                            console.log(`%c[AmpereAI] ✅ ID FOUND: ${id} (Returning to Agent)`, "color: #10b981; font-weight: bold;");
                         }
                         return id; // Return string directly
                     }

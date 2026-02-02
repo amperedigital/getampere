@@ -1,3 +1,6 @@
+## v2.829-explicit-visitor-id-logging
+- **Chat**: Updated `ai-chat.js` with verbose, colorful console logging for `get_web_visitor_id`. Now explicitly logs "🔍 IDENTITY CHECK", "👤 NEW VISITOR", and "✅ ID FOUND" to separate identity logic from standard noise.
+
 ## v2.828-fix-session-leak-and-backend-odp
 - **Chat**: Patched `ai-chat.js` to strictly suppress "session_id" JSON leaks (`set_context` output) from appearing in the user chat stream.
 - **Backend/Visualizer**: Fixed `memory-api` bootstrap logic to consolidate broadcasts and ensure correct "retrieved" vs "added" signals are sent to the Visualizer on load.
