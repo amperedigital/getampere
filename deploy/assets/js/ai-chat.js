@@ -214,6 +214,12 @@ export class AmpereAIChat {
                 clientTools: {
                     get_web_visitor_id: async (parameters) => {
                         console.log("%c[AmpereAI] 🔍 IDENTITY CHECK: Tool 'get_web_visitor_id' CALLED.", "color: #0ea5e9; font-weight: bold;");
+                        
+                        // v2.850: Trigger Visualization "Thinking" State during tool execution
+                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                             window.demoScene.setProcessingState(true);
+                        }
+                        
                         let id = localStorage.getItem('ampere_visitor_id');
                         if (!id) {
                             console.log("%c[AmpereAI] 👤 NEW VISITOR: Generating UUID...", "color: #f59e0b;");
@@ -227,6 +233,14 @@ export class AmpereAIChat {
                         } else {
                             console.log(`%c[AmpereAI] ✅ ID FOUND: ${id} (Returning to Agent)`, "color: #10b981; font-weight: bold;");
                         }
+                        
+                        // Short delay to ensure the flash is visible if the check is instant
+                        await new Promise(r => setTimeout(r, 800));
+                        
+                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                             window.demoScene.setProcessingState(false);
+                        }
+
                         return id; // Return string directly
                     }
                 }

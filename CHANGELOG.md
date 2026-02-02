@@ -1,4 +1,8 @@
 
+## v2.840
+- **AI Persona**: Enforced "Extreme Brevity" in `front-door-agent-prompt.md`. Agent now responds in <= 2 short sentences. Removed "Give me one sec" filler in favor of "Checking...".
+- **Visualizer**: Fixed `ai-chat.js` to explicitly trigger `setProcessingState(true)` (White Halo + Hyper-Rotation) when `get_web_visitor_id` is called, ensuring visual feedback during the initial identity check.
+
 ## v2.830
 - **Chat/Visualizer**: Added high-visibility console logs (Magenta) to `system-link.js` for all `auth_*` and `memory_*` broadcast events. This allows verification of ODP visual signals directly in the browser console.
 - **Backend (Prompt)**: Updated `front-door-agent-prompt.md` to enforce strict "Verify Before Send" logic for OTP. The agent must now explicitly ask the user to confirm the email/phone before firing `auth_request_otp`, preventing hallucinated addresses.
