@@ -2,6 +2,10 @@
 
 
 
+
+## v2.879
+- **Fix (Identity)**: Added logic to migrate `ampere_visitor_id` from Cookies to LocalStorage. This resolves an issue where returning users (from v2.875 or older) lost their identity/history because the new code only checked LocalStorage.
+
 ## v2.878
 - **Fix (Deployment)**: Patched `scripts/publish.sh` to correctly propagate `system-link.js` changes to `tech-demo-main.js`, ensuring `tech-demo.html` receives the latest version tag on deployment.
 
