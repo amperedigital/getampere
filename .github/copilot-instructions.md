@@ -53,3 +53,18 @@
     - **Desktop**: "Straddle" the container border.
       - Vertical: EXACT center on line (`top-[inset] -translate-y-1/2`).
       - Horizontal: Inset from edge (`right-[inset + 2rem]`). NEVER flush align.
+- **Responsive Layout Safety (Strict)**:
+  - **Compact Class**: For the 820px-1024px range, you MUST use the "Universal Compact" approach (Mobile UI, Desktop Width). Do not use `orientation` queries to split this range.
+  - **Shift Math**: NEVER apply `left/right` offsets to a `w-full` element without adding a compensating `width: calc(...)`. 
+  - **Verticality**: Avoid `height: 100vh` on complex layouts. Use `min-height: 100vh` to prevent vertical clipping on short screens.
+
+## Workspace & Project Separation (Strict)
+- **Dual-Project Setup**: The workspace contains two distinct projects with separate configuration files.
+  - **Frontend / Web UI**: `~/getampere/` (Run standard web commands here).
+  - **Backend / Workers**: `~/cloudflare/` (Cloudflare Workers).
+    - **Memory API**: `~/cloudflare/memory-api/`.
+- **Command Execution Rules**:
+  - **Workers CLI**: When running `wrangler` commands for the backend, you MUST either:
+    1. `cd` into `~/cloudflare/memory-api/` first.
+    2. OR use the `-c` flag: `wrangler ... -c ~/cloudflare/memory-api/wrangler.toml`.
+  - **Never Assume Root**: Do not run `wrangler` from `~/getampere` expecting it to hit the backend worker. It will hit the frontend worker (`getampere-web`) instead.

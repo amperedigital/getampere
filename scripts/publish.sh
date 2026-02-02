@@ -8,7 +8,6 @@ fi
 
 NEW_TAG="$1"
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-INDEX_HTML="$ROOT_DIR/deploy/index.html"
 
 # Ensure we are in the root
 cd "$ROOT_DIR"
@@ -27,19 +26,50 @@ if [ -f "CHANGELOG.md" ]; then
   fi
 fi
 
+# 0.5. DETECT & VALIDATE MARKUP
+echo "   🔍 Validating HTML changes..."
+# Check both working tree and HEAD for HTML changes
+DETECTED_HTML=$(git status --porcelain deploy/ | grep "\.html$" | awk '{print $2}')
+if [ -z "$DETECTED_HTML" ]; then
+  DETECTED_HTML=$(git show --name-only --format="" HEAD | grep "^deploy/.*\.html$" || true)
+fi
+
+if [ -n "$DETECTED_HTML" ]; then
+  # Only validate existing files (in case of deletions)
+  VALID_FILES=""
+  for f in $DETECTED_HTML; do
+    if [ -f "$f" ]; then
+      VALID_FILES="$VALID_FILES $f"
+    fi
+  done
+  
+  if [ -n "$VALID_FILES" ]; then
+     python3 scripts/validate_html.py $VALID_FILES
+  else
+     echo "   ℹ️  No HTML files to validate."
+  fi
+else
+  echo "   ℹ️  No HTML changes detected."
+fi
+
+# 0.6. VALIDATE JAVASCRIPT
+# Run syntax checking on all deploy JS files to catch accidental typos
+./scripts/validate_js.sh
+
 # -1. BUILD CSS
 echo "   🎨 Building Tailwind CSS..."
 npm run build:css
 
 # 1. Identify changed files in deploy/
 # Check for uncommitted changes (staged or unstaged)
-CHANGED_FILES=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
+CHANGED_UNCOMMITTED=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}')
 
-# If no uncommitted changes, check the last commit
-if [ -z "$CHANGED_FILES" ]; then
-  echo "ℹ️  No uncommitted changes in deploy/. Checking last commit..."
-  CHANGED_FILES=$(git show --name-only --format="" HEAD | grep "^deploy/" | grep -v "index.html" || true)
-fi
+# Check the last commit as well, to catch cases where we committed but haven't published yet
+CHANGED_COMMITTED=$(git show --name-only --format="" HEAD | grep "^deploy/" | grep -v "index.html" || true)
+
+# Combine both sources to handle "Mixed State" (Committed + Uncommitted changes)
+CHANGED_FILES=$(echo "$CHANGED_UNCOMMITTED
+$CHANGED_COMMITTED" | sort | uniq | grep -v "^$")
 
 if [ -z "$CHANGED_FILES" ]; then
   echo "⚠️  No changes detected in deploy/ (checked working tree and last commit)."
@@ -62,6 +92,16 @@ deploy/assets/js/global.js"
   fi
 fi
 
+# 1.2 TECH DEMO DEPENDENCY (Scene -> Main)
+if echo "$CHANGED_FILES" | grep -q "tech-demo-scene.js"; then
+  if ! echo "$CHANGED_FILES" | grep -q "tech-demo-main.js"; then
+     echo "   🔗 Dependency detected: tech-demo-scene.js changed."
+     echo "   ⬆️  Forcing update of tech-demo-main.js (Entry Point) to ensure dependency alignment..."
+     CHANGED_FILES="${CHANGED_FILES}
+deploy/assets/js/tech-demo-main.js"
+  fi
+fi
+
 # 1.5. GENERIC VERSION INJECTION
 # Inject version number into ANY changed JS file that contains a console.log with a version string
 for FILE in $CHANGED_FILES; do
@@ -76,7 +116,17 @@ for FILE in $CHANGED_FILES; do
   fi
 done
 
-# 2. Update CDN links in index.html for CHANGED ASSETS only
+# 2. Update CDN links in ALL HTML files for CHANGED ASSETS only
+# Scan for all HTML files in deploy/
+if [ -n "$2" ]; then
+  # User provided a scope/pattern (e.g. "deploy/tech-demo.html")
+  echo "   🎯 Scoping CDN updates to matches for: $2"
+  HTML_FILES=$(find deploy -maxdepth 1 -name "*.html" | grep -E "$2")
+else
+  # Default: Update all HTML files (Global Consistency)
+  HTML_FILES=$(find deploy -maxdepth 1 -name "*.html")
+fi
+
 for FILE in $CHANGED_FILES; do
   # Check if file is inside deploy/assets/
   if [[ "$FILE" == deploy/assets/* ]]; then
@@ -94,41 +144,47 @@ for FILE in $CHANGED_FILES; do
     
     REL_PATH="$FILE"
     
-    # Check if this file is referenced in index.html with a version tag
-    # We look for the pattern: getampere@v.../deploy/assets/.../filename
-    if grep -q "getampere@v[0-9a-zA-Z.-]*/$REL_PATH" "$INDEX_HTML"; then
-      echo "   ↻ Updating version for $REL_PATH to $NEW_TAG"
-      
-      # Escape slashes for sed
-      ESCAPED_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
-      
-      # Perform replacement
-      # Matches: getampere@v<any-version>/deploy/assets/...
-      # Replaces with: getampere@<new-tag>/deploy/assets/...
-      sed -i "s/getampere@v[0-9a-zA-Z.-]*\/$ESCAPED_PATH/getampere@$NEW_TAG\/$ESCAPED_PATH/g" "$INDEX_HTML"
-    else
-      # Check for local path usage to auto-convert to CDN
-      LOCAL_PATH="${REL_PATH#deploy/}"
-      # Escape for regex (looking for literal string in file)
-      ESCAPED_LOCAL_PATH=$(echo "$LOCAL_PATH" | sed 's/\//\\\//g')
-      
-      if grep -q "[\"']$LOCAL_PATH[\"']" "$INDEX_HTML"; then
-         echo "   ✨ Auto-converting local link for $LOCAL_PATH to CDN ($NEW_TAG)..."
-         # We need to use the FULL repo path for the CDN link (deploy/assets/...)
-         ESCAPED_FULL_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
-         CDN_BASE="https:\/\/cdn.jsdelivr.net\/gh\/amperedigital\/getampere@$NEW_TAG"
-         
-         # Replace "assets/..." or 'assets/...' with "https://cdn.../deploy/assets/..."
-         # We accept both ' and " quotes in the source, but normalize to " when replacing if we want standardizing,
-         # OR we just replace the content inside the quotes.
-         # Let's replace the content only to preserve quote style if possible, or just force double quotes.
-         # Simpler: Match quote, path, quote. Replace with quote, cdn_url, quote.
-         
-         sed -i "s/[\"']$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$INDEX_HTML"
-      else
-         echo "   ℹ️  $REL_PATH changed but not found with version tag or local path in index.html (skipping CDN update)"
-      fi
-    fi
+    for TARGET_HTML in $HTML_FILES; do
+        # Check if this file is referenced in the HTML with a version tag
+        # We look for the pattern: getampere@v.../deploy/assets/.../filename
+        # Regex updated (v2.321) to include underscores (_) in version tags
+        if grep -q "getampere@v[0-9a-zA-Z._-]*\/$REL_PATH" "$TARGET_HTML"; then
+          echo "   ↻ Updating version for $REL_PATH in $(basename "$TARGET_HTML") to $NEW_TAG"
+          
+          # Escape slashes for sed
+          ESCAPED_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
+          
+          # Perform replacement
+          # Matches: getampere@v<any-version>/deploy/assets/...
+          # Replaces with: getampere@<new-tag>/deploy/assets/...
+          sed -i "s/getampere@v[0-9a-zA-Z._-]*\/$ESCAPED_PATH/getampere@$NEW_TAG\/$ESCAPED_PATH/g" "$TARGET_HTML"
+        else
+          # Check for local path usage to auto-convert to CDN
+          LOCAL_PATH="${REL_PATH#deploy/}"
+          
+          # Handle potential query params in the HTML like output.js?v=1.23
+          # We just look for the filename.ext pattern
+          
+          # Escape for regex (looking for literal string in file)
+          ESCAPED_LOCAL_PATH=$(echo "$LOCAL_PATH" | sed 's/\//\\\//g')
+          
+          if grep -E -q "[\"'](\./)?$LOCAL_PATH" "$TARGET_HTML"; then
+             # It matches 'assets/js/foo.js' or 'assets/js/foo.js?v=...'
+             echo "   ✨ Auto-converting/Updating local link for $LOCAL_PATH in $(basename "$TARGET_HTML") to CDN ($NEW_TAG)..."
+             ESCAPED_FULL_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
+             CDN_BASE="https:\/\/cdn.jsdelivr.net\/gh\/amperedigital\/getampere@$NEW_TAG"
+             
+             # Case A: Quote + Path + Quote (Clean local path) -> Replace with CDN URL (Clean)
+             sed -i "s/[\"']\.\/$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
+             sed -i "s/[\"']$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
+
+             # Case B: Path + Query Param (?v=...) -> Replace with CDN URL (Strip Query param as CDN is versioned)
+             # Matches: ./assets/foo.js?v=1.23
+             sed -i "s/[\"']\.\/$ESCAPED_LOCAL_PATH?v=[^\"']*[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
+             sed -i "s/[\"']$ESCAPED_LOCAL_PATH?v=[^\"']*[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
+          fi
+        fi
+    done
   fi
 done
 
@@ -160,5 +216,20 @@ git push origin "$NEW_TAG"
 # 6. Deploy
 echo "☁️  Deploying to Cloudflare Workers..."
 npx wrangler deploy
+
+# 7. Cache Warming (JsDelivr)
+# Immediately fetch the new assets from the CDN to trigger GitHub->CDN replication
+# effectively preventing the first-visit 404 for users.
+echo "🔥 Warming CDN cache for changed assets..."
+CDN_BASE_URL="https://cdn.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
+
+for FILE in $CHANGED_FILES; do
+  # Only warm assets in deploy/assets/ (scripts, css, etc)
+  if [[ "$FILE" == deploy/assets/* ]]; then
+     URL="$CDN_BASE_URL/$FILE"
+     echo "   🌍 Pre-fetching: $URL"
+     curl -s -I "$URL" >/dev/null || echo "   ⚠️  Warning: Could not pre-fetch $URL"
+  fi
+done
 
 echo "✅ Release $NEW_TAG complete!"

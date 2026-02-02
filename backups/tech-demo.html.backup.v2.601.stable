@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Tech Demo | Get Ampere AI</title>
+    
+    <!-- Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="./assets/css/styles.css?v=2.484">
+</head>
+<body class="tech-demo-page bg-[#05060f] text-white lg:overflow-hidden">
+
+    <!-- Master Container (ID added v2.360 for Scrolling Control) -->
+    <div id="tech-demo-master" class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
+        
+        <!-- Left Column: 3D Scene -->
+        <div id="tech-demo-left-column" class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
+            
+            <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
+            <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
+            <!-- v2.337: Reduced lg:p-20 to lg:p-12 to expand available real estate -->
+            <!-- v2.352: Added ID for iPad Pro Gutter targeting -->
+            <!-- v2.496: Increased Desktop Top Padding to lg:pt-20 (5rem) to match iPad Pro verticality -->
+            <!-- v2.497: Reduced Desktop Horizontal Gutter to lg:px-6 (1.5rem) -->
+            <!-- v2.498: Restored deeper indentation lg:pl-12 (3rem) for Header text to align with Scene internal spacing, preventing edge crowding. -->
+            <!-- v2.503: Reduced Mobile Top Padding to pt-8 (was pt-12) to lift breadcrumbs. -->
+            <div id="tech-demo-header" class="relative lg:absolute top-0 left-0 w-full p-8 pt-8 pb-0 lg:pl-12 lg:pr-6 lg:pb-12 lg:pt-20 z-20 pointer-events-none flex flex-col lg:block">
+                
+                <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
+                <!-- Moved out of flex-row to ensure it stays on top line -->
+                <!-- v2.503: Increased Mobile Margin Bottom to mb-8 (was mb-1) for significant gap. Desktop to lg:mb-8. -->
+                <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-8 lg:mb-8">
+                    <span class="text-blue-400">/</span>
+                    <span class="text-slate-500">Visualization</span>
+                    <span class="text-blue-400">/</span>
+                    <span class="text-blue-400 font-semibold drop-shadow-[0_0_10px_rgba(96,165,250,0.4)]">V-Amp 2.0</span>
+                </div>
+
+                <!-- Row: Heading + Mobile Controls -->
+                <div class="flex justify-between items-start w-full lg:block lg:w-auto">
+                    <div class="max-w-md pt-2">
+                        <!-- v2.502: Increased base size to text-5xl for mobile robustness -->
+                        <h1 class="text-5xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
+                            <span class="font-bold text-blue-400">AI</span> Neural <span class="block font-light text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
+                        </h1>
+                        <!-- v2.502: Increased base size to text-lg for mobile readability -->
+                        <p class="text-lg lg:text-xl text-slate-300 leading-relaxed drop-shadow-lg text-balance">
+                            Explore the autonomous decision making core of Ampere AI.
+                        </p>
+
+                        <!-- v2.592: Action CTA Cluster (Voice & Text) -->
+                        <div class="flex flex-wrap items-center gap-4 mt-8 pointer-events-auto">
+                            <!-- Voice Chat (Start Conversation) -->
+                            <!-- v2.598: Single Primary Button (Chat is now a fallback flow) -->
+                            <button id="btn-start-voice" class="relative flex items-center gap-3 px-5 py-2.5 rounded-full bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/25 transition-all duration-300 group">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                                <span class="font-bold tracking-wide text-sm">Start Conversation</span>
+                                
+                                <!-- Tooltip -->
+                                <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                                    Start Session
+                                </span>
+                            </button>
+                            
+                            <!-- Voice Chat (End Conversation) - Hidden by default -->
+                            <button id="btn-end-voice" class="relative hidden flex items-center gap-3 px-5 py-2.5 rounded-full bg-red-500 hover:bg-red-400 text-white shadow-lg shadow-red-500/25 transition-all duration-300 group">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span class="font-bold tracking-wide text-sm">End Call</span>
+                                
+                                <!-- Tooltip -->
+                                <span class="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                                    Hang Up
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Control Cluster (Top Right) -->
+                    <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
+                    <div class="xl:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
+                     <!-- Controls Moved Down to Scene Container v2.258 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- v2.600: Mobile Controls (Top Corners) -->
+            <!-- Promoted from scene-container to Master Wrapper for consistent "HUD" placement -->
+            
+            <!-- 2. Mobile Transcription (Top Right) -->
+            <div class="lg:hidden absolute top-8 right-8 z-50 flex flex-row items-center gap-4 pointer-events-auto">
+                <!-- Transcript Toggle (Hidden unless Active) -->
+                <!-- v2.600: Power button removed on Mobile/Tablet as redundant with 'Start Conversation' -->
+                <button class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-400 active:scale-95 transition-all duration-500 opacity-0 pointer-events-none transcript-toggle-btn"
+                        aria-label="Show Transcript">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
+            <!-- Mobile: Centered Top. Desktop: Right aligned (Inset from edge). -->
+            <!-- v2.600: UNIFIED PILL. Used for both Mobile and Desktop. -->
+            <div id="live-demo-pill" class="flex absolute z-30 top-6 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-12 lg:top-8 items-center gap-4 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl transition-all duration-300">
+                
+                <!-- Base Indicator -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
+                    <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono">Live Demo</span>
+                </div>
+
+                <!-- Status Injection Target (JS will populate this) -->
+                <!-- Defaults to hidden until populated -->
+                <div id="status-injection-target" class="flex items-center gap-4 border-l border-white/10 pl-4"></div>
+            </div>
+
+            <!-- v2.528: Desktop Power Cluster (Rocker Switch) -->
+            <!-- Positioned top-right, underneath Live Demo pill. Replaces the Slider. -->
+            <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                    class="group hidden lg:flex absolute z-30 lg:right-12 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
+                    aria-label="Power & Standby Control"
+                    aria-pressed="false">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                </svg>
+                
+                <!-- Tooltip: Appears on Hover BELOW (v2.557) -->
+                <!-- Previously left side. Now centered below. -->
+                <span id="power-btn-tooltip" 
+                      class="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[11px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                    Turn On
+                </span>
+            </button>
+
+            <!-- v2.599: Desktop Transcript Toggle (Hidden until Power ON) -->
+            <button class="group hidden lg:flex absolute z-30 lg:right-28 lg:top-28 w-[48px] h-[48px] rounded-full items-center justify-center apple-glass apple-glass-interactive text-slate-400 hover:text-white active:scale-95 transition-all duration-500 opacity-0 pointer-events-none transcript-toggle-btn"
+                    aria-label="Show Transcript">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span class="absolute top-full mt-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[11px] font-medium text-white tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+                    Transcript
+                </span>
+            </button>
+
+            <!-- Scene Container with "Breathing Room" Packaging -->
+            <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
+            <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
+            <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
+            <!-- v2.253 Update: Increased negative margin (-mt-24) to pull scene higher. Reduced height to 480px. -->
+            <!-- v2.254: Backed off negative margin to -mt-4 to prevent overlap. Reduced height to 440px to pull cards up. -->
+            <!-- v2.255: Changed to POSITIVE mt-4 to push scene down into the empty void. Height 420px. -->
+            <!-- v2.266: Layout Change - Removed fixed height (h-[420px]) and layout constraints on mobile to allow flex stacking. -->
+            <!-- v2.274: Removed desktop background (lg:bg-white/5) and border as requested. -->
+            <!-- v2.276: Restored border/bg and updated radius to rounded-2xl. -->
+            <!-- v2.277: Removed bg (kept border) and updated radius to rounded-3xl to match cards. -->
+            <!-- v2.330: Reverted lg:top-32 to lg:top-12 to match Live Demo pill and Right Column (Alignment Repair). -->
+            <!-- v2.330: Added lg:pb-32 to create an internal "Safety Zone" at the bottom where the ring cannot grow. -->
+            <!-- v2.331: Changed lg:overflow-hidden to lg:overflow-visible to allow controls to hang off the bottom edge. -->
+            <!-- v2.337: Reduced insets from 12 (3rem) to 8 (2rem) and balanced margins to maximize real estate. -->
+            <!-- v2.356: Updated radius to lg:rounded-[2rem] to match Card Radius (32px) exactly. Was rounded-3xl (24px). -->
+            <!-- v2.585: Reverted container top to lg:top-8. Visuals are now pushed down internally via the wrapper. -->
+            <!-- v2.587: Changed alignment from lg:justify-center to lg:justify-end. -->
+            <!-- v2.588: Reverted to justify-center here, moving alignment logic to the wrapper to prevent collapse. -->
+            <!-- v2.590: Removed lg:pb-32 (8rem padding) to allow the visual content to sit flush at the bottom of the card. -->
+            <div id="tech-demo-scene-container" class="relative w-full mx-auto h-auto min-h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto xl:h-auto lg:absolute lg:top-8 lg:bottom-8 lg:left-6 lg:right-2 overflow-visible lg:overflow-visible lg:rounded-[2rem] lg:border lg:border-white/5 z-0 group/scene flex flex-col lg:flex-col items-center justify-start lg:justify-center">
+                
+                <!-- v2.258: Mobile Controls (Moved Inside Scene Container) -->
+                <!-- Absolute Positioned: Top Right within the container box -->
+                <!-- v2.259: Changed to single row (Status Left, Power Right) -->
+                <!-- v2.502: Moved to left-8 to align with Header content. Removed right-4. -->
+                <div class="lg:hidden absolute top-2 left-8 z-50 flex flex-row items-center gap-4 pointer-events-auto">
+                    <!-- Single Power Toggle -->
+                    <!-- Green when On, Amber when Standby, Slate when Off -->
+                    <button onclick="window.toggleMobilePower && window.toggleMobilePower()" 
+                            class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-amber-300 active:scale-95 transition-all power-toggle-btn"
+                            id="btn-mobile-power"
+                            aria-label="Power Toggle">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                        </svg>
+                    </button>
+
+                    <!-- v2.599: Mobile Transcript Toggle -->
+                    <button class="w-[42px] h-[42px] rounded-full flex items-center justify-center apple-glass apple-glass-interactive text-slate-400 active:scale-95 transition-all duration-500 opacity-0 pointer-events-none transcript-toggle-btn"
+                            aria-label="Show Transcript">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                    </button>
+
+                    <!-- Status Display REMOVED v2.600 -->
+                    <!-- Replaced by unified top-center pill -->
+                </div>
+
+                <!-- MASTER CONTAINER (Center of the Universe) -->
+                <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
+                <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
+                <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
+                <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
+                <!-- v2.262: Added pt-12 (padding-top) to push the ring down away from the top-right overlay buttons -->
+                <!-- v2.263: Changed pt-12 to mt-12 (markup fix) to force container displacement. -->
+
+                <!-- WRAPPER: Width constrains and centers column -->
+                <!-- v2.589: Restored h-full to container, applied justify-end to anchor content bottom. -->
+                <div id="tech-demo-wrapper" class="relative w-full max-w-[800px] h-full flex flex-col items-center justify-center lg:justify-end mx-auto mt-12 lg:mt-0">
+                    
+                    <!-- RING CONTAINER: Flexible Sizing (v2.326 Fix) -->
+                    <!-- v2.589: Added aspect-square to force intrinsic height based on width (preventing collapse). -->
+                    <!-- Removed lg:h-auto dependency that caused zero-height structure. -->
+                    <div class="relative w-full h-[350px] md:h-[600px] lg:w-full lg:h-auto lg:aspect-square flex flex-col items-center justify-between pointer-events-none">
+                    
+                    <!-- CONFIG: Justify-End forces the ring to the bottom of the grow space, kissing the controls -->
+                    <!-- VISUALS WRAPPER (Flex Grow) -->
+                    <!-- Consumes available space, centering the square visualization horizontally but pushing it down vertically -->
+                    <div class="relative w-full flex-grow min-h-0 flex items-end justify-center py-2 pointer-events-auto">
+                        <div class="relative h-full aspect-square max-h-full max-w-full">
+
+                    <!-- 1. NESTED SCENE (Background Layer) -->
+                    <!-- Centered within the Ring's coordinate space. Full Size. -->
+                    <!-- Camera Distance Increased to 9.5 to fit visually inside the tightened inner ring (r=190). -->
+                    <!-- CLIP-PATH: Strictly clipped to Inner Ring radius (~47.5%) to prevent any rendering outside the central portal -->
+                    <div id="tech-demo-scene" 
+                         class="absolute inset-0 z-0 rounded-full pointer-events-auto"
+                         style="clip-path: circle(47.4% at center);"
+                         data-standby-timeout="120"
+                         data-standby-warning="30"
+                         data-auto-recenter="2.5"
+                         data-lerp-speed="0.015"
+                         data-min-velocity="0.0025"
+                         data-rotation-rpm="0.17"
+                         data-camera-distance="13.0"></div>
+
+                    <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
+                    <!-- Absolute inset-0 of the Master Container -->
+                    <!-- v2.253: Added touch-action: pan-y to allow vertical page scrolling even if dragging -->
+                    <div class="absolute inset-0 pointer-events-none z-20 select-none">
+                         <svg class="w-full h-full pointer-events-auto cursor-grab" style="touch-action: pan-y;" viewBox="0 0 800 800" overflow="visible">
+                        <defs>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                            <!-- Outer Track (Radius 255 - Increased curvature) -->
+                            <path id="ring-track" d="M 255,0 A 255,255 0 1,1 -255,0 A 255,255 0 1,1 255,0" transform="rotate(15)" />
+                            <!-- Inner Track (Radius 190 - Increased curvature) -->
+                            <path id="ring-track-inner" d="M 190,0 A 190,190 0 1,1 -190,0 A 190,190 0 1,1 190,0" transform="rotate(15)" />
+                        </defs>
+
+                        <!-- Base Ring Group (Centered) -->
+                        <g transform="translate(400, 400)">
+                            
+                            <!-- 1. Outer Dashed Ring (Border Line - Static) -->
+                            <!-- Added ID for strict targeting -->
+                            <circle id="halo-ring-dashed" r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
+                            
+                            <!-- STATIC MARKERS (Selection Needles) -->
+                            <!-- 12 O'Clock (Top) - Inward/Down -->
+                            <path id="static-needle" d="M -8,-385 L 8,-385 L 0,-365 Z" class="fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] transition-colors duration-300" />
+
+                            <!-- RING 1: OUTER (Dark Slate) - Even Indices -->
+                            <g id="halo-ring-outer">
+                                <!-- Band: 270-330 (Width 60, Center 300) -->
+                                <!-- v2.541: Reverted to Solid Dark Fill (slate-800/20) as requested. Gradient removed. -->
+                                <circle r="300" fill="none" class="stroke-slate-800/20 transition-colors duration-500 hover:stroke-cyan-400/30" stroke-width="60" />
+                                <!-- Border Rings: Fixed to slate-700/30 -->
+                                <circle r="330" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
+                                <circle r="270" fill="none" class="stroke-slate-700/30 transition-colors duration-500 hover:stroke-cyan-400/50" stroke-width="1" />
+
+                                <!-- Markers (r=312) -->
+                                <g transform="rotate(-90)"><circle cx="312" cy="0" r="4" data-index="0" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
+                                <g transform="rotate(-30)"><circle cx="312" cy="0" r="4" data-index="2" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 2oc -->
+                                <g transform="rotate(30)"><circle cx="312" cy="0" r="4" data-index="4" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 4oc -->
+                                <g transform="rotate(90)"><circle cx="312" cy="0" r="4" data-index="6" class="fill-emerald-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 6oc -->
+                                <g transform="rotate(150)"><circle cx="312" cy="0" r="4" data-index="8" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 8oc -->
+                                <g transform="rotate(210)"><circle cx="312" cy="0" r="4" data-index="10" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
+
+                                <!-- Labels (Outer Track) -->
+                                <!-- v2.543: Reduced Text Opacity from Initial Blue to Muted Slate (Waiting for Active State) -->
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
+                            </g>
+
+                            <!-- RING 2: INNER (Slate) - Odd Indices -->
+                            <g id="halo-ring-inner">
+                                <!-- Band: 200-260 (Width 60, Center 230) -->
+                                <circle r="230" fill="none" class="stroke-slate-500/10" stroke-width="60" />
+                                <circle r="260" fill="none" class="stroke-slate-500/20" stroke-width="1" />
+                                <circle r="200" fill="none" class="stroke-slate-500/20" stroke-width="1" />
+
+                                <!-- Markers (r=242 = 230+12) -->
+                                <!-- Aligned with Outer Ring (30 deg steps starting at -90/12oc) -->
+                                <g transform="rotate(-90)"><circle cx="242" cy="0" r="4" data-index="1" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
+                                <g transform="rotate(-30)"><circle cx="242" cy="0" r="4" data-index="3" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 2oc -->
+                                <g transform="rotate(30)"><circle cx="242" cy="0" r="4" data-index="5" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 4oc -->
+                                <g transform="rotate(90)"><circle cx="242" cy="0" r="4" data-index="7" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 6oc -->
+                                <g transform="rotate(150)"><circle cx="242" cy="0" r="4" data-index="9" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 8oc -->
+                                <g transform="rotate(210)"><circle cx="242" cy="0" r="4" data-index="11" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
+
+                                <!-- Labels (Inner Track - Aligned to Outer Track StartOffsets) -->
+                                <!-- v2.544: Explicitly set Index 1 (Front Door Agent) to ACTIVE Green state on load -->
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" dy="-27" data-index="1"><textPath href="#ring-track-inner" startOffset="70.83%" text-anchor="middle">Front Door Agent</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-27" data-index="3"><textPath href="#ring-track-inner" startOffset="87.5%" text-anchor="middle">Demo Guide</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-27" data-index="5"><textPath href="#ring-track-inner" startOffset="4.17%" text-anchor="middle">Onboarding</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-27" data-index="7"><textPath href="#ring-track-inner" startOffset="20.83%" text-anchor="middle">Tech Specialist</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-27" data-index="9"><textPath href="#ring-track-inner" startOffset="37.5%" text-anchor="middle">Sales Advisor</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-500/50 drop-shadow-none" dy="-27" data-index="11"><textPath href="#ring-track-inner" startOffset="54.17%" text-anchor="middle">Booking Agent</textPath></text>
+                            </g>
+
+
+                        </g>
+                    </svg>
+                    </div>
+
+                        </div> <!-- End Aspect Square Wrapper -->
+                    </div> <!-- End Visuals Wrapper -->
+                         
+                    <!-- Controls Target: Absolute Overlay (v2.331) -->
+                    <!-- Positioned at lg:bottom-[-2rem] to hang slightly below the container edge. -->
+                    <!-- Visuals are clipped by the ring but controls must be visible. Container is overflow-visible. -->
+                    <!-- v2.350: Lifted from lg:bottom-[-2rem] to lg:bottom-12 to clear Chat Widget on Desktop. -->
+                    <div id="tech-demo-controls-target" class="w-full relative lg:absolute lg:bottom-12 left-0 right-0 z-30 flex justify-center pb-4 lg:pb-0 pointer-events-auto"></div>
+                </div>
+                <!-- End Ring Container -->
+
+                </div>
+                <!-- End Wrapper -->
+<!-- End Master Container -->
+
+                <!-- Mobile Ring Sliders (v2.264) -->
+                <!-- Positioned at the bottom of the Scene Container -->
+                <!-- v2.265: Enhanced UI with Labels and Live Feedback -->
+                <!-- v2.266: Layout Change - Removed 'absolute bottom-0', made relative block in flex col to sit BELOW scene. Removed bg-gradient (use solid or transparent). -->
+                <!-- v2.357: Changed 'xl:hidden' to 'hidden'. Visibility is now controlled exclusively by the CSS Media Query in <style> block to prevent overlaps between 1025-1279px. -->
+                <!-- v2.360: Changed bg-transparent to bg-slate-950 to prevent visual confusion if content overlaps on short screens. -->
+                <!-- v2.363: Reverted to bg-transparent as requested. Overlaps handled by better positioning logic. -->
+                <div id="mobile-sliders-container" class="hidden relative w-full px-6 pb-6 mt-4 flex flex-col gap-5 z-50 pointer-events-auto bg-transparent">
+                     
+                     <!-- Outer Ring Control (Blue) -->
+                     <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">System Function</span>
+                            <span id="label-slider-outer" class="text-xs font-mono text-blue-400 font-bold tracking-wider">MEMORY FUNCTION</span>
+                        </div>
+                        <div class="relative w-full h-6 flex items-center">
+                            <!-- Ticks (Absolute Background) -->
+                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                            </div>
+                            <!-- Slider (Z-10) -->
+                            <input type="range" id="mobile-ring-slider-outer" min="0" max="5" step="1" value="0" 
+                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none hover:accent-blue-400 transition-all">
+                        </div>
+                     </div>
+                     
+                     <!-- Inner Ring Control (Slate) -->
+                     <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Active Agent</span>
+                            <span id="label-slider-inner" class="text-xs font-mono text-slate-300 font-bold tracking-wider">FRONT DOOR AGENT</span>
+                        </div>
+                        <div class="relative w-full h-6 flex items-center">
+                            <!-- Ticks -->
+                            <div class="absolute inset-x-2 flex justify-between pointer-events-none z-0">
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                                <div class="w-1 h-1 rounded-full bg-slate-600"></div>
+                            </div>
+                            <input type="range" id="mobile-ring-slider-inner" min="0" max="5" step="1" value="0" 
+                                   class="relative z-10 w-full h-1.5 bg-slate-800/50 rounded-lg appearance-none cursor-pointer accent-emerald-500 outline-none hover:accent-emerald-400 transition-all">
+                        </div>
+                     </div>
+
+                </div>
+
+                <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
+            </div>
+                 
+             <!-- Overlay Hint (Positioned in the bezel area) -->
+             <!-- Removed in v2.156: Moved to header breadcrumb -->
+        </div>
+
+        <!-- Right Column: Interactive Grid -->
+        <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
+        <!-- Responsive Fix: Enabled h-full for the grid container to allow cards to stretch -->
+        <!-- Fix v2.243: Changed overflow-y-auto so we ALWAYS have a scrollbar if content (cards) >> screen height. -->
+        <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
+        <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
+        <!-- v2.261: Reduced right padding to lg:pr-4 (was 12) to maximize card width as requested. -->
+        <!-- v2.337: Reduced padding from 12 (3rem) to 8 (2rem) for tighter gutters. -->
+        <!-- v2.353: Added ID for iPad Pro Page Gutter targeting -->
+        <!-- v2.497: Decreased right gutter to lg:pr-6 (1.5rem) to match left side. -->
+        <div id="tech-demo-right-column" class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-4 lg:pt-8 lg:pb-8 lg:pr-6 lg:pl-2 overflow-y-auto">
+            
+            <!-- Ampere AI Chat Interface (Inline - Top of Right Column) -->
+            <!-- v2.582: Relocated here to sit "above the cards" on mobile/desktop as requested. -->
+            <!-- v2.592: Hidden on load, acts as text chat modal. Start Button removed. -->
+            <div id="ampere-ai-chat-container" class="hidden relative w-full mb-6 z-50 pointer-events-auto"></div>
+
+            <!-- 6-Box Grid (2 cols x 3 rows) -->
+            <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
+            <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
+            <!-- v2.274: Restored desktop card spacing to gap-4 (1rem) or gap-8 (2rem) as requested. Using gap-4 for now to balance space. -->
+            <!-- Wait, user said "should be desktop-sized, which is 2rem". So gap-8. -->
+            <!-- v2.279: Maintained lg:gap-8 (2rem) as requested ("two rem spacing, not four"). Changed card padding to lg:p-8 below. -->
+            <!-- v2.281: Changed desktop gap to lg:gap-4 (1rem) as requested. -->
+            <!-- v2.557: Mobile Scroll Track (Flex) -->
+            <!-- v2.559: Increased mobile track minimum height (min-h-[60vh]) to fix "cut off" issue -->
+            <!-- v2.577: Removed pb-4 (inner padding) to place scrollbar directly under cards. -->
+            <!-- v2.578: REMOVED min-h-[60vh] on mobile and replaced with h-auto for shrink-wrapping. -->
+            <!-- v2.579: Increased padding to pb-12 (3rem) to prevent scrollbar from touching card bottom. -->
+            <div id="tech-demo-card-track" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-12 lg:grid lg:grid-cols-2 lg:grid-rows-3 lg:gap-4 lg:px-0 lg:pb-0 w-full h-auto lg:h-full lg:min-h-[850px] hide-scrollbar" style="scroll-behavior: smooth;">
+                
+                <!-- Card: Front Door Agent -->
+                <!-- v2.436: Added isolation:isolate to contain stacking context and prevent hover artifact leakage to neighbors -->
+                <!-- v2.557: Added flex-shrink-0 min-w-[40%] for scrolling -->
+                <!-- v2.559: Increased mobile width to min-w-[85%] (~1.1 cards visible) as requested -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="active"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-0" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-0)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-0" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-0)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-5 h-5 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M26 22a3.86 3.86 0 0 0-2 .57l-3.09-3.1a6 6 0 0 0 0-6.94L24 9.43a3.86 3.86 0 0 0 2 .57a4 4 0 1 0-4-4a3.86 3.86 0 0 0 .57 2l-3.1 3.09a6 6 0 0 0-6.94 0L9.43 8A3.86 3.86 0 0 0 10 6a4 4 0 1 0-4 4a3.86 3.86 0 0 0 2-.57l3.09 3.1a6 6 0 0 0 0 6.94L8 22.57A3.86 3.86 0 0 0 6 22a4 4 0 1 0 4 4a3.86 3.86 0 0 0-.57-2l3.1-3.09a6 6 0 0 0 6.94 0l3.1 3.09a3.86 3.86 0 0 0-.57 2a4 4 0 1 0 4-4Zm0-18a2 2 0 1 1-2 2a2 2 0 0 1 2-2ZM4 6a2 2 0 1 1 2 2a2 2 0 0 1-2-2Zm2 22a2 2 0 1 1 2-2a2 2 0 0 1-2 2Zm10-8a4 4 0 1 1 4-4a4 4 0 0 1-4 4Zm10 8a2 2 0 1 1 2-2a2 2 0 0 1-2 2Z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Front Door Agent</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Reception & Routing</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Visitors</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">1,428</div>
+                        <div class="flex items-center text-[1em]"> <!-- Enforce font scaling context -->
+    <!-- LED Glass Range Meter: Scaled via EM units -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] w-[85%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps): Scaled via EM units -->
+        <!-- 0.6em Block, 0.15em Gap = 0.75em Repeat -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Active</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">342</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)] w-[60%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Bounce</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">12%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[12%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Routed</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">89%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-emerald-500 shadow-[0_0_8px_rgba(10,185,129,0.6)] w-[89%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Avg Time</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.2s</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-blue-300 shadow-[0_0_8px_rgba(147,197,253,0.6)] w-[40%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Auth</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">99.9%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)] w-[99%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card: Demo Guide -->
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="standby"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-1)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-1)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-6 h-6 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M19 27H5V13h4v-2H5c-1.1 0-2 .9-2 2v6H0v2h3v6c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4h-2v4z"></path><path fill="currentColor" d="M11 19h10v2H11zm0-4h10v2H11zm0-4h10v2H11z"></path><path fill="currentColor" d="M29 11V5c0-1.1-.9-2-2-2H13c-1.1 0-2 .9-2 2v4h2V5h14v14h-4v2h4c1.1 0 2-.9 2-2v-6h3v-2h-3z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Demo Guide</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Feature Walkthroughs</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Sessions</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">892</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-emerald-500 shadow-[0_0_8px_rgba(10,185,129,0.6)] w-[75%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Completion</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">76%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-emerald-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[76%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Drop-off</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">8%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[8%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Click-thru</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">45%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-cyan-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[45%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Avg Dur</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">5m 20s</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-teal-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[55%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Rating</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.8/5</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-yellow-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[96%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Onboarding Coach -->
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="standby"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-2)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-2)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-6 h-6 text-white/90" viewBox="0 0 76.12 75.56" fill="currentColor"><path d="M25.23,12.62C25.23,5.66,19.57,0,12.62,0S0,5.66,0,12.62s5.66,12.62,12.62,12.62,12.62-5.66,12.62-12.62Zm-20.73,0c0-4.48,3.64-8.12,8.12-8.12s8.12,3.64,8.12,8.12-3.64,8.12-8.12,8.12-8.12-3.64-8.12-8.12Zm10.37,31.02v16.43c0,2.54,2.07,4.6,4.6,4.6h19.67c1.24,0,2.25,1.01,2.25,2.25s-1.01,2.25-2.25,2.25H19.47c-5.02,0-9.1-4.08-9.1-9.1v-27.75c0-1.24,1.01-2.25,2.25-2.25s2.25,1.01,2.25,2.25v3.51c0,2.54,2.07,4.6,4.6,4.6h19.67c1.24,0,2.25,1.01,2.25,2.25s-1.01,2.25-2.25,2.25H19.47c-1.69,0-3.25-.49-4.6-1.29Zm38,7.68h14.62c4.76,0,8.64-3.87,8.64-8.64s-3.87-8.63-8.64-8.63h-14.62c-4.76,0-8.64,3.87-8.64,8.63s3.87,8.64,8.64,8.64Zm0-12.77h14.62c2.28,0,4.14,1.85,4.14,4.13s-1.85,4.14-4.14,4.14h-14.62c-2.28,0-4.14-1.85-4.14-4.14s1.85-4.13,4.14-4.13Zm14.62,19.74h-14.62c-4.76,0-8.64,3.87-8.64,8.63s3.87,8.64,8.64,8.64h14.62c4.76,0,8.64-3.87,8.64-8.64s-3.87-8.63-8.64-8.63Zm0,12.77h-14.62c-2.28,0-4.14-1.85-4.14-4.14s1.85-4.13,4.14-4.13h14.62c2.28,0,4.14,1.85,4.14,4.13s-1.85,4.14-4.14,4.14Z"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Onboarding Coach</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Setup Assistance</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">New Users</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">156</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-purple-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[45%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Profiles</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">92%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-purple-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[92%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Guides</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">3.5</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)] w-[35%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Verified</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">100%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-green-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[100%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Stuck</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">2.1%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[2%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Success</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">98%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-pink-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[98%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Technical Specialist -->
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="standby"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-3)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-3)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-5 h-5 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M11 11v10h10V11Zm8 8h-6v-6h6Z"></path><path fill="currentColor" d="M30 13v-2h-4V8a2 2 0 0 0-2-2h-3V2h-2v4h-6V2h-2v4H8a2 2 0 0 0-2 2v3H2v2h4v6H2v2h4v3a2 2 0 0 0 2 2h3v4h2v-4h6v4h2v-4h3a2 2 0 0 0 2-2v-3h4v-2h-4v-6Zm-6 11H8V8h16Z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Technical Specialist</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Deep Support</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Tickets</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">42</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-amber-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[20%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Resolved</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">38</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-yellow-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[90%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">AI Res</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">85%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-yellow-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[85%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Escalated</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">3</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[3%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Avg TTR</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">2.4m</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[10%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">CSAT</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4.9</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-green-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[98%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Sales Advisor -->
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="standby"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-4)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-4)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-5 h-5 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><circle cx="14" cy="14" r="2" fill="currentColor"></circle><path fill="currentColor" d="M20 30a.997.997 0 0 1-.707-.293L8.586 19A2.013 2.013 0 0 1 8 17.586V10a2.002 2.002 0 0 1 2-2h7.586A1.986 1.986 0 0 1 19 8.586l10.707 10.707a1 1 0 0 1 0 1.414l-9 9A.997.997 0 0 1 20 30ZM10 10v7.586l10 10L27.586 20l-10-10Z"></path><path fill="currentColor" d="M12 30H4a2.002 2.002 0 0 1-2-2V4a2.002 2.002 0 0 1 2-2h24a2.002 2.002 0 0 1 2 2v8h-2V4H4v24h8Z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Sales Advisor</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Revenue & Plans</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Leads</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">89</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-rose-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[50%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Qualified</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">45</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-rose-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[55%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Conv Rate</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">18%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-rose-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[20%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Pipeline</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">$450k</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-green-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[80%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Queries</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">312</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-rose-200 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[75%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Upsells</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">12</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-amber-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[30%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Booking Agent -->
+                <!-- v2.437: Update to isolate -->
+                <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container" data-agent-status="standby"> 
+                    
+                    <!-- SVG SHELL v15.2 (Single Path via JS) -->
+                    <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300" overflow="visible">
+                        <defs>
+                            <linearGradient id="grad-card-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- The Single Path -->
+                        <path class="socket-path" 
+                              fill="url(#grad-card-5)" 
+                              style="stroke: rgba(255,255,255,0.2); stroke-width: 1px;; transition: none !important;" 
+                              vector-effect="non-scaling-stroke"
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <!-- Backdrop Blur (Polygon Clip) -->
+          <div class="socket-background absolute inset-0 z-[-1] rounded-[2rem]" style="clip-path: polygon(
+                         
+                             0 0, 
+                             calc(100% - 96px) 0,
+                             100% 96px,
+                             100% 100%, 
+                             0 100%
+                         );">
+                    </div>
+
+                    <!-- Button (Glass Monotone) v15.5 Rendering Fix -->
+                    <!-- Changes: Thicker stroke (1.5px) for stability, Geometric Precision, TranslateZ for isolated compositing -->
+                    <div class="absolute top-0 right-0 w-14 h-14 z-20 cursor-pointer group-hover:bg-white/5 rounded-full transition-all duration-300 ease-out flex items-center justify-center overflow-hidden isolate group/button-trigger">
+                        
+                        <!-- Layer 1: Glass Background -->
+                        <!-- mask-image forces the blur to respect the radius perfectly on all engines -->
+                        <div class="absolute inset-0 rounded-full bg-white/5 backdrop-blur-xl shadow-none overflow-hidden"
+                             style="-webkit-mask-image: -webkit-radial-gradient(white, black);"></div>
+                        
+                        <!-- Layer 2: Vector Border (SVG) -->
+                        <!-- Stroke increased to 1.5px for better anti-aliasing channel utilization -->
+                        <svg class="absolute inset-0 w-full h-full rounded-full pointer-events-none transition-transform duration-700 ease-out " viewBox="0 0 56 56" shape-rendering="geometricPrecision">
+                            <defs>
+                                <linearGradient id="glass-border-grad-5" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+                                    <stop offset="15%" stop-color="rgba(255,255,255,0.4)" />
+                                    <stop offset="35%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="65%" stop-color="rgba(255,255,255,0.0)" />
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                                </linearGradient>
+                            </defs>
+                            <!-- r=27.25 to account for 1.5px stroke width (1.5/2 = 0.75 inset) -->
+                            <circle cx="28" cy="28" r="27.25" stroke="url(#glass-border-grad-5)" stroke-width="1.5" fill="none" class="opacity-100" />
+                        </svg>
+
+                        <!-- Layer 3: Icon -->
+                        <!-- Promoted to distinct layer to preventing scaling jitter -->
+                        <div class="relative z-30">
+                             <svg class="w-6 h-6 text-white/90" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="m20.413 14.584l-7.997-7.997a2.002 2.002 0 0 0-2.832 0l-7.997 7.997a2.002 2.002 0 0 0 0 2.832l3.291 3.292L3 22.585L4.414 24l1.879-1.878l3.291 3.291a2.002 2.002 0 0 0 2.832 0l2.256-2.256l-1.416-1.415l-2.258 2.257l-7.997-7.997l7.997-8.001l8.001 8.001L17.5 17.5l1.415 1.415l1.498-1.499a2.002 2.002 0 0 0 0-2.832Z"></path><path fill="currentColor" d="m30.413 14.584l-3.291-3.292L29 9.415L27.586 8l-1.878 1.878l-3.292-3.291a2.002 2.002 0 0 0-2.832 0l-2.256 2.256l1.415 1.414l2.255-2.256l8.001 8.001l-8.001 7.997l-7.997-7.997l1.5-1.501l-1.416-1.416l-1.498 1.499a2.002 2.002 0 0 0 0 2.832l7.997 7.997a2.002 2.002 0 0 0 2.832 0l7.997-7.997a2.002 2.002 0 0 0 0-2.832Z"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- v2.402: Bottom Right Expand Button -->
+                    <div class="expand-trigger absolute top-[0.7rem] right-[4.8rem] z-40 text-white/40 hover:text-white hover:bg-white/10 p-2 rounded-full cursor-pointer transition-all duration-300 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 items-center justify-center">
+                         <!-- Maximize Icon (Corner Brackets) -->
+                         <svg class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" shape-rendering="geometricPrecision">
+                             <path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />
+                         </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="relative h-full flex flex-col z-10 pointer-events-auto overflow-hidden pt-10 pb-8 pl-8 lg:pl-8 lg:py-8 pr-2 lg:pr-4">
+                        <div class="flex flex-col mb-4 border-b border-white/5 pb-4 mr-16">
+                            <h3 class="text-[clamp(1.1rem,4cqw,1.75rem)] line-clamp-2 font-normal text-white tracking-wide leading-none">Booking Agent</h3>
+                            <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Scheduling</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-y-5 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">Metric</div>
+                            <div class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">Data</div>
+                            
+                        <div class="text-slate-400 flex items-center">Requests</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">215</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[65%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Booked</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">142</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-cyan-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[70%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Resched</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">18</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-amber-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[15%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">No-show</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">4%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[4%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Utilization</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">82%</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-teal-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[82%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        <div class="text-slate-400 flex items-center">Sync</div>
+                        <div class="text-white text-right font-mono flex items-center justify-end">0.2s</div>
+                        <div class="flex items-center text-[1em]">
+    <!-- LED Glass Range Meter -->
+    <div class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
+        <!-- Active Bar (Lit LEDs) -->
+        <div class="absolute inset-y-0 left-0 bg-cyan-200 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[95%] transition-all duration-500"></div>
+        
+        <!-- Segmentation Mask (The Gaps) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-10" 
+             style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
+        </div>
+
+        
+        <!-- Surface Shine (Top Glass Refraction) -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay"></div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+    </div>
+</div>
+
+<!-- Init Script -->
+
+<script type="module">
+        /* v2.346: Cleanup - Removed unused IcosahedronScene import to reduce request count */
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tech-demo-scene');
+            
+            // v2.265: Mobile Config Override before Init
+            // Reduce camera distance to make Neural Net appear larger on mobile
+            // v2.266: Reduced further to 4.5.
+            if (window.innerWidth <= 1024 && container) {
+                container.setAttribute('data-camera-distance', '4.5'); 
+            }
+
+            if(container) {
+                // Initialize Scene with a slight delay to ensure layout stability
+                // This prevents 0x0 canvas issues in the new grid layout
+                setTimeout(async () => {
+                    console.log('Initializing Tech Demo...');
+                    
+                    // Dynamic Import of the isolated Scene logic
+                    // Using CDN to ensure correct versioning and cache invalidation
+                    const { TechDemoScene } = await import('https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.591/deploy/assets/js/tech-demo-scene.js');
+                    const scene = new TechDemoScene(container);
+                    
+                    // Optional: Expose to window for debugging
+                    window.demoScene = scene;
+
+                    // v2.264: Mobile Slider Logic
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    
+                    // v2.265: Explicit Label Mapping to match Ring Indices
+                    const outerTitles = [
+                        "MEMORY FUNCTION",     // Index 0
+                        "HUMAN HANDOFF",       // Index 2 (Step 1)
+                        "AGENT TRANSFER",      // Index 4
+                        "OTP AUTHORIZATION",   // Index 6
+                        "IDENTITY & HANDOFF",  // Index 8
+                        "CALENDAR BOOKING"     // Index 10
+                    ];
+                    
+                    const innerTitles = [
+                        "FRONT DOOR AGENT",    // Index 1
+                        "DEMO GUIDE",          // Index 3 (Step 1)
+                        "ONBOARDING",          // Index 5
+                        "TECH SPECIALIST",     // Index 7
+                        "SALES ADVISOR",       // Index 9
+                        "BOOKING AGENT"        // Index 11
+                    ];
+
+                    const updateRing = (type, slider, label, titles) => {
+                        const step = parseInt(slider.value); // 0 to 5
+                        const title = titles[step];
+                        
+                        // Update Label
+                        if(label) label.innerText = title;
+                        
+                        // Calculate Rotation
+                        // Step 0 -> 0 deg. Step 1 -> -60 deg (move next item to top).
+                        const targetDeg = step * -60;
+                        
+                        const rotator = (type === 'outer') ? window.demoScene.rotatorOuter : window.demoScene.rotatorInner;
+                        if(rotator) {
+                            rotator.targetRotation = targetDeg;
+                            rotator.isDragging = false; // Let it snap/lerp
+                        }
+
+                        // v2.561: Scroll Sync with buttery easing (Inner Ring ONLY)
+                        if (type === 'inner') {
+                             // v2.570: Auto-close any open Zen Mode card when controller is used
+                             window.dispatchEvent(new CustomEvent('ampere:close-cards'));
+
+                             const track = document.getElementById('tech-demo-card-track');
+                             if (track) {
+                                  const cards = track.querySelectorAll('.socket-card-container');
+                                  if (cards[step]) {
+                                      // center the card in the viewport with smooth behavior
+                                      cards[step].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                                  }
+                             }
+                        }
+                    };
+
+                    if (sliderOuter) {
+                        sliderOuter.addEventListener('input', (e) => updateRing('outer', e.target, labelOuter, outerTitles));
+                    }
+                    if (sliderInner) {
+                        sliderInner.addEventListener('input', (e) => updateRing('inner', e.target, labelInner, innerTitles));
+                    }
+
+                    // Toggle Helper for Mobile Power Button
+                    // v2.595: Unified Power Architecture
+                    // This button now controls BOTH the visual scene (lighting/rings) AND the AI Agent.
+                    window.toggleMobilePower = () => {
+                        if (!window.demoScene) return;
+                        const current = window.demoScene.systemState;
+                        const next = (current === 'ACTIVE') ? 'OFF' : 'ACTIVE';
+                        
+                        // 1. Trigger Visuals
+                        window.demoScene.setSystemState(next);
+                        
+                        // 2. Trigger AI (if available)
+                        if (window.ampereAI) {
+                            if (next === 'ACTIVE') {
+                                // Only start if not already connected
+                                if (!window.ampereAI.isConnected && !window.ampereAI.isConnecting) {
+                                    window.ampereAI.startSession();
+                                }
+                            } else {
+                                // Turn OFF
+                                window.ampereAI.endSession();
+                            }
+                        }
+                    };
+
+                    // --- Mobile UI State Observer ---
+                    const obs = new MutationObserver((mutations) => {
+                        for(const m of mutations) {
+                            if(m.type === 'attributes' && m.attributeName === 'data-system-state') {
+                                const state = document.body.getAttribute('data-system-state');
+                                updateMobileDisplay(state);
+
+                                // v2.596: Global State Enforcement for AI
+                                // If system enters STANDBY or OFF (manually or automatically), kill AI and hide window.
+                                if (state !== 'ACTIVE') {
+                                     const chatContainer = document.getElementById('ampere-ai-chat-container');
+                                     
+                                     // 1. Hide Window Immediately
+                                     if(chatContainer) chatContainer.classList.add('hidden');
+                                     
+                                     // 2. Terminate Session if running
+                                     if (window.ampereAI && (window.ampereAI.isConnected || window.ampereAI.isConnecting)) {
+                                         window.ampereAI.endSession();
+                                     }
+                                }
+                            }
+                        }
+                    });
+                    obs.observe(document.body, { attributes: true });
+
+                    // v2.269: Observe Standby Warning Changes
+                    // The TechDemoScene updates #ampere-standby-warning text. We monitor it and copy to mobile pill.
+                    const observerWarning = new MutationObserver((mutations) => {
+                         const warningEl = document.getElementById('ampere-standby-warning');
+                         const mobileTimer = document.getElementById('mobile-standby-timer');
+                         if(warningEl && mobileTimer) {
+                             const text = warningEl.innerText;
+                             const opacity = window.getComputedStyle(warningEl).opacity;
+                             
+                             if (opacity > 0 && text.includes('STANDBY IN')) {
+                                 // Show on Mobile
+                                 mobileTimer.classList.remove('hidden');
+                                 // Format: "STBY IN 30s" -> "STBY IN 30S" (Uniform uppercase)
+                                 const match = text.match(/\d+s/);
+                                 if(match) mobileTimer.innerText = "STBY IN " + match[0].toUpperCase();
+                             } else {
+                                 mobileTimer.classList.add('hidden');
+                             }
+                         }
+                    });
+                    // Wait for warning element to be created by JS
+                    setTimeout(() => {
+                        const warningEl = document.getElementById('ampere-standby-warning');
+                        if(warningEl) {
+                             // Hide the original overlay on mobile via CSS? Or just let it be hidden by z-index/position override?
+                             // Better to hide it explicitly via CSS style injection
+                             warningEl.classList.add('lg:block', 'hidden'); // Force hide on mobile via classes if possible
+                             observerWarning.observe(warningEl, { childList: true, characterData: true, subtree: true, attributes: true });
+                        }
+                    }, 1000);
+
+                }, 50);
+
+                function updateMobileDisplay(state) {
+                    // v2.600: Mobile Status Elements Removed. Only updating Sliders and Toggles below.
+                    // v2.528: Target ALL power toggle buttons (Mobile and Desktop)
+                    const btns = document.querySelectorAll('.power-toggle-btn');
+                    
+                    // v2.267: Slider Elements for Power State Management
+                    const sliderOuter = document.getElementById('mobile-ring-slider-outer');
+                    const sliderInner = document.getElementById('mobile-ring-slider-inner');
+                    const labelOuter = document.getElementById('label-slider-outer');
+                    const labelInner = document.getElementById('label-slider-inner');
+                    // Parent containers for opacity control
+                    // v2.349: Use ID selector exclusively to ensure targeting regardless of responsive visibility classes (lg:hidden vs xl:hidden)
+                    const inputsToToggle = document.querySelectorAll('#mobile-sliders-container input[type="range"]');
+                    inputsToToggle.forEach(input => {
+                         // Find the visual parent (div with flex col)
+                         const parent = input.closest('.flex-col');
+                         if(parent) {
+                             if (state === 'ACTIVE') {
+                                 parent.classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = false;
+                             } else {
+                                 parent.classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+                                 input.disabled = true;
+                             }
+                         }
+                    });
+
+                    // v2.599: Transcript Toggle Visibility (Only visible when ON)
+                    const transcriptBtns = document.querySelectorAll('.transcript-toggle-btn');
+                    transcriptBtns.forEach(btn => {
+                        if (state === 'ACTIVE') {
+                            btn.classList.remove('opacity-0', 'pointer-events-none');
+                        } else {
+                            btn.classList.add('opacity-0', 'pointer-events-none');
+                        }
+                    });
+
+                    // v2.600: Removed Legacy Mobile Status Logic
+                    // The main pill handles status for both mobile and desktop via 'Live Demo' indicator and AI overrides.
+                    // Sliders update below:
+                }
+            }
+        });
+    </script>
+    <!-- v2.400: Card Expander System -->
+    <script type="module">
+        import { CardExpander } from "./assets/js/card-expander.js";
+        new CardExpander();
+    </script>
+
+    <!-- Initialize Shared Glass Socket Script -->
+    <script type="module">
+        import { initAllSockets } from './assets/js/glass-socket.js?v=2.483';
+        initAllSockets('.socket-card-container');
+    </script>
+    <!-- Initialize Ampere AI Chat (v2.580) -->
+    <script type="module">
+        import { AmpereAIChat } from './assets/js/ai-chat.js';
+        
+        // Initialize with Container ID, Agent ID, and UI Options
+        // v2.595: Added Power Sync Callbacks. 
+        // Any AI start/end event (via buttons or otherwise) will sync the visual Power State.
+        window.ampereAI = new AmpereAIChat('ampere-ai-chat-container', 'agent_4501ka281xkpe6e8jzbspgy9qh4d', {
+            startBtnId: 'btn-start-voice',
+            endBtnId: 'btn-end-voice',
+            // textChatBtnId: Removed. Manually handled below for multiple context-aware buttons.
+            statusTargetId: 'status-injection-target',
+            onStart: () => {
+                // Ensure Visuals Power Up
+                if (window.demoScene && window.demoScene.systemState !== 'ACTIVE') {
+                    window.demoScene.setSystemState('ACTIVE');
+                }
+            },
+            onEnd: () => {
+                // Ensure Visuals Power Down
+                if (window.demoScene && window.demoScene.systemState === 'ACTIVE') {
+                    window.demoScene.setSystemState('OFF');
+                    // Also ensure window closes on power down if not already handled
+                    const chatContainer = document.getElementById('ampere-ai-chat-container');
+                    if(chatContainer) chatContainer.classList.add('hidden');
+                }
+            }
+        });
+
+        // v2.599: Manual Wiring for Transcript Toggles (Desktop & Mobile)
+        // These buttons are now context-aware (only visible when Power is ON)
+        document.querySelectorAll('.transcript-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle Container Visibility
+                const container = document.getElementById('ampere-ai-chat-container');
+                if(container) {
+                    container.classList.toggle('hidden');
+                    // Focus input if opening (nice to have)
+                    const input = container.querySelector('input');
+                    if(!container.classList.contains('hidden') && input) input.focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

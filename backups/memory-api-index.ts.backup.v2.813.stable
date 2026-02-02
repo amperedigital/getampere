@@ -1,0 +1,3215 @@
+/// <reference types="@cloudflare/workers-types" />
+
+export interface Env {
+  D1_DB: D1Database;
+  API_KEY: string;
+  USE_DO_CACHE?: string;
+  MEMORY_CACHE?: DurableObjectNamespace;
+  SUBJECT_SALT?: string; // add
+  DEBUG?: string;        // optional
+  TWILIO_ACCOUNT_SID?: string;
+  TWILIO_AUTH_TOKEN?: string;
+  TWILIO_FROM_NUMBER?: string;
+  ELEVENLABS_TWILIO_STREAM_URL?: string;
+  ELEVENLABS_LATENCY_PROFILE?: string;
+  TOOL_LATENCY_FILLER_MS?: string;
+  ELEVENLABS_CUSTOM_LLM_PARAMS?: string;
+  ELEVENLABS_CUSTOM_LLM_MODEL?: string;
+  ELEVENLABS_CUSTOM_LLM_TEMPERATURE?: string;
+  ELEVENLABS_CUSTOM_LLM_MAX_TOKENS?: string;
+  ELEVENLABS_CUSTOM_LLM_REASONING_EFFORT?: string;
+  ELEVENLABS_FIRST_MESSAGE?: string;
+  ELEVENLABS_CONVERSATION_OVERRIDE?: string;
+  ELEVENLABS_INIT_PAYLOAD_MODE?: string;
+  ELEVENLABS_INIT_WEBHOOK_SECRET?: string;
+  SMTP2GO_API_KEY?: string;
+  SMTP2GO_FROM_EMAIL?: string;
+}
+type Json = Record<string, unknown>;
+type IncomingFact = {
+  fact: string;
+  confidence?: number;
+  fact_type?: string | null;
+};
+
+type FactPolicy = {
+  fact_type: string;
+  enabled: boolean;
+  max_per_subject: number;
+  keywords: string[];
+  regex?: string | null;
+};
+
+type FactPolicyMap = Record<string, FactPolicy>;
+
+async function sha256Hex(input: string): Promise<string> {
+  const data = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  const bytes = new Uint8Array(hash);
+  let hex = "";
+  for (const b of bytes) hex += b.toString(16).padStart(2, "0");
+  return hex;
+}
+
+function normalizeE164(input: string): string {
+  const s = String(input || "");
+  // keep digits and a leading '+'
+  const cleaned = s.replace(/[^\d+]/g, "");
+  if (cleaned.startsWith("+")) return cleaned;
+  return "+" + cleaned.replace(/^\+/, "");
+}
+
+let subjectLinkTableSupported: boolean | null = null;
+
+function isMissingSubjectLinksTable(err: any) {
+  return String(err?.message || "").includes("no such table: subject_links");
+}
+
+async function getCanonicalSubjectId(env: Env, workspaceId: string, subjectId: string): Promise<string> {
+  if (!workspaceId || !subjectId || subjectLinkTableSupported === false) return subjectId;
+  let current = subjectId;
+  const visited = new Set<string>();
+  while (current && !visited.has(current)) {
+    visited.add(current);
+    try {
+      const row = await env.D1_DB
+        .prepare(
+          "SELECT primary_subject_id FROM subject_links WHERE workspace_id = ? AND alias_subject_id = ?"
+        )
+        .bind(workspaceId, current)
+        .first<{ primary_subject_id: string }>();
+      if (!row?.primary_subject_id || row.primary_subject_id === current) {
+        if (subjectLinkTableSupported === null) subjectLinkTableSupported = true;
+        break;
+      }
+      current = row.primary_subject_id;
+    } catch (err: any) {
+      if (isMissingSubjectLinksTable(err)) {
+        subjectLinkTableSupported = false;
+        return subjectId;
+      }
+      console.log("subject_link_lookup_error", err?.message || err);
+      return subjectId;
+    }
+  }
+  return current || subjectId;
+}
+
+async function phoneSubjectId(env: Env, workspaceId: string, phoneRaw: string): Promise<string> {
+  const e164 = normalizeE164(phoneRaw);
+  if (!e164) return "";
+  const salt = (env.SUBJECT_SALT || "").toString();
+  if (!salt) {
+    return getCanonicalSubjectId(env, workspaceId, "hash:" + e164);
+  }
+  const hex = await sha256Hex(`${salt}|${e164}`);
+  return getCanonicalSubjectId(env, workspaceId, "hash:" + hex);
+}
+
+async function resolveSubjectId(env: Env, workspaceId: string, body: any): Promise<string> {
+  const explicit = safeString(body?.subject_id ?? "", 256).trim();
+  if (explicit) return getCanonicalSubjectId(env, workspaceId, explicit);
+
+  const e164Raw = safeString(body?.subject_e164 ?? "", 64).trim();
+  if (e164Raw) return phoneSubjectId(env, workspaceId, e164Raw);
+
+  // v2.800: Cookie Identity
+  const visitorId = safeString(body?.visitor_id ?? "", 128).trim();
+  if (visitorId) return visitorId; // Trust the visitor_id as the subject_id
+
+  return "";
+}
+
+//helper function to limit facts
+function safeString(x: any, max = 512): string {
+  const s = (x ?? "").toString();
+  return s.length > max ? s.slice(0, max) : s;
+}
+function safeNumber(x: any, dflt = 0, min = -Infinity, max = Infinity): number {
+  const n = Number(x);
+  if (!Number.isFinite(n)) return dflt;
+  return Math.max(min, Math.min(max, n));
+}
+function clampArray<T>(arr: any, maxLen = 20): T[] {
+  const a = Array.isArray(arr) ? arr : [];
+  return a.slice(0, maxLen);
+}
+function normalizeChannelMode(input: any): "voice" | "chat" | "" {
+  const mode = (input ?? "").toString().trim().toLowerCase();
+  if (mode === "voice" || mode === "chat") return mode;
+  return "";
+}
+
+function getToolLatencyThreshold(env: Env): number {
+  const raw = Number(env.TOOL_LATENCY_FILLER_MS ?? "");
+  if (Number.isFinite(raw) && raw > 0) return raw;
+  return DEFAULT_TOOL_LATENCY_FILLER_MS;
+}
+
+function buildLatencyHint(startedAt: number, env: Env) {
+  const duration = Math.max(0, nowMs() - startedAt);
+  const threshold = getToolLatencyThreshold(env);
+  return {
+    duration_ms: duration,
+    filler_threshold_ms: threshold,
+    needs_filler: duration >= threshold
+  };
+}
+
+const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
+const VERIFIED_SESSION_TTL_MS = 15 * 60 * 1000; // 15 minutes of trusted recall
+const MAX_OTP_ATTEMPTS = 5;
+const DEFAULT_TOOL_LATENCY_FILLER_MS = 200;
+const KB_SENTENCE_LIMIT = 2;
+const KB_CHAR_LIMIT = 320;
+const SENSITIVE_FACT_TYPES = new Set([
+  "budget",
+  "family_detail",
+  "pet_details",
+  "hobby_detail",
+  "vehicle_detail",
+  "address_detail",
+  "payment_history"
+]);
+
+const DEFAULT_CUSTOM_LLM_MODEL = "gpt-5.1";
+const DEFAULT_CUSTOM_LLM_TEMPERATURE = 0.75;
+const DEFAULT_CUSTOM_LLM_REASONING_EFFORT = "medium";
+
+type VerificationState = {
+  level: "none" | "pending" | "verified" | "expired" | "locked";
+  verified_until?: number | null;
+};
+
+type WorkspaceChannelConfig = {
+  twilio_account_sid?: string | null;
+  twilio_auth_token?: string | null;
+  twilio_from_number?: string | null;
+  sms_enabled?: number | null;
+  email_enabled?: number | null;
+};
+type SessionContextRow = {
+  channel_mode: string | null;
+  verified_subject?: string | null;
+  handoff_reason?: string | null;
+};
+
+type SendResult = {
+  ok: boolean;
+  error?: string;
+  status?: number;
+};
+
+const DEFAULT_TIMEZONE = "America/New_York";
+const STATE_TIMEZONE_MAP: Record<string, string> = {
+  AL: "America/Chicago",
+  AK: "America/Anchorage",
+  AZ: "America/Phoenix",
+  AR: "America/Chicago",
+  CA: "America/Los_Angeles",
+  CO: "America/Denver",
+  CT: "America/New_York",
+  DE: "America/New_York",
+  DC: "America/New_York",
+  FL: "America/New_York",
+  GA: "America/New_York",
+  HI: "Pacific/Honolulu",
+  ID: "America/Boise",
+  IL: "America/Chicago",
+  IN: "America/New_York",
+  IA: "America/Chicago",
+  KS: "America/Chicago",
+  KY: "America/New_York",
+  LA: "America/Chicago",
+  ME: "America/New_York",
+  MD: "America/New_York",
+  MA: "America/New_York",
+  MI: "America/Detroit",
+  MN: "America/Chicago",
+  MS: "America/Chicago",
+  MO: "America/Chicago",
+  MT: "America/Denver",
+  NE: "America/Chicago",
+  NV: "America/Los_Angeles",
+  NH: "America/New_York",
+  NJ: "America/New_York",
+  NM: "America/Denver",
+  NY: "America/New_York",
+  NC: "America/New_York",
+  ND: "America/Chicago",
+  OH: "America/New_York",
+  OK: "America/Chicago",
+  OR: "America/Los_Angeles",
+  PA: "America/New_York",
+  RI: "America/New_York",
+  SC: "America/New_York",
+  SD: "America/Chicago",
+  TN: "America/Chicago",
+  TX: "America/Chicago",
+  UT: "America/Denver",
+  VT: "America/New_York",
+  VA: "America/New_York",
+  WA: "America/Los_Angeles",
+  WV: "America/New_York",
+  WI: "America/Chicago",
+  WY: "America/Denver"
+};
+
+const COUNTRY_TIMEZONE_MAP: Record<string, string> = {
+  US: DEFAULT_TIMEZONE,
+  CA: "America/Toronto",
+  MX: "America/Mexico_City",
+  GB: "Europe/London",
+  UK: "Europe/London",
+  AU: "Australia/Sydney"
+};
+
+function isVerified(state: VerificationState) {
+  return state.level === "verified";
+}
+
+function isValidTimezone(timeZone: string): boolean {
+  if (!timeZone) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone }).format(new Date());
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function formatLocalIso(date: Date, timeZone: string): string {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+    const parts = formatter.formatToParts(date);
+    const lookup = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((p) => p.type === type)?.value || "";
+    const year = lookup("year").padStart(4, "0");
+    const month = lookup("month").padStart(2, "0");
+    const day = lookup("day").padStart(2, "0");
+    const hour = lookup("hour").padStart(2, "0");
+    const minute = lookup("minute").padStart(2, "0");
+    const second = lookup("second").padStart(2, "0");
+    if (year && month && day && hour && minute && second) {
+      return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+    }
+  } catch (_) {
+    // ignore and fall through
+  }
+  return date.toISOString();
+}
+
+function deriveTimeGreeting(date: Date, timeZone: string): string {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      hour: "2-digit",
+      hour12: false
+    });
+    const hourStr = formatter.format(date);
+    const hour = parseInt(hourStr, 10);
+    if (!Number.isNaN(hour)) {
+      if (hour >= 5 && hour < 12) return "Good morning";
+      if (hour >= 12 && hour < 17) return "Good afternoon";
+      if (hour >= 17 || hour < 5) return "Good evening";
+    }
+  } catch (_) {
+    // ignore formatter errors
+  }
+  const hour = date.getUTCHours();
+  if (hour >= 5 && hour < 12) return "Good morning";
+  if (hour >= 12 && hour < 17) return "Good afternoon";
+  if (hour >= 17 || hour < 5) return "Good evening";
+  return "Hello";
+}
+
+function deriveTimezoneFromHints(
+  callerTimezone: string,
+  callerCountry: string,
+  callerState: string
+): string {
+  if (callerTimezone && isValidTimezone(callerTimezone)) return callerTimezone;
+  const upperCountry = (callerCountry || "").trim().toUpperCase();
+  if (upperCountry && COUNTRY_TIMEZONE_MAP[upperCountry]) {
+    return COUNTRY_TIMEZONE_MAP[upperCountry];
+  }
+  if (upperCountry === "US") {
+    const upperState = (callerState || "").trim().toUpperCase();
+    if (upperState && STATE_TIMEZONE_MAP[upperState]) {
+      return STATE_TIMEZONE_MAP[upperState];
+    }
+  }
+  return DEFAULT_TIMEZONE;
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, x-api-key, x-workspace-id",
+};
+
+export default {
+  async fetch(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    if (req.method === "OPTIONS") {
+      return new Response(null, { headers: CORS_HEADERS });
+    }
+
+    try {
+      const url = new URL(req.url);
+      const path = url.pathname;
+      const isVisualizer = path === "/memory/visualizer";
+
+      // Allow GET / for health checks
+      if (req.method === "GET" && path === "/") {
+        return json({ status: "ok", service: "memory-api" });
+      }
+
+      if (req.method !== "POST" && !isVisualizer) return json({ error: "use POST" }, 405);
+      
+      const headerWorkspace = req.headers.get("x-workspace-id");
+      const urlWorkspace = url.searchParams.get("workspace"); // Allow query override for sockets
+      const isElevenLabsInit = path === "/elevenlabs/init";
+      const isTwilioVoice = path === "/twilio/voice";
+      
+      let workspaceId = headerWorkspace ?? urlWorkspace ?? (isElevenLabsInit || isTwilioVoice ? "emily" : "default");
+      
+      // SANITIZE: Remove any accidental query string leakage or whitespace
+      // This ensures "default?workspace=default" becomes "default"
+      if (workspaceId.includes("?")) {
+         workspaceId = workspaceId.split("?")[0];
+      }
+      workspaceId = workspaceId.trim();
+      
+      if (!isVisualizer) {
+        console.log("REQ " + path + " ws=" + workspaceId + (headerWorkspace ? "" : " (fallback)"));
+      }
+
+      // Basic multi-tenant auth: x-workspace-id + x-api-key
+      if (!isElevenLabsInit && !isTwilioVoice && !isVisualizer) {
+        const apiKey = req.headers.get("x-api-key") ?? "";
+        const ok = await auth(env, workspaceId, apiKey);
+        if (!ok) return json({ error: "unauthorized" }, 401);
+      }
+      
+      if (isVisualizer) {
+         if (!env.MEMORY_CACHE) return json({ error: "no_cache_binding" }, 500);
+         console.log(`[Worker] Handing off visualizer req to DO. Upgrade: ${req.headers.get("Upgrade")}`);
+         const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+         const stub = env.MEMORY_CACHE.get(id);
+         return stub.fetch(req);
+      }
+
+      const bodyText = await req.text();
+      let body: any = {};
+      if (!isTwilioVoice) {
+        if (bodyText) {
+          try {
+            body = JSON.parse(bodyText);
+          } catch (err: any) {
+            console.log("invalid_json_payload", err?.message || err);
+            return json({ error: "invalid_json" }, 400);
+          }
+        }
+      }
+
+      if (path === "/twilio/voice") return twilioVoiceHandler(req, env, workspaceId, bodyText);
+      if (path === "/elevenlabs/init") return elevenLabsInitHandler(req, env, workspaceId, bodyText);
+      if (path === "/identity/preload") return preloadSession(env, workspaceId, body);
+
+      if (url.pathname === "/memory/bootstrap") return bootstrap(env, workspaceId, body, ctx);
+      if (url.pathname === "/memory/query") return query(env, workspaceId, body, ctx);
+      if (url.pathname === "/memory/upsert") return upsert(env, workspaceId, body, ctx);
+      if (url.pathname === "/memory/transcript") return ingestTranscript(env, workspaceId, body);
+      if (url.pathname === "/integrations/elevenlabs/transcript") return elevenLabsWebhook(env, workspaceId, body);
+      if (url.pathname === "/identity/passthrough") return identityPassthrough(env, workspaceId, body);
+      if (url.pathname === "/identity/session") return getSessionIdentity(env, workspaceId, body);
+      if (url.pathname === "/identity/validate") return identityValidate(env, workspaceId, body, ctx);
+      if (url.pathname === "/auth/request-otp") return requestOtp(env, workspaceId, body);
+      if (url.pathname === "/auth/verify-otp") return verifyOtp(env, workspaceId, body);
+      if (url.pathname === "/context/set") return setContext(env, workspaceId, body);
+      if (url.pathname === "/handoff/dispatch") return handoffDispatch(env, workspaceId, body);
+
+      return json({ error: "not found" }, 404);
+    } catch (e: any) {
+      return json({ error: e?.message ?? "server error" }, 500);
+    }
+  }
+};
+
+async function auth(env: Env, workspaceId: string, providedKey: string) {
+  // If a workspace key exists in DB, require it; else fall back to global API_KEY
+  const row = await env.D1_DB
+    .prepare("SELECT secret FROM api_keys WHERE workspace_id = ?")
+    .bind(workspaceId)
+    .first<{ secret: string }>();
+  if (row?.secret) return timingSafeEqual(providedKey, row.secret);
+  return timingSafeEqual(providedKey, env.API_KEY || "");
+}
+
+function timingSafeEqual(a: string, b: string) {
+  if (a.length !== b.length) return false;
+  let res = 0;
+  for (let i = 0; i < a.length; i++) res |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return res === 0 && a.length > 0;
+}
+
+function nowMs() { return Date.now(); }
+function json(obj: Json, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: {
+      "content-type": "application/json",
+      ...CORS_HEADERS
+    }
+  });
+}
+
+// POST /memory/bootstrap
+// { subject_id?: "hash:...", subject_e164?: "+1555...", lang?: "en", query?: "text", agent_id?: "billing", summary?: "text", extracted_facts?: [...] }
+async function bootstrap(env: Env, workspaceId: string, body: any, ctx?: ExecutionContext) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  console.log("BOOT subject_id=" + subjectId + " ws=" + workspaceId);
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+  const sessionId = safeString(body.session_id ?? body.call_id ?? "", 64);
+  const verificationState = await getSessionVerification(env, workspaceId, subjectId, sessionId);
+  const verified = verificationState.level === "verified";
+  const requestStartedAt = nowMs();
+
+  // Optional inline write (save summary/facts) so chat can "save" via bootstrap
+  let writeAck = false;
+  const hasSummary = typeof body.summary === "string" && body.summary.trim().length > 0;
+
+  // Accept both "extracted_facts" (objects) and "facts" (strings or objects)
+  const fromExtracted = clampArray(body.extracted_facts, 50);
+  const fromFacts = clampArray(body.facts, 50);
+  const factsInput: any[] = [...fromExtracted, ...fromFacts];
+  const agentId = body.agent_id ? String(body.agent_id) : null;
+  const q = safeString(body.query ?? "", 128).trim();
+
+  const cacheEligible = shouldUseDoCache(env);
+  const isWriteRequest = hasSummary || factsInput.length > 0;
+  const cacheKey = buildCacheEntryKey(agentId, q, verificationState.level);
+
+  if (!isWriteRequest && sessionId) {
+    const sessionCached = readSessionBootstrapCache(workspaceId, sessionId);
+    if (
+      sessionCached &&
+      sessionCached.subject_id === subjectId &&
+      sessionCached.verification_level === verificationState.level
+    ) {
+      console.log("BOOT session_cache_hit session=" + sessionId);
+      return json(sessionCached.payload);
+    }
+  }
+
+  if (!isWriteRequest && cacheKey) {
+    let cached = readLocalBootstrapCache(workspaceId, subjectId, cacheKey);
+    if (!cached && cacheEligible) {
+      cached = await readBootstrapCache(env, workspaceId, subjectId, cacheKey);
+    }
+    if (cached) {
+      console.log("BOOT cache_hit subject=" + subjectId);
+      if (sessionId) {
+        writeSessionBootstrapCache(workspaceId, sessionId, {
+          subject_id: subjectId,
+          verification_level: verificationState.level,
+          payload: cached
+        });
+      }
+      return json(cached);
+    }
+  }
+
+  let wroteFacts = 0;
+
+  if (isWriteRequest) {
+    const ts = nowMs();
+    const callId = String(body.call_id || `${ts}-${Math.random().toString(16).slice(2)}`);
+
+    await env.D1_DB.prepare(
+      "INSERT OR IGNORE INTO calls (id, subject_id, workspace_id, started_at) VALUES (?, ?, ?, ?)"
+    ).bind(callId, subjectId, workspaceId, ts).run();
+
+    if (hasSummary) {
+      await env.D1_DB.prepare(
+        "INSERT INTO call_summaries (call_id, subject_id, workspace_id, summary, created_at) VALUES (?, ?, ?, ?, ?)"
+      ).bind(callId, subjectId, workspaceId, String(body.summary), ts).run();
+    }
+
+    if (factsInput.length) {
+      const policies = await getWorkspaceFactPolicies(env, workspaceId);
+      wroteFacts += await persistFacts(
+        env,
+        workspaceId,
+        subjectId,
+        agentId,
+        deriveIncomingFacts(factsInput),
+        policies,
+        ts
+      );
+    }
+
+    writeAck = true;
+    console.log("BOOT write_ack=true call_id=" + callId + " facts_written=" + wroteFacts);
+    await invalidateBootstrapCache(env, workspaceId, subjectId);
+  }
+
+  const initialFactTypeSupport = await ensureFactTypeColumn(env);
+
+  const profileFactsPromise = (async (): Promise<MemorySelectResult> => {
+    let expectFactType = initialFactTypeSupport;
+    while (true) {
+      try {
+        const res = await env.D1_DB
+          .prepare(`SELECT fact, confidence, updated_at${expectFactType ? ", fact_type" : ""}
+                    FROM memories
+                    WHERE workspace_id = ? AND subject_id = ?
+                    ORDER BY updated_at DESC
+                    LIMIT 20`)
+          .bind(workspaceId, subjectId)
+          .all();
+        return { results: res.results ?? [], hasFactTypeColumn: expectFactType };
+      } catch (err: any) {
+        if (expectFactType && isFactTypeColumnError(err)) {
+          disableFactTypeColumnSupport();
+          expectFactType = false;
+          continue;
+        }
+        throw err;
+      }
+    }
+  })();
+
+  const summariesPromise = env.D1_DB
+    .prepare(`SELECT summary, created_at
+              FROM call_summaries
+              WHERE workspace_id = ? AND subject_id = ?
+              ORDER BY created_at DESC
+              LIMIT 3`)
+    .bind(workspaceId, subjectId)
+    .all();
+
+  const factsPromise = (async (): Promise<MemorySelectResult> => {
+    if (!q) return { results: [], hasFactTypeColumn: initialFactTypeSupport };
+    const like = `%${q.replace(/[%_]/g, "")}%`;
+    let expectFactType = initialFactTypeSupport;
+    while (true) {
+      try {
+        const res = await env.D1_DB
+          .prepare(
+            `SELECT fact, confidence, updated_at, agent_id${expectFactType ? ", fact_type" : ""}
+             FROM memories
+             WHERE workspace_id = ?
+               AND subject_id = ?
+               AND (? = '' OR fact LIKE ?)
+               AND (? IS NULL OR agent_id IS NULL OR agent_id = ?)
+             ORDER BY updated_at DESC
+             LIMIT ?`
+          )
+          .bind(workspaceId, subjectId, q, like, agentId, agentId, 5)
+          .all();
+        return { results: res.results ?? [], hasFactTypeColumn: expectFactType };
+      } catch (err: any) {
+        if (expectFactType && isFactTypeColumnError(err)) {
+          disableFactTypeColumnSupport();
+          expectFactType = false;
+          continue;
+        }
+        throw err;
+      }
+    }
+  })();
+
+  console.log("BOOT query=" + (q || "<empty>"));
+
+  const [profileFacts, summaries, factsRes] = await Promise.all([
+    profileFactsPromise,
+    summariesPromise,
+    factsPromise
+  ]);
+
+  if (env.MEMORY_CACHE) {
+    // Broadcast BOOT event to Visualizer
+    const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+    const stub = env.MEMORY_CACHE.get(id);
+    const p = stub.fetch("https://viz", {
+      method: "POST",
+      body: JSON.stringify({
+          op: "broadcast", 
+          message: { type: "memory_retrieved", items: [`BOOT: ${subjectId}`], source: "bootstrap" }
+      })
+    });
+    if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+  }
+
+  if (env.MEMORY_CACHE) {
+    // Broadcast BOOT event to Visualizer
+    const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+    const stub = env.MEMORY_CACHE.get(id);
+    const p = stub.fetch("https://viz", {
+      method: "POST",
+      body: JSON.stringify({
+          op: "broadcast", 
+          message: { type: "memory_retrieved", items: [`BOOT: ${subjectId}`], source: "bootstrap" }
+      })
+    });
+    if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+  }
+
+  console.log("BOOT facts=" + (factsRes.results?.length || 0));
+
+  const profileFactRows = trimKnowledgeBaseFacts(
+    normalizeFactRows(profileFacts.results ?? [], profileFacts.hasFactTypeColumn)
+  );
+  const queryFactRows = trimKnowledgeBaseFacts(
+    normalizeFactRows(factsRes.results ?? [], factsRes.hasFactTypeColumn)
+  );
+  const filteredProfileFacts = filterFactsForVerification(profileFactRows, verificationState);
+  const filteredFacts = filterFactsForVerification(queryFactRows, verificationState);
+  const sanitizedSummaries = sanitizeSummariesForVerification(summaries.results ?? [], verificationState);
+
+  const payload = {
+    write_ack: writeAck,
+    profile_facts: filteredProfileFacts,
+    recent_summaries: sanitizedSummaries,
+    facts: filteredFacts,
+    agent_hints: {},
+    verification_level: verificationState.level,
+    latency_hint: buildLatencyHint(requestStartedAt, env)
+  };
+
+  if (!isWriteRequest && cacheKey) {
+    writeLocalBootstrapCache(workspaceId, subjectId, cacheKey, payload);
+    if (cacheEligible) await writeBootstrapCache(env, workspaceId, subjectId, cacheKey, payload);
+  }
+
+  if (!isWriteRequest && sessionId) {
+    writeSessionBootstrapCache(workspaceId, sessionId, {
+      subject_id: subjectId,
+      verification_level: verificationState.level,
+      payload
+    });
+  }
+
+  return json(payload);
+}
+
+// POST /memory/query
+// { subject_id?: "hash:...", subject_e164?: "+1555...", agent_id?: "billing", query: "text", top_k?: 5 }
+async function query(env: Env, workspaceId: string, body: any, ctx?: ExecutionContext) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  const agentId = body.agent_id ? String(body.agent_id) : null;
+  const q = safeString(body.query ?? "", 128).trim();
+  const topK = safeNumber(body.top_k, 5, 1, 20);
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+  const sessionId = safeString(body.session_id ?? body.call_id ?? "", 64);
+  const verificationState = await getSessionVerification(env, workspaceId, subjectId, sessionId);
+  const requestStartedAt = nowMs();
+  console.log("QUERY_START", { workspaceId, subjectId: subjectId.substring(0,8) + "...", q });
+  
+  const cacheKey = buildQueryCacheEntryKey(workspaceId, subjectId, agentId, q, topK, verificationState.level);
+  const cachedPayload = readLocalQueryCache(workspaceId, subjectId, cacheKey);
+  if (cachedPayload) {
+    if (env.MEMORY_CACHE) {
+       // Broadcast cache hit
+       const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+       const stub = env.MEMORY_CACHE.get(id);
+       const p = stub.fetch("https://viz", {
+            method: "POST",
+            body: JSON.stringify({ 
+               op: "broadcast", 
+               message: { type: "memory_retrieved", items: cachedPayload.facts.slice(0,3).map(f => f.fact), source: "cache" }
+            })
+       });
+       if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+    }
+    console.log("QUERY cache_hit subject=" + subjectId);
+    return json(cachedPayload);
+  }
+  const like = q ? `%${q.replace(/[%_]/g, "")}%` : "";
+  let hasFactTypeColumn = await ensureFactTypeColumn(env);
+  let rows: { results: any[] } = { results: [] };
+  try {
+    rows = await env.D1_DB
+      .prepare(
+        `SELECT fact, confidence, updated_at, agent_id${hasFactTypeColumn ? ", fact_type" : ""}
+         FROM memories
+         WHERE workspace_id = ?
+           AND subject_id = ?
+           AND (? = '' OR fact LIKE ?)
+           AND (agent_id IS NULL OR agent_id = ?)
+         ORDER BY updated_at DESC
+         LIMIT ?`
+      )
+      .bind(workspaceId, subjectId, q, like, agentId, topK)
+      .all();
+  } catch (err: any) {
+    if (hasFactTypeColumn && isFactTypeColumnError(err)) {
+      disableFactTypeColumnSupport();
+      hasFactTypeColumn = false;
+      rows = await env.D1_DB
+        .prepare(
+          `SELECT fact, confidence, updated_at, agent_id
+           FROM memories
+           WHERE workspace_id = ?
+             AND subject_id = ?
+             AND (? = '' OR fact LIKE ?)
+             AND (agent_id IS NULL OR agent_id = ?)
+           ORDER BY updated_at DESC
+           LIMIT ?`
+        )
+        .bind(workspaceId, subjectId, q, like, agentId, topK)
+        .all();
+    } else {
+      throw err;
+    }
+  }
+
+  const normalizedFacts = normalizeFactRows(rows.results ?? [], hasFactTypeColumn);
+  const trimmedFacts = trimKnowledgeBaseFacts(normalizedFacts);
+  const filteredFacts = filterFactsForVerification(trimmedFacts, verificationState);
+  const payload: QueryCachePayload = {
+    facts: filteredFacts,
+    snippets: [],
+    citations: [],
+    verification_level: verificationState.level,
+    latency_hint: buildLatencyHint(requestStartedAt, env)
+  };
+  writeLocalQueryCache(workspaceId, subjectId, cacheKey, payload);
+
+  if (env.MEMORY_CACHE && payload.facts.length > 0) {
+      const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+      const stub = env.MEMORY_CACHE.get(id);
+      const p = stub.fetch("https://viz", {
+        method: "POST",
+        body: JSON.stringify({
+            op: "broadcast", 
+            message: { type: "memory_retrieved", items: payload.facts.slice(0,3).map((f:any) => f.fact) }
+        })
+      });
+      if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+  }
+
+  return json(payload);
+}
+
+function coerceBooleanFlag(value: any): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) return false;
+    return normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "y";
+  }
+  if (typeof value === "number") return value !== 0;
+  return false;
+}
+
+function isPlainObject(value: any): value is Record<string, any> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function getDefaultCustomLLMBody(env: Env): Record<string, any> {
+  const raw = safeString(env.ELEVENLABS_CUSTOM_LLM_PARAMS ?? "", 4096).trim();
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (isPlainObject(parsed)) return parsed;
+    } catch (err: any) {
+      console.log("init_custom_llm_params_parse_error", err?.message || err);
+    }
+  }
+
+  const body: Record<string, any> = {};
+  const model = safeString(env.ELEVENLABS_CUSTOM_LLM_MODEL ?? "", 128).trim();
+  body.model = model || DEFAULT_CUSTOM_LLM_MODEL;
+
+  const temp = Number(env.ELEVENLABS_CUSTOM_LLM_TEMPERATURE ?? "");
+  body.temperature = Number.isFinite(temp) ? temp : DEFAULT_CUSTOM_LLM_TEMPERATURE;
+
+  const maxTokens = Number(env.ELEVENLABS_CUSTOM_LLM_MAX_TOKENS ?? "");
+  if (Number.isFinite(maxTokens)) {
+    body.max_tokens = maxTokens;
+  }
+
+  const reasoning = safeString(env.ELEVENLABS_CUSTOM_LLM_REASONING_EFFORT ?? "", 32).trim();
+  body.reasoning_effort = reasoning || DEFAULT_CUSTOM_LLM_REASONING_EFFORT;
+
+  return body;
+}
+
+function getConversationOverride(env: Env): Record<string, any> | null {
+  const raw = safeString(env.ELEVENLABS_CONVERSATION_OVERRIDE ?? "", 8192).trim();
+  const envFirstMessage = safeString(env.ELEVENLABS_FIRST_MESSAGE ?? "", 512).trim();
+  if (!raw && !envFirstMessage) return null;
+
+  let parsed: Record<string, any> = {};
+  if (raw) {
+    try {
+      const candidate = JSON.parse(raw);
+      if (isPlainObject(candidate)) parsed = candidate;
+    } catch (err: any) {
+      console.log("init_conversation_override_parse_error", err?.message || err);
+    }
+  }
+
+  if (parsed.tts && isPlainObject(parsed.tts)) {
+    if (Object.prototype.hasOwnProperty.call(parsed.tts, "voice_id")) {
+      delete parsed.tts.voice_id;
+    }
+    if (!Object.keys(parsed.tts).length) {
+      delete parsed.tts;
+    }
+  }
+
+  if (envFirstMessage) {
+    if (!parsed.agent || !isPlainObject(parsed.agent)) parsed.agent = {};
+    parsed.agent.first_message = envFirstMessage;
+  }
+
+  if (parsed.agent && isPlainObject(parsed.agent)) {
+    if (isPlainObject(parsed.agent.prompt)) {
+      parsed.agent.prompt = { ...(parsed.agent.prompt || {}) };
+    }
+    if (parsed.agent.prompt && !Object.keys(parsed.agent.prompt).length) {
+      delete parsed.agent.prompt;
+    }
+    if (!Object.keys(parsed.agent).length) {
+      delete parsed.agent;
+    }
+  }
+
+  return Object.keys(parsed).length ? parsed : null;
+}
+
+function shouldDeferMemoryUpsert(body: any, summaryText: string, factCount: number): boolean {
+  if (!body || typeof body !== "object") return false;
+  if (!summaryText || factCount > 0) return false;
+  if (coerceBooleanFlag(body.require_sync) || coerceBooleanFlag(body.force_sync)) return false;
+  return coerceBooleanFlag(body.defer_logging);
+}
+
+// POST /memory/upsert
+// { subject_id?: "hash:...", subject_e164?: "+1555...", agent_id?, summary?, extracted_facts?: [...] }
+async function upsert(env: Env, workspaceId: string, body: any, ctx?: ExecutionContext) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  console.log("UPSERT_START", { workspaceId, subjectId: subjectId ? subjectId.substring(0,8) + "..." : "null" });
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+
+  const callId = String(body.call_id || `${nowMs()}-${Math.random().toString(16).slice(2)}`);
+  const ts = nowMs();
+  const summaryValue = body.summary;
+  const normalizedSummary = typeof summaryValue === "string" ? summaryValue.trim() : "";
+  const facts = Array.isArray(body.extracted_facts) ? body.extracted_facts : [];
+  const deferLogging = shouldDeferMemoryUpsert(body, normalizedSummary, facts.length);
+  
+  if (facts.length > 0) {
+      console.log("UPSERT_FACTS", { count: facts.length, callId });
+  }
+
+  const performWrite = async () => {
+    let touched = false;
+
+    try {
+        console.log("DB_WRITE: calls");
+        await env.D1_DB.prepare(
+        "INSERT OR IGNORE INTO calls (id, subject_id, workspace_id, started_at) VALUES (?, ?, ?, ?)"
+        ).bind(callId, subjectId, workspaceId, ts).run();
+
+        if (summaryValue) {
+        console.log("DB_WRITE: call_summaries");
+        await env.D1_DB.prepare(
+            "INSERT INTO call_summaries (call_id, subject_id, workspace_id, summary, created_at) VALUES (?, ?, ?, ?, ?)"
+        ).bind(callId, subjectId, workspaceId, String(summaryValue), ts).run();
+        touched = true;
+        }
+
+        if (facts.length) {
+        const agentId = body.agent_id ? String(body.agent_id) : null;
+        console.log("DB_WRITE: checking policies");
+        const policies = await getWorkspaceFactPolicies(env, workspaceId);
+        console.log("DB_WRITE: persistFacts");
+        await persistFacts(
+            env,
+            workspaceId,
+            subjectId,
+            agentId,
+            deriveIncomingFacts(facts),
+            policies,
+            ts
+        );
+        touched = true;
+        }
+
+        if (touched) await invalidateBootstrapCache(env, workspaceId, subjectId);
+
+        // Broadcast to visualizer
+        if (touched && env.MEMORY_CACHE) {
+             console.log("DB_BCAST: Starting...");
+             const vizItems: string[] = [];
+             if (facts.length) {
+                deriveIncomingFacts(facts).forEach(f => {
+                    if (f.fact) vizItems.push(f.fact);
+                });
+             }
+             if (summaryValue && !vizItems.length) {
+                vizItems.push("Summary: " + String(summaryValue).slice(0, 30) + "...");
+             }
+       
+             if (vizItems.length > 0) {
+                const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+                const stub = env.MEMORY_CACHE.get(id);
+                // Don't await strictly to fast return
+                const promise = stub.fetch("https://viz", {
+                    method: "POST",
+                    body: JSON.stringify({ 
+                    op: "broadcast", 
+                    message: { type: "memory_added", items: vizItems }
+                    })
+                });
+                if (ctx && ctx.waitUntil) ctx.waitUntil(promise);
+                else await promise;
+             }
+             console.log("DB_BCAST: Sent");
+        }
+    } catch (err: any) {
+        console.error("DB_WRITE_CRASH", err);
+        throw err;
+    }
+  };
+
+  if (deferLogging && ctx && typeof ctx.waitUntil === "function") {
+    ctx.waitUntil(
+      performWrite().catch((err) => {
+        console.log("deferred_memory_upsert_error", err?.message || err);
+      })
+    );
+    return json({ ok: true, call_id: callId, deferred: true });
+  }
+
+  await performWrite();
+  return json({ ok: true, call_id: callId, deferred: false });
+}
+
+async function ingestTranscript(env: Env, workspaceId: string, body: any) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+
+  const transcript = safeString(body.transcript ?? "", 20000).trim();
+  if (!transcript) return json({ error: "transcript text required" }, 400);
+
+  const agentId = body.agent_id ? String(body.agent_id) : null;
+  const callId = String(body.call_id || `${nowMs()}-${Math.random().toString(16).slice(2)}`);
+  const ts = nowMs();
+  const policies = await getWorkspaceFactPolicies(env, workspaceId);
+
+  await env.D1_DB.prepare(
+    "INSERT OR IGNORE INTO calls (id, subject_id, workspace_id, started_at) VALUES (?, ?, ?, ?)"
+  ).bind(callId, subjectId, workspaceId, ts).run();
+
+  const providedSummary = safeString(body.summary ?? "", 2000).trim();
+  const summary = providedSummary || summarizeTranscript(transcript);
+  if (summary) {
+    await env.D1_DB.prepare(
+      "INSERT INTO call_summaries (call_id, subject_id, workspace_id, summary, created_at) VALUES (?, ?, ?, ?, ?)"
+    ).bind(callId, subjectId, workspaceId, summary, ts).run();
+  }
+
+  const manualFacts = deriveIncomingFacts(clampArray(body.extracted_facts, 100));
+  const autoFacts = body.auto_extract === false ? [] : extractFactsFromTranscript(transcript, policies);
+  const combinedFacts = dedupeIncomingFacts([...manualFacts, ...autoFacts]);
+  const factsWritten = await persistFacts(
+    env,
+    workspaceId,
+    subjectId,
+    null,
+    combinedFacts,
+    policies,
+    ts
+  );
+
+  if (summary || factsWritten) await invalidateBootstrapCache(env, workspaceId, subjectId);
+
+  return json({
+    ok: true,
+    call_id: callId,
+    summary,
+    facts_written: factsWritten,
+    auto_facts_generated: autoFacts.length
+  });
+}
+
+async function elevenLabsWebhook(env: Env, workspaceId: string, body: any) {
+  const metadata = (body && typeof body.metadata === "object" && body.metadata) ? body.metadata : {};
+  const transcriptRaw = body.text ?? body.transcript ?? metadata.text ?? "";
+  const transcript = safeString(transcriptRaw, 60000).trim();
+  if (!transcript) {
+    return json({ error: "text (transcript) required" }, 400);
+  }
+
+  const subjectId = safeString(body.subject_id ?? metadata.subject_id ?? "", 256).trim();
+  const subjectPhone = safeString(body.subject_e164 ?? metadata.subject_e164 ?? metadata.phone ?? "", 64).trim();
+  if (!subjectId && !subjectPhone) {
+    return json({ error: "subject_id or subject_e164 required" }, 400);
+  }
+
+  const payload: Record<string, any> = {
+    subject_id: subjectId,
+    subject_e164: subjectPhone,
+    transcript,
+    call_id: body.call_id ?? metadata.call_id ?? body.transcription_id ?? metadata.transcription_id,
+    agent_id: body.agent_id ?? metadata.agent_id ?? null,
+    summary: body.summary ?? metadata.summary ?? "",
+    extracted_facts: Array.isArray(body.extracted_facts)
+      ? body.extracted_facts
+      : Array.isArray(metadata.extracted_facts) ? metadata.extracted_facts : [],
+  };
+
+  if (body.auto_extract === false || metadata.auto_extract === false) payload.auto_extract = false;
+  if (body.language_code || metadata.language_code) payload.language_code = body.language_code ?? metadata.language_code;
+  if (body.language_probability || metadata.language_probability) payload.language_probability = body.language_probability ?? metadata.language_probability;
+
+  return ingestTranscript(env, workspaceId, payload);
+}
+
+type SessionContextUpdateInput = {
+  channel_mode?: string | null;
+  verified_subject?: string | null;
+  handoff_reason?: string | null;
+};
+
+async function applySessionContextUpdate(
+  env: Env,
+  workspaceId: string,
+  sessionId: string,
+  updates: SessionContextUpdateInput
+) {
+  let existing: SessionContextRow | null = null;
+  const cached = readSessionContextCache(workspaceId, sessionId);
+  if (cached) {
+    existing = {
+      channel_mode: cached.channel_mode,
+      verified_subject: cached.verified_subject,
+      handoff_reason: cached.handoff_reason
+    };
+  } else {
+    const row = await env.D1_DB
+      .prepare(
+        "SELECT channel_mode, verified_subject, handoff_reason FROM session_context WHERE workspace_id = ? AND session_id = ?"
+      )
+      .bind(workspaceId, sessionId)
+      .first<SessionContextRow>();
+    if (row) existing = row;
+  }
+
+  const channelProvided = Object.prototype.hasOwnProperty.call(updates, "channel_mode");
+  const requestedMode = channelProvided ? normalizeChannelMode(updates.channel_mode ?? "") : "";
+  const nextMode = channelProvided
+    ? requestedMode || existing?.channel_mode || "chat"
+    : existing?.channel_mode || "chat";
+
+  const verifiedProvided = Object.prototype.hasOwnProperty.call(updates, "verified_subject");
+  const nextVerified = verifiedProvided
+    ? (() => {
+        const raw = updates.verified_subject;
+        if (raw === null) return null;
+        const val = safeString(raw ?? "", 256).trim();
+        return val || null;
+      })()
+    : existing?.verified_subject ?? null;
+
+  const handoffProvided = Object.prototype.hasOwnProperty.call(updates, "handoff_reason");
+  const nextHandoff = handoffProvided
+    ? (() => {
+        const raw = updates.handoff_reason;
+        if (raw === null) return null;
+        const val = safeString(raw ?? "", 256).trim();
+        return val || null;
+      })()
+    : existing?.handoff_reason ?? null;
+
+  if (!existing && !channelProvided && !verifiedProvided && !handoffProvided) {
+    const context = {
+      channel_mode: nextMode,
+      verified_subject: nextVerified,
+      handoff_reason: nextHandoff
+    };
+    writeSessionContextCache(workspaceId, sessionId, context);
+    return { context, changed: false };
+  }
+
+  const noChange =
+    existing &&
+    (existing.channel_mode || "chat") === nextMode &&
+    (existing.verified_subject ?? null) === nextVerified &&
+    (existing.handoff_reason ?? null) === nextHandoff;
+
+  if (noChange) {
+    return {
+      context: {
+        channel_mode: nextMode,
+        verified_subject: nextVerified,
+        handoff_reason: nextHandoff
+      },
+      changed: false
+    };
+  }
+
+  await env.D1_DB.prepare(
+    `INSERT INTO session_context (
+        workspace_id, session_id, channel_mode, verified_subject, handoff_reason, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(workspace_id, session_id) DO UPDATE SET
+        channel_mode = excluded.channel_mode,
+        verified_subject = excluded.verified_subject,
+        handoff_reason = excluded.handoff_reason,
+        updated_at = excluded.updated_at`
+  ).bind(workspaceId, sessionId, nextMode, nextVerified, nextHandoff, nowMs()).run();
+
+  const context = {
+    channel_mode: nextMode,
+    verified_subject: nextVerified,
+    handoff_reason: nextHandoff
+  };
+
+  writeSessionContextCache(workspaceId, sessionId, context);
+
+  return { context, changed: true };
+}
+
+async function setContext(env: Env, workspaceId: string, body: any) {
+  const sessionId = safeString(body.session_id ?? body.call_id ?? body.conversation_id ?? "", 128).trim();
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+
+  const updates: SessionContextUpdateInput = {};
+  if (Object.prototype.hasOwnProperty.call(body, "channel_mode")) {
+    updates.channel_mode =
+      body.channel_mode === null ? null : safeString(body.channel_mode ?? "", 32);
+  }
+  if (Object.prototype.hasOwnProperty.call(body, "verified_subject")) {
+    updates.verified_subject =
+      body.verified_subject === null ? null : safeString(body.verified_subject ?? "", 256).trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(body, "handoff_reason")) {
+    updates.handoff_reason =
+      body.handoff_reason === null ? null : safeString(body.handoff_reason ?? "", 256).trim();
+  }
+
+  const { context } = await applySessionContextUpdate(env, workspaceId, sessionId, updates);
+
+  return json({
+    ok: true,
+    session_id: sessionId,
+    context
+  });
+}
+
+async function handoffDispatch(env: Env, workspaceId: string, body: any) {
+  const sessionId = safeString(body.session_id ?? body.call_id ?? body.conversation_id ?? "", 128).trim();
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+
+  const rawReason = Object.prototype.hasOwnProperty.call(body, "handoff_reason")
+    ? body.handoff_reason
+    : body.reason;
+  const handoffReason = safeString(rawReason ?? "", 256).trim();
+  if (!handoffReason) return json({ error: "handoff_reason required" }, 400);
+
+  const updates: SessionContextUpdateInput = {
+    handoff_reason: handoffReason
+  };
+  if (Object.prototype.hasOwnProperty.call(body, "channel_mode")) {
+    updates.channel_mode =
+      body.channel_mode === null ? null : safeString(body.channel_mode ?? "", 32);
+  }
+  if (Object.prototype.hasOwnProperty.call(body, "verified_subject")) {
+    updates.verified_subject =
+      body.verified_subject === null ? null : safeString(body.verified_subject ?? "", 256).trim();
+  }
+
+  const { context } = await applySessionContextUpdate(env, workspaceId, sessionId, updates);
+
+  const transferPayload: Record<string, any> = {
+    session_id: sessionId,
+    channel_mode: context.channel_mode,
+    verified_subject: context.verified_subject,
+    handoff_reason: context.handoff_reason || handoffReason
+  };
+
+  if (body.transfer_payload && typeof body.transfer_payload === "object") {
+    Object.assign(transferPayload, body.transfer_payload);
+  }
+  if (body.transfer_metadata && typeof body.transfer_metadata === "object") {
+    transferPayload.metadata = body.transfer_metadata;
+  }
+
+  return json({
+    ok: true,
+    session_id: sessionId,
+    context,
+    transfer: transferPayload
+  });
+}
+
+async function identityPassthrough(env: Env, workspaceId: string, body: any) {
+  const sessionId = safeString(body.session_id ?? body.call_id ?? body.conversation_id ?? "", 128).trim();
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+
+  const channelMode = normalizeChannelMode(body.channel_mode) || "chat";
+  const phoneInput = safeString(
+    body.subject_e164 ?? body.phone ?? body.system_caller_id ?? body.system__caller_id ?? "",
+    64
+  ).trim();
+  const emailInput = safeString(body.email ?? "", 160).trim().toLowerCase();
+
+  const phoneDetails = phoneInput ? validatePhoneInput(phoneInput) : null;
+  const emailDetails = emailInput ? validateEmailInput(emailInput) : null;
+
+  if (!phoneDetails?.valid && !emailDetails?.valid) {
+    return json(
+      {
+        error: "valid phone or email required",
+        subject_e164_valid: phoneDetails?.valid ?? false,
+        subject_e164_reason: phoneDetails?.reason,
+        email_valid: emailDetails?.valid ?? false,
+        email_reason: emailDetails?.reason,
+        email_suggestion: emailDetails?.suggestion
+      },
+      400
+    );
+  }
+
+  const normalizedPhone = phoneDetails?.normalized || "";
+  const normalizedEmail = emailDetails?.normalized || "";
+  const subjectId = normalizedPhone
+    ? await phoneSubjectId(env, workspaceId, normalizedPhone)
+    : normalizedEmail;
+
+  if (!subjectId) return json({ error: "unable to derive subject_id" }, 400);
+
+  const metadataObject: Json | null =
+    body.metadata && typeof body.metadata === "object" ? (body.metadata as Json) : null;
+  let metadataJson: string | null = null;
+  if (metadataObject) {
+    try {
+      const serialized = JSON.stringify(metadataObject);
+      if (serialized.length <= 8000) metadataJson = serialized;
+    } catch (_) {
+      metadataJson = null;
+    }
+  }
+
+  const now = nowMs();
+  await env.D1_DB.prepare(
+    `INSERT INTO session_identity (
+        workspace_id, session_id, channel_mode, subject_e164, email, subject_id, metadata, created_at, updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(workspace_id, session_id) DO UPDATE SET
+        channel_mode = excluded.channel_mode,
+        subject_e164 = excluded.subject_e164,
+        email = excluded.email,
+        subject_id = excluded.subject_id,
+        metadata = excluded.metadata,
+        updated_at = excluded.updated_at`
+  ).bind(
+    workspaceId,
+    sessionId,
+    channelMode,
+    normalizedPhone || null,
+    normalizedEmail || null,
+    subjectId,
+    metadataJson,
+    now,
+    now
+  ).run();
+
+  // Seed the session_context row so downstream agents inherit the channel immediately.
+  try {
+    await env.D1_DB.prepare(
+      `INSERT INTO session_context (workspace_id, session_id, channel_mode, verified_subject, handoff_reason, updated_at)
+       VALUES (?, ?, ?, NULL, NULL, ?)
+       ON CONFLICT(workspace_id, session_id) DO UPDATE SET
+         channel_mode = excluded.channel_mode,
+         updated_at = excluded.updated_at`
+  ).bind(workspaceId, sessionId, channelMode, now).run();
+  } catch (err: any) {
+    console.log("session_context_seed_error", err?.message || err);
+  }
+
+  writeSessionIdentityCache(workspaceId, sessionId, {
+    channel_mode: channelMode,
+    subject_e164: normalizedPhone || null,
+    email: normalizedEmail || null,
+    subject_id: subjectId,
+    metadata: metadataObject,
+    updated_at: now
+  });
+
+  return json({
+    ok: true,
+    session_id: sessionId,
+    channel_mode: channelMode,
+    subject_id: subjectId,
+    subject_e164: normalizedPhone || null,
+    email: normalizedEmail || null,
+    metadata: metadataObject,
+    validation: {
+      subject_e164_valid: phoneDetails?.valid ?? false,
+      subject_e164_reason: phoneDetails?.reason,
+      email_valid: emailDetails?.valid ?? false,
+      email_reason: emailDetails?.reason,
+      email_suggestion: emailDetails?.suggestion
+    }
+  });
+}
+
+async function getSessionIdentity(env: Env, workspaceId: string, body: any) {
+  const sessionId = safeString(body.session_id ?? body.call_id ?? body.conversation_id ?? "", 128).trim();
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+
+  const data = await fetchSessionIdentityData(env, workspaceId, sessionId);
+  return json(data);
+}
+
+async function preloadSession(env: Env, workspaceId: string, body: any) {
+  const sessionId = safeString(body.session_id ?? body.call_id ?? body.conversation_id ?? "", 128).trim();
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+
+  const session = await fetchSessionIdentityData(env, workspaceId, sessionId);
+  if (!session.found) return json({ session, memory: null });
+
+  const subjectId = session.subject_id;
+  if (!subjectId) {
+    return json({ session, memory: null });
+  }
+
+  const bootstrapBody: any = {
+    subject_id: subjectId,
+    session_id: sessionId
+  };
+  if (body.agent_id) bootstrapBody.agent_id = body.agent_id;
+  if (body.query) bootstrapBody.query = body.query;
+  if (body.top_k) bootstrapBody.top_k = body.top_k;
+
+  const bootstrapResponse = await bootstrap(env, workspaceId, bootstrapBody);
+  if (!bootstrapResponse.ok) {
+    return bootstrapResponse;
+  }
+  const memoryPayload = await bootstrapResponse.json();
+  return json({ session, memory: memoryPayload });
+}
+
+async function elevenLabsInitHandler(
+  req: Request,
+  env: Env,
+  workspaceId: string,
+  bodyText: string
+) {
+  const secret = env.ELEVENLABS_INIT_WEBHOOK_SECRET || "";
+  if (!secret) {
+    return json({ error: "init_webhook_secret_missing" }, 500);
+  }
+
+  const providedSecret = safeString(
+    req.headers.get("X-ElevenLabs-Init-Secret") ??
+      req.headers.get("x-elevenlabs-init-secret") ??
+      req.headers.get("ElevenLabs_Init_Webhook_Secret") ??
+      req.headers.get("elevenlabs_init_webhook_secret") ??
+      "",
+    256
+  );
+  if (!providedSecret || !timingSafeEqual(providedSecret, secret)) {
+    return json({ error: "init_secret_invalid" }, 401);
+  }
+
+  const body = bodyText ? JSON.parse(bodyText) : {};
+  const initMode = safeString(env.ELEVENLABS_INIT_PAYLOAD_MODE ?? "", 16).toLowerCase();
+  if (initMode === "minimal") {
+    return json({
+      type: "conversation_initiation_client_data",
+      dynamic_variables: {}
+    });
+  }
+  if (body.type && body.type !== "conversation_initiation_client_data_request") {
+    console.log("Unexpected elevenlabs init type", body.type);
+  }
+  const sessionId = safeString(
+    body.session_id ?? body.call_sid ?? body.call_id ?? body.conversation_id ?? "",
+    128
+  ).trim();
+  const providedTimezone = safeString(
+    body.timezone ?? body.system__timezone ?? body.caller_timezone ?? "",
+    128
+  );
+  let timezone = providedTimezone && isValidTimezone(providedTimezone) ? providedTimezone : "";
+  let timeGreeting: string | null = null;
+
+  const callerIdRaw = safeString(
+    body.system__caller_id ?? body.caller_id ?? body.from ?? "",
+    64
+  ).trim();
+  const calledNumberRaw = safeString(
+    body.system__called_number ?? body.called_number ?? body.to ?? "",
+    64
+  ).trim();
+  const providedChannelMode = safeString(
+    body.channel_mode ?? body.system__channel_mode ?? "",
+    16
+  );
+  const inferredChannelMode = callerIdRaw ? "voice" : "chat";
+  const channelMode = normalizeChannelMode(providedChannelMode) || inferredChannelMode;
+
+  if (sessionId) {
+    const row = await env.D1_DB
+      .prepare(
+        `SELECT metadata
+         FROM session_identity
+         WHERE workspace_id = ? AND session_id = ?`
+      )
+      .bind(workspaceId, sessionId)
+      .first<{ metadata: string | null }>();
+
+    if (row?.metadata) {
+      try {
+        const metadata = JSON.parse(row.metadata);
+        if (!timezone && metadata?.timezone && isValidTimezone(metadata.timezone)) {
+          timezone = metadata.timezone;
+        }
+        if (!timeGreeting && metadata?.time_greeting) {
+          timeGreeting = metadata.time_greeting;
+        }
+      } catch (_) {
+        // ignore malformed metadata
+      }
+    }
+  }
+
+  if (!timezone) timezone = DEFAULT_TIMEZONE;
+  const nowUtc = new Date();
+  if (!timeGreeting) {
+    timeGreeting = deriveTimeGreeting(nowUtc, timezone);
+  }
+  const systemTimeUtc = nowUtc.toISOString();
+  const systemTimeLocal = formatLocalIso(nowUtc, timezone);
+
+  const dynamicVariables =
+    body && typeof body.dynamic_variables === "object" && body.dynamic_variables
+      ? { ...body.dynamic_variables }
+      : {};
+  if (timezone && !dynamicVariables.system__timezone) {
+    dynamicVariables.system__timezone = timezone;
+  }
+  if (!dynamicVariables.system__time) {
+    dynamicVariables.system__time = systemTimeLocal;
+  }
+  if (!dynamicVariables.system__time_utc) {
+    dynamicVariables.system__time_utc = systemTimeUtc;
+  }
+  if (timeGreeting && !dynamicVariables.time_greeting) {
+    dynamicVariables.time_greeting = timeGreeting;
+  }
+  if (!dynamicVariables.channel_mode) {
+    dynamicVariables.channel_mode = channelMode;
+  }
+  if (sessionId && !dynamicVariables.conversation_id) {
+    dynamicVariables.conversation_id = sessionId;
+  }
+  if (!dynamicVariables.latency_profile) {
+    dynamicVariables.latency_profile =
+      safeString(env.ELEVENLABS_LATENCY_PROFILE ?? "", 32).trim() || "low";
+  }
+  dynamicVariables.tool_latency_filler_ms = String(getToolLatencyThreshold(env));
+
+  if (sessionId && callerIdRaw) {
+    const metadata: Record<string, any> = {
+      timezone,
+      system_time_local: systemTimeLocal,
+      system_time_utc: systemTimeUtc,
+      time_greeting: timeGreeting
+    };
+    if (calledNumberRaw) metadata.called_number = calledNumberRaw;
+    try {
+      await identityPassthrough(env, workspaceId, {
+        session_id: sessionId,
+        channel_mode: channelMode,
+        subject_e164: callerIdRaw,
+        metadata
+      });
+    } catch (err: any) {
+      console.log("identity_passthrough_init_error", err?.message || err);
+    }
+  }
+
+  if (sessionId) {
+    try {
+      const baselineContextRes = await setContext(env, workspaceId, {
+        session_id: sessionId,
+        channel_mode: channelMode,
+        verified_subject: null,
+        handoff_reason: null
+      });
+      if (!baselineContextRes.ok) {
+        console.log("init_set_context_status", baselineContextRes.status);
+      }
+    } catch (err: any) {
+      console.log("init_set_context_error", err?.message || err);
+    }
+  }
+
+  let sessionSnapshot: Awaited<ReturnType<typeof fetchSessionIdentityData>> | null = null;
+  try {
+    sessionSnapshot = await fetchSessionIdentityData(env, workspaceId, sessionId);
+    if (sessionSnapshot.found && sessionSnapshot.subject_id) {
+      const bootstrapRes = await bootstrap(env, workspaceId, {
+        subject_id: sessionSnapshot.subject_id,
+        session_id: sessionId
+      });
+      if (bootstrapRes.ok) {
+        const memoryPayload = await bootstrapRes.json();
+        // caller_name / conversation_hint intentionally omitted from dynamic variables:
+        // ElevenLabs was rejecting non-system placeholders in the greeting turn.
+      } else {
+        console.log("init_bootstrap_status", bootstrapRes.status);
+      }
+    }
+  } catch (err: any) {
+    console.log("init_enrichment_error", err?.message || err);
+  }
+
+  const customExtraBody = isPlainObject(body?.custom_llm_extra_body)
+    ? { ...getDefaultCustomLLMBody(env), ...body.custom_llm_extra_body }
+    : { ...getDefaultCustomLLMBody(env) };
+  const existingExtraDynamic =
+    isPlainObject(customExtraBody.dynamic_variables) ? customExtraBody.dynamic_variables : {};
+  customExtraBody.dynamic_variables = {
+    ...existingExtraDynamic,
+    ...dynamicVariables
+  };
+
+  const responsePayload: Record<string, any> = {
+    type: "conversation_initiation_client_data",
+    dynamic_variables: dynamicVariables,
+    custom_llm_extra_body: customExtraBody
+  };
+
+  const conversationOverride = getConversationOverride(env);
+  if (conversationOverride && Object.keys(conversationOverride).length) {
+    responsePayload.conversation_config_override = conversationOverride;
+  }
+
+  const userId = safeString(
+    sessionSnapshot?.subject_id ?? callerIdRaw ?? sessionId ?? "",
+    256
+  ).trim();
+  if (userId) {
+    responsePayload.user_id = userId;
+  }
+
+  try {
+    console.log(
+      "elevenlabs_init_response",
+      JSON.stringify(responsePayload).slice(0, 4000)
+    );
+  } catch (_) {
+    // ignore logging issues
+  }
+  return json(responsePayload);
+}
+
+async function twilioVoiceHandler(
+  req: Request,
+  env: Env,
+  defaultWorkspaceId: string,
+  rawBody: string
+) {
+  const streamUrl = env.ELEVENLABS_TWILIO_STREAM_URL || "";
+  if (!streamUrl) {
+    const offline = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say>Sorry, our AI agent is offline right now.</Say>
+</Response>`;
+    return new Response(offline, {
+      status: 200,
+      headers: { "content-type": "text/xml; charset=utf-8" }
+    });
+  }
+
+  const url = new URL(req.url);
+  const form = rawBody ? new URLSearchParams(rawBody) : new URLSearchParams();
+  let workspaceId =
+    safeString(
+      form.get("WorkspaceId") || form.get("workspace_id") || url.searchParams.get("workspace_id") || "",
+      64
+    ).trim() || defaultWorkspaceId || "emily";
+
+  const callSid = safeString(form.get("CallSid") || form.get("CallSid[]") || "", 128).trim() ||
+    safeString(form.get("ConversationSid") || "", 128).trim() ||
+    crypto.randomUUID();
+  const fromRaw = safeString(form.get("From") || form.get("Caller") || "", 64);
+  const toRaw = safeString(form.get("To") || form.get("Called") || "", 64);
+  const normalizedCaller = fromRaw ? normalizeIdentityPhone(fromRaw) : "";
+  const normalizedCalled = toRaw ? normalizeIdentityPhone(toRaw) : "";
+  const callerCountry = safeString(form.get("CallerCountry") || "", 8);
+  const callerState = safeString(form.get("CallerState") || "", 8);
+  const callerTimezone = safeString(form.get("CallerTimeZone") || "", 64);
+  const timezone = deriveTimezoneFromHints(callerTimezone, callerCountry, callerState);
+  const now = new Date();
+  const systemTimeUtc = now.toISOString();
+  const systemTimeLocal = formatLocalIso(now, timezone);
+  const timeGreeting = deriveTimeGreeting(now, timezone);
+
+  const metadata: Record<string, any> = {
+    timezone,
+    system_time_local: systemTimeLocal,
+    system_time_utc: systemTimeUtc,
+    time_greeting: timeGreeting
+  };
+  if (callerCountry) metadata.caller_country = callerCountry;
+  if (callerState) metadata.caller_state = callerState;
+  if (normalizedCalled || toRaw) metadata.called_number = normalizedCalled || toRaw;
+
+  if (normalizedCaller) {
+    try {
+      await identityPassthrough(env, workspaceId, {
+        session_id: callSid,
+        subject_e164: normalizedCaller,
+        channel_mode: "voice",
+        metadata
+      });
+    } catch (err: any) {
+      console.log("twilio_identity_passthrough_error", err?.message || err);
+    }
+  }
+
+  try {
+    await setContext(env, workspaceId, {
+      session_id: callSid,
+      channel_mode: "voice"
+    });
+  } catch (err: any) {
+    console.log("twilio_set_context_error", err?.message || err);
+  }
+
+  const latencyProfile = safeString(env.ELEVENLABS_LATENCY_PROFILE ?? "", 64).trim() || "low";
+  const fillerThresholdMs = getToolLatencyThreshold(env);
+
+  const baseParameters = [
+    { name: "session_id", value: callSid },
+    { name: "workspace_id", value: workspaceId },
+    { name: "caller_id", value: normalizedCaller || fromRaw || "" },
+    { name: "called_number", value: normalizedCalled || toRaw || "" },
+    { name: "timezone", value: timezone },
+    { name: "time_greeting", value: timeGreeting },
+    { name: "system_time", value: systemTimeLocal },
+    { name: "latency_profile", value: latencyProfile },
+    { name: "filler_latency_ms", value: fillerThresholdMs.toString() }
+  ].filter((entry) => entry.value);
+
+  const parameterTuples = baseParameters;
+
+  const parametersXml = parameterTuples
+    .map(
+      (entry) =>
+        `      <Parameter name="${escapeXml(entry.name)}" value="${escapeXml(entry.value)}"/>`
+    )
+    .join("\n");
+
+  const parameterBlock = parameterTuples.length
+    ? `\n${parametersXml}\n    `
+    : "";
+
+  const trackAttr = streamUrl.includes("/convai/")
+    ? ' track="inbound_track"'
+    : "";
+
+  const streamXml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Connect>
+    <Stream url="${escapeXml(streamUrl)}"${trackAttr}>${parameterBlock}</Stream>
+  </Connect>
+</Response>`;
+
+  return new Response(streamXml, {
+    status: 200,
+    headers: { "content-type": "text/xml; charset=utf-8" }
+  });
+}
+
+async function identityValidate(env: Env, workspaceId: string, body: any, ctx?: ExecutionContext) {
+  console.log("IDENTITY validate body=" + JSON.stringify(body || {}));
+  const providedPhone = safeString(body.subject_e164 ?? "", 64).trim();
+  const fallbackPhone =
+    safeString(
+      body.system_caller_id ??
+        body.system__caller_id ??
+        body.fallback_subject_e164 ??
+        "",
+      64
+    ).trim();
+  const phoneRaw = providedPhone || fallbackPhone;
+  const emailRaw = safeString(body.email ?? "", 128).trim();
+  const visitorIdRaw = safeString(body.visitor_id ?? "", 128).trim(); // v2.800: Cookie Logic
+
+  if (!phoneRaw && !emailRaw && !visitorIdRaw) {
+    return json({ error: "subject_e164, email, or visitor_id required" }, 400);
+  }
+  const payload: Record<string, any> = {
+    valid: true
+  };
+
+  // Visitor ID Logic (Cookie)
+  if (visitorIdRaw) {
+    // Basic UUID validator or length check
+    if (visitorIdRaw.length > 10) { 
+        payload.visitor_id_input = visitorIdRaw;
+        // In the future, we could validate against a KV store of known visitors
+        // For now, we accept it as a valid "Key" to unlock memory
+        payload.valid = true; 
+    } else {
+        payload.visitor_id_valid = false;
+        payload.visitor_id_reason = "Too short";
+        if (!phoneRaw && !emailRaw) payload.valid = false;
+    }
+  }
+
+  if (phoneRaw) {
+    const phone = validatePhoneInput(phoneRaw);
+    payload.subject_e164_input = phone.input;
+    payload.subject_e164_normalized = phone.normalized || "";
+    payload.subject_e164_valid = phone.valid;
+    if (!phone.valid && phone.reason) payload.subject_e164_reason = phone.reason;
+    payload.valid &&= phone.valid;
+  }
+  if (emailRaw) {
+    const email = validateEmailInput(emailRaw);
+    payload.email_input = email.input;
+    payload.email_normalized = email.normalized || "";
+    payload.email_valid = email.valid;
+    if (!email.valid && email.reason) payload.email_reason = email.reason;
+    payload.valid &&= email.valid;
+    if (email.suggestion) payload.email_suggestion = email.suggestion;
+  }
+
+  // v2.798: Broadcast identity confirmation to frontend for Cookie Logic
+  if (payload.valid && env.MEMORY_CACHE) {
+    const id = env.MEMORY_CACHE.idFromName("viz:" + workspaceId);
+    const stub = env.MEMORY_CACHE.get(id);
+    const msg = {
+        op: "broadcast", 
+        message: { 
+            type: "identity_confirmed", 
+            email: payload.email_normalized || null,
+            phone: payload.subject_e164_normalized || null,
+            visitor_id: payload.visitor_id_input || null
+        }
+    };
+    const p = stub.fetch("https://viz", { method: "POST", body: JSON.stringify(msg) });
+    if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+  }
+
+  return json(payload);
+}
+
+function generateOtpCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+async function hashVerificationCode(code: string, env: Env) {
+  const salt = env.SUBJECT_SALT || "otp";
+  return sha256Hex(`${code}|${salt}`);
+}
+
+async function sendVerificationMessage(
+  env: Env,
+  workspaceId: string,
+  channel: string,
+  contact: string,
+  code: string
+): Promise<SendResult> {
+  if (channel === "sms") {
+    return sendSmsOtp(env, workspaceId, contact, code);
+  }
+  if (channel === "email") {
+    return sendEmailOtp(env, workspaceId, contact, code);
+  }
+  return { ok: false, error: "unsupported_channel", status: 400 };
+}
+
+async function requestOtp(env: Env, workspaceId: string, body: any) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+  const sessionId = safeString(body.session_id ?? body.call_id ?? "", 64);
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+  const sendEmail = safeString(body.send_to_email ?? "", 160).toLowerCase();
+  const sendPhoneRaw = safeString(body.send_to_e164 ?? "", 64);
+  const sendPhone = sendPhoneRaw ? normalizeIdentityPhone(sendPhoneRaw) : "";
+  if (!sendEmail && !sendPhone) {
+    return json({ error: "send_to_email or send_to_e164 required" }, 400);
+  }
+  const channel = sendEmail ? "email" : "sms";
+  const contact = sendEmail || sendPhone;
+  const code = generateOtpCode();
+  const sendResult = await sendVerificationMessage(env, workspaceId, channel, contact, code);
+  if (!sendResult.ok) {
+    const status = sendResult.status ?? 400;
+    return json({ error: sendResult.error || "otp_send_failed" }, status);
+  }
+
+  const codeHash = await hashVerificationCode(code, env);
+  const now = nowMs();
+  const expiresAt = now + OTP_EXPIRY_MS;
+  await env.D1_DB.prepare(
+    `INSERT INTO session_verifications
+       (workspace_id, session_id, subject_id, channel, contact, code_hash, expires_at, verified_at, verified_until, verification_level, attempt_count, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL, 'pending', 0, ?)
+     ON CONFLICT(workspace_id, session_id) DO UPDATE SET
+       subject_id = excluded.subject_id,
+       channel = excluded.channel,
+       contact = excluded.contact,
+       code_hash = excluded.code_hash,
+       expires_at = excluded.expires_at,
+       verified_at = NULL,
+       verified_until = NULL,
+       verification_level = 'pending',
+       attempt_count = 0`
+  ).bind(workspaceId, sessionId, subjectId, channel, contact, codeHash, expiresAt, now).run();
+
+  const payload: Record<string, any> = {
+    ok: true,
+    delivery: channel,
+    expires_in_ms: OTP_EXPIRY_MS,
+    verification_level: "pending"
+  };
+  if (env.DEBUG) payload.debug_code = code;
+
+  writeSessionVerificationCache(workspaceId, sessionId, {
+    subject_id: subjectId,
+    state: { level: "pending" }
+  });
+
+  return json(payload);
+}
+
+async function verifyOtp(env: Env, workspaceId: string, body: any) {
+  const subjectId = await resolveSubjectId(env, workspaceId, body);
+  if (!subjectId) return json({ error: "subject_id or subject_e164 required" }, 400);
+  const sessionId = safeString(body.session_id ?? body.call_id ?? "", 64);
+  if (!sessionId) return json({ error: "session_id required" }, 400);
+  const code = safeString(body.code ?? body.otp ?? "", 16);
+  if (!code) return json({ error: "code required" }, 400);
+  const now = nowMs();
+  const row = await env.D1_DB.prepare(
+    `SELECT subject_id, code_hash, expires_at, attempt_count, verification_level, channel, contact
+     FROM session_verifications
+     WHERE workspace_id = ? AND session_id = ?`
+  ).bind(workspaceId, sessionId).first<any>();
+  if (!row || row.subject_id !== subjectId) {
+    invalidateSessionVerificationCache(workspaceId, sessionId);
+    return json({ error: "verification_not_started" }, 400);
+  }
+  if (row.verification_level === "locked") {
+    invalidateSessionVerificationCache(workspaceId, sessionId);
+    return json({ error: "too_many_attempts", verification_level: "locked" }, 429);
+  }
+  if (!row.code_hash || Number(row.expires_at) < now) {
+    await env.D1_DB.prepare(
+      "UPDATE session_verifications SET verification_level = 'expired', code_hash = NULL WHERE workspace_id = ? AND session_id = ?"
+    ).bind(workspaceId, sessionId).run();
+    invalidateSessionVerificationCache(workspaceId, sessionId);
+    return json({ error: "code_expired", verification_level: "expired" }, 400);
+  }
+  const incomingHash = await hashVerificationCode(code, env);
+  if (incomingHash !== row.code_hash) {
+    const attempts = Number(row.attempt_count) + 1;
+    const locked = attempts >= MAX_OTP_ATTEMPTS;
+    await env.D1_DB.prepare(
+      "UPDATE session_verifications SET attempt_count = ?, verification_level = ? WHERE workspace_id = ? AND session_id = ?"
+    ).bind(attempts, locked ? "locked" : "pending", workspaceId, sessionId).run();
+    invalidateSessionVerificationCache(workspaceId, sessionId);
+    return json({ error: locked ? "too_many_attempts" : "invalid_code", verification_level: locked ? "locked" : "pending" }, 400);
+  }
+
+  const verifiedUntil = now + VERIFIED_SESSION_TTL_MS;
+  await env.D1_DB.prepare(
+    `UPDATE session_verifications
+        SET code_hash = NULL,
+            verification_level = 'verified',
+            verified_at = ?,
+            verified_until = ?,
+            expires_at = ?,
+            attempt_count = 0
+      WHERE workspace_id = ? AND session_id = ?`
+  ).bind(now, verifiedUntil, now, workspaceId, sessionId).run();
+
+  if (row.channel && row.contact) {
+    const aliasSubjectId = await deriveContactSubjectId(env, workspaceId, row.channel, row.contact);
+    if (aliasSubjectId) await linkSubjectIds(env, workspaceId, subjectId, aliasSubjectId);
+  }
+
+  const state: VerificationState = { level: "verified", verified_until: verifiedUntil };
+  writeSessionVerificationCache(workspaceId, sessionId, { subject_id: subjectId, state });
+
+  return json({ ok: true, verification_level: "verified", verified_until: verifiedUntil });
+}
+async function getSessionVerification(
+  env: Env,
+  workspaceId: string,
+  subjectId: string,
+  sessionId: string
+): Promise<VerificationState> {
+  if (!sessionId) return { level: "none" };
+  const cached = readSessionVerificationCache(workspaceId, sessionId);
+  if (cached && cached.subject_id === subjectId) {
+    return cached.state;
+  }
+  try {
+    const row = await env.D1_DB.prepare(
+      `SELECT subject_id, verification_level, expires_at, verified_until
+       FROM session_verifications
+       WHERE workspace_id = ? AND session_id = ?`
+    ).bind(workspaceId, sessionId).first<any>();
+    if (!row) {
+      writeSessionVerificationCache(workspaceId, sessionId, {
+        subject_id: subjectId,
+        state: { level: "none" }
+      });
+      return { level: "none" };
+    }
+    if (row.subject_id !== subjectId) {
+      writeSessionVerificationCache(workspaceId, sessionId, {
+        subject_id: row.subject_id || "",
+        state: { level: "none" }
+      });
+      return { level: "none" };
+    }
+    const now = nowMs();
+    const level: VerificationState["level"] = (row.verification_level as any) || "pending";
+    const verifiedUntil = Number(row.verified_until) || null;
+    const expiresAt = Number(row.expires_at) || 0;
+    if (level === "verified" && verifiedUntil && verifiedUntil > now) {
+      const state: VerificationState = { level: "verified", verified_until: verifiedUntil };
+      writeSessionVerificationCache(workspaceId, sessionId, { subject_id: subjectId, state });
+      return state;
+    }
+    if (level === "verified" && verifiedUntil && verifiedUntil <= now) {
+      await env.D1_DB.prepare(
+        "UPDATE session_verifications SET verification_level = 'expired', code_hash = NULL WHERE workspace_id = ? AND session_id = ?"
+      ).bind(workspaceId, sessionId).run();
+      const state: VerificationState = { level: "expired" };
+      writeSessionVerificationCache(workspaceId, sessionId, { subject_id: subjectId, state });
+      return state;
+    }
+    if (expiresAt && expiresAt <= now) {
+      if (level !== "expired") {
+        await env.D1_DB.prepare(
+          "UPDATE session_verifications SET verification_level = 'expired', code_hash = NULL WHERE workspace_id = ? AND session_id = ?"
+        ).bind(workspaceId, sessionId).run();
+      }
+      const state: VerificationState = { level: "expired" };
+      writeSessionVerificationCache(workspaceId, sessionId, { subject_id: subjectId, state });
+      return state;
+    }
+    const state: VerificationState = { level };
+    writeSessionVerificationCache(workspaceId, sessionId, { subject_id: subjectId, state });
+    return state;
+  } catch (err: any) {
+    console.log("verification_lookup_error", err?.message || err);
+    return { level: "none" };
+  }
+}
+
+type BootstrapCachePayload = {
+  write_ack: boolean;
+  profile_facts: any[];
+  recent_summaries: any[];
+  facts: any[];
+  agent_hints: Json;
+  verification_level?: string;
+};
+
+type QueryCachePayload = {
+  facts: any[];
+  snippets: any[];
+  citations: any[];
+  verification_level?: string;
+  latency_hint?: {
+    duration_ms: number;
+    filler_threshold_ms: number;
+    needs_filler: boolean;
+  };
+};
+
+type MemorySelectResult = {
+  results: any[];
+  hasFactTypeColumn: boolean;
+};
+
+type CacheEntry<T> = {
+  payload: T;
+  cachedAt: number;
+};
+
+type CacheBucket = Record<string, CacheEntry<BootstrapCachePayload>>;
+
+const CACHE_TTL_MS = 30 * 1000;
+const CACHE_STORAGE_KEY = "entries";
+const LOCAL_BOOTSTRAP_CACHE_TTL_MS = 30 * 1000;
+const LOCAL_QUERY_CACHE_TTL_MS = 30 * 1000;
+const SESSION_CACHE_TTL_MS = 30 * 1000;
+
+const localBootstrapCache = new Map<string, Map<string, CacheEntry<BootstrapCachePayload>>>();
+const localQueryCache = new Map<string, CacheEntry<QueryCachePayload>>();
+const localQuerySubjectIndex = new Map<string, Set<string>>();
+const sessionIdentityCache = new Map<string, CacheEntry<SessionIdentityCachePayload>>();
+const sessionContextCache = new Map<string, CacheEntry<SessionContextCachePayload>>();
+const sessionVerificationCache = new Map<string, CacheEntry<SessionVerificationCachePayload>>();
+const sessionBootstrapCache = new Map<string, CacheEntry<SessionBootstrapCachePayload>>();
+
+type SessionIdentityCachePayload = {
+  channel_mode: string | null;
+  subject_e164: string | null;
+  email: string | null;
+  subject_id: string | null;
+  metadata: Json | null;
+  updated_at: number | null;
+};
+
+type SessionContextCachePayload = {
+  channel_mode: string | null;
+  verified_subject: string | null;
+  handoff_reason: string | null;
+};
+
+type SessionVerificationCachePayload = {
+  subject_id: string;
+  state: VerificationState;
+};
+
+type SessionBootstrapCachePayload = {
+  subject_id: string;
+  verification_level: string;
+  payload: BootstrapCachePayload;
+};
+
+function sessionCacheKey(workspaceId: string, sessionId: string) {
+  return `${workspaceId}::${sessionId}`;
+}
+
+function readSessionIdentityCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  const entry = sessionIdentityCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > SESSION_CACHE_TTL_MS) {
+    sessionIdentityCache.delete(key);
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeSessionIdentityCache(
+  workspaceId: string,
+  sessionId: string,
+  payload: SessionIdentityCachePayload
+) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionIdentityCache.set(key, { payload, cachedAt: Date.now() });
+}
+
+function readSessionContextCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  const entry = sessionContextCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > SESSION_CACHE_TTL_MS) {
+    sessionContextCache.delete(key);
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeSessionContextCache(
+  workspaceId: string,
+  sessionId: string,
+  payload: SessionContextCachePayload
+) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionContextCache.set(key, { payload, cachedAt: Date.now() });
+}
+
+function readSessionVerificationCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  const entry = sessionVerificationCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > SESSION_CACHE_TTL_MS) {
+    sessionVerificationCache.delete(key);
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeSessionVerificationCache(
+  workspaceId: string,
+  sessionId: string,
+  payload: SessionVerificationCachePayload
+) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionVerificationCache.set(key, { payload, cachedAt: Date.now() });
+}
+
+function invalidateSessionVerificationCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionVerificationCache.delete(key);
+}
+
+function readSessionBootstrapCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  const entry = sessionBootstrapCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > SESSION_CACHE_TTL_MS) {
+    sessionBootstrapCache.delete(key);
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeSessionBootstrapCache(
+  workspaceId: string,
+  sessionId: string,
+  payload: SessionBootstrapCachePayload
+) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionBootstrapCache.set(key, { payload, cachedAt: Date.now() });
+}
+
+function invalidateSessionBootstrapCache(workspaceId: string, sessionId: string) {
+  const key = sessionCacheKey(workspaceId, sessionId);
+  sessionBootstrapCache.delete(key);
+}
+
+function extractPreferredNameFromFacts(facts: any[]): string | null {
+  if (!Array.isArray(facts)) return null;
+  for (const entry of facts) {
+    const text = safeString(entry?.fact ?? "", 200);
+    if (!text) continue;
+    const match =
+      text.match(/(?:caller|preferred) name:\s*(.+)$/i) ||
+      text.match(/name:\s*(.+)$/i);
+    if (match && match[1]) {
+      const value = match[1].trim();
+      if (value) return truncate(value, 40);
+    }
+  }
+  return null;
+}
+
+function extractConversationHint(summaries: any[]): string | null {
+  if (!Array.isArray(summaries) || !summaries.length) return null;
+  for (const entry of summaries) {
+    const summary = safeString(entry?.summary ?? "", 500);
+    if (!summary) continue;
+    const normalized = summary.replace(/\s+/g, " ").trim();
+    if (normalized) return truncate(normalized, 160);
+  }
+  return null;
+}
+
+function truncate(value: string, max: number) {
+  if (value.length <= max) return value;
+  return value.slice(0, max - 1).trimEnd() + "…";
+}
+
+async function fetchSessionIdentityData(env: Env, workspaceId: string, sessionId: string) {
+  const cached = readSessionIdentityCache(workspaceId, sessionId);
+  if (cached) {
+    return {
+      found: true,
+      session_id: sessionId,
+      channel_mode: normalizeChannelMode(cached.channel_mode) || "chat",
+      subject_id: cached.subject_id,
+      subject_e164: cached.subject_e164,
+      email: cached.email,
+      metadata: cached.metadata,
+      updated_at: cached.updated_at
+    };
+  }
+
+  const row = await env.D1_DB
+    .prepare(
+      `SELECT channel_mode, subject_e164, email, subject_id, metadata, updated_at
+       FROM session_identity
+       WHERE workspace_id = ? AND session_id = ?`
+    )
+    .bind(workspaceId, sessionId)
+    .first<{
+      channel_mode: string | null;
+      subject_e164: string | null;
+      email: string | null;
+      subject_id: string | null;
+      metadata: string | null;
+      updated_at: number | null;
+    }>();
+
+  if (!row) return { found: false, session_id: sessionId };
+
+  let metadata: Json | null = null;
+  if (row.metadata) {
+    try {
+      metadata = JSON.parse(row.metadata);
+    } catch (_) {
+      metadata = null;
+    }
+  }
+
+  const payload = {
+    found: true,
+    session_id: sessionId,
+    channel_mode: normalizeChannelMode(row.channel_mode) || "chat",
+    subject_id: row.subject_id,
+    subject_e164: row.subject_e164,
+    email: row.email,
+    metadata,
+    updated_at: row.updated_at
+  };
+
+  writeSessionIdentityCache(workspaceId, sessionId, {
+    channel_mode: row.channel_mode,
+    subject_e164: row.subject_e164,
+    email: row.email,
+    subject_id: row.subject_id,
+    metadata,
+    updated_at: row.updated_at
+  });
+
+  return payload;
+}
+
+function shouldUseDoCache(env: Env) {
+  return Boolean(env.MEMORY_CACHE) && String(env.USE_DO_CACHE || "").toLowerCase() === "true";
+}
+
+function buildCacheEntryKey(agentId: string | null, query: string, verificationLevel: string) {
+  const agentPart = agentId && agentId.trim().length ? agentId : "any";
+  const qPart = query && query.length ? query : "*";
+  const levelPart = verificationLevel || "none";
+  return `${agentPart}::${qPart}::${levelPart}`;
+}
+
+function cacheSubjectKey(workspaceId: string, subjectId: string) {
+  return `${workspaceId}:${subjectId}`;
+}
+
+function getCacheStub(env: Env, workspaceId: string, subjectId: string) {
+  if (!env.MEMORY_CACHE) throw new Error("MEMORY_CACHE binding missing");
+  const id = env.MEMORY_CACHE.idFromName(cacheSubjectKey(workspaceId, subjectId));
+  return env.MEMORY_CACHE.get(id);
+}
+
+function readLocalBootstrapCache(
+  workspaceId: string,
+  subjectId: string,
+  entryKey: string
+): BootstrapCachePayload | null {
+  if (!entryKey) return null;
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  const bucket = localBootstrapCache.get(subjectKey);
+  if (!bucket) return null;
+  const entry = bucket.get(entryKey);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > LOCAL_BOOTSTRAP_CACHE_TTL_MS) {
+    bucket.delete(entryKey);
+    if (!bucket.size) localBootstrapCache.delete(subjectKey);
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeLocalBootstrapCache(
+  workspaceId: string,
+  subjectId: string,
+  entryKey: string,
+  payload: BootstrapCachePayload
+) {
+  if (!entryKey) return;
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  let bucket = localBootstrapCache.get(subjectKey);
+  if (!bucket) {
+    bucket = new Map();
+    localBootstrapCache.set(subjectKey, bucket);
+  }
+  bucket.set(entryKey, { payload, cachedAt: Date.now() });
+}
+
+function invalidateLocalBootstrapCache(workspaceId: string, subjectId: string) {
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  localBootstrapCache.delete(subjectKey);
+}
+
+function buildQueryCacheEntryKey(
+  workspaceId: string,
+  subjectId: string,
+  agentId: string | null,
+  query: string,
+  topK: number,
+  verificationLevel: string
+) {
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  const agentPart = agentId && agentId.trim().length ? agentId : "any";
+  const queryPart = query && query.length ? query : "*";
+  const levelPart = verificationLevel || "none";
+  return `${subjectKey}::${agentPart}::${queryPart}::${topK}::${levelPart}`;
+}
+
+function readLocalQueryCache(
+  workspaceId: string,
+  subjectId: string,
+  cacheKey: string
+): QueryCachePayload | null {
+  if (!cacheKey) return null;
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  const entry = localQueryCache.get(cacheKey);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > LOCAL_QUERY_CACHE_TTL_MS) {
+    localQueryCache.delete(cacheKey);
+    const index = localQuerySubjectIndex.get(subjectKey);
+    if (index) {
+      index.delete(cacheKey);
+      if (!index.size) localQuerySubjectIndex.delete(subjectKey);
+    }
+    return null;
+  }
+  return entry.payload;
+}
+
+function writeLocalQueryCache(
+  workspaceId: string,
+  subjectId: string,
+  cacheKey: string,
+  payload: QueryCachePayload
+) {
+  if (!cacheKey) return;
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  localQueryCache.set(cacheKey, { payload, cachedAt: Date.now() });
+  let index = localQuerySubjectIndex.get(subjectKey);
+  if (!index) {
+    index = new Set();
+    localQuerySubjectIndex.set(subjectKey, index);
+  }
+  index.add(cacheKey);
+}
+
+function invalidateLocalQueryCache(workspaceId: string, subjectId: string) {
+  const subjectKey = cacheSubjectKey(workspaceId, subjectId);
+  const keys = localQuerySubjectIndex.get(subjectKey);
+  if (!keys) return;
+  for (const key of keys) {
+    localQueryCache.delete(key);
+  }
+  localQuerySubjectIndex.delete(subjectKey);
+}
+
+async function readBootstrapCache(
+  env: Env,
+  workspaceId: string,
+  subjectId: string,
+  entryKey: string
+): Promise<BootstrapCachePayload | null> {
+  if (!shouldUseDoCache(env) || !entryKey) return null;
+  try {
+    const stub = getCacheStub(env, workspaceId, subjectId);
+    const res = await stub.fetch("https://cache", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ op: "get", key: entryKey })
+    });
+    if (!res.ok) return null;
+    const data = await res.json<any>();
+    if (data?.hit && data.payload) return data.payload as BootstrapCachePayload;
+  } catch (err: any) {
+    console.log("BOOT cache_get_error", err?.message || err);
+  }
+  return null;
+}
+
+async function writeBootstrapCache(
+  env: Env,
+  workspaceId: string,
+  subjectId: string,
+  entryKey: string,
+  payload: BootstrapCachePayload
+) {
+  if (!shouldUseDoCache(env) || !entryKey) return;
+  try {
+    const stub = getCacheStub(env, workspaceId, subjectId);
+    await stub.fetch("https://cache", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ op: "put", key: entryKey, payload })
+    });
+  } catch (err: any) {
+    console.log("BOOT cache_put_error", err?.message || err);
+  }
+}
+
+async function invalidateBootstrapCache(env: Env, workspaceId: string, subjectId: string) {
+  invalidateLocalBootstrapCache(workspaceId, subjectId);
+  invalidateLocalQueryCache(workspaceId, subjectId);
+  if (subjectId) {
+    sessionBootstrapCache.forEach((entry, key) => {
+      if (entry.payload.subject_id === subjectId && key.startsWith(`${workspaceId}::`)) {
+        sessionBootstrapCache.delete(key);
+      }
+    });
+  }
+  if (!env.MEMORY_CACHE) return;
+  try {
+    const stub = getCacheStub(env, workspaceId, subjectId);
+    await stub.fetch("https://cache", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ op: "invalidate" })
+    });
+  } catch (err: any) {
+    console.log("BOOT cache_invalidate_error", err?.message || err);
+  }
+}
+
+async function migrateAliasData(env: Env, workspaceId: string, canonicalId: string, aliasId: string) {
+  if (!workspaceId || !canonicalId || !aliasId || canonicalId === aliasId) return;
+  const statements = [
+    {
+      sql: "UPDATE memories SET subject_id = ? WHERE workspace_id = ? AND subject_id = ?",
+      args: [canonicalId, workspaceId, aliasId]
+    },
+    {
+      sql: "UPDATE call_summaries SET subject_id = ? WHERE workspace_id = ? AND subject_id = ?",
+      args: [canonicalId, workspaceId, aliasId]
+    },
+    {
+      sql: "UPDATE calls SET subject_id = ? WHERE workspace_id = ? AND subject_id = ?",
+      args: [canonicalId, workspaceId, aliasId]
+    },
+    {
+      sql: "UPDATE session_verifications SET subject_id = ? WHERE workspace_id = ? AND subject_id = ?",
+      args: [canonicalId, workspaceId, aliasId]
+    }
+  ];
+  for (const { sql, args } of statements) {
+    try {
+      await env.D1_DB.prepare(sql).bind(...args).run();
+    } catch (err: any) {
+      if (!String(err?.message || "").includes("no such table")) {
+        console.log("alias_migrate_error", sql, err?.message || err);
+      }
+    }
+  }
+  await invalidateBootstrapCache(env, workspaceId, canonicalId);
+  await invalidateBootstrapCache(env, workspaceId, aliasId);
+}
+
+function pickCanonicalSubjectId(a: string, b: string) {
+  const score = (value: string) => {
+    if (!value) return 3;
+    if (value.includes("@")) return 0;
+    if (!value.startsWith("hash:")) return 1;
+    return 2;
+  };
+  const scoreA = score(a);
+  const scoreB = score(b);
+  if (scoreA < scoreB) return a;
+  if (scoreB < scoreA) return b;
+  return a < b ? a : b;
+}
+
+async function linkSubjectIds(env: Env, workspaceId: string, idA?: string | null, idB?: string | null): Promise<string> {
+  if (!workspaceId || !idA || !idB || idA === idB || subjectLinkTableSupported === false) {
+    return idA || idB || "";
+  }
+  const [canonicalA, canonicalB] = await Promise.all([
+    getCanonicalSubjectId(env, workspaceId, idA),
+    getCanonicalSubjectId(env, workspaceId, idB)
+  ]);
+  if (!canonicalA) return canonicalB || "";
+  if (!canonicalB) return canonicalA;
+  if (canonicalA === canonicalB) return canonicalA;
+
+  const primary = pickCanonicalSubjectId(canonicalA, canonicalB);
+  const alias = primary === canonicalA ? canonicalB : canonicalA;
+  try {
+    await env.D1_DB.prepare(
+      `INSERT INTO subject_links (workspace_id, primary_subject_id, alias_subject_id, created_at)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(workspace_id, alias_subject_id)
+       DO UPDATE SET primary_subject_id = excluded.primary_subject_id`
+    ).bind(workspaceId, primary, alias, nowMs()).run();
+    await migrateAliasData(env, workspaceId, primary, alias);
+    if (subjectLinkTableSupported === null) subjectLinkTableSupported = true;
+  } catch (err: any) {
+    if (isMissingSubjectLinksTable(err)) {
+      subjectLinkTableSupported = false;
+      return primary;
+    }
+    console.log("subject_link_upsert_error", err?.message || err);
+  }
+  return primary;
+}
+
+async function deriveContactSubjectId(
+  env: Env,
+  workspaceId: string,
+  channel: string | null,
+  contact: string | null
+): Promise<string | null> {
+  if (!channel || !contact) return null;
+  if (channel === "email") return contact.trim().toLowerCase();
+  if (channel === "sms") return phoneSubjectId(env, workspaceId, contact);
+  return null;
+}
+
+export class MemoryCacheDO {
+  private state: DurableObjectState;
+  private sessions: Set<WebSocket>;
+
+  constructor(state: DurableObjectState) {
+    this.state = state;
+    this.sessions = new Set<WebSocket>();
+    // Recover existing websockets if hibernation is supported or if state persists in memory
+    // Note: getWebSockets() is part of the new Hibernation API, checking if available or just use simple set
+    // For standard DO, state persists in memory while object is alive.
+    // However, if we want to be safe with standard generic usage:
+    try {
+      if (this.state.getWebSockets) {
+         this.state.getWebSockets().forEach((ws) => {
+           this.sessions.add(ws);
+         });
+      }
+    } catch(e) { /* ignore */ }
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const upgradeHeader = request.headers.get("Upgrade");
+    if (upgradeHeader === "websocket") {
+      const pair = new WebSocketPair();
+      const client = pair[0];
+      const server = pair[1];
+      
+      // Use standard accept() to avoid hibernation requirements (we don't implement webSocketMessage)
+      server.accept();
+      
+      this.sessions.add(server);
+      console.log(`[MemoryCacheDO] WebSocket Accepted. Total sessions: ${this.sessions.size}`);
+
+      server.addEventListener("close", () => {
+          this.sessions.delete(server);
+          console.log(`[MemoryCacheDO] WebSocket Closed. Remaining: ${this.sessions.size}`);
+      });
+      server.addEventListener("error", () => this.sessions.delete(server));
+      
+      // Send initial ping to confirm connection
+      server.send(JSON.stringify({ type: "connected" }));
+      
+      return new Response(null, { status: 101, webSocket: client });
+    }
+
+    try {
+      const bodyText = await request.text();
+      const body = bodyText ? JSON.parse(bodyText) : {};
+      const op: string = body.op || "";
+      const key: string = body.key || "";
+
+      if (op === "broadcast") {
+        const msg = JSON.stringify(body.message || {});
+        let count = 0;
+        for (const socket of this.sessions) {
+          try {
+            socket.send(msg);
+            count++;
+          } catch (err) {
+            this.sessions.delete(socket);
+          }
+        }
+        console.log(`[MemoryCacheDO] Broadcast op (count=${count}/${this.sessions.size})`);
+        return json({ ok: true, count });
+      }
+
+      let bucket = (await this.state.storage.get<CacheBucket>(CACHE_STORAGE_KEY)) || {};
+
+      if (op === "get") {
+        if (!key || !bucket[key]) return json({ hit: false });
+        const entry = bucket[key];
+        if (Date.now() - entry.cachedAt > CACHE_TTL_MS) {
+          delete bucket[key];
+          await this.state.storage.put(CACHE_STORAGE_KEY, bucket);
+          return json({ hit: false });
+        }
+        return json({ hit: true, payload: entry.payload });
+      }
+
+      if (op === "put") {
+        if (!key || !body.payload) return json({ ok: false }, 400);
+        bucket[key] = { payload: body.payload, cachedAt: Date.now() };
+        await this.state.storage.put(CACHE_STORAGE_KEY, bucket);
+        return json({ ok: true });
+      }
+
+      if (op === "invalidate") {
+        if (key) {
+          if (bucket[key]) {
+            delete bucket[key];
+            await this.state.storage.put(CACHE_STORAGE_KEY, bucket);
+          }
+        } else if (Object.keys(bucket).length) {
+          await this.state.storage.delete(CACHE_STORAGE_KEY);
+          bucket = {};
+        }
+        return json({ ok: true });
+      }
+
+      return json({ error: "unknown op" }, 400);
+    } catch (err: any) {
+      return json({ error: err?.message || "cache error" }, 500);
+    }
+  }
+}
+
+function validatePhoneInput(input: string) {
+  const normalized = normalizeIdentityPhone(input);
+  const valid = /^\+\d{10,15}$/.test(normalized);
+  return {
+    input,
+    normalized: valid ? normalized : undefined,
+    valid,
+    reason: valid ? undefined : "Please provide the full number including area code (digits only)."
+  };
+}
+
+function validateEmailInput(input: string) {
+  const normalized = input.trim().toLowerCase();
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+  const suggestion = valid ? undefined : suggestEmailCorrection(normalized);
+  return {
+    input,
+    normalized: valid ? normalized : undefined,
+    valid,
+    reason: valid ? undefined : "Provide a valid email like name@example.com.",
+    suggestion
+  };
+}
+
+function suggestEmailCorrection(normalized: string) {
+  if (!normalized.includes("@")) return undefined;
+  const [local, domain] = normalized.split("@");
+  if (!domain) return undefined;
+  const known = ["gmail.com", "hotmail.com", "outlook.com", "icloud.com", "yahoo.com", "ampere.io"];
+  let best: { domain: string; score: number } | null = null;
+  for (const candidate of known) {
+    const score = levenshtein(domain, candidate);
+    if (score <= 2 && (!best || score < best.score)) best = { domain: candidate, score };
+  }
+  if (best) return `${local}@${best.domain}`;
+  return undefined;
+}
+
+function levenshtein(a: string, b: string) {
+  const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+      else dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]) + 1;
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+function normalizeIdentityPhone(input: string) {
+  const raw = (input || "").trim();
+  if (!raw) return "";
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) return "";
+  const hasPlus = raw.startsWith("+");
+  if (hasPlus) return "+" + digits;
+  if (digits.length === 10) return "+1" + digits;
+  if (digits.length >= 11 && digits.length <= 15) return "+" + digits;
+  return "+" + digits;
+}
+
+async function getWorkspaceChannelConfig(env: Env, workspaceId: string): Promise<WorkspaceChannelConfig | null> {
+  try {
+    const row = await env.D1_DB
+      .prepare(
+        `SELECT twilio_account_sid, twilio_auth_token, twilio_from_number, sms_enabled, email_enabled
+         FROM workspace_channels
+         WHERE workspace_id = ?`
+      )
+      .bind(workspaceId)
+      .first<WorkspaceChannelConfig>();
+    return row ?? null;
+  } catch (err: any) {
+    if (!String(err?.message || "").includes("no such table")) {
+      console.log("workspace_channel_lookup_error", err?.message || err);
+    }
+    return null;
+  }
+}
+
+async function resolveTwilioConfig(env: Env, workspaceId: string) {
+  const row = await getWorkspaceChannelConfig(env, workspaceId);
+  const accountSid = env.TWILIO_ACCOUNT_SID || row?.twilio_account_sid || "";
+  const authToken = env.TWILIO_AUTH_TOKEN || row?.twilio_auth_token || "";
+  const fromNumber = env.TWILIO_FROM_NUMBER || row?.twilio_from_number || "";
+  // If env vars are present, allow SMS regardless of workspace toggle so the operator controls it centrally.
+  const smsFlag = row ? Number(row.sms_enabled ?? 0) : null;
+  const smsAllowed = env.TWILIO_ACCOUNT_SID && env.TWILIO_FROM_NUMBER ? true : row ? smsFlag === 1 : true;
+  if (!smsAllowed) return null;
+  if (!accountSid || !authToken || !fromNumber) return null;
+  return { accountSid, authToken, fromNumber };
+}
+
+async function sendSmsOtp(env: Env, workspaceId: string, to: string, code: string): Promise<SendResult> {
+  const config = await resolveTwilioConfig(env, workspaceId);
+  if (!config) {
+    return { ok: false, error: "sms_not_configured", status: 503 };
+  }
+  const params = new URLSearchParams({
+    To: to,
+    From: config.fromNumber,
+    Body: `Your Ampere verification code is ${code}. It expires in 10 minutes.`
+  });
+  const authHeader = "Basic " + btoa(`${config.accountSid}:${config.authToken}`);
+  try {
+    const response = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${config.accountSid}/Messages.json`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString()
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "");
+      console.log("twilio_sms_error", response.status, errorText);
+      return { ok: false, error: "sms_send_failed", status: 502 };
+    }
+    return { ok: true };
+  } catch (err: any) {
+    console.log("twilio_sms_exception", err?.message || err);
+    return { ok: false, error: "sms_send_failed", status: 502 };
+  }
+}
+
+async function resolveEmailConfig(env: Env, workspaceId: string) {
+  const row = await getWorkspaceChannelConfig(env, workspaceId);
+  const emailFlag = row ? Number(row.email_enabled ?? 0) : null;
+  const emailAllowed = row ? emailFlag === 1 : true;
+  const apiKey = env.SMTP2GO_API_KEY || "";
+  const fromEmail = env.SMTP2GO_FROM_EMAIL || "";
+  if (!emailAllowed) return null;
+  if (!apiKey || !fromEmail) return null;
+  return { apiKey, fromEmail };
+}
+
+async function sendEmailOtp(env: Env, workspaceId: string, to: string, code: string): Promise<SendResult> {
+  const config = await resolveEmailConfig(env, workspaceId);
+  if (!config) return { ok: false, error: "email_not_configured", status: 503 };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    return { ok: false, error: "invalid_email", status: 400 };
+  }
+  const subject = "Your Ampere verification code";
+  const textBody = `Your Ampere verification code is ${code}. It expires in 10 minutes.`;
+  const payload = {
+    api_key: config.apiKey,
+    sender: config.fromEmail,
+    to: [to],
+    subject,
+    text_body: textBody,
+    html_body: `<p>${textBody}</p>`
+  };
+  try {
+    const response = await fetch("https://api.smtp2go.com/v3/email/send", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      console.log("smtp2go_error", response.status, errText);
+      return { ok: false, error: "email_send_failed", status: 502 };
+    }
+    const result = await response.json<any>().catch(() => ({}));
+    if (result?.data?.succeeded === 1 || result?.data?.messages?.[0]?.status === "success") {
+      return { ok: true };
+    }
+    return { ok: false, error: "email_send_failed", status: 502 };
+  } catch (err: any) {
+    console.log("smtp2go_exception", err?.message || err);
+    return { ok: false, error: "email_send_failed", status: 502 };
+  }
+}
+
+const DEFAULT_FACT_POLICIES: FactPolicy[] = [
+  { fact_type: "contact_phone", enabled: true, max_per_subject: 3, keywords: ["phone", "number", "call back"], regex: null },
+  { fact_type: "contact_email", enabled: true, max_per_subject: 3, keywords: ["email", "inbox", "send over"], regex: null },
+  { fact_type: "website", enabled: true, max_per_subject: 3, keywords: ["website", "site", "url"], regex: null },
+  { fact_type: "conversation_recap", enabled: true, max_per_subject: 5, keywords: ["talked", "discussed", "asked about", "call about", "recap"], regex: null },
+  { fact_type: "kb_summary", enabled: true, max_per_subject: 5, keywords: ["feature", "pricing", "plan", "demo outline", "knowledge base"], regex: null },
+  { fact_type: "business_focus", enabled: true, max_per_subject: 5, keywords: ["business", "company", "niche", "industry"], regex: null },
+  { fact_type: "scheduling_preference", enabled: true, max_per_subject: 5, keywords: ["prefer", "available", "schedule", "morning", "afternoon"], regex: null },
+  { fact_type: "integration_interest", enabled: true, max_per_subject: 5, keywords: ["integration", "crm", "twilio", "sip", "api"], regex: null },
+  { fact_type: "budget", enabled: true, max_per_subject: 3, keywords: ["budget", "price", "cost", "spend", "$"], regex: null },
+  { fact_type: "family_detail", enabled: true, max_per_subject: 3, keywords: ["wife", "husband", "spouse", "partner", "daughter", "son", "kid", "family"], regex: null },
+  { fact_type: "pet_details", enabled: true, max_per_subject: 2, keywords: ["dog", "cat", "pet"], regex: null },
+  { fact_type: "hobby_detail", enabled: true, max_per_subject: 3, keywords: ["hobby", "enjoy", "love to", "ride", "golf", "ski", "motorcycle"], regex: null },
+  { fact_type: "vehicle_detail", enabled: true, max_per_subject: 2, keywords: ["car", "truck", "vehicle", "motorcycle", "bike"], regex: null },
+  { fact_type: "address_detail", enabled: true, max_per_subject: 2, keywords: ["address", "street", "road", "avenue", "suite"], regex: null },
+  { fact_type: "payment_history", enabled: true, max_per_subject: 3, keywords: ["invoice", "payment", "charged", "card", "paid"], regex: null },
+  { fact_type: "general", enabled: true, max_per_subject: 15, keywords: [], regex: null }
+];
+
+async function getWorkspaceFactPolicies(env: Env, workspaceId: string): Promise<FactPolicyMap> {
+  const defaults = defaultFactPolicyMap();
+  try {
+    const rows = await env.D1_DB
+      .prepare(
+        `SELECT fact_type, enabled, max_per_subject, config_json
+         FROM workspace_fact_policies
+         WHERE workspace_id = ?`
+      )
+      .bind(workspaceId)
+      .all();
+    const list = rows.results ?? [];
+    if (!list.length) return defaults;
+    const merged = { ...defaults } as FactPolicyMap;
+    for (const row of list as any[]) {
+      const factType = normalizeFactType(row.fact_type) || "general";
+      const config = parsePolicyConfig(row.config_json);
+      merged[factType] = {
+        fact_type: factType,
+        enabled: row.enabled !== 0,
+        max_per_subject: Number.isFinite(row.max_per_subject) ? Number(row.max_per_subject) : (defaults[factType]?.max_per_subject ?? 10),
+        keywords: config.keywords?.length ? config.keywords : defaults[factType]?.keywords ?? [],
+        regex: typeof config.regex === "string" ? config.regex : defaults[factType]?.regex ?? null
+      };
+    }
+    return merged;
+  } catch (err: any) {
+    if ((err?.message || "").includes("no such table")) return defaults;
+    console.log("FACT_POLICY fetch_error", err?.message || err);
+    return defaults;
+  }
+}
+
+function defaultFactPolicyMap(): FactPolicyMap {
+  return DEFAULT_FACT_POLICIES.reduce((acc, policy) => {
+    acc[policy.fact_type] = { ...policy };
+    return acc;
+  }, {} as FactPolicyMap);
+}
+
+function parsePolicyConfig(raw: any): { keywords?: string[]; regex?: string } {
+  if (!raw || typeof raw !== "string") return {};
+  try {
+    const parsed = JSON.parse(raw);
+    const keywords = Array.isArray(parsed.keywords)
+      ? parsed.keywords.map((k: any) => String(k || "").toLowerCase()).filter(Boolean)
+      : undefined;
+    const regex = typeof parsed.regex === "string" ? parsed.regex : undefined;
+    return { keywords, regex };
+  } catch (err) {
+    return {};
+  }
+}
+
+function normalizeFactType(raw?: string | null) {
+  const s = (raw || "").trim().toLowerCase();
+  if (!s) return null;
+  return s.replace(/[^a-z0-9_]+/g, "_");
+}
+
+function isFactTypeAllowed(factType: string | null, policies: FactPolicyMap) {
+  const key = factType || "general";
+  const policy = policies[key];
+  if (!policy) return true;
+  return policy.enabled;
+}
+
+async function persistFacts(
+  env: Env,
+  workspaceId: string,
+  subjectId: string,
+  agentId: string | null,
+  facts: IncomingFact[],
+  policies: FactPolicyMap,
+  ts: number
+): Promise<number> {
+  if (!facts.length) return 0;
+  let hasFactTypeColumn = await ensureFactTypeColumn(env);
+  let wrote = 0;
+  const seen = new Set<string>();
+  for (const f of facts) {
+    let factText = safeString(f.fact, 256).trim();
+    if (!factText) continue;
+    const key = factText.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const confidence = Number.isFinite(f.confidence) ? Number(f.confidence) : 0.8;
+    const inferredType = normalizeFactType(f.fact_type) || inferFactType(factText);
+    if (!isFactTypeAllowed(inferredType, policies)) continue;
+    try {
+      if (hasFactTypeColumn) {
+        await env.D1_DB.prepare(
+          "INSERT OR IGNORE INTO memories (subject_id, workspace_id, agent_id, fact, confidence, updated_at, fact_type) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        ).bind(subjectId, workspaceId, agentId, factText, confidence, ts, inferredType ?? "general").run();
+      } else {
+        await env.D1_DB.prepare(
+          "INSERT OR IGNORE INTO memories (subject_id, workspace_id, agent_id, fact, confidence, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+        ).bind(subjectId, workspaceId, agentId, factText, confidence, ts).run();
+      }
+    } catch (err: any) {
+      if (hasFactTypeColumn && isFactTypeColumnError(err)) {
+        disableFactTypeColumnSupport();
+        hasFactTypeColumn = false;
+        await env.D1_DB.prepare(
+          "INSERT OR IGNORE INTO memories (subject_id, workspace_id, agent_id, fact, confidence, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+        ).bind(subjectId, workspaceId, agentId, factText, confidence, ts).run();
+      } else {
+        throw err;
+      }
+    }
+    wrote++;
+  }
+  return wrote;
+}
+
+function deriveIncomingFacts(input: any[]): IncomingFact[] {
+  const facts: IncomingFact[] = [];
+  for (const raw of input) {
+    if (typeof raw === "string") {
+      facts.push({ fact: raw });
+      continue;
+    }
+    if (raw && typeof raw.fact === "string") {
+      const fact = safeString(raw.fact, 512);
+      const confidence = Number.isFinite(raw.confidence) ? Number(raw.confidence) : undefined;
+      const factType = typeof raw.fact_type === "string" ? raw.fact_type : undefined;
+      facts.push({ fact, confidence, fact_type: factType });
+    }
+  }
+  return facts;
+}
+
+function dedupeIncomingFacts(facts: IncomingFact[]): IncomingFact[] {
+  const seen = new Set<string>();
+  const deduped: IncomingFact[] = [];
+  for (const fact of facts) {
+    const key = fact.fact?.trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(fact);
+  }
+  return deduped;
+}
+
+function summarizeTranscript(transcript: string) {
+  const sentences = splitTranscriptSentences(transcript);
+  if (!sentences.length) return safeString(transcript, 480);
+  const summary = sentences.slice(0, 2).join(". ");
+  return safeString(summary, 480);
+}
+
+function extractFactsFromTranscript(transcript: string, policies: FactPolicyMap): IncomingFact[] {
+  const results: IncomingFact[] = [];
+  const sentences = splitTranscriptSentences(transcript);
+  const seen = new Set<string>();
+  const pushFact = (fact: string, factType: string, confidence = 0.78) => {
+    const text = safeString(fact, 256).trim();
+    if (!text) return;
+    const key = `${factType}::${text.toLowerCase()}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    if (!isFactTypeAllowed(factType, policies)) return;
+    results.push({ fact: text, fact_type: factType, confidence });
+  };
+
+  if (policies.contact_email?.enabled) {
+    const emailMatches = transcript.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || [];
+    for (const match of emailMatches) pushFact(match, "contact_email", 0.9);
+  }
+
+  if (policies.contact_phone?.enabled) {
+    const phoneMatches = transcript.match(/\+?\d[\d\-()\s]{9,}/g) || [];
+    for (const match of phoneMatches) {
+      const normalized = normalizeIdentityPhone(match);
+      if (normalized.length >= 11) pushFact(normalized, "contact_phone", 0.85);
+    }
+  }
+
+  if (policies.website?.enabled) {
+    const urlMatches = transcript.match(/https?:\/\/\S+|\b[a-z0-9.-]+\.(?:com|net|org|io|ai|co)\b/gi) || [];
+    for (const match of urlMatches) pushFact(match, "website", 0.82);
+  }
+
+  if (policies.budget?.enabled) {
+    const budgetMatches = transcript.match(/\$\s?\d[\d,]*/g) || [];
+    for (const match of budgetMatches) pushFact(`Budget mentioned: ${match}`, "budget", 0.8);
+  }
+
+  for (const policy of Object.values(policies)) {
+    if (!policy.enabled || !policy.keywords?.length) continue;
+    for (const sentence of sentences) {
+      const lower = sentence.toLowerCase();
+      if (policy.keywords.some((kw) => lower.includes(kw))) pushFact(sentence, policy.fact_type, 0.72);
+      if (results.length >= 25) return results;
+    }
+  }
+
+  return results.slice(0, 25);
+}
+
+function splitTranscriptSentences(text: string): string[] {
+  return (text || "")
+    .split(/(?:\.|\?|!|\n)+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function inferFactType(fact: string): string {
+  const lower = fact.toLowerCase();
+  if (/@/.test(fact)) return "contact_email";
+  if (/\$\s?\d/.test(fact) || lower.includes("budget")) return "budget";
+  if (/https?:\/\//i.test(fact) || /\b[a-z0-9.-]+\.(?:com|net|org|io|ai|co)\b/i.test(fact)) return "website";
+  if (/\+?\d[\d\s\-()]{9,}/.test(fact) || lower.includes("phone")) return "contact_phone";
+  if (lower.includes("discussed") || lower.includes("talked") || lower.includes("recap") || lower.includes("asked about"))
+    return "conversation_recap";
+  if (lower.includes("knowledge base") || lower.includes("kb summary") || lower.includes("feature rundown") || lower.includes("demo outline"))
+    return "kb_summary";
+  if (lower.includes("prefer") || lower.includes("available") || lower.includes("schedule")) return "scheduling_preference";
+  if (lower.includes("integration") || lower.includes("crm") || lower.includes("twilio") || lower.includes("sip")) return "integration_interest";
+  if (
+    lower.includes("wife") ||
+    lower.includes("husband") ||
+    lower.includes("spouse") ||
+    lower.includes("partner") ||
+    lower.includes("daughter") ||
+    lower.includes("son") ||
+    lower.includes("kids") ||
+    lower.includes("family")
+  )
+    return "family_detail";
+  if (lower.includes("dog") || lower.includes("cat") || lower.includes("pet")) return "pet_details";
+  if (lower.includes("hobby") || lower.includes("enjoy") || lower.includes("love to") || lower.includes("ride") || lower.includes("golf"))
+    return "hobby_detail";
+  if (lower.includes("car") || lower.includes("truck") || lower.includes("motorcycle") || lower.includes("vehicle") || lower.includes("bike"))
+    return "vehicle_detail";
+  if (lower.includes("address") || lower.includes("street") || lower.includes("road") || lower.includes("avenue") || lower.includes("suite"))
+    return "address_detail";
+  if (lower.includes("invoice") || lower.includes("payment") || lower.includes("charged") || lower.includes("card") || lower.includes("paid"))
+    return "payment_history";
+  if (lower.includes("business") || lower.includes("company") || lower.includes("industry") || lower.includes("niche")) return "business_focus";
+  return "general";
+}
+
+const FACT_TYPE_SUPPORT_CACHE_KEY = "__memoryFactTypeColumnSupported";
+
+async function ensureFactTypeColumn(env: Env): Promise<boolean> {
+  const cached = (globalThis as any)[FACT_TYPE_SUPPORT_CACHE_KEY];
+  if (typeof cached === "boolean") return cached;
+  try {
+    const row = await env.D1_DB
+      .prepare("SELECT 1 FROM pragma_table_info('memories') WHERE name = 'fact_type' LIMIT 1")
+      .first();
+    const hasColumn = Boolean(row);
+    (globalThis as any)[FACT_TYPE_SUPPORT_CACHE_KEY] = hasColumn;
+    return hasColumn;
+  } catch (err: any) {
+    console.log("FACT_TYPE detect error", err?.message || err);
+    (globalThis as any)[FACT_TYPE_SUPPORT_CACHE_KEY] = false;
+    return false;
+  }
+}
+
+function disableFactTypeColumnSupport() {
+  (globalThis as any)[FACT_TYPE_SUPPORT_CACHE_KEY] = false;
+}
+
+function isFactTypeColumnError(err: any) {
+  const msg = String(err?.message || "");
+  return (
+    msg.includes("no such column: fact_type") ||
+    msg.includes("has no column named fact_type")
+  );
+}
+
+function normalizeFactRows(rows: any[], hasFactTypeColumn: boolean) {
+  if (hasFactTypeColumn) return rows;
+  return rows.map((row) => ({ ...row, fact_type: row.fact_type ?? null }));
+}
+
+function filterFactsForVerification(rows: any[], verification: VerificationState) {
+  if (isVerified(verification)) return rows;
+  return rows.filter((row) => {
+    const factType = normalizeFactType(row.fact_type) || "general";
+    return !SENSITIVE_FACT_TYPES.has(factType);
+  });
+}
+
+function sanitizeSummariesForVerification(rows: any[], verification: VerificationState) {
+  if (isVerified(verification)) return rows;
+  return [];
+}
+
+function trimKnowledgeBaseFacts(rows: any[]) {
+  return rows.map((row) => {
+    const factType = normalizeFactType(row?.fact_type);
+    if (factType !== "kb_summary") return row;
+    const fact = safeString(row?.fact ?? "", 1024);
+    if (!fact) return row;
+    const trimmed = trimKnowledgeBaseText(fact);
+    if (trimmed === fact) return row;
+    return { ...row, fact: trimmed };
+  });
+}
+
+function trimKnowledgeBaseText(text: string) {
+  const normalized = text.trim();
+  if (!normalized) return normalized;
+  const sentences = normalized
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!sentences.length) {
+    return normalized.length > KB_CHAR_LIMIT ? normalized.slice(0, KB_CHAR_LIMIT).trimEnd() + "…" : normalized;
+  }
+  const selected: string[] = [];
+  for (const sentence of sentences) {
+    selected.push(sentence);
+    if (selected.length >= KB_SENTENCE_LIMIT) break;
+  }
+  let result = selected.join(" ");
+  if (result.length > KB_CHAR_LIMIT) {
+    result = result.slice(0, KB_CHAR_LIMIT).trimEnd();
+    if (!/[.!?…]$/.test(result)) result += "…";
+  }
+  return result;
+}

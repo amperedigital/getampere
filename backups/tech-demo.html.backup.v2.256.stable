@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Tech Demo | Get Ampere AI</title>
+    
+    <!-- Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body class="bg-[#05060f] text-white lg:overflow-hidden">
+
+    <div class="flex flex-col lg:flex-row min-h-screen lg:h-screen w-full relative lg:overflow-hidden">
+        
+        <!-- Left Column: 3D Scene -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full flex flex-col lg:block">
+            
+            <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
+            <!-- v2.256: Changed layout for independent breadcrumb line on mobile -->
+            <div class="relative lg:absolute top-0 left-0 w-full p-8 pt-12 pb-0 lg:p-20 z-20 pointer-events-none flex flex-col lg:block">
+                
+                <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
+                <!-- Moved out of flex-row to ensure it stays on top line -->
+                <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-1 lg:mb-6">
+                    <span class="text-blue-400">/</span>
+                    <span class="text-slate-500">Visualization</span>
+                    <span class="text-blue-400">/</span>
+                    <span class="text-blue-400 font-semibold drop-shadow-[0_0_10px_rgba(96,165,250,0.4)]">V-Amp 2.0</span>
+                </div>
+
+                <!-- Row: Heading + Mobile Controls -->
+                <div class="flex justify-between items-start w-full lg:block lg:w-auto">
+                    <div class="max-w-md pt-2">
+                        <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
+                            <span class="font-bold text-blue-400">AI</span> Neural <span class="block font-light text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
+                        </h1>
+                        <p class="text-sm lg:text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
+                            Explore the autonomous decision making core of Ampere AI.
+                        </p>
+                    </div>
+
+                    <!-- Mobile Control Cluster (Top Right) -->
+                    <!-- Replaces bottom UI track on mobile. Compact toggle dots + Status. -->
+                    <div class="lg:hidden flex flex-col items-end gap-3 pointer-events-auto mt-2">
+                    
+                    <!-- Status Display -->
+                    <div id="mobile-system-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-lg transition-colors duration-300">
+                        <div id="mobile-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+                        <span id="mobile-status-text" class="text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300">ONLINE</span>
+                    </div>
+
+                    <!-- Compact Buttons (Dots/Toggles) -->
+                    <div class="flex items-center gap-2">
+                         <!-- ACTIVE (Play/Bolt) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('ACTIVE')" 
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-blue-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-active"
+                                 aria-label="Active Mode">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                         </button>
+
+                         <!-- STANDBY (Pause) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('STANDBY')"
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-slate-400 hover:bg-white/10 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-standby"
+                                 aria-label="Standby Mode">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
+                            </svg>
+                         </button>
+
+                         <!-- OFF (Power) -->
+                         <button onclick="window.demoScene && window.demoScene.setSystemState('OFF')"
+                                 class="w-9 h-9 rounded-full flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md text-red-400 hover:bg-red-500/20 hover:border-red-500/30 active:scale-95 transition-all shadow-lg"
+                                 id="btn-mobile-off"
+                                 aria-label="Power Off">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                            </svg>
+                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
+            <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
+            <!-- v2.253: Hidden on mobile to reduce clutter -->
+            <div class="hidden lg:inline-flex absolute z-30 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
+            </div>
+
+            <!-- Scene Container with "Breathing Room" Packaging -->
+            <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
+            <!-- Mobile: Stacked relative block. Full width. No rounded corners (to max width). -->
+            <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
+            <!-- v2.253 Update: Increased negative margin (-mt-24) to pull scene higher. Reduced height to 480px. -->
+            <!-- v2.254: Backed off negative margin to -mt-4 to prevent overlap. Reduced height to 440px to pull cards up. -->
+            <!-- v2.255: Changed to POSITIVE mt-4 to push scene down into the empty void. Height 420px. -->
+            <div class="relative w-full mx-auto h-[420px] mt-4 mb-0 lg:mt-0 lg:mb-0 lg:mx-0 lg:w-auto lg:h-auto lg:absolute lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden lg:rounded-[2rem] z-0 group/scene flex items-center justify-center lg:bg-white/5 lg:border lg:border-white/5">
+                
+                <!-- MASTER CONTAINER (Center of the Universe) -->
+                <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
+                <!-- Responsive Update: lg:h-[85%] creates vertical breathing room. -->
+                <!-- Layout Fix: lg:-translate-y-12 shifts the ring UPWARDS to clear space for bottom UI controls -->
+                <!-- Added max-h-full to prevent vertical overflow if width dominates on short screens -->
+                <div class="relative w-full h-full lg:w-auto lg:h-[85%] max-h-full lg:-translate-y-12 max-w-[800px] lg:aspect-square flex items-center justify-center mx-auto">
+                    
+                    <!-- 1. NESTED SCENE (Background Layer) -->
+                    <!-- Centered within the Ring's coordinate space. Full Size. -->
+                    <!-- Camera Distance Increased to 9.5 to fit visually inside the tightened inner ring (r=190). -->
+                    <!-- CLIP-PATH: Strictly clipped to Inner Ring radius (~47.5%) to prevent any rendering outside the central portal -->
+                    <div id="tech-demo-scene" 
+                         class="absolute inset-0 z-0 rounded-full pointer-events-auto"
+                         style="clip-path: circle(47.4% at center);"
+                         data-standby-timeout="120"
+                         data-standby-warning="30"
+                         data-auto-recenter="2.5"
+                         data-lerp-speed="0.015"
+                         data-min-velocity="0.0025"
+                         data-rotation-rpm="0.17"
+                         data-camera-distance="13.0"></div>
+
+                    <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
+                    <!-- Absolute inset-0 of the Master Container -->
+                    <!-- v2.253: Added touch-action: pan-y to allow vertical page scrolling even if dragging -->
+                    <div class="absolute inset-0 pointer-events-none z-20 select-none">
+                         <svg class="w-full h-full pointer-events-auto cursor-grab" style="touch-action: pan-y;" viewBox="0 0 800 800" overflow="visible">
+                        <defs>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                            <!-- Outer Track (Radius 255 - Increased curvature) -->
+                            <path id="ring-track" d="M 255,0 A 255,255 0 1,1 -255,0 A 255,255 0 1,1 255,0" transform="rotate(15)" />
+                            <!-- Inner Track (Radius 190 - Increased curvature) -->
+                            <path id="ring-track-inner" d="M 190,0 A 190,190 0 1,1 -190,0 A 190,190 0 1,1 190,0" transform="rotate(15)" />
+                        </defs>
+
+                        <!-- Base Ring Group (Centered) -->
+                        <g transform="translate(400, 400)">
+                            
+                            <!-- 1. Outer Dashed Ring (Border Line - Static) -->
+                            <circle r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
+                            
+                            <!-- STATIC MARKERS (Selection Needles) -->
+                            <!-- 12 O'Clock (Top) - Inward/Down -->
+                            <path id="static-needle" d="M -8,-385 L 8,-385 L 0,-365 Z" class="fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] transition-colors duration-300" />
+
+                            <!-- RING 1: OUTER (Blue) - Even Indices -->
+                            <g id="halo-ring-outer">
+                                <!-- Band: 270-330 (Width 60, Center 300) -->
+                                <circle r="300" fill="none" class="stroke-blue-500/10" stroke-width="60" />
+                                <circle r="330" fill="none" class="stroke-blue-500/20" stroke-width="1" />
+                                <circle r="270" fill="none" class="stroke-blue-500/20" stroke-width="1" />
+
+                                <!-- Markers (r=312) -->
+                                <g transform="rotate(-90)"><circle cx="312" cy="0" r="4" data-index="0" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
+                                <g transform="rotate(-30)"><circle cx="312" cy="0" r="4" data-index="2" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 2oc -->
+                                <g transform="rotate(30)"><circle cx="312" cy="0" r="4" data-index="4" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 4oc -->
+                                <g transform="rotate(90)"><circle cx="312" cy="0" r="4" data-index="6" class="fill-emerald-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 6oc -->
+                                <g transform="rotate(150)"><circle cx="312" cy="0" r="4" data-index="8" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 8oc -->
+                                <g transform="rotate(210)"><circle cx="312" cy="0" r="4" data-index="10" class="fill-blue-500 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
+
+                                <!-- Labels (Outer Track) -->
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="0"><textPath href="#ring-track" startOffset="70.83%" text-anchor="middle">Memory Function</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="2"><textPath href="#ring-track" startOffset="87.5%" text-anchor="middle">Human Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="4"><textPath href="#ring-track" startOffset="4.17%" text-anchor="middle">Agent Transfer</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" dy="-32" data-index="6"><textPath href="#ring-track" startOffset="20.83%" text-anchor="middle">OTP Authorization</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="8"><textPath href="#ring-track" startOffset="37.5%" text-anchor="middle">Identity &amp; Handoff</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" dy="-32" data-index="10"><textPath href="#ring-track" startOffset="54.17%" text-anchor="middle">Calendar Booking</textPath></text>
+                            </g>
+
+                            <!-- RING 2: INNER (Slate) - Odd Indices -->
+                            <g id="halo-ring-inner">
+                                <!-- Band: 200-260 (Width 60, Center 230) -->
+                                <circle r="230" fill="none" class="stroke-slate-500/10" stroke-width="60" />
+                                <circle r="260" fill="none" class="stroke-slate-500/20" stroke-width="1" />
+                                <circle r="200" fill="none" class="stroke-slate-500/20" stroke-width="1" />
+
+                                <!-- Markers (r=242 = 230+12) -->
+                                <!-- Aligned with Outer Ring (30 deg steps starting at -90/12oc) -->
+                                <g transform="rotate(-90)"><circle cx="242" cy="0" r="4" data-index="1" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 12oc -->
+                                <g transform="rotate(-30)"><circle cx="242" cy="0" r="4" data-index="3" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 2oc -->
+                                <g transform="rotate(30)"><circle cx="242" cy="0" r="4" data-index="5" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g>  <!-- 4oc -->
+                                <g transform="rotate(90)"><circle cx="242" cy="0" r="4" data-index="7" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 6oc -->
+                                <g transform="rotate(150)"><circle cx="242" cy="0" r="4" data-index="9" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g> <!-- 8oc -->
+                                <g transform="rotate(210)"><circle cx="242" cy="0" r="4" data-index="11" class="fill-slate-400 transition-colors duration-300" filter="url(#glow)" /></g><!-- 10oc -->
+
+                                <!-- Labels (Inner Track - Aligned to Outer Track StartOffsets) -->
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="1"><textPath href="#ring-track-inner" startOffset="70.83%" text-anchor="middle">Front Door Agent</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="3"><textPath href="#ring-track-inner" startOffset="87.5%" text-anchor="middle">Demo Guide</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="5"><textPath href="#ring-track-inner" startOffset="4.17%" text-anchor="middle">Onboarding</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="7"><textPath href="#ring-track-inner" startOffset="20.83%" text-anchor="middle">Tech Specialist</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="9"><textPath href="#ring-track-inner" startOffset="37.5%" text-anchor="middle">Sales Advisor</textPath></text>
+                                <text class="font-mono text-sm font-bold tracking-[0.15em] uppercase transition-all duration-300 fill-slate-400 drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]" dy="-27" data-index="11"><textPath href="#ring-track-inner" startOffset="54.17%" text-anchor="middle">Booking Agent</textPath></text>
+                            </g>
+
+                                <!-- CURVED TEXT LABELS STYLE (Global) -->
+                                <style>
+                                    /* --- System Power State Transitions --- */
+                                    /* Controlled by .halo-dimmed class on SVG applied by halo-rotator.js */
+
+                                    /* Transition Base */
+                                    svg circle, svg path, svg text {
+                                        transition: all 1.5s ease;
+                                    }
+                                    
+                                    /* Dimmed State Overrides */
+                                    svg.halo-dimmed circle[fill^="#"], 
+                                    svg.halo-dimmed circle[class*="fill-"],
+                                    svg.halo-dimmed path[class*="fill-"] {
+                                        fill: #334155 !important; /* Slate-700 */
+                                        filter: none !important;
+                                        opacity: 0.7;
+                                    }
+                                    
+                                    /* Text "Off" State - Visible but Dim */
+                                    svg.halo-dimmed text {
+                                        fill: #475569 !important; /* Slate-600 */
+                                        text-shadow: none !important;
+                                        opacity: 0.8;
+                                    }
+                                    
+                                    svg.halo-dimmed circle[fill="none"],
+                                    svg.halo-dimmed path[fill="none"] {
+                                        stroke: #334155 !important;
+                                        opacity: 0.5;
+                                    }
+                                    
+                                    /* Hide Static Markers Glow */
+                                    svg.halo-dimmed .drop-shadow-\[0_0_8px_rgba\(96\,165\,250\,0\.6\)\] {
+                                        filter: none !important;
+                                        fill: #1e293b !important;
+                                    }
+                                </style>
+
+                        </g>
+                    </svg>
+                    </div>
+                         
+                </div><!-- End Master Container -->
+
+                <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
+            </div>
+                 
+             <!-- Overlay Hint (Positioned in the bezel area) -->
+             <!-- Removed in v2.156: Moved to header breadcrumb -->
+        </div>
+
+        <!-- Right Column: Interactive Grid -->
+        <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
+        <!-- Responsive Fix: Enabled h-full for the grid container to allow cards to stretch -->
+        <!-- Fix v2.243: Changed overflow-y-auto so we ALWAYS have a scrollbar if content (cards) >> screen height. -->
+        <!-- Ideally, on short screens, cards should NOT be dangerously compressed. -->
+        <!-- v2.253: Added pb-40 on mobile to clear the bottom chat widget ("Ready to chat?") -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 pb-40 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto">
+            
+            <!-- 6-Box Grid (2 cols x 3 rows) -->
+            <!-- Responsive Fix: Added h-full and grid-rows-3 (desktop) to force cards to fill the available height -->
+            <!-- Fix v2.243: Added min-h-[850px] (increased from 700px) to ensure the grid never squashes the cards beyond readability. -->
+            <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-rows-3 gap-6 w-full h-auto lg:h-full lg:min-h-[850px]">
+                
+                <!-- Card 1: Front Door Agent -->
+                <!-- Added h-full to flex container -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Front Door Agent</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Reception & Routing</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                        </div>
+                    </div>
+                    <!-- Data Grid (3 Cols x 6 Rows) -->
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <!-- Headings -->
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <!-- Row 1 -->
+                        <div class="text-slate-400 flex items-center">Visitors</div>
+                        <div class="text-white text-right font-bold">1,428</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[75%]"></div></div></div>
+                        
+                        <!-- Row 2 -->
+                        <div class="text-slate-400 flex items-center">Active</div>
+                        <div class="text-white text-right">342</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-400 w-[45%]"></div></div></div>
+
+                        <!-- Row 3 -->
+                        <div class="text-slate-400 flex items-center">Bounce</div>
+                        <div class="text-white text-right">12%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[12%]"></div></div></div>
+
+                        <!-- Row 4 -->
+                        <div class="text-slate-400 flex items-center">Routed</div>
+                        <div class="text-white text-right">89%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[89%]"></div></div></div>
+
+                        <!-- Row 5 -->
+                        <div class="text-slate-400 flex items-center">Avg Time</div>
+                        <div class="text-white text-right">4.2s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-300 w-[60%]"></div></div></div>
+
+                        <!-- Row 6 -->
+                        <div class="text-slate-400 flex items-center">Auth</div>
+                        <div class="text-white text-right">99.9%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 w-[99%]"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Demo Guide -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Demo Guide</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Feature Walkthroughs</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <div class="text-slate-400 flex items-center">Sessions</div>
+                        <div class="text-white text-right font-bold">892</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[65%]"></div></div></div>
+                        
+                        <div class="text-slate-400 flex items-center">Completion</div>
+                        <div class="text-white text-right">76%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-400 w-[76%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Drop-off</div>
+                        <div class="text-white text-right">8%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-400 w-[8%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Click-thru</div>
+                        <div class="text-white text-right">45%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-300 w-[45%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Avg Dur</div>
+                        <div class="text-white text-right">5m 20s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-teal-500 w-[55%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Rating</div>
+                        <div class="text-white text-right">4.8/5</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[96%]"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Onboarding Coach -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Onboarding</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Setup Assistance</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <div class="text-slate-400 flex items-center">New Users</div>
+                        <div class="text-white text-right font-bold">156</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[42%]"></div></div></div>
+                        
+                        <div class="text-slate-400 flex items-center">Profiles</div>
+                        <div class="text-white text-right">92%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-400 w-[92%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Guides</div>
+                        <div class="text-white text-right">3.5</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-300 w-[35%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Verified</div>
+                        <div class="text-white text-right">100%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 w-[100%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Stuck</div>
+                        <div class="text-white text-right">2.1%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-500 w-[4%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Success</div>
+                        <div class="text-white text-right">98%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-200 w-[98%]"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Technical Specialist -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Tech Specialist</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Deep Support</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <div class="text-slate-400 flex items-center">Tickets</div>
+                        <div class="text-white text-right font-bold">42</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[25%]"></div></div></div>
+                        
+                        <div class="text-slate-400 flex items-center">Resolved</div>
+                        <div class="text-white text-right">38</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-400 w-[90%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">AI Res</div>
+                        <div class="text-white text-right">85%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-300 w-[85%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Escalated</div>
+                        <div class="text-white text-right">3</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-400 w-[10%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Avg TTR</div>
+                        <div class="text-white text-right">2.4m</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-200 w-[60%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">CSAT</div>
+                        <div class="text-white text-right">4.9</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[98%]"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Sales Advisor -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Sales Advisor</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Revenue & Plans</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center group-hover:bg-rose-500/20 transition-colors">
+                            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <div class="text-slate-400 flex items-center">Leads</div>
+                        <div class="text-white text-right font-bold">89</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 w-[50%]"></div></div></div>
+                        
+                        <div class="text-slate-400 flex items-center">Qualified</div>
+                        <div class="text-white text-right">45</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-400 w-[55%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Conv Rate</div>
+                        <div class="text-white text-right">18%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-300 w-[18%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Pipeline</div>
+                        <div class="text-white text-right">$450k</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-400 w-[70%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Queries</div>
+                        <div class="text-white text-right">312</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-200 w-[60%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Upsells</div>
+                        <div class="text-white text-right">12</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-500 w-[30%]"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Card 6: Booking Agent -->
+                <div class="group border-2 border-white/5 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex flex-col h-full shadow-xl backdrop-blur-sm cursor-default relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-2">
+                        <div class="flex flex-col">
+                            <h3 class="text-sm font-normal text-white tracking-wide">Booking Agent</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Scheduling</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                             <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-y-2 gap-x-2 text-[10px] font-mono w-full">
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-1">Metric</div>
+                        <div class="text-slate-600 uppercase tracking-wider text-[8px] col-span-2 text-right">Live Data</div>
+                        
+                        <div class="text-slate-400 flex items-center">Booked</div>
+                        <div class="text-white text-right font-bold">24</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[45%]"></div></div></div>
+                        
+                        <div class="text-slate-400 flex items-center">Pending</div>
+                        <div class="text-white text-right">8</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 w-[15%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Slots</div>
+                        <div class="text-white text-right">45%</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-300 w-[45%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Resched</div>
+                        <div class="text-white text-right">2</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 w-[5%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Drop-off</div>
+                        <div class="text-white text-right">1</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[2%]"></div></div></div>
+
+                        <div class="text-slate-400 flex items-center">Sync</div>
+                        <div class="text-white text-right">0.2s</div>
+                        <div class="flex items-center"><div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-200 w-[95%]"></div></div></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Init Script -->
+    <script type="module">
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.137';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tech-demo-scene');
+            if(container) {
+                // Initialize Scene with a slight delay to ensure layout stability
+                // This prevents 0x0 canvas issues in the new grid layout
+                setTimeout(async () => {
+                    console.log('Initializing Tech Demo...');
+                    
+                    // Dynamic Import of the isolated Scene logic
+                    const { TechDemoScene } = await import('./assets/js/tech-demo-scene.js');
+                    const scene = new TechDemoScene(container);
+                    
+                    // Optional: Expose to window for debugging
+                    window.demoScene = scene;
+
+                    // --- Mobile UI State Observer ---
+                    const obs = new MutationObserver((mutations) => {
+                        for(const m of mutations) {
+                            if(m.type === 'attributes' && m.attributeName === 'data-system-state') {
+                                const state = document.body.getAttribute('data-system-state');
+                                updateMobileDisplay(state);
+                            }
+                        }
+                    });
+                    obs.observe(document.body, { attributes: true });
+                }, 50);
+
+                function updateMobileDisplay(state) {
+                    const dot = document.getElementById('mobile-status-dot');
+                    const text = document.getElementById('mobile-status-text');
+                    const container = document.getElementById('mobile-system-status');
+                    
+                    if(!dot || !text) return;
+                    
+                    if (state === 'ACTIVE') {
+                        text.innerText = "AI ONLINE";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-emerald-400 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)] transition-all duration-300';
+                        container.style.borderColor = 'rgba(255,255,255,0.1)';
+                    } 
+                    else if (state === 'STANDBY') {
+                        text.innerText = "STANDBY";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-blue-300 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.4)] transition-all duration-300'; // Steady Blue
+                        container.style.borderColor = 'rgba(255,255,255,0.1)';
+                    }
+                    else if (state === 'OFF') {
+                        text.innerText = "OFFLINE";
+                        text.className = 'text-[10px] font-mono font-bold tracking-widest text-red-400 transition-colors duration-300';
+                        dot.className = 'w-1.5 h-1.5 rounded-full bg-red-500 shadow-none transition-all duration-300 opacity-50';
+                        container.style.borderColor = 'rgba(248,113,113,0.2)';
+                    }
+                }
+            }
+        });
+    </script>
+    <elevenlabs-convai agent-id="agent_4501ka281xkpe6e8jzbspgy9qh4d"></elevenlabs-convai>
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+</body>
+</html>

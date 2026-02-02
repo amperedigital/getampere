@@ -242,7 +242,7 @@ export class SystemLink {
                     } else if (payload.type === 'identity_confirmed') {
                         // v2.800: Visual feedback for identity lock
                         this.log("IDENTITY LOCKED", "secure");
-                        if (window.techDemoScene) window.techDemoScene.selectFunction("security");
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
                         
                         setTimeout(() => {
                            if (payload.email) this.triggerInsert("USR: " + payload.email);
@@ -250,10 +250,10 @@ export class SystemLink {
                            else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
                         }, 500);
                     } else if (payload.type === 'auth_req') {
-                        // ODP Challenge - Rotate Halo to Security
+                        // ODP Challenge - Rotate Halo to OTP (Index 6)
                         this.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
                         if (window.techDemoScene) {
-                            window.techDemoScene.selectFunction("security");
+                            window.techDemoScene.selectFunction("otp");
                             // Optional: Make it pulse yellow if possible, but basic select is fine
                         }
                         this.triggerOdpTx();
@@ -263,7 +263,7 @@ export class SystemLink {
                         // Success
                         this.log("✅ IDENTITY: VERIFIED", "secure");
                         this.log(`SECURE_CHANNEL: ${payload.contact || "ESTABLISHED"}`, "secure");
-                        if (window.techDemoScene) window.techDemoScene.selectFunction("security");
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
                         this.triggerOdpRx();
 
                     } else if (payload.type === 'auth_fail') {

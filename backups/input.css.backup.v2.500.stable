@@ -1,0 +1,826 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-letter-reveal {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-100%);
+    clip-path: inset(0 0 100% 0);
+    animation: letterSlideIn 0.8s ease-out forwards;
+  }
+
+  .bg-grid-blue-fade {
+    background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .shadow-card-cyan {
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 50px -12px, rgba(34, 211, 238, 0.12) 0px 0px 0px 1px;
+  }
+}
+
+@keyframes letterSlideIn {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  50% {
+    opacity: 0.5;
+    clip-path: inset(0 0 50% 0);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Custom CSS that was previously in HTML <style> blocks can theoretically move here,
+   but we'll keep the specialized one-offs in HTML for now to minimize migration risk.
+   Global overrides should eventually live here. */
+
+/* Shiny CTA Styles */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --gradient-angle-offset {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --gradient-percent {
+  syntax: "<percentage>";
+  initial-value: 5%;
+  inherits: false;
+}
+
+@property --gradient-shine {
+  syntax: "<color>";
+  initial-value: white;
+  inherits: false;
+}
+
+@layer components {
+  .shiny-cta {
+    --gradient-angle: 0deg;
+    --gradient-angle-offset: 0deg;
+    --gradient-percent: 20%;
+    --gradient-shine: #8484ff;
+    --shadow-size: 2px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    padding: 1.25rem 2.5rem;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    font-weight: 500;
+    color: #ffffff;
+    background: linear-gradient(#000000, #000000) padding-box, conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)), transparent 0%, #1d4ed8 5%, var(--gradient-shine) 15%, #1d4ed8 30%, transparent 40%, transparent 100%) border-box;
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 0 1px #1a1818;
+    outline: none;
+    transition: --gradient-angle-offset 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-percent 800ms cubic-bezier(0.25, 1, 0.5, 1), --gradient-shine 800ms cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s;
+    cursor: pointer;
+    isolation: isolate;
+    outline-offset: 4px;
+    font-family: 'Geist', 'Helvetica Neue', sans-serif;
+    z-index: 0;
+    animation: border-spin 2.5s linear infinite;
+  }
+
+  .shiny-cta:active {
+    transform: translateY(1px);
+  }
+
+  .shiny-cta::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    --size: calc(100% - 6px);
+    --position: 2px;
+    --space: 4px;
+    width: var(--size);
+    height: var(--size);
+    background: radial-gradient(circle at var(--position) var(--position), white 0.5px, transparent 0) padding-box;
+    background-size: var(--space) var(--space);
+    background-repeat: space;
+    mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
+    border-radius: inherit;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .shiny-cta::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(-50deg, transparent, #1d4ed8, transparent);
+    mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+    opacity: 0.6;
+    animation: shimmer 4s linear infinite;
+    animation-play-state: running;
+  }
+
+  .shiny-cta span {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+  }
+
+  .shiny-cta span::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    --size: calc(100% + 1rem);
+    width: var(--size);
+    height: var(--size);
+    box-shadow: inset 0 -1ex 2rem 4px #1d4ed8;
+    opacity: 0;
+    border-radius: inherit;
+    transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
+    animation: breathe 4.5s linear infinite;
+  }
+}
+
+@keyframes border-spin {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.20);
+  }
+}
+
+@layer components {
+  .gradient-blur {
+    position: fixed;
+    z-index: 30;
+    inset: 0 0 auto 0;
+    height: 12%;
+    pointer-events: none;
+  }
+
+  .gradient-blur > div,
+  .gradient-blur::before,
+  .gradient-blur::after {
+    position: absolute;
+    inset: 0;
+  }
+
+  .gradient-blur::before {
+    content: "";
+    z-index: 1;
+    backdrop-filter: blur(0.5px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(5, 5, 5, 1) 12.5%,
+        rgba(5, 5, 5, 1) 25%,
+        rgba(0, 0, 0, 0) 37.5%);
+  }
+
+  .gradient-blur > div:nth-of-type(1) {
+    z-index: 2;
+    backdrop-filter: blur(1px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 12.5%,
+        rgba(5, 5, 5, 1) 25%,
+        rgba(5, 5, 5, 1) 37.5%,
+        rgba(0, 0, 0, 0) 50%);
+  }
+
+  .gradient-blur > div:nth-of-type(2) {
+    z-index: 3;
+    backdrop-filter: blur(2px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 25%,
+        rgba(5, 5, 5, 1) 37.5%,
+        rgba(5, 5, 5, 1) 50%,
+        rgba(0, 0, 0, 0) 62.5%);
+  }
+
+  .gradient-blur > div:nth-of-type(3) {
+    z-index: 4;
+    backdrop-filter: blur(4px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 37.5%,
+        rgba(5, 5, 5, 1) 50%,
+        rgba(5, 5, 5, 1) 62.5%,
+        rgba(0, 0, 0, 0) 75%);
+  }
+
+  .gradient-blur > div:nth-of-type(4) {
+    z-index: 5;
+    backdrop-filter: blur(8px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(5, 5, 5, 1) 62.5%,
+        rgba(5, 5, 5, 1) 75%,
+        rgba(0, 0, 0, 0) 87.5%);
+  }
+
+  .gradient-blur > div:nth-of-type(5) {
+    z-index: 6;
+    backdrop-filter: blur(16px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 62.5%,
+        rgba(5, 5, 5, 1) 75%,
+        rgba(5, 5, 5, 1) 87.5%,
+        rgba(0, 0, 0, 0) 100%);
+  }
+
+  .gradient-blur > div:nth-of-type(6) {
+    z-index: 7;
+    backdrop-filter: blur(32px);
+    mask: linear-gradient(to top,
+        rgba(0, 0, 0, 0) 75%,
+        rgba(5, 5, 5, 1) 87.5%,
+        rgba(5, 5, 5, 1) 100%);
+  }
+
+  .gradient-blur::after {
+    content: "";
+    z-index: 8;
+    backdrop-filter: blur(64px);
+    mask: linear-gradient(to top, rgba(0, 0, 0, 0) 87.5%, rgba(5, 5, 5, 1) 100%);
+  }
+}
+
+/* KEYFRAMES */
+@keyframes amp-ping {
+    75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes ping {
+    75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes arrow-pickup-drop {
+  0% { transform: translateY(0); opacity: 1; }
+  20% { transform: translateY(-15px); opacity: 1; }
+  40% { transform: translateY(25px); opacity: 0; }
+  50% { transform: translateY(-40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@layer base {
+  body {
+    font-family: "Geist", "DM Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scrollbar-gutter: stable;
+  }
+  ::selection {
+    background: rgba(59, 130, 246, 0.2);
+    color: white;
+  }
+}
+
+@layer utilities {
+    /* CRITICAL MOBILE OVERRIDES */
+    @media (max-width: 768px) {
+      .mobile-force-hidden { display: none !important; }
+      .mobile-force-auto-height { height: auto !important; max-height: none !important; overflow: visible !important; }
+      .mobile-force-block { display: block !important; }
+      .mobile-force-relative { position: relative !important; top: auto !important; left: auto !important; transform: none !important; }
+      .mobile-force-tight-spacing { margin-top: 2rem !important; margin-bottom: 2rem !important; padding-top: 2rem !important; padding-bottom: 2rem !important; }
+      .mobile-force-medium-spacing { margin-top: 5rem !important; margin-bottom: 5rem !important; padding-top: 2rem !important; padding-bottom: 2rem !important; }
+      .mobile-force-no-margin { margin: 0 !important; }
+      .mobile-card-gap { margin-bottom: 3rem !important; }
+      .mobile-card-gap:last-child { margin-bottom: 0 !important; }
+    }
+
+    .font-serif-italic {
+      font-family: "Newsreader", serif;
+      font-style: italic;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Force Display Helper from Global.js */
+    .force-smil-display, .force-visible {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+@layer components {
+    /* SVG Distortion Grid Fallback (Mobile) */
+    .distortion-grid-fallback {
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255, 255, 255, 0.1)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    /* Manual Active State for CRM Card */
+    .crm-animated-element, .crm-ping-element { display: none !important; }
+
+    [data-tab-card].active .crm-animated-element,
+    [data-tab-card].in-view .crm-animated-element,
+    [data-tab-card].active .crm-ping-element,
+    [data-tab-card].in-view .crm-ping-element,
+    [data-tab-card].active:hover .crm-animated-element,
+    [data-tab-card].active:hover .crm-ping-element {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    [data-tab-card].active .crm-ping-element,
+    [data-tab-card].in-view .crm-ping-element,
+    [data-tab-card].active:hover .crm-ping-element {
+        animation: amp-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+    }
+
+    /* Smooth Carousel Transitions */
+    .carousel-card { transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+
+    /* Grid/List View Transitions */
+    #projects-container { transition: opacity 0.3s ease; }
+
+    /* Hamburger */
+    .amp-hamburger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .amp-hamburger:focus-visible { outline: 2px solid rgba(37, 99, 235, 0.4); outline-offset: 2px; }
+    .amp-hamburger-line {
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background-color: #0F172A;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .amp-hamburger-line:first-child { transform: translateY(-5px); }
+    .amp-hamburger-line:last-child { transform: translateY(5px); }
+    .amp-hamburger.is-open .amp-hamburger-line:first-child { transform: rotate(45deg); }
+    .amp-hamburger.is-open .amp-hamburger-line:last-child { transform: rotate(-45deg); }
+    .amp-hamburger.is-open .amp-hamburger-line { background-color: #0F172A; }
+
+    /* Text Physics: Flip-In-Place */
+    .hover-flip-text .char {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .group:hover .hover-flip-text .char,
+    .hover-flip-text:hover .char { transform: rotateX(360deg); }
+
+    /* Re-usable Mono Labels */
+    .tag-mono-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .uc-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #60a5fa;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    .group:hover .uc-label, .active .uc-label { opacity: 1; }
+    @media (min-width: 1024px) { .uc-label { font-size: 12px; } }
+
+    /* Icon Physics */
+    .hover-push-down-parent {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hover-push-down {
+      display: inline-block;
+      transition: transform 0.4s linear, opacity 0.3s linear;
+      will-change: transform, opacity;
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: none;
+    }
+    .group:hover .hover-push-down { animation: arrow-pickup-drop 0.8s linear forwards; }
+
+    /* Standard Reveal Animations */
+    .fade-up-element { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
+    .fade-up-element.in-view { opacity: 1; transform: translateY(0); }
+    .reveal-heading { transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal-content { transition: opacity 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+    /* Mobile Reveal Animation */
+    .mobile-reveal:not([data-tab-card data-observer]) {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      filter: blur(10px);
+      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .mobile-reveal:not([data-tab-card data-observer]).in-view {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    .mobile-reveal[data-tab-card data-observer] {
+      opacity: 0;
+      filter: blur(10px);
+      transition: opacity 0.8s ease, filter 0.8s ease;
+    }
+    .mobile-reveal[data-tab-card data-observer].in-view {
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    /* Precision 3D Card Stack & Interaction */
+    [data-tab-card data-observer] {
+      --stack-y: 0px;
+      --rot-y: 12deg;
+      --rot-x: 6deg;
+      transform: translateY(var(--stack-y)) rotateY(var(--rot-y)) rotateX(var(--rot-x)) !important;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease !important;
+      touch-action: manipulation;
+    }
+    [data-tab-card data-observer].stack-1 { --stack-y: -12px; z-index: 18 !important; }
+    [data-tab-card data-observer].stack-2 { --stack-y: -24px; z-index: 17 !important; }
+    [data-tab-card data-observer].stack-3 { --stack-y: -36px; z-index: 16 !important; }
+
+    .group\/cards:hover [data-tab-card data-observer],
+    .group\/cards:active [data-tab-card data-observer],
+    [data-tab-card data-observer]:hover,
+    [data-tab-card data-observer]:active {
+      --rot-y: 0deg !important;
+      --rot-x: 6deg !important;
+    }
+}
+
+/* Specific Fix for iPad Pro 1024px Portrait Layout */
+/* Overrides standard lg: negative positioning */
+@media only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait) {
+  #tech-demo-controls-target {
+      bottom: 10rem !important;
+  }
+}
+
+/* iPad Pro 1024px Portrait Fixes (v2.335) */
+
+@media only screen and (min-width: 1024px) and (max-width: 1024px) and (orientation: portrait) {
+    /* Force Sliders Display (Override xl:hidden which hides >1280, Wait... 1024 is <1280 so it would be visible normally?) */
+    /* With the change to xl:hidden, elements are hidden >= 1280. So for 1024 they are VISIBLE. */
+    /* However, we need to ensure correct positioning below the "Hanging" cluster. */
+    
+    #mobile-sliders-container {
+        display: flex !important;
+        margin-top: 10rem !important; /* Push down to clear the bottom:10rem cluster? No, cluster is bottom:10rem. */
+        /* Cluster is absolute at bottom 10rem. */
+        /* Sliders are relative flow elements at the bottom of the column. */
+        /* We need to ensure they don't overlap. available space is key. */
+        
+        position: absolute;
+        bottom: 2rem;
+        left: 0; 
+        right: 0;
+        z-index: 60;
+        background: transparent;
+    }
+}
+
+/* Card Expander Styles (v1.0.0) */
+/* Triggered by card-expander.js */
+
+/* The expanded card floats over everything in the container */
+
+/* When a card is active, hide the others visually but keep them in flow? */
+/* Actually, the others stay in flow (behind the expanding card potentially) */
+/* But we used a spacer to keep the grid flow. */
+/* So the other cards remain at z-index 10 or whatever. */
+/* The expanded card at z-index 50 covers them. */
+/* We might want to dim them or fade them out to reduce paint cost. */
+.has-active-card .socket-card-container:not(.is-expanded) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Ensure the container preserves 3D space if needed */
+#tech-demo-right-column {
+    transform-style: preserve-3d;
+}
+
+/* --- v2.403 Container Query Engine --- */
+
+/* 1. Define the Context */
+.socket-card-container {
+    container-type: inline-size;
+    container-name: card;
+}
+
+/* 2. Responsive Content Scalers */
+/* These styles only active when card width > 500px (Expanded Mode) */
+@container card (min-width: 500px) {
+    
+    /* Metrics: Switch from list to grid */
+    .cq-cols-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2rem !important;
+    }
+    
+    /* Typography: Scale up */
+    .cq-text-lg {
+        font-size: 1.125rem !important; /* text-lg */
+        line-height: 1.75rem !important;
+    }
+    .cq-title-xl {
+        font-size: 1.5rem !important; /* text-2xl */
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Charts: Full Height */
+    .cq-chart-h-full {
+        height: 100% !important;
+        min-height: 400px !important;
+    }
+
+    /* Layout: Show/Hide Helpers */
+    .cq-show {
+        display: block !important;
+        opacity: 1 !important;
+    }
+    .cq-hide {
+        display: none !important;
+    }
+    
+    /* Spacing: More breathing room */
+    .cq-p-8 {
+        padding: 2rem !important;
+    }
+}
+
+/* --- Alignment Fixes --- */
+/* Override previous expander inset to match new symmetric 2rem desktop gutter */
+
+/* Alignment Override System */
+
+/* 1. Default Grid Padding: REMOVED to allow Tailwind gap-4 control */
+/* Padding now controlled by classes in tech-demo.html (lg:pl-2 etc) */
+
+/* 2. Expanded Card Inset: Match the Grid Padding EXACTLY */
+/* When absolute, 'top: 2rem' puts the TOP edge at 32px. */
+/* The grid content ALSO started at 32px (padding-top: 2rem). */
+/* 'left: 1.5rem' puts LEFT edge at 24px. */
+/* The grid content ALSO started at 24px (padding-left: 1.5rem). */
+
+/* Custom Easing & Scrollbar System */
+
+/* 1. Smooth Easing for Expansion (No Bounce) */
+/* Uses a standard exponential ease-out for a premium, solid feel without overshoot */
+.socket-card-container {
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1) !important; /* "Expo Ease Out" - Smooth, no bounce */
+    transition-property: all !important;
+    transition-duration: 0.6s !important;
+}
+
+/* 2. Top-Right Button Interaction Fix */
+/* Disable the group-hover scaling when expanded to prevent "stuck" state */
+.socket-card-container.is-expanded .group\/button-trigger {
+    transform: none !important;
+}
+.socket-card-container.is-expanded .group\/button-trigger:hover {
+    transform: scale(1.1) !important; /* Only scale on DIRECT hover when expanded */
+    background-color: rgba(255,255,255,0.2) !important;
+}
+
+/* 3. Dark Scrollbars */
+/* Applied globally to scrollable areas */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #334155; /* Slate-700 */
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569; /* Slate-600 */
+}
+
+/* REBUILT EXPANDER RULES (v2.409) */
+/* Consolidation of scattered rules. Removed !important from positioning to allow JS FLIP physics. */
+
+.socket-card-container.is-expanded {
+    position: absolute !important;
+    
+    /* Default Insets (Fallback if JS fails) */
+    /* NOTE: No !important on TOP/BOTTOM/LEFT/RIGHT/WIDTH/HEIGHT to allow JS override for scrolling */
+    top: 2rem;
+    bottom: 2rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    width: auto;
+    height: auto;
+
+    /* Styling & Stacking */
+    z-index: 50 !important;
+    margin: 0 !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    
+    /* Animation */
+    transition-duration: 0.6s !important;
+}
+
+/* --- Tech Demo Specific Styles (Scoped) --- */
+/* Migrated from inline styles in tech-demo.html */
+
+@layer components {
+    /* Mobile/Tablet Mode Visuals (Up to 1024px) */
+    @media (max-width: 1024px) {
+        /* Hide Rings & Needle */
+        #tech-demo-master #halo-ring-outer, 
+        #tech-demo-master #halo-ring-inner, 
+        #tech-demo-master #static-needle {
+            display: none !important;
+        }
+
+        /* Dashed Ring Visibility */
+        #tech-demo-master #halo-ring-dashed {
+            stroke: #475569 !important;
+            opacity: 1 !important;
+            stroke-dasharray: 4 6; 
+        }
+        
+        /* Strict Containment */
+        #tech-demo-master #tech-demo-scene {
+            /* clip-path: circle(46% at center) !important; */
+             clip-path: circle(46% at center) !important; 
+        }
+
+        /* Show Mobile Controls */
+        #tech-demo-master #mobile-sliders-container {
+            display: flex !important;
+        }
+
+        /* Layout Flow Safety */
+        .tech-demo-page,
+        #tech-demo-master {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-y: auto !important;
+        }
+        
+        #tech-demo-master #tech-demo-left-column, 
+        #tech-demo-master #tech-demo-right-column {
+            height: auto !important;
+            overflow-y: visible !important;
+        }
+    }
+
+    /* Tablet/Desktop Range (820px - 1024px) */
+    @media (min-width: 820px) and (max-width: 1024px) {
+        /* Unlock Scrolling */
+        .tech-demo-page, 
+        #tech-demo-master {
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100vh !important;
+        }
+
+        /* Adjust Column Balance (42/58 Split) */
+        #tech-demo-master #tech-demo-left-column { width: 42% !important; }
+        #tech-demo-master #tech-demo-right-column { width: 58% !important; padding-left: 0 !important; padding-right: 1.5rem !important; }
+
+        /* Move Controls UP */
+        #tech-demo-master #tech-demo-controls-target {
+            bottom: 15rem !important;
+        }
+        
+        /* Move Sliders (Cluster) UP */
+        #tech-demo-master #mobile-sliders-container {
+            bottom: 3rem !important;
+        }
+
+        /* Move Live Demo Pill */
+        #tech-demo-master #live-demo-pill {
+            top: 2rem !important;
+            right: 3rem !important;
+        }
+
+        /* Layout Adjustments */
+        #tech-demo-master #tech-demo-header { 
+            padding-left: 2.75rem !important;
+            padding-right: 1.5rem !important;
+            padding-top: 5rem !important;
+        }
+
+        /* Scene Container Box */
+        #tech-demo-master #tech-demo-scene-container {
+            top: 2rem !important;
+            left: 1.5rem !important;
+            width: calc(100% - 2.5rem) !important;
+        }
+    }
+
+    /* iPad Pro Specific (1024px Portrait) */
+    @media (width: 1024px) and (orientation: portrait) {
+        #tech-demo-master #mobile-sliders-container {
+            bottom: 9rem !important;
+        }
+    }
+
+    /* System Power State Transitions (Scoped to #tech-demo-master) */
+    
+    /* Transition Base */
+    #tech-demo-master svg circle, 
+    #tech-demo-master svg path, 
+    #tech-demo-master svg text {
+        transition: all 1.5s ease;
+    }
+    
+    /* Dimmed State Overrides */
+    #tech-demo-master svg.halo-dimmed circle[fill^="#"], 
+    #tech-demo-master svg.halo-dimmed circle[class*="fill-"],
+    #tech-demo-master svg.halo-dimmed path[class*="fill-"] {
+        fill: #334155 !important;
+        filter: none !important;
+        opacity: 0.7;
+    }
+    
+    /* Text "Off" State */
+    #tech-demo-master svg.halo-dimmed text {
+        fill: #475569 !important;
+        text-shadow: none !important;
+        opacity: 0.8;
+    }
+    
+    #tech-demo-master svg.halo-dimmed circle[fill="none"],
+    #tech-demo-master svg.halo-dimmed path[fill="none"] {
+        stroke: #334155 !important;
+        opacity: 0.5;
+    }
+    
+    /* Hide Static Markers Glow */
+    #tech-demo-master svg.halo-dimmed .drop-shadow-\[0_0_8px_rgba\(96\,165\,250\,0\.6\)\] {
+        filter: none !important;
+        fill: #1e293b !important;
+    }
+
+    /* Agent Power States */
+    #tech-demo-master [data-agent-status="standby"] {
+        opacity: 0.5;
+        filter: grayscale(100%) contrast(0.9);
+        transition: all 0.5s ease-out;
+    }
+    
+    #tech-demo-master [data-agent-status="standby"]:hover {
+        opacity: 0.9;
+        filter: grayscale(60%) contrast(1);
+        cursor: not-allowed;
+    }
+    
+    #tech-demo-master [data-agent-status="active"] {
+        opacity: 1;
+        filter: none;
+        transition: all 0.5s ease-out;
+        cursor: default;
+    }
+}

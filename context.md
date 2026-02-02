@@ -70,23 +70,56 @@
 - **Context**: Use for live status, system operational badges, or active indicators (e.g., "Services", "All Systems Normal").
 - **Colors**: `bg-green-500` (Operational), `bg-blue-500` (Active/Info), `bg-red-500` (Offline).
 
-### Animated Status Pill Component (v2.154+)
+### Animated Status Pill Component (Standard Display)
 - **Usage**: Used for live indicators or status badges on tech demos/visualizations.
+- **Visual Style**: "Standard Pill" (Translucent, Flat, Static).
+  - **Concept**: A passive information display, distinct from interactive buttons.
+  - **Appearance**: Flat semi-transparent black body (`bg-black/40`) with a subtle white border (`border-white/10`).
 - **Canonical Markup**:
   ```html
   <div class="absolute z-30 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl
               left-1/2 -translate-x-1/2 top-4 
               lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12">
-      <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
-      <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
+      <!-- Status Dot: Pulses only in Standby -->
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse transition-all duration-300"></span>
+      <!-- Status Text: Mono, Uppercase, 10px -->
+      <span class="text-[10px] uppercase text-blue-300 tracking-widest font-mono transition-colors duration-300">Standby</span>
   </div>
   ```
+- **Typography Standards**:
+  - **Font**: `font-mono`.
+  - **Size**: `text-[10px]` (Strict).
+  - **Case**: `uppercase`.
+  - **Tracking**: `tracking-widest`.
 - **Placement Rules (Responsive)**:
   - **Mobile**: Center strictly (`left-1/2 -translate-x-1/2` top `4`).
   - **Desktop**: Align to the container frame but **bisect the border**.
     - **Vertical**: `top-[inset] -translate-y-1/2` (straddles the line).
     - **Horizontal**: `right-[inset + 2rem]` (visually inset, never flush).
-- **Styling**: `rounded-full` (Standard Skinny), `backdrop-blur`.
+
+### Apple-Like Glass Button (Interactive Control)
+- **Usage**: Interactive toggle switches (e.g., Power Button). Distinct from display pills.
+- **Visual Style**: "Rocker Switch Glass" (Muted Pebble, Physical Snap).
+  - **Concept**: A physical button that feels like it "rocks" or "snaps" when pressed.
+  - **Material**: High-opacity dark glass (`rgba(15, 15, 20, 0.7)`) with strong blur (`blur(20px)`).
+- **Physics Implementation (CSS)**:
+  - **Class**: `.apple-glass` (Base) + `.apple-glass-interactive` (Behavior).
+  - **Glints (Rocker Effect)**: Vertical gradient on `::after` border.
+    - **Top (12 o'clock)**: Hard/Bright (0.8 opacity) - Resting state light catch.
+    - **Bottom (6 o'clock)**: Soft/Dim (0.2 opacity) - Resting state rim.
+  - **Interaction (Snap)**:
+    - **Hover/Active**: Forces a 180° rotation of the pseudo-element `::after`.
+    - **Transition**: `none` (Instant). This creates a "Snap" effect where the Top/Bottom glints instantly swap places, simulating a rocker switch flipping.
+- **Canonical Markup**:
+  ```html
+  <button class="w-[42px] h-[42px] rounded-full flex items-center justify-center 
+                 apple-glass apple-glass-interactive 
+                 text-slate-500 active:scale-95 transition-all">
+      <svg class="w-4 h-4">...</svg> <!-- Icon -->
+  </button>
+  ```
+- **State Handling (JS)**:
+  - For persistent "On" states, add class `.apple-glass-rotated` to lock the glints in the inverted (180°) position.
 
 ### Breadcrumb Header (v2.160+)
 - **Usage**: Header navigation indicator for deep-link/tech-demo pages.
@@ -103,8 +136,7 @@
 - **Rules**:
   - **Start**: Must begin with a leading `/`.
   - **Separators**: Always `text-blue-400`.
-  - **Spacing**: Tightly packed (`gap-2`).
-- **Future Component Requirements**:
+  - **Spacing**: Tightly packed (`gap*Future Component Requirements**:
   - **Semantics**: Must transition to `<nav aria-label="Breadcrumb">` with `<ol>`/`<li>` structure.
   - **Schema**: Must implement `BreadcrumbList` schema (LD-JSON or Microdata).
   - **Accessibility**: Active item requires `aria-current="page"`. Separators should be `aria-hidden="true"`.
@@ -166,6 +198,47 @@
     *   **Logic**: Rendered in `animate()` loop based on `simIntensity` (0.0-1.0).
     *   **Behavior**:
         *   **Ramp Up**: Dots fill from 0-20, Text says "INITIALIZING XX%".
+
+### Ampere AI Chat Interface (v2.600+)
+**Description**: A modular voice/text chat interface integrating ElevenLabs SDK. Features a floating glass transcript window, mic error handling, and a unified status "Pill" that adapts to connection states (Text vs Audio Visualizer).
+**File**: `deploy/assets/js/ai-chat.js`
+**Dependencies**: `@elevenlabs/client` (via `esm.sh`).
+
+**Agent Reconstruction Prompt**:
+> "Create the `AmpereAIChat` class module with the following requirements:
+>
+> 1. **Dependencies**:
+>    - Import `Conversation` from `https://esm.sh/@elevenlabs/client?bundle`.
+>
+> 2. **Architecture**:
+>    - **Constructor**: `new AmpereAIChat(containerId, agentId, options)`.
+>    - **Options**: `startBtnId`, `endBtnId`, `statusTargetId` (The Pill), `onStart/onEnd` callbacks.
+>    - **State Machine**: Track `subStatus` (Connecting, Connected, Error).
+>
+> 3. **UI Component: Glass Transcript Window** (Rendered in `container`):
+>    - **Style**: Fixed positioning or relative embed. `bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl`.
+>    - **Structure**:
+>      - **Header**: Visualizer bars + Close Button.
+>      - **Body**: `#ai-messages` (Scrollable flex col). System messages centered (slate-500), User right (blue bubble), Agent left (slate bubbles).
+>      - **Footer**: Input field + Send button (Text Fallback).
+>
+> 4. **UI Component: Unified Status Pill** (Target: `statusTargetId`):
+>    - **Logic**: The class MUST inject status updates into an external "Pill" container.
+>    - **States**:
+>      - **Connecting**: Text "Connecting..." (Yellow-400) + Dot (`animate-ping`).
+>      - **Connected**: Text "Secure Connection" (Blue-400) + **Visualizer** (Voice UV).
+>      - **Location Safety**: The Visualizer detects its container. If not found in `#voice-visualizer-container`, it automatically moves and re-initializes itself there to prevent layout shifts.
+>      - **Error**: Text "Error" (Red-500).
+>    - **Visualizer (Voice UV)**:
+>      - Create 5 vertical bars (`div.uv-bar`).
+>      - **Idle**: `animate-pulse` (Breathing).
+>      - **Speaking**: `setInterval` loop modifying height (20%-100%) for organic waveform effect.
+>
+> 5. **Critical Logic & Safety**:
+>    - **Mic Permission**: MUST call `navigator.mediaDevices.getUserMedia` *before* `Conversation.startSession`.
+>    - **Fallback**: If Mic throws `NotAllowedError`, unhide the Transcript Window and show a "Text Mode Only" system message.
+>    - **Power Up Delay**: Wait ~1.8s after Mic success before connecting to allow UI start-up animations to finish."
+
         *   **Steady**: All dots lit, Text says "AI ONLINE".
         *   **Ramp Down**: Dots drain 20-0, Text says "POWER OFF XX%".
     *   **Mobile Layout Constraints (Critical)**:
@@ -286,34 +359,39 @@ Correct layering is critical for the "Glass" effect. Attempting to flatten these
 
 ### Glass Control Cluster ("Power Pill")
 
-#### 4. The Expansion Mode (v2.410+ "Active Card")
-**Description**: The "Glass Socket" can expand from a card into a full-column overlay using a FLIP animation technique to ensure zero layout shift.
+#### 4. The Expansion Mode (v2.700+ "Zen Mode")
+**Description**: The "Glass Socket" can expand from a card into a constrained overlay within the right column using a "DOM Reparenting" technique to escape stacking contexts.
 **File**: `deploy/assets/js/card-expander.js`
 **Features**:
-- **FLIP Animation**: Calculates `startRect` (Card) vs `targetRect` (Column) and transitions `transform`/`width`/`height` smoothly.
+- **DOM Escape**: Temporarily moves the card to `document.body` to break free from parent `transform-style: preserve-3d` constraints (which trap `position: fixed` elements).
+- **Strict Coordinate Constraints**: 
+  - Calculates the column's **Content Box** (removing padding/borders) using `getComputedStyle`.
+  - Forces the card to these exact pixel coordinates to prevent bleeding into scrollbars or edges.
 - **Top-Right Dynamic Action**:
   - **Collapsed**: Shows "Expand" icon (Arrows out).
-  - **Expanded**: Swaps to "Close" icon (X) using `viewBox="0 0 24 24"` (Crucial for size fix) and `data-original-icon` preservation.
-- **Spacer Injection**: Leaves a `div.card-spacer` behind to hold the flow document capability.
+  - **Expanded**: Swaps SVG to "Close" icon (X) path; forces `opacity: 1` and `pointer-events: auto` on the `.expand-trigger`.
+- **Placeholder**: Injects a `div.socket-card-placeholder` to maintain document flow.
 
 **Agent Reconstruction Prompt (Expansion Ability)**:
-> "Implement the 'Card Expansion' ability for the Glass Socket component:
+> "Implement the 'Zen Mode' expansion for value-prop cards:
 >
-> 1.  **Javascript Controller (`CardExpander` class)**:
->     -   **Init**: Listen for clicks on `.socket-card-container` or `.expand-trigger`.
->     -   **FLIP Logic**:
->         1.  **First**: Measure `card.getBoundingClientRect()`.
->         2.  **Last**: Apply `position: absolute; inset: 0; z-index: 50;` to fill the parent container (`#tech-demo-right-column`).
->         3.  **Invert**: Calculate `deltaX`, `deltaY`, `scaleX`, `scaleY`.
->         4.  **Play**: Animate from inverted transform to `none` using `transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1)`.
+> 1.  **Javascript Controller (`initCardExpander`)**:
+>     -   **Init**: Listen for clicks on `.socket-card-container`.
+>     -   **Expand Logic**:
+>         1.  **Measure**: `startRect = card.getBoundingClientRect()`.
+>         2.  **Placeholder**: Insert exact-size placeholder in original DOM spot.
+>         3.  **Lift**: `document.body.appendChild(card)` and set `position: fixed`, `top/left/width/height` to `startRect` (!important).
+>         4.  **Target**: Calculate `#tech-demo-right-column` metrics. Subtract padding (`parseFloat(style.paddingLeft)` etc.) to find the **Visual Content Box**.
+>         5.  **Animate**: Transition to the Target coordinates.
 >     -   **Button Logic**:
->         -   When expanding, find the Top-Right button (`.group/button-trigger`).
->         -   Save inner HTML to `data-original-icon`.
->         -   Replace with Close Icon `<path d='M6 18L18 6M6 6l12 12' ...>`.
->         -   **CRITICAL**: Set `<svg viewBox='0 0 24 24'>` to ensure the X is sized correctly (24px) vs the original icon (32px).
+>         -   Select `.expand-trigger` inside the card.
+>         -   Force `opacity: '1'`, `display: 'flex'`, `pointerEvents: 'auto'`.
+>         -   Swap inner SVG path to a Close (X) icon.
 >
-> 2.  **CSS States**:
->     -   `.is-expanded`: `z-index: 50`, `background: rgba(10, 10, 15, 0.95)`, `backdrop-filter: blur(40px)`.
+> 2.  **Collapse Logic**:
+>     -   Find placeholder.
+>     -   Animate back to placeholder's rect.
+>     -   **On Complete**: Move card back to original DOM position (replace placeholder). remove `!important` styles.
 > "
 **Description**: The "Apple Glass" style control interface for interacting with system states (Active/Standby/Off). Features a "Partial Border" aesthetic where borders fade in/out based on light angles, and deep hover physics.
 **File**: `deploy/assets/js/tech-demo-scene.js` (Injected dynamically)
@@ -689,10 +767,25 @@ python3 scripts/smart_replace.py "deploy/index.html" "old_snippet.txt" "new_snip
 - **Usage**: Use for components that must drastically change layout based on their *own size*, not the screen size (e.g., a Card expanding to a Modal).
 - **Tool**: `@tailwindcss/container-queries`.
 - **Constraint**: Only valid when the component is context-aware (e.g., "Zen Mode" dashboard widgets). Do not use for general page layout.
-- **Pattern**:
+- **Pattern (Grid Switch)**:
   1.  **Define**: `.parent { container-type: inline-size; container-name: card; }`
   2.  **Query**: `@container card (min-width: 500px) { ... }`
-  3.  **Result**: Content auto-scales (Grid -> Columns, Text -> Large) without JS resizing logic.
+  3.  **Result**: Content auto-scales (Grid -> Columns) without JS resizing logic.
+
+### Fluid Typography & Motion (CQW)
+- **Problem**: When a card animates from "Small" to "Large" (Zen Mode), using fixed breakpoints (e.g., `text-sm md:text-xl`) causes the text to "snap" size instantly, breaking the smooth zoom illusion.
+- **Solution**: Use **Container Query Width (`cqw`)** units for continuous scaling.
+- **Principle**: `1cqw` = 1% of the container's width. As the container grows pixel-by-pixel, the text grows pixel-by-pixel.
+- **Pattern**:
+  ```html
+  <div class="@container">
+      <!-- Title is always ~5% of card width -->
+      <h3 class="text-[5cqw]">Dynamic Title</h3> 
+      <!-- Subtitle is ~3.5% -->
+      <p class="text-[3.5cqw]">Fluid Subtitle</p> 
+  </div>
+  ```
+- **Benefit**: Text expansion perfectly syncs with the container's easing curve (`cubic-bezier`), creating a cinematic "Optical Zoom" effect.
 
 ## 7. Design System & Aesthetics
 
@@ -743,6 +836,27 @@ You cannot use `border-color`. You must use `background-image` composite masking
 **Group Hover triggers**:
 - **Rule**: Do not put hover effects *only* on the icon. Put `group` on the parent card/container.
 - **CSS**: `group-hover:rotate-180` on the icon allows the user to hover anywhere on the large card to trigger the micro-interaction.
+
+#### 4. LED Glass Range Meter (Standard)
+**Usage**: All data visualization progress bars and range inputs.
+**Philosophy**: Mimics segmented "Power Cluster" glass blocks instead of continuous fluid bars. High-tech, segmented feel.
+**Technique**: Uses CSS Grid/Masking to avoid DOM explosion (1 node vs 20 nodes).
+**Components**:
+1. **Container**: `relative h-3 w-full bg-white/5 rounded-[1px] shadow-inner border border-white/10 overflow-hidden`
+2. **Active Bar**: `absolute inset-y-0 left-0 bg-[color]-500 shadow-[glow]`
+3. **Segment Mask**: An overlay `div` that "cuts" the gaps.
+   ```html
+   <div class="absolute inset-0 z-10 pointer-events-none" 
+        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.8) 8px, rgba(0,0,0,0.8) 10px);">
+   </div>
+   ```
+   *Rationale*: 8px visible block + 2px black gap creates the 10px repeat pattern. Black gap visually erases the bar underneath, creating independent segments.
+
+#### 5. Agent Card Status System (v2.427)
+**Purpose**: Visually distinguishes the active/live agent from background agents in the Power Cluster.
+**Mechanism**: Uses `data-agent-status` attribute on the card container `.socket-card-container`.
+- **`data-agent-status="active"`**: Full opacity, full color glow, interactive.
+- **`data-agent-status="standby"`**: Dimmed (`opacity: 0.5`), Desaturated (`grayscale(100%)`), Reduced Contrast. On hover, visibility improves slightly to hint interactivity.
 
 ### Glass Interaction States
 **Rule**: Glass components (`.glass-element`) should feel physical.

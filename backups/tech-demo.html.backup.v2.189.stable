@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Tech Demo | Get Ampere AI</title>
+    
+    <!-- Import Map for Three.js and Addons -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <!-- Tailwind via CDN for quick proto if css not built, but we have styles.css -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#151b2e' }
+                    },
+                    fontFamily: {
+                        mono: ['Geist Mono', 'monospace'],
+                        sans: ['Geist', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#05060f] text-white overflow-hidden">
+
+    <div class="flex flex-col lg:flex-row h-screen w-full relative">
+        
+        <!-- Left Column: 3D Scene -->
+        <div class="relative w-full lg:w-1/2 h-[80vh] lg:h-full bg-black/20">
+            
+            <!-- Title / Header (Reference: Top Left Over Interactive Element) -->
+            <div class="absolute top-0 left-0 w-full p-8 pt-24 lg:p-20 z-20 pointer-events-none flex justify-between items-start">
+                <div class="max-w-md pt-2">
+                    <!-- Breadcrumb: / Visualization / V-Amp 2.0 -->
+                    <div class="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase mb-6">
+                        <span class="text-blue-400">/</span>
+                        <span class="text-slate-500">Visualization</span>
+                        <span class="text-blue-400">/</span>
+                        <span class="text-blue-400 font-semibold drop-shadow-[0_0_10px_rgba(96,165,250,0.4)]">V-Amp 2.0</span>
+                    </div>
+
+                    <h1 class="text-4xl lg:text-6xl font-light tracking-tight text-white mb-4 drop-shadow-2xl">
+                        <span class="font-bold text-blue-400">AI</span> Neural <span class="block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Architecture</span>
+                    </h1>
+                    <p class="text-sm lg:text-lg text-slate-300 leading-relaxed drop-shadow-lg text-balance">
+                        Explore the autonomous decision making core of Ampere AI.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Live Demo Pill (Style Match: border-radius, padding, alignment) -->
+            <!-- Mobile: Centered. Desktop: Right aligned (Inset from edge). -->
+            <div class="absolute z-30 left-1/2 -translate-x-1/2 top-4 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 lg:right-20 lg:top-12 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                <span class="text-[10px] uppercase text-blue-400 tracking-widest font-mono">Live Demo</span>
+            </div>
+
+            <!-- Scene Container with "Breathing Room" Packaging -->
+            <!-- Inset padding creates the spacing from edge. Rounded corners for key look. -->
+            <!-- Mobile: Larger bottom inset (bottom-24) to frame text outside the "screen". -->
+            <!-- Desktop Layout: Uniform 3rem (12) spacing from outer edges, but 1rem (4) from center for 2rem gutter. -->
+            <div class="absolute top-8 left-4 right-4 bottom-24 lg:top-12 lg:bottom-12 lg:left-12 lg:right-4 overflow-hidden rounded-[2rem] border border-white/5 bg-slate-900/20 shadow-2xl backdrop-blur-sm z-0 group/scene flex items-center justify-center">
+                
+                <!-- MASTER CONTAINER (Center of the Universe) -->
+                <!-- Strictly constrained to the ring size (max 800px). Maintains Aspect Ratio. -->
+                <!-- The Canvas resides INSIDE this to share the exact same bounds. -->
+                <div class="relative w-full max-w-[800px] aspect-square flex items-center justify-center">
+                    
+                    <!-- 1. NESTED SCENE (Background Layer) -->
+                    <!-- Centered within the Ring's coordinate space. Full Size. -->
+                    <!-- Camera Distance Increased to 10.5 to fit visually inside the ring. -->
+                    <div id="tech-demo-scene" 
+                         class="absolute inset-0 z-0 rounded-full pointer-events-auto"
+                         data-standby-timeout="120"
+                         data-standby-warning="30"
+                         data-auto-recenter="2.5"
+                         data-lerp-speed="0.015"
+                         data-min-velocity="0.0025"
+                         data-rotation-rpm="0.17"
+                         data-camera-distance="6.4"></div>
+
+                    <!-- 2. The Ring Overlay (Foreground Layer, Z-20) -->
+                    <!-- Absolute inset-0 of the Master Container -->
+                    <div class="absolute inset-0 pointer-events-none z-20 select-none">
+                         <svg class="w-full h-full" viewBox="0 0 800 800" overflow="visible">
+                        <defs>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="2" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                            <!-- Paths for Curved Text (Radius 320 - Center of Halo) -->
+                            <!-- Upper Semi-Circle: Extended Arc 8oc to 4oc (240deg span) to allow full centering of 9/3 labels -->
+                            <path id="ring-upper" d="M -277,160 A 320,320 0 1,1 277,160" />
+                            <!-- Lower Semi-Circle (Counter-Clockwise: West -> South -> East) -->
+                            <path id="ring-lower" d="M -320,0 A 320,320 0 0,0 320,0" />
+                        </defs>
+
+                        <!-- Base Ring Group (Centered) -->
+                        <g transform="translate(400, 400)">
+                            
+                            <!-- 1. Outer Dashed Ring (Border Line) -->
+                            <circle r="360" fill="none" class="stroke-slate-700/50" stroke-width="1" stroke-dasharray="4 6" />
+                            
+                            <!-- 2. Main Ring Band (Thicker, Visible) -->
+                            <circle r="320" fill="none" class="stroke-blue-500/10" stroke-width="40" />
+                            <circle r="340" fill="none" class="stroke-blue-500/20" stroke-width="1" />
+                            <circle r="300" fill="none" class="stroke-blue-500/20" stroke-width="1" />
+
+                            <!-- MARKERS (Dots Only - Text Moved to Paths) -->
+                            
+                            <!-- 12 O'Clock -->
+                            <g transform="rotate(-90)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 1 O'Clock -->
+                            <g transform="rotate(-60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 2 O'Clock -->
+                            <g transform="rotate(-30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 3 O'Clock -->
+                            <g transform="rotate(0)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 4 O'Clock -->
+                            <g transform="rotate(30)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 5 O'Clock -->
+                            <g transform="rotate(60)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 6 O'Clock (System Logs - ACTIVE) -->
+                            <g transform="rotate(90)"><circle cx="350" cy="0" r="4" class="fill-emerald-500" filter="url(#glow)" /></g>
+                            <!-- 7 O'Clock -->
+                            <g transform="rotate(120)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 8 O'Clock -->
+                            <g transform="rotate(150)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 9 O'Clock -->
+                            <g transform="rotate(180)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 10 O'Clock -->
+                            <g transform="rotate(210)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+                            <!-- 11 O'Clock -->
+                            <g transform="rotate(240)"><circle cx="350" cy="0" r="4" class="fill-blue-500" filter="url(#glow)" /></g>
+
+                            <!-- CURVED TEXT LABELS -->
+                            <style>
+                                .ring-text { font-family: monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+                                .ring-text-blue { fill: #60a5fa; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+                                .ring-text-green { fill: #34d399; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+                            </style>
+
+                            <!-- Upper Hemisphere (Clockwise) -->
+                            <!-- Radius 320. offsets adjusted for 240deg arc (start 8oc) -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="12.5%" text-anchor="middle">Diagnostics</textPath></text>    <!-- 9 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="25%" text-anchor="middle">Reliability</textPath></text>      <!-- 10 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="37.5%" text-anchor="middle">Analysis</textPath></text>       <!-- 11 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="50%" text-anchor="middle">Data Sources</textPath></text>     <!-- 12 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="62.5%" text-anchor="middle">Optimization</textPath></text>   <!-- 1 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="75%" text-anchor="middle">Encryption</textPath></text>       <!-- 2 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-upper" startOffset="87.5%" text-anchor="middle">Neural Config</textPath></text>  <!-- 3 -->
+
+                            <!-- Lower Hemisphere (Counter-Clockwise for Smile) -->
+                            <!-- Radius 320. dy="2" pushes text slightly outward/downward to center on halo band -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="16.66%" text-anchor="middle">Integrity</textPath></text>     <!-- 8 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="33.33%" text-anchor="middle">Throughput</textPath></text>    <!-- 7 -->
+                            <text class="ring-text ring-text-green" dy="2"><textPath href="#ring-lower" startOffset="50%" text-anchor="middle">System Logs</textPath></text>     <!-- 6 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="66.66%" text-anchor="middle">Latency</textPath></text>       <!-- 5 -->
+                            <text class="ring-text ring-text-blue" dy="2"><textPath href="#ring-lower" startOffset="83.33%" text-anchor="middle">Protocol</textPath></text>      <!-- 4 -->
+
+
+                        </g>
+                    </svg>
+                    </div>
+                         
+                </div><!-- End Master Container -->
+
+                <!-- 2D Ring Removed - Migrated to 3D Scene in v2.169 -->
+            </div>
+                 
+             <!-- Overlay Hint (Positioned in the bezel area) -->
+             <!-- Removed in v2.156: Moved to header breadcrumb -->
+        </div>
+
+        <!-- Right Column: Interactive Grid -->
+        <!-- Desktop Padding: 3rem (12) vertical/right, 1rem (4) left to form uniform 2rem center gap. -->
+        <div class="relative w-full lg:w-1/2 h-auto lg:h-full bg-[#05060f] z-10 p-4 lg:pt-12 lg:pb-12 lg:pr-12 lg:pl-4 overflow-y-auto lg:overflow-hidden">
+            
+            <!-- 6-Box Grid (2 cols x 3 rows) -->
+            <div class="grid grid-cols-2 lg:grid-cols-2 grid-rows-3 gap-8 w-full h-full min-h-[600px] lg:min-h-0">
+                
+                <!-- Card 1: System Stats (Existing) -->
+                <div class="border-2 border-white/5 p-6 rounded-2xl bg-white/5 flex flex-col items-center justify-center gap-6 shadow-xl backdrop-blur-sm">
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-[200px]">
+                        <div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Status</div>
+                            <div class="text-lg lg:text-xl font-mono text-white">ONLINE</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Nodes</div>
+                            <div class="text-lg lg:text-xl font-mono text-white">ACTIVE</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">RPM</div>
+                            <div class="text-lg lg:text-xl font-mono text-white">0.17</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Latency</div>
+                            <div class="text-lg lg:text-xl font-mono text-green-400">12ms</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Placeholder -->
+                <div class="group border-2 border-white/5 p-6 rounded-2xl bg-white/[0.02] hover:bg-white/5 transition-colors flex flex-col items-center justify-center gap-3 cursor-pointer border-dashed">
+                    <div class="w-8 h-8 rounded-full bg-white/5 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                        <span class="text-slate-500 group-hover:text-blue-400 text-lg font-light">+</span>
+                    </div>
+                    <span class="text-[10px] text-slate-600 font-mono uppercase tracking-widest group-hover:text-slate-400 transition-colors">Connect</span>
+                </div>
+
+                <!-- Card 3: Placeholder -->
+                <div class="group border-2 border-white/5 p-6 rounded-2xl bg-white/[0.02] hover:bg-white/5 transition-colors flex flex-col items-center justify-center gap-3 cursor-pointer border-dashed">
+                    <div class="w-8 h-8 rounded-full bg-white/5 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                        <span class="text-slate-500 group-hover:text-blue-400 text-lg font-light">+</span>
+                    </div>
+                    <span class="text-[10px] text-slate-600 font-mono uppercase tracking-widest group-hover:text-slate-400 transition-colors">Add Source</span>
+                </div>
+
+                <!-- Card 4: Placeholder -->
+                <div class="group border-2 border-white/5 p-6 rounded-2xl bg-white/[0.02] hover:bg-white/5 transition-colors flex flex-col items-center justify-center gap-3 cursor-pointer border-dashed">
+                    <div class="w-8 h-8 rounded-full bg-white/5 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                        <span class="text-slate-500 group-hover:text-blue-400 text-lg font-light">+</span>
+                    </div>
+                    <span class="text-[10px] text-slate-600 font-mono uppercase tracking-widest group-hover:text-slate-400 transition-colors">Config</span>
+                </div>
+
+                <!-- Card 5: Placeholder -->
+                <div class="group border-2 border-white/5 p-6 rounded-2xl bg-white/[0.02] hover:bg-white/5 transition-colors flex flex-col items-center justify-center gap-3 cursor-pointer border-dashed">
+                    <div class="w-8 h-8 rounded-full bg-white/5 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                        <span class="text-slate-500 group-hover:text-blue-400 text-lg font-light">+</span>
+                    </div>
+                    <span class="text-[10px] text-slate-600 font-mono uppercase tracking-widest group-hover:text-slate-400 transition-colors">Logs</span>
+                </div>
+
+                <!-- Card 6: Placeholder -->
+                <div class="group border-2 border-white/5 p-6 rounded-2xl bg-white/[0.02] hover:bg-white/5 transition-colors flex flex-col items-center justify-center gap-3 cursor-pointer border-dashed">
+                    <div class="w-8 h-8 rounded-full bg-white/5 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                        <span class="text-slate-500 group-hover:text-blue-400 text-lg font-light">+</span>
+                    </div>
+                    <span class="text-[10px] text-slate-600 font-mono uppercase tracking-widest group-hover:text-slate-400 transition-colors">More</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Init Script -->
+    <script type="module">
+        import { IcosahedronScene } from './assets/js/icosahedron-scene.js?v=2.137';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('tech-demo-scene');
+            if(container) {
+                // Initialize Scene with a slight delay to ensure layout stability
+                // This prevents 0x0 canvas issues in the new grid layout
+                setTimeout(async () => {
+                    console.log('Initializing Tech Demo...');
+                    
+                    // Dynamic Import of the isolated Scene logic
+                    const { TechDemoScene } = await import('./assets/js/tech-demo-scene.js');
+                    const scene = new TechDemoScene(container);
+                    
+                    // Optional: Expose to window for debugging
+                    window.demoScene = scene;
+                }, 50);
+            }
+        });
+    </script>
+</body>
+</html>
