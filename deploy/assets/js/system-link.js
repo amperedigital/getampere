@@ -253,6 +253,7 @@ export class SystemLink {
                     } else if (payload.type === 'identity_confirmed') {
                         // v2.800: Visual feedback for identity lock
                         this.log("IDENTITY LOCKED", "secure");
+                        console.log("%c[SystemLink] 🔒 IDENTITY CONFIRMED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("identity");
                             this.triggerRevertToDefault(4000);
@@ -265,6 +266,7 @@ export class SystemLink {
                         }, 500);
                     } else if (payload.type === 'auth_req') {
                         // ODP Challenge - Rotate Halo to OTP (Index 6)
+                        console.log("%c[SystemLink] 🔐 AUTH REQUESTED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         this.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("otp");
@@ -275,6 +277,7 @@ export class SystemLink {
                         this.log(`AUTH_REQ [${payload.channel?.toUpperCase() || 'OTP'}]`, "system");
 
                     } else if (payload.type === 'auth_verify') {
+                        console.log("%c[SystemLink] 🔓 AUTH VERIFIED", "color: #ff00ff; font-weight: bold;");
                         // Success
                         this.log("✅ IDENTITY: VERIFIED", "secure");
                         this.log(`SECURE_CHANNEL: ${payload.contact || "ESTABLISHED"}`, "secure");
@@ -285,6 +288,7 @@ export class SystemLink {
                         this.triggerOdpRx();
 
                     } else if (payload.type === 'auth_fail') {
+                         console.log("%c[SystemLink] ❌ AUTH FAILED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                          this.log("🚫 AUTH_FAIL: " + (payload.reason || "INVALID"), "error");
                          if (this.elements.extractLed) {
                              this.elements.extractLed.classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
@@ -292,6 +296,7 @@ export class SystemLink {
                          }
                     } else if (payload.type === 'memory_retrieved') {
                          
+                         console.log("%c[SystemLink] 💾 MEMORY RETRIEVED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                          // TRIGGER HALO ROTATION -> MEMORY
                          if (window.demoScene) window.demoScene.selectFunction("memory");
                          else if (window.techDemoScene) window.techDemoScene.selectFunction("memory");

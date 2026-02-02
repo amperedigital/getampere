@@ -1,3 +1,7 @@
+
+## v2.830
+- **Chat/Visualizer**: Added high-visibility console logs (Magenta) to `system-link.js` for all `auth_*` and `memory_*` broadcast events. This allows verification of ODP visual signals directly in the browser console.
+- **Backend (Prompt)**: Updated `front-door-agent-prompt.md` to enforce strict "Verify Before Send" logic for OTP. The agent must now explicitly ask the user to confirm the email/phone before firing `auth_request_otp`, preventing hallucinated addresses.
 ## v2.829-explicit-visitor-id-logging
 - **Chat**: Updated `ai-chat.js` with verbose, colorful console logging for `get_web_visitor_id`. Now explicitly logs "🔍 IDENTITY CHECK", "👤 NEW VISITOR", and "✅ ID FOUND" to separate identity logic from standard noise.
 
