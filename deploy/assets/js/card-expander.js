@@ -2,7 +2,7 @@ import { updateSocketPath } from './glass-socket.js';
 
 // V-Amp 2.0 Card Expander Logic
 // Zen Mode Expansion - Column Constrained + Persistent Button + Interactable
-// v2.896: Optimized with Synchronized Redraw (rAF) and Hardware Acceleration
+// v2.897: Optimized for stability (no layout shift) and snappiness (0.4s)
 
 // Icons
 const ICON_EXPAND = `<path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />`;
@@ -30,11 +30,11 @@ export function initCardExpander() {
 }
 
 /**
- * Synchronized Redraw (v2.896)
+ * Synchronized Redraw (v2.897)
  * Loops updateSocketPath during the transition period (roughly 500ms)
  * to ensure Bezier curves stay attached to the changing dimensions.
  */
-function startSyncRedraw(card, duration = 600) {
+function startSyncRedraw(card, duration = 500) {
     const start = performance.now();
     const loop = (now) => {
         const elapsed = now - start;
@@ -55,11 +55,11 @@ function expandCard(card) {
     // 1. Measure BEFORE moving
     const startRect = card.getBoundingClientRect();
 
-    // 2. Create Placeholder
+    // 2. Create Placeholder (v2.897: Added h-full and flex-shrink-0 for stability)
     const placeholder = document.createElement('div');
     placeholder.style.width = startRect.width + 'px';
     placeholder.style.height = startRect.height + 'px';
-    placeholder.className = 'socket-card-placeholder flex-shrink-0 snap-start';
+    placeholder.className = 'socket-card-placeholder flex-shrink-0 snap-start h-full';
     card.parentNode.insertBefore(placeholder, card);
     card._placeholder = placeholder;
 
@@ -67,7 +67,7 @@ function expandCard(card) {
     document.body.appendChild(card);
 
     // 4. Set Initial Position (Fixed at Start)
-    // v2.896: Added will-change for GPU acceleration
+    // v2.897: Applied will-change pre-transition for GPU prep
     card.style.setProperty('position', 'fixed', 'important');
     card.style.setProperty('top', startRect.top + 'px', 'important');
     card.style.setProperty('left', startRect.left + 'px', 'important');
@@ -99,13 +99,12 @@ function expandCard(card) {
 
     // 6. Animate expansion
     card.classList.add('is-expanded');
-    // v2.896: Using specific properties instead of 'all' to reduce paint cost
-    card.style.transition = 'top 0.5s cubic-bezier(0.16, 1, 0.3, 1), left 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.5s cubic-bezier(0.16, 1, 0.3, 1), height 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+    // v2.897: Reduced to 0.4s for increased snappiness
+    card.style.transition = 'top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
 
-    // Trigger Synchronized SVG Redraw
-    startSyncRedraw(card);
-
+    // v2.897: Trigger rAF Redraw synchronized with style change frame
     requestAnimationFrame(() => {
+        startSyncRedraw(card, 500);
         card.style.setProperty('top', targetTop + 'px', 'important');
         card.style.setProperty('left', targetLeft + 'px', 'important');
         card.style.setProperty('width', targetWidth + 'px', 'important');
@@ -140,7 +139,7 @@ function collapseCard(card) {
 
     const endRect = placeholder.getBoundingClientRect();
 
-    // v2.896: Ensure will-change is ready for collapse
+    // v2.897: Ensure will-change is ready for collapse
     card.style.setProperty('will-change', 'top, left, width, height', 'important');
 
     // Animate Back
@@ -151,7 +150,7 @@ function collapseCard(card) {
     card.classList.remove('is-expanded');
 
     // Trigger Synchronized SVG Redraw
-    startSyncRedraw(card);
+    startSyncRedraw(card, 500);
 
     // Restore Icon
     const btn = card.querySelector('.expand-trigger');
@@ -180,4 +179,3 @@ function collapseCard(card) {
 
     card.addEventListener('transitionend', cleanup, { once: true });
 }
-

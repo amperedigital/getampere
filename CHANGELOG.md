@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.897] - 2026-02-03
+- **UX**: Eliminated layout shift during card expansion by stabilizing the placeholder. Tuned animation duration to 0.4s for snappiness.
+
 ## [v2.896] - 2026-02-03
 - **UX**: Optimized "Zen Mode" card expansion with Synchronized Redraw (rAF) and hardware acceleration. Resolves jitter and ensures responsive SVG curves during transitions.
 
