@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.889] - 2026-02-02
+- **Fix (Deployment)**: Enforced update of entry point scripts (`tech-demo-main.js`) to trigger correct HTML cache busting and Cloudflare Worker deployment.
+
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Enforced full release pipeline via `publish.sh` to ensure GitHub tags are pushed, fixing JSDelivr CDN synchronization issues. Verified consistency of HTML asset references.
 
