@@ -282,6 +282,35 @@ export class AmpereAIChat {
                         }
 
                         return id; // Return string directly
+                    },
+                    auth_request_otp: async (parameters) => {
+                        console.log("%c[AmpereAI] 🔐 AUTH REQUEST_OTP CALLED", "color: #f59e0b; font-weight: bold;", parameters);
+
+                        // Emulate Backend Event for Visuals
+                        if (window.systemLink) {
+                            const payload = {
+                                type: 'auth_request_otp',
+                                channel: parameters.channel || 'sms',
+                                contact: parameters.contact
+                            };
+
+                            // Allow SystemLink to handle the logic (Log + Halo Rotation + LED)
+                            // We spoof the incoming WebSocket message structure so shared logic works
+                            // But we can also call specific triggers if needed. 
+                            // The easiest way is to push it into the onmessage handler or use a helper.
+                            // SystemLink doesn't expose onmessage directly, but it acts on 'data'.
+
+                            // Let's manually trigger the visuals to be safe
+                            window.systemLink.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
+                            window.systemLink.triggerOdpTx();
+
+                            if (window.techDemoScene) {
+                                window.techDemoScene.selectFunction("otp");
+                                window.systemLink.triggerRevertToDefault(8000);
+                            }
+                        }
+
+                        return "otp_sent"; // Success response to Agent
                     }
                 }
             });
