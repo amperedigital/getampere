@@ -1,18 +1,14 @@
 @import "tailwindcss";
 
-/* 
 @plugin "tailwind-scrollbar";
-@plugin "@tailwindcss/typography"; 
-*/
+@plugin "@tailwindcss/typography";
 
-/*
 @theme {
   --font-geist: "Geist", sans-serif;
   --font-serif-italic: "Newsreader", serif;
-
-  --breakpoint-short: (max-height: 850px);
 }
-*/
+
+@custom-variant short (@media (max-height: 850px));
 
 @utility animate-letter-reveal {
   display: inline-block;
