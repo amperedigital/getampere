@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.892] - 2026-02-03
+- **UX**: Added `cursor-pointer` to voice chat buttons in `tech-demo.html` for better click feedback.
+
 ## [v2.891] - 2026-02-03
 - **Fix (Deployment)**: Manually updated `tech-demo.html` asset tags to `v2.891` to resolve 404s caused by build system overwrites. Restored correct CSS/JS loading.
 
