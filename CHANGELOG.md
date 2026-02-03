@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.891] - 2026-02-03
+- **Fix (Deployment)**: Manually updated `tech-demo.html` asset tags to `v2.891` to resolve 404s caused by build system overwrites. Restored correct CSS/JS loading.
+
 ## [v2.890] - 2026-02-03
 - **Fix (Deployment)**: Enforced update of CSS and JS assets to trigger correct HTML cache busting. Resolves CSS loading issue due to skipped version tags.
 
