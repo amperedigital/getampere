@@ -57,3 +57,4 @@ window.toggleMenu = function(trigger) {
     button.classList.toggle("is-open", nowOpen);
   }
 };
+// Sync v2.894

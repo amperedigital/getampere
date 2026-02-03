@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.894] - 2026-02-03
+- **DevOps**: Global synchronization of all core CSS and JS assets across `index.html` and `tech-demo.html`.
+
 ## [v2.893] - 2026-02-03
 - **UX**: Added `cursor-pointer` to voice chat buttons in `tech-demo.html` for better click feedback.
 

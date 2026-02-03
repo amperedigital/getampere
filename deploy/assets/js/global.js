@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function() {
-  console.log('[Ampere Global] v1.891 Loaded');
+  console.log('[Ampere Global] v2.894 Loaded');
   // Detect Aura editor or iframe environment
   const isEditor = window.location.hostname.includes('aura.build') || 
                    window.location.href.includes('aura.build') ||
@@ -1088,3 +1088,4 @@ document.addEventListener('DOMContentLoaded', () => {
     slider.addEventListener('input', updateROI);
 })();
 
+// Sync v2.894
