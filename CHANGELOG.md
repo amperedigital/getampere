@@ -1,3 +1,9 @@
+## [v2.884] - 2026-02-02
+- **Fix (Dual Modality)**: Updated `auth_request_otp` client tool to proxy the request to the backend `request-otp` endpoint via `fetch`.
+    - **Web Mode**: Browser triggers instant visuals (Halo/LEDs) -> Calls Backend API -> Backend sends Email/SMS.
+    - **Phone Mode**: ElevenLabs triggers Backend Webhook directly -> Backend sends SMS.
+    - This ensures correct behavior across both modalities while preserving the rich frontend feedback for web users.
+
 ## [v2.883] - 2026-02-02
 - **Fix (Agent)**: Added missing client-side tool definition for `auth_request_otp`. This ensures the ODP visual sequence (halo rotation, LEDs) triggers correctly when the agent requests an OTP.
 

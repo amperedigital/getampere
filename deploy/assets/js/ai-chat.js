@@ -294,13 +294,6 @@ export class AmpereAIChat {
                                 contact: parameters.contact
                             };
 
-                            // Allow SystemLink to handle the logic (Log + Halo Rotation + LED)
-                            // We spoof the incoming WebSocket message structure so shared logic works
-                            // But we can also call specific triggers if needed. 
-                            // The easiest way is to push it into the onmessage handler or use a helper.
-                            // SystemLink doesn't expose onmessage directly, but it acts on 'data'.
-
-                            // Let's manually trigger the visuals to be safe
                             window.systemLink.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
                             window.systemLink.triggerOdpTx();
 
@@ -310,7 +303,35 @@ export class AmpereAIChat {
                             }
                         }
 
-                        return "otp_sent"; // Success response to Agent
+                        // Perform the Backend Call (Client-Side Proxy)
+                        try {
+                            const apiHost = "https://memory-api.tight-butterfly-7b71.workers.dev";
+
+                            // Ensure session_id is present. Fallback to conversation ID if agent forgot it.
+                            const payload = {
+                                ...parameters,
+                                session_id: parameters.session_id || this.conversation?.id || "unknown_session"
+                            };
+
+                            console.log("[AmpereAI] Proxying OTP Request to Backend:", payload);
+
+                            const res = await fetch(`${apiHost}/auth/request-otp`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(payload)
+                            });
+
+                            if (!res.ok) {
+                                console.error("ODP Backend Call Failed", res.status);
+                                // We still return success to the agent so the flow continues smoothly
+                                // The user will check their phone/email, and if it fails, they will say "I didn't get it"
+                                return "otp_sent_with_warning";
+                            }
+                            return "otp_sent";
+                        } catch (err) {
+                            console.error("ODP Network Error", err);
+                            return "otp_network_error";
+                        }
                     }
                 }
             });
