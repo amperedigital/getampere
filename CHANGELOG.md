@@ -1,6 +1,9 @@
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
 
+## [v2.898] - 2026-02-03
+- **UX**: Implemented "Blur Cross-Fade" optimization for card transitions. Temporarily disables `backdrop-filter` during movement to ensure raw 60fps performance, restoring it upon completion.
+
 ## [v2.897] - 2026-02-03
 - **UX**: Eliminated layout shift during card expansion by stabilizing the placeholder. Tuned animation duration to 0.4s for snappiness.
 

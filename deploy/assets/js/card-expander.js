@@ -9,6 +9,22 @@ const ICON_EXPAND = `<path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3
 const ICON_COLLAPSE = `<path d="M4 14h6v6" /><path d="M20 10h-6V4" /><path d="M14 10l7-7" /><path d="M10 21l-7-7" />`; // Approximate inward or just use X
 const ICON_CLOSE = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`;
 
+/**
+ * Performance Mode (v2.898)
+ * Disables expensive backdrop-filter during movement to ensure 60fps.
+ */
+function enablePerformanceMode(card) {
+    card.style.setProperty('backdrop-filter', 'none', 'important');
+    card.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+    card.style.setProperty('background-color', 'rgba(15, 15, 20, 0.95)', 'important');
+}
+
+function disablePerformanceMode(card) {
+    card.style.removeProperty('backdrop-filter');
+    card.style.removeProperty('-webkit-backdrop-filter');
+    card.style.removeProperty('background-color');
+}
+
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
     const cards = document.querySelectorAll('.socket-card-container');
@@ -77,6 +93,9 @@ function expandCard(card) {
     card.style.zIndex = '9999';
     card.style.margin = '0';
 
+    // v2.898: Enable Performance Mode (No Blur) before we start moving
+    enablePerformanceMode(card);
+
     // Force Layout
     void card.offsetWidth;
 
@@ -128,6 +147,13 @@ function expandCard(card) {
             svg.innerHTML = ICON_CLOSE;
         }
     }
+
+    // v2.898: Restore blur after transition
+    const restoreBlur = () => {
+        disablePerformanceMode(card);
+        card.removeEventListener('transitionend', restoreBlur);
+    };
+    card.addEventListener('transitionend', restoreBlur);
 }
 
 function collapseCard(card) {
@@ -139,7 +165,8 @@ function collapseCard(card) {
 
     const endRect = placeholder.getBoundingClientRect();
 
-    // v2.897: Ensure will-change is ready for collapse
+    // v2.898: Enable Performance Mode for collapse
+    enablePerformanceMode(card);
     card.style.setProperty('will-change', 'top, left, width, height', 'important');
 
     // Animate Back
