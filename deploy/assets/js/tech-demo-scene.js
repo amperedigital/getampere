@@ -17,7 +17,7 @@ export class TechDemoScene {
         // v2.780: Updated to <= 1024 to INCLUDE 1024px (iPad Pro) in mobile logic per request.
         this.isMobile = (window.innerWidth <= 1024);
 
-        console.log("Tech Demo Scene Initialized - v2.882 (Tailwind v4 Migration Complete)");
+        console.log("Tech Demo Scene Initialized - v2.895 (Tailwind v4 Migration Complete)");
 
         this.systemState = 'STANDBY'; // ACTIVE, STANDBY, OFF
         this.lightTargets = { ambient: 0.2, spot: 8.0, core: 0.4 }; // Target intensities
@@ -2347,3 +2347,4 @@ export class TechDemoScene {
     }
 }
 // Force update v2.746
+// Sync v2.895
