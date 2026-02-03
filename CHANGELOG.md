@@ -1,8 +1,14 @@
+## [v2.883] - 2026-02-02
+- **Fix (Agent)**: Added missing client-side tool definition for `auth_request_otp`. This ensures the ODP visual sequence (halo rotation, LEDs) triggers correctly when the agent requests an OTP.
+
 ## [v2.882] - 2026-02-02
 - **Sync**: Updated internal version string in `tech-demo-scene.js` to match the current release (v2.882).
 - **Deployment**: Re-running publication to ensure all assets and source files are committed and deployed correctly to Cloudflare.
 
 ## [v2.881] - 2026-02-02
+- **Fix (Tailwind v4)**: Completed migration by restoring missing @plugin and @theme blocks.
+- **Fix (CSS)**: Migrated legacy height-based breakpoints to the new v4 @custom-variant short syntax, resolving build warnings.
+- **Cleanup**: Removed stale metadata files and verified build performance (~230ms).
 - **Fix (Tailwind v4)**: Completed migration by restoring missing @plugin and @theme blocks.
 - **Fix (CSS)**: Migrated legacy height-based breakpoints to the new v4 @custom-variant short syntax, resolving build warnings.
 - **Cleanup**: Removed stale metadata files and verified build performance (~230ms).
