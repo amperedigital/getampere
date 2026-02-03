@@ -1,5 +1,8 @@
+import { updateSocketPath } from './glass-socket.js';
+
 // V-Amp 2.0 Card Expander Logic
 // Zen Mode Expansion - Column Constrained + Persistent Button + Interactable
+// v2.896: Optimized with Synchronized Redraw (rAF) and Hardware Acceleration
 
 // Icons
 const ICON_EXPAND = `<path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" />`;
@@ -9,31 +12,49 @@ const ICON_CLOSE = `<path stroke-linecap="round" stroke-linejoin="round" stroke-
 export function initCardExpander() {
     const track = document.getElementById('tech-demo-card-track');
     const cards = document.querySelectorAll('.socket-card-container');
-    
+
     if (!track || !cards.length) return;
 
     cards.forEach(card => {
         card.addEventListener('click', (e) => {
-             // Allow clicks on our expand button
-             if(e.target.closest('a, button') && !e.target.closest('.expand-trigger')) return;
-             
-             if(card.classList.contains('is-expanded')) {
-                 collapseCard(card);
-             } else {
-                 expandCard(card);
-             }
+            // Allow clicks on our expand button
+            if (e.target.closest('a, button') && !e.target.closest('.expand-trigger')) return;
+
+            if (card.classList.contains('is-expanded')) {
+                collapseCard(card);
+            } else {
+                expandCard(card);
+            }
         });
     });
 }
 
+/**
+ * Synchronized Redraw (v2.896)
+ * Loops updateSocketPath during the transition period (roughly 500ms)
+ * to ensure Bezier curves stay attached to the changing dimensions.
+ */
+function startSyncRedraw(card, duration = 600) {
+    const start = performance.now();
+    const loop = (now) => {
+        const elapsed = now - start;
+        updateSocketPath(card);
+        if (elapsed < duration) {
+            requestAnimationFrame(loop);
+        }
+    };
+    requestAnimationFrame(loop);
+}
+
 function expandCard(card) {
     if (window.innerWidth < 1024) return;
-    
+
     const container = document.getElementById('tech-demo-right-column');
-    
+    if (!container) return;
+
     // 1. Measure BEFORE moving
     const startRect = card.getBoundingClientRect();
-    
+
     // 2. Create Placeholder
     const placeholder = document.createElement('div');
     placeholder.style.width = startRect.width + 'px';
@@ -46,21 +67,23 @@ function expandCard(card) {
     document.body.appendChild(card);
 
     // 4. Set Initial Position (Fixed at Start)
+    // v2.896: Added will-change for GPU acceleration
     card.style.setProperty('position', 'fixed', 'important');
     card.style.setProperty('top', startRect.top + 'px', 'important');
     card.style.setProperty('left', startRect.left + 'px', 'important');
     card.style.setProperty('width', startRect.width + 'px', 'important');
     card.style.setProperty('height', startRect.height + 'px', 'important');
+    card.style.setProperty('will-change', 'top, left, width, height', 'important');
     card.style.zIndex = '9999';
     card.style.margin = '0';
-    
+
     // Force Layout
     void card.offsetWidth;
 
     // 5. Calculate Target (Container CONTENT Box)
     const containerRect = container.getBoundingClientRect();
     const computedStyle = window.getComputedStyle(container);
-    
+
     const pLeft = parseFloat(computedStyle.paddingLeft) || 0;
     const pRight = parseFloat(computedStyle.paddingRight) || 0;
     const pTop = parseFloat(computedStyle.paddingTop) || 0;
@@ -68,7 +91,7 @@ function expandCard(card) {
     const bLeft = parseFloat(computedStyle.borderLeftWidth) || 0;
     const bTop = parseFloat(computedStyle.borderTopWidth) || 0;
 
-    // Constrain to the padding box (visual content area) to avoid bleeding into scrollbars/gutters
+    // Constrain to the padding box (visual content area)
     const targetLeft = containerRect.left + bLeft + pLeft;
     const targetTop = containerRect.top + bTop + pTop;
     const targetWidth = container.clientWidth - pLeft - pRight;
@@ -76,45 +99,50 @@ function expandCard(card) {
 
     // 6. Animate expansion
     card.classList.add('is-expanded');
-    card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-    
+    // v2.896: Using specific properties instead of 'all' to reduce paint cost
+    card.style.transition = 'top 0.5s cubic-bezier(0.16, 1, 0.3, 1), left 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.5s cubic-bezier(0.16, 1, 0.3, 1), height 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+
+    // Trigger Synchronized SVG Redraw
+    startSyncRedraw(card);
+
     requestAnimationFrame(() => {
         card.style.setProperty('top', targetTop + 'px', 'important');
         card.style.setProperty('left', targetLeft + 'px', 'important');
         card.style.setProperty('width', targetWidth + 'px', 'important');
         card.style.setProperty('height', targetHeight + 'px', 'important');
-        card.style.removeProperty('border-radius'); 
+        card.style.removeProperty('border-radius');
     });
 
     // 7. Swap Icon & Ensure Visibility
     const btn = card.querySelector('.expand-trigger');
-    if(btn) {
+    if (btn) {
         btn.style.opacity = '1';
         btn.style.display = 'flex';
         btn.style.pointerEvents = 'auto';
-        
+
         // Find SVG and swap path
         const svg = btn.querySelector('svg');
-        if(svg) {
-            // Store original
-            if(!btn.dataset.originalIcon) {
+        if (svg) {
+            if (!btn.dataset.originalIcon) {
                 btn.dataset.originalIcon = svg.innerHTML;
             }
-            // Swap to Close (X)
-            svg.innerHTML = ICON_CLOSE; 
+            svg.innerHTML = ICON_CLOSE;
         }
     }
 }
 
 function collapseCard(card) {
     const placeholder = card._placeholder;
-    if(!placeholder) {
+    if (!placeholder) {
         card.classList.remove('is-expanded');
         return;
     }
-    
+
     const endRect = placeholder.getBoundingClientRect();
-    
+
+    // v2.896: Ensure will-change is ready for collapse
+    card.style.setProperty('will-change', 'top, left, width, height', 'important');
+
     // Animate Back
     card.style.setProperty('top', endRect.top + 'px', 'important');
     card.style.setProperty('left', endRect.left + 'px', 'important');
@@ -122,33 +150,34 @@ function collapseCard(card) {
     card.style.setProperty('height', endRect.height + 'px', 'important');
     card.classList.remove('is-expanded');
 
+    // Trigger Synchronized SVG Redraw
+    startSyncRedraw(card);
+
     // Restore Icon
     const btn = card.querySelector('.expand-trigger');
-    if(btn && btn.dataset.originalIcon) {
+    if (btn && btn.dataset.originalIcon) {
         const svg = btn.querySelector('svg');
-        if(svg) svg.innerHTML = btn.dataset.originalIcon;
-        // Revert opacity/display as well if needed? 
-        // For now, removing 'is-expanded' class usually handles CSS, but we set inline styles.
-        // We should clear the inline styles we set in expandCard.
+        if (svg) svg.innerHTML = btn.dataset.originalIcon;
         btn.style.opacity = '';
         btn.style.display = '';
         btn.style.pointerEvents = '';
     }
 
     const cleanup = () => {
-        if(card.classList.contains('is-expanded')) return;
+        if (card.classList.contains('is-expanded')) return;
 
         // Reset Styles
-        card.style.cssText = ''; 
-        
+        card.style.cssText = '';
+
         // Return to DOM
-        if(placeholder.parentNode) {
+        if (placeholder.parentNode) {
             placeholder.parentNode.insertBefore(card, placeholder);
             placeholder.remove();
         }
         card._placeholder = null;
         card.removeEventListener('transitionend', cleanup);
     };
-    
+
     card.addEventListener('transitionend', cleanup, { once: true });
 }
+
