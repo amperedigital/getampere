@@ -283,56 +283,6 @@ export class AmpereAIChat {
 
                         return id; // Return string directly
                     },
-                    auth_request_otp: async (parameters) => {
-                        console.log("%c[AmpereAI] 🔐 AUTH REQUEST_OTP CALLED", "color: #f59e0b; font-weight: bold;", parameters);
-
-                        // Emulate Backend Event for Visuals
-                        if (window.systemLink) {
-                            const payload = {
-                                type: 'auth_request_otp',
-                                channel: parameters.channel || 'sms',
-                                contact: parameters.contact
-                            };
-
-                            window.systemLink.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
-                            window.systemLink.triggerOdpTx();
-
-                            if (window.techDemoScene) {
-                                window.techDemoScene.selectFunction("otp");
-                                window.systemLink.triggerRevertToDefault(8000);
-                            }
-                        }
-
-                        // Perform the Backend Call (Client-Side Proxy)
-                        try {
-                            const apiHost = "https://memory-api.tight-butterfly-7b71.workers.dev";
-
-                            // Ensure session_id is present. Fallback to conversation ID if agent forgot it.
-                            const payload = {
-                                ...parameters,
-                                session_id: parameters.session_id || this.conversation?.id || "unknown_session"
-                            };
-
-                            console.log("[AmpereAI] Proxying OTP Request to Backend:", payload);
-
-                            const res = await fetch(`${apiHost}/auth/request-otp`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify(payload)
-                            });
-
-                            if (!res.ok) {
-                                console.error("ODP Backend Call Failed", res.status);
-                                // We still return success to the agent so the flow continues smoothly
-                                // The user will check their phone/email, and if it fails, they will say "I didn't get it"
-                                return "otp_sent_with_warning";
-                            }
-                            return "otp_sent";
-                        } catch (err) {
-                            console.error("ODP Network Error", err);
-                            return "otp_network_error";
-                        }
-                    }
                 }
             });
 

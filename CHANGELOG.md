@@ -1,3 +1,6 @@
+## [v2.885] - 2026-02-02
+- **Refactor**: Reverted client-side ODP proxies (`auth_request_otp`). Access to tools on the web interface now strictly adheres to the standard WebSocket callback architecture (`system-link.js`), ensuring "real functionality" without client-side emulation.
+
 ## [v2.884] - 2026-02-02
 - **Fix (Dual Modality)**: Updated `auth_request_otp` client tool to proxy the request to the backend `request-otp` endpoint via `fetch`.
     - **Web Mode**: Browser triggers instant visuals (Halo/LEDs) -> Calls Backend API -> Backend sends Email/SMS.
