@@ -1,7 +1,9 @@
+## [v2.900] - 2026-02-04
+- **Fix**: Standardized backend workspace fallback to `emily` for unified tool call synchronization.
+- **Fix**: Corrected terminology from "ODP" to "OTP" and fixed broken visualizer method calls.
+- **Observability**: Strengthened backend broadcasting with `ctx.waitUntil` and comprehensive error handling.
+
 ## [v2.899] - 2026-02-04
-- **Refactor**: Corrected "ODP" terminology to "OTP" (One-Time Password / Over-The-Phone) across visualizers and metadata.
-- **Fix**: Resolved "Emily" workspace mismatch in SystemLink to restore real-time Halo rotation during tool calls.
-- **Observability**: Enhanced frontend console logging for WebSocket communication and tool executions.
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.

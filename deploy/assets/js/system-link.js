@@ -266,15 +266,15 @@ export class SystemLink {
                             else if (payload.visitor_id) this.triggerInsert("ID: VISITOR_COOKIE");
                         }, 500);
                     } else if (payload.type === 'auth_req' || payload.type === 'auth_request_otp') {
-                        // ODP Challenge - Rotate Halo to OTP (Index 6)
+                        // OTP Challenge - Rotate Halo to OTP (Index 6)
                         console.log("%c[SystemLink] 🔐 AUTH REQUESTED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
-                        this.log("⚠️ IDENTITY_CHALLENGE: ODP REQUIRED", "alert");
+                        this.log("⚠️ IDENTITY_CHALLENGE: OTP REQUIRED", "alert");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("otp");
                             // Optional: Make it pulse yellow if possible, but basic select is fine
                             this.triggerRevertToDefault(8000); // Longer wait for user to OTP
                         }
-                        this.triggerOdpTx();
+                        this.triggerOtpTx();
                         this.log(`AUTH_REQ [${payload.channel?.toUpperCase() || 'OTP'}]`, "system");
 
                     } else if (payload.type === 'auth_verify') {
@@ -286,7 +286,7 @@ export class SystemLink {
                             window.techDemoScene.selectFunction("identity");
                             this.triggerRevertToDefault(4000);
                         }
-                        this.triggerOdpRx();
+                        this.triggerOtpRx();
 
                     } else if (payload.type === 'auth_fail') {
                         console.log("%c[SystemLink] ❌ AUTH FAILED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
@@ -317,7 +317,7 @@ export class SystemLink {
                         this.log("TRANSFER: " + (payload.reason || "AGENT_BRIDGE").toUpperCase(), "system");
                         // Trigger visual feedback (Green Pulse + Identity Mode)
                         if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
-                        this.triggerOdpRx();
+                        this.triggerOtpRx();
                         setTimeout(() => this.triggerExtract("HANDOFF_PKT"), 200);
                     }
                 } catch (e) {
