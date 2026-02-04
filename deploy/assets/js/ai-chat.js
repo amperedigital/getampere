@@ -233,7 +233,7 @@ export class AmpereAIChat {
             else timeGreeting = "Good evening";
 
             console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
-                web_visitor_id: visitorId,
+                visitor_id: visitorId,
                 user_time_greeting: timeGreeting
             });
 
@@ -241,7 +241,7 @@ export class AmpereAIChat {
                 agentId: this.agentId,
                 // v2.860+v2.871: Push context immediately (ID + Greeting)
                 dynamicVariables: {
-                    web_visitor_id: visitorId,
+                    visitor_id: visitorId,
                     user_time_greeting: timeGreeting
                 },
                 onConnect: () => this.handleConnect(),

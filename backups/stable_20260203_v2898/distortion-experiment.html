@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Distortion Grid Experiment</title>
+    <!-- Tailwind CSS (via CDN for this experiment) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0a0b14', // Base background
+                            800: '#141621',
+                            700: '#1e202e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; overflow-x: hidden; background-color: #0a0b14; color: white; }
+        
+        /* Local Canvas for each card */
+        .distortion-canvas-local {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind content */
+            pointer-events: none; /* Let clicks pass through */
+            border-radius: inherit; /* Follow card radius if any */
+            opacity: 0.6; /* Slight fade for subtlety */
+        }
+
+        main {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        ._itemsContainer_ogirg_70 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px; /* Increased to make divider clearly visible */
+            background-color: rgba(255, 255, 255, 0.2); /* Brighter divider */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem;
+        }
+
+        ._keyCard_ogirg_83 {
+            background-color: #0a0b14; /* Match body */
+            padding: 2.5rem;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden; 
+        }
+
+        /* Gradient Overlay to soften dots */
+        ._keyCard_ogirg_83::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 5; /* Above canvas (0), below content (10) */
+            /* REDUCED Vignette for better low-light visibility */
+            background: radial-gradient(circle at center, rgba(10, 11, 20, 0) 0%, rgba(10, 11, 20, 0.85) 100%);
+            pointer-events: none;
+        }
+        
+        /* Ensure content sits above canvas */
+        ._keyCard_ogirg_83 > *:not(canvas) {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Let mouse interact with card container */
+        }
+        
+        ._keyCard_ogirg_83._empty_ogirg_181 {
+            /* Empty card style */
+            background-color: #0a0b14; 
+        }
+
+        ._textContainer_ogirg_104 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        ._number_ogirg_224 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: white;
+            margin: 0;
+        }
+        
+        ._unit_ogirg_234 {
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        ._text_ogirg_104 {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        ._logo_ogirg_101 {
+            color: #334155;
+            align-self: flex-end;
+            margin-bottom: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            ._itemsContainer_ogirg_70 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <!-- User Provided Snippet Wrapped -->
+        <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v2.894/deploy/assets/js/distortion-grid.js"></script>
+
+        <div class="_itemsContainer_ogirg_70">
+            <!-- Card 1: Defaults (uses variant 1 color) -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">100</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">cumulative years of expertise</p>
+                </div>
+            </div>
+
+            <!-- Card 2 (Empty): Large Pixels -->
+            <div data-object="grid" 
+                 data-grid-spacing="12" 
+                 data-dot-radius="2.5" 
+                 data-idle-alpha="0.08"
+                 class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
+
+            <!-- Card 3: Dense Grid, Red Interaction -->
+            <div data-object="grid"
+                 data-grid-spacing="5"
+                 data-dot-radius="0.8"
+                 data-hover-color="255, 200, 200"
+                 class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">16</p>
+                        <span class="_unit_ogirg_234">%</span>
+                    </div>
+                    <p class="_text_ogirg_104">organic growth</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">600</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">satisfied clients</p>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div data-object="grid" class="_keyCard_ogirg_83">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" class="_logo_ogirg_101">
+                    <path d="M19.839.3h-6.045c-.193 0-.322.134-.322.267v6.865c0 .133-.128.2-.193.066L6.077.368C6.077.3 6.012.3 5.948.3H.546C.353.3.225.434.225.567v5.465c0 .067 0 .134.064.134l14.02 14.062c0 .066.064.066.128.066h5.466c.193 0 .322-.133.322-.333V.567c-.065-.133-.193-.266-.386-.266M6.591 13.636H.546c-.193 0-.321.134-.321.267v6.065c0 .2.128.333.321.333h6.045c.193 0 .322-.133.322-.267V13.97c0-.2-.193-.334-.322-.334"></path>
+                </svg>
+                <div>
+                    <div class="_textContainer_ogirg_104">
+                        <p class="_number_ogirg_224">1200</p>
+                        <span class="_unit_ogirg_234">+</span>
+                    </div>
+                    <p class="_text_ogirg_104">employees around the world</p>
+                </div>
+            </div>
+
+            <!-- Card 6 (Empty) -->
+            <div data-object="grid" class="_keyCard_ogirg_83 _empty_ogirg_181"></div>
+            
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             if(window.DistortionGrid) {
+                 window.DistortionGrid.initAll('[data-object="grid"]');
+             }
+        });
+    </script>
+</body>
+</html>

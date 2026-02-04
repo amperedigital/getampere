@@ -27,6 +27,15 @@
   4. **VERIFY**: Check output.
 - **Safe HTML Usage**: Use `python3 scripts/safe_replace_html.py` for complex grid/layout updates to prevent breakage.
 
+## 3b. Backend Deployment Workflow (Memory API)
+- **Scope**: All changes in `getampere-antigravity-backend/memory-api`.
+- **Process**:
+  1.  Edit files locally.
+  2.  **EXECUTE**: `memory-api/scripts/publish.sh vX.Y.Z`
+  3.  **VERIFY**: Check `wrangler tail` logs for successful deployment.
+- **Rule**: If you touch both Frontend and Backend, you MUST run **BOTH** publish scripts.
+- **Strictness**: DO NOT use `wrangler deploy` manually. Use the script to ensure Backup, Type Gen, and Git Tags are synchronized.
+
 ## 4. Core Systems
 
 ### Modal System (v1.0.111+)
@@ -648,7 +657,54 @@ Control the physics interaction using `data-wave-type="..."`.
     *   **Auto-Recenter**: Must use `initialCameraPos` clone or config value, NEVER hardcoded defaults (e.g., `z=5`).
     *   **Resize**: Camera zoom must adapt responsively but respect the `isMobile` multiplier (`1.6x`).
 
-## 7. Performance & Scroll Standards (Mobile)
+### Visualizer Architecture & Signal Flow (v2.898+)
+**Description**: Detailed blueprint of the data propagation chain from AI agent tool calls to real-time 3D visual feedback.
+
+#### 1. The Trigger (ElevenLabs Webhooks)
+When the AI agent (e.g., during a voice session) executes a function call—such as **OTP Verification** (`auth_request_otp`) or **Memory Retrieval** (`memory_query`)—it sends a POST request to the backend.
+
+#### 2. The Switchboard (Cloudflare Worker & Durable Object)
+The `memory-api` worker receives the request and concurrently initiates a visual broadcast:
+- It targets a **Durable Object** (`MEMORY_CACHE`) scoped to a specific `workspace` (default: `emily`).
+- This DO maintains all active WebSocket connections for that workspace's visualizer clients.
+- Logic: `env.MEMORY_CACHE.get(workspace).broadcast(payload)`
+
+#### 3. The Conduit (WebSocket / SystemLink)
+The frontend `SystemLink` class (`assets/js/system-link.js`) maintains the live connection:
+- **Connection**: `wss://memory-api.../memory/visualizer?workspace=emily`.
+- **Latency**: Sub-100ms delivery ensures visuals update before or synchronized with the agent's voice response.
+
+#### 4. The Visual Conductors
+Once the browser receives the message, `SystemLink` triggers the specific UI components:
+
+| Feature | Signal Type | UI Action | Component |
+| :--- | :--- | :--- | :--- |
+| **Memory** | `memory_added` | Rotate to Index 0 | `HaloRotator` |
+| **Identity** | `identity_confirmed` | Rotate to Index 2 | `HaloRotator` |
+| **OTP** | `auth_request_otp` | Rotate to Index 6 + LED Flash | `HaloRotator` / `SystemLink` |
+| **Transfer** | `handoff` | Rotate to Index 4 | `HaloRotator` |
+
+#### 5. Logic Flow Diagram
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent as ElevenLabs Agent
+    participant Worker as Cloudflare Worker (memory-api)
+    participant DO as Durable Object (MemoryCache)
+    participant Front as Frontend (SystemLink)
+    participant Halo as 3D Halo Rotator
+
+    User->>Agent: "Verify me via SMS"
+    Agent->>Worker: POST /auth/request-otp
+    Worker->>DO: Internal Broadcast (Viz)
+    DO-->>Front: WebSocket: { type: 'auth_request_otp' }
+    Front->>Halo: selectFunction("otp")
+    Halo-->>Front: Animate Rotation to Index 6
+    Front->>User: LED Flashes + Hex Log
+    Worker->>Agent: Success Response
+    Agent->>User: "Sent! Check your phone."
+```
+
 **CRITICAL**: Strictly mandated patterns for scroll-linked animations.
 
 ### The "NO JANK" Rule
