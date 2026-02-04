@@ -31,6 +31,7 @@ export class SystemLink {
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
         const workspaceString = urlParams.get('workspace') || "emily";
+        console.log("%c[SystemLink] 🌐 CONNECTION ATTEMPT: " + apiHost + " [Workspace: " + workspaceString + "]", "color: #3b82f6; font-weight: bold;");
 
         // Always auto-connect unless specifically disabled
         // Boot Sequence (Visual) - Fire and Forget (don't block connection)
@@ -220,7 +221,7 @@ export class SystemLink {
                     const data = JSON.parse(event.data);
 
                     // Console Logging for Observability
-                    console.log("[SystemLink] Received WS Data:", data);
+                    console.log("%c[SystemLink] 📥 WS MESSAGE RECEIVED:", "background: #1e293b; color: #34d399; font-weight: bold; padding: 2px 4px;", data);
 
                     // Handle broadcast messages
                     if (data.type === 'connected') {
