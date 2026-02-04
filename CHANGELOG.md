@@ -1,7 +1,7 @@
-## [v2.907] - 2026-02-04
-- **Fix (Verification)**: Synchronized with backend OTP tool updates to fix SMS verification failures when using visitor ID identity.
+## [v2.909] - 2026-02-04
+- **Stability (Identity)**: Synchronized with backend "Universal Identity" updates. Standardized resolution priority (Visitor ID > Email > Phone) to ensure correct cross-platform (Web/PSTN) behavior.
 
-## [v2.906] - 2026-02-04
+## [v2.907] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
