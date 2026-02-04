@@ -188,8 +188,9 @@ export class SystemLink {
         if (this.revertTimer) clearTimeout(this.revertTimer);
         this.revertTimer = setTimeout(() => {
             if (window.techDemoScene) {
-                this.log(`VISUALIZER: RETURN -> MEMORY (${reason})`, "dim");
-                window.techDemoScene.selectFunction("memory");
+                // v2.906: Changed default from 'memory' to 'transfer' per request
+                this.log(`VISUALIZER: RETURN -> TRANSFER (${reason})`, "dim");
+                window.techDemoScene.selectFunction("transfer");
             }
         }, delay);
     }
@@ -251,6 +252,9 @@ export class SystemLink {
                         } else {
                             this.triggerInsert("DATA_PACKET");
                         }
+
+                        // v2.906: Auto-revert to Transfer after sync
+                        this.triggerRevertToDefault(6000, "SYNC_COMPLETE");
                     } else if (payload.type === 'identity_confirmed') {
                         // v2.800: Visual feedback for identity lock
                         this.log("IDENTITY LOCKED", "secure");
@@ -312,6 +316,9 @@ export class SystemLink {
                         } else {
                             this.triggerExtract("QUERY_RESULT");
                         }
+
+                        // v2.906: Auto-revert to Transfer after query
+                        this.triggerRevertToDefault(6000, "QUERY_COMPLETE");
                     } else if (payload.type === 'handoff') {
                         console.log("%c[SystemLink] 📡 HANDOFF: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         this.log("TRANSFER: " + (payload.reason || "AGENT_BRIDGE").toUpperCase(), "system");
