@@ -1,8 +1,7 @@
-## [v2.901] - 2026-02-04
-- **Fix**: Resolved "Agent Blindness" by ensuring `visitor_id` is correctly canonicalized to primary identities during tool calls.
-- **Sync**: Bumped project version to Match backend identity fix.
+## [v2.903] - 2026-02-04
+- **Fix**: Standardized entire stack on `visitor_id`. Unifying the identifier simplifies mapping inside ElevenLabs and eliminates confusion between "web visitor" and "visitor".
 
-## [v2.900] - 2026-02-04
+## [v2.901] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
