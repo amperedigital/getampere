@@ -1,9 +1,7 @@
-## [v2.906] - 2026-02-04
-- **Refinement (Visual)**: Standardized Halo rotator default/parking position to "Agent Transfer" (Index 4).
-- **Fix**: Added auto-revert logic to Memory tool calls ensuring they don't remain stuck on the "Memory" label after completion.
-- **Refinement**: Explicitly reset rotator to neutral when call session ends.
+## [v2.907] - 2026-02-04
+- **Fix (Verification)**: Synchronized with backend OTP tool updates to fix SMS verification failures when using visitor ID identity.
 
-## [v2.905] - 2026-02-04
+## [v2.906] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
