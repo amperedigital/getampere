@@ -3,8 +3,8 @@ export class SystemLink {
         this.elements = {
             extractLed: document.getElementById('mem-extract-led'),
             insertLed: document.getElementById('mem-insert-led'),
-            odpTxLed: document.getElementById('odp-tx-led'),
-            odpRxLed: document.getElementById('odp-rx-led'),
+            otpTxLed: document.getElementById('otp-tx-led'),
+            otpRxLed: document.getElementById('otp-rx-led'),
             activityBar: document.getElementById('mem-activity-bar'),
             streamWindow: document.getElementById('mem-data-stream')
         };
@@ -30,7 +30,7 @@ export class SystemLink {
         // Check for WebSocket param or default to Prod Worker
         const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
-        const workspaceString = urlParams.get('workspace') || "default";
+        const workspaceString = urlParams.get('workspace') || "emily";
 
         // Always auto-connect unless specifically disabled
         // Boot Sequence (Visual) - Fire and Forget (don't block connection)
@@ -152,31 +152,31 @@ export class SystemLink {
         }
     }
 
-    triggerOdpTx() {
-        if (this.elements.odpTxLed) {
+    triggerOtpTx() {
+        if (this.elements.otpTxLed) {
             // Flash Orange
-            this.elements.odpTxLed.classList.remove('bg-slate-800', 'border-slate-600');
-            this.elements.odpTxLed.classList.add('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
+            this.elements.otpTxLed.classList.remove('bg-slate-800', 'border-slate-600');
+            this.elements.otpTxLed.classList.add('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
 
             setTimeout(() => {
-                if (this.elements.odpTxLed) {
-                    this.elements.odpTxLed.classList.add('bg-slate-800', 'border-slate-600');
-                    this.elements.odpTxLed.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
+                if (this.elements.otpTxLed) {
+                    this.elements.otpTxLed.classList.add('bg-slate-800', 'border-slate-600');
+                    this.elements.otpTxLed.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-[0_0_12px_rgba(249,115,22,0.8)]');
                 }
             }, 800);
         }
     }
 
-    triggerOdpRx() {
-        if (this.elements.odpRxLed) {
+    triggerOtpRx() {
+        if (this.elements.otpRxLed) {
             // Flash Emerald/Green
-            this.elements.odpRxLed.classList.remove('bg-slate-800', 'border-slate-600');
-            this.elements.odpRxLed.classList.add('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
+            this.elements.otpRxLed.classList.remove('bg-slate-800', 'border-slate-600');
+            this.elements.otpRxLed.classList.add('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
 
             setTimeout(() => {
-                if (this.elements.odpRxLed) {
-                    this.elements.odpRxLed.classList.add('bg-slate-800', 'border-slate-600');
-                    this.elements.odpRxLed.classList.remove('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
+                if (this.elements.otpRxLed) {
+                    this.elements.otpRxLed.classList.add('bg-slate-800', 'border-slate-600');
+                    this.elements.otpRxLed.classList.remove('bg-emerald-400', 'border-emerald-300', 'shadow-[0_0_12px_rgba(52,211,153,0.8)]');
                 }
             }, 800);
         }
