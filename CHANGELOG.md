@@ -1,7 +1,7 @@
-## [v2.903] - 2026-02-04
-- **Fix**: Standardized entire stack on `visitor_id`. Unifying the identifier simplifies mapping inside ElevenLabs and eliminates confusion between "web visitor" and "visitor".
+## [v2.904] - 2026-02-04
+- **Sync**: Synchronized version with backend to support identity resolution debugging. No functional changes to frontend.
 
-## [v2.901] - 2026-02-04
+## [v2.903] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
