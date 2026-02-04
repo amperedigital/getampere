@@ -1,7 +1,8 @@
-## [v2.904] - 2026-02-04
-- **Sync**: Synchronized version with backend to support identity resolution debugging. No functional changes to frontend.
+## [v2.905] - 2026-02-04
+- **Fix (Visual)**: Increased OTP rotation timeout to 60 seconds to ensure the "OTP Authorization" label remains visible during the authentication flow.
+- **Debug**: Enhanced visualizer revert logging to include reason for transitions.
 
-## [v2.903] - 2026-02-04
+## [v2.904] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.

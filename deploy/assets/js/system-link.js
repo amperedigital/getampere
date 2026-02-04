@@ -184,11 +184,11 @@ export class SystemLink {
     }
 
 
-    triggerRevertToDefault(delay = 5000) {
+    triggerRevertToDefault(delay = 5000, reason = "TIMEOUT") {
         if (this.revertTimer) clearTimeout(this.revertTimer);
         this.revertTimer = setTimeout(() => {
             if (window.techDemoScene) {
-                this.log("VISUALIZER: RETURN -> MEMORY", "dim");
+                this.log(`VISUALIZER: RETURN -> MEMORY (${reason})`, "dim");
                 window.techDemoScene.selectFunction("memory");
             }
         }, delay);
@@ -257,7 +257,7 @@ export class SystemLink {
                         console.log("%c[SystemLink] 🔒 IDENTITY CONFIRMED: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("identity");
-                            this.triggerRevertToDefault(4000);
+                            this.triggerRevertToDefault(6000, "IDENTITY_LOCK");
                         }
 
                         setTimeout(() => {
@@ -271,8 +271,8 @@ export class SystemLink {
                         this.log("⚠️ IDENTITY_CHALLENGE: OTP REQUIRED", "alert");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("otp");
-                            // Optional: Make it pulse yellow if possible, but basic select is fine
-                            this.triggerRevertToDefault(8000); // Longer wait for user to OTP
+                            // v2.905: Increased from 8s to 60s as it was reverting before user noticed.
+                            this.triggerRevertToDefault(60000, "OTP_CHALLENGE");
                         }
                         this.triggerOtpTx();
                         this.log(`AUTH_REQ [${payload.channel?.toUpperCase() || 'OTP'}]`, "system");
@@ -284,7 +284,7 @@ export class SystemLink {
                         this.log(`SECURE_CHANNEL: ${payload.contact || "ESTABLISHED"}`, "secure");
                         if (window.techDemoScene) {
                             window.techDemoScene.selectFunction("identity");
-                            this.triggerRevertToDefault(4000);
+                            this.triggerRevertToDefault(6000, "VERIFIED");
                         }
                         this.triggerOtpRx();
 
