@@ -1,3 +1,7 @@
+## [v2.939] - 2026-02-05
+- **Sync (Identity)**: Standardized identity tool names across frontend and backend. Renamed `get_visitor_id` back to `get_web_visitor_id` to align with ElevenLabs UI and backend resolution logic.
+- **Sync**: Unified versioning with `memory-api` v2.939.
+
 ## [v2.912] - 2026-02-04
 - **Sync (Identity)**: Terminology unification. Renamed `get_web_visitor_id` to `get_visitor_id` for architectural consistency with the unified `visitor_id` standard.
 

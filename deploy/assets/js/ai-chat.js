@@ -252,8 +252,8 @@ export class AmpereAIChat {
                 onMessage: (props) => this.handleMessage(props),
                 // v2.800: Client Tool for Web Visitor ID (Cookies)
                 clientTools: {
-                    get_visitor_id: async (parameters) => {
-                        console.log("%c[AmpereAI] 🔍 IDENTITY CHECK: Tool 'get_visitor_id' CALLED.", "color: #0ea5e9; font-weight: bold;");
+                    get_web_visitor_id: async (parameters) => {
+                        console.log("%c[AmpereAI] 🔍 IDENTITY CHECK: Tool 'get_web_visitor_id' CALLED.", "color: #0ea5e9; font-weight: bold;");
 
                         // v2.850: Trigger Visualization "Thinking" State during tool execution
                         if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
