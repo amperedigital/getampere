@@ -1,7 +1,7 @@
-## [v2.909] - 2026-02-04
-- **Stability (Identity)**: Synchronized with backend "Universal Identity" updates. Standardized resolution priority (Visitor ID > Email > Phone) to ensure correct cross-platform (Web/PSTN) behavior.
+## [v2.910] - 2026-02-04
+- **Stability (Identity)**: Synchronized with backend "Session Anchoring" logic. This ensures that once a user is identified via browser cookie, the session is locked to that profile, preventing placeholder data from disrupting tool calls.
 
-## [v2.907] - 2026-02-04
+## [v2.909] - 2026-02-04
 
 ## [v2.887] - 2026-02-02
 - **Fix (Deployment)**: Forced update of HTML assets to reference the latest version tags, ensuring the frontend loads the correct ODP-reverted architecture.
