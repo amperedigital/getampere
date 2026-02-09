@@ -1,8 +1,5 @@
-## [v2.946] - 2026-02-09
-- **Sync**: Unified versioning with `memory-api` v2.946. Forced script refresh to resolve browser caching.
-
-## [v2.945] - 2026-02-09
-- **Sync**: Unified versioning with `memory-api` v2.945. Verified end-to-end "Intelligence Loop" compatibility.
+## [v2.947] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.947. Forced global cache reset in `index.html`.
 
 ## [v2.939] - 2026-02-05
 - **Sync (Identity)**: Standardized identity tool names across frontend and backend. Renamed `get_visitor_id` back to `get_web_visitor_id` to align with ElevenLabs UI and backend resolution logic.
