@@ -1,3 +1,6 @@
+## [v2.946] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.946. Forced script refresh to resolve browser caching.
+
 ## [v2.945] - 2026-02-09
 - **Sync**: Unified versioning with `memory-api` v2.945. Verified end-to-end "Intelligence Loop" compatibility.
 
