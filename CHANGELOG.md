@@ -1,3 +1,6 @@
+## [v2.948] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.948. Enabled dynamic "Warm Start" greeting compatibility.
+
 ## [v2.947] - 2026-02-09
 - **Sync**: Unified versioning with `memory-api` v2.947. Forced global cache reset in `index.html`.
 
