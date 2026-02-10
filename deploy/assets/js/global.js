@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v2.949 Loaded');
+    console.log('[Ampere Global] v2.950 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -846,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * v2.949 - Intelligence Loop Refresh
+ * v2.950 - Intelligence Loop Refresh
  */
 /*
  * Ampere 3D Key Global Manager

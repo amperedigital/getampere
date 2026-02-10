@@ -1,3 +1,6 @@
+## [v2.950] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.950. Switched to seamless agent configuration for specialized agents.
+
 ## [v2.949] - 2026-02-09
 - **Sync**: Unified versioning with `memory-api` v2.949. Reverted to static initiation greetings for stability.
 
