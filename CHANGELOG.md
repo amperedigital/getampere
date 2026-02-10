@@ -1,3 +1,6 @@
+## [v2.965] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.965. Adhering to the "Smart Scoping" script logic for active work area files.
+
 ## [v2.964] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.964. Strict adherence to approved `publish.sh` workflow.
 
