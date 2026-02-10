@@ -1,3 +1,6 @@
+## [v2.966] - 2026-02-10
+- **Sync**: Unified synchronization for v2.966 following backend signature fix.
+
 ## [v2.965] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.965. Adhering to the "Smart Scoping" script logic for active work area files.
 
