@@ -1,3 +1,6 @@
+## [v2.956] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.956. Restored index.html to v2.953 to respect project scope.
+
 ## [v2.955] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.955.
 
