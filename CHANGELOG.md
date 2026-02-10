@@ -1,3 +1,6 @@
+## [v2.958] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.958. Fixed the automatic version injection in `publish.sh` to ensure browser console logs always reflect the real release.
+
 ## [v2.957] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.957. Updated internal JavaScript console logs and meta tags.
 

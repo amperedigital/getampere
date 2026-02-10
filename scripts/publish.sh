@@ -141,7 +141,8 @@ for FILE in $CHANGED_FILES; do
      if grep -q "console.log.*v[0-9]\+\.[0-9]\+" "$FILE"; then
        echo "   🖊️  Injecting version $NEW_TAG into $FILE..."
        # Replace vX.Y.Z or vX.Y with new tag on lines containing console.log
-       sed -i "/console.log/s/v[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?/$NEW_TAG/" "$FILE"
+       # Robust regex to catch v2.953, v2.91, etc.
+       sed -i "/console.log/s/v[0-9]\{1,\}\.[0-9]\{1,\}\(\.[0-9]\{1,\}\)\?/$NEW_TAG/g" "$FILE"
      fi
   fi
 done
