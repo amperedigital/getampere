@@ -1,3 +1,6 @@
+## [v2.964] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.964. Strict adherence to approved `publish.sh` workflow.
+
 ## [v2.963] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.963. Verified official `publish.sh` workflow without manual bypass.
 
