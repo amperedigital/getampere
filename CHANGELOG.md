@@ -1,3 +1,9 @@
+## [v2.960] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.960. Forced alignment of `tech-demo.html` to ensure the real version is reflected in the console.
+
+## [v2.959] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.959. Manually forced cache-busting on `tech-demo.html` to resolve delivery lag.
+
 ## [v2.958] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.958. Fixed the automatic version injection in `publish.sh` to ensure browser console logs always reflect the real release.
 
