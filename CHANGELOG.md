@@ -1,3 +1,6 @@
+## [v2.967] - 2026-02-10
+- **Sync**: Unified synchronization for v2.967 following backend ingestion fix.
+
 ## [v2.966] - 2026-02-10
 - **Sync**: Unified synchronization for v2.966 following backend signature fix.
 
