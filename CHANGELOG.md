@@ -1,3 +1,6 @@
+## [v2.953] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.953. Standardized `user_time_greeting` across the stack.
+
 ## [v2.952] - 2026-02-09
 - **Sync**: Unified versioning with `memory-api` v2.952. Finalized Hive Mind seamless handoffs.
 
