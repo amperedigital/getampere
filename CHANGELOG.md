@@ -1,3 +1,6 @@
+## [v2.952] - 2026-02-09
+- **Sync**: Unified versioning with `memory-api` v2.952. Finalized Hive Mind seamless handoffs.
+
 ## [v2.951] - 2026-02-09
 - **Sync**: Unified versioning with `memory-api` v2.951. Finalized seamless agent "Hive Mind" configuration.
 
