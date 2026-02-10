@@ -1,3 +1,6 @@
+## [v2.961] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.961. Full-site alignment (index and tech-demo) using the approved `publish.sh` workflow.
+
 ## [v2.960] - 2026-02-10
 - **Sync**: Unified synchronization across frontend and backend for v2.960. Forced alignment of `tech-demo.html` to ensure the real version is reflected in the console.
 
