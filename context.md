@@ -23,8 +23,9 @@
 - **Process**:
   1. Edit local files in `deploy/`. 
   2. **Do NOT** manually commit/tag.
-  3. **EXECUTE**: `./scripts/publish.sh vX.Y.Z`
+  3. **EXECUTE**: `./scripts/publish.sh vX.Y.Z` (This performs tagging and pushing to origin).
   4. **VERIFY**: Check output.
+- **Dual-Publish Rule**: If you touch both Frontend and Backend, you MUST run **BOTH** publish scripts. See section 3b.
 - **Safe HTML Usage**: Use `python3 scripts/safe_replace_html.py` for complex grid/layout updates to prevent breakage.
 
 ## 3b. Backend Deployment Workflow (Memory API)
@@ -33,8 +34,13 @@
   1.  Edit files locally.
   2.  **EXECUTE**: `memory-api/scripts/publish.sh vX.Y.Z`
   3.  **VERIFY**: Check `wrangler tail` logs for successful deployment.
-- **Rule**: If you touch both Frontend and Backend, you MUST run **BOTH** publish scripts.
 - **Strictness**: DO NOT use `wrangler deploy` manually. Use the script to ensure Backup, Type Gen, and Git Tags are synchronized.
+
+## 3c. Variable Naming Standards (MANDATORY)
+To avoid breaking frontend logic or ElevenLabs interpolations, always use these exactly:
+- **Greeting**: Always use `user_time_greeting` (snake_case). Never `timeGreeting` or `userTimeGreeting`.
+- **Session IDs**: Always use `session_id`.
+- **Subject IDs**: Use `visitor_id` for web sessions.
 
 ## 4. Core Systems
 

@@ -239,11 +239,16 @@ git commit -m "chore(release): $NEW_TAG" || echo "   (Nothing to commit, proceed
 
 # 4. Tag
 if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-  echo "   ⚠️  Tag $NEW_TAG already exists."
-  # We don't auto-delete tags to be safe, just fail or warn.
-  # But for a helper script, failing is safer.
-  echo "   Error: Tag already exists. Please use a new version number."
-  exit 1
+  EXISTING_TAG_COMMIT=$(git rev-parse "$NEW_TAG")
+  CURRENT_COMMIT=$(git rev-parse HEAD)
+  if [ "$EXISTING_TAG_COMMIT" == "$CURRENT_COMMIT" ]; then
+    echo "   ✅ Tag $NEW_TAG already exists and matches HEAD. Proceeding..."
+  else
+    echo "   ❌ Error: Tag $NEW_TAG already exists but points to a different commit ($EXISTING_TAG_COMMIT)."
+    echo "      Current HEAD is $CURRENT_COMMIT."
+    echo "      Please use a new version number or resolve the collision."
+    exit 1
+  fi
 else
   echo "🏷️  Creating tag $NEW_TAG..."
   git tag "$NEW_TAG"
@@ -252,7 +257,7 @@ fi
 # 5. Push
 echo "⬆️  Pushing to origin..."
 git push origin master
-git push origin "$NEW_TAG"
+git push origin "$NEW_TAG" || echo "   ⚠️  Tag $NEW_TAG already exists on remote."
 
 # 6. Deploy
 echo "☁️  Deploying to Cloudflare Workers..."

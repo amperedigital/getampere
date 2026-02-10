@@ -17,14 +17,16 @@
 
 ## Deployment Workflow (Strict)
 - **Source of Truth**: The `deploy/` folder is the only source for deployment.
-- **CDN Usage**: Production HTML (`deploy/index.html`) MUST use jsDelivr CDN links for all scripts (e.g., `https://cdn.jsdelivr.net/gh/amperedigital/getampere@vX.Y.Z/assets/js/...`).
-- **Local Paths Forbidden**: NEVER change script sources to local relative paths (e.g., `./assets/js/...`) in `deploy/index.html` without explicit user permission.
-- **Update Process**:
+- **CDN Usage**: Production HTML (`deploy/index.html`) MUST use jsDelivr CDN links for all scripts.
+- **Dual-Publish Rule**: If you touch both Frontend and Backend, you MUST run **BOTH** publish scripts.
+  - **Frontend**: `./scripts/publish.sh vX.Y.Z`
+  - **Backend**: `../getampere-antigravity-backend/memory-api/scripts/publish.sh vX.Y.Z`
+- **Variable Naming (MANDATORY)**: Always use `user_time_greeting` (snake_case). Never use camelCase for ElevenLabs variables in this environment.
+- **Process**:
   1. Edit local files in `deploy/`.
   2. **STOP**: Do NOT manually commit, tag, or edit `index.html` versions.
   3. **EXECUTE**: Run the publish script: `./scripts/publish.sh vX.Y.Z`
-     - This script handles git operations, selective CDN updates, and deployment.
-  4. **VERIFY**: Check the output to ensure only changed assets were updated.
+  4. **VERIFY**: Check the output and verify the CDN is live.
 
 ## General Rules
 - **MANDATORY**: You MUST read the file `context.md` at the very beginning of every session to understand the project architecture and rules. Do not proceed without reading it.

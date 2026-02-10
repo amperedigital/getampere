@@ -1,7 +1,7 @@
-## [v2.954] - 2026-02-10
-- **Sync**: Unified versioning with `memory-api` v2.954. Synchronized all frontend assets with the critical webhook security fix.
+## [v2.955] - 2026-02-10
+- **Sync**: Unified synchronization across frontend and backend for v2.955.
 
-## [v2.953] - 2026-02-09
+## [v2.954] - 2026-02-10
 - **Sync**: Unified versioning with `memory-api` v2.953. Standardized `user_time_greeting` across the stack.
 
 ## [v2.952] - 2026-02-09
