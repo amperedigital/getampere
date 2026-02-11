@@ -326,6 +326,18 @@ export class SystemLink {
                         if (window.techDemoScene) window.techDemoScene.selectFunction("identity");
                         this.triggerOtpRx();
                         setTimeout(() => this.triggerExtract("HANDOFF_PKT"), 200);
+                    } else if (payload.type === 'call_summary') {
+                        console.log("%c[SystemLink] 📞 CALL SUMMARY: " + JSON.stringify(payload), "color: #ff00ff; font-weight: bold;");
+                        // Log the summary text
+                        this.log("CALL_COMPLETE: SUMMARY_RCVD", "system");
+                        if (payload.summary) {
+                            // Typewriter the summary
+                            setTimeout(() => this.typewriterLog(payload.summary.substring(0, 120) + (payload.summary.length > 120 ? "..." : ""), "data", 5), 500);
+                        }
+
+                        // Visual Feedback
+                        if (window.techDemoScene) window.techDemoScene.selectFunction("memory");
+                        this.triggerRevertToDefault(8000, "SUMMARY_COMPLETE");
                     }
                 } catch (e) {
                     console.error("Viz msg error", e);

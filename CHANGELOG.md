@@ -1,3 +1,12 @@
+## [v2.983] - 2026-02-11
+- **Feature**: Enhanced `situational_briefing` to support **Dual Mode** (Phone + Web/VisitorID).
+- **Backend**: Updated `twilioVoiceHandler` to resolve `subject_id` from either verified phone OR client-passed `visitor_id`, ensuring warm starts work across both channels.
+
+## [v2.981] - 2026-02-11
+- **Backend**: Added `call_summary` broadcast to visualization UI on every successful call ingestion.
+- **Frontend**: Updated `SystemLink` to display call summaries in the data stream.
+- **Fix**: Resolved "invisible webhook" issue where calls without new facts were silent in the UI.
+
 ## [v2.980] - 2026-02-11
 - **Fix**: Verified permanent fix for `publish.sh` version injection. All JS files now auto-update version strings.
 - **Sync**: Unified release v2.980.
