@@ -1,3 +1,4 @@
+console.log('[Tech Demo] v2.976 Loaded');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
