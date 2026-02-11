@@ -1,3 +1,6 @@
+## [v2.969] - 2026-02-10
+- **Sync**: Unified synchronization for v2.969 following backend "Clean Handoff" fix.
+
 ## [v2.968] - 2026-02-10
 - **Sync**: Unified synchronization for v2.968 following backend robustness improvements.
 
