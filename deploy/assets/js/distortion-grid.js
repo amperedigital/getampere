@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v2.898 Loaded'); 
+console.log('[DistortionGrid] v2.979 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
@@ -536,3 +536,5 @@ window.DistortionGrid = DistortionGrid;
 
 })(); // End IIFE
 // Sync v2.894
+
+// Force update v2.979

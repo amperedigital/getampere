@@ -8,7 +8,7 @@
  */
 
 (function() {
-    console.log('[ScrollFlipper v2.898] Loading High-Performance Mode...');
+    console.log('[ScrollFlipper v2.979] Loading High-Performance Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
@@ -332,3 +332,5 @@
 
 })();
 // Sync v2.894
+
+// Force update v2.979

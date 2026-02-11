@@ -1,3 +1,7 @@
+## [v2.979] - 2026-02-11
+- **Sync**: Forced synchronization of all JS module version strings (tech-demo-scene, global, etc.) to v2.979.
+- **Fix**: Resolved persistent console log version mismatch.
+
 ## [v2.978] - 2026-02-11
 - **Sync**: Unified release v2.978 to ensure all assets are synchronized and deployed via the publish script.
 - **Cleanup**: Removed stale metadata and verified deployment pipeline.
