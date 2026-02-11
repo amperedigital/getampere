@@ -1,3 +1,7 @@
+## [v2.980] - 2026-02-11
+- **Fix**: Verified permanent fix for `publish.sh` version injection. All JS files now auto-update version strings.
+- **Sync**: Unified release v2.980.
+
 ## [v2.979] - 2026-02-11
 - **Sync**: Forced synchronization of all JS module version strings (tech-demo-scene, global, etc.) to v2.979.
 - **Fix**: Resolved persistent console log version mismatch.
