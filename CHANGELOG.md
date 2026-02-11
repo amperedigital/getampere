@@ -1,3 +1,11 @@
+## [v2.973] - 2026-02-11
+- **Fix**: Robust identity extraction in `memory-api` for ElevenLabs webhooks.
+
+## [v2.972] - 2026-02-11
+- **D1 Fix**: Added `transcript` column to `calls` table for history persistence.
+- **Backend**: Updated `ingestTranscript` to save raw transcript data.
+- **Cleanup**: Handled v2.969 "Clean Handoff" verification.
+
 ## [v2.969] - 2026-02-10
 - **Sync**: Unified synchronization for v2.969 following backend "Clean Handoff" fix.
 
