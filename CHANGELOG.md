@@ -1,3 +1,7 @@
+## [v2.977] - 2026-02-11
+- **Sync**: Bumped to v2.977 to resolve tag conflict and force full CDN deployment.
+- **Fix**: Ensured `styles.css` and `tech-demo-main.js` are correctly linked via CDN in `tech-demo.html`.
+
 ## [v2.976] - 2026-02-11
 - **Sync**: Unified synchronization across frontend and backend for v2.976. Restoring total alignment across index, tech-demo, and backend assets.
 
