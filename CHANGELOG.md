@@ -1,3 +1,6 @@
+## [v2.968] - 2026-02-10
+- **Sync**: Unified synchronization for v2.968 following backend robustness improvements.
+
 ## [v2.967] - 2026-02-10
 - **Sync**: Unified synchronization for v2.967 following backend ingestion fix.
 
