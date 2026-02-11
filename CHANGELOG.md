@@ -1,3 +1,7 @@
+## [v2.978] - 2026-02-11
+- **Sync**: Unified release v2.978 to ensure all assets are synchronized and deployed via the publish script.
+- **Cleanup**: Removed stale metadata and verified deployment pipeline.
+
 ## [v2.977] - 2026-02-11
 - **Sync**: Bumped to v2.977 to resolve tag conflict and force full CDN deployment.
 - **Fix**: Ensured `styles.css` and `tech-demo-main.js` are correctly linked via CDN in `tech-demo.html`.
@@ -138,9 +142,6 @@
 - **Deployment**: Re-running publication to ensure all assets and source files are committed and deployed correctly to Cloudflare.
 
 ## [v2.881] - 2026-02-02
-- **Fix (Tailwind v4)**: Completed migration by restoring missing @plugin and @theme blocks.
-- **Fix (CSS)**: Migrated legacy height-based breakpoints to the new v4 @custom-variant short syntax, resolving build warnings.
-- **Cleanup**: Removed stale metadata files and verified build performance (~230ms).
 - **Fix (Tailwind v4)**: Completed migration by restoring missing @plugin and @theme blocks.
 - **Fix (CSS)**: Migrated legacy height-based breakpoints to the new v4 @custom-variant short syntax, resolving build warnings.
 - **Cleanup**: Removed stale metadata files and verified build performance (~230ms).

@@ -1,4 +1,4 @@
-console.log('[Tech Demo] v2.976 Unified Release');
+console.log('[Tech Demo] v2.978 Unified Release');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
@@ -250,4 +250,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Force update v2.889
 // Force update v2.890
-// Sync v2.894
+// Force update v2.978
