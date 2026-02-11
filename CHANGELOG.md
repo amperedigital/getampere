@@ -1,3 +1,6 @@
+## [v2.976] - 2026-02-11
+- **Sync**: Unified synchronization across frontend and backend for v2.976. Restoring total alignment across index, tech-demo, and backend assets.
+
 ## [v2.973] - 2026-02-11
 - **Fix**: Robust identity extraction in `memory-api` for ElevenLabs webhooks.
 
