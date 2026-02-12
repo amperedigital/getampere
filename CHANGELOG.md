@@ -1,6 +1,10 @@
 # Changelog
 
-## v2.995
+## v2.997
+- [SECURITY] Removed client-side `/memory/bootstrap` fetch in `ai-chat.js`.
+- [FIX] Agent now relies on internal tool calls for context loading, securing the architecture.
+
+## v2.9965
 - **Feature:** Conversational Identity Verification. Agent now asks "Am I speaking to {name}?" for returning users.
 
 ## v2.994

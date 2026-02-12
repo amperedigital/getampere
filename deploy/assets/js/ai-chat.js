@@ -237,39 +237,11 @@ export class AmpereAIChat {
                 user_time_greeting: timeGreeting
             });
 
-            // v2.983: SITUATIONAL BRIEFING INJECTION (Web Mode)
-            // Fetch the last summary from the backend to warm-start the agent.
-            let situationalBriefing = "";
-            try {
-                const apiHost = "https://memory-api.tight-butterfly-7b71.workers.dev";
-                console.log(`[AmpereAI] 🧠 Fetching Context for ${visitorId}...`);
-
-                const resp = await fetch(`${apiHost}/memory/bootstrap`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ subject_id: visitorId })
-                });
-
-                if (resp.ok) {
-                    const data = await resp.json();
-                    // Bootstrap returns { recent_summaries: [...] } from the SQL query we verified
-                    if (data.recent_summaries && data.recent_summaries.length > 0) {
-                        const last = data.recent_summaries[0]; // Ordered DESC by backend
-                        const dateStr = new Date(last.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-                        situationalBriefing = `LAST INTERACTION (${dateStr}):\nSUMMARY: ${last.summary}`;
-                        console.log(`[AmpereAI] 💡 BRIEFING INJECTED:`, situationalBriefing);
-                    }
-                }
-            } catch (e) {
-                console.warn("[AmpereAI] Context fetch failed (proceeding without briefing)", e);
-            }
-
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
                 dynamicVariables: {
                     visitor_id: visitorId,
-                    user_time_greeting: timeGreeting,
-                    situational_briefing: situationalBriefing
+                    user_time_greeting: timeGreeting
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
