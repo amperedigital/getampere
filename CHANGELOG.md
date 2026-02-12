@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.994
+- **Fix:** Added support for `identity_confirmed` broadcast to display Identity Card immediately.
+
 ## v2.993
 - **fix(ui)**: Re-deployment of `urlParams` fix (v2.992 was interrupted).
 
