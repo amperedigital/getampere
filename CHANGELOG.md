@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.998
+- [UPDATE] synced with Backend v2.998 (Generative Prompt Update).
+
 ## v2.997
 - [SECURITY] Removed client-side `/memory/bootstrap` fetch in `ai-chat.js`.
 - [FIX] Agent now relies on internal tool calls for context loading, securing the architecture.
