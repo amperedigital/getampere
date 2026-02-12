@@ -1,6 +1,18 @@
+## [v2.986] - 2026-02-12
+- **Fix (Prompt)**: Resolved logic conflict in `front-door-agent-prompt.md`. Explicitly ordered the "Warm Start" greeting to occur *after* the mandatory identity tools (`memory_bootstrap`) have run. This ensures the situational briefing doesn't override the identity verification step.
+
+## [v2.985] - 2026-02-11
+- **Fix**: Hardened `processRichTranscriptIntelligence` with regex-based JSON extraction to handle chatty LLaMA responses.
+- **Backend**: Improved AI prompt for stricter JSON schema adherence.
+
+## [v2.984] - 2026-02-11
+- **Cleanup**: Restored `ai-chat.js` to clean state, removing experimental frontend fetching logic.
+- **Backend**: (From v2.983) Universal Situational Briefing is active.
+
 ## [v2.983] - 2026-02-11
-- **Feature**: Enhanced `situational_briefing` to support **Dual Mode** (Phone + Web/VisitorID).
-- **Backend**: Updated `twilioVoiceHandler` to resolve `subject_id` from either verified phone OR client-passed `visitor_id`, ensuring warm starts work across both channels.
+- **Feature**: Implemented **Universal Situational Briefing** in `elevenLabsInitHandler`.
+- **Backend**: Now automatically injects the last call summary for *any* channel (Web `visitor_id` or Phone `caller_id`) into the `situational_briefing` variable during the ElevenLabs initialization phase.
+- **Cleanup**: Reverted frontend-side fetching logic in favor of this robust backend implementation.
 
 ## [v2.981] - 2026-02-11
 - **Backend**: Added `call_summary` broadcast to visualization UI on every successful call ingestion.
