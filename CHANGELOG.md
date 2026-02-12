@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.004
+- [UPDATE] synced with Backend v3.004 (V3 Prompt Tuning).
+
 ## v3.003
 - [UPDATE] synced with Backend v3.003 (V3 Final).
 
