@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.999
+- [UPDATE] synced with Backend v2.999 (V3 Expressive Mode).
+
 ## v2.998
 - [UPDATE] synced with Backend v2.998 (Generative Prompt Update).
 
