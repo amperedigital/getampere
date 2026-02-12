@@ -108,7 +108,7 @@ export class TechDemoScene {
     */
 
     // Stub for initControls to prevent errors if called
-    initControls() { }
+    // Stub removed (Duplicate of actual method at line 1222)
 
     initGlobalInteraction() {
         // Initialize timestamp
