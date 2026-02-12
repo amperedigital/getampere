@@ -232,6 +232,27 @@ for FILE in $CHANGED_FILES; do
   fi
 done
 
+# ------------------------------------------------------------------------------
+# 2.5 UNIVERSAL TAGGING (Force Update)
+# ------------------------------------------------------------------------------
+# User Requirement: "Universal tagging system"
+# Regardless of whether assets changed, we MUST update the HTML to point to the new version.
+if [ -n "$HTML_FILES" ]; then
+    echo "   🏷️  Universal Tagging: Forcing CDN links and Meta Tags to $NEW_TAG..."
+    for TARGET_HTML in $HTML_FILES; do
+        echo "      Processing $(basename "$TARGET_HTML")..."
+        
+        # 1. Update Meta Version
+        if grep -q "<meta name=\"version\"" "$TARGET_HTML"; then
+            sed -i "s/<meta name=\"version\" content=\"v[^\"]*\">/<meta name=\"version\" content=\"$NEW_TAG\">/g" "$TARGET_HTML"
+        fi
+        
+        # 2. Update Asset Links (getampere@v...)
+        # This ensures that v2.990 loads v2.990 assets, keeping the ecosystem synced.
+        sed -i "s/getampere@v[0-9a-zA-Z._-]*\//getampere@$NEW_TAG\//g" "$TARGET_HTML"
+    done
+fi
+
 # 3. Commit changes
 echo "📦 Committing changes..."
 git add deploy/

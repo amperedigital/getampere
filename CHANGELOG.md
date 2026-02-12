@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.990
+- **Refactor:** Implemented "Universal Tagging" in deployment scripts. HTML version tags and CDN links now force-update to the release version regardless of asset changes.
+
 ## v2.989
 - **fix(identity)**: Reject placeholder phone `+10000000000` to force valid identity resolution.
 - **fix(prompt)**: Clarify "PHASE 1: LOCKED STATE" to strictly enforce identity verification before interaction.
