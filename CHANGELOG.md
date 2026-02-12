@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.006
+- [UPDATE] synced with Backend v3.006 (Privacy Emphasis).
+
+## v3.0056
+- [UPDATE] synced with Backend v3.006 (Security Tone).
+
 ## v3.005
 - [UPDATE] synced with Backend v3.005 (Generative OTP).
 
