@@ -1,3 +1,15 @@
+# Changelog
+
+## [v2.988] - 2026-02-12
+### Fixed
+- **Deployment**: Forced update of asset links in `tech-demo.html` to ensure new JS/CSS is loaded.
+- **Unified Release**: Synchronized with Backend v2.988.
+
+## [v2.987] - 2026-02-12
+### Synced
+- **Unified Release**: Synchronized with Backend v2.987.
+- **Agent**: Enforce identity tools before Situational Briefing.
+
 ## [v2.986] - 2026-02-12
 - **Fix (Prompt)**: Resolved logic conflict in `front-door-agent-prompt.md`. Explicitly ordered the "Warm Start" greeting to occur *after* the mandatory identity tools (`memory_bootstrap`) have run. This ensures the situational briefing doesn't override the identity verification step.
 
@@ -2110,6 +2122,11 @@
 - **Visuals**: Blocks feature inner depth shadows (inactive) and complex illuminated glow (active) for a more tactile, premium feel.
 
 # Changelog
+
+## [v2.988] - 2026-02-12
+### Fixed
+- **Deployment**: Forced update of asset links in `index.html` to ensure new JS/CSS is loaded.
+- **Unified Release**: Synchronized with Backend v2.988.
 
 ## [v2.987] - 2026-02-12
 ### Synced
