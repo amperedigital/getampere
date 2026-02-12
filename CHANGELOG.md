@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.992
+- **fix(ui)**: Fixed `ReferenceError: urlParams` in `system-link.js` that caused UI crash.
+
 ## v2.991
 - **fix(ai)**: Added regex fallback for AI Intelligence JSON parsing to handle conversational model output.
 - **feat(identity)**: Implemented fallback where `visitor_id` becomes `subject_id` if phone/email are missing in `identityValidate`.

@@ -28,6 +28,7 @@ export class SystemLink {
         setInterval(() => this.tick(), 160);
 
         // Check for WebSocket param or default to Prod Worker
+        const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
 
         // v2.991: "Split Brain" Fix. Prefer Visitor ID (Agent Context) over default "emily" if no param provided.
