@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.989
+- **fix(identity)**: Reject placeholder phone `+10000000000` to force valid identity resolution.
+- **fix(prompt)**: Clarify "PHASE 1: LOCKED STATE" to strictly enforce identity verification before interaction.
+- **chore**: Silence verbose identity logs.
+
 ## [v2.988] - 2026-02-12
 ### Fixed
 - **Deployment**: Forced update of asset links in `tech-demo.html` to ensure new JS/CSS is loaded.
