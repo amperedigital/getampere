@@ -133,11 +133,13 @@ deploy/assets/js/tech-demo-main.js"
 fi
 
 # 1.5. GENERIC VERSION INJECTION
-# Inject version number into ANY changed JS file that contains a console.log with a version string
-for FILE in $CHANGED_FILES; do
-  if [[ "$FILE" == *.js ]] && [ -f "$FILE" ]; then
+# Inject version number into ALL JS files that contain a console.log with a version string
+# This ensures that even if a file hasn't changed logic-wise, it still reports the correct deployed version.
+echo "   🔫 Scanning ALL deploy/ JS files for version strings..."
+find deploy/ -name "*.js" | while read -r FILE; do
+  if [ -f "$FILE" ]; then
      # Check if the file actually has a potential version string to avoid touching files unnecessarily
-     # Looks for `console.log(... vX.Y ...)
+     # Looks for `console.log(... vX.Y ...) . Also supports "Version: vX.Y" comments if we wanted, but sticking to console.log for now.
      if grep -q "console.log.*v[0-9]\+\.[0-9]\+" "$FILE"; then
        echo "   🖊️  Injecting version $NEW_TAG into $FILE..."
        # Replace vX.Y.Z or vX.Y with new tag on lines containing console.log
