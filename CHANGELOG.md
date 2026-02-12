@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.000
+- [UPDATE] synced with Backend v3.000 (V3 Fix).
+
 ## v2.999
 - [UPDATE] synced with Backend v2.999 (V3 Expressive Mode).
 
