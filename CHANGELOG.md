@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.995
+- **Feature:** Conversational Identity Verification. Agent now asks "Am I speaking to {name}?" for returning users.
+
 ## v2.994
 - **Fix:** Added support for `identity_confirmed` broadcast to display Identity Card immediately.
 
