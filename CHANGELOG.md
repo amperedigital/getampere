@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.003
+- [UPDATE] synced with Backend v3.003 (V3 Final).
+
 ## v3.002
 - [UPDATE] synced with Backend v3.002 (Deep Debug).
 
