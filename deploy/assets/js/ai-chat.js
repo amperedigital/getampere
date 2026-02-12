@@ -277,6 +277,27 @@ export class AmpereAIChat {
                 onModeChange: (mode) => this.handleModeChange(mode),
                 // v2.594: Handle incoming text messages (transcriptions)
                 onMessage: (props) => this.handleMessage(props),
+                // v2.991: Tool Callbacks for UI Feedback (User Request)
+                onToolCall: (toolCall) => {
+                    console.log(`%c[AmpereAI] 🛠️ SERVER TOOL CALLED: ${toolCall.name}`, "color: #f472b6; font-weight: bold;", toolCall);
+
+                    // Direct UI Manipulation (Robust Fallback if WebSocket fails)
+                    if (window.demoScene) {
+                        if (toolCall.name.includes('memory')) {
+                            window.demoScene.selectFunction("memory");
+                            if (window.systemLink) {
+                                if (toolCall.name.includes('query') || toolCall.name.includes('search')) window.systemLink.triggerExtract("QUERYING...");
+                                else window.systemLink.triggerInsert("MEM_WRITE");
+                            }
+                        } else if (toolCall.name.includes('identity')) {
+                            window.demoScene.selectFunction("identity");
+                            if (window.systemLink) window.systemLink.triggerOtpTx();
+                        } else if (toolCall.name.includes('handoff') || toolCall.name.includes('transfer')) {
+                            window.demoScene.selectFunction("transfer");
+                            if (window.systemLink) window.systemLink.log("AGENT_HANDOFF_INIT", "system");
+                        }
+                    }
+                },
                 // v2.800: Client Tool for Web Visitor ID (Cookies)
                 clientTools: {
                     get_web_visitor_id: async (parameters) => {

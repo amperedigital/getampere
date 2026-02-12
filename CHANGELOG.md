@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.991
+- **fix(ai)**: Added regex fallback for AI Intelligence JSON parsing to handle conversational model output.
+- **feat(identity)**: Implemented fallback where `visitor_id` becomes `subject_id` if phone/email are missing in `identityValidate`.
+- **feat(ui)**: Added client-side `onToolCall` handlers to trigger Halo animations immediately when Agent uses tools.
+- **fix(ui)**: Resolved "Split Brain" issue where SystemLink connected to default workspace instead of User's Visitor ID.
+
 ## v2.990
 - **Refactor:** Implemented "Universal Tagging" in deployment scripts. HTML version tags and CDN links now force-update to the release version regardless of asset changes.
 

@@ -28,9 +28,19 @@ export class SystemLink {
         setInterval(() => this.tick(), 160);
 
         // Check for WebSocket param or default to Prod Worker
-        const urlParams = new URLSearchParams(window.location.search);
         const apiHost = urlParams.get('mem_api') || "https://memory-api.tight-butterfly-7b71.workers.dev";
-        const workspaceString = urlParams.get('workspace') || "emily";
+
+        // v2.991: "Split Brain" Fix. Prefer Visitor ID (Agent Context) over default "emily" if no param provided.
+        let workspaceString = urlParams.get('workspace');
+        if (!workspaceString) {
+            const storedId = localStorage.getItem('ampere_visitor_id');
+            if (storedId) {
+                workspaceString = storedId;
+                console.log(`[SystemLink] Auto-detected Visitor ID: ${workspaceString}`);
+            } else {
+                workspaceString = "emily";
+            }
+        }
         console.log("%c[SystemLink] 🌐 CONNECTION ATTEMPT: " + apiHost + " [Workspace: " + workspaceString + "]", "color: #3b82f6; font-weight: bold;");
 
         // Always auto-connect unless specifically disabled
