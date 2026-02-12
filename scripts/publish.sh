@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 vX.Y.Z"
+if [ "$#" -lt 1 ]; then
+  echo "Usage: $0 vX.Y.Z [optional-force-target]"
   exit 1
 fi
 

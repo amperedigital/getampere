@@ -18,6 +18,9 @@
 ## Deployment Workflow (Strict)
 - **Source of Truth**: The `deploy/` folder is the only source for deployment.
 - **CDN Usage**: Production HTML (`deploy/index.html`) MUST use jsDelivr CDN links for all scripts.
+- **Smart Scoping Rule**:
+  - The script *only* updates asset links in HTML files that are currently being edited.
+  - **Force Update**: If you change a shared asset (JS/CSS) but NOT the HTML file, you MUST force the update: `./scripts/publish.sh vX.Y.Z "deploy/path/to/target.html"`
 - **Dual-Publish Rule**: If you touch both Frontend and Backend, you MUST run **BOTH** publish scripts.
   - **Frontend**: `./scripts/publish.sh vX.Y.Z`
   - **Backend**: `../getampere-antigravity-backend/memory-api/scripts/publish.sh vX.Y.Z`
