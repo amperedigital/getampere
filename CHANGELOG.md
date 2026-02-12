@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.993
+- **fix(ui)**: Re-deployment of `urlParams` fix (v2.992 was interrupted).
+
 ## v2.992
 - **fix(ui)**: Fixed `ReferenceError: urlParams` in `system-link.js` that caused UI crash.
 
