@@ -2111,6 +2111,10 @@
 
 # Changelog
 
+## [v2.987] - 2026-02-12
+### Synced
+- **Unified Release**: Synchronized with Backend v2.987 (Identity Prompt Fixes).
+
 ## [v2.422] - 2026-01-26
 - **Restored**: UI Status Dots in Power Cluster (20-dot row).
 - **Updated**: Range dots now use Emerald Green theme (`#10b981`) to match the Power Up button.
