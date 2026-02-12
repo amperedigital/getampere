@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.005
+- [UPDATE] synced with Backend v3.005 (Generative OTP).
+
 ## v3.004
 - [UPDATE] synced with Backend v3.004 (V3 Prompt Tuning).
 
