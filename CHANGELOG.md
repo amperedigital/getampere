@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.010
+- [SYNC] Synced with Backend v3.010 (Identity Table Fix).
+
 ## v3.009
 - [SYNC] Synced with Backend v3.009 (Forced Frontend Update).
 
