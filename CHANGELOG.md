@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.007
+- [UPDATE] synced with Backend v3.007 (Unified Versioning).
+- [FIX] Updated `tech-demo.html` meta version to v3.007.
+
 ## v3.006
 - [UPDATE] synced with Backend v3.006 (Privacy Emphasis).
 
