@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.008
+- [SYNC] Synced with Backend v3.008 (Identity Resolution Fix).
+
 ## v3.007
 - [UPDATE] synced with Backend v3.007 (Unified Versioning).
 - [FIX] Updated `tech-demo.html` meta version to v3.007.
