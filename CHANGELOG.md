@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.015
+- [SYNC] Synced with Backend v3.015 (Prompt Priority Fix).
+
 ## v3.014
 - [SYNC] Synced with Backend v3.014 (Auditing Agent Name Extraction).
 
