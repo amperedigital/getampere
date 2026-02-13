@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.012
+- [SYNC] Synced with Backend v3.012 (Agent Prompt Update).
+
 ## v3.011
 - [FIX] cicd: Updated deployment script to force `meta` tag updates on release.
 
