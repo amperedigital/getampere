@@ -167,6 +167,24 @@ else
     HTML_FILES=$(git show --name-only --format="" HEAD | grep "^deploy/.*\.html$" || true)
   fi
 
+  # v3.010: FORCE RELEASE UPDATE
+  # If a release version is provided, we MUST update the main entry points (index.html, tech-demo.html)
+  # to ensure the <meta name="version"> tag reflects the new release, even if the file itself didn't change.
+  if [ -n "$NEW_TAG" ]; then
+     echo "   🚨 RELEASE MODE: Forcing metadata update for entry points..."
+     # Add tech-demo.html and index.html to the list if they exist
+     if [ -f "deploy/tech-demo.html" ]; then
+        HTML_FILES="${HTML_FILES}
+deploy/tech-demo.html"
+     fi
+     if [ -f "deploy/index.html" ]; then
+        HTML_FILES="${HTML_FILES}
+deploy/index.html"
+     fi
+     # Dedup
+     HTML_FILES=$(echo "$HTML_FILES" | sort | uniq | grep -v "^$")
+  fi
+
   if [ -z "$HTML_FILES" ]; then
     echo "   ⚠️  No HTML files are currently being edited. Skipping asset version alignment."
     HTML_FILES=""

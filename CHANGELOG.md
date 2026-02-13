@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.011
+- [FIX] cicd: Updated deployment script to force `meta` tag updates on release.
+
 ## v3.010
 - [SYNC] Synced with Backend v3.010 (Identity Table Fix).
 
