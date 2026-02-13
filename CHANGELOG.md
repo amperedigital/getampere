@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.016
+- [SYNC] Synced with Backend v3.016 (JSON Leak Fix).
+
 ## v3.015
 - [SYNC] Synced with Backend v3.015 (Prompt Priority Fix).
 
