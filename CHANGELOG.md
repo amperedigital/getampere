@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.009
+- [SYNC] Synced with Backend v3.009 (Forced Frontend Update).
+
 ## v3.008
 - [SYNC] Synced with Backend v3.008 (Identity Resolution Fix).
 
