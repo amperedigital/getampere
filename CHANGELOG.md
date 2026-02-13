@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.014
+- [SYNC] Synced with Backend v3.014 (Auditing Agent Name Extraction).
+
+## v3.013
+- [SYNC] Synced with Backend v3.013 (Memory Persistence Fix).
+
 ## v3.012
 - [SYNC] Synced with Backend v3.012 (Agent Prompt Update).
 
