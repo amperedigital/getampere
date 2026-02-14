@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.076 - Visibility Debugging
+- **Fix**: Updated User Snippet to set `window.UnicornStudio.isInitialized = true` upon completion (satisfies `global.js`).
+- **debug**: Changed `mix-blend-screen` to `mix-blend-normal` on Expertise container to rule out background blending issues.
+- **Note**: Header instance remains disabled.
+
 ## v3.075 - Header Isolation
 - **Fix**: Disabled Header Unicorn instance (`qpSlP...`) by checking for `data-us-disabled`.
 - **Fix**: Restored User's snippet to use `v2.0.5` (as requested).
