@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.040 - Full WebGL Component Restoration
+- **Restore**: Reverted `distortion-grid.js` and `ampere-3d-key.js` to their versions from `deploy.backup.20260122.v2.130` to resolve WebGL context conflicts with Unicorn Studio.
+
 ## v3.039 - WebGL Restoration (Backup Revert)
 - **Restore**: Reverted `index.html` to use the original inline Unicorn Studio script (v1.4.29) from `deploy.backup.20260122.v2.130`.
 - **Restore**: Reverted `global.js` to independent initialization logic for DistortionGrid and Ampere3DKey, removing the experimental sequencing that caused WebGL conflicts.
