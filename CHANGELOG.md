@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.064 - Library Upgrade
+- **Fix**: Upgraded Unicorn Studio library to `v2.0.5` (Latest).
+- **Reason**: The older `v1.4.29` was failing to create WebGL contexts on the current environment.
+
 ## v3.063 - Inline Initialization (Final)
 - **Fix**: Re-applied inline initialization logic (v3.062 was skipped).
 - **Reason**: Previous deployment finished before fix was applied.
