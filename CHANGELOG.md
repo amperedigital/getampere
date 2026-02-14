@@ -4,6 +4,12 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.070 - Multi-Instance Fix
+- **Fix**: Corrected Header Project ID to `qpSlPSWA2bdkUAYztz8z` (was incorrectly `dpD...`).
+- **Fix**: Removed duplicate `id="expertise-gradients"` from header.
+- **Fix**: Updated inline script to initialize ALL Unicorn instances (looped `querySelectorAll`).
+- **Style**: Both instances forced to `opacity-100` and `z-0` for visibility.
+
 ## v3.069 - Force Visibility
 - **Fix**: Changed Unicorn container starting class from `opacity-20` to `opacity-100`.
 - **Reason**: To rule out animation logic failing to fade it in or `opacity-20` being too faint.
