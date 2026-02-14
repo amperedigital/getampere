@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.083 - Inspect Unicorn Internals
+- **Debug**: Updated debugger to inspect `window.UnicornStudio` object (renderer, canvas, scenes).
+- **Reason**: Confirmed "orphan" canvas 0 is `Ampere3DKey`. Unicorn Studio v2.0.5 is running but failing to create a canvas. Need to check if `renderer` exists internally.
+
 ## v3.082 - Deep Canvas Locate
 - **Debug**: Updated debugger to log Parent ID and Class for all canvases.
 - **Reason**: Canvas 0 is 500x400 (orphan/default size) and `static`, meaning it missed the `#expertise-gradients` container. Need to find where it landed (likely `body` or a wrapper) to fix the targeting.
