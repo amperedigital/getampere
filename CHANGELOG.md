@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.035 - WebGL Conflict Diagnosis
+- **Debug**: Temporarily disabled `DistortionGrid` and `Ampere3DKey` to diagnose Unicorn Studio `gl` context failure.
+
 ## v3.034 - Hybrid Unicorn Initialization
 - **Fix**: Implemented hybrid initialization for Unicorn Studio.
 - **Details**: Hero section auto-initializes via `UnicornStudio.init()` to establish WebGL context. Expertise section lazy-loads via `addScene()` using the existing renderer.

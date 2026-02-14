@@ -37,6 +37,9 @@
 })();
 
 // --- Initialize Distortion Grid (Lazy Load) ---
+// --- Initialize Distortion Grid (Lazy Load) ---
+// DISABLED FOR DEBUGGING (Unicorn Studio WebGL Conflict)
+/*
 (function () {
     function checkAndLoad() {
         const selector = '[data-object="distortion-grid"]';
@@ -59,6 +62,7 @@
         checkAndLoad();
     }
 })();
+*/
 
 // --- Initialize Unicorn Studio (Hybrid Strategy) ---
 // 1. Hero: Auto-init via UnicornStudio.init() to create WebGL context.
@@ -914,6 +918,8 @@ document.addEventListener('DOMContentLoaded', () => {
  * Ampere 3D Key Global Manager
  * Auto-initializes 3D keys when [data-ampere-key-3d] is present.
  */
+// DISABLED FOR DEBUGGING (Unicorn Studio WebGL Conflict)
+/*
 (function () {
     // Capture script URL immediately while this script is executing
     const scriptUrl = document.currentScript ? document.currentScript.src : null;
