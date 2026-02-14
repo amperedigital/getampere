@@ -970,193 +970,194 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch(err => console.error("Failed to load Ampere3DKey module:", err));
             }
         });
-    })();
+    });
+})();
 
-    // ... (End of previous file content)
+// ... (End of previous file content)
 
-    /*
-     * FAQ Accordion Animation (WAAPI) - Refined v2
-     * Provides smooth open/close transitions for <details> elements.
-     * Handles rapid clicking, prevents layout flashing, and uses custom easing.
-     */
-    document.addEventListener('DOMContentLoaded', () => {
-        const details = document.querySelectorAll('#faq-section details');
+/*
+ * FAQ Accordion Animation (WAAPI) - Refined v2
+ * Provides smooth open/close transitions for <details> elements.
+ * Handles rapid clicking, prevents layout flashing, and uses custom easing.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const details = document.querySelectorAll('#faq-section details');
 
-        details.forEach(detail => {
-            const summary = detail.querySelector('summary');
-            const content = detail.querySelector('summary + div');
-            const chevron = summary ? summary.querySelector('.faq-chevron') : null; // Get the arrow
-            let currentAnimation = null; // Store active animation to cancel on interrupt
+    details.forEach(detail => {
+        const summary = detail.querySelector('summary');
+        const content = detail.querySelector('summary + div');
+        const chevron = summary ? summary.querySelector('.faq-chevron') : null; // Get the arrow
+        let currentAnimation = null; // Store active animation to cancel on interrupt
 
-            if (!summary || !content) return;
+        if (!summary || !content) return;
 
-            // Ensure content is prepared for height animation
-            content.style.overflow = 'hidden';
-            content.style.display = 'block'; // Ensure it behaves as a block for height calc
+        // Ensure content is prepared for height animation
+        content.style.overflow = 'hidden';
+        content.style.display = 'block'; // Ensure it behaves as a block for height calc
 
-            summary.addEventListener('click', (e) => {
-                e.preventDefault();
+        summary.addEventListener('click', (e) => {
+            e.preventDefault();
 
-                // Calculate height of the content content
-                // We need to temporarily ensure it's visible to measure 'scrollHeight'
-                // If it's closed, we momentarily open it but keep height locked if possible, 
-                // or rely on the logic below.
+            // Calculate height of the content content
+            // We need to temporarily ensure it's visible to measure 'scrollHeight'
+            // If it's closed, we momentarily open it but keep height locked if possible, 
+            // or rely on the logic below.
 
-                if (detail.open) {
-                    // --- CLOSING ---
-                    if (currentAnimation) currentAnimation.cancel();
+            if (detail.open) {
+                // --- CLOSING ---
+                if (currentAnimation) currentAnimation.cancel();
 
-                    // Immediately rotate arrow back
-                    if (chevron) chevron.classList.remove('rotate-180');
+                // Immediately rotate arrow back
+                if (chevron) chevron.classList.remove('rotate-180');
 
-                    // 1. Measure current state
-                    const startHeight = content.offsetHeight;
-                    const style = window.getComputedStyle(content);
-                    const startPadBottom = style.paddingBottom;
-                    const startPadTop = style.paddingTop;
+                // 1. Measure current state
+                const startHeight = content.offsetHeight;
+                const style = window.getComputedStyle(content);
+                const startPadBottom = style.paddingBottom;
+                const startPadTop = style.paddingTop;
 
-                    // Lock dimensions
-                    content.style.height = startHeight + 'px';
-                    content.style.overflow = 'hidden';
+                // Lock dimensions
+                content.style.height = startHeight + 'px';
+                content.style.overflow = 'hidden';
 
-                    // 2. Play Animation
-                    currentAnimation = content.animate([
-                        { height: startHeight + 'px', opacity: 1, paddingBottom: startPadBottom, paddingTop: startPadTop },
-                        { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' }
-                    ], {
-                        duration: 300,
-                        easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
-                    });
+                // 2. Play Animation
+                currentAnimation = content.animate([
+                    { height: startHeight + 'px', opacity: 1, paddingBottom: startPadBottom, paddingTop: startPadTop },
+                    { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' }
+                ], {
+                    duration: 300,
+                    easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
+                });
 
-                    // 3. Cleanup on finish
-                    currentAnimation.onfinish = () => {
-                        detail.removeAttribute('open');
-                        content.style.height = '';
-                        content.style.overflow = '';
-                        currentAnimation = null;
-                    };
+                // 3. Cleanup on finish
+                currentAnimation.onfinish = () => {
+                    detail.removeAttribute('open');
+                    content.style.height = '';
+                    content.style.overflow = '';
+                    currentAnimation = null;
+                };
 
-                } else {
-                    // --- OPENING ---
+            } else {
+                // --- OPENING ---
 
-                    // Auto-close other items (Accordion behavior)
-                    details.forEach(otherDetail => {
-                        if (otherDetail !== detail && otherDetail.open) {
-                            const otherSummary = otherDetail.querySelector('summary');
-                            // Trigger the click logic for the other item so it animates closed
-                            if (otherSummary) otherSummary.click();
-                        }
-                    });
+                // Auto-close other items (Accordion behavior)
+                details.forEach(otherDetail => {
+                    if (otherDetail !== detail && otherDetail.open) {
+                        const otherSummary = otherDetail.querySelector('summary');
+                        // Trigger the click logic for the other item so it animates closed
+                        if (otherSummary) otherSummary.click();
+                    }
+                });
 
-                    if (currentAnimation) currentAnimation.cancel();
+                if (currentAnimation) currentAnimation.cancel();
 
-                    // Immediately rotate arrow down
-                    if (chevron) chevron.classList.add('rotate-180');
+                // Immediately rotate arrow down
+                if (chevron) chevron.classList.add('rotate-180');
 
-                    // 1. Open the element
-                    detail.setAttribute('open', '');
-                    content.style.overflow = 'hidden'; // Lock overflow
+                // 1. Open the element
+                detail.setAttribute('open', '');
+                content.style.overflow = 'hidden'; // Lock overflow
 
-                    // 2. Measure the natural height & styles
-                    const style = window.getComputedStyle(content);
-                    const targetPadBottom = style.paddingBottom;
-                    const targetPadTop = style.paddingTop;
-                    const endHeight = content.scrollHeight;
+                // 2. Measure the natural height & styles
+                const style = window.getComputedStyle(content);
+                const targetPadBottom = style.paddingBottom;
+                const targetPadTop = style.paddingTop;
+                const endHeight = content.scrollHeight;
 
-                    // 3. Play Animation
-                    currentAnimation = content.animate([
-                        { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' },
-                        { height: endHeight + 'px', opacity: 1, paddingBottom: targetPadBottom, paddingTop: targetPadTop }
-                    ], {
-                        duration: 300,
-                        easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
-                    });
+                // 3. Play Animation
+                currentAnimation = content.animate([
+                    { height: '0px', opacity: 0, paddingBottom: '0px', paddingTop: '0px' },
+                    { height: endHeight + 'px', opacity: 1, paddingBottom: targetPadBottom, paddingTop: targetPadTop }
+                ], {
+                    duration: 300,
+                    easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
+                });
 
-                    currentAnimation.onfinish = () => {
-                        content.style.height = '';
-                        content.style.opacity = '';
-                        content.style.overflow = ''; // Release overflow
-                        currentAnimation = null;
-                    };
-                }
-            });
+                currentAnimation.onfinish = () => {
+                    content.style.height = '';
+                    content.style.opacity = '';
+                    content.style.overflow = ''; // Release overflow
+                    currentAnimation = null;
+                };
+            }
         });
     });
+});
 
-    // --- ROI Calculator Logic ---
-    (function () {
-        const slider = document.getElementById('roi-calls');
-        const displayCalls = document.getElementById('roi-calls-display');
-        const displaySavings = document.getElementById('roi-savings');
-        const displayHours = document.getElementById('roi-hours');
+// --- ROI Calculator Logic ---
+(function () {
+    const slider = document.getElementById('roi-calls');
+    const displayCalls = document.getElementById('roi-calls-display');
+    const displaySavings = document.getElementById('roi-savings');
+    const displayHours = document.getElementById('roi-hours');
 
-        if (!slider || !displayCalls || !displaySavings || !displayHours) return;
+    if (!slider || !displayCalls || !displaySavings || !displayHours) return;
 
-        function updateROI() {
-            const calls = parseInt(slider.value, 10);
+    function updateROI() {
+        const calls = parseInt(slider.value, 10);
 
-            // Assumptions:
-            // - Average call handling time (including interruption context switching): 3 minutes
-            // - Average hourly cost of employee (salary + benefits + overhead): $30/hr
-            // - Cost per call = (3/60) * 30 = $1.50
-            // - Revenue recovery factor (missed calls recovered): +$1.00 per call (conservative avg)
-            // - Total Value per Call = $2.50
+        // Assumptions:
+        // - Average call handling time (including interruption context switching): 3 minutes
+        // - Average hourly cost of employee (salary + benefits + overhead): $30/hr
+        // - Cost per call = (3/60) * 30 = $1.50
+        // - Revenue recovery factor (missed calls recovered): +$1.00 per call (conservative avg)
+        // - Total Value per Call = $2.50
 
-            const savings = Math.floor(calls * 2.5);
-            const hours = Math.floor(calls * (3 / 60));
+        const savings = Math.floor(calls * 2.5);
+        const hours = Math.floor(calls * (3 / 60));
 
-            displayCalls.textContent = calls.toLocaleString();
-            displaySavings.textContent = '$' + savings.toLocaleString();
-            displayHours.textContent = hours + 'h';
+        displayCalls.textContent = calls.toLocaleString();
+        displaySavings.textContent = '$' + savings.toLocaleString();
+        displayHours.textContent = hours + 'h';
 
-            // Update slider track background size for "fill" effect (Webkit)
-            const min = parseInt(slider.min) || 0;
-            const max = parseInt(slider.max) || 2500;
-            const percentage = ((calls - min) / (max - min)) * 100;
-            slider.style.backgroundSize = percentage + '% 100%';
-        }
+        // Update slider track background size for "fill" effect (Webkit)
+        const min = parseInt(slider.min) || 0;
+        const max = parseInt(slider.max) || 2500;
+        const percentage = ((calls - min) / (max - min)) * 100;
+        slider.style.backgroundSize = percentage + '% 100%';
+    }
 
-        // Initial update
-        updateROI();
+    // Initial update
+    updateROI();
 
-        // Event listener
-        slider.addEventListener('input', updateROI);
-    })();
+    // Event listener
+    slider.addEventListener('input', updateROI);
+})();
 
-    // Sync v2.894
+// Sync v2.894
 
-    // Force update v2.979
+// Force update v2.979
 
-    // --- Migrated from index-patches.js (v3.022) ---
+// --- Migrated from index-patches.js (v3.022) ---
 
-    // 1. Editor Hacks (Hide modal content on live site)
-    (function () {
-        try {
-            const hostname = window.location.hostname;
-            const isLive = hostname.includes('workers.dev') ||
-                hostname === 'getampere.ai' ||
-                hostname.endsWith('.getampere.ai') ||
-                hostname.includes('amperedigital.github.io');
+// 1. Editor Hacks (Hide modal content on live site)
+(function () {
+    try {
+        const hostname = window.location.hostname;
+        const isLive = hostname.includes('workers.dev') ||
+            hostname === 'getampere.ai' ||
+            hostname.endsWith('.getampere.ai') ||
+            hostname.includes('amperedigital.github.io');
 
-            if (!isLive) return;
+        if (!isLive) return;
 
-            var style = document.createElement('style');
-            style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
-            document.head.appendChild(style);
-        } catch (e) { }
-    })();
+        var style = document.createElement('style');
+        style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
+        document.head.appendChild(style);
+    } catch (e) { }
+})();
 
-    // 2. Mobile Menu Toggle
-    window.toggleMenu = function (trigger) {
-        const menu = document.getElementById("mobile-menu");
-        if (!menu) return;
-        menu.classList.toggle("translate-x-full");
-        const nowOpen = !menu.classList.contains("translate-x-full");
-        const button =
-            trigger?.classList?.contains("amp-hamburger") ?
-                trigger :
-                document.querySelector(".amp-hamburger[data-role='toggle']");
-        if (button) {
-            button.classList.toggle("is-open", nowOpen);
-        }
-    };
+// 2. Mobile Menu Toggle
+window.toggleMenu = function (trigger) {
+    const menu = document.getElementById("mobile-menu");
+    if (!menu) return;
+    menu.classList.toggle("translate-x-full");
+    const nowOpen = !menu.classList.contains("translate-x-full");
+    const button =
+        trigger?.classList?.contains("amp-hamburger") ?
+            trigger :
+            document.querySelector(".amp-hamburger[data-role='toggle']");
+    if (button) {
+        button.classList.toggle("is-open", nowOpen);
+    }
+};
