@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.020
+- **Fix**: Suppressed Unicorn Studio WebGL errors in `index-patches.js` (try/catch + context check).
+- **Cleanup**: Removed redundant Unicorn initialization block.
+
 ## v3.019
 - **Fix**: Hardened `index-patches.js` to prevent Unicorn Studio WebGL errors.
 - **Fix**: Patched `publish.sh` to strictly respect deployment targets (protects index.html).
