@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.060 - Official CDN Restoration
+- **Fix**: Replaced local `unicornStudio.umd.js` with dynamic loading of the official `v1.4.29` library from JSDelivr.
+- **Reason**: To eliminate potential binary corruption or version mismatch causing WebGL context errors.
+- **Change**: `index.html` no longer loads the library directly; `unicorn-init.js` handles it.
+
 ## v3.059 - Script Execution Order
 - **Fix**: Added `defer` attribute to `unicornStudio.umd.js` and `unicorn-init.js` in `index.html`.
 - **Reason**: To ensure scripts execute in order after parsing, preventing race conditions where the init script runs before the library or DOM is ready.
