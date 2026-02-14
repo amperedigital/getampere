@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.095 Loaded');
+    console.log('[Ampere Global] v3.098 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -915,68 +915,70 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Append query string
                 componentUrl += `?v=${cacheBuster}`;
 
-                // [Debug v3.086] Disabled for isolation
-                // import(componentUrl)
-                //    .then(({ Ampere3DKey }) => {
-                //        const initKeys = () => {
-                keyContainers.forEach(container => {
-                    // Avoid double initialization
-                    if (container.dataset.keyInitialized) return;
-                    container.dataset.keyInitialized = "true";
+                // [Debug v3.098] Restored Import
+                import(componentUrl)
+                    .then(({ Ampere3DKey }) => {
+                        keyContainers.forEach(container => {
+                            // Avoid double initialization
+                            if (container.dataset.keyInitialized) return;
+                            container.dataset.keyInitialized = "true";
 
-                    const instance = new Ampere3DKey(container);
+                            const instance = new Ampere3DKey(container);
 
-                    // Register with Global Observer
-                    container._key3dInstance = instance;
-                    if (window.globalObserver) {
-                        window.globalObserver.observe(container);
-                    }
+                            // Register with Global Observer
+                            container._key3dInstance = instance;
+                            if (window.globalObserver) {
+                                window.globalObserver.observe(container);
+                            }
 
-                    // Hook into Lenis if available
-                    if (window.lenis) {
-                        window.lenis.on('scroll', () => {
-                            // Optimization: Skip calculation if off-screen (managed by Global Observer)
-                            if (instance.isVisible === false) return;
+                            // Hook into Lenis if available
+                            if (window.lenis) {
+                                window.lenis.on('scroll', () => {
+                                    // Optimization: Skip calculation if off-screen (managed by Global Observer)
+                                    if (instance.isVisible === false) return;
 
-                            const rect = container.getBoundingClientRect();
-                            const vh = window.innerHeight;
-                            // Default Logic: 85% -> 35% viewport reveal
-                            const start = vh * 0.85;
-                            const end = vh * 0.35;
+                                    const rect = container.getBoundingClientRect();
+                                    const vh = window.innerHeight;
+                                    // Default Logic: 85% -> 35% viewport reveal
+                                    const start = vh * 0.85;
+                                    const end = vh * 0.35;
 
-                            let p = (start - rect.top) / (start - end);
-                            p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
+                                    let p = (start - rect.top) / (start - end);
+                                    p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
 
-                            instance.setProgress(p);
+                                    instance.setProgress(p);
+                                });
+                            } else {
+                                // Fallback for no-lenis (native scroll)
+                                window.addEventListener('scroll', () => {
+                                    if (instance.isVisible === false) return;
+
+                                    const rect = container.getBoundingClientRect();
+                                    const vh = window.innerHeight;
+                                    const start = vh * 0.85;
+                                    const end = vh * 0.35;
+
+                                    let p = (start - rect.top) / (start - end);
+                                    p = Math.min(Math.max(p, 0), 1);
+
+                                    instance.setProgress(p);
+                                }, { passive: true });
+                            }
+                            //             });
+                            //     };
+                            // 
+                            //     initKeys();
+                            // })
+                            //     .catch(err => console.error("Failed to load Ampere3DKey module:", err));
+                            //             }
+                            //         });
+                            //             }
+                            //         });
                         });
-                    } else {
-                        // Fallback for no-lenis (native scroll)
-                        window.addEventListener('scroll', () => {
-                            if (instance.isVisible === false) return;
-
-                            const rect = container.getBoundingClientRect();
-                            const vh = window.innerHeight;
-                            const start = vh * 0.85;
-                            const end = vh * 0.35;
-
-                            let p = (start - rect.top) / (start - end);
-                            p = Math.min(Math.max(p, 0), 1);
-
-                            instance.setProgress(p);
-                        }, { passive: true });
-                    }
-                    //             });
-                    //     };
-                    // 
-                    //     initKeys();
-                    // })
-                    //     .catch(err => console.error("Failed to load Ampere3DKey module:", err));
-                    //             }
-                    //         });
-                    //             }
-                    //         });
-                });
-            });
+                    })
+                    .catch(err => console.error("Failed to load Ampere3DKey module:", err));
+            }
+        });
     });
 })();
 

@@ -4,6 +4,21 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.098 - Restore Dynamic Import
+- **Fix**: Restored the `import(componentUrl)` logic for `Ampere3DKey` in `global.js`. This fixes the `ReferenceError: Ampere3DKey is not defined` and the resulting Lint error.
+- **Verification**: User reported "extra bracket" which was likely an artifact of the mismatched nesting. This structure should be sound.
+- **Goal**: Restore full JS functionality.
+
+## v3.097 - Syntax Fix & ESLint Verification
+- **Fix**: Re-applied the correct closing braces in `global.js` (`} }); }); })();`) to resolve the syntax error.
+- **Verification**: Confirmed with local ESLint run before deploying.
+- **Goal**: Finally get the JS running to test the Canvas Binding.
+
+## v3.096 - ESLint Integration
+- **Fix**: Removed extra closing braces in `global.js` that caused `SyntaxError`.
+- **Infrastructure**: Added `eslint` check to `scripts/publish.sh`. The deployment will now **FAIL** if there are syntax errors, preventing broken builds from shipping.
+- **Goal**: Ensure code validity before deployment.
+
 ## v3.095 - Explicit Canvas Binding
 - **Fix**: Corrected the closing braces in `global.js` to resolve the `missing )` syntax error.
 - **Change**: Updated `UnicornStudio.init` configuration to explicitly pass `canvas: hardcodedCanvas`.
