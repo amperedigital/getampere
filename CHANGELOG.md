@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.069 - Force Visibility
+- **Fix**: Changed Unicorn container starting class from `opacity-20` to `opacity-100`.
+- **Reason**: To rule out animation logic failing to fade it in or `opacity-20` being too faint.
+
 ## v3.068 - Visibility Restoration
 - **Fix**: Restored `index.html` container styles to match backup v2.130.
 - **Changes**: Added `mix-blend-screen`, `opacity-20`, `z-0`, and `data-reveal-bg`.
