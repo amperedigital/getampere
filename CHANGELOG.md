@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.090 - Syntax Fix Redux
+- **Fix**: Restored the missing closing brace `}` for the `if (keyContainers.length > 0)` block in `global.js`. This was the cause of the `Unexpected token ')'` error.
+- **Goal**: Finally restore site functionality (sections visible) and verify Shim logic.
+
 ## v3.089 - Global JS Rescue & Shim Logs
 - **Fix**: Resolved `Uncaught SyntaxError` in `global.js` (restored missing `});`). This fixes the "Missing Sections" issue caused by crashing observers.
 - **Debug**: Added explicit logging for Unicorn Shim to report *why* it skips creation (e.g., if canvas already exists).
