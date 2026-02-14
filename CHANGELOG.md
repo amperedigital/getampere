@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.038 - Frontend Visualization Fix
+- **Fix**: Corrected CSS `mask-image` on the background container that was accidentally hiding the Unicorn Studio canvas (was set to 1% visibility).
+
 ## v3.037 - Global JS Cleanup
 - **Fix**: Removed dead code for "Expertise" lazy loading (hallucinated requirement).
 - **Optimization**: Simplified `initUnicorn` to only handle the single Hero project.
