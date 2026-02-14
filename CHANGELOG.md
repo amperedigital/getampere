@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.033 - Fixed Unicorn Path
+- **Fix**: Corrected `unicornStudio.umd.js` path in `index.html` from `assets/js/lib/` to `assets/js/`.
+- **Fix**: Resolves `SyntaxError: Unexpected token '<'` (404 error).
+
 ## v3.032 - Restored Unicorn Script
 - **Fix**: Restored missing `<script src="assets/js/lib/unicornStudio.umd.js">` in `index.html`.
 - **Note**: This was accidentally removed during the revert of dynamic loading.
