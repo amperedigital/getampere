@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.056 - Sequential Initialization (Tag Fix)
+- **Fix**: Re-release of v3.055 logic with clean tag.
+- **Improved**: Strict sequential loading: Unicorn -> Distortion -> Keys.
+
 ## v3.055 - Sequential Initialization
 - **Fix**: Modified `global.js` to strictly wait for `UnicornStudio` to report `isInitialized` (or timeout) before initializing `DistortionGrid` and `Ampere3DKey`.
 - **Reason**: To resolve WebGL context creation errors caused by race conditions and resource contention between the three WebGL components.
