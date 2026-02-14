@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.067 - Project ID Fix
+- **Fix**: Restored original (v2.130) Unicorn Studio Project ID (`dpD006...`).
+- **Cleanup**: Removed stale `v1.4.29` preload link from `<head>`.
+- **Reason**: `v2.0.5` requires the correct Project ID to avoid "undefined cache" errors.
+
 ## v3.066 - Corruption Fix & Upgrade
 - **Fix**: Cleaned up `index.html` corruption from failed v3.065 edit.
 - **Includes**: Correctly applied Unicorn Studio `v2.0.5` upgrade.
