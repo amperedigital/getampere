@@ -4,6 +4,15 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.075 - Header Isolation
+- **Fix**: Disabled Header Unicorn instance (`qpSlP...`) by checking for `data-us-disabled`.
+- **Fix**: Restored User's snippet to use `v2.0.5` (as requested).
+- **Reason**: The Header project data is incompatible with v2.0.5, causing a global crash. Configuring index.html to only load the Expertise section (`dpD006...`) which is confirmed compatible with v2.x.
+
+## v3.074 - Snippet Version Fix
+- **Fix**: Modified User's snippet to load `v1.4.29` instead of `v2.0.5`.
+- **Reason**: The "undefined cache" error is specific to `v2.x` when processing older project exports. `v1.4.29` is confirmed compatible.
+
 ## v3.073 - User Snippet
 - **Fix**: Replaced inline script with User-provided `v2.0.5` snippet.
 - **Fix**: Updated Expertise container to `data-us-project` (from `data-us-lazy`) to support standard initialization.
