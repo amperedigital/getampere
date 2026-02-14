@@ -77,12 +77,13 @@ function waitForUnicorn(callback) {
                 if (window.DistortionGrid) {
                     window.DistortionGrid.initAll(selector);
                 } else if (!document.querySelector('script[src*="distortion-grid.js"]')) {
-                    const script = document.createElement('script');
-                    script.src = 'assets/js/distortion-grid.js?v=' + Date.now();
-                    script.onload = () => {
-                        if (window.DistortionGrid) window.DistortionGrid.initAll(selector);
-                    };
-                    document.body.appendChild(script);
+                    // [Debug v3.086] Disabled for isolation
+                    // const script = document.createElement('script');
+                    // script.src = 'assets/js/distortion-grid.js?v=' + Date.now();
+                    // script.onload = () => {
+                    //     if (window.DistortionGrid) window.DistortionGrid.initAll(selector);
+                    // };
+                    // document.body.appendChild(script);
                 }
             }
         });
@@ -897,9 +898,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Works for CDN paths: .../v1.XYZ/deploy/assets/js/global.js -> .../ampere-3d-key.js
                 // Uses a flexible regex to handle potential .min suffix
                 let componentUrl = './assets/js/ampere-3d-key.js';
-                if (scriptUrl) {
-                    componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
-                }
+                // [Debug v3.086] Disabled
+                // if (scriptUrl) {
+                //     componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
+                // }
 
                 // Appending a cache buster timestamp to ensure latest version is loaded
                 // (Updates when global.js updates)
@@ -913,65 +915,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Append query string
                 componentUrl += `?v=${cacheBuster}`;
 
-                import(componentUrl)
-                    .then(({ Ampere3DKey }) => {
-                        const initKeys = () => {
-                            keyContainers.forEach(container => {
-                                // Avoid double initialization
-                                if (container.dataset.keyInitialized) return;
-                                container.dataset.keyInitialized = "true";
+                // [Debug v3.086] Disabled for isolation
+                // import(componentUrl)
+                //    .then(({ Ampere3DKey }) => {
+                //        const initKeys = () => {
+                //            keyContainers.forEach(container => {
+                // Avoid double initialization
+                if (container.dataset.keyInitialized) return;
+                container.dataset.keyInitialized = "true";
 
-                                const instance = new Ampere3DKey(container);
+                const instance = new Ampere3DKey(container);
 
-                                // Register with Global Observer
-                                container._key3dInstance = instance;
-                                if (window.globalObserver) {
-                                    window.globalObserver.observe(container);
-                                }
+                // Register with Global Observer
+                container._key3dInstance = instance;
+                if (window.globalObserver) {
+                    window.globalObserver.observe(container);
+                }
 
-                                // Hook into Lenis if available
-                                if (window.lenis) {
-                                    window.lenis.on('scroll', () => {
-                                        // Optimization: Skip calculation if off-screen (managed by Global Observer)
-                                        if (instance.isVisible === false) return;
+                // Hook into Lenis if available
+                if (window.lenis) {
+                    window.lenis.on('scroll', () => {
+                        // Optimization: Skip calculation if off-screen (managed by Global Observer)
+                        if (instance.isVisible === false) return;
 
-                                        const rect = container.getBoundingClientRect();
-                                        const vh = window.innerHeight;
-                                        // Default Logic: 85% -> 35% viewport reveal
-                                        const start = vh * 0.85;
-                                        const end = vh * 0.35;
+                        const rect = container.getBoundingClientRect();
+                        const vh = window.innerHeight;
+                        // Default Logic: 85% -> 35% viewport reveal
+                        const start = vh * 0.85;
+                        const end = vh * 0.35;
 
-                                        let p = (start - rect.top) / (start - end);
-                                        p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
+                        let p = (start - rect.top) / (start - end);
+                        p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
 
-                                        instance.setProgress(p);
-                                    });
-                                } else {
-                                    // Fallback for no-lenis (native scroll)
-                                    window.addEventListener('scroll', () => {
-                                        if (instance.isVisible === false) return;
+                        instance.setProgress(p);
+                    });
+                } else {
+                    // Fallback for no-lenis (native scroll)
+                    window.addEventListener('scroll', () => {
+                        if (instance.isVisible === false) return;
 
-                                        const rect = container.getBoundingClientRect();
-                                        const vh = window.innerHeight;
-                                        const start = vh * 0.85;
-                                        const end = vh * 0.35;
+                        const rect = container.getBoundingClientRect();
+                        const vh = window.innerHeight;
+                        const start = vh * 0.85;
+                        const end = vh * 0.35;
 
-                                        let p = (start - rect.top) / (start - end);
-                                        p = Math.min(Math.max(p, 0), 1);
+                        let p = (start - rect.top) / (start - end);
+                        p = Math.min(Math.max(p, 0), 1);
 
-                                        instance.setProgress(p);
-                                    }, { passive: true });
-                                }
-                            });
-                        };
+                        instance.setProgress(p);
+                    }, { passive: true });
+                }
+            });
+    };
 
-                        initKeys();
-                    })
-                    .catch(err => console.error("Failed to load Ampere3DKey module:", err));
+    initKeys();
+})
+    .catch(err => console.error("Failed to load Ampere3DKey module:", err));
             }
         });
     });
-})();
+}) ();
 
 // ... (End of previous file content)
 

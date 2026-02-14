@@ -3500,7 +3500,11 @@
         });
 
         // Enable Debug Mode if supported
-        u.init({ debug: true, logLevel: 'verbose' }).then(function () {
+        u.init({
+          projectId: 'dpD006WOWWQALxqKpHFZ', // Force the project ID
+          debug: true,
+          logLevel: 'verbose'
+        }).then(function () {
           window.UnicornStudio.isInitialized = true;
           console.log("[Unicorn Inline] Initialized & Flag Set.");
         }).catch(function (err) {
