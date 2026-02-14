@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.023
+- **Consolidation**: Finalized migration of `index-patches.js` logic to `global.js`.
+- **Cleanup**: Deprecated `index-patches.js` to simplify frontend architecture.
+
 ## v3.022
 - **Performance**: Implemented Strict Lazy Loading for Unicorn Studio via `globalObserver`.
 - **Optimization**: Unicorn script only loads when a project element is actually in view.
