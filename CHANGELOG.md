@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.047 - Strict WebGL Restoration (v2.130)
+- **Restore**: Reverted to exact WebGL initialization pattern from v2.130 backup.
+- **Revert**: Undo sequential loading consolidation (it caused context errors).
+- **Fix**: Restored `unicorn-init.js` and synchronous `UnicornStudio` loading.
+
+## v3.046 - Sequential WebGL Manager
+- **Fix**: Implemented strict sequential loading for WebGL components in `global.js` to resolve context creation conflicts.
+- **Order**: Unicorn Studio (Background) -> Distortion Grid -> Ampere 3D Keys.
+- **Cleanup**: Removed `unicorn-init.js` and consolidated logic to avoid script bloat.
+
 ## v3.045 - Rollback to v3.043
 - **Rollback**: Reverted system state to `v3.043` (Commit `4992d3d`) at user request.
 - **Undo**: Restored `index.html` script order (Unicorn Init at bottom).
