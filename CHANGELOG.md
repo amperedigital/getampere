@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.017
+- [SYNC] Synced with Backend v3.017 (Channel-First Logic & Halo Fix).
+
 ## v3.016
 - [SYNC] Synced with Backend v3.016 (JSON Leak Fix).
 
