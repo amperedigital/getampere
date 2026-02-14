@@ -60,56 +60,9 @@
     }
 })();
 
-// --- Initialize Unicorn Studio (Lazy Load & Robust Init) ---
-(function () {
-    function initUnicorn() {
-        // Prevent double init
-        if (window.UnicornStudio && window.UnicornStudio.isInitialized) return;
+// --- Initialize Unicorn Studio (Lazy Load via Observer) ---
+// Logic moved to globalObserver (below) to support "Scroll to Start"
 
-        const project = document.querySelector('[data-us-project]');
-        if (project) {
-            if (window.UnicornStudio) {
-                try {
-                    window.UnicornStudio.init();
-                    window.UnicornStudio.isInitialized = true;
-                    console.log("[Global] Unicorn Studio Initialized.");
-
-                    // SYNC WITH OBSERVER
-                    // Ensure scenes respect the execution state (data-in-view) immediately
-                    setTimeout(() => {
-                        if (window.UnicornStudio.scenes) {
-                            window.UnicornStudio.scenes.forEach(scene => {
-                                const el = scene.element;
-                                const inView = el.getAttribute('data-in-view') === 'true';
-                                if (!inView) {
-                                    scene.paused = true;
-                                    console.log(`[Global] Initial Sync: Paused off-screen scene (${scene.id})`);
-                                }
-                            });
-                        }
-                    }, 100);
-
-                } catch (e) {
-                    console.warn("[Global] Unicorn Init Warning:", e);
-                }
-            } else if (!document.querySelector('script[src*="unicornStudio.umd.js"]')) {
-                console.log("[Global] Loading Unicorn Studio...");
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
-                script.onload = () => {
-                    initUnicorn();
-                };
-                document.body.appendChild(script);
-            }
-        }
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initUnicorn);
-    } else {
-        setTimeout(initUnicorn, 50); // Small delay to ensure DOM is ready
-    }
-})();
 
 /* 
  * Navigation Color Toggle Logic
@@ -817,11 +770,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (distGrid) distGrid.resume();
                 if (keyInstance) keyInstance.resume();
 
-                if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
-                    const scene = window.UnicornStudio.scenes.find(s => s.element === target);
-                    if (scene) {
-                        console.log(`[Global] Resuming Unicorn Scene (${scene.id})`);
-                        scene.paused = false;
+                if (isUnicornProject) {
+                    // Lazy Load / Init Logic
+                    if (!window.UnicornStudio) {
+                        if (!document.querySelector('script[src*="unicornStudio.umd.js"]')) {
+                            console.log("[Global] Observer: Lazy Loading Unicorn Studio for", target);
+                            const script = document.createElement('script');
+                            script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
+                            script.onload = () => {
+                                if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+                                    try {
+                                        window.UnicornStudio.init();
+                                        window.UnicornStudio.isInitialized = true;
+                                        console.log("[Global] Unicorn Initialized via Observer");
+                                        // Re-trigger resume for this specific target
+                                        // The observer loop will catch it on next frame or we can force it:
+                                        if (window.UnicornStudio.scenes) {
+                                            const s = window.UnicornStudio.scenes.find(sc => sc.element === target);
+                                            if (s) s.paused = false;
+                                        }
+                                    } catch (e) { console.warn(e); }
+                                }
+                            };
+                            document.body.appendChild(script);
+                        }
+                    } else if (!window.UnicornStudio.isInitialized) {
+                        window.UnicornStudio.init();
+                        window.UnicornStudio.isInitialized = true;
+                    }
+
+                    if (window.UnicornStudio && window.UnicornStudio.scenes) {
+                        const scene = window.UnicornStudio.scenes.find(s => s.element === target);
+                        if (scene) {
+                            console.log(`[Global] Resuming Unicorn Scene (${scene.id})`);
+                            scene.paused = false;
+                        }
                     }
                 }
 
@@ -1145,3 +1128,37 @@ document.addEventListener('DOMContentLoaded', () => {
 // Sync v2.894
 
 // Force update v2.979
+
+// --- Migrated from index-patches.js (v3.022) ---
+
+// 1. Editor Hacks (Hide modal content on live site)
+(function () {
+  try {
+    const hostname = window.location.hostname;
+    const isLive = hostname.includes('workers.dev') ||
+      hostname === 'getampere.ai' ||
+      hostname.endsWith('.getampere.ai') ||
+      hostname.includes('amperedigital.github.io');
+
+    if (!isLive) return;
+
+    var style = document.createElement('style');
+    style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
+    document.head.appendChild(style);
+  } catch (e) { }
+})();
+
+// 2. Mobile Menu Toggle
+window.toggleMenu = function (trigger) {
+  const menu = document.getElementById("mobile-menu");
+  if (!menu) return;
+  menu.classList.toggle("translate-x-full");
+  const nowOpen = !menu.classList.contains("translate-x-full");
+  const button =
+    trigger?.classList?.contains("amp-hamburger") ?
+      trigger :
+      document.querySelector(".amp-hamburger[data-role='toggle']");
+  if (button) {
+    button.classList.toggle("is-open", nowOpen);
+  }
+};

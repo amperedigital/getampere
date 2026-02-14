@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.022
+- **Performance**: Implemented Strict Lazy Loading for Unicorn Studio via `globalObserver`.
+- **Optimization**: Unicorn script only loads when a project element is actually in view.
+
 ## v3.021
 - **Refactor**: Moved Unicorn Studio initialization to `global.js` (Centralized Control).
 - **Cleanup**: Removed legacy Unicorn init from `index-patches.js`.
