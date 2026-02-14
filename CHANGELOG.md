@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.088 - Syntax Fix & CSS Restore
+- **Fix**: Corrected a syntax error in `global.js` where closing braces for disabled imports were left dangling.
+- **Fix**: Reverted `styles.css` reference to relative path `./assets/css/styles.css` to fix 404/MIME issues.
+- **Goal**: Restore site functionality and continue debugging Unicorn Shim.
+
 ## v3.087 - Force Shim Integration
 - **Fix**: Injected a manual `<canvas>` shim into `#expertise-gradients` before Unicorn init.
 - **Reason**: Unicorn v2.0.5 fails to create its own canvas. Providing one manually might trigger the renderer to attach to it (or at least give us a target).
