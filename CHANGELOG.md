@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.019
+- **Fix**: Hardened `index-patches.js` to prevent Unicorn Studio WebGL errors.
+- **Fix**: Patched `publish.sh` to strictly respect deployment targets (protects index.html).
+
 ## v3.018
 - **Identity**: Synced with Backend v3.018 (Frequent User Logic).
 - **Prompt**: Synced with Backend v3.018 (Interrogative Verification).
