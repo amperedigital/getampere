@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.061 - Clean CDN Loader
+- **Fix**: Removed residual `unicornStudio.umd.js` script tag from `index.html`.
+- **Reason**: v3.060 had a race condition where both the local (index.html) and CDN (unicorn-init.js) libraries were loading.
+
 ## v3.060 - Official CDN Restoration
 - **Fix**: Replaced local `unicornStudio.umd.js` with dynamic loading of the official `v1.4.29` library from JSDelivr.
 - **Reason**: To eliminate potential binary corruption or version mismatch causing WebGL context errors.
