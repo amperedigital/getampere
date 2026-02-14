@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.018
+- **Identity**: Synced with Backend v3.018 (Frequent User Logic).
+- **Prompt**: Synced with Backend v3.018 (Interrogative Verification).
+- **Latency**: Synced with Backend v3.018 (Dynamic Greetings).
+
 ## v3.017
 - [SYNC] Synced with Backend v3.017 (Channel-First Logic & Halo Fix).
 
