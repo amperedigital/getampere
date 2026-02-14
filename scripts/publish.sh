@@ -168,9 +168,9 @@ else
   fi
 
   # v3.010: FORCE RELEASE UPDATE
-  # If a release version is provided, we MUST update the main entry points (index.html, tech-demo.html)
-  # to ensure the <meta name="version"> tag reflects the new release, even if the file itself didn't change.
-  if [ -n "$NEW_TAG" ]; then
+  # If a release version is provided AND NO SPECIFIC TARGET IS SET ($2), we update the main entry points.
+  # If a user provides a target (e.g. tech-demo.html), we respect that strictly.
+  if [ -n "$NEW_TAG" ] && [ -z "$2" ]; then
      echo "   🚨 RELEASE MODE: Forcing metadata update for entry points..."
      # Add tech-demo.html and index.html to the list if they exist
      if [ -f "deploy/tech-demo.html" ]; then
