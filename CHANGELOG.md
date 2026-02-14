@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.072 - Revert to v1.4.29
+- **Fix**: Downgraded Unicorn Studio library from `v2.0.5` to `v1.4.29`.
+- **Reason**: The existing Project IDs export data appears incompatible with v2.x (causes "undefined cache" crash). v1.4.29 matches the known working configuration from v2.130.
+
 ## v3.071 - Single Init Call
 - **Fix**: Refactored inline script to call `UnicornStudio.init()` exactly once.
 - **Reason**: Previous loop called `init()` multiple times, causing "undefined cache" error in v2.0.5 library.
