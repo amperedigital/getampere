@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.032 - Restored Unicorn Script
+- **Fix**: Restored missing `<script src="assets/js/lib/unicornStudio.umd.js">` in `index.html`.
+- **Note**: This was accidentally removed during the revert of dynamic loading.
+
 ## v3.031 - Unicorn Debugging
 - **Debug**: Added verbose logging to `global.js` to trace `addScene` execution and dimension checks.
 - **Fix**: Adjusted `tryInitManual` retry loop logic.
