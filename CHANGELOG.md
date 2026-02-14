@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.085 - Isolate Unicorn (WebGL Conflict)
+- **Fix**: Temporarily commented out `ampere-3d-key.js` and `distortion-grid.js` to free up WebGL contexts.
+- **Debug**: Re-enabled Container dimension logging to ensure target div isn't 0x0.
+- **Goal**: Rule out context limit/sharing issues causing Unicorn to abort renderer creation.
+
 ## v3.084 - Unicorn Debug Mode
 - **Debug**: Refactored inline init script to use verbose logging and `{ debug: true }`.
 - **Debug**: Added explicit `catch` block to init promise to capture silent failures.
