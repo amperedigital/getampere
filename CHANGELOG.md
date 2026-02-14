@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.071 - Single Init Call
+- **Fix**: Refactored inline script to call `UnicornStudio.init()` exactly once.
+- **Reason**: Previous loop called `init()` multiple times, causing "undefined cache" error in v2.0.5 library.
+
 ## v3.070 - Multi-Instance Fix
 - **Fix**: Corrected Header Project ID to `qpSlPSWA2bdkUAYztz8z` (was incorrectly `dpD...`).
 - **Fix**: Removed duplicate `id="expertise-gradients"` from header.

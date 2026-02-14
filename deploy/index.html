@@ -3268,7 +3268,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3474,15 +3474,15 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.070/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.071/deploy/assets/js/carousel.js" defer></script>
 
 
 
@@ -3496,7 +3496,7 @@
       var libUrl = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
 
       function initAll() {
-        // Select BOTH types of instances: data-us-project (Validation) and data-us-lazy (Expertise)
+        // Select BOTH types of instances
         var targets = document.querySelectorAll('[data-us-project], [data-us-lazy]');
 
         if (targets.length === 0) {
@@ -3506,33 +3506,33 @@
 
         console.log("[Unicorn Inline] Found " + targets.length + " targets.");
 
+        // 1. Validate Dimensions (Ensure at least one is visible/sized)
+        var hasValidTarget = false;
         targets.forEach(function (el, index) {
-          // Dimension Check per element
           var rect = el.getBoundingClientRect();
-          if (rect.width < 1 || rect.height < 1) {
-            console.warn("[Unicorn Inline] Target " + index + " zero dims. Skipping for now.");
-            return;
-          }
-
-          // Check if already initialized to avoid double-init
-          if (el.getAttribute('data-us-initialized')) {
-            return;
-          }
-
-          if (window.UnicornStudio) {
-            console.log("[Unicorn Inline] Init Target " + index + " (" + rect.width + "x" + rect.height + ")");
-            try {
-              UnicornStudio.init(); // v2.0.5 init() scans the DOM automatically for data attributes
-              // We mark it manually just in case, though the lib might do it
-              el.setAttribute('data-us-initialized', 'true');
-            } catch (e) {
-              console.error("[Unicorn Inline] Failed target " + index, e);
-            }
+          if (rect.width > 0 && rect.height > 0) {
+            hasValidTarget = true;
+            // console.log("[Unicorn Inline] Target " + index + " valid (" + Math.round(rect.width) + "x" + Math.round(rect.height) + ")");
           }
         });
 
-        // v2.0.5 might need a global flag
-        if (window.UnicornStudio) window.UnicornStudio.isInitialized = true;
+        if (!hasValidTarget) {
+          console.warn("[Unicorn Inline] All targets have zero dimensions. Retrying...");
+          setTimeout(initAll, 100);
+          return;
+        }
+
+        // 2. Initialize Library (ONCE)
+        if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+          console.log("[Unicorn Inline] Calling UnicornStudio.init() (Global)...");
+          try {
+            UnicornStudio.init();
+            window.UnicornStudio.isInitialized = true;
+            console.log("[Unicorn Inline] Init Triggered.");
+          } catch (e) {
+            console.error("[Unicorn Inline] Error during init:", e);
+          }
+        }
       }
 
       if (!window.UnicornStudio) {
