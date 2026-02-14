@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.036 - Sequenced WebGL Initialization
+- **Fix**: Implemented sequenced loading for WebGL components to prevent context conflicts.
+- **Details**: Unicorn Studio initializes first (Critical), then triggers `DistortionGrid` and `Ampere3DKey`.
+- **Infrastructure**: Switched to frontend-only deployment workflow (`scripts/publish.sh`).
+
 ## v3.035 - WebGL Conflict Diagnosis
 - **Debug**: Temporarily disabled `DistortionGrid` and `Ampere3DKey` to diagnose Unicorn Studio `gl` context failure.
 
