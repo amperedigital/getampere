@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.057 - Dimension Safety
+- **Fix**: Added logic to `unicorn-init.js` to check `getBoundingClientRect()` dimensions before initializing.
+- **Reason**: To prevent "Renderer not passed" errors caused by initializing WebGL on a 0x0 container (e.g., before layout or style application).
+
 ## v3.056 - Sequential Initialization (Tag Fix)
 - **Fix**: Re-release of v3.055 logic with clean tag.
 - **Improved**: Strict sequential loading: Unicorn -> Distortion -> Keys.
