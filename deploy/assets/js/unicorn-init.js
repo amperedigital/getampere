@@ -1,5 +1,5 @@
 // Unicorn Studio Initialization (Dynamic Loader v3.060)
-console.log("[Unicorn Init] Starting dynamic load of v3.088...");
+console.log("[Unicorn Init] Starting dynamic load of v3.089...");
 
 (function () {
     // 1. Define the library URL (Official CDN)
@@ -16,7 +16,7 @@ console.log("[Unicorn Init] Starting dynamic load of v3.088...");
             try {
                 UnicornStudio.init();
                 window.UnicornStudio.isInitialized = true;
-                console.log("[Unicorn Init] Success. v3.088 Initialized.");
+                console.log("[Unicorn Init] Success. v3.089 Initialized.");
             } catch (e) {
                 console.error("[Unicorn Init] Error during init:", e);
             }

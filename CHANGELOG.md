@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.089 - Global JS Rescue & Shim Logs
+- **Fix**: Resolved `Uncaught SyntaxError` in `global.js` (restored missing `});`). This fixes the "Missing Sections" issue caused by crashing observers.
+- **Debug**: Added explicit logging for Unicorn Shim to report *why* it skips creation (e.g., if canvas already exists).
+- **Goal**: Restore site visibility and diagnose why Shim didn't seem to fire in v3.087.
+
 ## v3.088 - Syntax Fix & CSS Restore
 - **Fix**: Corrected a syntax error in `global.js` where closing braces for disabled imports were left dangling.
 - **Fix**: Reverted `styles.css` reference to relative path `./assets/css/styles.css` to fix 404/MIME issues.
