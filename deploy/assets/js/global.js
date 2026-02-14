@@ -778,19 +778,25 @@ document.addEventListener('DOMContentLoaded', () => {
                             const script = document.createElement('script');
                             script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
                             script.onload = () => {
-                                if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-                                    try {
-                                        window.UnicornStudio.init();
-                                        window.UnicornStudio.isInitialized = true;
-                                        console.log("[Global] Unicorn Initialized via Observer");
-                                        // Re-trigger resume for this specific target
-                                        // The observer loop will catch it on next frame or we can force it:
-                                        if (window.UnicornStudio.scenes) {
-                                            const s = window.UnicornStudio.scenes.find(sc => sc.element === target);
-                                            if (s) s.paused = false;
+                                // Wait for dimensions
+                                const waitForDims = setInterval(() => {
+                                    const rect = target.getBoundingClientRect();
+                                    if (rect.width > 0 && rect.height > 0) {
+                                        clearInterval(waitForDims);
+                                        if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+                                            try {
+                                                console.log(`[Global] Init Unicorn (Dims: ${rect.width}x${rect.height})`);
+                                                window.UnicornStudio.init();
+                                                window.UnicornStudio.isInitialized = true;
+
+                                                if (window.UnicornStudio.scenes) {
+                                                    const s = window.UnicornStudio.scenes.find(sc => sc.element === target);
+                                                    if (s) s.paused = false;
+                                                }
+                                            } catch (e) { console.warn("[Global] Unicorn Init Failed:", e); }
                                         }
-                                    } catch (e) { console.warn(e); }
-                                }
+                                    }
+                                }, 100);
                             };
                             document.body.appendChild(script);
                         }
@@ -1133,32 +1139,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 1. Editor Hacks (Hide modal content on live site)
 (function () {
-  try {
-    const hostname = window.location.hostname;
-    const isLive = hostname.includes('workers.dev') ||
-      hostname === 'getampere.ai' ||
-      hostname.endsWith('.getampere.ai') ||
-      hostname.includes('amperedigital.github.io');
+    try {
+        const hostname = window.location.hostname;
+        const isLive = hostname.includes('workers.dev') ||
+            hostname === 'getampere.ai' ||
+            hostname.endsWith('.getampere.ai') ||
+            hostname.includes('amperedigital.github.io');
 
-    if (!isLive) return;
+        if (!isLive) return;
 
-    var style = document.createElement('style');
-    style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
-    document.head.appendChild(style);
-  } catch (e) { }
+        var style = document.createElement('style');
+        style.textContent = '[data-amp-modal-' + 'content] { display: none; }';
+        document.head.appendChild(style);
+    } catch (e) { }
 })();
 
 // 2. Mobile Menu Toggle
 window.toggleMenu = function (trigger) {
-  const menu = document.getElementById("mobile-menu");
-  if (!menu) return;
-  menu.classList.toggle("translate-x-full");
-  const nowOpen = !menu.classList.contains("translate-x-full");
-  const button =
-    trigger?.classList?.contains("amp-hamburger") ?
-      trigger :
-      document.querySelector(".amp-hamburger[data-role='toggle']");
-  if (button) {
-    button.classList.toggle("is-open", nowOpen);
-  }
+    const menu = document.getElementById("mobile-menu");
+    if (!menu) return;
+    menu.classList.toggle("translate-x-full");
+    const nowOpen = !menu.classList.contains("translate-x-full");
+    const button =
+        trigger?.classList?.contains("amp-hamburger") ?
+            trigger :
+            document.querySelector(".amp-hamburger[data-role='toggle']");
+    if (button) {
+        button.classList.toggle("is-open", nowOpen);
+    }
 };

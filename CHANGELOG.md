@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.025
+- **Fix**: Added dimension check (`width > 0 && height > 0`) before initializing Unicorn Studio to prevent WebGL context failures on hidden/loading elements.
+- **Cleanup**: Removed deprecated `index-patches.js` reference.
+
 ## v3.024
 - **Fix**: Reverted CSS/JS links in `index.html` to relative paths to fix loading failure.
 - **Optimization**: Removed CDN dependency for critical assets to improve reliability.
