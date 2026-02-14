@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.092 - Global JS Fix (For Real)
+- **Fix**: The previous attempt to remove the extra `})();` in `global.js` failed due to a tool error. I have manually verified the file content and removed the duplicate closure block.
+- **Goal**: Restore site functionality.
+
 ## v3.091 - Global JS Final Fix
 - **Fix**: Removed the extra `})();` at the end of the `if` block in `global.js` which caused `Unexpected token '}'`.
 - **Goal**: Restore site functionality (sections visible).
