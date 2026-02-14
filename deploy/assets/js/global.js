@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.038 Loaded');
+    console.log('[Ampere Global] v3.039 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -38,8 +38,8 @@
 
 // --- Initialize Distortion Grid (Lazy Load) ---
 // --- Initialize Distortion Grid (Sequenced) ---
-window.initDistortionGrid = function () {
-    console.log("[Global] Initializing Distortion Grid (Sequenced)...");
+// --- Initialize Distortion Grid (Lazy Load) ---
+(function () {
     function checkAndLoad() {
         const selector = '[data-object="distortion-grid"]';
         if (document.querySelector(selector)) {
@@ -55,35 +55,10 @@ window.initDistortionGrid = function () {
             }
         }
     }
-    checkAndLoad();
-};
-
-// --- Initialize Unicorn Studio (Hybrid Strategy) ---
-// 1. Hero: Auto-init via UnicornStudio.init() to create WebGL context.
-// 2. Expertise: Lazy-load via addScene() reusing the existing context.
-(function () {
-    const initUnicorn = () => {
-        if (window.UnicornStudio) {
-            console.log("[Global] Unicorn Studio Loaded. Initializing Hero...");
-            window.UnicornStudio.init(); // Handles [data-us-project] elements (Hero)
-
-            // --- SEQUENCED INIT: Load other WebGL apps AFTER Unicorn ---
-            // This prevents context creation conflicts.
-            setTimeout(() => {
-                if (window.initDistortionGrid) window.initDistortionGrid();
-                if (window.initAmpereKeys) window.initAmpereKeys();
-            }, 100);
-
-        } else {
-            console.log("[Global] Waiting for Unicorn...");
-            setTimeout(initUnicorn, 100);
-        }
-    };
-
-    if (document.readyState === 'complete') {
-        initUnicorn();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAndLoad);
     } else {
-        window.addEventListener('load', initUnicorn);
+        checkAndLoad();
     }
 })();
 
@@ -870,93 +845,99 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * v2.976 - Intelligence Loop Refresh
  */
+
 /*
  * Ampere 3D Key Global Manager
  * Auto-initializes 3D keys when [data-ampere-key-3d] is present.
  */
-// --- Initialize Ampere 3D Key (Sequenced) ---
-// --- Initialize Ampere 3D Key (Sequenced) ---
-window.initAmpereKeys = function () {
-    console.log("[Global] Initializing Ampere 3D Keys (Sequenced)...");
-
-    // Capture script URL immediately (best effort, though usually runs later)
-    // We use a hardcoded path fallback since currentScript might be null in async exec
+(function () {
+    // Capture script URL immediately while this script is executing
     const scriptUrl = document.currentScript ? document.currentScript.src : null;
 
-    const keyContainers = document.querySelectorAll('[data-ampere-key-3d]');
+    document.addEventListener('DOMContentLoaded', () => {
+        const keyContainers = document.querySelectorAll('[data-ampere-key-3d]');
 
-    if (keyContainers.length > 0) {
-        console.log("[Global] Found 3D Key containers, loading component...");
+        if (keyContainers.length > 0) {
+            console.log("[Global] Found 3D Key containers, loading component...");
 
-        // Construct component URL
-        let componentUrl = './assets/js/ampere-3d-key.js';
+            // Resolve sibling URL (replaces 'global.js' with 'ampere-3d-key.js')
+            // Works for CDN paths: .../v1.XYZ/deploy/assets/js/global.js -> .../ampere-3d-key.js
+            // Uses a flexible regex to handle potential .min suffix
+            let componentUrl = './assets/js/ampere-3d-key.js';
+            if (scriptUrl) {
+                componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
+            }
 
-        // Try to respect current script path if available (CDN support)
-        if (scriptUrl) {
-            componentUrl = scriptUrl.replace(/\/global.*?\.js$/, '/ampere-3d-key.js');
+            // Appending a cache buster timestamp to ensure latest version is loaded
+            // (Updates when global.js updates)
+            const cacheBuster = new Date().getTime();
+
+            // LOCAL DEV FALLBACK
+            if (!componentUrl || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                componentUrl = './assets/js/ampere-3d-key.js';
+            }
+
+            // Append query string
+            componentUrl += `?v=${cacheBuster}`;
+
+            import(componentUrl)
+                .then(({ Ampere3DKey }) => {
+                    const initKeys = () => {
+                        keyContainers.forEach(container => {
+                            // Avoid double initialization
+                            if (container.dataset.keyInitialized) return;
+                            container.dataset.keyInitialized = "true";
+
+                            const instance = new Ampere3DKey(container);
+
+                            // Register with Global Observer
+                            container._key3dInstance = instance;
+                            if (window.globalObserver) {
+                                window.globalObserver.observe(container);
+                            }
+
+                            // Hook into Lenis if available
+                            if (window.lenis) {
+                                window.lenis.on('scroll', () => {
+                                    // Optimization: Skip calculation if off-screen (managed by Global Observer)
+                                    if (instance.isVisible === false) return;
+
+                                    const rect = container.getBoundingClientRect();
+                                    const vh = window.innerHeight;
+                                    // Default Logic: 85% -> 35% viewport reveal
+                                    const start = vh * 0.85;
+                                    const end = vh * 0.35;
+
+                                    let p = (start - rect.top) / (start - end);
+                                    p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
+
+                                    instance.setProgress(p);
+                                });
+                            } else {
+                                // Fallback for no-lenis (native scroll)
+                                window.addEventListener('scroll', () => {
+                                    if (instance.isVisible === false) return;
+
+                                    const rect = container.getBoundingClientRect();
+                                    const vh = window.innerHeight;
+                                    const start = vh * 0.85;
+                                    const end = vh * 0.35;
+
+                                    let p = (start - rect.top) / (start - end);
+                                    p = Math.min(Math.max(p, 0), 1);
+
+                                    instance.setProgress(p);
+                                }, { passive: true });
+                            }
+                        });
+                    };
+
+                    initKeys();
+                })
+                .catch(err => console.error("Failed to load Ampere3DKey module:", err));
         }
-
-        const cacheBuster = new Date().getTime();
-        componentUrl += `?v=${cacheBuster}`;
-
-        import(componentUrl)
-            .then(({ Ampere3DKey }) => {
-                const initKeys = () => {
-                    keyContainers.forEach(container => {
-                        // Avoid double initialization
-                        if (container.dataset.keyInitialized) return;
-                        container.dataset.keyInitialized = "true";
-
-                        const instance = new Ampere3DKey(container);
-
-                        // Register with Global Observer
-                        container._key3dInstance = instance;
-                        if (window.globalObserver) {
-                            window.globalObserver.observe(container);
-                        }
-
-                        // Hook into Lenis if available
-                        if (window.lenis) {
-                            window.lenis.on('scroll', () => {
-                                // Optimization: Skip calculation if off-screen (managed by Global Observer)
-                                if (instance.isVisible === false) return;
-
-                                const rect = container.getBoundingClientRect();
-                                const vh = window.innerHeight;
-                                // Default Logic: 85% -> 35% viewport reveal
-                                const start = vh * 0.85;
-                                const end = vh * 0.35;
-
-                                let p = (start - rect.top) / (start - end);
-                                p = Math.min(Math.max(p, 0), 1); // Clamp 0-1
-
-                                instance.setProgress(p);
-                            });
-                        } else {
-                            // Fallback for no-lenis (native scroll)
-                            window.addEventListener('scroll', () => {
-                                if (instance.isVisible === false) return;
-
-                                const rect = container.getBoundingClientRect();
-                                const vh = window.innerHeight;
-                                const start = vh * 0.85;
-                                const end = vh * 0.35;
-
-                                let p = (start - rect.top) / (start - end);
-                                p = Math.min(Math.max(p, 0), 1);
-
-                                instance.setProgress(p);
-                            }, { passive: true });
-                        }
-                    });
-                };
-
-                // Init immediately
-                initKeys();
-            })
-            .catch(err => console.error("Failed to load Ampere3DKey module:", err));
-    }
-};
+    });
+})();
 
 // ... (End of previous file content)
 
