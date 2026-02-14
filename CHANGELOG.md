@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.091 - Global JS Final Fix
+- **Fix**: Removed the extra `})();` at the end of the `if` block in `global.js` which caused `Unexpected token '}'`.
+- **Goal**: Restore site functionality (sections visible).
+
 ## v3.090 - Syntax Fix Redux
 - **Fix**: Restored the missing closing brace `}` for the `if (keyContainers.length > 0)` block in `global.js`. This was the cause of the `Unexpected token ')'` error.
 - **Goal**: Finally restore site functionality (sections visible) and verify Shim logic.
