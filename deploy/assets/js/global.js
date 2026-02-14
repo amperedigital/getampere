@@ -774,20 +774,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Lazy Load / Init Logic
                     if (!window.UnicornStudio) {
                         if (!document.querySelector('script[src*="unicornStudio.umd.js"]')) {
-                            console.log("[Global] Observer: Lazy Loading Unicorn Studio for", target);
+                            console.log("[Global] Observer: Lazy Loading Unicorn Studio (Local)...");
                             const script = document.createElement('script');
-                            script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
+                            // LOCAL SELF-HOSTED VERSION
+                            script.src = './assets/js/unicornStudio.umd.js';
                             script.onload = () => {
                                 // Wait for dimensions
                                 const waitForDims = setInterval(() => {
                                     const rect = target.getBoundingClientRect();
                                     if (rect.width > 0 && rect.height > 0) {
                                         clearInterval(waitForDims);
+
+                                        // FORCE CLEANUP: If attribute exists from a failed run or cache, remove it.
+                                        if (target.hasAttribute('data-us-initialized')) {
+                                            console.warn("[Global] Removing stale data-us-initialized attribute.");
+                                            target.removeAttribute('data-us-initialized');
+                                        }
+
                                         if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
                                             try {
                                                 console.log(`[Global] Init Unicorn (Dims: ${rect.width}x${rect.height})`);
                                                 window.UnicornStudio.init();
                                                 window.UnicornStudio.isInitialized = true;
+
 
                                                 if (window.UnicornStudio.scenes) {
                                                     const s = window.UnicornStudio.scenes.find(sc => sc.element === target);

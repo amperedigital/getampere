@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.027
+- **Fix**: Self-hosting `unicornStudio.umd.js` to eliminate potential CDN/CORS issues causing WebGL context creation failures.
+- **Fix**: Added logic to forcibly remove stale `data-us-initialized` attributes before initialization.
+
 ## v3.026
 - **Fix**: Delayed `Ampere3DKey` initialization by 1.5s to allow `UnicornStudio` to claim the WebGL context first, resolving the race condition causing initialization failures.
 
