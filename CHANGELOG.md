@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.086 - True Isolation & Explicit Init
+- **Fix**: Modified `global.js` to disable dynamic imports of `ampere-3d-key.js` and `distortion-grid.js`.
+- **Debug**: Updated inline init to pass `projectId` explicitly in config.
+- **Reason**: Previous isolation failed because `global.js` was loading scripts. Unicorn renderer is uninitialized; trying to force it with explicit config.
+
 ## v3.085 - Isolate Unicorn (WebGL Conflict)
 - **Fix**: Temporarily commented out `ampere-3d-key.js` and `distortion-grid.js` to free up WebGL contexts.
 - **Debug**: Re-enabled Container dimension logging to ensure target div isn't 0x0.
