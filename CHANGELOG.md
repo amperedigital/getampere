@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.030 - Multi-Instance Unicorn Fix
+- **Global**: Refactored `global.js` to support multiple Unicorn Studio instances via manual lazy loading (`addScene`).
+- **Fix**: Prevents race conditions and WebGL context errors by initializing scenes individually only when visible and sized.
+## v3.029
+- **Revert**: Restored static loading of `unicornStudio.umd.js` in `index.html` to resolve WebGL context creation failure caused by dynamic script injection.
+- **Fix**: Updated `global.js` to wait for the statically loaded library rather than injecting it.
+
 ## v3.028
 - **debug**: Injected WebGL Probe to diagnose context creation failures.
 

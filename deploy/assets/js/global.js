@@ -772,55 +772,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (isUnicornProject) {
                     // Lazy Load / Init Logic
-                    if (!window.UnicornStudio) {
-                        if (!document.querySelector('script[src*="unicornStudio.umd.js"]')) {
-                            console.log("[Global] Observer: Lazy Loading Unicorn Studio (Local)...");
-                            const script = document.createElement('script');
-                            // LOCAL SELF-HOSTED VERSION
-                            script.src = './assets/js/unicornStudio.umd.js';
-                            script.onload = () => {
-                                // Wait for dimensions
-                                const waitForDims = setInterval(() => {
-                                    const rect = target.getBoundingClientRect();
-                                    if (rect.width > 0 && rect.height > 0) {
-                                        clearInterval(waitForDims);
+                    // REVERT: We now load the script statically in index.html to ensure WebGL context access.
+                    // We just wait for it to be ready.
 
-                                        // FORCE CLEANUP: If attribute exists from a failed run or cache, remove it.
-                                        if (target.hasAttribute('data-us-initialized')) {
-                                            console.warn("[Global] Removing stale data-us-initialized attribute.");
-                                            target.removeAttribute('data-us-initialized');
-                                        }
+                    // Lazy Load / Manual Init Logic
+                    // We bypass the global UnicornStudio.init() to avoid it eagerly grabbing 
+                    // hidden or zero-dimension elements (like the Expertise section before it's visible).
 
-                                        if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-                                            try {
-                                                console.log(`[Global] Init Unicorn (Dims: ${rect.width}x${rect.height})`);
-                                                window.UnicornStudio.init();
-                                                window.UnicornStudio.isInitialized = true;
+                    const tryInitManual = () => {
+                        if (window.UnicornStudio && typeof window.UnicornStudio.addScene === 'function') {
 
+                            // Check if already initialized to handle re-entries
+                            if (target.hasAttribute('data-us-initialized')) {
+                                return;
+                            }
 
-                                                if (window.UnicornStudio.scenes) {
-                                                    const s = window.UnicornStudio.scenes.find(sc => sc.element === target);
-                                                    if (s) s.paused = false;
-                                                }
-                                            } catch (e) { console.warn("[Global] Unicorn Init Failed:", e); }
-                                        }
-                                    }
-                                }, 100);
-                            };
-                            document.body.appendChild(script);
+                            // Wait for valid dimensions
+                            const rect = target.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0) {
+
+                                console.log(`[Global] Lazy Init Unicorn Scene: ${target.getAttribute('data-us-project')} (${rect.width}x${rect.height})`);
+
+                                try {
+                                    const projectId = target.getAttribute('data-us-project');
+                                    const src = target.getAttribute('data-us-project-src');
+                                    const scale = parseFloat(target.getAttribute('data-us-scale')) || 1;
+                                    const dpi = parseFloat(target.getAttribute('data-us-dpi')) || 1;
+                                    const fps = parseInt(target.getAttribute('data-us-fps')) || 60;
+
+                                    window.UnicornStudio.addScene({
+                                        element: target,
+                                        projectId: projectId,
+                                        filePath: src, // Optional if hosting json file
+                                        scale: scale,
+                                        dpi: dpi,
+                                        fps: fps,
+                                        production: true,
+                                        lazyLoad: false // We are handling the lazy load via observer
+                                    }).then((scene) => {
+                                        console.log(`[Global] Unicorn Scene Access: ${scene.id}`);
+                                        target.setAttribute('data-us-initialized', 'true');
+                                        scene.paused = false;
+                                    }).catch(err => {
+                                        console.error(`[Global] Unicorn AddScene Failed for ${projectId}:`, err);
+                                        // If it failed, maybe we leave initialized off so it retries? 
+                                        // Or we set it to avoid loop? Let's assume retry is okay after a delay.
+                                    });
+
+                                } catch (e) {
+                                    console.error("[Global] Sync Error in Unicorn Init:", e);
+                                }
+
+                            } else {
+                                // No dimensions yet, check again soon
+                                // Only if we are still intersecting (handled by next observer tick or timeout?)
+                                // Simple timeout retry
+                                setTimeout(tryInitManual, 300);
+                            }
+                        } else {
+                            // Library not loaded yet
+                            setTimeout(tryInitManual, 200);
                         }
-                    } else if (!window.UnicornStudio.isInitialized) {
-                        window.UnicornStudio.init();
-                        window.UnicornStudio.isInitialized = true;
-                    }
+                    };
 
-                    if (window.UnicornStudio && window.UnicornStudio.scenes) {
-                        const scene = window.UnicornStudio.scenes.find(s => s.element === target);
-                        if (scene) {
-                            console.log(`[Global] Resuming Unicorn Scene (${scene.id})`);
-                            scene.paused = false;
-                        }
-                    }
+                    tryInitManual();
                 }
 
             } else {
