@@ -1,5 +1,5 @@
 // Unicorn Studio Initialization (Dynamic Loader v3.060)
-console.log("[Unicorn Init] Starting dynamic load of v3.081...");
+console.log("[Unicorn Init] Starting dynamic load of v3.082...");
 
 (function () {
     // 1. Define the library URL (Official CDN)
@@ -12,11 +12,11 @@ console.log("[Unicorn Init] Starting dynamic load of v3.081...");
             if (!el) return; // Wait for DOM
 
             console.log("[Unicorn Init] Library loaded. Initializing...");
-            
+
             try {
                 UnicornStudio.init();
                 window.UnicornStudio.isInitialized = true;
-                console.log("[Unicorn Init] Success. v3.081 Initialized.");
+                console.log("[Unicorn Init] Success. v3.082 Initialized.");
             } catch (e) {
                 console.error("[Unicorn Init] Error during init:", e);
             }
@@ -27,11 +27,11 @@ console.log("[Unicorn Init] Starting dynamic load of v3.081...");
     if (!window.UnicornStudio) {
         // Preset the object so global.js knows we are *trying* to load
         // checking execution order: global.js waits for isInitialized, so this is fine.
-        
+
         var script = document.createElement("script");
         script.src = libUrl;
         script.onload = initWhenReady;
-        script.onerror = function() { console.error("[Unicorn Init] Failed to load library info."); };
+        script.onerror = function () { console.error("[Unicorn Init] Failed to load library info."); };
         document.head.appendChild(script);
     } else {
         // Already loaded? (Rare)

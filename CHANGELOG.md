@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.082 - Deep Canvas Locate
+- **Debug**: Updated debugger to log Parent ID and Class for all canvases.
+- **Reason**: Canvas 0 is 500x400 (orphan/default size) and `static`, meaning it missed the `#expertise-gradients` container. Need to find where it landed (likely `body` or a wrapper) to fix the targeting.
+
 ## v3.081 - Stringified Debug Logs
 - **Debug**: Updated debugger to `JSON.stringify` the output.
 - **Reason**: User logs showed `Array(4)` but didn't expand the details. Need to see the properties of the 4 canvases to identify the Unicorn instance.
