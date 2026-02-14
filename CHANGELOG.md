@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.021
+- **Refactor**: Moved Unicorn Studio initialization to `global.js` (Centralized Control).
+- **Cleanup**: Removed legacy Unicorn init from `index-patches.js`.
+
 ## v3.020
 - **Fix**: Suppressed Unicorn Studio WebGL errors in `index-patches.js` (try/catch + context check).
 - **Cleanup**: Removed redundant Unicorn initialization block.

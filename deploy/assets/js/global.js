@@ -60,6 +60,57 @@
     }
 })();
 
+// --- Initialize Unicorn Studio (Lazy Load & Robust Init) ---
+(function () {
+    function initUnicorn() {
+        // Prevent double init
+        if (window.UnicornStudio && window.UnicornStudio.isInitialized) return;
+
+        const project = document.querySelector('[data-us-project]');
+        if (project) {
+            if (window.UnicornStudio) {
+                try {
+                    window.UnicornStudio.init();
+                    window.UnicornStudio.isInitialized = true;
+                    console.log("[Global] Unicorn Studio Initialized.");
+
+                    // SYNC WITH OBSERVER
+                    // Ensure scenes respect the execution state (data-in-view) immediately
+                    setTimeout(() => {
+                        if (window.UnicornStudio.scenes) {
+                            window.UnicornStudio.scenes.forEach(scene => {
+                                const el = scene.element;
+                                const inView = el.getAttribute('data-in-view') === 'true';
+                                if (!inView) {
+                                    scene.paused = true;
+                                    console.log(`[Global] Initial Sync: Paused off-screen scene (${scene.id})`);
+                                }
+                            });
+                        }
+                    }, 100);
+
+                } catch (e) {
+                    console.warn("[Global] Unicorn Init Warning:", e);
+                }
+            } else if (!document.querySelector('script[src*="unicornStudio.umd.js"]')) {
+                console.log("[Global] Loading Unicorn Studio...");
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
+                script.onload = () => {
+                    initUnicorn();
+                };
+                document.body.appendChild(script);
+            }
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUnicorn);
+    } else {
+        setTimeout(initUnicorn, 50); // Small delay to ensure DOM is ready
+    }
+})();
+
 /* 
  * Navigation Color Toggle Logic
  * Merged from nav-color-toggle.js

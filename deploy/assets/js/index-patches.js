@@ -18,38 +18,7 @@
   } catch (e) { }
 })();
 
-// 2. Unicorn Studio Init (Robust)
-(function () {
-  function initUnicorn() {
-    if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-      // Check if container exists to avoid "WebGL context" errors
-      if (document.querySelector('[data-us-project]')) {
-        window.UnicornStudio.init();
-        window.UnicornStudio.isInitialized = true;
-      }
-    }
-  }
-
-  if (!window.UnicornStudio) {
-    window.UnicornStudio = { isInitialized: false };
-    var i = document.createElement("script");
-    i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js";
-    i.onload = function () {
-      // Try init immediately if loaded
-      initUnicorn();
-    };
-    (document.head || document.body).appendChild(i);
-  }
-
-  // Safety check on load to ensure it catches late renders
-  window.addEventListener('load', initUnicorn);
-  // Double check for DOM readiness
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(initUnicorn, 100);
-  } else {
-    document.addEventListener('DOMContentLoaded', initUnicorn);
-  }
-})();
+// 2. Unicorn Studio Init -> Moved to global.js v3.021
 
 // 4. Mobile Menu Toggle
 window.toggleMenu = function (trigger) {
