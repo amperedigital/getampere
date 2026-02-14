@@ -60,8 +60,72 @@
     }
 })();
 
-// --- Initialize Unicorn Studio (Lazy Load via Observer) ---
-// Logic moved to globalObserver (below) to support "Scroll to Start"
+// --- Initialize Unicorn Studio (Hybrid Strategy) ---
+// 1. Hero: Auto-init via UnicornStudio.init() to create WebGL context.
+// 2. Expertise: Lazy-load via addScene() reusing the existing context.
+(function () {
+    const initUnicorn = () => {
+        if (window.UnicornStudio) {
+            console.log("[Global] Unicorn Studio Loaded. Initializing Hero...");
+            window.UnicornStudio.init(); // Handles [data-us-project] elements (Hero)
+
+            // Now setup Lazy Loader for [data-us-lazy] elements (Expertise)
+            const lazyTargets = document.querySelectorAll('[data-us-lazy]');
+
+            if (lazyTargets.length > 0) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const target = entry.target;
+
+                            // Prevent duplicate init
+                            if (target.getAttribute('data-us-initialized') === 'true') return;
+
+                            const projectId = target.getAttribute('data-us-lazy');
+                            const rect = target.getBoundingClientRect();
+                            console.log(`[Global] Lazy Detecting Expertise: ${projectId} Dims: ${rect.width}x${rect.height}`);
+
+                            if (rect.width > 0 && rect.height > 0) {
+                                console.log(`[Global] Adding Lazy Scene: ${projectId}`);
+
+                                window.UnicornStudio.addScene({
+                                    element: target,
+                                    projectId: projectId,
+                                    scale: 1,
+                                    dpi: 1,
+                                    fps: 60,
+                                    production: true,
+                                    lazyLoad: false
+                                }).then(scene => {
+                                    console.log(`[Global] Lazy Scene Initialized:`, scene);
+                                    target.setAttribute('data-us-initialized', 'true');
+                                    scene.paused = false;
+                                }).catch(err => {
+                                    console.error(`[Global] Lazy Scene Failed:`, err);
+                                });
+
+                                // Stop observing once initialized
+                                observer.unobserve(target);
+                            }
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                lazyTargets.forEach(el => observer.observe(el));
+            }
+
+        } else {
+            console.log("[Global] Waiting for Unicorn...");
+            setTimeout(initUnicorn, 100);
+        }
+    };
+
+    if (document.readyState === 'complete') {
+        initUnicorn();
+    } else {
+        window.addEventListener('load', initUnicorn);
+    }
+})();
 
 
 /* 
@@ -770,79 +834,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (distGrid) distGrid.resume();
                 if (keyInstance) keyInstance.resume();
 
-                if (isUnicornProject) {
-                    // Lazy Load / Init Logic
-                    // REVERT: We now load the script statically in index.html to ensure WebGL context access.
-                    // We just wait for it to be ready.
-
-                    // Lazy Load / Manual Init Logic
-                    // We bypass the global UnicornStudio.init() to avoid it eagerly grabbing 
-                    // hidden or zero-dimension elements (like the Expertise section before it's visible).
-
-                    const tryInitManual = () => {
-                        if (window.UnicornStudio && typeof window.UnicornStudio.addScene === 'function') {
-
-                            // Check if already initialized to handle re-entries
-                            if (target.hasAttribute('data-us-initialized')) {
-                                return;
-                            }
-
-                            // Wait for valid dimensions
-                            const rect = target.getBoundingClientRect();
-                            console.log(`[Global] Checking Unicorn Target: ${target.getAttribute('data-us-project')} Dims: ${rect.width}x${rect.height}`);
-
-                            if (rect.width > 0 && rect.height > 0) {
-
-                                console.log(`[Global] Dimensions Valid. Attempting addScene...`);
-
-                                try {
-                                    const projectId = target.getAttribute('data-us-project');
-                                    const src = target.getAttribute('data-us-project-src'); // Might be null
-                                    const scale = parseFloat(target.getAttribute('data-us-scale')) || 1;
-                                    const dpi = parseFloat(target.getAttribute('data-us-dpi')) || 1;
-                                    const fps = parseInt(target.getAttribute('data-us-fps')) || 60;
-
-                                    // Construct config object explicitly
-                                    const config = {
-                                        element: target,
-                                        projectId: projectId,
-                                        scale: scale,
-                                        dpi: dpi,
-                                        fps: fps,
-                                        production: true,
-                                        lazyLoad: false
-                                    };
-                                    if (src) config.filePath = src;
-
-                                    console.log("[Global] Config:", config);
-
-                                    window.UnicornStudio.addScene(config).then((scene) => {
-                                        console.log(`[Global] Unicorn Scene Initialized:`, scene);
-                                        target.setAttribute('data-us-initialized', 'true');
-                                        scene.paused = false;
-                                    }).catch(err => {
-                                        console.error(`[Global] Unicorn addScene Promise Rejected:`, err);
-                                    });
-
-                                } catch (e) {
-                                    console.error("[Global] Sync Error in Unicorn Init Construction:", e);
-                                }
-
-                            } else {
-                                console.log(`[Global] waiting for dimensions...`);
-                                setTimeout(tryInitManual, 300);
-                            }
-                        } else {
-                            console.log(`[Global] window.UnicornStudio not found yet...`);
-                            setTimeout(tryInitManual, 200);
-                        }
-                    };
-
-                    tryInitManual();
-                }
+                // Unicorn Logic moved to top-level initUnicorn() function (Hybrid Strategy)
 
             } else {
-                // target.classList.remove('in-view'); 
+                // target.classList.remove('in-view');
                 target.setAttribute('data-in-view', 'false');
 
                 if (smilContainer) window.triggerMedia(smilContainer, false);

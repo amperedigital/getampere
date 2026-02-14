@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.034 - Hybrid Unicorn Initialization
+- **Fix**: Implemented hybrid initialization for Unicorn Studio.
+- **Details**: Hero section auto-initializes via `UnicornStudio.init()` to establish WebGL context. Expertise section lazy-loads via `addScene()` using the existing renderer.
+- **Fix**: Resolves `Renderer: WebGL context could not be created` error.
+
 ## v3.033 - Fixed Unicorn Path
 - **Fix**: Corrected `unicornStudio.umd.js` path in `index.html` from `assets/js/lib/` to `assets/js/`.
 - **Fix**: Resolves `SyntaxError: Unexpected token '<'` (404 error).
