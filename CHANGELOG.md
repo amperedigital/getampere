@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.062 - Inline Initialization
+- **Fix**: Moved Unicorn Studio initialization back to an inline script in `index.html`.
+- **Reason**: To eliminate request latency and potential caching issues with external init scripts.
+- **Includes**: Dynamic loading of `v1.4.29` and robust dimension checking.
+
 ## v3.061 - Clean CDN Loader
 - **Fix**: Removed residual `unicornStudio.umd.js` script tag from `index.html`.
 - **Reason**: v3.060 had a race condition where both the local (index.html) and CDN (unicorn-init.js) libraries were loading.
