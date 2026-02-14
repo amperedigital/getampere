@@ -1,59 +1,40 @@
-// Unicorn Studio Initialization
-console.log("[Unicorn Init Script] Loaded and running...");
+// Unicorn Studio Initialization (Dynamic Loader v3.060)
+console.log("[Unicorn Init] Starting dynamic load of v3.060...");
+
 (function () {
-    // Helper to init
-    function tryInit() {
+    // 1. Define the library URL (Official CDN)
+    var libUrl = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js";
+
+    // 2. Helper to initialize once loaded
+    function initWhenReady() {
         if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-            // Check if element exists
             var el = document.querySelector('[data-us-project]');
-            if (!el) {
-                console.warn("[Unicorn Init] Container not found yet.");
-                return;
+            if (!el) return; // Wait for DOM
+
+            console.log("[Unicorn Init] Library loaded. Initializing...");
+            
+            try {
+                UnicornStudio.init();
+                window.UnicornStudio.isInitialized = true;
+                console.log("[Unicorn Init] Success. v3.060 Initialized.");
+            } catch (e) {
+                console.error("[Unicorn Init] Error during init:", e);
             }
-
-            // Check dimensions (WebGL requires non-zero size)
-            var rect = el.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) {
-                console.warn("[Unicorn Init] Container has 0 dimensions (" + rect.width + "x" + rect.height + "). Waiting...");
-                // Retry in 100ms
-                setTimeout(tryInit, 100);
-                return;
-            }
-
-            console.log("[Unicorn Init] Element found (" + el.getAttribute('data-us-project') + ") with dimensions " + rect.width + "x" + rect.height + ". Initializing...");
-
-            // Add slight delay to ensure layout is ready (WebGL context needs dimensions)
-            setTimeout(function () {
-                try {
-                    UnicornStudio.init();
-                    window.UnicornStudio.isInitialized = true;
-                    console.log("[Unicorn Init] Success.");
-                } catch (e) {
-                    console.error("[Unicorn Init] Error during init:", e);
-                }
-            }, 100);
         }
     }
 
-    // 1. Try Immediately
-    if (window.UnicornStudio) {
-        tryInit();
-        return;
+    // 3. Load the Script
+    if (!window.UnicornStudio) {
+        // Preset the object so global.js knows we are *trying* to load
+        // checking execution order: global.js waits for isInitialized, so this is fine.
+        
+        var script = document.createElement("script");
+        script.src = libUrl;
+        script.onload = initWhenReady;
+        script.onerror = function() { console.error("[Unicorn Init] Failed to load library info."); };
+        document.head.appendChild(script);
+    } else {
+        // Already loaded? (Rare)
+        initWhenReady();
     }
-
-    // 2. Wait for Load (if script is async/defer or below this one)
-    console.log("[Unicorn Init] Library not found yet, waiting...");
-    window.addEventListener('load', tryInit);
-    document.addEventListener('DOMContentLoaded', tryInit);
-
-    // 3. Fallback Poll
-    var checks = 0;
-    var interval = setInterval(function () {
-        if (window.UnicornStudio) {
-            clearInterval(interval);
-            tryInit();
-        }
-        checks++;
-        if (checks > 20) clearInterval(interval); // Stop after 2s
-    }, 100);
 })();
