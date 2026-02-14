@@ -3,14 +3,25 @@
     // Helper to init
     function tryInit() {
         if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-            console.log("[Unicorn Init] Accessing global and initializing...");
-            try {
-                UnicornStudio.init();
-                window.UnicornStudio.isInitialized = true;
-                console.log("[Unicorn Init] Success.");
-            } catch (e) {
-                console.error("[Unicorn Init] Error during init:", e);
+            // Check if element exists
+            var el = document.querySelector('[data-us-project]');
+            if (!el) {
+                console.warn("[Unicorn Init] Container not found yet.");
+                return;
             }
+
+            console.log("[Unicorn Init] Element found (" + el.getAttribute('data-us-project') + "). Initializing...");
+
+            // Add slight delay to ensure layout is ready (WebGL context needs dimensions)
+            setTimeout(function () {
+                try {
+                    UnicornStudio.init();
+                    window.UnicornStudio.isInitialized = true;
+                    console.log("[Unicorn Init] Success.");
+                } catch (e) {
+                    console.error("[Unicorn Init] Error during init:", e);
+                }
+            }, 100);
         }
     }
 

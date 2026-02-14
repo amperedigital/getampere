@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.054 - Initialization Safety
+- **Fix**: Added explicit `querySelector('[data-us-project]')` check and a 100ms delay to `unicorn-init.js`.
+- **Reason**: The "Renderer not passed" error indicated `UnicornStudio.init()` was running before the container was ready or had dimensions. This ensures the DOM is fully parsed and laid out before WebGL context creation is attempted.
+
 ## v3.053 - Emergency Override
 - **Fix**: Bypassed validation scripts to force deployment of robust initialization logic.
 
