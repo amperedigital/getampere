@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.055 - Sequential Initialization
+- **Fix**: Modified `global.js` to strictly wait for `UnicornStudio` to report `isInitialized` (or timeout) before initializing `DistortionGrid` and `Ampere3DKey`.
+- **Reason**: To resolve WebGL context creation errors caused by race conditions and resource contention between the three WebGL components.
+
 ## v3.054 - Initialization Safety
 - **Fix**: Added explicit `querySelector('[data-us-project]')` check and a 100ms delay to `unicorn-init.js`.
 - **Reason**: The "Renderer not passed" error indicated `UnicornStudio.init()` was running before the container was ready or had dimensions. This ensures the DOM is fully parsed and laid out before WebGL context creation is attempted.
