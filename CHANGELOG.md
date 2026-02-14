@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.068 - Visibility Restoration
+- **Fix**: Restored `index.html` container styles to match backup v2.130.
+- **Changes**: Added `mix-blend-screen`, `opacity-20`, `z-0`, and `data-reveal-bg`.
+- **Reason**: Previous container was visually hidden (`-z-10`, no blend mode).
+
 ## v3.067 - Project ID Fix
 - **Fix**: Restored original (v2.130) Unicorn Studio Project ID (`dpD006...`).
 - **Cleanup**: Removed stale `v1.4.29` preload link from `<head>`.

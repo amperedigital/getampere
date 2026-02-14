@@ -3,7 +3,7 @@
 // Version: v1.790
 
 (function() {
-console.log('[DistortionGrid] v3.067 Loaded'); 
+console.log('[DistortionGrid] v3.068 Loaded'); 
 
 class DistortionGrid {
     constructor(parentElement, index) {
