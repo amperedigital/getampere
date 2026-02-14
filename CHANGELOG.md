@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.093 - Global JS Loop Restoration
+- **Fix**: Restored the `keyContainers.forEach(container => {` loop in `global.js` which was commented out, causing `ReferenceError: container is not defined`.
+- **Goal**: Fix the final JS crash and get a clean run to debug Unicorn visibility.
+
 ## v3.092 - Global JS Fix (For Real)
 - **Fix**: The previous attempt to remove the extra `})();` in `global.js` failed due to a tool error. I have manually verified the file content and removed the duplicate closure block.
 - **Goal**: Restore site functionality.
