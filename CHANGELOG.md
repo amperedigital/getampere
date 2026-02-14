@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.095 - Explicit Canvas Binding
+- **Fix**: Corrected the closing braces in `global.js` to resolve the `missing )` syntax error.
+- **Change**: Updated `UnicornStudio.init` configuration to explicitly pass `canvas: hardcodedCanvas`.
+- **Goal**: Force Unicorn to attach to our verified (Red Tinted) canvas and restore site interactivity.
+
 ## v3.094 - Hardcoded Canvas & Red Tint
 - **Change**: Replaced JS-injected shim with a hardcoded `<canvas id="unicorn-canvas-target">` in `index.html`.
 - **Debug**: Added `background: rgba(255, 0, 0, 0.1)` (Red Tint) to the canvas to verify its presence visually.
