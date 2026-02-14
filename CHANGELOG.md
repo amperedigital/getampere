@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.044 - Full Restoration (v2.130 Backup)
+- **Restore**: Reverted `index.html`, `global.js`, `distortion-grid.js`, and `ampere-3d-key.js` to their state in backup `v2.130` (dated 2026-01-22). This is a hard reset to the last known stable configuration.
+- **Compliance**: Extracted the restored inline Unicorn Studio script to `assets/js/unicorn-init.js` to satisfy deployment validation rules (Shotgun Rule), while maintaining the exact logic and CDN version (v1.4.29) from the backup.
+
 ## v3.043 - Critical Cleanup
 - **Fix**: Removed stray `<script src="assets/js/unicornStudio.umd.js">` tag from `index.html`. This tag was prematurely loading the library, causing `unicorn-init.js` to skip initialization due to its `!window.UnicornStudio` check.
 - **Cleanup**: Deleted unused local file `deploy/assets/js/unicornStudio.umd.js`.
