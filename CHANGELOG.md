@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.081 - Stringified Debug Logs
+- **Debug**: Updated debugger to `JSON.stringify` the output.
+- **Reason**: User logs showed `Array(4)` but didn't expand the details. Need to see the properties of the 4 canvases to identify the Unicorn instance.
+
 ## v3.080 - Seek Global Canvas
 - **Debug**: Updated debugger to scan *entire document* for `<canvas>` elements.
 - **Reason**: v3.079 showed no canvas inside `#expertise-gradients`. Suspect Unicorn v2.0.5 uses a global shared canvas (Curtains.js pattern) appended to `body`.
