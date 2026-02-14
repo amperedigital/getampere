@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.037 - Global JS Cleanup
+- **Fix**: Removed dead code for "Expertise" lazy loading (hallucinated requirement).
+- **Optimization**: Simplified `initUnicorn` to only handle the single Hero project.
+
 ## v3.036 - Sequenced WebGL Initialization
 - **Fix**: Implemented sequenced loading for WebGL components to prevent context conflicts.
 - **Details**: Unicorn Studio initializes first (Critical), then triggers `DistortionGrid` and `Ampere3DKey`.

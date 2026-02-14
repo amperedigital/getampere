@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.036 Loaded');
+    console.log('[Ampere Global] v3.037 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -65,7 +65,6 @@ window.initDistortionGrid = function () {
     const initUnicorn = () => {
         if (window.UnicornStudio) {
             console.log("[Global] Unicorn Studio Loaded. Initializing Hero...");
-            console.log("[Global] Unicorn Studio Loaded. Initializing Hero...");
             window.UnicornStudio.init(); // Handles [data-us-project] elements (Hero)
 
             // --- SEQUENCED INIT: Load other WebGL apps AFTER Unicorn ---
@@ -74,51 +73,6 @@ window.initDistortionGrid = function () {
                 if (window.initDistortionGrid) window.initDistortionGrid();
                 if (window.initAmpereKeys) window.initAmpereKeys();
             }, 100);
-
-            // Now setup Lazy Loader for [data-us-lazy] elements (Expertise)
-            const lazyTargets = document.querySelectorAll('[data-us-lazy]');
-
-            if (lazyTargets.length > 0) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const target = entry.target;
-
-                            // Prevent duplicate init
-                            if (target.getAttribute('data-us-initialized') === 'true') return;
-
-                            const projectId = target.getAttribute('data-us-lazy');
-                            const rect = target.getBoundingClientRect();
-                            console.log(`[Global] Lazy Detecting Expertise: ${projectId} Dims: ${rect.width}x${rect.height}`);
-
-                            if (rect.width > 0 && rect.height > 0) {
-                                console.log(`[Global] Adding Lazy Scene: ${projectId}`);
-
-                                window.UnicornStudio.addScene({
-                                    element: target,
-                                    projectId: projectId,
-                                    scale: 1,
-                                    dpi: 1,
-                                    fps: 60,
-                                    production: true,
-                                    lazyLoad: false
-                                }).then(scene => {
-                                    console.log(`[Global] Lazy Scene Initialized:`, scene);
-                                    target.setAttribute('data-us-initialized', 'true');
-                                    scene.paused = false;
-                                }).catch(err => {
-                                    console.error(`[Global] Lazy Scene Failed:`, err);
-                                });
-
-                                // Stop observing once initialized
-                                observer.unobserve(target);
-                            }
-                        }
-                    });
-                }, { threshold: 0.1 });
-
-                lazyTargets.forEach(el => observer.observe(el));
-            }
 
         } else {
             console.log("[Global] Waiting for Unicorn...");
