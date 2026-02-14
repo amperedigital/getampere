@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.094 - Hardcoded Canvas & Red Tint
+- **Change**: Replaced JS-injected shim with a hardcoded `<canvas id="unicorn-canvas-target">` in `index.html`.
+- **Debug**: Added `background: rgba(255, 0, 0, 0.1)` (Red Tint) to the canvas to verify its presence visually.
+- **Goal**: Confirm canvas rendering and see if Unicorn attaches to this explicit element.
+
 ## v3.093 - Global JS Loop Restoration
 - **Fix**: Restored the `keyContainers.forEach(container => {` loop in `global.js` which was commented out, causing `ReferenceError: container is not defined`.
 - **Goal**: Fix the final JS crash and get a clean run to debug Unicorn visibility.
