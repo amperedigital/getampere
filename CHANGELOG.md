@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.048 - Missing Library Restoration
+- **Fix**: Restored `unicornStudio.umd.js` from v2.130 backup.
+- **Root Cause**: The file was missing locally, causing `index.html` to return a 404 (HTML) when trying to load it, leading to `SyntaxError: Unexpected token '<'` and subsequent Context Creation failure.
+
 ## v3.047 - Strict WebGL Restoration (v2.130)
 - **Restore**: Reverted to exact WebGL initialization pattern from v2.130 backup.
 - **Revert**: Undo sequential loading consolidation (it caused context errors).
