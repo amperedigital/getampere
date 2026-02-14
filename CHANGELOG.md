@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.031 - Unicorn Debugging
+- **Debug**: Added verbose logging to `global.js` to trace `addScene` execution and dimension checks.
+- **Fix**: Adjusted `tryInitManual` retry loop logic.
+
 ## v3.030 - Multi-Instance Unicorn Fix
 - **Global**: Refactored `global.js` to support multiple Unicorn Studio instances via manual lazy loading (`addScene`).
 - **Fix**: Prevents race conditions and WebGL context errors by initializing scenes individually only when visible and sized.

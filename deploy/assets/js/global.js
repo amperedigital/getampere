@@ -789,48 +789,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             // Wait for valid dimensions
                             const rect = target.getBoundingClientRect();
+                            console.log(`[Global] Checking Unicorn Target: ${target.getAttribute('data-us-project')} Dims: ${rect.width}x${rect.height}`);
+
                             if (rect.width > 0 && rect.height > 0) {
 
-                                console.log(`[Global] Lazy Init Unicorn Scene: ${target.getAttribute('data-us-project')} (${rect.width}x${rect.height})`);
+                                console.log(`[Global] Dimensions Valid. Attempting addScene...`);
 
                                 try {
                                     const projectId = target.getAttribute('data-us-project');
-                                    const src = target.getAttribute('data-us-project-src');
+                                    const src = target.getAttribute('data-us-project-src'); // Might be null
                                     const scale = parseFloat(target.getAttribute('data-us-scale')) || 1;
                                     const dpi = parseFloat(target.getAttribute('data-us-dpi')) || 1;
                                     const fps = parseInt(target.getAttribute('data-us-fps')) || 60;
 
-                                    window.UnicornStudio.addScene({
+                                    // Construct config object explicitly
+                                    const config = {
                                         element: target,
                                         projectId: projectId,
-                                        filePath: src, // Optional if hosting json file
                                         scale: scale,
                                         dpi: dpi,
                                         fps: fps,
                                         production: true,
-                                        lazyLoad: false // We are handling the lazy load via observer
-                                    }).then((scene) => {
-                                        console.log(`[Global] Unicorn Scene Access: ${scene.id}`);
+                                        lazyLoad: false
+                                    };
+                                    if (src) config.filePath = src;
+
+                                    console.log("[Global] Config:", config);
+
+                                    window.UnicornStudio.addScene(config).then((scene) => {
+                                        console.log(`[Global] Unicorn Scene Initialized:`, scene);
                                         target.setAttribute('data-us-initialized', 'true');
                                         scene.paused = false;
                                     }).catch(err => {
-                                        console.error(`[Global] Unicorn AddScene Failed for ${projectId}:`, err);
-                                        // If it failed, maybe we leave initialized off so it retries? 
-                                        // Or we set it to avoid loop? Let's assume retry is okay after a delay.
+                                        console.error(`[Global] Unicorn addScene Promise Rejected:`, err);
                                     });
 
                                 } catch (e) {
-                                    console.error("[Global] Sync Error in Unicorn Init:", e);
+                                    console.error("[Global] Sync Error in Unicorn Init Construction:", e);
                                 }
 
                             } else {
-                                // No dimensions yet, check again soon
-                                // Only if we are still intersecting (handled by next observer tick or timeout?)
-                                // Simple timeout retry
+                                console.log(`[Global] waiting for dimensions...`);
                                 setTimeout(tryInitManual, 300);
                             }
                         } else {
-                            // Library not loaded yet
+                            console.log(`[Global] window.UnicornStudio not found yet...`);
                             setTimeout(tryInitManual, 200);
                         }
                     };
