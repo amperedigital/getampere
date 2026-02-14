@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.026
+- **Fix**: Delayed `Ampere3DKey` initialization by 1.5s to allow `UnicornStudio` to claim the WebGL context first, resolving the race condition causing initialization failures.
+
 ## v3.025
 - **Fix**: Added dimension check (`width > 0 && height > 0`) before initializing Unicorn Studio to prevent WebGL context failures on hidden/loading elements.
 - **Cleanup**: Removed deprecated `index-patches.js` reference.
