@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.080 - Seek Global Canvas
+- **Debug**: Updated debugger to scan *entire document* for `<canvas>` elements.
+- **Reason**: v3.079 showed no canvas inside `#expertise-gradients`. Suspect Unicorn v2.0.5 uses a global shared canvas (Curtains.js pattern) appended to `body`.
+- **Goal**: Locate the canvas and check if it's occluded by container backgrounds.
+
 ## v3.079 - Revert to v2.0.5 & Enhanced Debug
 - **Fix**: Reverted User Snippet to `v2.0.5` after `v1.4.29` downgrade caused WebGL crash.
 - **Debug**: Enhanced debugger to log `canvas` computed styles (opacity, position, z-index) to check if canvas itself is hidden.
