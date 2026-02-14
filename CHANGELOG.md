@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.073 - User Snippet
+- **Fix**: Replaced inline script with User-provided `v2.0.5` snippet.
+- **Fix**: Updated Expertise container to `data-us-project` (from `data-us-lazy`) to support standard initialization.
+- **Verification**: This ensures we use the exact integration code requested by the user.
+
 ## v3.072 - Revert to v1.4.29
 - **Fix**: Downgraded Unicorn Studio library from `v2.0.5` to `v1.4.29`.
 - **Reason**: The existing Project IDs export data appears incompatible with v2.x (causes "undefined cache" crash). v1.4.29 matches the known working configuration from v2.130.
