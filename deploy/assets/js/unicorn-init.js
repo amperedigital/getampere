@@ -10,8 +10,17 @@
                 return;
             }
 
-            console.log("[Unicorn Init] Element found (" + el.getAttribute('data-us-project') + "). Initializing...");
+            // Check dimensions (WebGL requires non-zero size)
+            var rect = el.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) {
+                 console.warn("[Unicorn Init] Container has 0 dimensions (" + rect.width + "x" + rect.height + "). Waiting...");
+                 // Retry in 100ms
+                 setTimeout(tryInit, 100);
+                 return;
+            }
 
+            console.log("[Unicorn Init] Element found (" + el.getAttribute('data-us-project') + ") with dimensions " + rect.width + "x" + rect.height + ". Initializing...");
+            
             // Add slight delay to ensure layout is ready (WebGL context needs dimensions)
             setTimeout(function () {
                 try {

@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.058 - Dimension Safety (Retry)
+- **Fix**: Re-deploy of v3.057 logic.
+- **Improved**: `unicorn-init.js` now polls for non-zero dimensions.
+
 ## v3.057 - Dimension Safety
 - **Fix**: Added logic to `unicorn-init.js` to check `getBoundingClientRect()` dimensions before initializing.
 - **Reason**: To prevent "Renderer not passed" errors caused by initializing WebGL on a 0x0 container (e.g., before layout or style application).
