@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.059 - Script Execution Order
+- **Fix**: Added `defer` attribute to `unicornStudio.umd.js` and `unicorn-init.js` in `index.html`.
+- **Reason**: To ensure scripts execute in order after parsing, preventing race conditions where the init script runs before the library or DOM is ready.
+- **Debug**: Added top-level logging to `unicorn-init.js` to confirm execution.
+
 ## v3.058 - Dimension Safety (Retry)
 - **Fix**: Re-deploy of v3.057 logic.
 - **Improved**: `unicorn-init.js` now polls for non-zero dimensions.
