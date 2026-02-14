@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.078 - Downgrade to v1.4.29
+- **Fix**: Downgraded User Snippet to load `v1.4.29` instead of `v2.0.5`.
+- **Reason**: Expertise section (`dpD006...`) was running but invisible on `v2.0.5`. Suspect renderer incompatibility with legacy project data.
+- **State**: Header disabled, Debugger active, Blend Mode Normal.
+
 ## v3.077 - Debug Instrumentation
 - **Debug**: Injected `setInterval` debugger to log Container and Canvas state (`opacity`, `visibility`, `dimensions`) every 5s.
 - **Goal**: Determine if `canvas` is missing, hidden, or broken.
