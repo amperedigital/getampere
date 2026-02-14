@@ -15,7 +15,7 @@
 
   <title>Get Ampere AI - AI Voice Agents</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3268,7 +3268,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3474,15 +3474,15 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.086/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.087/deploy/assets/js/carousel.js" defer></script>
 
 
 
@@ -3493,8 +3493,23 @@
       var u = window.UnicornStudio;
 
       function runInit() {
+        var container = document.getElementById('expertise-gradients');
+
+        // [Shim] Manually create canvas if it doesn't exist
+        if (container && !container.querySelector('canvas')) {
+          var canvas = document.createElement('canvas');
+          canvas.id = "unicorn-canvas-shim";
+          canvas.style.width = "100%";
+          canvas.style.height = "100%";
+          canvas.style.position = "absolute";
+          canvas.style.top = "0";
+          canvas.style.left = "0";
+          container.appendChild(canvas);
+          console.log("🛠️ [Unicorn Shim] Created Manual Canvas:", canvas);
+        }
+
         console.log("🦄 [Unicorn Boot] Starting Init...", {
-          container: document.getElementById('expertise-gradients'),
+          container: container,
           hasProject: document.querySelector('[data-us-project]'),
           libVersion: u.version || "Unknown"
         });
