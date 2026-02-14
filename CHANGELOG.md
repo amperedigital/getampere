@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.043 - Critical Cleanup
+- **Fix**: Removed stray `<script src="assets/js/unicornStudio.umd.js">` tag from `index.html`. This tag was prematurely loading the library, causing `unicorn-init.js` to skip initialization due to its `!window.UnicornStudio` check.
+- **Cleanup**: Deleted unused local file `deploy/assets/js/unicornStudio.umd.js`.
+
 ## v3.042 - Regression Fix & Script Ordering
 - **Fix**: Moved `unicorn-init.js` to the bottom of `index.html` (before `</body>`). This matches the execution order of the original backup, ensuring `global.js` and other dependencies load *before* Unicorn Studio attempts to initialize.
 - **Restore**: Undid the reversion of `distortion-grid.js` and `ampere-3d-key.js` (from v3.040) as the backup versions were incompatible with the current environment and caused a regression. Restored to v3.039 versions.
