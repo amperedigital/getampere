@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.079 - Revert to v2.0.5 & Enhanced Debug
+- **Fix**: Reverted User Snippet to `v2.0.5` after `v1.4.29` downgrade caused WebGL crash.
+- **Debug**: Enhanced debugger to log `canvas` computed styles (opacity, position, z-index) to check if canvas itself is hidden.
+
 ## v3.078 - Downgrade to v1.4.29
 - **Fix**: Downgraded User Snippet to load `v1.4.29` instead of `v2.0.5`.
 - **Reason**: Expertise section (`dpD006...`) was running but invisible on `v2.0.5`. Suspect renderer incompatibility with legacy project data.
