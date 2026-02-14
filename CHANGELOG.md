@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.041 - WebGL Loading Optimization
+- **Optimize**: Added `<link rel="preload">` for `unicornStudio.umd.js` in `index.html`. This forces an immediate network request for the library, eliminating the latency introduced by extracting the inline script to `unicorn-init.js` and resolving the race condition with `DistortionGrid`.
+
 ## v3.040 - Full WebGL Component Restoration
 - **Restore**: Reverted `distortion-grid.js` and `ampere-3d-key.js` to their versions from `deploy.backup.20260122.v2.130` to resolve WebGL context conflicts with Unicorn Studio.
 
