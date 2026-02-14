@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.066 - Corruption Fix & Upgrade
+- **Fix**: Cleaned up `index.html` corruption from failed v3.065 edit.
+- **Includes**: Correctly applied Unicorn Studio `v2.0.5` upgrade.
+
 ## v3.065 - Library Upgrade (Retry)
 - **Fix**: Re-applied library upgrade to `v2.0.5` (v3.064 missed it).
 - **Reason**: Tool failure in previous step.
