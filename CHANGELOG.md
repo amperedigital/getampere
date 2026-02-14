@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.084 - Unicorn Debug Mode
+- **Debug**: Refactored inline init script to use verbose logging and `{ debug: true }`.
+- **Debug**: Added explicit `catch` block to init promise to capture silent failures.
+- **Goal**: Force Unicorn Studio v2.0.5 to reveal why it refuses to create a renderer (invalid project data? WebGL error? missing target?).
+
 ## v3.083 - Inspect Unicorn Internals
 - **Debug**: Updated debugger to inspect `window.UnicornStudio` object (renderer, canvas, scenes).
 - **Reason**: Confirmed "orphan" canvas 0 is `Ampere3DKey`. Unicorn Studio v2.0.5 is running but failing to create a canvas. Need to check if `renderer` exists internally.

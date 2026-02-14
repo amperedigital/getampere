@@ -15,7 +15,7 @@
 
   <title>Get Ampere AI - AI Voice Agents</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3268,7 +3268,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3474,22 +3474,69 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.083/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.084/deploy/assets/js/carousel.js" defer></script>
 
 
 
   <!-- Unicorn Studio Library (Must load before global.js tries to init) -->
   <!-- Unicorn Studio: User Provided Init (v3.073) -->
   <script type="text/javascript">
-    !function () { var u = window.UnicornStudio; if (u && u.init) { if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function () { u.init().then(function () { window.UnicornStudio.isInitialized = true; console.log("[Unicorn Inline] Initialized & Flag Set."); }) }) } else { u.init().then(function () { window.UnicornStudio.isInitialized = true; console.log("[Unicorn Inline] Initialized & Flag Set."); }) } } else { window.UnicornStudio = { isInitialized: !1 }; var i = document.createElement("script"); i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js", i.onload = function () { if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function () { UnicornStudio.init().then(function () { window.UnicornStudio.isInitialized = true; console.log("[Unicorn Inline] Initialized & Flag Set."); }) }) } else { UnicornStudio.init().then(function () { window.UnicornStudio.isInitialized = true; console.log("[Unicorn Inline] Initialized & Flag Set."); }) } }, (document.head || document.body).appendChild(i) } }();
+    !function () {
+      var u = window.UnicornStudio;
+
+      function runInit() {
+        console.log("🦄 [Unicorn Boot] Starting Init...", {
+          container: document.getElementById('expertise-gradients'),
+          hasProject: document.querySelector('[data-us-project]'),
+          libVersion: u.version || "Unknown"
+        });
+
+        // Enable Debug Mode if supported
+        u.init({ debug: true, logLevel: 'verbose' }).then(function () {
+          window.UnicornStudio.isInitialized = true;
+          console.log("[Unicorn Inline] Initialized & Flag Set.");
+        }).catch(function (err) {
+          console.error("🔥 [Unicorn Boot] Init Failed:", err);
+        });
+      }
+
+      if (u && u.init) {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", runInit);
+        } else {
+          runInit();
+        }
+      } else {
+        // Fallback loader (same as before but with debug logging)
+        window.UnicornStudio = { isInitialized: !1 };
+        var i = document.createElement("script");
+        i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
+        i.onload = function () {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function () {
+              UnicornStudio.init({ debug: true }).then(function () {
+                window.UnicornStudio.isInitialized = true;
+                console.log("[Unicorn Inline] Initialized & Flag Set.");
+              });
+            });
+          } else {
+            UnicornStudio.init({ debug: true }).then(function () {
+              window.UnicornStudio.isInitialized = true;
+              console.log("[Unicorn Inline] Initialized & Flag Set.");
+            });
+          }
+        };
+        (document.head || document.body).appendChild(i);
+      }
+    }();
 
     // v3.080 Debugger (Global Canvas Search)
     setInterval(function () {
