@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.028
+- **debug**: Injected WebGL Probe to diagnose context creation failures.
+
 ## v3.027
 - **Fix**: Self-hosting `unicornStudio.umd.js` to eliminate potential CDN/CORS issues causing WebGL context creation failures.
 - **Fix**: Added logic to forcibly remove stale `data-us-initialized` attributes before initialization.
