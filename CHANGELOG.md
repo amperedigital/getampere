@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.024
+- **Fix**: Reverted CSS/JS links in `index.html` to relative paths to fix loading failure.
+- **Optimization**: Removed CDN dependency for critical assets to improve reliability.
+
 ## v3.023
 - **Consolidation**: Finalized migration of `index-patches.js` logic to `global.js`.
 - **Cleanup**: Deprecated `index-patches.js` to simplify frontend architecture.
