@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.077 - Debug Instrumentation
+- **Debug**: Injected `setInterval` debugger to log Container and Canvas state (`opacity`, `visibility`, `dimensions`) every 5s.
+- **Goal**: Determine if `canvas` is missing, hidden, or broken.
+
 ## v3.076 - Visibility Debugging
 - **Fix**: Updated User Snippet to set `window.UnicornStudio.isInitialized = true` upon completion (satisfies `global.js`).
 - **debug**: Changed `mix-blend-screen` to `mix-blend-normal` on Expertise container to rule out background blending issues.
