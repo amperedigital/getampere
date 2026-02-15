@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.113 - Resize Recovered Canvas
+- **Fix**: Applied `absolute w-full h-full` classes to the recovered Unicorn canvas, which was defaulting to 300x150.
+- **Fix**: Triggered a window `resize` event 100ms after recovery to force the WebGL renderer to update its viewport dimensions.
+- **Status**: Renderer is now correctly identified and appended; this step ensures it is visible and correctly sized.
+
 ## v3.112 - Cleanup & Deep Search
 - **Cleanup**: Removed `DistortionGrid` force-init logic from `index.html` to prevent double-initialization (it's already handled in `global.js`).
 - **Fix**: Replaced simple Unicorn debug logging with a recursive "Renderer Hunter" script.
