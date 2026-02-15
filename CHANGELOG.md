@@ -2,6 +2,7 @@
 
 
 ## v3.124
+- **v3.125**: Removed conflicting Unicorn Studio project ID (`qpSlPSWA2bdkUAYztz8z`) from the document head. This allows the correct project (`dpD006WOWWQALxqKpHFZ`) to initialize properly, resolving the WebGL context creation failure.
 - **v3.124**: Hardened inline Unicorn Studio initialization to correctly handle `window.UnicornStudio` global assignment and added robust promise handling. Extended `global.js` timeout to 5 seconds to accommodate slower connections.
 
 ## v3.123
