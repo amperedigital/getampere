@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.156 Loaded');
+    console.log('[Ampere Global] v3.157 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -92,7 +92,37 @@ async function initUnicorn() {
     // Store scenes to await them
     const promises = [];
 
-    // --- Expertise Background (Moved First v3.156 for testing) ---
+    // --- Hero Background (Restored to First Position v3.157) ---
+    const heroTarget = document.getElementById('unicorn-hero-target');
+    if (heroTarget) {
+        console.log("[Unicorn] >>> Starting Hero Init (bX3WumMMI9ge6elLKxvT)");
+        promises.push(
+            UnicornStudio.addScene({
+                elementId: 'unicorn-hero-target',
+                projectId: 'bX3WumMMI9ge6elLKxvT',
+                iframe: true,
+                interactivity: {
+                    mouse: {
+                        disableMobile: true
+                    }
+                },
+                onLoad: () => {
+                    console.log("[Unicorn] !!! Hero Loaded Match (Success)");
+                    heroTarget.style.opacity = '1';
+                },
+                onError: (err) => {
+                    console.error("[Unicorn] !!! Hero Error Details:", err);
+                    console.log("[Unicorn] RAW Hero Error:", JSON.stringify(err));
+                }
+            })
+        );
+        // Add artificial delay to prevent library race conditions (v3.157)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    } else {
+        console.warn("[Unicorn] Hero Target NOT found");
+    }
+
+    // --- Expertise Background ---
     const expertTarget = document.getElementById('expertise-gradients');
     if (expertTarget) {
         console.log("[Unicorn] >>> Starting Expert Init (dpD006WOWWQALxqKpHFZ)");
@@ -115,34 +145,6 @@ async function initUnicorn() {
         );
     } else {
         console.warn("[Unicorn] Expert Target NOT found");
-    }
-
-    // --- Hero Background (Moved Second v3.156) ---
-    const heroTarget = document.getElementById('unicorn-hero-target');
-    if (heroTarget) {
-        console.log("[Unicorn] >>> Starting Hero Init (bX3WumMMI9ge6elLKxvT)");
-        promises.push(
-            UnicornStudio.addScene({
-                elementId: 'unicorn-hero-target',
-                projectId: 'bX3WumMMI9ge6elLKxvT',
-                iframe: true,
-                interactivity: {
-                    mouse: {
-                        disableMobile: true
-                    }
-                },
-                onLoad: () => {
-                    console.log("[Unicorn] !!! Hero Loaded Match (Success)");
-                    heroTarget.style.opacity = '0.7';
-                },
-                onError: (err) => {
-                    console.error("[Unicorn] !!! Hero Error Details:", err);
-                    console.log("[Unicorn] RAW Hero Error:", JSON.stringify(err));
-                }
-            })
-        );
-    } else {
-        console.warn("[Unicorn] Hero Target NOT found");
     }
 
     try {
@@ -266,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.156...");
+        console.log("[Global] Initializing v3.157...");
         checkNavTheme();
     }, 100);
 });

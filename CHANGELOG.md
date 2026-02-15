@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.157
+- **Fix**: Implemented sequential Unicorn scene addition with a 1-second delay in `global.js`. This resolves the race condition in the library that was causing the Hero section to remain blank when both scenes were added simultaneously.
+- **Update**: Improved Hero background opacity handling for better visibility.
+
 ## v3.156
 - **Debug**: Swapped initialization order of Hero and Expertise scenes in `global.js` to test if the library only allows one scene (last-one-wins theory).
 - **Update**: Re-implemented `unicorn-test.html` (v3.156) with "Solo" test buttons to isolate the Hero and Expertise loads.
