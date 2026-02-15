@@ -5,6 +5,10 @@
 - **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
 - **Status**: Retrying the render kickstart logic with clean syntax.
 
+## v3.121 - Externalize Init
+- **Fix**: Moved inline JavaScript to `assets/js/unicorn-init.js` to eliminate HTML syntax errors.
+- **Cleanup**: Removed broken inline code blocks.
+
 ## v3.120 - Cleanup & Simplification
 - **Cleanup**: Verified no double-loading of scripts. Removed duplicate injection logic.
 - **Simplification**: Reduced init parameter to purely `canvas` and `projectId`.

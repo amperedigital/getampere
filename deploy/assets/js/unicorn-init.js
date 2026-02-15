@@ -1,40 +1,43 @@
-// Unicorn Studio Initialization (Dynamic Loader v3.060)
-console.log("[Unicorn Init] Starting dynamic load of v3.120...");
+// Unicorn Studio Initialization (v3.121)
+// Moved to external file to prevent HTML syntax errors during patching.
 
-(function () {
-    // 1. Define the library URL (Official CDN)
-    var libUrl = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js";
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("🦄 [Unicorn Init] DOMContentLoaded fired.");
 
-    // 2. Helper to initialize once loaded
-    function initWhenReady() {
-        if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-            var el = document.querySelector('[data-us-project]');
-            if (!el) return; // Wait for DOM
+    var canvas = document.getElementById('unicorn-canvas-target');
+    var container = document.getElementById('expertise-gradients');
 
-            console.log("[Unicorn Init] Library loaded. Initializing...");
+    // 1. Ensure Canvas Exists & Fits
+    if (canvas && container) {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
 
-            try {
-                UnicornStudio.init();
-                window.UnicornStudio.isInitialized = true;
-                console.log("[Unicorn Init] Success. v3.120 Initialized.");
-            } catch (e) {
-                console.error("[Unicorn Init] Error during init:", e);
-            }
-        }
-    }
-
-    // 3. Load the Script
-    if (!window.UnicornStudio) {
-        // Preset the object so global.js knows we are *trying* to load
-        // checking execution order: global.js waits for isInitialized, so this is fine.
-
-        var script = document.createElement("script");
-        script.src = libUrl;
-        script.onload = initWhenReady;
-        script.onerror = function () { console.error("[Unicorn Init] Failed to load library info."); };
-        document.head.appendChild(script);
+        // Force critical styles
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '10'; // visible
+        canvas.style.pointerEvents = 'none'; // click-through
     } else {
-        // Already loaded? (Rare)
-        initWhenReady();
+        console.error("🔥 [Unicorn Init] Canvas or Container missing!", { canvas, container });
+        return;
     }
-})();
+
+    // 2. Initialize Library
+    if (window.UnicornStudio) {
+        UnicornStudio.init({
+            projectId: 'dpD006WOWWQALxqKpHFZ',
+            canvas: canvas,
+            debug: false
+        }).then(function () {
+            console.log("🦄 [Unicorn Init] Success!");
+            window.UnicornStudio.isInitialized = true;
+        }).catch(function (err) {
+            console.error("🔥 [Unicorn Init] Failed:", err);
+        });
+    } else {
+        console.error("🔥 [Unicorn Init] 'UnicornStudio' global not found.");
+    }
+});

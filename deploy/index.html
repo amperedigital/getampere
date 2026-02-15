@@ -3273,7 +3273,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3479,15 +3479,15 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.120/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/carousel.js" defer></script>
 
 
 
@@ -3607,32 +3607,8 @@
                   var scene = window.UnicornStudio.scenes ? window.UnicornStudio.scenes[0] : null;
 
                   // Should we call 'update' or 'render'?
-                  if (foundRenderer.render && scene) {
-                    // Try to find camera in scene or renderer
-                    var camera = scene.camera || (foundRenderer.camera);
-                    <!-- Unicorn Studio: Simple Init (v3.120) -->
-                    <script>
-                      document.addEventListener("DOMContentLoaded", function() {
-            // 1. Target the specific canvas we want to use
-            var canvas = document.getElementById('unicorn-canvas-target');
-
-                      // 2. Init Unicorn Studio
-                      if (window.UnicornStudio) {
-                        UnicornStudio.init({
-                          projectId: 'dpD006WOWWQALxqKpHFZ',
-                          canvas: canvas,
-                          debug: false
-                        }).then(function () {
-                          console.log("🦄 [v3.120] Unicorn Studio Initialized.");
-                          window.UnicornStudio.isInitialized = true;
-                        }).catch(function (err) {
-                          console.error("🔥 [v3.120] Init Failed:", err);
-                        });
-            } else {
-                        console.error("🔥 [v3.120] Library not loaded in <head>.");
-            }
-        });
-  </script>
+                  <!-- Unicorn Studio: External Init (v3.121) -->
+                  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.121/deploy/assets/js/unicorn-init.js"></script>
 
   // v3.080 Debugger (Global Canvas Search)
   setInterval(function () {
