@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.142
+- **Fix**: Restored the Hero Unicorn background div in `index.html` with its original project ID (`qpSlPSWA2bdkUAYztz8z`).
+- **Fix**: Reverted the expertise section in `index.html` to its original project ID (`dpD006WOWWQALxqKpHFZ`).
+
 ## v3.141
 - **Simplification**: Removed all debug overlays and complex logic from `unicorn-test.html`. Reverted to a minimal implementation using `addScene` and the local library to satisfy user request for simplicity.
 
