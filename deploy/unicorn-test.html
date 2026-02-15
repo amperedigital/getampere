@@ -5,11 +5,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unicorn Studio Test - v3.135 (addScene)</title>
-
-    <!-- Local Library (User path was /unicornStudio.umd.js, mapped to assets/js/) -->
-    <script
-        src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.138/deploy/assets/js/unicornStudio.umd.js"></script>
+    <title>Unicorn Studio Test - v3.139 (Async Fix)</title>
 
     <style>
         html,
@@ -26,33 +22,51 @@
             height: 100%;
         }
     </style>
+
+    <!-- Load Library with Callbacks -->
+    <script src="assets/js/unicornStudio.umd.js"
+        onload="console.log('[v3.139] Lib Loaded. Triggering init...'); window.initUnicorn();"
+        onerror="console.error('[v3.139] CRITICAL: Library failed to load (404 or Network Error).'); document.getElementById('debug-status').innerText = 'LIB LOAD FAILED';"></script>
 </head>
 
 <body>
     <!-- Verification Overlay -->
-    <div
+    <div id="debug-status"
         style="position: fixed; top: 10px; right: 10px; background: yellow; color: black; z-index: 9999; padding: 5px; font-weight: bold; border: 2px solid red;">
-        VERSION: v3.137 (Force Refresh)
+        VERSION: v3.139 (Async Fix)
     </div>
 
     <div id="app"></div>
 
     <script>
-        console.log("[v3.137] Starting addScene...");
-
-        // User's snippet adapted for specific Project ID
-        UnicornStudio.addScene({
-            elementId: 'app',
-            projectId: 'dpD006WOWWQALxqKpHFZ', // Expertise Gradients
-            iframe: true,
-            interactivity: {
-                mouse: {
-                    disableMobile: true
-                }
+        window.initUnicorn = function () {
+            if (typeof UnicornStudio === 'undefined') {
+                console.error("[v3.139] UnicornStudio global inside init() is UNDEFINED. Script loaded but global missing?");
+                document.getElementById('debug-status').innerText = 'GLOBAL MISSING';
+                return;
             }
-        })
-            .then(() => console.log("[v3.135] Scene Added Successfully"))
-            .catch(err => console.error("[v3.135] Scene Failed:", err));
+
+            console.log("[v3.139] UnicornStudio found. Calling addScene...");
+
+            // User's snippet
+            UnicornStudio.addScene({
+                elementId: 'app',
+                projectId: 'dpD006WOWWQALxqKpHFZ',
+                iframe: true,
+                interactivity: { mouse: { disableMobile: true } }
+            })
+                .then(() => console.log("[v3.139] Scene Added Successfully"))
+                .catch(err => {
+                    console.error("[v3.139] Scene Failed:", err);
+                    document.getElementById('debug-status').innerText = 'SCENE ERROR: ' + err.message;
+                });
+        }
+
+        // Fallback check in case onload missed (unlikely but safe)
+        if (typeof UnicornStudio !== 'undefined') {
+            console.log("[v3.139] UnicornStudio already defined. Running init...");
+            window.initUnicorn();
+        }
     </script>
 </body>
 

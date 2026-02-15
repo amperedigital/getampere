@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.139
+- **Fix**: Re-applied the `onload` fix for `unicorn-test.html` (v3.138 failed to apply the file change). Validated async loading logic.
+
 ## v3.138
 - **Fix**: Updated `unicorn-test.html` to use `onload` callback for `unicornStudio.umd.js`. This prevents `Uncaught ReferenceError` by ensuring the library is fully loaded before `addScene` is called.
 
