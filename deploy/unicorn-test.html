@@ -4,52 +4,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unicorn Test v3.141</title>
+    <title>Unicorn Studio ID Verification</title>
     <style>
-        body,
-        html {
+        body {
+            font-family: sans-serif;
+            background: #111;
+            color: #fff;
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
-        /* Matching user's known working style preference but ensuring visibility */
-        #code-embed {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .test-container {
+            flex: 1;
+            display: flex;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+
+        .label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 10;
+            font-size: 12px;
+        }
+
+        #hero-test {
+            background: #1a1a1a;
+            flex: 1;
+        }
+
+        #expert-test {
+            background: #222;
+            flex: 1;
+        }
+
+        #logs {
+            height: 150px;
+            background: #000;
+            overflow-y: auto;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            border-top: 2px solid #444;
+        }
+
+        .log-error {
+            color: #ff5555;
+        }
+
+        .log-success {
+            color: #55ff55;
         }
     </style>
 </head>
 
 <body>
-    <div id="code-embed"></div>
+    <div class="test-container">
+        <div class="label">HERO: bX3WumMMI9ge6elLKxvT</div>
+        <div id="hero-test"></div>
+    </div>
+    <div class="test-container">
+        <div class="label">EXPERT: dpD006WOWWQALxqKpHFZ</div>
+        <div id="expert-test"></div>
+    </div>
+    <div id="logs">Loading logs...<br></div>
 
-    <!-- Local Library -->
     <script src="assets/js/unicornStudio.umd.js"></script>
-
     <script>
-        // Simple, clean initialization once window is ready
-        window.onload = function () {
-            if (window.UnicornStudio) {
-                UnicornStudio.addScene({
-                    elementId: 'code-embed',
-                    projectId: 'bX3WumMMI9ge6elLKxvT',
-                    iframe: true,
-                    interactivity: {
-                        mouse: {
-                            disableMobile: true
-                        }
-                    }
-                })
-                    .then(() => console.log("UnicornStudio: Scene added."))
-                    .catch(err => console.error("UnicornStudio Error:", err));
-            } else {
-                console.error("UnicornStudio library not found.");
+        const logs = document.getElementById('logs');
+        function log(msg, type) {
+            const div = document.createElement('div');
+            if (type) div.className = 'log-' + type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logs.appendChild(div);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        window.onload = async function () {
+            log("Window loaded. Library check...");
+            if (!window.UnicornStudio) {
+                log("FAIL: UnicornStudio library not found!", "error");
+                return;
             }
+            log("SUCCESS: Library found.", "success");
+
+            // Test Hero
+            log("Starting Hero load...");
+            UnicornStudio.addScene({
+                elementId: 'hero-test',
+                projectId: 'bX3WumMMI9ge6elLKxvT',
+                iframe: true,
+                onLoad: () => log("HERO LOADED SUCCESSFULLY", "success"),
+                onError: (err) => log("HERO ERROR: " + JSON.stringify(err), "error")
+            });
+
+            // Test Expert
+            log("Starting Expert load...");
+            UnicornStudio.addScene({
+                elementId: 'expert-test',
+                projectId: 'dpD006WOWWQALxqKpHFZ',
+                iframe: true,
+                onLoad: () => log("EXPERT LOADED SUCCESSFULLY", "success"),
+                onError: (err) => log("EXPERT ERROR: " + JSON.stringify(err), "error")
+            });
         };
     </script>
 </body>

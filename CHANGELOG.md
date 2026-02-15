@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.152
+- **Update**: Improved `unicorn-test.html` to a dual-test layout. It now attempts to load both the Hero ID (`bX3WumMMI9ge6elLKxvT`) and Expertise ID (`dpD006WOWWQALxqKpHFZ`) side-by-side with on-screen logging. This is to verify Project ID validity stand-alone.
+
 ## v3.151
 - **Fix**: Simplified Hero background structure in `index.html` to match the working Expertise section. Removed nested `-z-10` containers and moved masks/opacity directly to the target div at `z-0`.
 - **Polish**: Added transition and refined `onLoad` opacity handling in `global.js` for smoother fade-in.
