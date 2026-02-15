@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.149 Loaded');
+    console.log('[Ampere Global] v3.150 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -95,7 +95,7 @@ async function initUnicorn() {
     // --- Hero Background ---
     const heroTarget = document.getElementById('unicorn-hero-target');
     if (heroTarget) {
-        console.log("[Unicorn] Adding Hero Background (bX3WumMMI9ge6elLKxvT)...");
+        console.log("[Unicorn] >>> Starting Hero Init (bX3WumMMI9ge6elLKxvT)");
         promises.push(
             UnicornStudio.addScene({
                 elementId: 'unicorn-hero-target',
@@ -106,16 +106,18 @@ async function initUnicorn() {
                         disableMobile: true
                     }
                 },
-                onLoad: () => console.log("[Unicorn] Hero Loaded Match"),
-                onError: (err) => console.error("[Unicorn] Hero Error:", err)
+                onLoad: () => console.log("[Unicorn] !!! Hero Loaded Match"),
+                onError: (err) => console.error("[Unicorn] !!! Hero Error:", err)
             })
         );
+    } else {
+        console.warn("[Unicorn] Hero Target NOT found");
     }
 
     // --- Expertise Background ---
     const expertTarget = document.getElementById('expertise-gradients');
     if (expertTarget) {
-        console.log("[Unicorn] Adding Expert Background (dpD006WOWWQALxqKpHFZ)...");
+        console.log("[Unicorn] >>> Starting Expert Init (dpD006WOWWQALxqKpHFZ)");
         promises.push(
             UnicornStudio.addScene({
                 elementId: 'expertise-gradients',
@@ -125,9 +127,13 @@ async function initUnicorn() {
                     mouse: {
                         disableMobile: true
                     }
-                }
+                },
+                onLoad: () => console.log("[Unicorn] !!! Expert Loaded Match"),
+                onError: (err) => console.error("[Unicorn] !!! Expert Error:", err)
             })
         );
+    } else {
+        console.warn("[Unicorn] Expert Target NOT found");
     }
 
     try {
@@ -251,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.149...");
+        console.log("[Global] Initializing v3.150...");
         checkNavTheme();
     }, 100);
 });

@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.150
+- **Fix**: Corrected Hero background CSS mask in `index.html`. The previous `black 1%` stop was effectively hiding 99% of the element.
+- **Update**: Restored `data-us-project` attribute value in `index.html` for better library consistency.
+- **Log**: Added more granular "Startup" and "Loaded" logs for both Hero and Expertise scenes in `global.js`.
+
 ## v3.149
 - **Fix**: Added robust 5-second retry loop for `UnicornStudio` library detection in `global.js` to prevent race conditions during page load.
 - **Update**: Cleaned up version strings in logs (removed `-test`).
