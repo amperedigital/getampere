@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.164
+- **Backend**: Init webhook speed optimization — web fast path skips 5 sequential D1 queries, parallelized remaining queries, added DO cache for greeting data.
+
 ## v3.163
 - **Frontend**: No code changes (Sync Version).
 - **Backend**: Fixed `getLatestBriefing()` — name is now queried independently from `memories` table, not JOIN'd to `call_summaries`. Prompt updated to call `memory_bootstrap` in condition 1b.
