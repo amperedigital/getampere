@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.128
+- **Fix**: Updated `unicorn-test.html` with user-provided embedded code snippet (v2.0.5) to fix initialization issues.
+
 ## v3.124
 - **v3.127-test**: Added diagnostic test page `unicorn-test.html` to isolate Unicorn Studio initialization issues.
 - **v3.126**: Resolved critical double-initialization and version conflict by removing the v2.0.5 Unicorn Studio script from the `<head>`. Updated the inline v1.4.29 script to wait for `DOMContentLoaded`, ensuring the target element exists before initialization to prevent WebGL context failures.
