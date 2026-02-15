@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.137
+- **Update**: Bumped `unicorn-test.html` to v3.137 to force cache invalidation.
+
 ## v3.136
 - **Fix**: Replaced local `unicornStudio.umd.js` with the official version downloaded directly from `unicorn.studio`. This ensures exact parity with the working embed.
 - **Update**: `unicorn-test.html` overlaid with "VERSION: v3.136 (Official Lib)".
