@@ -1,14 +1,6 @@
 # Changelog
 
 
-## v3.160
-- **Backend**: Dynamic Greeting & Front Door Prompt Refactor. Backend now composes varied greetings based on visitor status.
-- **Frontend**: No code changes (Sync Version).
-
-## v3.159
-- **Visibility Fix**: Increased Hero Unicorn brightness by setting starting opacity to 100% and elevating `z-index` to `z-9`. This places the background on top of transition blur layers while remaining behind the main hero content.
-- **Mask Update**: Sharpened the mask gradient to maintain full visibility for the top 50% of the screen.
-
 ## v3.157
 - **Fix**: Implemented sequential Unicorn scene addition with a 1-second delay in `global.js`. This resolves the race condition in the library that was causing the Hero section to remain blank when both scenes were added simultaneously.
 - **Update**: Improved Hero background opacity handling for better visibility.

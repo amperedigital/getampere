@@ -3,6 +3,9 @@ import globals from "globals";
 import js from "@eslint/js";
 
 export default [
+    {
+        ignores: ["deploy/assets/js/unicornStudio.umd.js"]
+    },
     js.configs.recommended,
     {
         files: ["deploy/**/*.js"],

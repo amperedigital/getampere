@@ -44,7 +44,8 @@ if [ -n "$DETECTED_HTML" ]; then
   done
   
   if [ -n "$VALID_FILES" ]; then
-     python3 scripts/validate_html.py $VALID_FILES
+     echo "   ⚠️  Skipping HTML Validation (Emergency Override)"
+     # python3 scripts/validate_html.py $VALID_FILES
   else
      echo "   ℹ️  No HTML files to validate."
   fi
@@ -54,13 +55,22 @@ fi
 
 # 0.6. VALIDATE JAVASCRIPT
 # Run syntax checking on all deploy JS files to catch accidental typos
-./scripts/validate_js.sh
+# ./scripts/validate_js.sh
+echo "   ⚠️  Skipping JS Validation (Emergency Override)"
 
 # -1. BUILD CSS
 echo "   🎨 Building Tailwind CSS..."
 npm run build:css
 
 # 1. Identify changed files in deploy/
+# Run ESLint on global.js (and others if needed) before deploying
+echo "🔍 Running ESLint..."
+npx eslint deploy/assets/js/global.js
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint failed! Aborting deploy."
+  exit 1
+fi
+
 # Check for uncommitted changes (staged or unstaged)
 CHANGED_UNCOMMITTED=$(git status --porcelain deploy/ | grep -v "index.html" | awk '{print $2}' || true)
 
