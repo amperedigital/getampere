@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.143
+- **Update**: Updated the Hero Unicorn background project ID to `bX3WumMMI9ge6elLKxvT`.
+
 ## v3.142
 - **Fix**: Restored the Hero Unicorn background div in `index.html` with its original project ID (`qpSlPSWA2bdkUAYztz8z`).
 - **Fix**: Reverted the expertise section in `index.html` to its original project ID (`dpD006WOWWQALxqKpHFZ`).
