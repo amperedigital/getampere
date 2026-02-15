@@ -2,6 +2,7 @@
 
 
 ## v3.124
+- **v3.127-test**: Added diagnostic test page `unicorn-test.html` to isolate Unicorn Studio initialization issues.
 - **v3.126**: Resolved critical double-initialization and version conflict by removing the v2.0.5 Unicorn Studio script from the `<head>`. Updated the inline v1.4.29 script to wait for `DOMContentLoaded`, ensuring the target element exists before initialization to prevent WebGL context failures.
 - **v3.125**: Removed conflicting Unicorn Studio project ID (`qpSlPSWA2bdkUAYztz8z`) from the document head. This allows the correct project (`dpD006WOWWQALxqKpHFZ`) to initialize properly, resolving the WebGL context creation failure.
 - **v3.124**: Hardened inline Unicorn Studio initialization to correctly handle `window.UnicornStudio` global assignment and added robust promise handling. Extended `global.js` timeout to 5 seconds to accommodate slower connections.

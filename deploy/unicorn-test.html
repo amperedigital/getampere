@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicorn Studio Diagnostic</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: sans-serif;
+        }
+
+        .section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            border-bottom: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .label {
+            position: relative;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .us-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+    </style>
+    <!-- Use the version we are trying to stabilize: v1.4.29 -->
+    <script
+        src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js"></script>
+</head>
+
+<body>
+
+    <!-- Test 1: Expertise Gradients (The one causing issues) -->
+    <div class="section">
+        <div class="label">
+            <h1>Test 1: Expertise Gradients</h1>
+            <p>ID: dpD006WOWWQALxqKpHFZ</p>
+        </div>
+        <!-- 
+             Note: Added explicitly sized container to rule out 0-height issues. 
+        -->
+        <div class="us-container" data-us-project="dpD006WOWWQALxqKpHFZ"></div>
+    </div>
+
+    <!-- Test 2: Aura Background (The one we removed, just to check if it works in isolation) -->
+    <div class="section">
+        <div class="label">
+            <h1>Test 2: Aura Background</h1>
+            <p>ID: qpSlPSWA2bdkUAYztz8z</p>
+        </div>
+        <div class="us-container" data-us-project="qpSlPSWA2bdkUAYztz8z"></div>
+    </div>
+
+    <script>
+        console.log("[Diagnostic] Booting...");
+
+        // Basic Polling to see status
+        setInterval(() => {
+            if (window.UnicornStudio) {
+                console.log("[Diagnostic] UnicornStudio Status:", {
+                    isInitialized: window.UnicornStudio.isInitialized
+                });
+            } else {
+                console.log("[Diagnostic] window.UnicornStudio not found yet.");
+            }
+        }, 1000);
+
+        // Native Init (The library should auto-init since we have the script in head, 
+        // but let's see if we need to call it manually if it fails)
+        window.addEventListener('load', () => {
+            console.log("[Diagnostic] Window Load. Checking Init...");
+            if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+                console.log("[Diagnostic] Not auto-initialized. Calling init()...");
+                UnicornStudio.init().then(() => {
+                    console.log("[Diagnostic] Init Success");
+                }).catch(e => {
+                    console.error("[Diagnostic] Init Failed", e);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
