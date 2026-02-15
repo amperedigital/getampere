@@ -8,7 +8,7 @@
  */
 
 (function() {
-    console.log('[ScrollFlipper v3.125] Loading High-Performance Mode...');
+    console.log('[ScrollFlipper v3.126] Loading High-Performance Mode...');
 
     let isRunning = false;
     let track, stickyContainer, cards, triggers, cardParent;
