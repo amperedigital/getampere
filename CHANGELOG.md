@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.154
+- **Library Update**: Replaced local `unicornStudio.umd.js` with version `v2.0.5` from CDN. This version matches the official snippet provided by the user and should support the Hero Project ID `bX3WumMMI9ge6elLKxvT`.
+- **Update**: `unicorn-test.html` (v3.154) updated to confirm library version during runtime.
+
 ## v3.153
 - **Update**: Expanded `unicorn-test.html` (v3.153) to test three project IDs: the current Hero ID, the User's suggestion from the editor URL (`SGn62RlcTTS7DWfEEYpC`), and the known working Expertise ID.
 

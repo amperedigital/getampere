@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unicorn Studio ID Verification v3.153</title>
+    <title>Unicorn Studio ID Verification v3.154 (Lib v2.0.5)</title>
     <style>
         body {
             font-family: sans-serif;
@@ -88,7 +88,7 @@
     </div>
     <div id="logs">Loading logs...<br></div>
 
-    <script src="assets/js/unicornStudio.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.154/deploy/assets/js/unicornStudio.umd.js"></script>
     <script>
         const logs = document.getElementById('logs');
         function log(msg, type) {
@@ -100,7 +100,7 @@
         }
 
         window.onload = async function () {
-            log("v3.153 Verification Started.");
+            log("v3.154 Verification Started (Using Lib v2.0.5).");
             if (!window.UnicornStudio) {
                 log("FAIL: UnicornStudio library not found!", "error");
                 return;
