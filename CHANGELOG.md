@@ -1,7 +1,7 @@
 # Changelog
 
 
-## v3.161
+## v3.162
 - **Frontend**: Added `dynamic_greeting` as client-side fallback in `ai-chat.js` — ElevenLabs validates `first_message` variables against client-side data before calling the init webhook. The fallback passes validation; the webhook overrides it with a personalized greeting.
 - **Backend**: Removed duplicate briefing query from init handler; added timing diagnostics.
 
