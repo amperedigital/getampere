@@ -5,6 +5,20 @@
 - **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
 - **Status**: Retrying the render kickstart logic with clean syntax.
 
+## v3.120 - Cleanup & Simplification
+- **Cleanup**: Verified no double-loading of scripts. Removed duplicate injection logic.
+- **Simplification**: Reduced init parameter to purely `canvas` and `projectId`.
+
+## v3.119 - Revert to Basic Init
+- **Revert**: Removed all complex "Renderer Hunter" and "Kickstart" logic.
+- **Implement**: Added simple `script` tag and `UnicornStudio.init()` call.
+- **Style**: Enforced basic CSS on the canvas to ensure visibility (`z-index: 10`, `opacity: 1`).
+
+## v3.118 - Debugging WebGL Context (Purple Test)
+- **Refactor**: Rewrote the entire Unicorn Studio initialization logic to be simpler and syntax-error free.
+- **Test**: Added a "Purple Screen" test. If the renderer is found, we attempt `gl.clearColor(1,0,1,1)` to verify we have control over the WebGL context.
+- **Fix**: Removed the recursive "Renderer Hunter" in favor of standard property checking (`renderer` or `scenes[0].renderer`).
+
 ## v3.117 - Fix Syntax (Unbalanced Braces)
 - **Fix**: Restored the `if (window.UnicornStudio.canvas)` block that was accidentally removed in v3.115, causing `SyntaxError` due to unbalanced braces.
 - **Status**: Logic should now be syntactically correct and run as expected.
