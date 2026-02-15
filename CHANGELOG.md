@@ -1,6 +1,14 @@
 # Changelog
 
 
+## v3.156
+- **Debug**: Swapped initialization order of Hero and Expertise scenes in `global.js` to test if the library only allows one scene (last-one-wins theory).
+- **Update**: Re-implemented `unicorn-test.html` (v3.156) with "Solo" test buttons to isolate the Hero and Expertise loads.
+
+## v3.155
+- **Debug**: Enhanced `global.js` with RAW error logging (JSON.stringify) for both Unicorn scenes.
+- **Update**: Re-implemented `unicorn-test.html` (v3.155) as a "Deep Diagnostic" tool. It now tests `addScene` (with/without iframe) vs `init()` attribute-based methods, and includes a periodic "Canvas Hunter" and "Iframe Hunter" for live inspection.
+
 ## v3.154
 - **Library Update**: Replaced local `unicornStudio.umd.js` with version `v2.0.5` from CDN. This version matches the official snippet provided by the user and should support the Hero Project ID `bX3WumMMI9ge6elLKxvT`.
 - **Update**: `unicorn-test.html` (v3.154) updated to confirm library version during runtime.

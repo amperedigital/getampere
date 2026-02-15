@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.154 Loaded');
+    console.log('[Ampere Global] v3.156 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -92,7 +92,32 @@ async function initUnicorn() {
     // Store scenes to await them
     const promises = [];
 
-    // --- Hero Background ---
+    // --- Expertise Background (Moved First v3.156 for testing) ---
+    const expertTarget = document.getElementById('expertise-gradients');
+    if (expertTarget) {
+        console.log("[Unicorn] >>> Starting Expert Init (dpD006WOWWQALxqKpHFZ)");
+        promises.push(
+            UnicornStudio.addScene({
+                elementId: 'expertise-gradients',
+                projectId: 'dpD006WOWWQALxqKpHFZ',
+                iframe: true,
+                interactivity: {
+                    mouse: {
+                        disableMobile: true
+                    }
+                },
+                onLoad: () => console.log("[Unicorn] !!! Expert Loaded Match (Success)"),
+                onError: (err) => {
+                    console.error("[Unicorn] !!! Expert Error Details:", err);
+                    console.log("[Unicorn] RAW Expert Error:", JSON.stringify(err));
+                }
+            })
+        );
+    } else {
+        console.warn("[Unicorn] Expert Target NOT found");
+    }
+
+    // --- Hero Background (Moved Second v3.156) ---
     const heroTarget = document.getElementById('unicorn-hero-target');
     if (heroTarget) {
         console.log("[Unicorn] >>> Starting Hero Init (bX3WumMMI9ge6elLKxvT)");
@@ -107,36 +132,17 @@ async function initUnicorn() {
                     }
                 },
                 onLoad: () => {
-                    console.log("[Unicorn] !!! Hero Loaded Match");
-                    heroTarget.style.opacity = '0.7'; // Fade in on load
+                    console.log("[Unicorn] !!! Hero Loaded Match (Success)");
+                    heroTarget.style.opacity = '0.7';
                 },
-                onError: (err) => console.error("[Unicorn] !!! Hero Error:", err)
+                onError: (err) => {
+                    console.error("[Unicorn] !!! Hero Error Details:", err);
+                    console.log("[Unicorn] RAW Hero Error:", JSON.stringify(err));
+                }
             })
         );
     } else {
         console.warn("[Unicorn] Hero Target NOT found");
-    }
-
-    // --- Expertise Background ---
-    const expertTarget = document.getElementById('expertise-gradients');
-    if (expertTarget) {
-        console.log("[Unicorn] >>> Starting Expert Init (dpD006WOWWQALxqKpHFZ)");
-        promises.push(
-            UnicornStudio.addScene({
-                elementId: 'expertise-gradients',
-                projectId: 'dpD006WOWWQALxqKpHFZ',
-                iframe: true,
-                interactivity: {
-                    mouse: {
-                        disableMobile: true
-                    }
-                },
-                onLoad: () => console.log("[Unicorn] !!! Expert Loaded Match"),
-                onError: (err) => console.error("[Unicorn] !!! Expert Error:", err)
-            })
-        );
-    } else {
-        console.warn("[Unicorn] Expert Target NOT found");
     }
 
     try {
@@ -185,7 +191,7 @@ if (document.readyState === 'loading') {
 })();
 
 
-/* 
+/*
  * Navigation Color Toggle Logic
  * Merged from nav-color-toggle.js
  */
@@ -260,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.154...");
+        console.log("[Global] Initializing v3.156...");
         checkNavTheme();
     }, 100);
 });
