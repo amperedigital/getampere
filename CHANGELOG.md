@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.149
+- **Fix**: Added robust 5-second retry loop for `UnicornStudio` library detection in `global.js` to prevent race conditions during page load.
+- **Update**: Cleaned up version strings in logs (removed `-test`).
+
 ## v3.148
 - **Fix**: Resolved CSS syntax error in `index.html` (leading semicolon in background style).
 - **Sequencing**: Moved `initUnicorn` to occur earlier in `global.js` and added `await Promise.all()` on `addScene` calls to ensure proper registration before WebGL dependencies fire.
