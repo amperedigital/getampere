@@ -22,34 +22,68 @@
 
 <body>
 
-    <!-- User Provided Embedded Snippet -->
-    <div style="position: relative;">
-        <div data-us-project="dpD006WOWWQALxqKpHFZ" style="width:1440px; height: 900px"></div>
+    <!-- Visual Debug Console -->
+    <div id="debug-console"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 200px; background: rgba(0,0,0,0.8); color: lime; font-family: monospace; overflow-y: auto; z-index: 9999; padding: 10px; border-bottom: 1px solid lime;">
+        <div>[System] Visual Console Ready.</div>
+    </div>
+
+    <!-- User Provided Embedded Snippet (Instrumented) -->
+    <div style="position: relative; border: 1px solid red;">
+        <div data-us-project="dpD006WOWWQALxqKpHFZ" style="width:1440px; height: 900px; background: #111;"></div>
         <script type="text/javascript">
+            // Visual Logger
+            function log(msg, type = 'info') {
+                var el = document.getElementById('debug-console');
+                var line = document.createElement('div');
+                line.style.color = type === 'error' ? 'red' : 'lime';
+                line.innerText = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+                el.appendChild(line);
+                console.log(msg); // Keep standard console
+            }
+
+            window.onerror = function (msg, url, lineNo, columnNo, error) {
+                log('Global Error: ' + msg + ' @ ' + lineNo + ':' + columnNo, 'error');
+                return false;
+            };
+
+            log("Starting Snippet Execution...");
+
             ! function () {
                 var u = window.UnicornStudio;
                 if (u && u.init) {
+                    log("UnicornStudio already found on window.Initializing...");
                     if (document.readyState === "loading") {
                         document.addEventListener("DOMContentLoaded", function () {
-                            u.init()
+                            u.init().then(() => log("Init Success (Existing)")).catch(e => log("Init Fail: " + e, 'error'));
                         })
                     } else {
-                        u.init()
+                        u.init().then(() => log("Init Success (Existing)")).catch(e => log("Init Fail: " + e, 'error'));
                     }
                 } else {
+                    log("UnicornStudio not found. Injecting v2.0.5 script...");
                     window.UnicornStudio = {
                         isInitialized: !1
                     };
                     var i = document.createElement("script");
-                    i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js", i.onload = function () {
+                    i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
+
+                    i.onload = function () {
+                        log("Script Loaded. Initializing...");
                         if (document.readyState === "loading") {
                             document.addEventListener("DOMContentLoaded", function () {
-                                UnicornStudio.init()
+                                UnicornStudio.init().then(() => log("Init Success")).catch(e => log("Init Fail: " + e, 'error'));
                             })
                         } else {
-                            UnicornStudio.init()
+                            UnicornStudio.init().then(() => log("Init Success")).catch(e => log("Init Fail: " + e, 'error'));
                         }
-                    }, (document.head || document.body).appendChild(i)
+                    };
+
+                    i.onerror = function () {
+                        log("Script Load Failed. Check Network/CORS.", 'error');
+                    };
+
+                    (document.head || document.body).appendChild(i)
                 }
             }();
         </script>

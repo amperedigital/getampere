@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.129
+- **Debug**: Added visual console to `unicorn-test.html` to diagnose "blank screen" issue.
+
 ## v3.128
 - **Fix**: Updated `unicorn-test.html` with user-provided embedded code snippet (v2.0.5) to fix initialization issues.
 
