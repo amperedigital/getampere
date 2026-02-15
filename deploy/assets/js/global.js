@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.143-test Loaded');
+    console.log('[Ampere Global] v3.144-test Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -38,43 +38,36 @@
 
 // --- Initialize Distortion Grid (Lazy Load) ---
 // --- Helper: Wait for Unicorn Studio (WebGL Priority) ---
-function waitForUnicorn(callback) {
-    // If Unicorn script is not present, proceed immediately
-    if (!document.querySelector('script[src*="unicornStudio"]')) {
-        callback();
-        return;
-    }
-
-    // specific check for tech-demo or pages where we might NOT want to wait
-    // (Optional optimization, but let's be safe)
-
-    console.log("[Global] Waiting for Unicorn Studio before initializing other WebGL...");
-
-    let checks = 0;
-    const interval = setInterval(() => {
-        // [Debug v3.124] Verbose polling
-        // console.log(`[Global] Polling Unicorn... Check ${checks}/50`, window.UnicornStudio);
-
-        // Condition 1: Unicorn Initialized
-        if (window.UnicornStudio && window.UnicornStudio.isInitialized) {
-            clearInterval(interval);
-            console.log("[Global] Unicorn Ready. Proceeding.");
-            callback();
+function waitForUnicorn() {
+    return new Promise((resolve) => {
+        if (!window.UnicornStudio) {
+            resolve();
+            return;
         }
-        // Condition 2: Timeout (5s) - Failsafe
-        else if (checks > 50) {
-            clearInterval(interval);
-            console.warn("[Global] Unicorn Init Timeout. Proceeding anyway. State:", window.UnicornStudio);
-            callback();
+        if (window.UnicornStudio.isInitialized) {
+            resolve();
+            return;
         }
-        checks++;
-    }, 100);
+        console.log("[Global] Waiting for Unicorn Studio...");
+        let checks = 0;
+        const interval = setInterval(() => {
+            if (window.UnicornStudio && window.UnicornStudio.isInitialized) {
+                clearInterval(interval);
+                resolve();
+            } else if (checks > 50) {
+                clearInterval(interval);
+                console.warn("[Global] Unicorn Init Timeout");
+                resolve();
+            }
+            checks++;
+        }, 100);
+    });
 }
 
 // --- Initialize Distortion Grid (Sequenced) ---
 (function () {
     function checkAndLoad() {
-        waitForUnicorn(() => {
+        waitForUnicorn().then(() => {
             const selector = '[data-object="distortion-grid"]';
             if (document.querySelector(selector)) {
                 if (window.DistortionGrid) {
@@ -175,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.143-test...");
+        console.log("[Global] Initializing v3.144-test...");
         checkNavTheme();
     }, 100);
 });
@@ -893,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scriptUrl = document.currentScript ? document.currentScript.src : null;
 
     document.addEventListener('DOMContentLoaded', () => {
-        waitForUnicorn(() => {
+        waitForUnicorn().then(() => {
             const keyContainers = document.querySelectorAll('[data-ampere-key-3d]');
 
             if (keyContainers.length > 0) {
@@ -1179,3 +1172,47 @@ window.toggleMenu = function (trigger) {
         button.classList.toggle("is-open", nowOpen);
     }
 };
+
+// 3. Unicorn Studio Centralized Loader (v3.144)
+(function () {
+    async function initUnicorn() {
+        if (!window.UnicornStudio) {
+            console.error("[Unicorn] Library not found on window.");
+            return;
+        }
+
+        console.log("[Unicorn] Initializing scenes...");
+
+        // --- Hero Background ---
+        const heroTarget = document.getElementById('unicorn-hero-target');
+        if (heroTarget) {
+            console.log("[Unicorn] Adding Hero Background...");
+            UnicornStudio.addScene({
+                element: heroTarget,
+                projectId: 'bX3WumMMI9ge6elLKxvT',
+                onLoad: () => console.log("[Unicorn] Hero Loaded"),
+                onError: (err) => console.error("[Unicorn] Hero Error:", err)
+            });
+        }
+
+        // --- Expertise Background ---
+        const expertTarget = document.getElementById('expertise-gradients');
+        if (expertTarget) {
+            console.log("[Unicorn] Adding Expert Background...");
+            UnicornStudio.addScene({
+                element: expertTarget,
+                projectId: 'dpD006WOWWQALxqKpHFZ',
+                onLoad: () => console.log("[Unicorn] Expert Loaded"),
+                onError: (err) => console.error("[Unicorn] Expert Error:", err)
+            });
+        }
+
+        window.UnicornStudio.isInitialized = true;
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUnicorn);
+    } else {
+        initUnicorn();
+    }
+})();

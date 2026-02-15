@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.144
+- **Refactor**: Centralized Unicorn Studio initialization in `global.js` using the `addScene` pattern.
+- **Cleanup**: Removed inline scripts and modernized WebGL dependency synchronization.
+
 ## v3.143
 - **Update**: Updated the Hero Unicorn background project ID to `bX3WumMMI9ge6elLKxvT`.
 
