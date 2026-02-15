@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.151
+- **Fix**: Simplified Hero background structure in `index.html` to match the working Expertise section. Removed nested `-z-10` containers and moved masks/opacity directly to the target div at `z-0`.
+- **Polish**: Added transition and refined `onLoad` opacity handling in `global.js` for smoother fade-in.
+
 ## v3.150
 - **Fix**: Corrected Hero background CSS mask in `index.html`. The previous `black 1%` stop was effectively hiding 99% of the element.
 - **Update**: Restored `data-us-project` attribute value in `index.html` for better library consistency.

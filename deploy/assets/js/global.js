@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.150 Loaded');
+    console.log('[Ampere Global] v3.151 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -106,7 +106,10 @@ async function initUnicorn() {
                         disableMobile: true
                     }
                 },
-                onLoad: () => console.log("[Unicorn] !!! Hero Loaded Match"),
+                onLoad: () => {
+                    console.log("[Unicorn] !!! Hero Loaded Match");
+                    heroTarget.style.opacity = '0.7'; // Fade in on load
+                },
                 onError: (err) => console.error("[Unicorn] !!! Hero Error:", err)
             })
         );
@@ -201,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeSections = document.querySelectorAll('[data-nav-theme]');
     console.log(`[Global] Found ${themeSections.length} theme sections.`);
     themeSections.forEach((sec, i) => {
-        console.log(`[Global] Section ${i}:`, sec.className.substring(0, 50) + "...", "Theme:", sec.dataset.navTheme);
+        console.log(`[Global] Section ${i}: `, sec.className.substring(0, 50) + "...", "Theme:", sec.dataset.navTheme);
     });
 
     function checkNavTheme() {
@@ -227,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // console.log(`[Global] Check: Active=${activeSectionDebug} Inverted=${inverted}`);
+        // console.log(`[Global] Check: Active = ${ activeSectionDebug } Inverted = ${ inverted } `);
 
         if (inverted) {
             if (!nav.classList.contains('nav-inverted')) {
@@ -257,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.150...");
+        console.log("[Global] Initializing v3.151...");
         checkNavTheme();
     }, 100);
 });
@@ -276,8 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            container.style.setProperty('--mouse-x', `${x}px`);
-            container.style.setProperty('--mouse-y', `${y}px`);
+            container.style.setProperty('--mouse-x', `${x} px`);
+            container.style.setProperty('--mouse-y', `${y} px`);
         });
     });
 
@@ -524,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Dot 1 fills from 1.0->2.0
                 let p = mappedProgress - i;
                 p = Math.max(0, Math.min(1, p));
-                dot.style.width = `${p * 100}%`;
+                dot.style.width = `${p * 100}% `;
             });
         }
     }
@@ -684,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Reset vertical props just in case
                     this.indicator.style.transform = `translateX(${relativeLeft}px)`;
-                    this.indicator.style.width = `${width}px`;
+                    this.indicator.style.width = `${width} px`;
                     this.indicator.style.height = ''; // Let CSS control height or keep existing
                 } else {
                     // Desktop / Vertical Mode
@@ -692,7 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const height = activeLink.offsetHeight;
 
                     this.indicator.style.transform = `translateY(${relativeTop}px)`;
-                    this.indicator.style.height = `${height}px`;
+                    this.indicator.style.height = `${height} px`;
                     this.indicator.style.width = ''; // Reset width
                 }
             }
@@ -735,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Support optional delay attribute (data-anim-delay="ms")
                 if (g.dataset.animDelay) {
-                    g.style.transitionDelay = show ? `${g.dataset.animDelay}ms` : '0ms';
+                    g.style.transitionDelay = show ? `${g.dataset.animDelay} ms` : '0ms';
                 }
 
                 if (show) {
@@ -892,7 +895,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
                     const scene = window.UnicornStudio.scenes.find(s => s.element === target);
                     if (scene && scene.paused) {
-                        console.log(`[Unicorn] Resuming Scene: ${target.id || 'unknown'}`);
+                        console.log(`[Unicorn] Resuming Scene: ${target.id || 'unknown'} `);
                         scene.paused = false;
                     }
                 }
@@ -911,7 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
                     const scene = window.UnicornStudio.scenes.find(s => s.element === target);
                     if (scene && !scene.paused) {
-                        console.log(`[Unicorn] Pausing Scene: ${target.id || 'unknown'}`);
+                        console.log(`[Unicorn] Pausing Scene: ${target.id || 'unknown'} `);
                         scene.paused = true;
                     }
                 }
@@ -1012,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Append query string
-                componentUrl += `?v=${cacheBuster}`;
+                componentUrl += `? v = ${cacheBuster} `;
 
                 // [Debug v3.098] Restored Import
                 import(componentUrl)
