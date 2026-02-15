@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.138
+- **Fix**: Updated `unicorn-test.html` to use `onload` callback for `unicornStudio.umd.js`. This prevents `Uncaught ReferenceError` by ensuring the library is fully loaded before `addScene` is called.
+
 ## v3.137
 - **Update**: Bumped `unicorn-test.html` to v3.137 to force cache invalidation.
 
