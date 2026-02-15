@@ -3271,7 +3271,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3477,15 +3477,15 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.102/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.103/deploy/assets/js/carousel.js" defer></script>
 
 
 
@@ -3543,17 +3543,9 @@
         i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
         i.onload = function () {
           if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", function () {
-              UnicornStudio.init({ debug: true }).then(function () {
-                window.UnicornStudio.isInitialized = true;
-                console.log("[Unicorn Inline] Initialized & Flag Set.");
-              });
-            });
+            document.addEventListener("DOMContentLoaded", runInit);
           } else {
-            UnicornStudio.init({ debug: true }).then(function () {
-              window.UnicornStudio.isInitialized = true;
-              console.log("[Unicorn Inline] Initialized & Flag Set.");
-            });
+            runInit();
           }
         };
         (document.head || document.body).appendChild(i);

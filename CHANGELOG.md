@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.103 - Fix Fallback Loader & Hardcode Dims
+- **Fix (HTML)**: Updated the `UnicornStudio` fallback loader logic (used when the library isn't cached) to use the `runInit` function. This ensures the canvas resizing logic and explicit `canvas` binding are applied even on first load.
+- **Fix (HTML)**: Added `width="2000" height="1000"` attributes to the hardcoded canvas to prevent it from defaulting to 300x150 if JS execution is delayed.
+- **Goal**: Ensure the canvas has valid dimensions 100% of the time.
+
 ## v3.102 - Force-Enable WebGL Components
 - **Fix**: Disabled the `IntersectionObserver` auto-pause logic for **Distortion Grid**, **3D Key**, and **Unicorn Studio** in `global.js`.
 - **Reason**: Logs showed these components were being paused immediately upon load (`[Global] Pausing ...`), causing them to stop rendering or fail initialization, despite being visually present.
