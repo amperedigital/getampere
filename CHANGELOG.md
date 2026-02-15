@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.136
+- **Fix**: Replaced local `unicornStudio.umd.js` with the official version downloaded directly from `unicorn.studio`. This ensures exact parity with the working embed.
+- **Update**: `unicorn-test.html` overlaid with "VERSION: v3.136 (Official Lib)".
+
 ## v3.135
 - **Fix**: Replaced `unicorn-test.html` content with User's "addScene" snippet (v3.135). Switched from `init()` attribute-based loading to explicit `addScene()` config.
 
