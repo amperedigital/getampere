@@ -232,16 +232,24 @@ export class AmpereAIChat {
             else if (currentHour < 17) timeGreeting = "Good afternoon";
             else timeGreeting = "Good evening";
 
+            // v3.161: Compose a client-side fallback greeting.
+            // ElevenLabs validates first_message vars BEFORE calling the init webhook,
+            // so we must provide dynamic_greeting client-side. The webhook will override
+            // it with a personalized version if the user is known.
+            const fallbackGreeting = `${timeGreeting}, this is Emily with Ampere AI. How can I help you today?`;
+
             console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
                 visitor_id: visitorId,
-                user_time_greeting: timeGreeting
+                user_time_greeting: timeGreeting,
+                dynamic_greeting: fallbackGreeting
             });
 
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
                 dynamicVariables: {
                     visitor_id: visitorId,
-                    user_time_greeting: timeGreeting
+                    user_time_greeting: timeGreeting,
+                    dynamic_greeting: fallbackGreeting
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
