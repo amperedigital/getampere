@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.134
+- **Fix**: Re-applied "Canvas Hunter" logic to `unicorn-test.html` (missed in v3.131/133). This version now aggressively searches for and highlights `<canvas>` elements.
+
 ## v3.133
 - **Fix**: Truly applied Visual Version Overlay to `unicorn-test.html`. (v3.132 missed the file edit).
 

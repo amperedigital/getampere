@@ -31,7 +31,7 @@
     <!-- Explicit Version Overlay -->
     <div
         style="position: fixed; top: 210px; right: 10px; background: yellow; color: black; font-size: 24px; padding: 10px; z-index: 99999; font-weight: bold; border: 2px solid red;">
-        VERSION: v3.133
+        VERSION: v3.134
     </div>
 
     <!-- User Provided Embedded Snippet (Instrumented) -->
@@ -53,7 +53,7 @@
                 return false;
             };
 
-            log("Starting Snippet Execution... (v3.133)");
+            log("Starting Snippet Execution... (v3.134)");
 
             ! function () {
                 var u = window.UnicornStudio;
@@ -61,10 +61,20 @@
                     log("UnicornStudio already found on window.Initializing...");
                     if (document.readyState === "loading") {
                         document.addEventListener("DOMContentLoaded", function () {
-                            u.init().then(() => log("Init Success (Existing)")).catch(e => log("Init Fail: " + e, 'error'));
+                            u.init()
+                                .then(() => {
+                                    log("Init Success (Existing). Starting Canvas Hunter...");
+                                    setInterval(inspectDOM, 2000);
+                                })
+                                .catch(e => log("Init Fail: " + e, 'error'));
                         })
                     } else {
-                        u.init().then(() => log("Init Success (Existing)")).catch(e => log("Init Fail: " + e, 'error'));
+                        u.init()
+                            .then(() => {
+                                log("Init Success (Existing). Starting Canvas Hunter...");
+                                setInterval(inspectDOM, 2000);
+                            })
+                            .catch(e => log("Init Fail: " + e, 'error'));
                     }
                 } else {
                     log("UnicornStudio not found. Injecting v2.0.5 script...");
@@ -78,10 +88,20 @@
                         log("Script Loaded. Initializing...");
                         if (document.readyState === "loading") {
                             document.addEventListener("DOMContentLoaded", function () {
-                                UnicornStudio.init().then(() => log("Init Success")).catch(e => log("Init Fail: " + e, 'error'));
+                                UnicornStudio.init()
+                                    .then(() => {
+                                        log("Init Success. Starting Canvas Hunter...");
+                                        setInterval(inspectDOM, 2000);
+                                    })
+                                    .catch(e => log("Init Fail: " + e, 'error'));
                             })
                         } else {
-                            UnicornStudio.init().then(() => log("Init Success")).catch(e => log("Init Fail: " + e, 'error'));
+                            UnicornStudio.init()
+                                .then(() => {
+                                    log("Init Success. Starting Canvas Hunter...");
+                                    setInterval(inspectDOM, 2000);
+                                })
+                                .catch(e => log("Init Fail: " + e, 'error'));
                         }
                     };
 
@@ -92,9 +112,37 @@
                     (document.head || document.body).appendChild(i)
                 }
             }();
-        </script>
-    </div>
 
-</body>
+            function inspectDOM() {
+                log("[v3.134 Hunter] Scanning...");
 
-</html>
+                // 2. Find ALL canvases
+                var canvases = document.querySelectorAll('canvas');
+                if (canvases.length === 0) {
+                    log("WARNING: No <canvas> elements found in DOM!", 'error');
+                } else {
+                    log("Found " + canvases.length + " <canvas> elements.");
+                    canvases.forEach((c, idx) => {
+                        var style = window.getComputedStyle(c);
+                        var rect = c.getBoundingClientRect();
+                        var parent = c.parentElement;
+
+                        log(`Canvas #${idx} [${c.id}]:
+                          - Size: ${rect.width}x${rect.height}
+                          - Opacity: ${style.opacity}
+                          - Z-Index: ${style.zIndex}
+                          - Parent: <${parent.tagName} id="${parent.id}">`);
+
+                        // Force visibility
+                        c.style.border = "5px solid red";
+                        c.style.zIndex = "99999";
+                        c.style.position = "absolute";
+                        c.style.pointerEvents = "none";
+                    });
+                }
+            }
+    </div >
+
+</body >
+
+</html >
