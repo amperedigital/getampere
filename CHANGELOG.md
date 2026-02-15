@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.099 - Canvas Resize & Absolute Import
+- **Fix (Unicorn)**: Manually setting `canvas.width` and `canvas.height` to match the container before initialization. The default 300x150 might have been preventing Unicorn from attaching or rendering correctly.
+- **Fix (JS)**: Changed `Ampere3DKey` import to use root-relative path `/assets/js/ampere-3d-key.js` to resolve `Failed to resolve module specifier` error.
+- **Goal**: Render the unicorn and load the key.
+
 ## v3.098 - Restore Dynamic Import
 - **Fix**: Restored the `import(componentUrl)` logic for `Ampere3DKey` in `global.js`. This fixes the `ReferenceError: Ampere3DKey is not defined` and the resulting Lint error.
 - **Verification**: User reported "extra bracket" which was likely an artifact of the mismatched nesting. This structure should be sound.
