@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.115 - Fix Resize Crash & Restore Background
+- **Fix**: Removed the crashing `renderer.resize()` call (which was throwing `TypeError: Cannot read properties of undefined`).
+- **Fix**: Stopped hiding `unicorn-canvas-target`, as it apparently contained the "red background" the user was missing.
+- **Fix**: Added experimental logic to find the `camera` and manually force a `renderer.render(scene, camera)` frame, in case the loop isn't running.
+
 ## v3.114 - Fix Canvas Resolution
 - **Fix**: Explicitly set the recovered canvas `width` and `height` attributes to match the container's physical dimensions (fixing the 300x150 blur).
 - **Fix**: Attempted to call `renderer.resize()` and `renderer.setSize(w, h)` if available on the found renderer object.
