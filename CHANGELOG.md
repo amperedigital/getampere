@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.100 - Fix Import Resolution & Canvas CSS
+- **Fix (JS)**: Switched from root-relative path to `scriptUrl.replace(...)` for `Ampere3DKey`. this ensures the `import()` call uses a fully qualified URL (e.g., `https://cdn.../ampere-3d-key.js`) instead of resolving against `about:blank`, which happens in some execution contexts.
+- **Fix (HTML)**: Added `absolute w-full h-full left-0 top-0` classes to the `unicorn-canvas-target` to ensure it physically covers the background area.
+- **Goal**: Resolve `Failed to resolve module specifier` and ensure Unicorn has a valid viewport.
+
 ## v3.099 - Canvas Resize & Absolute Import
 - **Fix (Unicorn)**: Manually setting `canvas.width` and `canvas.height` to match the container before initialization. The default 300x150 might have been preventing Unicorn from attaching or rendering correctly.
 - **Fix (JS)**: Changed `Ampere3DKey` import to use root-relative path `/assets/js/ampere-3d-key.js` to resolve `Failed to resolve module specifier` error.
