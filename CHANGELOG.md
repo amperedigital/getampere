@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.111 - Recover Hidden Renderer
+- **Fix**: Added logic to extract `renderer` from `scenes[0].renderer` if it's missing on the root object.
+- **Fix**: If the recovered canvas has no parent, force-append it to `expertise-gradients`.
+- **Reason**: `UnicornStudio` root object seems to be a wrapper/namespace, and the actual WebGL context is hidden inside the Scene instance. We have confirmed `scenes[0]` exists, so we pull the renderer from there.
+
 ## v3.110 - Inject Unicorn v2.0.5 & Deep Debug
 - **Fix (HTML)**: Explicitly injected `<script src="...unicornstudio.js@v2.0.5...">` in the `<head>` of `index.html`.
 - **Debug**: Enhanced logging to inspect `scenes[0]` keys and internal properties (`renderer`, `canvas`, `gl`, `local`).
