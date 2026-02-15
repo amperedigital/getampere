@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.123 Loaded');
+    console.log('[Ampere Global] v3.124 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -52,16 +52,19 @@ function waitForUnicorn(callback) {
 
     let checks = 0;
     const interval = setInterval(() => {
+        // [Debug v3.124] Verbose polling
+        // console.log(`[Global] Polling Unicorn... Check ${checks}/50`, window.UnicornStudio);
+
         // Condition 1: Unicorn Initialized
         if (window.UnicornStudio && window.UnicornStudio.isInitialized) {
             clearInterval(interval);
             console.log("[Global] Unicorn Ready. Proceeding.");
             callback();
         }
-        // Condition 2: Timeout (2s) - Failsafe
-        else if (checks > 20) {
+        // Condition 2: Timeout (5s) - Failsafe
+        else if (checks > 50) {
             clearInterval(interval);
-            console.warn("[Global] Unicorn Init Timeout. Proceeding anyway.");
+            console.warn("[Global] Unicorn Init Timeout. Proceeding anyway. State:", window.UnicornStudio);
             callback();
         }
         checks++;
@@ -172,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.123...");
+        console.log("[Global] Initializing v3.124...");
         checkNavTheme();
     }, 100);
 });

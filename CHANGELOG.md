@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.124
+- **v3.124**: Hardened inline Unicorn Studio initialization to correctly handle `window.UnicornStudio` global assignment and added robust promise handling. Extended `global.js` timeout to 5 seconds to accommodate slower connections.
+
 ## v3.123
 - **Fix**: Fixed critical "undefined cache" crash by removing redundant Unicorn initialization. Restored `DistortionGrid` script injection logic in `global.js` which was causing the grid to fail.
 
