@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.148
+- **Fix**: Resolved CSS syntax error in `index.html` (leading semicolon in background style).
+- **Sequencing**: Moved `initUnicorn` to occur earlier in `global.js` and added `await Promise.all()` on `addScene` calls to ensure proper registration before WebGL dependencies fire.
+- **Log**: Increased logging specificity for internal state transitions.
+
 ## v3.147
 - **Fix**: Updated `initUnicorn` in `global.js` to use `elementId` and `iframe: true`, aligning with the proven pattern from `unicorn-test.html`.
 - **Optimization**: Explicitly added interactivity and mobile-disable settings to centralized loader.
