@@ -1,6 +1,12 @@
 # Changelog
 
 
+## v3.114 - Fix Canvas Resolution
+- **Fix**: Explicitly set the recovered canvas `width` and `height` attributes to match the container's physical dimensions (fixing the 300x150 blur).
+- **Fix**: Attempted to call `renderer.resize()` and `renderer.setSize(w, h)` if available on the found renderer object.
+- **Fix**: Set `zIndex = 10` on the recovered canvas to ensure it's not hidden behind backgrounds.
+- **Fix**: Hidden the unused `unicorn-canvas-target` placeholder to prevent conflicts.
+
 ## v3.113 - Resize Recovered Canvas
 - **Fix**: Applied `absolute w-full h-full` classes to the recovered Unicorn canvas, which was defaulting to 300x150.
 - **Fix**: Triggered a window `resize` event 100ms after recovery to force the WebGL renderer to update its viewport dimensions.

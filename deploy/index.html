@@ -3273,7 +3273,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3479,20 +3479,20 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/carousel.js" defer></script>
 
 
 
   <!-- [Debug v3.107] Force Load Distortion Grid -->
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.113/deploy/assets/js/distortion-grid.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.114/deploy/assets/js/distortion-grid.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       console.log("🌊 [Distortion] Force Init...");
@@ -3589,24 +3589,38 @@
               window.UnicornStudio.canvas = foundRenderer.canvas;
 
               if (window.UnicornStudio.canvas) {
-                // v3.113: Ensure canvas fills container
-                window.UnicornStudio.canvas.classList.add('absolute', 'w-full', 'h-full', 'left-0', 'top-0');
-                window.UnicornStudio.canvas.style.width = '100%';
-                window.UnicornStudio.canvas.style.height = '100%';
+                // v3.114: Set attributes to match CSS for correct resolution
+                var container = document.getElementById('expertise-gradients');
+                if (container) {
+                  var w = container.clientWidth;
+                  var h = container.clientHeight;
+                  window.UnicornStudio.canvas.width = w;
+                  window.UnicornStudio.canvas.height = h;
+                  console.log(`🦄 [Fix v3.114] Forced Canvas Attributes to ${w}x${h}`);
 
-                if (!window.UnicornStudio.canvas.parentNode) {
-                  var container = document.getElementById('expertise-gradients');
-                  if (container) {
+                  if (!window.UnicornStudio.canvas.parentNode) {
                     console.log("🦄 [Fix v3.112] Appending found canvas to container");
                     container.appendChild(window.UnicornStudio.canvas);
                   }
                 }
 
-                // v3.113: Force Resize Update
-                setTimeout(function () {
-                  console.log("🦄 [Fix v3.113] Triggering Resize...");
-                  window.dispatchEvent(new Event('resize'));
-                }, 100);
+                // v3.114: Explicitly style and Z-index
+                window.UnicornStudio.canvas.classList.add('absolute', 'w-full', 'h-full', 'left-0', 'top-0');
+                window.UnicornStudio.canvas.style.width = '100%';
+                window.UnicornStudio.canvas.style.height = '100%';
+                window.UnicornStudio.canvas.style.zIndex = '10'; // Bring to front?
+
+                // v3.114: Try to resize renderer
+                try {
+                  if (typeof foundRenderer.resize === 'function') foundRenderer.resize();
+                  if (typeof foundRenderer.setSize === 'function') foundRenderer.setSize(w, h);
+                } catch (e) { console.error("Could not resize renderer:", e); }
+
+                // v3.114: Hide the unused placeholder if it exists
+                var oldCanvas = document.getElementById('unicorn-canvas-target');
+                if (oldCanvas && oldCanvas !== window.UnicornStudio.canvas) {
+                  oldCanvas.style.display = 'none';
+                }
               }
             } else {
               console.log("🦄 [Fix v3.112] Renderer Hunt Failed. Dumping root keys:", Object.keys(window.UnicornStudio));
