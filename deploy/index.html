@@ -3273,7 +3273,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3479,32 +3479,19 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.116/deploy/assets/js/carousel.js" defer></script>
 
 
 
-  <!-- [Debug v3.107] Force Load Distortion Grid -->
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.115/deploy/assets/js/distortion-grid.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      console.log("🌊 [Distortion] Force Init...");
-      if (window.DistortionGrid) {
-        // Find elements with data-distortion-grid or fallback class
-        var grids = document.querySelectorAll('.distortion-grid, [data-object="distortion-grid"]');
-        // Removed distortion grid initialization logic
-      } else {
-        console.error("🌊 [Distortion] Script not loaded!");
-      }
-    });
-  </script>
+
 
   <!-- Unicorn Studio Library (Must load before global.js tries to init) -->
 

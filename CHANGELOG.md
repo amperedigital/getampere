@@ -1,6 +1,15 @@
 # Changelog
 
 
+## v3.116 - Fix Syntax Error
+- **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
+- **Status**: Retrying the render kickstart logic with clean syntax.
+
+## v3.116 - Fix Syntax & Cleanup
+- **Fix**: Corrected a `SyntaxError: missing )` caused by unbalanced braces in the `else` block of the renderer hunt logic.
+- **Cleanup**: Removed the persistent "Distortion Force Init" log block from `index.html` to reduce console noise.
+- **Status**: The "Renderer Hunter" + "Kickstart" logic is now syntactically correct and should run.
+
 ## v3.115 - Fix Resize Crash & Restore Background
 - **Fix**: Removed the crashing `renderer.resize()` call (which was throwing `TypeError: Cannot read properties of undefined`).
 - **Fix**: Stopped hiding `unicorn-canvas-target`, as it apparently contained the "red background" the user was missing.
