@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.140
+- **Debug**: completely rewrote `unicorn-test.html` to eliminate race conditions (functions defined in `<head>`) and added a DOM inspector to identify *what* is actually being rendered (Canvas vs Iframe vs Nothing).
+
 ## v3.139
 - **Fix**: Re-applied the `onload` fix for `unicorn-test.html` (v3.138 failed to apply the file change). Validated async loading logic.
 
