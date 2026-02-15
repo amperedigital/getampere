@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.146
+- **Update**: Replaced local `unicornStudio.umd.js` with version `v1.4.29` from CDN for consistency.
+- **Log**: Added console logging for Unicorn scene pausing (`[Unicorn] Pausing Scene`) and resuming (`[Unicorn] Resuming Scene`) within the global observer.
+
 ## v3.145
 - **Fix**: Re-enabled Unicorn Studio scene pausing/resuming in the global `IntersectionObserver` to reduce system load.
 - **Update**: Added `data-us-project` attribute back to the Hero target to ensure it is correctly observed for visibility.

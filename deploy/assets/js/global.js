@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.145-test Loaded');
+    console.log('[Ampere Global] v3.146-test Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.145-test...");
+        console.log("[Global] Initializing v3.146-test...");
         checkNavTheme();
     }, 100);
 });
@@ -802,7 +802,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 3. Unicorn Scene Control (v3.145)
                 if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
                     const scene = window.UnicornStudio.scenes.find(s => s.element === target);
-                    if (scene) scene.paused = false;
+                    if (scene && scene.paused) {
+                        console.log(`[Unicorn] Resuming Scene: ${target.id || 'unknown'}`);
+                        scene.paused = false;
+                    }
                 }
 
             } else {
@@ -818,8 +821,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
                     const scene = window.UnicornStudio.scenes.find(s => s.element === target);
-                    if (scene) {
-                        // console.log(`[Global] Pausing Unicorn Scene (${scene.id})`);
+                    if (scene && !scene.paused) {
+                        console.log(`[Unicorn] Pausing Scene: ${target.id || 'unknown'}`);
                         scene.paused = true;
                     }
                 }
