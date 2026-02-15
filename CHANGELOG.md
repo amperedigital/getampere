@@ -1,6 +1,16 @@
 # Changelog
 
 
+## v3.112 - Cleanup & Deep Search
+- **Cleanup**: Removed `DistortionGrid` force-init logic from `index.html` to prevent double-initialization (it's already handled in `global.js`).
+- **Fix**: Replaced simple Unicorn debug logging with a recursive "Renderer Hunter" script.
+- **Logic**: Searches `UnicornStudio` object graph for any object possessing a `gl` context or `renderer` property, including checking `obj.state()` if available. If found, it links it to the root object and appends the canvas.
+
+## v3.112 - Cleanup & Deep Search
+- **Cleanup**: Removed `DistortionGrid` force-init logic from `index.html` to prevent double-initialization (it's already handled in `global.js`).
+- **Fix**: Replaced simple Unicorn debug logging with a recursive "Renderer Hunter" script.
+- **Logic**: Searches `UnicornStudio` object graph for any object possessing a `gl` context or `renderer` property, including checking `obj.state()` if available. If found, it links it to the root object and appends the canvas.
+
 ## v3.111 - Recover Hidden Renderer
 - **Fix**: Added logic to extract `renderer` from `scenes[0].renderer` if it's missing on the root object.
 - **Fix**: If the recovered canvas has no parent, force-append it to `expertise-gradients`.
