@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.145
+- **Fix**: Re-enabled Unicorn Studio scene pausing/resuming in the global `IntersectionObserver` to reduce system load.
+- **Update**: Added `data-us-project` attribute back to the Hero target to ensure it is correctly observed for visibility.
+
 ## v3.144
 - **Refactor**: Centralized Unicorn Studio initialization in `global.js` using the `addScene` pattern.
 - **Cleanup**: Removed inline scripts and modernized WebGL dependency synchronization.
