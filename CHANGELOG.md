@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.132
+- **Debug**: Added **Visual Version Overlay** to `unicorn-test.html` to unambiguous verify deployment.
+
 ## v3.131
 - **Debug**: Added version log (v3.131) and periodic canvas hunting to `unicorn-test.html`.
 
