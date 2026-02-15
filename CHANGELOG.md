@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.133
+- **Fix**: Truly applied Visual Version Overlay to `unicorn-test.html`. (v3.132 missed the file edit).
+
 ## v3.132
 - **Debug**: Added **Visual Version Overlay** to `unicorn-test.html` to unambiguous verify deployment.
 
