@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.153
+- **Update**: Expanded `unicorn-test.html` (v3.153) to test three project IDs: the current Hero ID, the User's suggestion from the editor URL (`SGn62RlcTTS7DWfEEYpC`), and the known working Expertise ID.
+
 ## v3.152
 - **Update**: Improved `unicorn-test.html` to a dual-test layout. It now attempts to load both the Hero ID (`bX3WumMMI9ge6elLKxvT`) and Expertise ID (`dpD006WOWWQALxqKpHFZ`) side-by-side with on-screen logging. This is to verify Project ID validity stand-alone.
 
