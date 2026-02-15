@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.146-test Loaded');
+    console.log('[Ampere Global] v3.147-test Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.146-test...");
+        console.log("[Global] Initializing v3.147-test...");
         checkNavTheme();
     }, 100);
 });
@@ -1196,8 +1196,14 @@ window.toggleMenu = function (trigger) {
         if (heroTarget) {
             console.log("[Unicorn] Adding Hero Background...");
             UnicornStudio.addScene({
-                element: heroTarget,
+                elementId: 'unicorn-hero-target',
                 projectId: 'bX3WumMMI9ge6elLKxvT',
+                iframe: true,
+                interactivity: {
+                    mouse: {
+                        disableMobile: true
+                    }
+                },
                 onLoad: () => console.log("[Unicorn] Hero Loaded"),
                 onError: (err) => console.error("[Unicorn] Hero Error:", err)
             });
@@ -1208,8 +1214,14 @@ window.toggleMenu = function (trigger) {
         if (expertTarget) {
             console.log("[Unicorn] Adding Expert Background...");
             UnicornStudio.addScene({
-                element: expertTarget,
+                elementId: 'expertise-gradients',
                 projectId: 'dpD006WOWWQALxqKpHFZ',
+                iframe: true,
+                interactivity: {
+                    mouse: {
+                        disableMobile: true
+                    }
+                },
                 onLoad: () => console.log("[Unicorn] Expert Loaded"),
                 onError: (err) => console.error("[Unicorn] Expert Error:", err)
             });

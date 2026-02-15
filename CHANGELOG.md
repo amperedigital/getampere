@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.147
+- **Fix**: Updated `initUnicorn` in `global.js` to use `elementId` and `iframe: true`, aligning with the proven pattern from `unicorn-test.html`.
+- **Optimization**: Explicitly added interactivity and mobile-disable settings to centralized loader.
+
 ## v3.146
 - **Update**: Replaced local `unicornStudio.umd.js` with version `v1.4.29` from CDN for consistency.
 - **Log**: Added console logging for Unicorn scene pausing (`[Unicorn] Pausing Scene`) and resuming (`[Unicorn] Resuming Scene`) within the global observer.
