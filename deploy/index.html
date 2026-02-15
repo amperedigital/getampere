@@ -17,6 +17,8 @@
 
   <link rel="stylesheet" href="./assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/components.css">
+  <!-- [Debug v3.110] Explicitly injecting Unicorn v2.0.5 -->
+  <script src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js"></script>
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -3271,7 +3273,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3477,20 +3479,20 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/carousel.js" defer></script>
 
 
 
   <!-- [Debug v3.107] Force Load Distortion Grid -->
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.109/deploy/assets/js/distortion-grid.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.110/deploy/assets/js/distortion-grid.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       console.log("🌊 [Distortion] Force Init...");
@@ -3558,7 +3560,15 @@
             });
 
             if (window.UnicornStudio.scenes && window.UnicornStudio.scenes[0]) {
-              console.log("🦄 [Scene 0] Inspect:", window.UnicornStudio.scenes[0]);
+              var s = window.UnicornStudio.scenes[0];
+              console.log("🦄 [Scene 0] Deep Inspect:", {
+                renderer: s.renderer,
+                canvas: s.canvas,
+                ctx: s.ctx,
+                gl: s.gl,
+                local: s.local,
+                keys: Object.keys(s)
+              });
             }
 
             if (!window.UnicornStudio.renderer) {

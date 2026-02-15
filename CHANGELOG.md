@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.110 - Inject Unicorn v2.0.5 & Deep Debug
+- **Fix (HTML)**: Explicitly injected `<script src="...unicornstudio.js@v2.0.5...">` in the `<head>` of `index.html`.
+- **Debug**: Enhanced logging to inspect `scenes[0]` keys and internal properties (`renderer`, `canvas`, `gl`, `local`).
+- **Goal**: Ensure the library is loaded and find the renderer.
+
 ## v3.109 - Debug Unicorn Scenes
 - **Debug**: Added deep logging for `scenes[0]` in `UnicornStudio.init()` callback.
 - **Reason**: `renderer` is NULL on the root object, but `scenes` array has 1 item. We need to see if the renderer is nested inside the scene object.
