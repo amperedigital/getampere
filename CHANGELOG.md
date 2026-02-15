@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v3.107 - Force Distortion & Debug Unicorn
+- **Fix (HTML)**: Re-injected the `distortion-grid.js` script and force-init logic (previous attempt failed to apply).
+- **Debug**: Enhanced `UnicornStudio.init()` callback to log the full internal state of the `UnicornStudio` object immediately upon initialization success. This will reveal if the `renderer` is being created but hidden, or simply failing to instantiate.
+- **Goal**: Restore Distortion Grid and diagnose the persistent "Unicorn Renderer NULL" issue.
+
 ## v3.106 - Fix Syntax & Enable Distortion (Final)
 - **Fix (HTML)**: Added the missing `();` to close the IIFE in `index.html` (line 3556). This syntax error was preventing the entire initialization block from executing, blocking both Unicorn and Distortion Grid.
 - **Verification**: Verified hardcoded canvas dimensions are present.
