@@ -5,6 +5,10 @@
 - **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
 - **Status**: Retrying the render kickstart logic with clean syntax.
 
+## v3.117 - Fix Syntax (Unbalanced Braces)
+- **Fix**: Restored the `if (window.UnicornStudio.canvas)` block that was accidentally removed in v3.115, causing `SyntaxError` due to unbalanced braces.
+- **Status**: Logic should now be syntactically correct and run as expected.
+
 ## v3.116 - Fix Syntax & Cleanup
 - **Fix**: Corrected a `SyntaxError: missing )` caused by unbalanced braces in the `else` block of the renderer hunt logic.
 - **Cleanup**: Removed the persistent "Distortion Force Init" log block from `index.html` to reduce console noise.
