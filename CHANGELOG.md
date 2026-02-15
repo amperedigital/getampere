@@ -5,6 +5,11 @@
 - **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
 - **Status**: Retrying the render kickstart logic with clean syntax.
 
+## v3.122
+- **Fix**: Reverted Unicorn Studio initialization to legacy method (v1.4.29) based on stable backups.
+- **Refactor**: Removed complex manual initialization and external script logic.
+- **Perf**: Restored original lightweight IIFE injection.
+
 ## v3.121 - Externalize Init
 - **Fix**: Moved inline JavaScript to `assets/js/unicorn-init.js` to eliminate HTML syntax errors.
 - **Cleanup**: Removed broken inline code blocks.
