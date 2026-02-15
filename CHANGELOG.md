@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.104 - Fix JS Scope & Restore Distortion Grid
+- **Fix (HTML)**: Resolved `Uncaught TypeError: u is undefined` in `index.html`. The fallback loader's IIFE captured `u` (window.UnicornStudio) *before* it was loaded. Changed it to access `window.UnicornStudio` dynamically at runtime.
+- **Fix (JS)**: Located and restored the `DistortionGrid` initialization in `global.js` (Status: Pending location confirmation).
+- **Goal**: Clear console errors and revive all WebGL components.
+
 ## v3.103 - Fix Fallback Loader & Hardcode Dims
 - **Fix (HTML)**: Updated the `UnicornStudio` fallback loader logic (used when the library isn't cached) to use the `runInit` function. This ensures the canvas resizing logic and explicit `canvas` binding are applied even on first load.
 - **Fix (HTML)**: Added `width="2000" height="1000"` attributes to the hardcoded canvas to prevent it from defaulting to 300x150 if JS execution is delayed.
