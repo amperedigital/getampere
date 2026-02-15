@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.131
+- **Debug**: Added version log (v3.131) and periodic canvas hunting to `unicorn-test.html`.
+
 ## v3.130
 - **Debug**: Added DOM inspection to `unicorn-test.html` to find missing canvas elements.
 
