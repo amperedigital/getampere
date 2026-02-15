@@ -4,6 +4,10 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.101 - Disable Auto-Pause
+- **Fix**: Commented out the `UnicornStudio.stop()` call in `global.js`'s IntersectionObserver. logs showed "[Global] Pausing Unicorn Scene" firing immediately, which might be tearing down the renderer before it even renders a frame.
+- **Goal**: Force Unicorn to stay running.
+
 ## v3.100 - Fix Import Resolution & Canvas CSS
 - **Fix (JS)**: Switched from root-relative path to `scriptUrl.replace(...)` for `Ampere3DKey`. this ensures the `import()` call uses a fully qualified URL (e.g., `https://cdn.../ampere-3d-key.js`) instead of resolving against `about:blank`, which happens in some execution contexts.
 - **Fix (HTML)**: Added `absolute w-full h-full left-0 top-0` classes to the `unicorn-canvas-target` to ensure it physically covers the background area.
