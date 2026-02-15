@@ -1,8 +1,10 @@
 # Changelog
 
-## v3.052 - Emergency Fallback Deploy
-- **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
-- **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
+
+## v3.106 - Fix Syntax & Enable Distortion (Final)
+- **Fix (HTML)**: Added the missing `();` to close the IIFE in `index.html` (line 3556). This syntax error was preventing the entire initialization block from executing, blocking both Unicorn and Distortion Grid.
+- **Verification**: Verified hardcoded canvas dimensions are present.
+- **Goal**: All systems go.
 
 ## v3.105 - Fix HTML Syntax & Enable Distortion
 - **Fix (HTML)**: Removed extra `()` parenthesis at line 3554 that was causing a `SyntaxError` and preventing Unicorn initialization.
