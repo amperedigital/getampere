@@ -3,146 +3,56 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unicorn Studio Diagnostic - Embedded Code v2.0.5</title>
+    <title>Unicorn Studio Test - v3.135 (addScene)</title>
+
+    <!-- Local Library (User path was /unicornStudio.umd.js, mapped to assets/js/) -->
+    <script src="assets/js/unicornStudio.umd.js"></script>
+
     <style>
+        html,
         body {
             margin: 0;
-            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
             background: #000;
-            color: #fff;
-            font-family: sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Visual Debug Console -->
-    <div id="debug-console"
-        style="position: fixed; top: 0; left: 0; width: 100%; height: 200px; background: rgba(0,0,0,0.8); color: lime; font-family: monospace; overflow-y: auto; z-index: 9999; padding: 10px; border-bottom: 1px solid lime;">
-        <div>[System] Visual Console Ready.</div>
-    </div>
-
-    <!-- Explicit Version Overlay -->
+    <!-- Verification Overlay -->
     <div
-        style="position: fixed; top: 210px; right: 10px; background: yellow; color: black; font-size: 24px; padding: 10px; z-index: 99999; font-weight: bold; border: 2px solid red;">
-        VERSION: v3.134
+        style="position: fixed; top: 10px; right: 10px; background: yellow; color: black; z-index: 9999; padding: 5px; font-weight: bold; border: 2px solid red;">
+        VERSION: v3.135
     </div>
 
-    <!-- User Provided Embedded Snippet (Instrumented) -->
-    <div style="position: relative; border: 1px solid red;">
-        <div data-us-project="dpD006WOWWQALxqKpHFZ" style="width:1440px; height: 900px; background: #111;"></div>
-        <script type="text/javascript">
-            // Visual Logger
-            function log(msg, type = 'info') {
-                var el = document.getElementById('debug-console');
-                var line = document.createElement('div');
-                line.style.color = type === 'error' ? 'red' : 'lime';
-                line.innerText = '[' + new Date().toLocaleTimeString() + '] ' + msg;
-                el.appendChild(line);
-                console.log(msg); // Keep standard console
-            }
+    <div id="app"></div>
 
-            window.onerror = function (msg, url, lineNo, columnNo, error) {
-                log('Global Error: ' + msg + ' @ ' + lineNo + ':' + columnNo, 'error');
-                return false;
-            };
+    <script>
+        console.log("[v3.135] Starting addScene...");
 
-            log("Starting Snippet Execution... (v3.134)");
-
-            ! function () {
-                var u = window.UnicornStudio;
-                if (u && u.init) {
-                    log("UnicornStudio already found on window.Initializing...");
-                    if (document.readyState === "loading") {
-                        document.addEventListener("DOMContentLoaded", function () {
-                            u.init()
-                                .then(() => {
-                                    log("Init Success (Existing). Starting Canvas Hunter...");
-                                    setInterval(inspectDOM, 2000);
-                                })
-                                .catch(e => log("Init Fail: " + e, 'error'));
-                        })
-                    } else {
-                        u.init()
-                            .then(() => {
-                                log("Init Success (Existing). Starting Canvas Hunter...");
-                                setInterval(inspectDOM, 2000);
-                            })
-                            .catch(e => log("Init Fail: " + e, 'error'));
-                    }
-                } else {
-                    log("UnicornStudio not found. Injecting v2.0.5 script...");
-                    window.UnicornStudio = {
-                        isInitialized: !1
-                    };
-                    var i = document.createElement("script");
-                    i.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js";
-
-                    i.onload = function () {
-                        log("Script Loaded. Initializing...");
-                        if (document.readyState === "loading") {
-                            document.addEventListener("DOMContentLoaded", function () {
-                                UnicornStudio.init()
-                                    .then(() => {
-                                        log("Init Success. Starting Canvas Hunter...");
-                                        setInterval(inspectDOM, 2000);
-                                    })
-                                    .catch(e => log("Init Fail: " + e, 'error'));
-                            })
-                        } else {
-                            UnicornStudio.init()
-                                .then(() => {
-                                    log("Init Success. Starting Canvas Hunter...");
-                                    setInterval(inspectDOM, 2000);
-                                })
-                                .catch(e => log("Init Fail: " + e, 'error'));
-                        }
-                    };
-
-                    i.onerror = function () {
-                        log("Script Load Failed. Check Network/CORS.", 'error');
-                    };
-
-                    (document.head || document.body).appendChild(i)
-                }
-            }();
-
-            function inspectDOM() {
-                log("[v3.134 Hunter] Scanning...");
-
-                // 2. Find ALL canvases
-                var canvases = document.querySelectorAll('canvas');
-                if (canvases.length === 0) {
-                    log("WARNING: No <canvas> elements found in DOM!", 'error');
-                } else {
-                    log("Found " + canvases.length + " <canvas> elements.");
-                    canvases.forEach((c, idx) => {
-                        var style = window.getComputedStyle(c);
-                        var rect = c.getBoundingClientRect();
-                        var parent = c.parentElement;
-
-                        log(`Canvas #${idx} [${c.id}]:
-                          - Size: ${rect.width}x${rect.height}
-                          - Opacity: ${style.opacity}
-                          - Z-Index: ${style.zIndex}
-                          - Parent: <${parent.tagName} id="${parent.id}">`);
-
-                        // Force visibility
-                        c.style.border = "5px solid red";
-                        c.style.zIndex = "99999";
-                        c.style.position = "absolute";
-                        c.style.pointerEvents = "none";
-                    });
+        // User's snippet adapted for specific Project ID
+        UnicornStudio.addScene({
+            elementId: 'app',
+            projectId: 'dpD006WOWWQALxqKpHFZ', // Expertise Gradients
+            iframe: true,
+            interactivity: {
+                mouse: {
+                    disableMobile: true
                 }
             }
-    </div >
+        })
+            .then(() => console.log("[v3.135] Scene Added Successfully"))
+            .catch(err => console.error("[v3.135] Scene Failed:", err));
+    </script>
+</body>
 
-</body >
-
-</html >
+</html>

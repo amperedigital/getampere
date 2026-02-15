@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.135
+- **Fix**: Replaced `unicorn-test.html` content with User's "addScene" snippet (v3.135). Switched from `init()` attribute-based loading to explicit `addScene()` config.
+
 ## v3.134
 - **Fix**: Re-applied "Canvas Hunter" logic to `unicorn-test.html` (missed in v3.131/133). This version now aggressively searches for and highlights `<canvas>` elements.
 
