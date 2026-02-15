@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v3.161
+- **Backend**: Init webhook performance fix — removed duplicate briefing query causing potential ElevenLabs webhook timeout.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.160
 - **Backend**: Dynamic Greeting & Front Door Prompt Refactor. Backend now composes varied greetings based on visitor status.
 - **Frontend**: No code changes (Sync Version).
