@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.130
+- **Debug**: Added DOM inspection to `unicorn-test.html` to find missing canvas elements.
+
 ## v3.129
 - **Debug**: Added visual console to `unicorn-test.html` to diagnose "blank screen" issue.
 
