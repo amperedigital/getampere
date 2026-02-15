@@ -1,6 +1,9 @@
 # Changelog
 
 
+## v3.141
+- **Simplification**: Removed all debug overlays and complex logic from `unicorn-test.html`. Reverted to a minimal implementation using `addScene` and the local library to satisfy user request for simplicity.
+
 ## v3.140
 - **Debug**: completely rewrote `unicorn-test.html` to eliminate race conditions (functions defined in `<head>`) and added a DOM inspector to identify *what* is actually being rendered (Canvas vs Iframe vs Nothing).
 

@@ -4,130 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unicorn Test v3.140</title>
+    <title>Unicorn Test v3.141</title>
     <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
+        body,
+        html {
             margin: 0;
             padding: 0;
-            background: #222;
+            width: 100%;
+            height: 100%;
+            background: #000;
             overflow: hidden;
         }
 
-        #app {
+        /* Matching user's known working style preference but ensuring visibility */
+        #code-embed {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: #000;
-        }
-
-        #logs {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            max-height: 50%;
-            overflow: auto;
-            background: rgba(0, 0, 0, 0.8);
-            color: lime;
-            font-family: monospace;
-            padding: 10px;
-            z-index: 9999;
-            pointer-events: none;
-            white-space: pre-wrap;
-        }
-
-        #version {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: yellow;
-            color: black;
-            font-weight: bold;
-            padding: 5px;
-            z-index: 10000;
-            border: 2px solid red;
+            display: block;
         }
     </style>
-    <script>
-        function log(msg) {
-            var el = document.getElementById('logs');
-            if (el) {
-                var line = document.createElement('div');
-                line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
-                el.appendChild(line);
-                el.scrollTop = el.scrollHeight;
-            }
-            console.log("[v3.140] " + msg);
-        }
-
-        function inspectDOM() {
-            log("--- DOM INSPECTION ---");
-            var app = document.getElementById('app');
-            log("#app children: " + app.children.length);
-
-            var iframes = document.querySelectorAll('iframe');
-            log("Global Iframes: " + iframes.length);
-            if (iframes.length > 0) {
-                log("Iframe Src: " + iframes[0].src);
-                log("Iframe Size: " + iframes[0].offsetWidth + "x" + iframes[0].offsetHeight);
-            }
-
-            var canvases = document.querySelectorAll('canvas');
-            log("Global Canvases: " + canvases.length);
-
-            if (canvases.length > 0) {
-                var c = canvases[0];
-                log("Canvas Size: " + c.width + "x" + c.height);
-                log("Canvas ClientSize: " + c.clientWidth + "x" + c.clientHeight);
-                log("Canvas Style: " + (c.getAttribute('style') || 'none'));
-                // Force visibility just in case
-                c.style.border = "2px solid red";
-                c.style.zIndex = "5000";
-            } else if (iframes.length === 0) {
-                log("CRITICAL: No Iframe and No Canvas found in DOM.");
-            }
-        }
-
-        function initUnicorn() {
-            log("initUnicorn called. Checking Global...");
-            if (typeof UnicornStudio === 'undefined') {
-                log("ERROR: UnicornStudio is undefined in init!");
-                return;
-            }
-
-            log("UnicornStudio defined. Calling addScene...");
-            UnicornStudio.addScene({
-                elementId: 'app',
-                projectId: 'dpD006WOWWQALxqKpHFZ',
-                iframe: true,
-                interactivity: { mouse: { disableMobile: true } }
-            })
-                .then(function () {
-                    log("Scene Added Promise Resolved.");
-                    log("Waiting 2s before inspecting DOM...");
-                    setTimeout(inspectDOM, 2000);
-                })
-                .catch(function (err) {
-                    log("Scene Add Failed: " + err);
-                });
-        }
-    </script>
 </head>
 
 <body>
-    <div id="version">v3.140 (DOM Inspector)</div>
-    <div id="logs">
-        <div>Waiting for lib...</div>
-    </div>
-    <div id="app"></div>
+    <div id="code-embed"></div>
 
-    <script src="assets/js/unicornStudio.umd.js" onload="log('Lib loaded (onload). Running init.'); initUnicorn();"
-        onerror="log('Lib LOAD FAILED!');"></script>
+    <!-- Local Library -->
+    <script src="assets/js/unicornStudio.umd.js"></script>
+
+    <script>
+        // Simple, clean initialization once window is ready
+        window.onload = function () {
+            if (window.UnicornStudio) {
+                UnicornStudio.addScene({
+                    elementId: 'code-embed',
+                    projectId: 'dpD006WOWWQALxqKpHFZ',
+                    iframe: true,
+                    interactivity: {
+                        mouse: {
+                            disableMobile: true
+                        }
+                    }
+                })
+                    .then(() => console.log("UnicornStudio: Scene added."))
+                    .catch(err => console.error("UnicornStudio Error:", err));
+            } else {
+                console.error("UnicornStudio library not found.");
+            }
+        };
+    </script>
 </body>
 
 </html>
