@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.105 - Fix HTML Syntax & Enable Distortion
+- **Fix (HTML)**: Removed extra `()` parenthesis at line 3554 that was causing a `SyntaxError` and preventing Unicorn initialization.
+- **Fix (HTML)**: Explicitly injected `<script src="./assets/js/distortion-grid.js">` and added a force-initialization script to ensure the Distortion Grid effect loads.
+- **Goal**: Resolve syntax errors and restore all visual components.
+
 ## v3.104 - Fix JS Scope & Restore Distortion Grid
 - **Fix (HTML)**: Resolved `Uncaught TypeError: u is undefined` in `index.html`. The fallback loader's IIFE captured `u` (window.UnicornStudio) *before* it was loaded. Changed it to access `window.UnicornStudio` dynamically at runtime.
 - **Fix (JS)**: Located and restored the `DistortionGrid` initialization in `global.js` (Status: Pending location confirmation).
