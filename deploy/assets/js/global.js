@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.101 Loaded');
+    console.log('[Ampere Global] v3.102 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -810,16 +810,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (smilContainer) window.triggerMedia(smilContainer, false);
                 if (directVideo && !smilContainer) directVideo.pause();
-                if (distGrid) distGrid.pause();
-                if (keyInstance) keyInstance.pause();
+                // [Debug v3.102] Disabled Auto-Pause
+                // if (distGrid) distGrid.pause();
+                // if (keyInstance) keyInstance.pause();
 
-                if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
-                    const scene = window.UnicornStudio.scenes.find(s => s.element === target);
-                    if (scene) {
-                        console.log(`[Global] Pausing Unicorn Scene (${scene.id})`);
-                        scene.paused = true;
-                    }
-                }
+                // if (isUnicornProject && window.UnicornStudio && window.UnicornStudio.scenes) {
+                //     const scene = window.UnicornStudio.scenes.find(s => s.element === target);
+                //     if (scene) {
+                //         console.log(`[Global] Pausing Unicorn Scene (${scene.id})`);
+                //         scene.paused = true;
+                //     }
+                // }
             }
         });
     }, observerOptions);

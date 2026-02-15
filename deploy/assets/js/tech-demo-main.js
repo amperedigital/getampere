@@ -1,4 +1,4 @@
-console.log('[Tech Demo] v3.101 Unified Release');
+console.log('[Tech Demo] v3.102 Unified Release');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';

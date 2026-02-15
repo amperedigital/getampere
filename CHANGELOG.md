@@ -4,6 +4,11 @@
 - **Fix**: Manually deployed via `wrangler` to bypass build validation issues.
 - **Includes**: Robust `unicorn-init.js` and cleaned `index.html`.
 
+## v3.102 - Force-Enable WebGL Components
+- **Fix**: Disabled the `IntersectionObserver` auto-pause logic for **Distortion Grid**, **3D Key**, and **Unicorn Studio** in `global.js`.
+- **Reason**: Logs showed these components were being paused immediately upon load (`[Global] Pausing ...`), causing them to stop rendering or fail initialization, despite being visually present.
+- **Goal**: Ensure all WebGL components run continuously to verify they work.
+
 ## v3.101 - Disable Auto-Pause
 - **Fix**: Commented out the `UnicornStudio.stop()` call in `global.js`'s IntersectionObserver. logs showed "[Global] Pausing Unicorn Scene" firing immediately, which might be tearing down the renderer before it even renders a frame.
 - **Goal**: Force Unicorn to stay running.
