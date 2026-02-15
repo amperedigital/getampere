@@ -1,6 +1,14 @@
 # Changelog
 
 
+## v3.109 - Debug Unicorn Scenes
+- **Debug**: Added deep logging for `scenes[0]` in `UnicornStudio.init()` callback.
+- **Reason**: `renderer` is NULL on the root object, but `scenes` array has 1 item. We need to see if the renderer is nested inside the scene object.
+- **Goal**: Find the missing renderer.
+
+## v3.108 - Revert Unicorn Version (Skipped)
+- **Revert**: Undid the forced injection of v1.4.29 (User cancelled).
+
 ## v3.107 - Force Distortion & Debug Unicorn
 - **Fix (HTML)**: Re-injected the `distortion-grid.js` script and force-init logic (previous attempt failed to apply).
 - **Debug**: Enhanced `UnicornStudio.init()` callback to log the full internal state of the `UnicornStudio` object immediately upon initialization success. This will reveal if the `renderer` is being created but hidden, or simply failing to instantiate.
