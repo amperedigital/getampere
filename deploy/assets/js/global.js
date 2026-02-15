@@ -1,6 +1,6 @@
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.122 Loaded');
+    console.log('[Ampere Global] v3.123 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -77,13 +77,14 @@ function waitForUnicorn(callback) {
                 if (window.DistortionGrid) {
                     window.DistortionGrid.initAll(selector);
                 } else if (!document.querySelector('script[src*="distortion-grid.js"]')) {
-                    // [Debug v3.086] Disabled for isolation
-                    // const script = document.createElement('script');
-                    // script.src = 'assets/js/distortion-grid.js?v=' + Date.now();
-                    // script.onload = () => {
-                    //     if (window.DistortionGrid) window.DistortionGrid.initAll(selector);
-                    // };
-                    // document.body.appendChild(script);
+                    // [Restored v3.122] Dynamic Import
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/distortion-grid.js';
+                    script.defer = true;
+                    script.onload = () => {
+                        if (window.DistortionGrid) window.DistortionGrid.initAll(selector);
+                    };
+                    document.body.appendChild(script);
                 }
             }
         });
@@ -171,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.122...");
+        console.log("[Global] Initializing v3.123...");
         checkNavTheme();
     }, 100);
 });

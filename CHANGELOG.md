@@ -1,9 +1,8 @@
 # Changelog
 
 
-## v3.116 - Fix Syntax Error
-- **Fix**: Corrected a `SyntaxError: missing ) after argument list` introduced in v3.115.
-- **Status**: Retrying the render kickstart logic with clean syntax.
+## v3.123
+- **Fix**: Fixed critical "undefined cache" crash by removing redundant Unicorn initialization. Restored `DistortionGrid` script injection logic in `global.js` which was causing the grid to fail.
 
 ## v3.122
 - **Fix**: Reverted Unicorn Studio initialization to legacy method (v1.4.29) based on stable backups.

@@ -1953,17 +1953,7 @@
           class="absolute w-full h-full left-0 top-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-20 transition-opacity duration-1000 ease-in-out">
         </div>
 
-        <script>
-          // Force check for Unicorn Studio in case it initialized before this element was ready
-          // Only init if the function actually exists (loaded). If not, the script loader onload will handle it.
-          if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') {
-            window.UnicornStudio.init();
-          } else {
-            window.addEventListener('load', () => {
-              if (window.UnicornStudio && typeof window.UnicornStudio.init === 'function') window.UnicornStudio.init();
-            });
-          }
-        </script>
+
         <!-- "Four Corner" Grid Lines Background -->
         <div class="absolute inset-0 z-0 pointer-events-none">
           <!-- Outer Border Lines Only -->
@@ -3282,7 +3272,7 @@
 
             <!-- Chart.js Implementation -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/chart-init.js"
+            <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/chart-init.js"
               defer></script>
           </div>
         </div>
@@ -3488,15 +3478,15 @@
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/global.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/modal.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/hero-slider.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/global.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/modal.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/hero-slider.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/modal-helpers.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/modal-helpers.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/scroll-flipper.js"
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/scroll-flipper.js"
     defer></script>
-  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.122/deploy/assets/js/carousel.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.123/deploy/assets/js/carousel.js" defer></script>
 </body>
 
 </html>
