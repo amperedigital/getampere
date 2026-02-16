@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.165
+- **Backend**: Fix personalized greeting for returning web visitors. ElevenLabs SDK nests client `dynamicVariables` inside `conversation_initiation_client_data.dynamic_variables` — init handler now checks both locations. Added diagnostic logging.
+- **Frontend**: No code changes (Sync Version).
 
 ## v3.164
 - **Backend**: Init webhook speed optimization — web fast path skips 5 sequential D1 queries, parallelized remaining queries, added DO cache for greeting data.
