@@ -200,7 +200,6 @@ export class AmpereAIChat {
             // v2.611: Delay Audio Start to allow Visual Power-Up to complete
             // User request: "Emily shouldn't speak until the power ramp-up is complete."
             // We wait 1.8 seconds here (typical animation ramp up).
-            await new Promise(resolve => setTimeout(resolve, 1800));
 
             // v2.860: Identity Push. Retrieve ID here to push into dynamic_variables.
             // This allows the Agent to know the ID immediately without "probing" callbacks.
@@ -232,16 +231,38 @@ export class AmpereAIChat {
             else if (currentHour < 17) timeGreeting = "Good afternoon";
             else timeGreeting = "Good evening";
 
-            // v3.161: Compose a client-side fallback greeting.
-            // ElevenLabs validates first_message vars BEFORE calling the init webhook,
-            // so we must provide dynamic_greeting client-side. The webhook will override
-            // it with a personalized version if the user is known.
+            // v3.166: Pre-fetch personalized greeting from backend.
+            // The ElevenLabs init webhook only fires for phone/SIP calls, not web SDK.
+            // We call /greeting/web during the animation delay (runs in parallel, no extra latency).
             const fallbackGreeting = `${timeGreeting}, this is Emily with Ampere AI. How can I help you today?`;
+            let personalizedGreeting = fallbackGreeting;
+
+            const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ visitor_id: visitorId, time_greeting: timeGreeting })
+            }).then(async (res) => {
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.dynamic_greeting) {
+                        personalizedGreeting = data.dynamic_greeting;
+                        console.log(`%c[AmpereAI] 🎯 PERSONALIZED GREETING: "${data.dynamic_greeting}" (status: ${data.visitor_status}, name: ${data.name})`, "color: #10b981; font-weight: bold;");
+                    }
+                }
+            }).catch((err) => {
+                console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed, using fallback`, "color: #f59e0b;", err);
+            });
+
+            // Run animation delay and greeting fetch in parallel
+            await Promise.all([
+                new Promise(resolve => setTimeout(resolve, 1800)),
+                greetingFetch
+            ]);
 
             console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
                 visitor_id: visitorId,
                 user_time_greeting: timeGreeting,
-                dynamic_greeting: fallbackGreeting
+                dynamic_greeting: personalizedGreeting
             });
 
             this.conversation = await Conversation.startSession({
@@ -249,7 +270,7 @@ export class AmpereAIChat {
                 dynamicVariables: {
                     visitor_id: visitorId,
                     user_time_greeting: timeGreeting,
-                    dynamic_greeting: fallbackGreeting
+                    dynamic_greeting: personalizedGreeting
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),

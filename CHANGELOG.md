@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.166
+- **Frontend**: Pre-fetch personalized greeting from `/greeting/web` during animation delay before starting ElevenLabs session. Runs in parallel with the 1.8s power-up animation — zero added latency. Falls back to generic greeting on failure.
+- **Backend**: New `/greeting/web` endpoint for web visitor greeting resolution.
+
 ## v3.165
 - **Backend**: Fix personalized greeting for returning web visitors. ElevenLabs SDK nests client `dynamicVariables` inside `conversation_initiation_client_data.dynamic_variables` — init handler now checks both locations. Added diagnostic logging.
 - **Frontend**: No code changes (Sync Version).
