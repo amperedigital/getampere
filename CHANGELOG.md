@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.176
+- **Backend**: Memory fact quality overhaul — broad query detection, removed keyword noise generator, identity auto-linking for emails/phones, visitor_id tool schema fix. See backend CHANGELOG for full details.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.173
 - **Frontend**: Fixed WebSocket workspace mismatch in `system-link.js` — visualizer was connecting with visitor UUID instead of `emily`, so tool broadcasts from the backend never reached the halo ring or data stream. Added `setProcessingState(true)` to `onToolCall` handler in `ai-chat.js` for server-side tool feedback.
 - **Backend**: All stored facts now require OTP verification. Prompt updated with persistent memory instructions.
