@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.171
+- **Backend**: Briefing timestamp now displays in Eastern Time instead of UTC.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.170
 - **Backend**: Critical fix — subject ID mismatch was causing empty briefing lookups. Full canonical ID now preserved for DB queries.
 - **Frontend**: No code changes (Sync Version).
