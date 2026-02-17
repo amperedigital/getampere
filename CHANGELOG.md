@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.178
+- **Backend**: JSON leak prompt fix deployed to production. See backend CHANGELOG for details.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.177
 - **Backend**: Anti-JSON leak prompt hardening — agent will no longer speak tool call parameters aloud. See backend CHANGELOG for full details.
 - **Frontend**: No code changes (Sync Version).
