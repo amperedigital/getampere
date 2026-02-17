@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.179
+- **Backend**: Fixed `memory_upsert` — singular `body.fact` from ElevenLabs tool was never mapped to `extracted_facts[]`, so facts were silently dropped and no WebSocket broadcast fired for the halo ring. See backend CHANGELOG for details.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.178
 - **Backend**: JSON leak prompt fix deployed to production. See backend CHANGELOG for details.
 - **Frontend**: No code changes (Sync Version).
