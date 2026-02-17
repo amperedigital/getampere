@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.177
+- **Backend**: Anti-JSON leak prompt hardening — agent will no longer speak tool call parameters aloud. See backend CHANGELOG for full details.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.176
 - **Backend**: Memory fact quality overhaul — broad query detection, removed keyword noise generator, identity auto-linking for emails/phones, visitor_id tool schema fix. See backend CHANGELOG for full details.
 - **Frontend**: No code changes (Sync Version).
