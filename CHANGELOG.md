@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.166
+## v3.167
 - **Frontend**: Pre-fetch personalized greeting from `/greeting/web` during animation delay before starting ElevenLabs session. Runs in parallel with the 1.8s power-up animation — zero added latency. Falls back to generic greeting on failure.
 - **Backend**: New `/greeting/web` endpoint for web visitor greeting resolution.
 
