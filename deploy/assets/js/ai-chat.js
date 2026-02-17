@@ -591,6 +591,14 @@ export class AmpereAIChat {
 
         this.updateStatusUI('disconnected', 'Disconnected');
 
+        // v3.172: Transition status to "Standby" after brief disconnect flash
+        // Gives user a clear "session ended" signal before settling into hibernation state.
+        setTimeout(() => {
+            if (!this.isConnected && !this.isConnecting) {
+                this.updateStatusUI('disconnected', 'Standby');
+            }
+        }, 2000);
+
         // Swap Buttons
         if (this.startBtn) {
             this.startBtn.classList.remove('hidden');

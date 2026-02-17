@@ -757,9 +757,15 @@ export class TechDemoScene {
                 this.setSystemState('ACTIVE');
             }
         } else {
-            // Reset to default Active color (Amber) immediately
+            // v3.172: Hibernate on Disconnect
+            // When the agent disconnects, transition the scene back to STANDBY.
+            // This dims the lights, fades out electrons, and starts the standby pulse.
+            console.log('[TechDemo] Voice Disconnected -> Entering STANDBY (Hibernate)');
             this.targetCoreColor.setHex(0xf59e0b);
             this.voiceActive = false;
+            this.processingState = false;
+            this.clearElectrons();
+            this.setSystemState('STANDBY');
         }
     }
 

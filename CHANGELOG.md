@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.172
+- **Frontend**: Hibernate on Disconnect — when the AI agent disconnects, the 3D scene transitions from ACTIVE to STANDBY (dims lights, fades electrons, starts standby pulse). Status pill shows "Disconnected" briefly then settles to "Standby". Previously the scene stayed fully lit after disconnect.
+- **Backend**: No code changes (Sync Version).
+
 ## v3.171
 - **Backend**: Briefing timestamp now displays in Eastern Time instead of UTC.
 - **Frontend**: No code changes (Sync Version).
