@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.170
+- **Backend**: Critical fix — subject ID mismatch was causing empty briefing lookups. Full canonical ID now preserved for DB queries.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.169
 - **Frontend**: `ai-chat.js` now captures `situational_briefing` from `/greeting/web` and passes it to ElevenLabs `dynamicVariables`. Web sessions now have full temporal context matching phone calls.
 - **Backend**: `webGreetingHandler` now includes `situational_briefing` in the JSON response.
