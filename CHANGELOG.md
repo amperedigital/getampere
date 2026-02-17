@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.173
+- **Frontend**: Fixed WebSocket workspace mismatch in `system-link.js` — visualizer was connecting with visitor UUID instead of `emily`, so tool broadcasts from the backend never reached the halo ring or data stream. Added `setProcessingState(true)` to `onToolCall` handler in `ai-chat.js` for server-side tool feedback.
+- **Backend**: All stored facts now require OTP verification. Prompt updated with persistent memory instructions.
+
 ## v3.172
 - **Frontend**: Hibernate on Disconnect — when the AI agent disconnects, the 3D scene transitions from ACTIVE to STANDBY (dims lights, fades electrons, starts standby pulse). Status pill shows "Disconnected" briefly then settles to "Standby". Previously the scene stayed fully lit after disconnect.
 - **Backend**: No code changes (Sync Version).

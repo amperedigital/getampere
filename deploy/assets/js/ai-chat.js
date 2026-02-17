@@ -289,6 +289,11 @@ export class AmpereAIChat {
                 onToolCall: (toolCall) => {
                     console.log(`%c[AmpereAI] 🛠️ SERVER TOOL CALLED: ${toolCall.name}`, "color: #f472b6; font-weight: bold;", toolCall);
 
+                    // v3.172: Trigger processing state (halo ring) for ALL server tool calls
+                    if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                        window.demoScene.setProcessingState(true);
+                    }
+
                     // Direct UI Manipulation (Robust Fallback if WebSocket fails)
                     if (window.demoScene) {
                         if (toolCall.name.includes('memory')) {
