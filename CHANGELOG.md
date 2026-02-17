@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.168
+- **Backend**: Critical fix — `getLatestBriefing()` SQL error was silently killing the situational briefing on every session. Emily had no temporal context and was hallucinating past conversation details. Fixed by removing broken JOIN on `calls` table.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.167
 - **Frontend**: Pre-fetch personalized greeting from `/greeting/web` during animation delay before starting ElevenLabs session. Runs in parallel with the 1.8s power-up animation — zero added latency. Falls back to generic greeting on failure.
 - **Backend**: New `/greeting/web` endpoint for web visitor greeting resolution.
