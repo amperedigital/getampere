@@ -236,6 +236,7 @@ export class AmpereAIChat {
             // We call /greeting/web during the animation delay (runs in parallel, no extra latency).
             const fallbackGreeting = `${timeGreeting}, this is Emily with Ampere AI. How can I help you today?`;
             let personalizedGreeting = fallbackGreeting;
+            let situationalBriefing = "";
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
@@ -247,6 +248,10 @@ export class AmpereAIChat {
                     if (data.dynamic_greeting) {
                         personalizedGreeting = data.dynamic_greeting;
                         console.log(`%c[AmpereAI] 🎯 PERSONALIZED GREETING: "${data.dynamic_greeting}" (status: ${data.visitor_status}, name: ${data.name})`, "color: #10b981; font-weight: bold;");
+                    }
+                    if (data.situational_briefing) {
+                        situationalBriefing = data.situational_briefing;
+                        console.log(`%c[AmpereAI] 📋 SITUATIONAL BRIEFING LOADED (${data.situational_briefing.length} chars)`, "color: #8b5cf6; font-weight: bold;");
                     }
                 }
             }).catch((err) => {
@@ -262,7 +267,8 @@ export class AmpereAIChat {
             console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
                 visitor_id: visitorId,
                 user_time_greeting: timeGreeting,
-                dynamic_greeting: personalizedGreeting
+                dynamic_greeting: personalizedGreeting,
+                situational_briefing: situationalBriefing ? '(loaded)' : '(empty)'
             });
 
             this.conversation = await Conversation.startSession({
@@ -270,7 +276,8 @@ export class AmpereAIChat {
                 dynamicVariables: {
                     visitor_id: visitorId,
                     user_time_greeting: timeGreeting,
-                    dynamic_greeting: personalizedGreeting
+                    dynamic_greeting: personalizedGreeting,
+                    situational_briefing: situationalBriefing
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
