@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.182
+- **Backend**: Fixed `pickCanonicalSubjectId` scoring — E.164+Name format (`+14168922443|Andrew Crowe`) scored the same as bare E.164 (`+14168922443`), so on ties the bare phone won alphabetically. This caused `linkSubjectIds` to constantly demote the name-bearing ID to an alias, stripping the embedded name. Now Phone+Name scores 2, bare E.164 scores 3.
+- **Data Fix**: Removed re-created stale `subject_links` row (again).
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.181
 - **Frontend**: Pass `known_phone` and `known_email` from `/greeting/web` response to ElevenLabs `dynamicVariables`. Build richer `verified_identity_preview` including phone/email so the agent has the user's contact info from session start.
 - **Backend**: `webGreetingHandler` now extracts the phone number embedded in the canonical subject ID (e.g. `+14168922443|Andrew Crowe`) and queries `memories` for `contact_email` facts. Both returned in response as `known_phone` and `known_email`.
