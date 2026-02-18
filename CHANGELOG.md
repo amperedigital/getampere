@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.189
+- **Frontend**: Cleaned up personalized greeting console log — `visitor_status` no longer includes redundant name.
+- **Backend**: Removed name from `visitor_status` field (now just `"returning"` instead of `"returning:Andrew"`). Added voice print implementation plan to docs.
+
 ## v3.188
 - **Frontend (Text Chat Fix)**: Corrected SDK method name from `sendUserText` to `sendUserMessage` per ElevenLabs Conversation API.
 - **Backend**: No code changes (Sync Version).

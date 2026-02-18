@@ -247,7 +247,7 @@ export class AmpereAIChat {
                     const data = await res.json();
                     if (data.dynamic_greeting) {
                         personalizedGreeting = data.dynamic_greeting;
-                        console.log(`%c[AmpereAI] 🎯 PERSONALIZED GREETING: "${data.dynamic_greeting}" (status: ${data.visitor_status}, name: ${data.name})`, "color: #10b981; font-weight: bold;");
+                        console.log(`%c[AmpereAI] 🎯 PERSONALIZED GREETING: "${data.dynamic_greeting}" (status: ${data.visitor_status}${data.name ? ', name: ' + data.name : ''})`, "color: #10b981; font-weight: bold;");
                     }
                     if (data.situational_briefing) {
                         situationalBriefing = data.situational_briefing;
