@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.184
+- **Backend (Security)**: Situational briefing no longer includes raw call summary. Specific facts (vehicles, addresses, family details) were leaking pre-OTP via the summary text. Briefing now only includes generalized metadata (sentiment, outcome, timing). Facts remain gated behind OTP via `memory_bootstrap` / profile card.
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.183
 - **Backend (Profile Cards)**: New `profile_cards` table + `compileProfileCard()` function. Automatically compiles all facts for a subject into a deduplicated, grouped markdown card. Triggered async by auditor post-call (`ingestTranscript`) and live `memory_upsert`. Served via `memory_bootstrap` — OTP-gated (only included when `verification_level === "verified"`).
 - **Backend (Search)**: Fixed `memory_query` and bootstrap LIKE search to also match against `fact_type` column. Searching for "vehicle" now matches `vehicle_detail` facts even when the fact text says "truck".
