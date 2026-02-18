@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.188
+- **Frontend (Text Chat Fix)**: Corrected SDK method name from `sendUserText` to `sendUserMessage` per ElevenLabs Conversation API.
+- **Backend**: No code changes (Sync Version).
+
 ## v3.187
 - **Frontend (Text Chat)**: Fixed text input — `sendMessage()` was a stub that cleared input but never sent to the agent. Now calls `conversation.sendUserText(text)` via the ElevenLabs SDK.
 - **Backend**: No code changes (Sync Version).

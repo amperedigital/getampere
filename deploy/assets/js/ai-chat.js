@@ -135,8 +135,8 @@ export class AmpereAIChat {
                 this.chatInput.value = '';
 
                 // v3.185: Send text to ElevenLabs Conversation SDK
-                if (this.conversation && typeof this.conversation.sendUserText === 'function') {
-                    this.conversation.sendUserText(text);
+                if (this.conversation && typeof this.conversation.sendUserMessage === 'function') {
+                    this.conversation.sendUserMessage(text);
                     console.log(`%c[AmpereAI] 💬 TEXT SENT: "${text}"`, "color: #60a5fa; font-weight: bold;");
                 } else {
                     console.warn('[AmpereAI] Text send unavailable — no active session or SDK method missing.');
