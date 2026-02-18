@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.186
+- **Frontend (Text Chat)**: Fixed text input — `sendMessage()` was a stub that cleared input but never sent to the agent. Now calls `conversation.sendUserText(text)` via the ElevenLabs SDK, with optimistic UI rendering and fallback warning if no active session.
+- **Backend**: No code changes (Sync Version).
+
 ## v3.185
 - **Frontend (Multi-Agent Visualization)**: Replicated memory visualization UI (retrieval/insert LEDs, data stream, activity bar) from Front Door agent card to all active agent cards (Demo Guide, Onboarding Coach, Tech Specialist, Sales Advisor). Each card has unique element IDs and `data-agent-id` attributes.
 - **Frontend (Handoff Routing)**: `handoff_dispatch` tool calls now parse `handoff_reason` keywords to automatically rotate the inner halo ring to the target agent and visually activate the receiving card. Added agent registry and `activateAgentCard()` global API.

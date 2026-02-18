@@ -130,22 +130,18 @@ export class AmpereAIChat {
                 const text = this.chatInput.value.trim();
                 if (!text) return;
 
-                // Add to UI immediately (optimistic)
-                // this.addMessage(text, 'user'); // onMessage usually echoes back, but let's see.
-                // Using optimistic add for better UX
+                // v3.185: Show user message immediately (optimistic)
+                this.addMessage(text, 'user');
                 this.chatInput.value = '';
 
-                // Send to Agent
-                /* 
-                   Note: The ElevenLabs Conversation SDK primarily handles audio. 
-                   Text-to-Socket sending might not be exposed in the high-level 'Conversation' helper 
-                   depending on the version. We will attempt to use it if available, or rely on voice.
-                   However, for this "Tech Demo", the user expects text input to work.
-                */
-                // For now, we just rely on voice for input, but if typing is needed we might need custom handling.
-                // But the user asked for typing.
-                // If the SDK library doesn't support .sendText(), this might be a limitation.
-                // We'll leave the UI part for now. If this.conversation has a method, we use it.
+                // v3.185: Send text to ElevenLabs Conversation SDK
+                if (this.conversation && typeof this.conversation.sendUserText === 'function') {
+                    this.conversation.sendUserText(text);
+                    console.log(`%c[AmpereAI] 💬 TEXT SENT: "${text}"`, "color: #60a5fa; font-weight: bold;");
+                } else {
+                    console.warn('[AmpereAI] Text send unavailable — no active session or SDK method missing.');
+                    this.addMessage("⚠️ Voice session required. Text input needs an active connection.", 'system');
+                }
             };
 
             this.chatSendBtn.addEventListener('click', sendMessage);
