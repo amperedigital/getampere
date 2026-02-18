@@ -8,6 +8,7 @@ export class AmpereAIChat {
         this.conversation = null;
         this.isConnecting = false;
         this.isConnected = false;
+        this.voiceBuffer = null; // v3.190: Voice Print PCM ring buffer
 
         // UI References
         this.startBtn = options.startBtnId ? document.getElementById(options.startBtnId) : null;
@@ -191,7 +192,35 @@ export class AmpereAIChat {
         try {
             // Request Mic Check before starting SDK
             // This allows us to give a friendly "No Mic" error before the SDK explodes or fails silently
-            await navigator.mediaDevices.getUserMedia({ audio: true });
+            const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            // v3.190: Voice Print — Initialize AudioWorklet for PCM ring buffer
+            try {
+                const audioCtx = new AudioContext({ sampleRate: 48000 });
+                await audioCtx.audioWorklet.addModule('/assets/js/audio-worklet-processor.js');
+                const workletNode = new AudioWorkletNode(audioCtx, 'voice-print-processor');
+                const source = audioCtx.createMediaStreamSource(micStream);
+                source.connect(workletNode);
+                // Don't connect to destination — silent tap only
+                this.voiceBuffer = {
+                    node: workletNode,
+                    context: audioCtx,
+                    getSnapshot: (durationMs = 3000) => {
+                        return new Promise((resolve) => {
+                            const handler = (event) => {
+                                workletNode.port.removeEventListener('message', handler);
+                                resolve(event.data);
+                            };
+                            workletNode.port.addEventListener('message', handler);
+                            workletNode.port.postMessage({ type: 'snapshot', durationMs });
+                        });
+                    }
+                };
+                console.log('%c[AmpereAI] 🎙️ VOICE BUFFER: AudioWorklet initialized (5s ring buffer)', 'color: #06b6d4; font-weight: bold;');
+            } catch (vbErr) {
+                console.warn('[AmpereAI] Voice buffer init failed (non-blocking):', vbErr);
+                this.voiceBuffer = null;
+            }
 
             // v2.611: Delay Audio Start to allow Visual Power-Up to complete
             // User request: "Emily shouldn't speak until the power ramp-up is complete."
@@ -341,7 +370,6 @@ export class AmpereAIChat {
                             if (window.systemLink) window.systemLink.triggerOtpTx();
                         } else if (toolCall.name.includes('handoff') || toolCall.name.includes('transfer')) {
                             window.demoScene.selectFunction("transfer");
-
                             // v3.185: Inner ring rotation — map handoff_reason to target agent
                             const reason = (toolCall.parameters?.handoff_reason || '').toLowerCase();
                             const AGENT_REASON_MAP = [
@@ -393,6 +421,96 @@ export class AmpereAIChat {
                         }
 
                         return id; // Return string directly
+                    },
+
+                    // v3.190: Voice Print — Enroll speaker voiceprint
+                    voice_enroll: async (parameters) => {
+                        console.log('%c[AmpereAI] 🎙️ VOICE ENROLL: Capturing audio...', 'color: #8b5cf6; font-weight: bold;', parameters);
+
+                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                            window.demoScene.setProcessingState(true);
+                        }
+
+                        try {
+                            if (!this.voiceBuffer) {
+                                console.warn('[AmpereAI] Voice buffer not available');
+                                return JSON.stringify({ status: 'error', reason: 'voice_buffer_unavailable' });
+                            }
+
+                            const snapshot = await this.voiceBuffer.getSnapshot(3000);
+                            if (snapshot.status !== 'ok') {
+                                return JSON.stringify({ status: 'error', reason: snapshot.status });
+                            }
+
+                            // Convert Float32 PCM to 16-bit WAV and base64-encode
+                            const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
+
+                            const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    user_id: parameters.user_id,
+                                    display_name: parameters.display_name || '',
+                                    audio: wavBase64,
+                                    sampleRate: snapshot.sampleRate
+                                })
+                            });
+
+                            const result = await res.json();
+                            console.log('%c[AmpereAI] ✅ VOICE ENROLL RESULT:', 'color: #10b981; font-weight: bold;', result);
+                            return JSON.stringify(result);
+                        } catch (err) {
+                            console.error('[AmpereAI] Voice enroll error:', err);
+                            return JSON.stringify({ status: 'error', reason: err.message });
+                        } finally {
+                            if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                                window.demoScene.setProcessingState(false);
+                            }
+                        }
+                    },
+
+                    // v3.190: Voice Print — Verify speaker voiceprint
+                    voice_verify: async (parameters) => {
+                        console.log('%c[AmpereAI] 🔐 VOICE VERIFY: Capturing audio...', 'color: #f59e0b; font-weight: bold;', parameters);
+
+                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                            window.demoScene.setProcessingState(true);
+                        }
+
+                        try {
+                            if (!this.voiceBuffer) {
+                                console.warn('[AmpereAI] Voice buffer not available');
+                                return JSON.stringify({ verified: false, reason: 'voice_buffer_unavailable' });
+                            }
+
+                            const snapshot = await this.voiceBuffer.getSnapshot(3000);
+                            if (snapshot.status !== 'ok') {
+                                return JSON.stringify({ verified: false, reason: snapshot.status });
+                            }
+
+                            const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
+
+                            const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    user_id: parameters.user_id,
+                                    audio: wavBase64,
+                                    sampleRate: snapshot.sampleRate
+                                })
+                            });
+
+                            const result = await res.json();
+                            console.log('%c[AmpereAI] 🔐 VOICE VERIFY RESULT:', 'color: #f59e0b; font-weight: bold;', result);
+                            return JSON.stringify(result);
+                        } catch (err) {
+                            console.error('[AmpereAI] Voice verify error:', err);
+                            return JSON.stringify({ verified: false, reason: err.message });
+                        } finally {
+                            if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
+                                window.demoScene.setProcessingState(false);
+                            }
+                        }
                     },
                 }
             });
@@ -497,10 +615,62 @@ export class AmpereAIChat {
         // v2.595: Trigger external callback (e.g. for Power Down)
         if (this.options.onEnd) this.options.onEnd();
 
+        // v3.190: Clean up voice buffer AudioWorklet
+        if (this.voiceBuffer) {
+            try {
+                this.voiceBuffer.node.disconnect();
+                await this.voiceBuffer.context.close();
+            } catch (e) { /* ignore cleanup errors */ }
+            this.voiceBuffer = null;
+        }
+
         if (this.conversation) {
             await this.conversation.endSession();
             this.conversation = null;
         }
+    }
+
+    // v3.190: Convert Float32 PCM samples to 16-bit WAV base64
+    _pcmToWavBase64(samples, sampleRate) {
+        const numChannels = 1;
+        const bitsPerSample = 16;
+        const bytesPerSample = bitsPerSample / 8;
+        const dataLength = samples.length * bytesPerSample;
+        const headerLength = 44;
+        const buffer = new ArrayBuffer(headerLength + dataLength);
+        const view = new DataView(buffer);
+
+        // WAV header
+        const writeString = (offset, str) => {
+            for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        };
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + dataLength, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true); // fmt chunk size
+        view.setUint16(20, 1, true);  // PCM format
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
+        view.setUint16(32, numChannels * bytesPerSample, true);
+        view.setUint16(34, bitsPerSample, true);
+        writeString(36, 'data');
+        view.setUint32(40, dataLength, true);
+
+        // PCM data — clamp and convert Float32 to Int16
+        for (let i = 0; i < samples.length; i++) {
+            const s = Math.max(-1, Math.min(1, samples[i]));
+            view.setInt16(headerLength + i * 2, s * 0x7FFF, true);
+        }
+
+        // Base64 encode
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
     }
 
     // --- UI Update Helpers ---

@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.190 - Voice Print Security Layer
+- **Frontend**: Added `VoiceBuffer` AudioWorklet for silent PCM ring buffer (5s at 48kHz).
+- **Frontend**: Added `voice_enroll` and `voice_verify` client tools with audio snapshot capture.
+- **Frontend**: Added `_pcmToWavBase64()` helper for Float32 PCM → 16-bit WAV base64 encoding.
+- **Frontend**: Voice tool animation in `onToolCall`, AudioWorklet cleanup in `endSession`.
+- **Backend**: Worker endpoints, DO voiceprint storage, agent prompt updates (see backend changelog).
+
 ## v3.189
 - **Frontend**: Cleaned up personalized greeting console log — `visitor_status` no longer includes redundant name.
 - **Backend**: Removed name from `visitor_status` field (now just `"returning"` instead of `"returning:Andrew"`). Added voice print implementation plan to docs.
