@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.183
+- **Backend (Profile Cards)**: New `profile_cards` table + `compileProfileCard()` function. Automatically compiles all facts for a subject into a deduplicated, grouped markdown card. Triggered async by auditor post-call (`ingestTranscript`) and live `memory_upsert`. Served via `memory_bootstrap` — OTP-gated (only included when `verification_level === "verified"`).
+- **Backend (Search)**: Fixed `memory_query` and bootstrap LIKE search to also match against `fact_type` column. Searching for "vehicle" now matches `vehicle_detail` facts even when the fact text says "truck".
+- **Frontend**: No code changes (Sync Version).
+
 ## v3.182
 - **Backend**: Fixed `pickCanonicalSubjectId` scoring — E.164+Name format (`+14168922443|Andrew Crowe`) scored the same as bare E.164 (`+14168922443`), so on ties the bare phone won alphabetically. This caused `linkSubjectIds` to constantly demote the name-bearing ID to an alias, stripping the embedded name. Now Phone+Name scores 2, bare E.164 scores 3.
 - **Data Fix**: Removed re-created stale `subject_links` row (again).
