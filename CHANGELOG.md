@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.187
+- **Frontend (Text Chat)**: Fixed text input — `sendMessage()` was a stub that cleared input but never sent to the agent. Now calls `conversation.sendUserText(text)` via the ElevenLabs SDK.
+- **Backend**: No code changes (Sync Version).
+
 ## v3.186
 - **Frontend (Text Chat)**: Fixed text input — `sendMessage()` was a stub that cleared input but never sent to the agent. Now calls `conversation.sendUserText(text)` via the ElevenLabs SDK, with optimistic UI rendering and fallback warning if no active session.
 - **Backend**: No code changes (Sync Version).
