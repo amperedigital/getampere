@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.180
+- **Frontend**: Critical fix — `ai-chat.js` was not passing `visitor_status`, `user_name`, or `verified_identity_preview` to ElevenLabs `dynamicVariables`. The `/greeting/web` endpoint returned these values but they were discarded. This meant the agent's prompt FAST TRACK (`{{visitor_status}}` starts with `returning` + `{{user_name}}` present) never triggered for web sessions, so Emily never recognized returning users by name.
+- **Backend**: No code changes (Sync Version).
+
 ## v3.179
 - **Backend**: Fixed `memory_upsert` — singular `body.fact` from ElevenLabs tool was never mapped to `extracted_facts[]`, so facts were silently dropped and no WebSocket broadcast fired for the halo ring. See backend CHANGELOG for details.
 - **Frontend**: No code changes (Sync Version).

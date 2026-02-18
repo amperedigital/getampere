@@ -237,6 +237,8 @@ export class AmpereAIChat {
             const fallbackGreeting = `${timeGreeting}, this is Emily with Ampere AI. How can I help you today?`;
             let personalizedGreeting = fallbackGreeting;
             let situationalBriefing = "";
+            let visitorStatus = "new";
+            let userName = "";
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
@@ -253,6 +255,13 @@ export class AmpereAIChat {
                         situationalBriefing = data.situational_briefing;
                         console.log(`%c[AmpereAI] 📋 SITUATIONAL BRIEFING LOADED (${data.situational_briefing.length} chars)`, "color: #8b5cf6; font-weight: bold;");
                     }
+                    if (data.visitor_status) {
+                        visitorStatus = data.visitor_status;
+                    }
+                    if (data.name) {
+                        userName = data.name;
+                        console.log(`%c[AmpereAI] 👤 USER NAME RESOLVED: ${data.name}`, "color: #f472b6; font-weight: bold;");
+                    }
                 }
             }).catch((err) => {
                 console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed, using fallback`, "color: #f59e0b;", err);
@@ -268,7 +277,9 @@ export class AmpereAIChat {
                 visitor_id: visitorId,
                 user_time_greeting: timeGreeting,
                 dynamic_greeting: personalizedGreeting,
-                situational_briefing: situationalBriefing ? '(loaded)' : '(empty)'
+                situational_briefing: situationalBriefing ? '(loaded)' : '(empty)',
+                visitor_status: visitorStatus,
+                user_name: userName || '(none)'
             });
 
             this.conversation = await Conversation.startSession({
@@ -277,7 +288,10 @@ export class AmpereAIChat {
                     visitor_id: visitorId,
                     user_time_greeting: timeGreeting,
                     dynamic_greeting: personalizedGreeting,
-                    situational_briefing: situationalBriefing
+                    situational_briefing: situationalBriefing,
+                    visitor_status: visitorStatus,
+                    user_name: userName,
+                    verified_identity_preview: userName ? `Web Visitor (${userName})` : ""
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
