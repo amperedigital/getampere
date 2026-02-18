@@ -239,6 +239,8 @@ export class AmpereAIChat {
             let situationalBriefing = "";
             let visitorStatus = "new";
             let userName = "";
+            let knownPhone = "";
+            let knownEmail = "";
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
@@ -262,6 +264,13 @@ export class AmpereAIChat {
                         userName = data.name;
                         console.log(`%c[AmpereAI] 👤 USER NAME RESOLVED: ${data.name}`, "color: #f472b6; font-weight: bold;");
                     }
+                    if (data.known_phone) {
+                        knownPhone = data.known_phone;
+                    }
+                    if (data.known_email) {
+                        knownEmail = data.known_email;
+                        console.log(`%c[AmpereAI] 📧 KNOWN EMAIL: ${data.known_email}`, "color: #06b6d4; font-weight: bold;");
+                    }
                 }
             }).catch((err) => {
                 console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed, using fallback`, "color: #f59e0b;", err);
@@ -273,13 +282,26 @@ export class AmpereAIChat {
                 greetingFetch
             ]);
 
+            // Build identity preview with all known contact info
+            let identityPreview = "";
+            if (userName || knownPhone || knownEmail) {
+                const parts = [];
+                if (userName) parts.push(`Name: ${userName}`);
+                if (knownPhone) parts.push(`Phone: ${knownPhone}`);
+                if (knownEmail) parts.push(`Email: ${knownEmail}`);
+                identityPreview = `Web Visitor — ${parts.join(", ")}`;
+            }
+
             console.log("%c[AmpereAI] 🚀 PUSHING CONTEXT:", "color: #a855f7; font-weight: bold;", {
                 visitor_id: visitorId,
                 user_time_greeting: timeGreeting,
                 dynamic_greeting: personalizedGreeting,
                 situational_briefing: situationalBriefing ? '(loaded)' : '(empty)',
                 visitor_status: visitorStatus,
-                user_name: userName || '(none)'
+                user_name: userName || '(none)',
+                known_phone: knownPhone || '(none)',
+                known_email: knownEmail || '(none)',
+                verified_identity_preview: identityPreview || '(none)'
             });
 
             this.conversation = await Conversation.startSession({
@@ -291,7 +313,9 @@ export class AmpereAIChat {
                     situational_briefing: situationalBriefing,
                     visitor_status: visitorStatus,
                     user_name: userName,
-                    verified_identity_preview: userName ? `Web Visitor (${userName})` : ""
+                    known_phone: knownPhone,
+                    known_email: knownEmail,
+                    verified_identity_preview: identityPreview
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),

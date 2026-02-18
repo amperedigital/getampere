@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.181
+- **Frontend**: Pass `known_phone` and `known_email` from `/greeting/web` response to ElevenLabs `dynamicVariables`. Build richer `verified_identity_preview` including phone/email so the agent has the user's contact info from session start.
+- **Backend**: `webGreetingHandler` now extracts the phone number embedded in the canonical subject ID (e.g. `+14168922443|Andrew Crowe`) and queries `memories` for `contact_email` facts. Both returned in response as `known_phone` and `known_email`.
+- **Prompt**: Added `{{known_phone}}` and `{{known_email}}` context sections + CONTACT INFO RULE instructing the agent to use these for OTP rather than asking/hallucinating.
+- **Data Fix**: Removed stale `subject_links` row (`+14168922443|Andrew Crowe → +14168922443`) that caused `getCanonicalSubjectId` to resolve past the name-bearing ID to the bare phone, losing the embedded name.
+
 ## v3.180
 - **Frontend**: Critical fix — `ai-chat.js` was not passing `visitor_status`, `user_name`, or `verified_identity_preview` to ElevenLabs `dynamicVariables`. The `/greeting/web` endpoint returned these values but they were discarded. This meant the agent's prompt FAST TRACK (`{{visitor_status}}` starts with `returning` + `{{user_name}}` present) never triggered for web sessions, so Emily never recognized returning users by name.
 - **Backend**: No code changes (Sync Version).
