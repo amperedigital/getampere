@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- Version: v2.989 -->
-    <meta name="version" content="v3.184">
+    <meta name="version" content="v3.185">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -24,7 +24,7 @@
     </script>
 
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.184/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.185/deploy/assets/css/styles.css">
 </head>
 
 <body class="tech-demo-page bg-[#05060f] text-white lg:overflow-hidden">
@@ -593,7 +593,8 @@
                 <!-- v2.557: Added flex-shrink-0 min-w-[40%] for scrolling -->
                 <!-- v2.559: Increased mobile width to min-w-[85%] (~1.1 cards visible) as requested -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="active">
+                    data-agent-status="active"
+                    data-agent-id="agent_4501ka281xkpe6e8jzbspgy9qh4d">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -785,7 +786,8 @@
                 <!-- Card: Demo Guide -->
                 <!-- v2.437: Update to isolate -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="standby">
+                    data-agent-status="standby"
+                    data-agent-id="agent_1001k9d6se7ee2f9cqt9btjd0mb4">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -883,146 +885,95 @@
                             <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Feature
                                 Walkthroughs</p>
                         </div>
+                                                <!-- v3.185: Memory Function Visualizer (Replicated from Front Door) -->
                         <div
-                            class="grid grid-cols-3 gap-y-2 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            class="flex flex-col gap-4 w-full flex-1 min-h-0 pr-2 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                            <!-- Memory Operations Header & Indicators -->
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between items-baseline mb-1 mr-4">
+                                    <span
+                                        class="text-[clamp(0.75rem,2.5cqmin,1.1rem)] text-slate-400 font-mono tracking-widest uppercase">Memory
+                                        Function</span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                                        <span class="text-[10px] text-blue-400 font-mono">STANDBY</span>
+                                    </div>
+                                </div>
+
+                                <!-- Visual Control Panel -->
+                                <div
+                                    class="flex items-center justify-between bg-white/5 rounded-lg p-2 lg:p-3 border border-white/5 mr-4">
+
+                                    <!-- Extraction Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-extract-led-1"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Retr</span>
+                                    </div>
+
+                                    <!-- OTP TX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] ml-1 opacity-50">
+                                        <div id="otp-tx-led-1"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Snd</span>
+                                    </div>
+
+                                    <!-- Activity Graph (Bar) -->
+                                    <div class="flex-1 mx-2 lg:mx-3 flex flex-col justify-center gap-1">
+                                        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+                                            <div id="mem-activity-bar-1"
+                                                class="h-full w-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-100 ease-out">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OTP RX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] mr-1 opacity-50">
+                                        <div id="otp-rx-led-1"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Vrfy</span>
+                                    </div>
+
+                                    <!-- Insertion Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-insert-led-1"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Ins</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Stream Window -->
                             <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">
-                                Metric</div>
-                            <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">
-                                Data</div>
-
-                            <div class="text-slate-400 flex items-center">Sessions</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">892</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+                                class="flex flex-col flex-1 min-h-[120px] bg-black/40 rounded-lg border border-white/10 overflow-hidden relative group/console mr-4">
+                                <!-- Header/Label -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-emerald-500 shadow-[0_0_8px_rgba(10,185,129,0.6)] w-[75%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="px-2 lg:px-3 py-1 lg:py-1.5 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <span
+                                        class="text-[9px] lg:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Data
+                                        Stream</span>
+                                    <span class="text-[9px] font-mono text-slate-600">CH-2</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Completion</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">76%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-emerald-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[76%] transition-all duration-500">
-                                    </div>
 
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                <!-- Terminal Output -->
+                                <div id="mem-data-stream-1"
+                                    class="flex-1 p-2 lg:p-3 font-mono text-[9px] lg:text-[10px] leading-relaxed text-blue-400/90 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent flex flex-col-reverse break-all whitespace-pre-wrap">
+                                    <span class="opacity-50 text-slate-600">_awaiting_socket_i/o...</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Drop-off</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">8%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+
+                                <!-- Scanline overlay -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[8%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Click-thru</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">45%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-cyan-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[45%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Avg Dur</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">5m 20s</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-teal-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[55%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Rating</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">4.8/5</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-yellow-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[96%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]">
                                 </div>
                             </div>
                         </div>
@@ -1032,7 +983,8 @@
                 <!-- Card: Onboarding Coach -->
                 <!-- v2.437: Update to isolate -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="standby">
+                    data-agent-status="standby"
+                    data-agent-id="agent_5501k9d6f9n5e9sanbytq6ggz9xa">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -1123,145 +1075,95 @@
                             <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Setup
                                 Assistance</p>
                         </div>
+                                                <!-- v3.185: Memory Function Visualizer (Replicated from Front Door) -->
                         <div
-                            class="grid grid-cols-3 gap-y-2 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            class="flex flex-col gap-4 w-full flex-1 min-h-0 pr-2 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                            <!-- Memory Operations Header & Indicators -->
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between items-baseline mb-1 mr-4">
+                                    <span
+                                        class="text-[clamp(0.75rem,2.5cqmin,1.1rem)] text-slate-400 font-mono tracking-widest uppercase">Memory
+                                        Function</span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                                        <span class="text-[10px] text-blue-400 font-mono">STANDBY</span>
+                                    </div>
+                                </div>
+
+                                <!-- Visual Control Panel -->
+                                <div
+                                    class="flex items-center justify-between bg-white/5 rounded-lg p-2 lg:p-3 border border-white/5 mr-4">
+
+                                    <!-- Extraction Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-extract-led-2"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Retr</span>
+                                    </div>
+
+                                    <!-- OTP TX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] ml-1 opacity-50">
+                                        <div id="otp-tx-led-2"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Snd</span>
+                                    </div>
+
+                                    <!-- Activity Graph (Bar) -->
+                                    <div class="flex-1 mx-2 lg:mx-3 flex flex-col justify-center gap-1">
+                                        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+                                            <div id="mem-activity-bar-2"
+                                                class="h-full w-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-100 ease-out">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OTP RX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] mr-1 opacity-50">
+                                        <div id="otp-rx-led-2"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Vrfy</span>
+                                    </div>
+
+                                    <!-- Insertion Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-insert-led-2"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Ins</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Stream Window -->
                             <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">
-                                Metric</div>
-                            <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">
-                                Data</div>
-
-                            <div class="text-slate-400 flex items-center">New Users</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">156</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+                                class="flex flex-col flex-1 min-h-[120px] bg-black/40 rounded-lg border border-white/10 overflow-hidden relative group/console mr-4">
+                                <!-- Header/Label -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-purple-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[45%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="px-2 lg:px-3 py-1 lg:py-1.5 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <span
+                                        class="text-[9px] lg:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Data
+                                        Stream</span>
+                                    <span class="text-[9px] font-mono text-slate-600">CH-3</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Profiles</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">92%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-purple-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[92%] transition-all duration-500">
-                                    </div>
 
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                <!-- Terminal Output -->
+                                <div id="mem-data-stream-2"
+                                    class="flex-1 p-2 lg:p-3 font-mono text-[9px] lg:text-[10px] leading-relaxed text-blue-400/90 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent flex flex-col-reverse break-all whitespace-pre-wrap">
+                                    <span class="opacity-50 text-slate-600">_awaiting_socket_i/o...</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Guides</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">3.5</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+
+                                <!-- Scanline overlay -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)] w-[35%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Verified</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">100%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-green-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[100%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Stuck</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">2.1%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[2%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Success</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">98%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-pink-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[98%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]">
                                 </div>
                             </div>
                         </div>
@@ -1271,7 +1173,8 @@
                 <!-- Card: Technical Specialist -->
                 <!-- v2.437: Update to isolate -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="standby">
+                    data-agent-status="standby"
+                    data-agent-id="agent_2101k9d53mane36s5evqp36qj4qh">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -1366,145 +1269,95 @@
                             <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Deep
                                 Support</p>
                         </div>
+                                                <!-- v3.185: Memory Function Visualizer (Replicated from Front Door) -->
                         <div
-                            class="grid grid-cols-3 gap-y-2 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            class="flex flex-col gap-4 w-full flex-1 min-h-0 pr-2 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                            <!-- Memory Operations Header & Indicators -->
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between items-baseline mb-1 mr-4">
+                                    <span
+                                        class="text-[clamp(0.75rem,2.5cqmin,1.1rem)] text-slate-400 font-mono tracking-widest uppercase">Memory
+                                        Function</span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                                        <span class="text-[10px] text-blue-400 font-mono">STANDBY</span>
+                                    </div>
+                                </div>
+
+                                <!-- Visual Control Panel -->
+                                <div
+                                    class="flex items-center justify-between bg-white/5 rounded-lg p-2 lg:p-3 border border-white/5 mr-4">
+
+                                    <!-- Extraction Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-extract-led-3"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Retr</span>
+                                    </div>
+
+                                    <!-- OTP TX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] ml-1 opacity-50">
+                                        <div id="otp-tx-led-3"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Snd</span>
+                                    </div>
+
+                                    <!-- Activity Graph (Bar) -->
+                                    <div class="flex-1 mx-2 lg:mx-3 flex flex-col justify-center gap-1">
+                                        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+                                            <div id="mem-activity-bar-3"
+                                                class="h-full w-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-100 ease-out">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OTP RX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] mr-1 opacity-50">
+                                        <div id="otp-rx-led-3"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Vrfy</span>
+                                    </div>
+
+                                    <!-- Insertion Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-insert-led-3"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Ins</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Stream Window -->
                             <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">
-                                Metric</div>
-                            <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">
-                                Data</div>
-
-                            <div class="text-slate-400 flex items-center">Tickets</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">42</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+                                class="flex flex-col flex-1 min-h-[120px] bg-black/40 rounded-lg border border-white/10 overflow-hidden relative group/console mr-4">
+                                <!-- Header/Label -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-amber-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[20%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="px-2 lg:px-3 py-1 lg:py-1.5 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <span
+                                        class="text-[9px] lg:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Data
+                                        Stream</span>
+                                    <span class="text-[9px] font-mono text-slate-600">CH-4</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Resolved</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">38</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-yellow-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[90%] transition-all duration-500">
-                                    </div>
 
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                <!-- Terminal Output -->
+                                <div id="mem-data-stream-3"
+                                    class="flex-1 p-2 lg:p-3 font-mono text-[9px] lg:text-[10px] leading-relaxed text-blue-400/90 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent flex flex-col-reverse break-all whitespace-pre-wrap">
+                                    <span class="opacity-50 text-slate-600">_awaiting_socket_i/o...</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">AI Res</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">85%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+
+                                <!-- Scanline overlay -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-yellow-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[85%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Escalated</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">3</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[3%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Avg TTR</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">2.4m</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)] w-[10%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">CSAT</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">4.9</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-green-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[98%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]">
                                 </div>
                             </div>
                         </div>
@@ -1514,7 +1367,8 @@
                 <!-- Card: Sales Advisor -->
                 <!-- v2.437: Update to isolate -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="standby">
+                    data-agent-status="standby"
+                    data-agent-id="agent_4101k9akdzxsf68tkjw4w882d244">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -1612,145 +1466,95 @@
                             <p class="text-[clamp(0.85rem,1.5cqmin,1.1rem)] text-slate-500 mt-1 leading-tight">Revenue &
                                 Plans</p>
                         </div>
+                                                <!-- v3.185: Memory Function Visualizer (Replicated from Front Door) -->
                         <div
-                            class="grid grid-cols-3 gap-y-2 gap-x-4 text-[clamp(0.85rem,1.5cqmin,1.1rem)] @lg:gap-y-2 @lg:gap-x-8 @lg:py-8 w-full flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-8">
+                            class="flex flex-col gap-4 w-full flex-1 min-h-0 pr-2 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                            <!-- Memory Operations Header & Indicators -->
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between items-baseline mb-1 mr-4">
+                                    <span
+                                        class="text-[clamp(0.75rem,2.5cqmin,1.1rem)] text-slate-400 font-mono tracking-widest uppercase">Memory
+                                        Function</span>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                                        <span class="text-[10px] text-blue-400 font-mono">STANDBY</span>
+                                    </div>
+                                </div>
+
+                                <!-- Visual Control Panel -->
+                                <div
+                                    class="flex items-center justify-between bg-white/5 rounded-lg p-2 lg:p-3 border border-white/5 mr-4">
+
+                                    <!-- Extraction Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-extract-led-4"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Retr</span>
+                                    </div>
+
+                                    <!-- OTP TX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] ml-1 opacity-50">
+                                        <div id="otp-tx-led-4"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Snd</span>
+                                    </div>
+
+                                    <!-- Activity Graph (Bar) -->
+                                    <div class="flex-1 mx-2 lg:mx-3 flex flex-col justify-center gap-1">
+                                        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+                                            <div id="mem-activity-bar-4"
+                                                class="h-full w-0 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-100 ease-out">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OTP RX Indicator -->
+                                    <div
+                                        class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px] mr-1 opacity-50">
+                                        <div id="otp-rx-led-4"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Vrfy</span>
+                                    </div>
+
+                                    <!-- Insertion Indicator -->
+                                    <div class="flex flex-col items-center gap-1.5 lg:gap-2 min-w-[32px]">
+                                        <div id="mem-insert-led-4"
+                                            class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-slate-800 border border-slate-600 shadow-inner transition-colors duration-200">
+                                        </div>
+                                        <span
+                                            class="text-[9px] lg:text-[10px] font-mono text-slate-500 uppercase tracking-widest leading-none">Ins</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Stream Window -->
                             <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-1">
-                                Metric</div>
-                            <div
-                                class="text-slate-600 uppercase tracking-wider text-[clamp(0.75rem,2.5cqmin,1.25rem)] col-span-2 text-right">
-                                Data</div>
-
-                            <div class="text-slate-400 flex items-center">Leads</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">89</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+                                class="flex flex-col flex-1 min-h-[120px] bg-black/40 rounded-lg border border-white/10 overflow-hidden relative group/console mr-4">
+                                <!-- Header/Label -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-rose-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[50%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="px-2 lg:px-3 py-1 lg:py-1.5 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <span
+                                        class="text-[9px] lg:text-[10px] font-mono text-slate-400 uppercase tracking-wider">Data
+                                        Stream</span>
+                                    <span class="text-[9px] font-mono text-slate-600">CH-5</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Qualified</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">45</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-rose-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[55%] transition-all duration-500">
-                                    </div>
 
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                <!-- Terminal Output -->
+                                <div id="mem-data-stream-4"
+                                    class="flex-1 p-2 lg:p-3 font-mono text-[9px] lg:text-[10px] leading-relaxed text-blue-400/90 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent flex flex-col-reverse break-all whitespace-pre-wrap">
+                                    <span class="opacity-50 text-slate-600">_awaiting_socket_i/o...</span>
                                 </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Conv Rate</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">18%</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
+
+                                <!-- Scanline overlay -->
                                 <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-rose-300 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[20%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Pipeline</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">$450k</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-green-400 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[80%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Queries</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">312</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-rose-200 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[75%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-slate-400 flex items-center">Upsells</div>
-                            <div class="text-white text-right font-mono flex items-center justify-end">12</div>
-                            <div class="flex items-center text-[1em]">
-                                <!-- LED Glass Range Meter -->
-                                <div
-                                    class="relative w-full h-[0.8em] rounded-[1px] bg-white/5 overflow-hidden shadow-inner border border-white/10">
-                                    <!-- Active Bar (Lit LEDs) -->
-                                    <div
-                                        class="absolute inset-y-0 left-0 bg-amber-500 shadow-[0_0_8px_rgba(255,255,255,0.5)] w-[30%] transition-all duration-500">
-                                    </div>
-
-                                    <!-- Segmentation Mask (The Gaps) -->
-                                    <div class="absolute inset-0 w-full h-full pointer-events-none z-10"
-                                        style="background-image: repeating-linear-gradient(90deg, transparent, transparent 0.6em, rgba(0,0,0,0.8) 0.6em, rgba(0,0,0,0.8) 0.75em);">
-                                    </div>
-
-                                    <!-- Surface Shine (Top Glass Refraction) -->
-                                    <div
-                                        class="absolute inset-0 w-full h-full pointer-events-none z-20 bg-gradient-to-b from-white/10 to-transparent mix-blend-overlay">
-                                    </div>
+                                    class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]">
                                 </div>
                             </div>
                         </div>
@@ -1760,7 +1564,8 @@
                 <!-- Card: Booking Agent -->
                 <!-- v2.437: Update to isolate -->
                 <div class="relative group h-full flex-shrink-0 min-w-[85%] lg:min-w-0 snap-start socket-card-container @container"
-                    data-agent-status="standby">
+                    data-agent-status="standby"
+                    data-agent-id="placeholder">
 
                     <!-- SVG SHELL v15.2 (Single Path via JS) -->
                     <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none text-slate-300"
@@ -2009,7 +1814,7 @@
     </div>
 
     <script type="module"
-        src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.184/deploy/assets/js/tech-demo-main.js"></script>
+        src="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.185/deploy/assets/js/tech-demo-main.js"></script>
 </body>
 
 </html>

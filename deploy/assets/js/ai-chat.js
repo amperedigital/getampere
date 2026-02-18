@@ -345,7 +345,23 @@ export class AmpereAIChat {
                             if (window.systemLink) window.systemLink.triggerOtpTx();
                         } else if (toolCall.name.includes('handoff') || toolCall.name.includes('transfer')) {
                             window.demoScene.selectFunction("transfer");
-                            if (window.systemLink) window.systemLink.log("AGENT_HANDOFF_INIT", "system");
+
+                            // v3.185: Inner ring rotation — map handoff_reason to target agent
+                            const reason = (toolCall.parameters?.handoff_reason || '').toLowerCase();
+                            const AGENT_REASON_MAP = [
+                                { keywords: ['demo', 'walk-through', 'walkthrough', 'feature'], agent: 'guide', card: 1 },
+                                { keywords: ['onboarding', 'setup', 'getting started', 'new user'], agent: 'onboarding', card: 2 },
+                                { keywords: ['technical', 'twilio', 'integration', 'api', 'support'], agent: 'tech', card: 3 },
+                                { keywords: ['pricing', 'sales', 'plan', 'quote', 'revenue'], agent: 'sales', card: 4 },
+                                { keywords: ['booking', 'calendar', 'schedule', 'appointment'], agent: 'booking', card: 5 },
+                            ];
+                            const match = AGENT_REASON_MAP.find(m => m.keywords.some(k => reason.includes(k)));
+                            if (match) {
+                                console.log(`[AmpereAI] Handoff → ${match.agent} (reason: "${reason}")`);
+                                setTimeout(() => window.demoScene.selectFunction(match.agent), 600);
+                                if (window.activateAgentCard) window.activateAgentCard(match.card);
+                            }
+                            if (window.systemLink) window.systemLink.log("AGENT_HANDOFF → " + (match?.agent || reason).toUpperCase(), "system");
                         }
                     }
                 },

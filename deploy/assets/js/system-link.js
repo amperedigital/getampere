@@ -1,13 +1,8 @@
 export class SystemLink {
     constructor() {
-        this.elements = {
-            extractLed: document.getElementById('mem-extract-led'),
-            insertLed: document.getElementById('mem-insert-led'),
-            otpTxLed: document.getElementById('otp-tx-led'),
-            otpRxLed: document.getElementById('otp-rx-led'),
-            activityBar: document.getElementById('mem-activity-bar'),
-            streamWindow: document.getElementById('mem-data-stream')
-        };
+        // v3.185: Multi-agent card support
+        this.activeCard = 0; // Default to front-door (card 0, unsuffixed IDs)
+        this.bindElements(0);
 
         // Configuration
         this.maxLines = 20;
@@ -18,6 +13,28 @@ export class SystemLink {
         if (this.elements.streamWindow) {
             this.init();
         }
+    }
+
+    // v3.185: Bind element references for a specific card index
+    // Card 0 = unsuffixed IDs (front-door), Cards 1-4 = suffixed IDs (-1 through -4)
+    bindElements(cardIndex) {
+        const suffix = cardIndex === 0 ? '' : `-${cardIndex}`;
+        this.elements = {
+            extractLed: document.getElementById(`mem-extract-led${suffix}`),
+            insertLed: document.getElementById(`mem-insert-led${suffix}`),
+            otpTxLed: document.getElementById(`otp-tx-led${suffix}`),
+            otpRxLed: document.getElementById(`otp-rx-led${suffix}`),
+            activityBar: document.getElementById(`mem-activity-bar${suffix}`),
+            streamWindow: document.getElementById(`mem-data-stream${suffix}`)
+        };
+    }
+
+    // v3.185: Switch active card — rebinds all element references
+    setActiveCard(cardIndex) {
+        if (cardIndex === this.activeCard) return;
+        console.log(`[SystemLink] Switching active card: ${this.activeCard} → ${cardIndex}`);
+        this.activeCard = cardIndex;
+        this.bindElements(cardIndex);
     }
 
     init() {

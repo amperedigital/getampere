@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.185
+- **Frontend (Multi-Agent Visualization)**: Replicated memory visualization UI (retrieval/insert LEDs, data stream, activity bar) from Front Door agent card to all active agent cards (Demo Guide, Onboarding Coach, Tech Specialist, Sales Advisor). Each card has unique element IDs and `data-agent-id` attributes.
+- **Frontend (Handoff Routing)**: `handoff_dispatch` tool calls now parse `handoff_reason` keywords to automatically rotate the inner halo ring to the target agent and visually activate the receiving card. Added agent registry and `activateAgentCard()` global API.
+- **Frontend (SystemLink)**: Added `setActiveCard(cardIndex)` method to dynamically rebind visualization elements to whichever agent card is currently active.
+
 ## v3.184
 - **Backend (Security)**: Situational briefing no longer includes raw call summary. Specific facts (vehicles, addresses, family details) were leaking pre-OTP via the summary text. Briefing now only includes generalized metadata (sentiment, outcome, timing). Facts remain gated behind OTP via `memory_bootstrap` / profile card.
 - **Frontend**: No code changes (Sync Version).

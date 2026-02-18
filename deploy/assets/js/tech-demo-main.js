@@ -1,4 +1,4 @@
-console.log('[Tech Demo] v3.184-test Unified Release');
+console.log('[Tech Demo] v3.185 Multi-Agent Visualization');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
@@ -33,6 +33,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1b. Initialize System Link (Backend Socket + Memory UI)
     window.systemLink = new SystemLink();
+
+    // v3.185: Agent Registry — maps card index to agent details
+    const AGENT_REGISTRY = [
+        { card: 0, agentId: 'agent_4501ka281xkpe6e8jzbspgy9qh4d', ring: 'front_door', name: 'Front Door' },
+        { card: 1, agentId: 'agent_1001k9d6se7ee2f9cqt9btjd0mb4', ring: 'guide', name: 'Demo Guide' },
+        { card: 2, agentId: 'agent_5501k9d6f9n5e9sanbytq6ggz9xa', ring: 'onboarding', name: 'Onboarding' },
+        { card: 3, agentId: 'agent_2101k9d53mane36s5evqp36qj4qh', ring: 'tech', name: 'Tech Specialist' },
+        { card: 4, agentId: 'agent_4101k9akdzxsf68tkjw4w882d244', ring: 'sales', name: 'Sales Advisor' },
+        { card: 5, agentId: '', ring: 'booking', name: 'Booking Agent' },
+    ];
+    window.AGENT_REGISTRY = AGENT_REGISTRY;
+
+    // v3.185: Card activation — highlight the active agent's card
+    window.activateAgentCard = (cardIndex) => {
+        const cards = document.querySelectorAll('.socket-card-container');
+        cards.forEach((card, i) => {
+            if (i === cardIndex) {
+                card.setAttribute('data-agent-status', 'active');
+                card.style.boxShadow = '0 0 30px rgba(59,130,246,0.3)';
+            } else {
+                card.setAttribute('data-agent-status', 'standby');
+                card.style.boxShadow = '';
+            }
+        });
+        // Also switch SystemLink to visualize on the active card
+        if (window.systemLink) window.systemLink.setActiveCard(cardIndex);
+        console.log(`[TechDemo] Activated card ${cardIndex}: ${AGENT_REGISTRY[cardIndex]?.name}`);
+    };
 
     // 2. Initialize Shared Glass Socket Effects
     initAllSockets('.socket-card-container');
