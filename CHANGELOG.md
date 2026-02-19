@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.200 - Voice Enroll Debug Logging
+- **Backend**: Step-by-step debug logging in `handleVoiceEnroll`. No frontend changes — version sync only.
+
 ## v3.199 - Container Warmup Ping
 - **Backend**: Added `/voice/health` endpoint for container warmup.
 - **Frontend**: Fires warmup ping at session start. Auto-voiceprint timer awaits warmup completion before proceeding.
