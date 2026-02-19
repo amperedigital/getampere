@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.193 - Voiceprint Dynamic Variable
+- **Frontend**: `ai-chat.js` now captures `has_voiceprint` from `/greeting/web` response and passes it to ElevenLabs `dynamicVariables`. Agent knows voiceprint status from session start.
+- **Backend**: Voiceprint check moved from `bootstrap()` to `webGreetingHandler` and `elevenLabsInitHandler`. See backend changelog for details.
+
 ## v3.192 - Voice Print Container Sync
 - **Backend**: Voice print container deployed to Cloudflare, service binding connected, ElevenLabs client tools registered.
 - **Frontend**: No code changes — sync version with backend v3.192.

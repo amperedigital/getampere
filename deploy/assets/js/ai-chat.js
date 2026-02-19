@@ -266,6 +266,7 @@ export class AmpereAIChat {
             let userName = "";
             let knownPhone = "";
             let knownEmail = "";
+            let hasVoiceprint = "false";
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
@@ -295,6 +296,10 @@ export class AmpereAIChat {
                     if (data.known_email) {
                         knownEmail = data.known_email;
                         console.log(`%c[AmpereAI] 📧 KNOWN EMAIL: ${data.known_email}`, "color: #06b6d4; font-weight: bold;");
+                    }
+                    if (data.has_voiceprint) {
+                        hasVoiceprint = data.has_voiceprint ? "true" : "false";
+                        console.log(`%c[AmpereAI] 🎙️ HAS VOICEPRINT: ${hasVoiceprint}`, "color: #8b5cf6; font-weight: bold;");
                     }
                 }
             }).catch((err) => {
@@ -326,7 +331,8 @@ export class AmpereAIChat {
                 user_name: userName || '(none)',
                 known_phone: knownPhone || '(none)',
                 known_email: knownEmail || '(none)',
-                verified_identity_preview: identityPreview || '(none)'
+                verified_identity_preview: identityPreview || '(none)',
+                has_voiceprint: hasVoiceprint
             });
 
             this.conversation = await Conversation.startSession({
@@ -340,7 +346,8 @@ export class AmpereAIChat {
                     user_name: userName,
                     known_phone: knownPhone,
                     known_email: knownEmail,
-                    verified_identity_preview: identityPreview
+                    verified_identity_preview: identityPreview,
+                    has_voiceprint: hasVoiceprint
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
