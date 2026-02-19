@@ -1,4 +1,3 @@
-/* eslint-env worker */
 /* global AudioWorkletProcessor, registerProcessor */
 /**
  * AudioWorklet Processor — Voice Print PCM Ring Buffer
