@@ -522,6 +522,48 @@ export class AmpereAIChat {
                 }
             });
 
+            // v3.197: Automatic voice enroll/verify — fires 10s after session start, bypasses LLM
+            setTimeout(async () => {
+                try {
+                    if (!this.voiceBuffer) {
+                        console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: No voice buffer, skipping', 'color: #6b7280;');
+                        return;
+                    }
+
+                    const userId = visitorId; // Use visitor_id as the user identifier
+                    const isEnroll = hasVoiceprint === "false";
+                    const action = isEnroll ? 'enroll' : 'verify';
+
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Starting ${action} for ${userId}`, 'color: #8b5cf6; font-weight: bold;');
+
+                    const snapshot = await this.voiceBuffer.getSnapshot(3000);
+                    if (snapshot.status !== 'ok') {
+                        console.warn(`[AmpereAI] AUTO-VOICEPRINT: Snapshot failed: ${snapshot.status}`);
+                        return;
+                    }
+
+                    const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
+                    const endpoint = isEnroll
+                        ? 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll'
+                        : 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify';
+
+                    const body = isEnroll
+                        ? { user_id: userId, display_name: userName || '', audio: wavBase64, sampleRate: snapshot.sampleRate }
+                        : { user_id: userId, audio: wavBase64, sampleRate: snapshot.sampleRate };
+
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+
+                    const result = await res.json();
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT ${action.toUpperCase()} RESULT:`, 'color: #10b981; font-weight: bold;', result);
+                } catch (err) {
+                    console.error('[AmpereAI] AUTO-VOICEPRINT error:', err);
+                }
+            }, 10000); // 10 seconds after session starts
+
         } catch (error) {
             console.warn('AmpereAIChat: Mic access failed or connection error', error);
 

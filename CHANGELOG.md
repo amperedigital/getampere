@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.197 - Automatic Voice Enroll/Verify
+- **Frontend**: Added automatic voiceprint timer in `ai-chat.js`. 10 seconds after session start, captures audio snapshot and calls `/voice/enroll` (if `has_voiceprint` is false) or `/voice/verify` (if true). Runs independently of LLM tool calls.
+
 ## v3.196 - Enrollment vs Verification Clarity
 - **Backend**: Prompt updated to clarify enrollment vs verification access model. No frontend changes — version sync only.
 
