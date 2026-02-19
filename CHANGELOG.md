@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.197.1 - Voiceprint Debug Logging
+- **Frontend**: Added step-by-step console logging to auto-voiceprint timer to diagnose where enrollment stalls.
+
 ## v3.197 - Automatic Voice Enroll/Verify
 - **Frontend**: Added automatic voiceprint timer in `ai-chat.js`. 10 seconds after session start, captures audio snapshot and calls `/voice/enroll` (if `has_voiceprint` is false) or `/voice/verify` (if true). Runs independently of LLM tool calls.
 

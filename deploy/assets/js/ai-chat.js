@@ -525,24 +525,32 @@ export class AmpereAIChat {
             // v3.197: Automatic voice enroll/verify — fires 10s after session start, bypasses LLM
             setTimeout(async () => {
                 try {
+                    console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Timer fired, checking voiceBuffer...', 'color: #8b5cf6;');
+
                     if (!this.voiceBuffer) {
                         console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: No voice buffer, skipping', 'color: #6b7280;');
                         return;
                     }
 
-                    const userId = visitorId; // Use visitor_id as the user identifier
+                    const userId = visitorId;
                     const isEnroll = hasVoiceprint === "false";
                     const action = isEnroll ? 'enroll' : 'verify';
 
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Starting ${action} for ${userId}`, 'color: #8b5cf6; font-weight: bold;');
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 1 — Capturing snapshot...`, 'color: #8b5cf6;');
 
                     const snapshot = await this.voiceBuffer.getSnapshot(3000);
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 2 — Snapshot status: ${snapshot.status}, samples: ${snapshot.samples?.length || 0}`, 'color: #8b5cf6;');
+
                     if (snapshot.status !== 'ok') {
                         console.warn(`[AmpereAI] AUTO-VOICEPRINT: Snapshot failed: ${snapshot.status}`);
                         return;
                     }
 
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 3 — Converting to WAV...`, 'color: #8b5cf6;');
                     const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 4 — WAV size: ${wavBase64.length} chars, posting to /voice/${action}...`, 'color: #8b5cf6;');
+
                     const endpoint = isEnroll
                         ? 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll'
                         : 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify';
@@ -557,6 +565,7 @@ export class AmpereAIChat {
                         body: JSON.stringify(body)
                     });
 
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 5 — Response status: ${res.status}`, 'color: #8b5cf6;');
                     const result = await res.json();
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT ${action.toUpperCase()} RESULT:`, 'color: #10b981; font-weight: bold;', result);
                 } catch (err) {
