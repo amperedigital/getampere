@@ -529,10 +529,26 @@ export class AmpereAIChat {
                 }
             });
 
+            // v3.199: Container warmup — fire immediately at session start so it's ready by the 10s timer
+            const containerWarmup = fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/health')
+                .then(r => r.json())
+                .then(data => {
+                    console.log(`%c[AmpereAI] 🎙️ CONTAINER WARMUP: ${data.status}`, 'color: #06b6d4; font-weight: bold;', data);
+                    return data;
+                })
+                .catch(err => {
+                    console.warn('[AmpereAI] CONTAINER WARMUP failed:', err);
+                    return { status: 'error' };
+                });
+
             // v3.197: Automatic voice enroll/verify — fires 10s after session start, bypasses LLM
             setTimeout(async () => {
                 try {
-                    console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Timer fired, checking voiceBuffer...', 'color: #8b5cf6;');
+                    console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Timer fired, waiting for container warmup...', 'color: #8b5cf6;');
+
+                    // Wait for container warmup (should have completed during 10s wait)
+                    const warmupResult = await containerWarmup;
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Container status: ${warmupResult.status}`, 'color: #8b5cf6;');
 
                     if (!this.voiceBuffer) {
                         console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: No voice buffer, skipping', 'color: #6b7280;');

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.199 - Container Warmup Ping
+- **Backend**: Added `/voice/health` endpoint for container warmup.
+- **Frontend**: Fires warmup ping at session start. Auto-voiceprint timer awaits warmup completion before proceeding.
+
 ## v3.198 - Voice Buffer Snapshot Fix
 - **Frontend**: Fixed `getSnapshot` hanging forever — added `port.start()` (required when using `addEventListener` on MessagePort) and a 5-second timeout fallback.
 
