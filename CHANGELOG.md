@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.201 - Voice Enroll Container Retry
+- **Backend**: Container cold-start retry logic added to `handleVoiceEnroll`. No frontend changes — version sync only.
+
 ## v3.200 - Voice Enroll Debug Logging
 - **Backend**: Step-by-step debug logging in `handleVoiceEnroll`. No frontend changes — version sync only.
 
