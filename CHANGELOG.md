@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.195 - Mandatory Voice Enroll/Verify
+- **Backend**: Agent prompt updated to make `voice_enroll` and `voice_verify` mandatory tool calls. No frontend code changes — version sync only.
+
 ## v3.194 - Voiceprint Console Log Fix
 - **Frontend**: Fixed falsy check in `ai-chat.js` where `if (data.has_voiceprint)` skipped log when value was `false`. Now uses `!== undefined` and always logs `🎙️ VOICEPRINT STATUS` to browser console.
 
