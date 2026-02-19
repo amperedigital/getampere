@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.196 - Enrollment vs Verification Clarity
+- **Backend**: Prompt updated to clarify enrollment vs verification access model. No frontend changes — version sync only.
+
 ## v3.195 - Mandatory Voice Enroll/Verify
 - **Backend**: Agent prompt updated to make `voice_enroll` and `voice_verify` mandatory tool calls. No frontend code changes — version sync only.
 
