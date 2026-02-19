@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.192 - Voice Print Container Sync
+- **Backend**: Voice print container deployed to Cloudflare, service binding connected, ElevenLabs client tools registered.
+- **Frontend**: No code changes — sync version with backend v3.192.
+
 ## v3.190 - Voice Print Security Layer
 - **Frontend**: Added `VoiceBuffer` AudioWorklet for silent PCM ring buffer (5s at 48kHz).
 - **Frontend**: Added `voice_enroll` and `voice_verify` client tools with audio snapshot capture.
