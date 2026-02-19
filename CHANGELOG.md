@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.202 - Voice Health GET Fix
+- **Backend**: Fixed 405 on `/voice/health` GET warmup ping. No frontend changes — version sync only.
+
 ## v3.201 - Voice Enroll Container Retry
 - **Backend**: Container cold-start retry logic added to `handleVoiceEnroll`. No frontend changes — version sync only.
 
