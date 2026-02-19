@@ -297,10 +297,10 @@ export class AmpereAIChat {
                         knownEmail = data.known_email;
                         console.log(`%c[AmpereAI] 📧 KNOWN EMAIL: ${data.known_email}`, "color: #06b6d4; font-weight: bold;");
                     }
-                    if (data.has_voiceprint) {
+                    if (data.has_voiceprint !== undefined) {
                         hasVoiceprint = data.has_voiceprint ? "true" : "false";
-                        console.log(`%c[AmpereAI] 🎙️ HAS VOICEPRINT: ${hasVoiceprint}`, "color: #8b5cf6; font-weight: bold;");
                     }
+                    console.log(`%c[AmpereAI] 🎙️ VOICEPRINT STATUS: ${hasVoiceprint}`, "color: #8b5cf6; font-weight: bold;");
                 }
             }).catch((err) => {
                 console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed, using fallback`, "color: #f59e0b;", err);

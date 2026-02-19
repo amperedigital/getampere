@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.194 - Voiceprint Console Log Fix
+- **Frontend**: Fixed falsy check in `ai-chat.js` where `if (data.has_voiceprint)` skipped log when value was `false`. Now uses `!== undefined` and always logs `🎙️ VOICEPRINT STATUS` to browser console.
+
 ## v3.193 - Voiceprint Dynamic Variable
 - **Frontend**: `ai-chat.js` now captures `has_voiceprint` from `/greeting/web` response and passes it to ElevenLabs `dynamicVariables`. Agent knows voiceprint status from session start.
 - **Backend**: Voiceprint check moved from `bootstrap()` to `webGreetingHandler` and `elevenLabsInitHandler`. See backend changelog for details.
