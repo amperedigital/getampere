@@ -207,11 +207,18 @@ export class AmpereAIChat {
                     context: audioCtx,
                     getSnapshot: (durationMs = 3000) => {
                         return new Promise((resolve) => {
+                            const timeout = setTimeout(() => {
+                                workletNode.port.removeEventListener('message', handler);
+                                console.warn('[AmpereAI] Voice buffer snapshot timed out after 5s');
+                                resolve({ status: 'timeout' });
+                            }, 5000);
                             const handler = (event) => {
+                                clearTimeout(timeout);
                                 workletNode.port.removeEventListener('message', handler);
                                 resolve(event.data);
                             };
                             workletNode.port.addEventListener('message', handler);
+                            workletNode.port.start(); // Required when using addEventListener
                             workletNode.port.postMessage({ type: 'snapshot', durationMs });
                         });
                     }

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.198 - Voice Buffer Snapshot Fix
+- **Frontend**: Fixed `getSnapshot` hanging forever — added `port.start()` (required when using `addEventListener` on MessagePort) and a 5-second timeout fallback.
+
 ## v3.197.1 - Voiceprint Debug Logging
 - **Frontend**: Added step-by-step console logging to auto-voiceprint timer to diagnose where enrollment stalls.
 
