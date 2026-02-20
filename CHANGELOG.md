@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.203 - Direct Container Embed (Service Binding Bypass)
+- **Frontend**: Auto-voiceprint now calls the voice-print container `/embed` endpoint directly instead of routing through memory-api's service binding. This eliminates the 500 timeout caused by ONNX inference exceeding the Worker-to-Container service binding timeout.
+- **Frontend**: Container warmup ping also calls the container directly.
+- **Backend**: `handleVoiceEnroll` now accepts pre-computed `embedding` array, skipping the service binding call entirely when embeddings are already computed by the frontend.
+
 ## v3.202 - Voice Health GET Fix
 - **Backend**: Fixed 405 on `/voice/health` GET warmup ping. No frontend changes — version sync only.
 

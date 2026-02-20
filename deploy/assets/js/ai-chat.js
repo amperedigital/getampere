@@ -529,8 +529,9 @@ export class AmpereAIChat {
                 }
             });
 
-            // v3.199: Container warmup — fire immediately at session start so it's ready by the 10s timer
-            const containerWarmup = fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/health')
+            // v3.200: Container warmup — call the container DIRECTLY (bypasses service binding timeout)
+            const CONTAINER_URL = 'https://voice-print-service.tight-butterfly-7b71.workers.dev';
+            const containerWarmup = fetch(`${CONTAINER_URL}/health`)
                 .then(r => r.json())
                 .then(data => {
                     console.log(`%c[AmpereAI] 🎙️ CONTAINER WARMUP: ${data.status}`, 'color: #06b6d4; font-weight: bold;', data);
@@ -572,23 +573,42 @@ export class AmpereAIChat {
 
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 3 — Converting to WAV...`, 'color: #8b5cf6;');
                     const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
-                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 4 — WAV size: ${wavBase64.length} chars, posting to /voice/${action}...`, 'color: #8b5cf6;');
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 4 — WAV size: ${wavBase64.length} chars`, 'color: #8b5cf6;');
 
+                    // v3.200: Call container DIRECTLY for embedding (bypasses service binding timeout)
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 5 — Calling container /embed directly...`, 'color: #8b5cf6;');
+                    const embedRes = await fetch(`${CONTAINER_URL}/embed`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav' })
+                    });
+
+                    if (!embedRes.ok) {
+                        const errText = await embedRes.text();
+                        console.error(`[AmpereAI] AUTO-VOICEPRINT: Container /embed failed: HTTP ${embedRes.status}`, errText);
+                        return;
+                    }
+
+                    const embedData = await embedRes.json();
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 6 — Embedding received: ${embedData.dimension}-dim, ${embedData.audioDuration}s audio`, 'color: #8b5cf6; font-weight: bold;');
+
+                    // Step 7: Send embedding (NOT audio) to memory-api for storage/verification
                     const endpoint = isEnroll
                         ? 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll'
                         : 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify';
 
                     const body = isEnroll
-                        ? { user_id: userId, display_name: userName || '', audio: wavBase64, sampleRate: snapshot.sampleRate }
-                        : { user_id: userId, audio: wavBase64, sampleRate: snapshot.sampleRate };
+                        ? { user_id: userId, display_name: userName || '', embedding: embedData.embedding, dimension: embedData.dimension, audioDuration: embedData.audioDuration }
+                        : { user_id: userId, embedding: embedData.embedding, dimension: embedData.dimension };
 
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 7 — Posting ${action} to memory-api (embedding only, no audio)...`, 'color: #8b5cf6;');
                     const res = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(body)
                     });
 
-                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 5 — Response status: ${res.status}`, 'color: #8b5cf6;');
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 8 — Response status: ${res.status}`, 'color: #8b5cf6;');
                     const result = await res.json();
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT ${action.toUpperCase()} RESULT:`, 'color: #10b981; font-weight: bold;', result);
                 } catch (err) {
