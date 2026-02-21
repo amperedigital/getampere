@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.206 - Voiceprint Canonical ID Fix + Data Stream Clear + Verify Fast Path
+## v3.207 - Voiceprint Canonical ID Fix + Data Stream Clear + Verify Fast Path
 - **Backend**: Voice enroll and verify now resolve visitor UUID → canonical subject ID before storing/retrieving voiceprints. Voiceprint DO key consistency fix.
 - **Tech Demo**: Data stream panels now clear on power-down, not just on WebSocket disconnect. Added `clearAllStreams()` to `SystemLink` — clears all agent card streams and resets to standby state.
 
