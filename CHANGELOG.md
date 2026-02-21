@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.204 - Container Keep-Alive Health Gate
+- **Frontend**: Replaced reactive container warmup with a quick health-check gate. Container is now kept warm by a server-side cron (every 4 min). Frontend health check is a 5s pass/fail gate — if container isn't ready, voiceprint is skipped entirely instead of blocking the session.
+
 ## v3.203 - Direct Container Embed (Service Binding Bypass)
 - **Frontend**: Auto-voiceprint now calls the voice-print container `/embed` endpoint directly instead of routing through memory-api's service binding. This eliminates the 500 timeout caused by ONNX inference exceeding the Worker-to-Container service binding timeout.
 - **Frontend**: Container warmup ping also calls the container directly.

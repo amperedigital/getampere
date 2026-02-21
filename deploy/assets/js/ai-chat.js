@@ -529,27 +529,33 @@ export class AmpereAIChat {
                 }
             });
 
-            // v3.200: Container warmup — call the container DIRECTLY (bypasses service binding timeout)
+            // v3.201: Quick health gate — container should already be warm (cron keepalive every 4m)
+            // This is NOT a warmup; it's a fast check. If the container isn't ready, skip voiceprint.
             const CONTAINER_URL = 'https://voice-print-service.tight-butterfly-7b71.workers.dev';
-            const containerWarmup = fetch(`${CONTAINER_URL}/health`)
+            const healthAbort = new AbortController();
+            const healthTimer = setTimeout(() => healthAbort.abort(), 5000);
+            const containerReady = fetch(`${CONTAINER_URL}/health`, { signal: healthAbort.signal })
                 .then(r => r.json())
                 .then(data => {
-                    console.log(`%c[AmpereAI] 🎙️ CONTAINER WARMUP: ${data.status}`, 'color: #06b6d4; font-weight: bold;', data);
-                    return data;
+                    clearTimeout(healthTimer);
+                    console.log(`%c[AmpereAI] 🎙️ CONTAINER HEALTH: ${data.status}`, 'color: #06b6d4; font-weight: bold;', data);
+                    return data.status === 'ok';
                 })
                 .catch(err => {
-                    console.warn('[AmpereAI] CONTAINER WARMUP failed:', err);
-                    return { status: 'error' };
+                    clearTimeout(healthTimer);
+                    console.warn('[AmpereAI] CONTAINER HEALTH: not ready, voiceprint skipped this session', err.name === 'AbortError' ? '(timeout)' : err);
+                    return false;
                 });
 
             // v3.197: Automatic voice enroll/verify — fires 10s after session start, bypasses LLM
             setTimeout(async () => {
                 try {
-                    console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Timer fired, waiting for container warmup...', 'color: #8b5cf6;');
-
-                    // Wait for container warmup (should have completed during 10s wait)
-                    const warmupResult = await containerWarmup;
-                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Container status: ${warmupResult.status}`, 'color: #8b5cf6;');
+                    // Quick gate: is container alive? (should be instant if cron is working)
+                    const isReady = await containerReady;
+                    if (!isReady) {
+                        console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Container not ready, skipping', 'color: #6b7280;');
+                        return;
+                    }
 
                     if (!this.voiceBuffer) {
                         console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: No voice buffer, skipping', 'color: #6b7280;');
@@ -576,12 +582,17 @@ export class AmpereAIChat {
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 4 — WAV size: ${wavBase64.length} chars`, 'color: #8b5cf6;');
 
                     // v3.200: Call container DIRECTLY for embedding (bypasses service binding timeout)
+                    // v3.201: 30s timeout prevents hang if container is still cold
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Step 5 — Calling container /embed directly...`, 'color: #8b5cf6;');
+                    const embedAbort = new AbortController();
+                    const embedTimer = setTimeout(() => embedAbort.abort(), 30000);
                     const embedRes = await fetch(`${CONTAINER_URL}/embed`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav' })
+                        body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav' }),
+                        signal: embedAbort.signal
                     });
+                    clearTimeout(embedTimer);
 
                     if (!embedRes.ok) {
                         const errText = await embedRes.text();
