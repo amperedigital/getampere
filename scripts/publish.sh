@@ -335,3 +335,18 @@ for FILE in $CHANGED_FILES; do
 done
 
 echo "✅ Release $NEW_TAG complete!"
+
+# PERSISTENT MEMORY LOG (standalone deploys only)
+if [ "${SKIP_TAG:-0}" != "1" ]; then
+    MEMORY_SCRIPT="$(cd "$(dirname "$0")/../../.agent/scripts" 2>/dev/null && pwd)/memory.sh"
+    if [ -x "$MEMORY_SCRIPT" ]; then
+        CHANGES=$(sed -n "/^## $NEW_TAG/,/^## v/{/^## v/!p;}" CHANGELOG.md | grep -v "^$" | grep -v "^## " | head -5 | tr '\n' '; ' | sed 's/; $//')
+        [ -z "$CHANGES" ] && CHANGES="Frontend release $NEW_TAG"
+        "$MEMORY_SCRIPT" log-deploy "$NEW_TAG" "frontend" "$CHANGES"
+        echo "📝 Deploy logged to persistent memory"
+
+        # Auto-update CONTEXT.md
+        CONTEXT_SCRIPT="$(cd "$(dirname "$0")/../../.agent/scripts" 2>/dev/null && pwd)/update_context.py"
+        python3 "$CONTEXT_SCRIPT" "$NEW_TAG" "frontend" "$(pwd)/CHANGELOG.md"
+    fi
+fi
