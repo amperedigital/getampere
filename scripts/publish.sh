@@ -289,27 +289,31 @@ if [ -f "CHANGELOG.md" ]; then
 fi
 git commit -m "chore(release): $NEW_TAG" || echo "   (Nothing to commit, proceeding...)"
 
-# 4. Tag
-if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-  EXISTING_TAG_COMMIT=$(git rev-parse "$NEW_TAG")
-  CURRENT_COMMIT=$(git rev-parse HEAD)
-  if [ "$EXISTING_TAG_COMMIT" == "$CURRENT_COMMIT" ]; then
-    echo "   ✅ Tag $NEW_TAG already exists and matches HEAD. Proceeding..."
-  else
-    echo "   ❌ Error: Tag $NEW_TAG already exists but points to a different commit ($EXISTING_TAG_COMMIT)."
-    echo "      Current HEAD is $CURRENT_COMMIT."
-    echo "      Please use a new version number or resolve the collision."
-    exit 1
-  fi
+# 4. Tag & Push
+if [ "${SKIP_TAG:-}" = "1" ]; then
+  echo "🏷️  Skipping tag/push (handled by unified script)."
 else
-  echo "🏷️  Creating tag $NEW_TAG..."
-  git tag "$NEW_TAG"
-fi
+  if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+    EXISTING_TAG_COMMIT=$(git rev-parse "$NEW_TAG")
+    CURRENT_COMMIT=$(git rev-parse HEAD)
+    if [ "$EXISTING_TAG_COMMIT" == "$CURRENT_COMMIT" ]; then
+      echo "   ✅ Tag $NEW_TAG already exists and matches HEAD. Proceeding..."
+    else
+      echo "   ❌ Error: Tag $NEW_TAG already exists but points to a different commit ($EXISTING_TAG_COMMIT)."
+      echo "      Current HEAD is $CURRENT_COMMIT."
+      echo "      Please use a new version number or resolve the collision."
+      exit 1
+    fi
+  else
+    echo "🏷️  Creating tag $NEW_TAG..."
+    git tag "$NEW_TAG"
+  fi
 
-# 5. Push
-echo "⬆️  Pushing to origin..."
-git push origin master
-git push origin "$NEW_TAG" || echo "   ⚠️  Tag $NEW_TAG already exists on remote."
+  # 5. Push
+  echo "⬆️  Pushing to origin..."
+  git push origin master
+  git push origin "$NEW_TAG" || echo "   ⚠️  Tag $NEW_TAG already exists on remote."
+fi
 
 # 6. Deploy
 echo "☁️  Deploying to Cloudflare Workers..."
