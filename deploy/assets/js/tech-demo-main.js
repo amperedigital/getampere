@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const chatContainer = document.getElementById('ampere-ai-chat-container');
                 if (chatContainer) chatContainer.classList.add('hidden');
             }
+            // v3.205: Clear data streams on power-down
+            if (window.systemLink) window.systemLink.clearAllStreams();
         }
     });
 

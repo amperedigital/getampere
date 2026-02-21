@@ -37,6 +37,20 @@ export class SystemLink {
         this.bindElements(cardIndex);
     }
 
+    // v3.205: Clear ALL data stream panels across all agent cards
+    clearAllStreams() {
+        const ids = ['mem-data-stream', 'mem-data-stream-1', 'mem-data-stream-2', 'mem-data-stream-3', 'mem-data-stream-4'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '';
+        });
+        // Log reset message on the currently active stream
+        if (this.elements.streamWindow) {
+            this.log('DATA STREAM CLEARED', 'system');
+            this.log('STANDBY_MONITOR_ACTIVE', 'dim');
+        }
+    }
+
     init() {
         this.isRunning = true;
         // this.log("INITIALIZING SYSTEM LINK...", "system"); // Moved to Boot Sequence
@@ -368,23 +382,8 @@ export class SystemLink {
 
             this.socket.onclose = (e) => {
                 this.log("SOCKET LOST " + (e.reason || ""), "dim");
-                // v2.825: CLEAR STREAM ON DISCONNECT
-                // Wipe the data stream window so it's fresh for the next user/session
-                setTimeout(() => {
-                    if (this.elements.streamWindow) {
-                        this.elements.streamWindow.innerHTML = '';
-                        this.log("DATA STREAM CLEARED", "system");
-                        this.log("READY FOR RESET", "dim");
-                    }
-                }, 1500); // Small delay to let user see "SOCKET LOST"
-
-                /*
-                setTimeout(() => {
-                    if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
-                        this.startAttractMode();
-                    }
-                }, 3000);
-                */
+                // v3.205: Use unified clear method
+                setTimeout(() => this.clearAllStreams(), 1500);
             };
 
             this.socket.onerror = (err) => {

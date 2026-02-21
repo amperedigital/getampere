@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.205 - Voiceprint Canonical ID Fix (Backend Only) + Data Stream Clear
+- **Backend**: Voice enroll and verify now resolve visitor UUID → canonical subject ID before storing/retrieving voiceprints. Voiceprint DO key consistency fix.
+- **Tech Demo**: Data stream panels now clear on power-down, not just on WebSocket disconnect. Added `clearAllStreams()` to `SystemLink` — clears all agent card streams and resets to standby state.
+
 ## v3.204 - Container Keep-Alive Health Gate
 - **Frontend**: Replaced reactive container warmup with a quick health-check gate. Container is now kept warm by a server-side cron (every 4 min). Frontend health check is a 5s pass/fail gate — if container isn't ready, voiceprint is skipped entirely instead of blocking the session.
 
