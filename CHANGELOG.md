@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.218 - Voiceprint Accuracy Overhaul
+- **AudioWorklet**: Native 16kHz capture (was 48kHz with lossy downsampling), 10s ring buffer for 8s snapshots.
+- **Multi-Embedding Enrollment**: 3 snapshots at t=15s/30s/45s averaged into one stable voiceprint. Falls back to fewer if call ends early.
+- **Bug Fix**: Auto-verify was broken — checked `"false"` instead of `"no"` after v3.217 value change. Auto-verify now fires correctly.
+- **Audio Quality**: 8s snapshots (was 3s) for both LLM tools and auto-voiceprint. Matches model's optimal input length.
+- **Container**: Swapped Chinese `eres2net_base_sv_zh-cn` model for English `wespeaker_en_voxceleb_resnet34_LM` (VoxCeleb-trained).
+
 ## v3.217 - Fix: has_voiceprint uses yes/no instead of true/false
 - **Frontend + Backend + Prompt**: Changed `has_voiceprint` dynamic variable from `true`/`false` to `yes`/`no`. ElevenLabs may parse boolean strings as internal flags, causing TTS stall.
 

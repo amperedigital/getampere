@@ -4,20 +4,23 @@
  *
  * Runs in the audio rendering thread. Collects PCM samples
  * into a circular buffer and provides snapshots on demand.
+ *
+ * v3.218: Native 16kHz capture (no downsampling), 10s ring buffer for 8s snapshots.
  */
 
 class VoicePrintProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
-        // 5 seconds at 48kHz mono = 240,000 samples
-        this.bufferSize = 48000 * 5;
+        // v3.218: 10 seconds at 16kHz mono = 160,000 samples
+        this.sampleRate = 16000;
+        this.bufferSize = this.sampleRate * 10;
         this.buffer = new Float32Array(this.bufferSize);
         this.writeIndex = 0;
         this.totalSamplesWritten = 0;
 
         this.port.onmessage = (event) => {
             if (event.data.type === 'snapshot') {
-                this.sendSnapshot(event.data.durationMs || 3000);
+                this.sendSnapshot(event.data.durationMs || 8000);
             }
         };
     }
@@ -44,16 +47,17 @@ class VoicePrintProcessor extends AudioWorkletProcessor {
     /**
      * Extract the last N milliseconds from the ring buffer
      * and send as a message back to the main thread.
+     *
+     * v3.218: No downsampling — AudioContext is already at 16kHz.
      */
     sendSnapshot(durationMs) {
-        const sampleRate = 48000; // AudioWorklet default
         const samplesToExtract = Math.min(
-            Math.floor((durationMs / 1000) * sampleRate),
+            Math.floor((durationMs / 1000) * this.sampleRate),
             this.bufferSize,
             this.totalSamplesWritten
         );
 
-        if (samplesToExtract < sampleRate * 0.5) {
+        if (samplesToExtract < this.sampleRate * 0.5) {
             // Less than 0.5s of audio — insufficient
             this.port.postMessage({
                 type: 'snapshot',
@@ -72,22 +76,14 @@ class VoicePrintProcessor extends AudioWorkletProcessor {
             readIndex = (readIndex + 1) % this.bufferSize;
         }
 
-        // Downsample to 16kHz for the voice model
-        const downsampleRatio = 3; // 48000 / 16000 = 3
-        const downsampledLength = Math.floor(samplesToExtract / downsampleRatio);
-        const downsampled = new Float32Array(downsampledLength);
-
-        for (let i = 0; i < downsampledLength; i++) {
-            downsampled[i] = snapshot[i * downsampleRatio];
-        }
-
+        // v3.218: Send directly at native 16kHz — no downsampling needed
         this.port.postMessage({
             type: 'snapshot',
             status: 'ok',
-            samples: downsampled,
-            sampleRate: 16000,
-            durationMs: Math.round((downsampledLength / 16000) * 1000),
-        }, [downsampled.buffer]); // transfer buffer for zero-copy
+            samples: snapshot,
+            sampleRate: this.sampleRate,
+            durationMs: Math.round((samplesToExtract / this.sampleRate) * 1000),
+        }, [snapshot.buffer]); // transfer buffer for zero-copy
     }
 }
 
