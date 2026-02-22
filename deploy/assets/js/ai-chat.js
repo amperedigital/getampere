@@ -745,6 +745,15 @@ export class AmpereAIChat {
                             const confidence = result.confidence?.toFixed(2) || 'N/A';
                             const displayName = userName || userId;
 
+                            // v3.226: Trigger identity_confirmed visualization
+                            if (window.systemLink) {
+                                window.systemLink.log('VOICE_VERIFIED: ' + displayName, 'secure');
+                                if (window.techDemoScene) {
+                                    window.techDemoScene.selectFunction('identity');
+                                }
+                                window.systemLink.triggerOtpRx(); // green flash for success
+                            }
+
                             // Fetch profile card directly — don't rely on Emily to re-bootstrap
                             let profileData = '';
                             try {
@@ -770,6 +779,18 @@ export class AmpereAIChat {
                                 if (bootstrapData.facts && bootstrapData.facts.length > 0) {
                                     const factList = bootstrapData.facts.map(f => typeof f === 'string' ? f : f.fact || f.text || JSON.stringify(f)).join('\n- ');
                                     profileData += `\n\nSTORED FACTS:\n- ${factList}`;
+                                }
+
+                                // v3.226: Trigger memory visualization for bootstrap data
+                                if (window.systemLink && bootstrapData.facts && bootstrapData.facts.length > 0) {
+                                    setTimeout(() => {
+                                        if (window.techDemoScene) window.techDemoScene.selectFunction('memory');
+                                        bootstrapData.facts.forEach((f, i) => {
+                                            const text = typeof f === 'string' ? f : f.fact || 'DATA_PKT';
+                                            const display = text.length > 32 ? text.substring(0, 32) + '..' : text;
+                                            setTimeout(() => window.systemLink.triggerExtract(display), i * 200);
+                                        });
+                                    }, 1500); // delay to let identity viz play first
                                 }
                             } catch (bootErr) {
                                 console.error('[AmpereAI] Auto-bootstrap after verify failed:', bootErr);
@@ -1065,6 +1086,9 @@ export class AmpereAIChat {
         } else {
             console.warn('[AmpereChat] Bridge Failed: window.demoScene not found');
         }
+
+        // v3.226: Clear stale data streams from previous calls
+        if (window.systemLink) window.systemLink.clearAllStreams();
 
         this.updateStatusUI('connected', 'Secure Connection');
 
