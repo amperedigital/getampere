@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.225 - Prompt: Hard brevity rules (anti-monologue)
+- **Prompt-only**: Max 2 sentences per turn, yield the floor. No code changes.
+
 ## v3.224 - Fix: Include subject_id in voice context update
 - **Context Update**: Now includes `subject_id="${userId}"` so Emily passes visitor UUID when re-running `memory_bootstrap`. Backend resolves UUID → canonical via LINK_LOOKUP.
 
