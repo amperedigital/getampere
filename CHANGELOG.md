@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.213 - Browser Console Log Pipe
+- **Frontend**: Console log interceptor in `global.js` wraps `console.log/warn/error`, batches entries every 2s, and POSTs to `/debug/console` on memory-api. Captures `[AmpereChat]`, `[AmpereVoice]`, `[SystemLink]`, `[Ampere Global]`, `[AUTO-VOICEPRINT]`, `[VoiceBuffer]` prefixed logs plus all warnings/errors. Self-filtering prevents recursion.
+
 ## v3.212 - Auto-generated
 - **Frontend**: Release v3.212 (no new commits)
 
