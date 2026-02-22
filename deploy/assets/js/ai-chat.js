@@ -740,16 +740,48 @@ export class AmpereAIChat {
                         const result = await res.json();
                         console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT VERIFY RESULT (${embeddings.length} embeddings averaged):`, 'color: #f59e0b; font-weight: bold;', result);
 
-                        // v3.224: Notify Emily mid-call via contextual update — include subject_id for re-bootstrap
+                        // v3.226: Auto-bootstrap after verify — fetch profile card at tool level, inject into context
                         if (result.verified && this.conversation) {
                             const confidence = result.confidence?.toFixed(2) || 'N/A';
                             const displayName = userName || userId;
+
+                            // Fetch profile card directly — don't rely on Emily to re-bootstrap
+                            let profileData = '';
+                            try {
+                                const bootstrapRes = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/memory/bootstrap', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'x-api-key': '15bf5f77-01d1-4e72-b1f7-0587fb4d4e4c',
+                                        'x-workspace-id': 'emily'
+                                    },
+                                    body: JSON.stringify({
+                                        visitor_id: userId,
+                                        query: 'Full profile after voice verification',
+                                        session_id: this.conversation.getId?.() || ''
+                                    })
+                                });
+                                const bootstrapData = await bootstrapRes.json();
+                                console.log('%c[AmpereAI] 🔓 AUTO-BOOTSTRAP AFTER VERIFY:', 'color: #10b981; font-weight: bold;', bootstrapData);
+
+                                if (bootstrapData.profile_card) {
+                                    profileData = `\n\nPROFILE CARD (unlocked via voice verification):\n${bootstrapData.profile_card}`;
+                                }
+                                if (bootstrapData.facts && bootstrapData.facts.length > 0) {
+                                    const factList = bootstrapData.facts.map(f => typeof f === 'string' ? f : f.fact || f.text || JSON.stringify(f)).join('\n- ');
+                                    profileData += `\n\nSTORED FACTS:\n- ${factList}`;
+                                }
+                            } catch (bootErr) {
+                                console.error('[AmpereAI] Auto-bootstrap after verify failed:', bootErr);
+                            }
+
                             this.conversation.sendContextualUpdate(
                                 `Voice identity confirmed: the speaker's voice matches ${displayName}'s voiceprint (confidence: ${confidence}). ` +
-                                `Session is now fully verified. IMMEDIATELY rerun memory_bootstrap with subject_id="${userId}" to access the full profile card and all stored facts. ` +
-                                `For sensitive actions (account changes, payments), still require OTP.`
+                                `Session is now fully verified. You now have full access to their profile and stored facts. ` +
+                                `For sensitive actions (account changes, payments), still require OTP.` +
+                                profileData
                             );
-                            console.log(`%c[AmpereAI] 🎙️ VOICE CONTEXT UPDATE SENT TO EMILY (confidence: ${confidence})`, 'color: #10b981; font-weight: bold;');
+                            console.log(`%c[AmpereAI] 🎙️ VOICE CONTEXT UPDATE SENT TO EMILY (confidence: ${confidence}, profileData: ${profileData.length} chars)`, 'color: #10b981; font-weight: bold;');
                         }
                     }
                 } catch (err) {

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.226 - Auto-bootstrap at tool level after voice verify
+- **Auto-Bootstrap**: After successful voice verify, frontend calls `/memory/bootstrap` with `visitor_id`, gets profile card + facts, injects into contextual update. Emily no longer needs to re-bootstrap.
+
 ## v3.225 - Prompt: Hard brevity rules (anti-monologue)
 - **Prompt-only**: Max 2 sentences per turn, yield the floor. No code changes.
 
