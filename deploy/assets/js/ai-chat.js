@@ -404,8 +404,7 @@ export class AmpereAIChat {
                     user_name: userName,
                     known_phone: knownPhone,
                     known_email: knownEmail,
-                    verified_identity_preview: identityPreview,
-                    has_voiceprint: hasVoiceprint
+                    verified_identity_preview: identityPreview
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),
@@ -712,6 +711,18 @@ export class AmpereAIChat {
                         });
                         const result = await res.json();
                         console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT VERIFY RESULT:`, 'color: #f59e0b; font-weight: bold;', result);
+
+                        // v3.219: Notify Emily mid-call via contextual update
+                        if (result.verified && this.conversation) {
+                            const confidence = result.confidence?.toFixed(2) || 'N/A';
+                            const displayName = userName || userId;
+                            this.conversation.sendContextualUpdate(
+                                `Voice identity confirmed: the speaker's voice matches ${displayName}'s voiceprint (confidence: ${confidence}). ` +
+                                `Session is now fully verified. IMMEDIATELY rerun memory_bootstrap with session_id to access the full profile card and all stored facts. ` +
+                                `For sensitive actions (account changes, payments), still require OTP.`
+                            );
+                            console.log(`%c[AmpereAI] 🎙️ VOICE CONTEXT UPDATE SENT TO EMILY (confidence: ${confidence})`, 'color: #10b981; font-weight: bold;');
+                        }
                     }
                 } catch (err) {
                     console.error('[AmpereAI] AUTO-VOICEPRINT error:', err);

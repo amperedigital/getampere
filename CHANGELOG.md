@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.219 - Voice Verification → Profile Card Unlock
+- **Frontend**: Updated contextual update sent after voice verify success — now tells Emily to rerun `memory_bootstrap` with `session_id` to access the full profile card and all stored facts.
+- **Backend**: Voice verification now writes `verified` to session (see backend changelog).
+
 ## v3.218 - Voiceprint Accuracy Overhaul
 - **AudioWorklet**: Native 16kHz capture (was 48kHz with lossy downsampling), 10s ring buffer for 8s snapshots.
 - **Multi-Embedding Enrollment**: 3 snapshots at t=15s/30s/45s averaged into one stable voiceprint. Falls back to fewer if call ends early.
