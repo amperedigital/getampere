@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.221 - Voice Verification Accuracy: Multi-Snapshot + Larger Buffer
+- **Ring Buffer**: Increased from 10s to 20s (`audio-worklet-processor.js`), allowing 15s snapshot captures.
+- **Snapshot Size**: Captures increased from 8s to 15s — nearly double the audio per embedding.
+- **Multi-Snapshot Verify**: Verification now uses 3 captures (t=25s, t=40s, t=55s) averaged into a single embedding, matching enrollment's multi-embedding approach. Previously was a single snapshot.
+- **Delayed Start**: First capture delayed from t=15s to t=25s, giving more user speech in the buffer and less TTS contamination.
+
 ## v3.220 - Fix: Voice verify session upgrade (Backend Only)
 - **Backend**: Fixed NOT NULL constraint error preventing voice verification from upgrading the session to `verified`. No frontend changes.
 

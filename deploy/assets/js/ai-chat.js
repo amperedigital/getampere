@@ -274,7 +274,7 @@ export class AmpereAIChat {
                         });
                     }
                 };
-                console.log('%c[AmpereAI] 🎙️ VOICE BUFFER: AudioWorklet initialized (16kHz, 10s ring buffer)', 'color: #06b6d4; font-weight: bold;');
+                console.log('%c[AmpereAI] 🎙️ VOICE BUFFER: AudioWorklet initialized (16kHz, 20s ring buffer)', 'color: #06b6d4; font-weight: bold;');
             } catch (vbErr) {
                 console.warn('[AmpereAI] Voice buffer init failed (non-blocking):', vbErr);
                 this.voiceBuffer = null;
@@ -597,9 +597,9 @@ export class AmpereAIChat {
                     return false;
                 });
 
-            // v3.218: Automatic voice enroll/verify — multi-embedding enrollment
-            // Enrollment: 3 snapshots at t=15s, t=30s, t=45s → averaged → stored
-            // Verification: single snapshot at t=15s
+            // v3.221: Automatic voice enroll/verify — multi-embedding for both
+            // Enrollment: 3 snapshots at t=25s, t=40s, t=55s → averaged → stored
+            // Verification: 3 snapshots at t=25s, t=40s, t=55s → averaged → verified
             const autoVoiceprintRun = async (captureDelays) => {
                 try {
                     const isReady = await containerReady;
@@ -619,10 +619,10 @@ export class AmpereAIChat {
 
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Starting ${action} for ${userId}`, 'color: #8b5cf6; font-weight: bold;');
 
-                    // Helper: capture one embedding from an 8s snapshot
+                    // Helper: capture one embedding from a 15s snapshot
                     const captureEmbedding = async (label) => {
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT [${label}]: Capturing 8s snapshot...`, 'color: #8b5cf6;');
-                        const snapshot = await this.voiceBuffer.getSnapshot(8000);
+                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT [${label}]: Capturing 15s snapshot...`, 'color: #8b5cf6;');
+                        const snapshot = await this.voiceBuffer.getSnapshot(15000);
                         if (snapshot.status !== 'ok') {
                             console.warn(`[AmpereAI] AUTO-VOICEPRINT [${label}]: Snapshot failed: ${snapshot.status}`);
                             return null;
@@ -696,21 +696,49 @@ export class AmpereAIChat {
                         console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT ENROLL RESULT (${embeddings.length} embeddings averaged):`, 'color: #10b981; font-weight: bold;', result);
 
                     } else {
-                        // Verification: single 8s snapshot
-                        const embedData = await captureEmbedding('verify');
-                        if (!embedData) return;
+                        // v3.221: Multi-snapshot verification — 3 captures averaged for accuracy
+                        const embeddings = [];
+                        const embed1 = await captureEmbedding('verify-1/3');
+                        if (embed1) embeddings.push(embed1.embedding);
+
+                        for (let i = 1; i < captureDelays.length; i++) {
+                            const waitMs = (captureDelays[i] - captureDelays[i - 1]) * 1000;
+                            console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Waiting ${waitMs / 1000}s before next verify capture...`, 'color: #6b7280;');
+                            await new Promise(r => setTimeout(r, waitMs));
+                            if (!this.conversation) {
+                                console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Call ended, using collected verify embeddings', 'color: #6b7280;');
+                                break;
+                            }
+                            const embed = await captureEmbedding(`verify-${i + 1}/${captureDelays.length}`);
+                            if (embed) embeddings.push(embed.embedding);
+                        }
+
+                        if (embeddings.length === 0) {
+                            console.error('[AmpereAI] AUTO-VOICEPRINT: No verify embeddings captured, aborting');
+                            return;
+                        }
+
+                        // Average all collected verification embeddings
+                        const dim = embeddings[0].length;
+                        const averaged = new Array(dim).fill(0);
+                        for (const emb of embeddings) {
+                            for (let j = 0; j < dim; j++) averaged[j] += emb[j];
+                        }
+                        for (let j = 0; j < dim; j++) averaged[j] /= embeddings.length;
+
+                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Averaged ${embeddings.length} verify embeddings → verifying...`, 'color: #f59e0b; font-weight: bold;');
 
                         const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 user_id: userId,
-                                embedding: embedData.embedding,
-                                dimension: embedData.dimension
+                                embedding: averaged,
+                                dimension: dim
                             })
                         });
                         const result = await res.json();
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT VERIFY RESULT:`, 'color: #f59e0b; font-weight: bold;', result);
+                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT VERIFY RESULT (${embeddings.length} embeddings averaged):`, 'color: #f59e0b; font-weight: bold;', result);
 
                         // v3.219: Notify Emily mid-call via contextual update
                         if (result.verified && this.conversation) {
@@ -729,8 +757,8 @@ export class AmpereAIChat {
                 }
             };
 
-            // v3.218: Start auto-voiceprint 15s after session, capture at t=15, t=30, t=45
-            setTimeout(() => autoVoiceprintRun([15, 30, 45]), 15000);
+            // v3.221: Start auto-voiceprint 25s after session, capture at t=25, t=40, t=55
+            setTimeout(() => autoVoiceprintRun([25, 40, 55]), 25000);
 
         } catch (error) {
             console.warn('AmpereAIChat: Mic access failed or connection error', error);

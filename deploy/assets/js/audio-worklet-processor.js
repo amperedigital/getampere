@@ -5,15 +5,15 @@
  * Runs in the audio rendering thread. Collects PCM samples
  * into a circular buffer and provides snapshots on demand.
  *
- * v3.218: Native 16kHz capture (no downsampling), 10s ring buffer for 8s snapshots.
+ * v3.221: 20s ring buffer for 15s multi-snapshot verification captures.
  */
 
 class VoicePrintProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
-        // v3.218: 10 seconds at 16kHz mono = 160,000 samples
+        // v3.221: 20 seconds at 16kHz mono = 320,000 samples
         this.sampleRate = 16000;
-        this.bufferSize = this.sampleRate * 10;
+        this.bufferSize = this.sampleRate * 20;
         this.buffer = new Float32Array(this.bufferSize);
         this.writeIndex = 0;
         this.totalSamplesWritten = 0;
