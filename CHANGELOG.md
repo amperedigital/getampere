@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.220 - Fix: Voice verify session upgrade (Backend Only)
+- **Backend**: Fixed NOT NULL constraint error preventing voice verification from upgrading the session to `verified`. No frontend changes.
+
 ## v3.219 - Voice Verification → Profile Card Unlock
 - **Frontend**: Updated contextual update sent after voice verify success — now tells Emily to rerun `memory_bootstrap` with `session_id` to access the full profile card and all stored facts.
 - **Backend**: Voice verification now writes `verified` to session (see backend changelog).
