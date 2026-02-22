@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.224 - Fix: Include subject_id in voice context update
+- **Context Update**: Now includes `subject_id="${userId}"` so Emily passes visitor UUID when re-running `memory_bootstrap`. Backend resolves UUID → canonical via LINK_LOOKUP.
+
 ## v3.223 - Fix: Voice verify session race (Backend Only)
 - **Backend**: Fixed timing race where voice verify upgraded the wrong session. No frontend changes.
 
