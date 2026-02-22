@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.216 - Fix: Voiceprint TTS stall
+- **Frontend**: Removed v3.215 debug override. `has_voiceprint` now passes through to ElevenLabs correctly.
+- **Prompt**: Removed voiceprint enroll/verify from MANDATORY FIRST ACTIONS section. Detailed instructions at §voice_enroll/§voice_verify still guide Turn 2 behavior. Fixes ElevenLabs TTS stall when `has_voiceprint=true`.
+
 ## v3.215 - Debug: TTS isolation test (has_voiceprint override)
 - **Frontend**: Temporary debug override forces `has_voiceprint` to `"false"` before pushing to ElevenLabs SDK. Isolates whether this variable causes TTS failure on returning calls.
 

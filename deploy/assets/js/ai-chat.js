@@ -393,14 +393,6 @@ export class AmpereAIChat {
                 has_voiceprint: hasVoiceprint
             });
 
-            // DEBUG: v3.214.1 — Isolation test. Force has_voiceprint to "false" to confirm
-            // whether this variable causes ElevenLabs TTS to fail. Real value logged above.
-            const debugVoiceprint = hasVoiceprint;
-            if (hasVoiceprint === "true") {
-                console.log(`%c[AmpereAI] ⚠️ DEBUG OVERRIDE: has_voiceprint was "${hasVoiceprint}", forcing to "false" for TTS isolation test`, "color: #ef4444; font-weight: bold;");
-                hasVoiceprint = "false";
-            }
-
             this.conversation = await Conversation.startSession({
                 agentId: this.agentId,
                 dynamicVariables: {
