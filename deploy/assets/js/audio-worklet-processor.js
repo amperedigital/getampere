@@ -5,7 +5,7 @@
  * Runs in the audio rendering thread. Collects PCM samples
  * into a circular buffer and provides snapshots on demand.
  *
- * v3.221: 20s ring buffer for 15s multi-snapshot verification captures.
+ * v3.222: User-only capture — pauses during agent speech to eliminate TTS contamination.
  */
 
 class VoicePrintProcessor extends AudioWorkletProcessor {
@@ -17,10 +17,16 @@ class VoicePrintProcessor extends AudioWorkletProcessor {
         this.buffer = new Float32Array(this.bufferSize);
         this.writeIndex = 0;
         this.totalSamplesWritten = 0;
+        // v3.222: Pause during agent speech to avoid TTS contamination
+        this.paused = false;
 
         this.port.onmessage = (event) => {
             if (event.data.type === 'snapshot') {
-                this.sendSnapshot(event.data.durationMs || 8000);
+                this.sendSnapshot(event.data.durationMs || 15000);
+            } else if (event.data.type === 'pause') {
+                this.paused = true;
+            } else if (event.data.type === 'resume') {
+                this.paused = false;
             }
         };
     }
@@ -30,6 +36,9 @@ class VoicePrintProcessor extends AudioWorkletProcessor {
      * Copy samples into the circular buffer.
      */
     process(inputs, outputs, parameters) {
+        // v3.222: Skip capture while agent is speaking (TTS contamination)
+        if (this.paused) return true;
+
         const input = inputs[0];
         if (!input || !input[0]) return true;
 

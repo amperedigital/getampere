@@ -1110,6 +1110,11 @@ export class AmpereAIChat {
     handleModeChange(modeData) {
         const isSpeaking = modeData.mode === 'speaking';
 
+        // v3.222: Pause voice buffer during agent speech to avoid TTS contamination
+        if (this.voiceBuffer?.node?.port) {
+            this.voiceBuffer.node.port.postMessage({ type: isSpeaking ? 'pause' : 'resume' });
+        }
+
         // v2.762: Reset Thinking State Override
         // If the mode changes (either to Speaking OR Listening), we exit the "Thinking" state.
         if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {

@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.222 - User-Only Voice Capture (TTS Contamination Fix)
+- **AudioWorklet**: Added `pause`/`resume` message handling. When paused, processor skips all sample writes — ring buffer only accumulates user speech.
+- **Mode Change Hook**: `handleModeChange` now sends `pause` to the worklet when agent starts speaking and `resume` when listening. Eliminates TTS audio bleed from contaminating voiceprint embeddings.
+- **Root cause**: Previous captures included Emily's TTS audio from speaker bleed into the mic, diluting voiceprint accuracy. 15s snapshots were ~60% TTS audio. Now 100% user speech.
+
 ## v3.221 - Voice Verification Accuracy: Multi-Snapshot + Larger Buffer
 - **Ring Buffer**: Increased from 10s to 20s (`audio-worklet-processor.js`), allowing 15s snapshot captures.
 - **Snapshot Size**: Captures increased from 8s to 15s — nearly double the audio per embedding.
