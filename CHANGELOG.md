@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.223 - Fix: Voice verify session race (Backend Only)
+- **Backend**: Fixed timing race where voice verify upgraded the wrong session. No frontend changes.
+
 ## v3.222 - User-Only Voice Capture (TTS Contamination Fix)
 - **AudioWorklet**: Added `pause`/`resume` message handling. When paused, processor skips all sample writes — ring buffer only accumulates user speech.
 - **Mode Change Hook**: `handleModeChange` now sends `pause` to the worklet when agent starts speaking and `resume` when listening. Eliminates TTS audio bleed from contaminating voiceprint embeddings.
