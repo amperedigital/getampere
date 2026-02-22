@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.215 - Debug: TTS isolation test (has_voiceprint override)
+- **Frontend**: Temporary debug override forces `has_voiceprint` to `"false"` before pushing to ElevenLabs SDK. Isolates whether this variable causes TTS failure on returning calls.
+
 ## v3.214 - Console Pipe Relocate to ai-chat.js
 - **Frontend**: Moved console log pipe IIFE from `global.js` to `ai-chat.js`. Tech demo page now gets console piping via its existing `ai-chat.js` import (it doesn't load `global.js`). Added `[Tech Demo]`, `[TechDemo]`, `[AmpereAI]`, `[AI-Chat]` to capture prefixes.
 
