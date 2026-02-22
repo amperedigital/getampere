@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.214 - Console Pipe Relocate to ai-chat.js
+- **Frontend**: Moved console log pipe IIFE from `global.js` to `ai-chat.js`. Tech demo page now gets console piping via its existing `ai-chat.js` import (it doesn't load `global.js`). Added `[Tech Demo]`, `[TechDemo]`, `[AmpereAI]`, `[AI-Chat]` to capture prefixes.
+
 ## v3.213 - Browser Console Log Pipe
 - **Frontend**: Console log interceptor in `global.js` wraps `console.log/warn/error`, batches entries every 2s, and POSTs to `/debug/console` on memory-api. Captures `[AmpereChat]`, `[AmpereVoice]`, `[SystemLink]`, `[Ampere Global]`, `[AUTO-VOICEPRINT]`, `[VoiceBuffer]` prefixed logs plus all warnings/errors. Self-filtering prevents recursion.
 

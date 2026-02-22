@@ -1,3 +1,54 @@
+// v3.214: Console Log Pipe — sends browser console.log/warn/error to worker logs via /debug/console
+// Moved here from global.js because ai-chat.js is loaded by both index.html and tech-demo.html
+(function () {
+    const PIPE_URL = 'https://memory-api.tight-butterfly-7b71.workers.dev/debug/console';
+    const FLUSH_MS = 2000;
+    const MAX_BUFFER = 20;
+    const CAPTURE_PREFIXES = ['[AmpereChat]', '[AmpereVoice]', '[SystemLink]', '[Ampere Global]', '[AUTO-VOICEPRINT]', '[VoiceBuffer]', '[Tech Demo]', '[TechDemo]', '[AmpereAI]', '[AI-Chat]'];
+    let _buffer = [];
+    let _flushing = false;
+
+    function shouldCapture(level, args) {
+        if (level !== 'log') return true; // always capture warn/error
+        const first = args[0];
+        if (typeof first !== 'string') return false;
+        if (first.includes('/debug/console')) return false; // prevent recursion
+        return CAPTURE_PREFIXES.some(p => first.includes(p));
+    }
+
+    function pipeEntry(level, args) {
+        const msg = args.map(a => {
+            if (typeof a === 'string') return a;
+            try { return JSON.stringify(a); } catch { return String(a); }
+        }).join(' ');
+        _buffer.push({ level, message: msg, timestamp: new Date().toISOString().slice(11, 23) });
+        if (_buffer.length >= MAX_BUFFER && !_flushing) flush();
+    }
+
+    function flush() {
+        if (!_buffer.length || _flushing) return;
+        _flushing = true;
+        const batch = _buffer.splice(0, MAX_BUFFER);
+        fetch(PIPE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ logs: batch }),
+            keepalive: true
+        }).catch(() => { }).finally(() => { _flushing = false; });
+    }
+
+    ['log', 'warn', 'error'].forEach(level => {
+        const orig = console[level].bind(console);
+        console[level] = function (...args) {
+            orig(...args);
+            if (shouldCapture(level, args)) pipeEntry(level, args);
+        };
+    });
+
+    setInterval(flush, FLUSH_MS);
+    window.addEventListener('beforeunload', flush);
+})();
+
 import { Conversation } from 'https://esm.sh/@elevenlabs/client@latest?bundle';
 
 export class AmpereAIChat {
