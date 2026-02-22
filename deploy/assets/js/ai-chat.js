@@ -324,7 +324,7 @@ export class AmpereAIChat {
             let userName = "";
             let knownPhone = "";
             let knownEmail = "";
-            let hasVoiceprint = "false";
+            let hasVoiceprint = "no";
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
@@ -356,7 +356,7 @@ export class AmpereAIChat {
                         console.log(`%c[AmpereAI] 📧 KNOWN EMAIL: ${data.known_email}`, "color: #06b6d4; font-weight: bold;");
                     }
                     if (data.has_voiceprint !== undefined) {
-                        hasVoiceprint = data.has_voiceprint ? "true" : "false";
+                        hasVoiceprint = data.has_voiceprint === true || data.has_voiceprint === "yes" ? "yes" : "no";
                     }
                     console.log(`%c[AmpereAI] 🎙️ VOICEPRINT STATUS: ${hasVoiceprint}`, "color: #8b5cf6; font-weight: bold;");
                 }

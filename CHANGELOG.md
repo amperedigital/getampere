@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.217 - Fix: has_voiceprint uses yes/no instead of true/false
+- **Frontend + Backend + Prompt**: Changed `has_voiceprint` dynamic variable from `true`/`false` to `yes`/`no`. ElevenLabs may parse boolean strings as internal flags, causing TTS stall.
+
 ## v3.216 - Fix: Voiceprint TTS stall
 - **Frontend**: Removed v3.215 debug override. `has_voiceprint` now passes through to ElevenLabs correctly.
 - **Prompt**: Removed voiceprint enroll/verify from MANDATORY FIRST ACTIONS section. Detailed instructions at §voice_enroll/§voice_verify still guide Turn 2 behavior. Fixes ElevenLabs TTS stall when `has_voiceprint=true`.
