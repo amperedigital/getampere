@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.228 - Multi-tier identity system (omni-channel)
+- **Backend + Prompt**: Tiered identity (Anonymous → Named → Voice-Verified → Contact-Verified). Name-only canonical IDs for web visitors. No frontend code changes.
+
 ## v3.227 - Subject-scoped verification (person > session)
 - **Backend-only**: Verification is now person-scoped, not session-scoped. No frontend changes.
 
