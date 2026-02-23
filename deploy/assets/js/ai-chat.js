@@ -634,7 +634,7 @@ export class AmpereAIChat {
                         const embedRes = await fetch(`${CONTAINER_URL}/embed`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav' }),
+                            body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav', normalize: true }),
                             signal: embedAbort.signal
                         });
                         clearTimeout(embedTimeout);

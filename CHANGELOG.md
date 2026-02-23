@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.229 - Omni-channel phone voiceprint
+- **Frontend**: Auto-voiceprint sends `normalize: true` for 8kHz cross-channel parity.
+
 ## v3.228 - Multi-tier identity system (omni-channel)
 - **Backend + Prompt**: Tiered identity (Anonymous → Named → Voice-Verified → Contact-Verified). Name-only canonical IDs for web visitors. No frontend code changes.
 
