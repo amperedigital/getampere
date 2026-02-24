@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.255 - Auto-generated
+- **Frontend**: chore(release): auto-commit for memory-api
+
+
 ## v3.229 - Omni-channel phone voiceprint
 - **Frontend**: Auto-voiceprint sends `normalize: true` for 8kHz cross-channel parity.
 
