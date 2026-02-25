@@ -328,7 +328,10 @@ export class AmpereAIChat {
 
             const greetingFetch = fetch("https://memory-api.tight-butterfly-7b71.workers.dev/greeting/web", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-workspace-id": "emily"
+                },
                 body: JSON.stringify({ visitor_id: visitorId, time_greeting: timeGreeting })
             }).then(async (res) => {
                 if (res.ok) {
@@ -511,7 +514,10 @@ export class AmpereAIChat {
 
                             const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-workspace-id': 'emily'
+                                },
                                 body: JSON.stringify({
                                     user_id: parameters.user_id,
                                     display_name: parameters.display_name || '',
@@ -556,7 +562,10 @@ export class AmpereAIChat {
 
                             const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-workspace-id': 'emily'
+                                },
                                 body: JSON.stringify({
                                     user_id: parameters.user_id,
                                     audio: wavBase64,
