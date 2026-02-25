@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.268 - Unified Publish (Sync Version)
+- **Frontend**: Synchronized release for unified frontend/backend deployment.
+- **Frontend**: Full activation of Hybrid Memory Classification and GUID CDP architecture.
+
 ## v3.259 - Hybrid Memory Classification (Sync Version)
 - **Frontend**: Synced version with backend v3.259 (Hybrid Memory Classification).
 - **Backend**: Implemented sub-ms keyword heuristics with Zero-Shot AI fallback for robust real-time memory extraction.
