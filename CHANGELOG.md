@@ -1,8 +1,8 @@
 # Changelog
 
-## v3.258 - Auto-generated
-- **Frontend**: Release v3.258 (no new commits)
-
+## v3.259 - Hybrid Memory Classification (Sync Version)
+- **Frontend**: Synced version with backend v3.259 (Hybrid Memory Classification).
+- **Backend**: Implemented sub-ms keyword heuristics with Zero-Shot AI fallback for robust real-time memory extraction.
 
 ## v3.257 - Auto-generated
 - **Frontend**: Release v3.257 (no new commits)
