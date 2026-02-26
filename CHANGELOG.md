@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.281 - Upsert Diagnostics + OTP Phone Gate
+- **Backend**: UPSERT_BODY_IDS diagnostic log to trace binding misses.
+- **Prompt**: Emily must ask for phone number before calling auth_request_otp when known_phone is absent.
+
 ## v3.280 - Sync: Session Seed + Phone Normalization
 - **Backend**: Web session_identity now seeded at init \u2014 fixes GUID fallback for all web tool calls.
 - **Backend**: 10-digit NA phone numbers auto-normalized to E.164 in auth_request_otp.
