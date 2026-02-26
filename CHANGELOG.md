@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.282 - Reject ElevenLabs Visitor ID Stubs
+- **Backend**: resolveSubjectId rejects "visitor_web" and similar constant_value placeholders.
+- **Frontend**: No code changes — version sync.
+
 ## v3.281 - Upsert Diagnostics + OTP Phone Gate
 - **Backend**: UPSERT_BODY_IDS diagnostic log to trace binding misses.
 - **Prompt**: Emily must ask for phone number before calling auth_request_otp when known_phone is absent.
