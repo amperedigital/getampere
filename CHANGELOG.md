@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.289 - Fix Session Seed Timing (getId available post-startSession)
+- **Frontend**: Session seed moved from onConnect to post-startSession — getId() now reliable.
+
 ## v3.288 - session_id dynamic_variable_only in upsert + bootstrap
 - **Schema**: session_id back to dynamic_variable_only (system__conversation_id) in upsert + bootstrap.
 - **Frontend**: No code changes.

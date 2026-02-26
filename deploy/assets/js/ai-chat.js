@@ -579,6 +579,18 @@ export class AmpereAIChat {
                     return false;
                 });
 
+            // v3.289: Seed session_identity right after startSession resolves — getId() now available.
+            const _convId = this.conversation?.getId?.();
+            if (_convId && this.visitorId) {
+                fetch('https://memory-api.tight-butterfly-7b71.workers.dev/session/seed', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                    body: JSON.stringify({ conv_id: _convId, visitor_id: this.visitorId })
+                }).then(r => {
+                    console.log(`%c[AmpereAI] 🔗 SESSION SEED: conv=${_convId.slice(0, 16)}... visitor=${this.visitorId.slice(0, 8)}... → ${r.status}`, 'color: #a855f7; font-weight: bold;');
+                }).catch(e => console.warn('[AmpereAI] Session seed failed:', e));
+            }
+
             // v3.221: Automatic voice enroll/verify — multi-embedding for both
             // Enrollment: 3 snapshots at t=25s, t=40s, t=55s → averaged → stored
             // Verification: 3 snapshots at t=25s, t=40s, t=55s → averaged → verified
@@ -1086,25 +1098,8 @@ export class AmpereAIChat {
             this.messages.innerHTML = '';
             this.addMessage("Connection established. Say hello!", 'system');
         }
-
-        // v3.287: Seed session_identity from browser the moment we connect.
-        // The ElevenLabs SDK gives us the conv_id here via getId(). We immediately
-        // POST to /session/seed so session_identity is populated before any tool call fires.
-        // This eliminates the race where memory_upsert fires before a session anchor exists.
-        const convId = this.conversation?.getId?.();
-        const visitorId = this.visitorId || window._ampereVisitorId;
-        if (convId && visitorId && this.apiBase) {
-            fetch(`${this.apiBase}/session/seed`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-workspace-id': this.workspaceId || 'emily'
-                },
-                body: JSON.stringify({ conv_id: convId, visitor_id: visitorId })
-            }).then(r => {
-                console.log(`%c[AmpereAI] 🔗 SESSION SEED: conv=${convId.slice(0, 16)}... visitor=${visitorId.slice(0, 8)}... → ${r.status}`, 'color: #a855f7; font-weight: bold;');
-            }).catch(e => console.warn('[AmpereAI] Session seed failed:', e));
-        }
+        // Note: session_identity seeding happens in startSession() after connection, not here.
+        // getId() is not available during onConnect — seed is done post-startSession resolve.
     }
 
     handleDisconnect() {
