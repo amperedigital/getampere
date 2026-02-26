@@ -408,7 +408,8 @@ export class AmpereAIChat {
                     user_name: userName,
                     known_phone: knownPhone,
                     known_email: knownEmail,
-                    verified_identity_preview: identityPreview
+                    verified_identity_preview: identityPreview,
+                    channel: "web",  // v3.276: Explicit channel signal — never infer from absence
                 },
                 onConnect: () => this.handleConnect(),
                 onDisconnect: () => this.handleDisconnect(),

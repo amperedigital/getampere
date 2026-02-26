@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.276 - Explicit Channel Variable
+- **Frontend**: `ai-chat.js` now pushes `channel: "web"` into `dynamicVariables` at session start.
+- **Backend**: `elevenLabsInitHandler` injects `channel: "phone"` or `"web"` based on `isVoiceSession`. Added to `REGISTERED_VARS`.
+- **Prompt**: All channel detection rewritten around `{{channel}}` — no more absence-inference of `system__caller_id`.
+
 ## v3.275 - Sync: GUID Merge Dedup Fix
 - **Backend**: Fixed GUID merge crash — duplicate facts deleted before subject_id reassignment to avoid UNIQUE constraint error.
 - **Frontend**: No code changes — version sync with backend v3.275.
