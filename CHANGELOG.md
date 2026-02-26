@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.285 - OTP Diagnostics + session_id Required Schema
+- **Backend**: OTP_BODY_IDS + session_fallback diagnostic logs.
+- **Schema**: session_id required in upsert + bootstrap.
+
 ## v3.284 - Tool Schema: Remove Broken visitor_id, Fix session_id Binding
 - **Tool Schema**: Removed visitor_id from memory_upsert; session_id now dynamic_variable_only.
 - **Frontend**: No code changes.
