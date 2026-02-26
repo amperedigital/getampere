@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.283 - Tone Tag Ban + OTP Visualization Fix
+- **Prompt**: Banned [warm], [calm], [curious] etc. — ElevenLabs reads them aloud as literal words.
+- **Frontend**: auth_request_otp and auth_verify_otp now trigger OTP identity ring visualization.
+
 ## v3.282 - Reject ElevenLabs Visitor ID Stubs
 - **Backend**: resolveSubjectId rejects "visitor_web" and similar constant_value placeholders.
 - **Frontend**: No code changes — version sync.

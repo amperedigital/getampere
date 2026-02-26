@@ -434,7 +434,7 @@ export class AmpereAIChat {
                                 if (toolCall.name.includes('query') || toolCall.name.includes('search')) window.systemLink.triggerExtract("QUERYING...");
                                 else window.systemLink.triggerInsert("MEM_WRITE");
                             }
-                        } else if (toolCall.name.includes('identity')) {
+                        } else if (toolCall.name.includes('identity') || toolCall.name.includes('auth_request_otp') || toolCall.name.includes('auth_verify_otp')) {
                             window.demoScene.selectFunction("identity");
                             if (window.systemLink) window.systemLink.triggerOtpTx();
                         } else if (toolCall.name.includes('handoff') || toolCall.name.includes('transfer')) {
