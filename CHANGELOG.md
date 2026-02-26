@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.273 - Bootstrap Pre-seed + Remove get_web_visitor_id
+- **Backend**: Pre-seeds bootstrap DO cache at greeting time for ~50ms `memory_bootstrap` hits.
+- **Agents**: Removed `get_web_visitor_id` tool from all 5 agents — redundant since `visitor_id` is in `dynamicVariables`.
+- **Frontend**: No code changes — version sync with backend v3.273.
+
 ## v3.272 - Sync: Backend Resilience Fixes
 - **Backend**: `memory_bootstrap` now returns graceful empty-facts 200 instead of 400 when ElevenLabs GUI tool binding fails to inject identifiers.
 - **Backend**: `identity_validate` now falls back to session-anchor lookup before returning 400.
