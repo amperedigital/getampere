@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.278 - Sync: Full GUID Fallback Coverage
+- **Backend**: Session-anchor fallback now on `auth_request_otp` + `auth_verify_otp`. All agent endpoints covered.
+- **Backend**: GUID merge UNIQUE constraint fixed for `profile_cards`.
+- **Frontend**: No code changes — version sync with backend v3.278.
+
 ## v3.277 - Sync: Web OTP Flow Fix
 - **Prompt**: Web OTP flow now goes directly to `auth_request_otp` with the number — no `identity_validate` on phone numbers given verbally (ElevenLabs nullifies them on web channel).
 - **Frontend**: No code changes — version sync with backend v3.277.
