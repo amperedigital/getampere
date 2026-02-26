@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.290 - Fix Emotion Tag Leakage (Verified ElevenLabs Tag List)
+- **Prompt**: Corrected tag allowlist — bans [warm]/[pleased]/[empathetic], keeps verified tags.
+
 ## v3.289 - Fix Session Seed Timing (getId available post-startSession)
 - **Frontend**: Session seed moved from onConnect to post-startSession — getId() now reliable.
 
