@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.272 - Sync: Backend Resilience Fixes
+- **Backend**: `memory_bootstrap` now returns graceful empty-facts 200 instead of 400 when ElevenLabs GUI tool binding fails to inject identifiers.
+- **Backend**: `identity_validate` now falls back to session-anchor lookup before returning 400.
+- **Frontend**: No code changes — version sync with backend v3.272.
+
 ## v3.268 - Unified Publish (Sync Version)
 - **Frontend**: Synchronized release for unified frontend/backend deployment.
 - **Frontend**: Full activation of Hybrid Memory Classification and GUID CDP architecture.
