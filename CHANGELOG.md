@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.277 - Sync: Web OTP Flow Fix
+- **Prompt**: Web OTP flow now goes directly to `auth_request_otp` with the number — no `identity_validate` on phone numbers given verbally (ElevenLabs nullifies them on web channel).
+- **Frontend**: No code changes — version sync with backend v3.277.
+
 ## v3.276 - Explicit Channel Variable
 - **Frontend**: `ai-chat.js` now pushes `channel: "web"` into `dynamicVariables` at session start.
 - **Backend**: `elevenLabsInitHandler` injects `channel: "phone"` or `"web"` based on `isVoiceSession`. Added to `REGISTERED_VARS`.
