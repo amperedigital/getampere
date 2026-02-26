@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.291 - Auto-generated
+- **Frontend**: Release v3.291 (no new commits)
+
+
 ## v3.290 - Fix Emotion Tag Leakage (Verified ElevenLabs Tag List)
 - **Prompt**: Corrected tag allowlist — bans [warm]/[pleased]/[empathetic], keeps verified tags.
 
