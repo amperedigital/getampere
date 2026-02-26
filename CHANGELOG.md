@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.286 - Auto-Create Session Identity for Web (Root Cause Fix)
+- **Backend**: Auto-creates ephemeral GUID from conv_... ID when session_identity lookup misses.
+- **Frontend**: No code changes.
+
 ## v3.285 - OTP Diagnostics + session_id Required Schema
 - **Backend**: OTP_BODY_IDS + session_fallback diagnostic logs.
 - **Schema**: session_id required in upsert + bootstrap.
