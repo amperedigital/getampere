@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.279 - Remove Dead get_web_visitor_id Tool
+- **Frontend**: Removed `get_web_visitor_id` client tool handler from `ai-chat.js`. `visitor_id` is now a pre-call dynamic variable — no tool call needed.
+- **Backend**: Archived tool JSON as `.deprecated`.
+
 ## v3.278 - Sync: Full GUID Fallback Coverage
 - **Backend**: Session-anchor fallback now on `auth_request_otp` + `auth_verify_otp`. All agent endpoints covered.
 - **Backend**: GUID merge UNIQUE constraint fixed for `profile_cards`.

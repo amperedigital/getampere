@@ -458,40 +458,8 @@ export class AmpereAIChat {
                         }
                     }
                 },
-                // v2.800: Client Tool for Web Visitor ID (Cookies)
+                // v3.279: client tool handlers — get_web_visitor_id REMOVED (visitor_id now pre-injected as dynamic variable)
                 clientTools: {
-                    get_web_visitor_id: async (parameters) => {
-                        console.log("%c[AmpereAI] 🔍 IDENTITY CHECK: Tool 'get_web_visitor_id' CALLED.", "color: #0ea5e9; font-weight: bold;");
-
-                        // v2.850: Trigger Visualization "Thinking" State during tool execution
-                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                            window.demoScene.setProcessingState(true);
-                        }
-
-                        let id = localStorage.getItem('ampere_visitor_id');
-                        if (!id) {
-                            console.log("%c[AmpereAI] 👤 NEW VISITOR: Generating UUID...", "color: #f59e0b;");
-                            if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-                                id = crypto.randomUUID();
-                            } else {
-                                id = 'v-' + Math.random().toString(36).substring(2, 15);
-                            }
-                            localStorage.setItem('ampere_visitor_id', id);
-                            console.log(`%c[AmpereAI] ✅ ID ASSIGNED: ${id}`, "color: #10b981; font-weight: bold;");
-                        } else {
-                            console.log(`%c[AmpereAI] ✅ ID FOUND: ${id} (Returning to Agent)`, "color: #10b981; font-weight: bold;");
-                        }
-
-                        // Short delay to ensure the flash is visible if the check is instant
-                        await new Promise(r => setTimeout(r, 800));
-
-                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                            window.demoScene.setProcessingState(false);
-                        }
-
-                        return id; // Return string directly
-                    },
-
                     // v3.190: Voice Print — Enroll speaker voiceprint
                     voice_enroll: async (parameters) => {
                         console.log('%c[AmpereAI] 🎙️ VOICE ENROLL: Capturing audio...', 'color: #8b5cf6; font-weight: bold;', parameters);
