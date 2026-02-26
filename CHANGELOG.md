@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.288 - session_id dynamic_variable_only in upsert + bootstrap
+- **Schema**: session_id back to dynamic_variable_only (system__conversation_id) in upsert + bootstrap.
+- **Frontend**: No code changes.
+
 ## v3.287 - Browser-Side Session Seed (Fixes Memory Upsert)
 - **Frontend**: Calls /session/seed on ElevenLabs connect with conv_id + visitor_id.
 - **Backend**: New /session/seed endpoint — no auth required, browser-accessible.
