@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.280 - Sync: Session Seed + Phone Normalization
+- **Backend**: Web session_identity now seeded at init \u2014 fixes GUID fallback for all web tool calls.
+- **Backend**: 10-digit NA phone numbers auto-normalized to E.164 in auth_request_otp.
+- **Frontend**: No code changes \u2014 version sync with backend v3.280.
+
 ## v3.279 - Remove Dead get_web_visitor_id Tool
 - **Frontend**: Removed `get_web_visitor_id` client tool handler from `ai-chat.js`. `visitor_id` is now a pre-call dynamic variable — no tool call needed.
 - **Backend**: Archived tool JSON as `.deprecated`.
