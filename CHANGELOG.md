@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.274 - Sync: Upsert + Query Session Fallbacks
+- **Backend**: `memory_upsert` and `memory_query` now resolve identity via session-anchor D1 fallback before returning 400.
+- **Frontend**: No code changes — version sync with backend v3.274.
+
 ## v3.273 - Bootstrap Pre-seed + Remove get_web_visitor_id
 - **Backend**: Pre-seeds bootstrap DO cache at greeting time for ~50ms `memory_bootstrap` hits.
 - **Agents**: Removed `get_web_visitor_id` tool from all 5 agents — redundant since `visitor_id` is in `dynamicVariables`.
