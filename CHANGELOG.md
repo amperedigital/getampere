@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.287 - Browser-Side Session Seed (Fixes Memory Upsert)
+- **Frontend**: Calls /session/seed on ElevenLabs connect with conv_id + visitor_id.
+- **Backend**: New /session/seed endpoint — no auth required, browser-accessible.
+
 ## v3.286 - Auto-Create Session Identity for Web (Root Cause Fix)
 - **Backend**: Auto-creates ephemeral GUID from conv_... ID when session_identity lookup misses.
 - **Frontend**: No code changes.

@@ -308,6 +308,9 @@ export class AmpereAIChat {
                 localStorage.setItem('ampere_visitor_id', visitorId);
             }
 
+            // v3.287: Store on instance so handleConnect can seed session_identity
+            this.visitorId = visitorId;
+
             // v2.871: Pre-calculate Time Greeting (Client Side) for consistency
             const currentHour = new Date().getHours();
             let timeGreeting = "Hello";
@@ -1082,6 +1085,25 @@ export class AmpereAIChat {
             // Clear legacy placeholder
             this.messages.innerHTML = '';
             this.addMessage("Connection established. Say hello!", 'system');
+        }
+
+        // v3.287: Seed session_identity from browser the moment we connect.
+        // The ElevenLabs SDK gives us the conv_id here via getId(). We immediately
+        // POST to /session/seed so session_identity is populated before any tool call fires.
+        // This eliminates the race where memory_upsert fires before a session anchor exists.
+        const convId = this.conversation?.getId?.();
+        const visitorId = this.visitorId || window._ampereVisitorId;
+        if (convId && visitorId && this.apiBase) {
+            fetch(`${this.apiBase}/session/seed`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-workspace-id': this.workspaceId || 'emily'
+                },
+                body: JSON.stringify({ conv_id: convId, visitor_id: visitorId })
+            }).then(r => {
+                console.log(`%c[AmpereAI] 🔗 SESSION SEED: conv=${convId.slice(0, 16)}... visitor=${visitorId.slice(0, 8)}... → ${r.status}`, 'color: #a855f7; font-weight: bold;');
+            }).catch(e => console.warn('[AmpereAI] Session seed failed:', e));
         }
     }
 
