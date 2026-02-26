@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.275 - Sync: GUID Merge Dedup Fix
+- **Backend**: Fixed GUID merge crash — duplicate facts deleted before subject_id reassignment to avoid UNIQUE constraint error.
+- **Frontend**: No code changes — version sync with backend v3.275.
+
 ## v3.274 - Sync: Upsert + Query Session Fallbacks
 - **Backend**: `memory_upsert` and `memory_query` now resolve identity via session-anchor D1 fallback before returning 400.
 - **Frontend**: No code changes — version sync with backend v3.274.
