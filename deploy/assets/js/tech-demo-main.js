@@ -1,4 +1,4 @@
-console.log('[Tech Demo] v3.275 Multi-Agent Visualization');
+console.log('[Tech Demo] v3.276 Multi-Agent Visualization');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
