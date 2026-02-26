@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.284 - Tool Schema: Remove Broken visitor_id, Fix session_id Binding
+- **Tool Schema**: Removed visitor_id from memory_upsert; session_id now dynamic_variable_only.
+- **Frontend**: No code changes.
+
 ## v3.283 - Tone Tag Ban + OTP Visualization Fix
 - **Prompt**: Banned [warm], [calm], [curious] etc. — ElevenLabs reads them aloud as literal words.
 - **Frontend**: auth_request_otp and auth_verify_otp now trigger OTP identity ring visualization.
