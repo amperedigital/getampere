@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.313 - Fix /llm/chat Body Drain Bug (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.313 routing fix.
+
+## v3.312 - Fix LLM Router Auth Key (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.312 auth key fix.
+
 ## v3.311 - Multi-Model LLM Router (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.311 LLM router implementation.
 
