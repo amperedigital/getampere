@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.316 - LLM Router Turn-Count-Only (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.316 routing simplification.
+
 ## v3.315 - Upgrade Tier 2 Model (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.315 gpt-5.1 model upgrade.
 
