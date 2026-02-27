@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.315 - Upgrade Tier 2 Model (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.315 gpt-5.1 model upgrade.
+
 ## v3.313 - Fix /llm/chat Body Drain Bug (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.313 routing fix.
 
