@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.319 - Progressive Tool Loading (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.319 progressive tool loading.
+
+## v3.318 - Revert v3.317 (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.318 revert.
+
+## v3.317 - Tier 1 Speed Optimizations (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.317 perf improvements.
+
 ## v3.316 - LLM Router Turn-Count-Only (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.316 routing simplification.
 
