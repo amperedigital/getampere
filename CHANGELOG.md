@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.294 - Auto-generated
+- **Frontend**: Release v3.294 (no new commits)
+
+
 ## v3.293 - Fix UUID Sticky Identity Leak (Deferred GUID_MERGE)
 - **Backend**: UUIDs only linked to canonical on 2nd+ session. First-session data migrates, UUID row stays fresh.
 
