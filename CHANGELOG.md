@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.311 - Multi-Model LLM Router (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.311 LLM router implementation.
+
 ## v3.310 - Stable Build Point (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.310 stable build point. Regression anchor before multi-model LLM router implementation.
 
