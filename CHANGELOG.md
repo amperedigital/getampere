@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.323 - LLM Benchmark Endpoint (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.323.
+
 ## v3.322 - Fix OPEN_API_KEY Secret Name (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.322.
 
