@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.321 - Fix gpt-4o-mini + Cache Warmup (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.321.
+
 ## v3.320 - OpenAI Mini Tier 1 + Cache Warmup (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.320.
 
