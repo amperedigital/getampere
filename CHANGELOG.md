@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.320 - OpenAI Mini Tier 1 + Cache Warmup (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.320.
+
 ## v3.319 - Progressive Tool Loading (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.319 progressive tool loading.
 
