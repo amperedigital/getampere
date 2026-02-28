@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.322 - Fix OPEN_API_KEY Secret Name (Frontend Sync)
+- **Frontend**: No code changes — version sync with backend v3.322.
+
 ## v3.321 - Fix gpt-4o-mini + Cache Warmup (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.321.
 
