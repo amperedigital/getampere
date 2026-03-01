@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.328 - LLM Benchmark Full Rebuild
+
+- **llm-benchmark.html**: Complete Tailwind v4 rebuild. Moved source of truth from `.agent/` to `deploy/` directly. Removes entire `<style>` block, references shared `assets/css/styles.css`.
+- **New columns**: Tokens (avg in / out per run) and Cost/turn with full formula display: `N×$X/M in + N×$X/M out = $Z/turn` and `N runs = $total`.
+- **Pricing table**: All 11 models priced from Cloudflare's billing page (confirmed $/1M tokens). Hermes 2 Pro marked as estimate.
+- **Chinese character fix**: All 3 scenario system prompts now include `RESPOND ONLY IN ENGLISH`. Non-ASCII characters in response detected and flagged with `⚠️ LANG` badge.
+- **Dynamic sort**: After all runs complete, rows re-ordered by weighted score (50% TTFB + 50% cost). Winner gets green left-border highlight.
+- **Llama 4 Scout**: Re-added to Returning User tab. 12s Workers AI timeout on backend means it will show results instead of hanging.
+- **Expand button fix**: `sanitizeId()` strips all non-word chars from rowKey before using as HTML id — eliminates broken `getElementById` lookups.
+- **Runs input**: Widened from 50px to 64px (`w-16`) so multi-digit values are visible.
+- **Responsive**: Table wrapped in `overflow-x-auto`. Token/Cost columns hidden on `< sm` screens. Controls use `flex flex-wrap`.
+
 ## v3.323 - LLM Benchmark Endpoint (Frontend Sync)
 - **Frontend**: No code changes — version sync with backend v3.323.
 

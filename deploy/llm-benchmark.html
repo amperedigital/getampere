@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="version" content="v3.328">
+  <title>Ampere LLM Benchmark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    .preview-inner {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      white-space: pre-wrap;
+    }
+
+    .preview-inner.expanded {
+      display: block;
+      overflow: visible;
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
+
+    .winner-row td:first-child {
+      border-left: 2px solid #3fb950;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+  </style>
+</head>
+
+<body class="bg-[#0d1117] text-[#e6edf3] min-h-screen p-4 sm:p-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-xl font-bold text-blue-400 mb-1">⚡ Ampere LLM Benchmark</h1>
+    <p class="text-xs text-[#8b949e] leading-relaxed">Direct LLM calls — <strong class="text-orange-400">no ElevenLabs
+        overhead</strong>. Real-world latency +100–200ms. Baseline comparisons use live results from current run. Cost =
+      actual tokens × Cloudflare neurons pricing.</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="flex flex-wrap gap-3 mb-5 items-center">
+    <input type="text" id="apiKey" value="dev-secret-key" placeholder="x-api-key"
+      class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-2 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500">
+    <label class="text-[#8b949e] text-xs flex items-center gap-2">
+      Runs:
+      <input type="number" id="numRuns" value="5" min="1" max="20"
+        class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-2 py-2 rounded-md text-xs font-mono w-16 text-center focus:outline-none focus:border-blue-500">
+    </label>
+    <label
+      class="text-orange-400 text-xs flex items-center gap-2 px-3 py-2 bg-[#1a1000] border border-orange-400/30 rounded-md cursor-pointer">
+      <input type="checkbox" id="overheadToggle" onchange="rerenderRows()" class="accent-orange-400">
+      +11Labs overhead:
+      <input type="number" id="overheadMs" value="400" min="0" max="999" oninput="rerenderRows()"
+        class="bg-[#0d1117] border border-orange-400/30 text-orange-400 px-2 py-1 rounded text-xs font-mono w-20 text-center focus:outline-none">
+      ms
+    </label>
+    <button id="runBtn" onclick="runBenchmark()"
+      class="bg-[#238636] hover:bg-[#2ea043] disabled:bg-[#30363d] disabled:text-[#8b949e] disabled:cursor-not-allowed text-white px-5 py-2 rounded-md text-sm font-semibold transition-colors cursor-pointer">
+      ▶ Run Benchmark
+    </button>
+    <span id="runStatus" class="text-[#8b949e] text-xs font-mono"></span>
+  </div>
+
+  <!-- Tabs -->
+  <div id="tabs" class="flex border-b border-[#21262d] mb-5 overflow-x-auto gap-0"></div>
+
+  <!-- Scenario description -->
+  <div id="scenarioDesc"
+    class="text-xs text-[#8b949e] mb-4 px-4 py-3 bg-[#161b22] border border-[#21262d] rounded-lg leading-relaxed"></div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto rounded-lg border border-[#30363d]">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] sticky left-0 z-10 w-48">
+            Model</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] whitespace-nowrap">
+            Status</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] whitespace-nowrap">
+            Avg TTFB</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] hidden sm:table-cell whitespace-nowrap">
+            Tokens</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] hidden sm:table-cell whitespace-nowrap">
+            Cost / Turn</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] whitespace-nowrap">
+            Tool Result</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d]">
+            Preview</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Summary -->
+  <div class="hidden mt-5 px-4 py-4 bg-[#161b22] border border-[#30363d] rounded-lg text-sm leading-relaxed"
+    id="summary"></div>
+
+  <script>
+    const ENDPOINT = 'https://memory-api.tight-butterfly-7b71.workers.dev/llm/benchmark';
+
+    // ── Pricing ($/1M tokens, from cloudflare.com/en-us/developer-platform/pricing/) ──
+    const MODEL_PRICING = {
+      'openai:gpt-4o-mini': { in: 0.150, out: 0.600 },
+      'openai:gpt-5.1': { in: 10.00, out: 30.00, est: true },
+      'openai:gpt-5.1-warm': { in: 10.00, out: 30.00, est: true },
+      '@cf/qwen/qwen3-30b-a3b-fp8': { in: 0.051, out: 0.340 },
+      '@cf/meta/llama-4-scout-17b-16e-instruct': { in: 0.270, out: 0.850 },
+      '@hf/nousresearch/hermes-2-pro-mistral-7b': { in: 0.045, out: 0.384, est: true },
+      '@cf/ibm-granite/granite-4.0-h-micro': { in: 0.017, out: 0.112 },
+      '@cf/zai-org/glm-4.7-flash': { in: 0.060, out: 0.400 },
+      '@cf/mistralai/mistral-small-3.1-24b-instruct': { in: 0.351, out: 0.560 },
+      '@cf/meta/llama-3.3-70b-instruct-fp8-fast': { in: 0.293, out: 2.253 },
+      '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
+    };
+
+    function calcCost(modelId, promptTok, completionTok) {
+      if (promptTok == null || completionTok == null) return null;
+      const cleanId = modelId.replace(/-warm$/, '');
+      const p = MODEL_PRICING[modelId] || MODEL_PRICING[cleanId] || null;
+      if (!p) return null;
+      return (promptTok * p.in + completionTok * p.out) / 1_000_000;
+    }
+
+    function fmtCost(cost, decimals) {
+      if (cost == null) return '—';
+      if (cost === 0) return '$0.00';
+      if (cost < 0.000001) return '$' + cost.toFixed(10);
+      if (cost < 0.0001) return '$' + cost.toFixed(8);
+      if (cost < 0.01) return '$' + cost.toFixed(6);
+      return '$' + cost.toFixed(4);
+    }
+
+    // ── System prompts — English-only enforced ────────────────────────────────
+    const NEW_USER_SYSTEM = `You are Emily, an AI sales assistant for Ampere AI.
+RESPOND ONLY IN ENGLISH. Do not use any other language.
+SITUATIONAL BRIEFING: NEW VISITOR.
+Phase 1 Rule 3: channel=web AND visitor_status=new → Greet warmly, introduce yourself, ask for name. Do NOT call any tools.
+CURRENT SESSION: channel: web, visitor_status: new
+Tools available: memory_bootstrap, memory_upsert`;
+
+    const RETURNING_SYSTEM = `You are Emily, an AI sales assistant for Ampere AI.
+RESPOND ONLY IN ENGLISH. Do not use any other language.
+SITUATIONAL BRIEFING: RECURRING CONTACT. Last interaction: Feb 28. Sentiment: Positive.
+Phase 1 Rule 1: visitor_status starts with "returning" AND user_name present → IMMEDIATELY call memory_bootstrap. Do NOT speak first.
+CURRENT SESSION: channel: web, visitor_status: returning, user_name: Drew
+CRITICAL: Your FIRST action MUST be a tool call to memory_bootstrap with subject_id="hash:drew123". No words before the tool call.
+Tools available: memory_bootstrap, memory_upsert`;
+
+    const CONV_SYSTEM = `You are Emily, an AI sales assistant for Ampere AI.
+RESPOND ONLY IN ENGLISH. Do not use any other language.
+The user has already been greeted and their identity is confirmed (Drew, returning customer). You are now in a free-flowing conversation.
+Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-sentence response. No tool calls needed.`;
+
+    // ── Scenarios ─────────────────────────────────────────────────────────────
+    const SCENARIOS = {
+      new: {
+        label: "🆕 New User",
+        desc: "<strong>Tier 1 — New visitor.</strong> Expect: friendly greeting, ask for name. No tool call. Tests conversational quality.",
+        system: NEW_USER_SYSTEM,
+        user: "Hello",
+        expectTool: null,
+        withTools: false,
+        models: [
+          { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
+          { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
+          { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T1", note: "No fn-call" },
+          { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
+          { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
+          { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
+          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
+          { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
+          { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B fp8", tier: "T1" },
+        ]
+      },
+      returning: {
+        label: "🔁 Returning User (Tool Call)",
+        desc: "<strong>Tier 1 — Returning user.</strong> MUST call <code>memory_bootstrap</code> as first action. <span style='color:#f85149'>FAIL = no tool call or wrong tool.</span>",
+        system: RETURNING_SYSTEM,
+        user: "Hey",
+        expectTool: "memory_bootstrap",
+        withTools: true,
+        hallucinationMarkers: ["drew", "welcome back", "great to have you", "how can i assist", "returning", "i remember", "i know you", "previous"],
+        models: [
+          { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
+          { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
+          { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
+          { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
+          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
+          { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
+          { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
+        ]
+      },
+      tier2: {
+        label: "💬 Tier 2 vs gpt-5.1",
+        desc: "<strong>Tier 2 — Conversational quality + speed vs gpt-5.1.</strong> gpt-5.1-warm fires a cache warmup call first. Gemma 3 = no function calling.",
+        system: CONV_SYSTEM,
+        user: "What does Ampere AI cost?",
+        expectTool: null,
+        withTools: false,
+        models: [
+          { id: "openai:gpt-5.1", label: "gpt-5.1 cold", tier: "T2", note: "baseline" },
+          { id: "openai:gpt-5.1-warm", label: "gpt-5.1 warm cache", tier: "T2", note: "prod" },
+          { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
+          { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
+          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
+          { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
+        ]
+      }
+    };
+
+    let currentScenario = 'new';
+    const rows = {};
+    let lastRunResults = [];
+
+    function sanitizeId(str) {
+      return str.replace(/[^\w]/g, '_');
+    }
+
+    function getOverhead() {
+      const tog = document.getElementById('overheadToggle');
+      if (!tog || !tog.checked) return 0;
+      return parseInt(document.getElementById('overheadMs').value) || 0;
+    }
+
+    function addOverhead(ms) {
+      if (ms == null) return null;
+      return ms + getOverhead();
+    }
+
+    function buildTabs() {
+      const el = document.getElementById('tabs');
+      el.innerHTML = Object.entries(SCENARIOS).map(([key, s]) =>
+        `<div class="px-5 py-2 cursor-pointer text-sm whitespace-nowrap border-b-2 -mb-px transition-colors ${key === currentScenario ? 'text-blue-400 border-blue-400' : 'text-[#8b949e] border-transparent hover:text-[#e6edf3]'}" onclick="setScenario('${key}')">${s.label}</div>`
+      ).join('');
+    }
+
+    function setScenario(key) {
+      currentScenario = key;
+      buildTabs();
+      document.getElementById('scenarioDesc').innerHTML = SCENARIOS[key].desc;
+      buildTable();
+      document.getElementById('summary').classList.add('hidden');
+    }
+
+    function ttfbColor(ms) {
+      if (!ms) return 'text-[#8b949e]';
+      if (ms < 250) return 'text-green-400';
+      if (ms < 600) return 'text-yellow-400';
+      return 'text-red-400';
+    }
+
+    function buildTable() {
+      const s = SCENARIOS[currentScenario];
+      const tbody = document.getElementById('resultsBody');
+      tbody.innerHTML = '';
+      s.models.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.id = 'row_' + sanitizeId(m.id) + '_' + currentScenario;
+        tr.className = 'border-b border-[#21262d]';
+        const tierCls = m.tier === 'T1'
+          ? 'text-blue-400 bg-blue-500/10 border border-blue-500/30'
+          : 'text-purple-400 bg-purple-500/10 border border-purple-500/30';
+        const noteBadge = m.note
+          ? `<span class="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-[#2d2d00] text-yellow-500 border border-yellow-500/30">${m.note}</span>`
+          : '';
+        tr.innerHTML = `
+          <td class="px-3 py-3 align-top sticky left-0 bg-[#0d1117] z-10 w-48">
+            <div class="text-sm font-semibold text-[#e6edf3]">${m.label}${noteBadge}</div>
+            <div class="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${m.tier === 'T1' ? 'Tier 1' : 'Tier 2'}</div>
+            <div class="text-[10px] text-[#484f58] mt-1 font-mono break-all">${m.id}</div>
+          </td>
+          <td class="px-3 py-3 align-top whitespace-nowrap"><span class="text-[#484f58] text-xs">— idle</span></td>
+          <td class="px-3 py-3 align-top">—</td>
+          <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
+          <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
+          <td class="px-3 py-3 align-top"><span class="text-[#8b949e] text-xs">—</span></td>
+          <td class="px-3 py-3 align-top text-xs text-[#8b949e] max-w-xs">—</td>
+        `;
+        rows[m.id + currentScenario] = tr;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function detectHallucination(r, s) {
+      if (!s.expectTool || r.tool_call === s.expectTool) return false;
+      if (!r.response_preview?.trim()) return false;
+      const preview = r.response_preview.toLowerCase();
+      return (s.hallucinationMarkers || []).some(m => preview.includes(m));
+    }
+
+    function detectNonEnglish(text) {
+      if (!text) return false;
+      return /[\u0100-\uFFFF]/.test(text);
+    }
+
+    function updateRow(rowKey, state, data, expectTool) {
+      const tr = rows[rowKey];
+      if (!tr) return;
+      const cells = tr.querySelectorAll('td');
+      const numRuns = parseInt(document.getElementById('numRuns').value) || 5;
+
+      if (state === 'running') {
+        cells[1].innerHTML = '<span class="text-yellow-400 text-xs"><span class="spinner">⟳</span> running…</span>';
+        return;
+      }
+
+      const r = data;
+      if (r.error && !r.ttfb_ms) {
+        cells[1].innerHTML = '<span class="text-red-400 text-xs">✗ error</span>';
+        cells[5].innerHTML = expectTool
+          ? '<span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30">✗ FAIL</span>'
+          : '<span class="text-[#8b949e] text-xs">—</span>';
+        cells[6].innerHTML = `<span class="text-red-400 font-mono text-xs">${r.error}</span>`;
+        return;
+      }
+
+      cells[1].innerHTML = '<span class="text-green-400 text-xs">✓ done</span>';
+
+      // TTFB
+      const ttfbVal = r.ttfb_ms != null ? addOverhead(r.ttfb_ms) : null;
+      const overheadTag = getOverhead() ? `<span class="text-[9px] text-orange-400 ml-1">+${getOverhead()}ms</span>` : '';
+      const rangeHtml = r.ttfb_min != null
+        ? `<div class="text-[10px] text-[#8b949e] mt-0.5 font-mono">${addOverhead(r.ttfb_min)}–${addOverhead(r.ttfb_max)}ms</div>`
+        : '';
+      cells[2].innerHTML = ttfbVal != null
+        ? `<div class="text-2xl font-bold font-mono ${ttfbColor(ttfbVal)}">${ttfbVal}<span class="text-sm font-normal ml-0.5">ms</span>${overheadTag}</div>${rangeHtml}`
+        : '<span class="text-red-400 text-xs font-mono">timeout</span>';
+
+      // Tokens
+      cells[3].innerHTML = r.avg_prompt_tokens != null
+        ? `<div class="text-xs font-mono"><span class="text-[#e6edf3]">${r.avg_prompt_tokens}</span><span class="text-[#8b949e]"> in</span></div>
+           <div class="text-xs font-mono"><span class="text-[#e6edf3]">${r.avg_completion_tokens}</span><span class="text-[#8b949e]"> out</span></div>`
+        : '<span class="text-[#8b949e] text-xs">—</span>';
+
+      // Cost / turn
+      if (r.costPerTurn != null) {
+        const cleanId = r.model.replace(/-warm$/, '');
+        const p = MODEL_PRICING[r.model] || MODEL_PRICING[cleanId] || null;
+        const totalCost = r.costPerTurn * numRuns;
+        const formula = p && r.avg_prompt_tokens != null
+          ? `<div class="text-[10px] text-[#484f58] mt-1 font-mono leading-relaxed">
+               ${r.avg_prompt_tokens}×$${p.in}/M in<br>
+               +${r.avg_completion_tokens}×$${p.out}/M out<br>
+               <span class="text-[#8b949e]">= ${fmtCost(r.costPerTurn)}/turn</span><br>
+               <span class="text-[#8b949e]">${numRuns}× = ${fmtCost(totalCost)}</span>
+               ${p.est ? '<br><span class="text-yellow-500/60">~est.</span>' : ''}
+             </div>`
+          : '';
+        cells[4].innerHTML = `<div class="text-sm font-bold font-mono text-[#e6edf3]">${fmtCost(r.costPerTurn)}</div>${formula}`;
+      } else {
+        cells[4].innerHTML = '<span class="text-[#8b949e] text-xs">—</span>';
+      }
+
+      // Tool result
+      if (expectTool) {
+        const pass = r.tool_call === expectTool;
+        const isHallucination = !pass && detectHallucination(r, SCENARIOS[currentScenario]);
+        cells[5].innerHTML = pass
+          ? `<span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30">✓ PASS</span>
+             <div class="text-[10px] text-cyan-400 mt-1 font-mono">${r.tool_call}</div>`
+          : `<span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30">✗ FAIL</span>
+             <div class="text-[10px] text-red-400 mt-1 font-mono">${r.tool_call || 'no tool'}</div>
+             ${isHallucination ? '<span class="mt-1 inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30">⚠️ HALLUCINATION</span>' : ''}`;
+      } else {
+        cells[5].innerHTML = r.tool_call
+          ? `<span class="text-[#8b949e] text-xs">called: <span class="text-cyan-400 font-mono">${r.tool_call}</span></span>`
+          : `<span class="text-[#8b949e] text-xs">✓ none</span>`;
+      }
+
+      // Preview
+      let previewText = r.response_preview || '';
+      if (r.tool_call) {
+        let toolSig = `🔧 ${r.tool_call}(...)`;
+        try {
+          const args = r.tool_call_args ? JSON.parse(r.tool_call_args) : {};
+          const argStr = Object.entries(args).map(([k, v]) => `${k}: "${v}"`).join(', ');
+          toolSig = `🔧 ${r.tool_call}(${argStr})`;
+        } catch { /* keep default */ }
+        previewText = previewText ? `${toolSig}\n${previewText}` : toolSig;
+      }
+      if (!previewText) previewText = '(empty)';
+
+      const hasNonEnglish = detectNonEnglish(previewText);
+      const langBadge = hasNonEnglish
+        ? '<span class="inline-block text-[10px] font-bold text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/30 mb-1">⚠️ LANG</span><br>'
+        : '';
+
+      if (r.error) {
+        cells[6].innerHTML = `<span class="text-red-400 font-mono text-xs">${r.error}</span>`;
+        return;
+      }
+
+      const safeKey = sanitizeId(rowKey);
+      const isLong = previewText.length > 120;
+      cells[6].classList.add('max-w-xs', 'leading-relaxed');
+      cells[6].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<span class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300" onclick="togglePreview('pi_${safeKey}')">[expand]</span>` : ''}`;
+    }
+
+    function togglePreview(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const isExpanded = el.classList.contains('expanded');
+      el.classList.toggle('expanded');
+      const toggle = el.nextElementSibling;
+      if (toggle) toggle.textContent = isExpanded ? '[expand]' : '[collapse]';
+    }
+
+    function rerenderRows() {
+      if (!lastRunResults.length) return;
+      const s = SCENARIOS[currentScenario];
+      lastRunResults.forEach(r => updateRow(r.model + currentScenario, 'done', r, s.expectTool));
+    }
+
+    async function callModel(apiKey, model, s) {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+        body: JSON.stringify({ system_prompt: s.system, user_message: s.user, with_tools: s.withTools, models: [model.id] }),
+        signal: AbortSignal.timeout(45000)
+      });
+      const data = await res.json();
+      return data.results?.[0] || { model: model.id, error: 'no result', ttfb_ms: null, tool_call: null, response_preview: '' };
+    }
+
+    async function runBenchmark() {
+      const btn = document.getElementById('runBtn');
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const s = SCENARIOS[currentScenario];
+      const numRuns = Math.max(1, Math.min(20, parseInt(document.getElementById('numRuns').value) || 5));
+      let completed = 0;
+      const total = s.models.length * numRuns;
+      btn.disabled = true; btn.textContent = '⟳ Running…';
+      document.getElementById('summary').classList.add('hidden');
+      document.getElementById('runStatus').textContent = `0/${total} calls`;
+      buildTable();
+      document.querySelectorAll('.winner-row').forEach(r => r.classList.remove('winner-row'));
+
+      const allResults = await Promise.all(s.models.map(async (model) => {
+        const rowKey = model.id + currentScenario;
+        updateRow(rowKey, 'running', null, s.expectTool);
+        const ttfbs = [], promptToks = [], completionToks = [];
+        let lastResult = null, errorMsg = null;
+
+        for (let i = 0; i < numRuns; i++) {
+          try {
+            const r = await callModel(apiKey, model, s);
+            if (r.ttfb_ms !== null && !r.error) {
+              ttfbs.push(r.ttfb_ms);
+              if (r.prompt_tokens != null) promptToks.push(r.prompt_tokens);
+              if (r.completion_tokens != null) completionToks.push(r.completion_tokens);
+            }
+            lastResult = r;
+          } catch (e) { errorMsg = e.message; }
+          completed++;
+          document.getElementById('runStatus').textContent = `${completed}/${total} calls`;
+        }
+
+        const avg = (arr) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+        const avgTTFB = avg(ttfbs);
+        const avgPromptTok = avg(promptToks);
+        const avgCompletionTok = avg(completionToks);
+        const costPerTurn = calcCost(model.id, avgPromptTok, avgCompletionTok);
+
+        const result = {
+          ...(lastResult || {}),
+          model: model.id,
+          ttfb_ms: avgTTFB,
+          ttfb_min: ttfbs.length ? Math.min(...ttfbs) : null,
+          ttfb_max: ttfbs.length ? Math.max(...ttfbs) : null,
+          runs: ttfbs.length,
+          avg_prompt_tokens: avgPromptTok,
+          avg_completion_tokens: avgCompletionTok,
+          costPerTurn,
+          error: !ttfbs.length ? (errorMsg || lastResult?.error || 'all runs failed') : null
+        };
+        updateRow(rowKey, 'done', result, s.expectTool);
+        return { ...result, label: model.label };
+      }));
+
+      lastRunResults = allResults;
+
+      // ── Weighted sort: 50% speed + 50% cost ───────────────────────────────
+      const valid = allResults.filter(r => r.ttfb_ms && !r.error);
+      if (valid.length > 1) {
+        const ttfbVals = valid.map(r => r.ttfb_ms);
+        const costVals = valid.filter(r => r.costPerTurn != null).map(r => r.costPerTurn);
+        const [minT, maxT] = [Math.min(...ttfbVals), Math.max(...ttfbVals)];
+        const [minC, maxC] = costVals.length ? [Math.min(...costVals), Math.max(...costVals)] : [0, 1];
+        const norm = (v, lo, hi) => hi === lo ? 0 : (v - lo) / (hi - lo);
+
+        allResults.forEach(r => {
+          if (!r.ttfb_ms || r.error) { r._score = Infinity; return; }
+          r._score = norm(r.ttfb_ms, minT, maxT) * 0.5 + (r.costPerTurn != null ? norm(r.costPerTurn, minC, maxC) : 0.5) * 0.5;
+        });
+
+        const sorted = [...allResults].sort((a, b) => a._score - b._score);
+        const tbody = document.getElementById('resultsBody');
+        sorted.forEach(r => { const tr = rows[r.model + currentScenario]; if (tr) tbody.appendChild(tr); });
+
+        const winner = sorted[0];
+        if (winner && !winner.error) {
+          const winRow = rows[winner.model + currentScenario];
+          if (winRow) winRow.classList.add('winner-row');
+        }
+      }
+
+      // ── Summary ───────────────────────────────────────────────────────────
+      let qualifying = allResults.filter(r => r.ttfb_ms && !r.error);
+      if (s.expectTool) qualifying = qualifying.filter(r => r.tool_call === s.expectTool);
+      qualifying.sort((a, b) => (a._score ?? a.ttfb_ms) - (b._score ?? b.ttfb_ms));
+
+      const el = document.getElementById('summary');
+      el.classList.remove('hidden');
+      if (qualifying.length) {
+        const w = qualifying[0];
+        const baselineId = currentScenario === 'tier2' ? 'openai:gpt-5.1' : 'openai:gpt-4o-mini';
+        const baselineResult = allResults.find(r => r.model === baselineId);
+        const baselineTTFB = baselineResult?.ttfb_ms ?? (currentScenario === 'tier2' ? 500 : 506);
+        const pct = Math.round((1 - w.ttfb_ms / baselineTTFB) * 100);
+        const baselineLabel = baselineResult ? `${baselineTTFB}ms (live)` : `${baselineTTFB}ms (historical)`;
+
+        el.innerHTML = `
+          <div class="text-base font-bold mb-1">🏆 ${w.label} wins — avg ${w.ttfb_ms}ms TTFB over ${numRuns} runs (${pct > 0 ? pct + '% faster' : Math.abs(pct) + '% slower'} than baseline ${baselineLabel})</div>
+          <div class="text-xs text-[#8b949e] mb-3">Sorted by weighted score: 50% TTFB + 50% cost. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
+          <div class="grid gap-1.5">
+            ${allResults.map(r => `
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-mono">
+                <span class="text-[#e6edf3] w-36 truncate shrink-0">${r.label}</span>
+                <span class="${ttfbColor(r.ttfb_ms)}">${r.ttfb_ms != null ? r.ttfb_ms + 'ms' : 'ERR'}</span>
+                ${r.avg_prompt_tokens != null ? `<span class="text-[#8b949e]">${r.avg_prompt_tokens}in/${r.avg_completion_tokens}out</span>` : ''}
+                ${r.costPerTurn != null ? `<span class="text-[#8b949e]">${fmtCost(r.costPerTurn)}/turn</span>` : ''}
+                ${s.expectTool ? (r.tool_call === s.expectTool ? '<span class="text-green-400">✓</span>' : '<span class="text-red-400">✗</span>') : ''}
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        el.innerHTML = `<div class="text-red-400 font-bold">✗ No qualifying results${s.expectTool ? ' — no model called ' + s.expectTool : ''}</div>`;
+      }
+
+      btn.disabled = false; btn.textContent = '▶ Run Again';
+      document.getElementById('runStatus').textContent = `Done (${numRuns} runs each)`;
+    }
+
+    setScenario('new');
+  </script>
+</body>
+
+</html>
