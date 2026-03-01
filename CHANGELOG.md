@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.344 - Benchmark: Fix TTFB Pre-Fetch Timestamp (Backend Sync)
+- **Frontend**: No changes.
+
 ## v3.343 - Benchmark: Fix TTFB Timestamp (Backend Sync)
 - **Frontend**: No changes.
 
