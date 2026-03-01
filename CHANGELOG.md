@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.332 - Benchmark: Token Estimation Fallback (Backend Sync)
+- **Frontend**: No code changes — version sync with backend v3.332 character-count token estimation for `@hf/` Workers AI models.
+
 ## v3.331 - Benchmark: Workers AI Token Count Fallback (Backend Sync)
 - **Frontend**: No code changes — version sync with backend v3.331 Workers AI token fallback.
 
