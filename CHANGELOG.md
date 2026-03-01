@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.346 - Benchmark: Gemini Warm Cache Variants
+- **Feature**: Added `gemini:gemini-2.5-pro-warm` and `gemini:gemini-2.5-flash-warm` to Tier 2 scenario. Backend fires a `max_tokens:1` preflight before the measured call (same as `gpt-5.1-warm`), priming Gemini's implicit cache. Runs 1+ skip the warmup.
+- **UI**: Renamed existing Gemini rows to "cold" for clarity. Added `-warm` pricing entries to `MODEL_PRICING` (same rates as base model).
+
 ## v3.345 - Benchmark: Fix Gemini Flash Lite Model ID
 - **Fix**: `gemini-2.0-flash-lite` blocked for new accounts (same restriction as entire 2.0 line). Replaced with `gemini-2.5-flash-lite` (confirmed available).
 

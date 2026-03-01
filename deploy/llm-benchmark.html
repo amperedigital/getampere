@@ -165,7 +165,9 @@
       '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
       // Gemini (Google AI) — IDs confirmed available via models list
       'gemini:gemini-2.5-flash': { in: 0.150, out: 0.600 },
+      'gemini:gemini-2.5-flash-warm': { in: 0.150, out: 0.600 },
       'gemini:gemini-2.5-pro': { in: 1.250, out: 10.00 },
+      'gemini:gemini-2.5-pro-warm': { in: 1.250, out: 10.00 },
       'gemini:gemini-2.5-flash-lite': { in: 0.075, out: 0.300 },
     };
 
@@ -257,9 +259,11 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         withTools: false,
         models: [
           { id: "openai:gpt-5.1", label: "gpt-5.1 cold", tier: "T2", note: "baseline" },
-          { id: "openai:gpt-5.1-warm", label: "gpt-5.1 warm cache", tier: "T2", note: "prod" },
-          { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
-          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
+          { id: "openai:gpt-5.1-warm", label: "gpt-5.1 warm", tier: "T2", note: "prod" },
+          { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro cold", tier: "T2", note: "vs gpt-5.1" },
+          { id: "gemini:gemini-2.5-pro-warm", label: "Gemini 2.5 Pro warm", tier: "T2", note: "prod" },
+          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash cold", tier: "T2", note: "mid-tier" },
+          { id: "gemini:gemini-2.5-flash-warm", label: "Gemini 2.5 Flash warm", tier: "T2", note: "prod" },
           { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T2" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
