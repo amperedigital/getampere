@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.335 - Benchmark: Workers AI Tool Call Fix (Backend Sync)
+## v3.336 - Benchmark: Summary Sort Order + Expand Button Visibility
+
+- **Fix**: Summary list at the bottom was rendering `allResults` in original insertion order rather than best-value sort order. Now uses `sortedAll` (same hoisted array that reorders the table rows) so winner always appears first.
+- **Fix**: Expand button now uses a `requestAnimationFrame` DOM overflow check (`scrollHeight > clientHeight + 2`) instead of a character count heuristic. Button only appears when text is genuinely clamped — no phantom expand buttons on short responses.
+
 - **Frontend**: No code changes — version sync with backend v3.335 Workers AI native tool call detection fix.
 
 ## v3.334 - Benchmark: Favicon

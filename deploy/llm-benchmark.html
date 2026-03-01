@@ -454,9 +454,19 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
       }
 
       const safeKey = sanitizeId(rowKey);
-      const isLong = previewText.length > 120;
       cells[previewCellIdx].classList.add('preview-cell', 'leading-relaxed');
-      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<button class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300 bg-transparent border-none p-0" onclick="togglePreview('pi_${safeKey}', this)">[ expand ]</button>` : ''}`;
+      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>`;
+      // Only show expand button when text is actually clamped (DOM overflow check, not char count)
+      requestAnimationFrame(() => {
+        const el = document.getElementById(`pi_${safeKey}`);
+        if (el && el.scrollHeight > el.clientHeight + 2) {
+          const btn = document.createElement('button');
+          btn.className = 'text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300 bg-transparent border-none p-0';
+          btn.textContent = '[ expand ]';
+          btn.onclick = () => togglePreview(`pi_${safeKey}`, btn);
+          el.insertAdjacentElement('afterend', btn);
+        }
+      });
     }
 
     function togglePreview(id, btn) {
@@ -541,34 +551,36 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
       lastRunResults = allResults;
 
       // ── Weighted sort: best value = 50% speed + 50% cost ────────────────
+      // Score ALL results first (hoisted outside the valid.length guard so summary can use same order)
       const valid = allResults.filter(r => r.ttfb_ms && !r.error);
+      const ttfbVals = valid.map(r => r.ttfb_ms);
+      const costVals = valid.filter(r => r.costPerTurn != null).map(r => r.costPerTurn);
+      const [minT, maxT] = ttfbVals.length ? [Math.min(...ttfbVals), Math.max(...ttfbVals)] : [0, 1];
+      const [minC, maxC] = costVals.length ? [Math.min(...costVals), Math.max(...costVals)] : [0, 1];
+      const norm = (v, lo, hi) => hi === lo ? 0 : (v - lo) / (hi - lo);
+
+      allResults.forEach(r => {
+        if (!r.ttfb_ms || r.error) { r._score = Infinity; return; }
+        r._score = norm(r.ttfb_ms, minT, maxT) * 0.5 + (r.costPerTurn != null ? norm(r.costPerTurn, minC, maxC) : 0.5) * 0.5;
+      });
+
+      // sortedAll is used for BOTH the DOM table reorder AND the summary list
+      const sortedAll = [...allResults].sort((a, b) => (a._score ?? Infinity) - (b._score ?? Infinity));
+
       if (valid.length > 1) {
-        const ttfbVals = valid.map(r => r.ttfb_ms);
-        const costVals = valid.filter(r => r.costPerTurn != null).map(r => r.costPerTurn);
-        const [minT, maxT] = [Math.min(...ttfbVals), Math.max(...ttfbVals)];
-        const [minC, maxC] = costVals.length ? [Math.min(...costVals), Math.max(...costVals)] : [0, 1];
-        const norm = (v, lo, hi) => hi === lo ? 0 : (v - lo) / (hi - lo);
-
-        allResults.forEach(r => {
-          if (!r.ttfb_ms || r.error) { r._score = Infinity; return; }
-          r._score = norm(r.ttfb_ms, minT, maxT) * 0.5 + (r.costPerTurn != null ? norm(r.costPerTurn, minC, maxC) : 0.5) * 0.5;
-        });
-
-        const sorted = [...allResults].sort((a, b) => a._score - b._score);
         const tbody = document.getElementById('resultsBody');
-        sorted.forEach(r => { const tr = rows[r.model + currentScenario]; if (tr) tbody.appendChild(tr); });
-
-        const winner = sorted[0];
-        if (winner && !winner.error) {
+        sortedAll.forEach(r => { const tr = rows[r.model + currentScenario]; if (tr) tbody.appendChild(tr); });
+        const winner = sortedAll.find(r => !r.error && r.ttfb_ms);
+        if (winner) {
           const winRow = rows[winner.model + currentScenario];
           if (winRow) winRow.classList.add('winner-row');
         }
       }
 
       // ── Summary ───────────────────────────────────────────────────────────
-      let qualifying = allResults.filter(r => r.ttfb_ms && !r.error);
+      let qualifying = sortedAll.filter(r => r.ttfb_ms && !r.error);
       if (s.expectTool) qualifying = qualifying.filter(r => r.tool_call === s.expectTool);
-      qualifying.sort((a, b) => (a._score ?? a.ttfb_ms) - (b._score ?? b.ttfb_ms));
+      // qualifying is already in sorted order (inherited from sortedAll)
 
       const el = document.getElementById('summary');
       el.classList.remove('hidden');
@@ -584,7 +596,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           <div class="text-base font-bold mb-1">🏆 ${w.label} wins — avg ${w.ttfb_ms}ms TTFB over ${numRuns} runs (${pct > 0 ? pct + '% faster' : Math.abs(pct) + '% slower'} than baseline ${baselineLabel})</div>
           <div class="text-xs text-[#8b949e] mb-3">Sorted by best value: 50% speed (TTFB) + 50% cost. 🏆 Winner = fastest <em>and</em> cheapest. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
           <div class="grid gap-1.5">
-            ${allResults.map(r => `
+            ${sortedAll.map(r => `
               <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-mono">
                 <span class="text-[#e6edf3] w-36 truncate shrink-0">${r.label}</span>
                 <span class="${ttfbColor(r.ttfb_ms)}">${r.ttfb_ms != null ? r.ttfb_ms + 'ms' : 'ERR'}</span>
