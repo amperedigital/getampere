@@ -1,6 +1,13 @@
 # Changelog
 
-## v3.332 - Benchmark: Token Estimation Fallback (Backend Sync)
+## v3.333 - Benchmark: Preview Expand Fix + Tab Overflow Fix
+
+- **Tab overflow**: Scenario tabs (`New User`, `Returning User`, etc.) no longer show a horizontal scrollbar — switched from `overflow-x-auto` to `flex-wrap` so tabs wrap to a second line instead of scrolling.
+- **Expand button**: Preview cell now uses a `<button>` element with the correct reference passed to `togglePreview()`. Button label properly toggles between `[ expand ]` and `[ collapse ]`. Previous `<span>` lost the reference on re-render.
+- **Preview cell layout**: Replaced `max-w-xs` (too narrow on desktop) with `.preview-cell` CSS class (`min-width: 200px`, `max-width: 380px`, `word-break: break-word`). Expanded text now has room to breathe.
+- **Line clamp**: Increased from 3 to 4 lines before truncating, giving more context at a glance before requiring expand.
+
+
 - **Frontend**: No code changes — version sync with backend v3.332 character-count token estimation for `@hf/` Workers AI models.
 
 ## v3.331 - Benchmark: Workers AI Token Count Fallback (Backend Sync)

@@ -25,11 +25,12 @@
 
     .preview-inner {
       display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
       white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .preview-inner.expanded {
@@ -37,6 +38,14 @@
       overflow: visible;
       -webkit-line-clamp: unset;
       line-clamp: unset;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .preview-cell {
+      min-width: 200px;
+      max-width: 380px;
+      word-break: break-word;
     }
 
     .winner-row td:first-child {
@@ -88,7 +97,7 @@
   </div>
 
   <!-- Tabs -->
-  <div id="tabs" class="flex border-b border-[#21262d] mb-5 overflow-x-auto gap-0"></div>
+  <div id="tabs" class="flex flex-wrap border-b border-[#21262d] mb-5 gap-0"></div>
 
   <!-- Scenario description -->
   <div id="scenarioDesc"
@@ -441,17 +450,15 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
 
       const safeKey = sanitizeId(rowKey);
       const isLong = previewText.length > 120;
-      cells[previewCellIdx].classList.add('max-w-xs', 'leading-relaxed');
-      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<span class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300" onclick="togglePreview('pi_${safeKey}')">[ expand]</span>` : ''}`;
+      cells[previewCellIdx].classList.add('preview-cell', 'leading-relaxed');
+      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<button class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300 bg-transparent border-none p-0" onclick="togglePreview('pi_${safeKey}', this)">[ expand ]</button>` : ''}`;
     }
 
-    function togglePreview(id) {
+    function togglePreview(id, btn) {
       const el = document.getElementById(id);
       if (!el) return;
-      const isExpanded = el.classList.contains('expanded');
-      el.classList.toggle('expanded');
-      const toggle = el.nextElementSibling;
-      if (toggle) toggle.textContent = isExpanded ? '[expand]' : '[collapse]';
+      const isExpanded = el.classList.toggle('expanded');
+      if (btn) btn.textContent = isExpanded ? '[ collapse ]' : '[ expand ]';
     }
 
     function rerenderRows() {
