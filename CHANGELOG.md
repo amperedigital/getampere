@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.336 - Benchmark: Summary Sort Order + Expand Button Visibility
+## v3.337 - Benchmark: Skip Warmup on Multi-Run
+
+- **Fix**: `gpt-5.1-warm` was firing a sequential warmup call before EVERY measured run, adding ~300-500ms overhead per run. Now `callModel` passes `skip_warmup: runIndex > 0` — warmup only fires on run 0. Runs 1+ use the already-warm cache without extra overhead, giving a fair warm-vs-cold comparison.
+
 
 - **Fix**: Summary list at the bottom was rendering `allResults` in original insertion order rather than best-value sort order. Now uses `sortedAll` (same hoisted array that reorders the table rows) so winner always appears first.
 - **Fix**: Expand button now uses a `requestAnimationFrame` DOM overflow check (`scrollHeight > clientHeight + 2`) instead of a character count heuristic. Button only appears when text is genuinely clamped — no phantom expand buttons on short responses.

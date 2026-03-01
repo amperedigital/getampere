@@ -482,11 +482,11 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
       lastRunResults.forEach(r => updateRow(r.model + currentScenario, 'done', r, s.expectTool));
     }
 
-    async function callModel(apiKey, model, s) {
+    async function callModel(apiKey, model, s, runIndex = 0) {
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
-        body: JSON.stringify({ system_prompt: s.system, user_message: s.user, with_tools: s.withTools, models: [model.id] }),
+        body: JSON.stringify({ system_prompt: s.system, user_message: s.user, with_tools: s.withTools, models: [model.id], skip_warmup: runIndex > 0 }),
         signal: AbortSignal.timeout(45000)
       });
       const data = await res.json();
@@ -514,7 +514,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
 
         for (let i = 0; i < numRuns; i++) {
           try {
-            const r = await callModel(apiKey, model, s);
+            const r = await callModel(apiKey, model, s, i);
             if (r.ttfb_ms !== null && !r.error) {
               ttfbs.push(r.ttfb_ms);
               if (r.prompt_tokens != null) promptToks.push(r.prompt_tokens);
