@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.334 - Benchmark: Favicon
+- **Frontend**: Added favicon block matching `tech-demo.html` — PNG 96x96, SVG, ICO, apple-touch-icon, webmanifest. Benchmark page had no favicon.
+
 ## v3.333 - Benchmark: Preview Expand Fix + Tab Overflow Fix
 
 - **Tab overflow**: Scenario tabs (`New User`, `Returning User`, etc.) no longer show a horizontal scrollbar — switched from `overflow-x-auto` to `flex-wrap` so tabs wrap to a second line instead of scrolling.
