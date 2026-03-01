@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.331 - Benchmark: Workers AI Token Count Fallback (Backend Sync)
+- **Frontend**: No code changes — version sync with backend v3.331 Workers AI token fallback.
+
 ## v3.330 - Benchmark: Fix False Language Flag
 
 - **Language detection fix**: `detectNonEnglish` regex narrowed from `[\u0100-\uFFFF]` (everything above basic Latin) to only actual non-Latin writing systems (Cyrillic, Arabic, Devanagari, Thai, CJK, Korean). Unicode typographic punctuation — smart quotes `"` `"` (U+201C/D), em dash `—` (U+2014), ellipsis `…` (U+2026) — is now correctly ignored. Gemma 3 and other models that use proper typographic English will no longer receive a false `⚠️ LANG` badge.
