@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.330 - Benchmark: Fix False Language Flag
+
+- **Language detection fix**: `detectNonEnglish` regex narrowed from `[\u0100-\uFFFF]` (everything above basic Latin) to only actual non-Latin writing systems (Cyrillic, Arabic, Devanagari, Thai, CJK, Korean). Unicode typographic punctuation — smart quotes `"` `"` (U+201C/D), em dash `—` (U+2014), ellipsis `…` (U+2026) — is now correctly ignored. Gemma 3 and other models that use proper typographic English will no longer receive a false `⚠️ LANG` badge.
+
 ## v3.329 - Benchmark: Total Column + Best Value Sort
 
 - **New "Total" column**: Splits cost display into two distinct columns — `Cost / Turn` (per-turn cost with formula breakdown) and `Total` (N runs × cost, color-coded green → yellow → orange by cost tier). Both displayed at `text-xl` for easy scanning.

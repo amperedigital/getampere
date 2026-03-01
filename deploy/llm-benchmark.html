@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.329">
+  <meta name="version" content="v3.330">
   <title>Ampere LLM Benchmark</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.329/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.330/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -329,7 +329,12 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
 
     function detectNonEnglish(text) {
       if (!text) return false;
-      return /[\u0100-\uFFFF]/.test(text);
+      // Only flag actual non-Latin writing systems.
+      // Excluded: U+0100–U+024F (extended Latin), U+2000–U+206F (typographic punctuation
+      // like smart quotes " " and em dash —), U+2070–U+209F (superscripts), U+20A0–U+20CF (currency).
+      // These appear in normal English text (Gemma/GPT use smart quotes and em dashes).
+      return /[\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u0E00-\u0E7F\u3000-\u9FFF\uAC00-\uD7FF\uF900-\uFAFF]/.test(text);
+      // Covers: Cyrillic, Arabic, Devanagari, Thai, CJK Unified, Korean, CJK Compatibility
     }
 
     function updateRow(rowKey, state, data, expectTool) {
