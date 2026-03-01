@@ -1,6 +1,12 @@
 # Changelog
 
-## v3.337 - Benchmark: Skip Warmup on Multi-Run
+## v3.338 - Benchmark: Gemini Model Support
+
+- **Feature**: Added Gemini routing via `gemini:` model ID prefix. Routes to Google's OpenAI-compatible endpoint (`generativelanguage.googleapis.com/v1beta/openai/chat/completions`) using `GEMINI_API_KEY` Cloudflare secret. Full streaming + tool calling support — `measureStream()` works unchanged.
+- **Frontend**: Added `Gemini 2.0 Flash` to New User + Returning User tabs (gpt-4o-mini peer, $0.10/$0.40 per 1M tokens). Added `Gemini 2.5 Pro`, `Gemini 2.5 Flash`, `Gemini 2.0 Flash` to Tier 2 tab (gpt-5.1 peers).
+- **Pricing**: Gemini pricing added to `MODEL_PRICING` map.
+- **Deploy note**: Requires `wrangler secret put GEMINI_API_KEY` before models will respond.
+
 
 - **Fix**: `gpt-5.1-warm` was firing a sequential warmup call before EVERY measured run, adding ~300-500ms overhead per run. Now `callModel` passes `skip_warmup: runIndex > 0` — warmup only fires on run 0. Runs 1+ use the already-warm cache without extra overhead, giving a fair warm-vs-cold comparison.
 
