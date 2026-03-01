@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.329 - Benchmark: Total Column + Best Value Sort
+
+- **New "Total" column**: Splits cost display into two distinct columns — `Cost / Turn` (per-turn cost with formula breakdown) and `Total` (N runs × cost, color-coded green → yellow → orange by cost tier). Both displayed at `text-xl` for easy scanning.
+- **Best value sort**: Table now sorts by weighted score (50% TTFB speed + 50% cost) after all runs complete. Winner row gets green highlight. Summary footer reads "Sorted by best value: fastest and cheapest."
+- **Zero-token fix**: Workers AI models that don't report SSE usage (e.g. Hermes 2 Pro) show `—` for tokens and cost instead of false `$0.00`.
+
 ## v3.328 - LLM Benchmark Full Rebuild
 
 - **llm-benchmark.html**: Complete Tailwind v4 rebuild. Moved source of truth from `.agent/` to `deploy/` directly. Removes entire `<style>` block, references shared `assets/css/styles.css`.

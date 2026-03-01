@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.328">
+  <meta name="version" content="v3.329">
   <title>Ampere LLM Benchmark</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.328/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.329/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -114,6 +114,9 @@
           <th
             class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] hidden sm:table-cell whitespace-nowrap">
             Cost / Turn</th>
+          <th
+            class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] hidden sm:table-cell whitespace-nowrap">
+            Total</th>
           <th
             class="bg-[#161b22] text-[#8b949e] text-left px-3 py-3 text-[11px] font-semibold uppercase tracking-wide border-b border-[#30363d] whitespace-nowrap">
             Tool Result</th>
@@ -308,6 +311,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           <td class="px-3 py-3 align-top">—</td>
           <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
           <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
+          <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
           <td class="px-3 py-3 align-top"><span class="text-[#8b949e] text-xs">—</span></td>
           <td class="px-3 py-3 align-top text-xs text-[#8b949e] max-w-xs">—</td>
         `;
@@ -361,48 +365,53 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         ? `<div class="text-2xl font-bold font-mono ${ttfbColor(ttfbVal)}">${ttfbVal}<span class="text-sm font-normal ml-0.5">ms</span>${overheadTag}</div>${rangeHtml}`
         : '<span class="text-red-400 text-xs font-mono">timeout</span>';
 
-      // Tokens
-      cells[3].innerHTML = r.avg_prompt_tokens != null
+      // Tokens — treat 0 as absent (Workers AI models that don't report usage return 0 not null)
+      const hasTokens = r.avg_prompt_tokens != null && r.avg_prompt_tokens > 0;
+      cells[3].innerHTML = hasTokens
         ? `<div class="text-xs font-mono"><span class="text-[#e6edf3]">${r.avg_prompt_tokens}</span><span class="text-[#8b949e]"> in</span></div>
            <div class="text-xs font-mono"><span class="text-[#e6edf3]">${r.avg_completion_tokens}</span><span class="text-[#8b949e]"> out</span></div>`
         : '<span class="text-[#8b949e] text-xs">—</span>';
 
-      // Cost / turn
-      if (r.costPerTurn != null) {
+      // Cost / turn + Total — only show if we have real token data (non-zero)
+      if (r.costPerTurn != null && hasTokens) {
         const cleanId = r.model.replace(/-warm$/, '');
         const p = MODEL_PRICING[r.model] || MODEL_PRICING[cleanId] || null;
         const totalCost = r.costPerTurn * numRuns;
-        const formula = p && r.avg_prompt_tokens != null
-          ? `<div class="text-[10px] text-[#484f58] mt-1 font-mono leading-relaxed">
+        // Cost/turn cell: prominent per-turn cost + formula breakdown
+        const formula = p
+          ? `<div class="text-[10px] text-[#484f58] mt-1.5 font-mono leading-relaxed">
                ${r.avg_prompt_tokens}×$${p.in}/M in<br>
-               +${r.avg_completion_tokens}×$${p.out}/M out<br>
-               <span class="text-[#8b949e]">= ${fmtCost(r.costPerTurn)}/turn</span><br>
-               <span class="text-[#8b949e]">${numRuns}× = ${fmtCost(totalCost)}</span>
+               +${r.avg_completion_tokens}×$${p.out}/M out
                ${p.est ? '<br><span class="text-yellow-500/60">~est.</span>' : ''}
              </div>`
           : '';
-        cells[4].innerHTML = `<div class="text-sm font-bold font-mono text-[#e6edf3]">${fmtCost(r.costPerTurn)}</div>${formula}`;
+        cells[4].innerHTML = `<div class="text-xl font-bold font-mono text-[#e6edf3]">${fmtCost(r.costPerTurn)}</div><div class="text-[10px] text-[#8b949e] font-mono">per turn</div>${formula}`;
+        // Total cell: large, colored by cost tier
+        const totalColor = totalCost < 0.0001 ? 'text-green-400' : totalCost < 0.001 ? 'text-yellow-400' : 'text-orange-400';
+        cells[5].innerHTML = `<div class="text-xl font-bold font-mono ${totalColor}">${fmtCost(totalCost)}</div><div class="text-[10px] text-[#8b949e] font-mono">${numRuns} runs</div>`;
       } else {
         cells[4].innerHTML = '<span class="text-[#8b949e] text-xs">—</span>';
+        cells[5].innerHTML = '<span class="text-[#8b949e] text-xs">—</span>';
       }
 
       // Tool result
       if (expectTool) {
         const pass = r.tool_call === expectTool;
         const isHallucination = !pass && detectHallucination(r, SCENARIOS[currentScenario]);
-        cells[5].innerHTML = pass
+        cells[6].innerHTML = pass
           ? `<span class="text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30">✓ PASS</span>
              <div class="text-[10px] text-cyan-400 mt-1 font-mono">${r.tool_call}</div>`
           : `<span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30">✗ FAIL</span>
              <div class="text-[10px] text-red-400 mt-1 font-mono">${r.tool_call || 'no tool'}</div>
              ${isHallucination ? '<span class="mt-1 inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30">⚠️ HALLUCINATION</span>' : ''}`;
       } else {
-        cells[5].innerHTML = r.tool_call
+        cells[6].innerHTML = r.tool_call
           ? `<span class="text-[#8b949e] text-xs">called: <span class="text-cyan-400 font-mono">${r.tool_call}</span></span>`
           : `<span class="text-[#8b949e] text-xs">✓ none</span>`;
       }
 
       // Preview
+      const previewCellIdx = 7;
       let previewText = r.response_preview || '';
       if (r.tool_call) {
         let toolSig = `🔧 ${r.tool_call}(...)`;
@@ -421,14 +430,14 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         : '';
 
       if (r.error) {
-        cells[6].innerHTML = `<span class="text-red-400 font-mono text-xs">${r.error}</span>`;
+        cells[previewCellIdx].innerHTML = `<span class="text-red-400 font-mono text-xs">${r.error}</span>`;
         return;
       }
 
       const safeKey = sanitizeId(rowKey);
       const isLong = previewText.length > 120;
-      cells[6].classList.add('max-w-xs', 'leading-relaxed');
-      cells[6].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<span class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300" onclick="togglePreview('pi_${safeKey}')">[expand]</span>` : ''}`;
+      cells[previewCellIdx].classList.add('max-w-xs', 'leading-relaxed');
+      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>${isLong ? `<span class="text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300" onclick="togglePreview('pi_${safeKey}')">[ expand]</span>` : ''}`;
     }
 
     function togglePreview(id) {
@@ -514,7 +523,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
 
       lastRunResults = allResults;
 
-      // ── Weighted sort: 50% speed + 50% cost ───────────────────────────────
+      // ── Weighted sort: best value = 50% speed + 50% cost ────────────────
       const valid = allResults.filter(r => r.ttfb_ms && !r.error);
       if (valid.length > 1) {
         const ttfbVals = valid.map(r => r.ttfb_ms);
@@ -556,7 +565,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
 
         el.innerHTML = `
           <div class="text-base font-bold mb-1">🏆 ${w.label} wins — avg ${w.ttfb_ms}ms TTFB over ${numRuns} runs (${pct > 0 ? pct + '% faster' : Math.abs(pct) + '% slower'} than baseline ${baselineLabel})</div>
-          <div class="text-xs text-[#8b949e] mb-3">Sorted by weighted score: 50% TTFB + 50% cost. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
+          <div class="text-xs text-[#8b949e] mb-3">Sorted by best value: 50% speed (TTFB) + 50% cost. 🏆 Winner = fastest <em>and</em> cheapest. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
           <div class="grid gap-1.5">
             ${allResults.map(r => `
               <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-mono">
