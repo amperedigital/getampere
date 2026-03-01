@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.340 - Benchmark: Fix Badge Layout + Correct Gemini Model IDs
+## v3.341 - Benchmark: Fix Column Balance + Gemini Model IDs
+
+- **Fix**: Tool accuracy column was bloating wider than preview. Added `whitespace-nowrap w-px` to tool cell so it only takes what it needs; preview gets remaining width.
+- **Fix**: Gemini 2.0 Flash model IDs (`gemini-2.0-flash`, `-001`) blocked for new accounts. Updated to confirmed-available models: `gemini-2.5-flash`, `gemini-2.5-pro`, `gemini-2.0-flash-lite`.
 
 - **Fix**: Note badge (e.g. "vs 4o-mini") was inline with the model name causing wrapping. Moved to a flex row below the label, alongside the tier badge.
 - **Fix**: `gemini-2.0-flash` generic alias deprecated by Google (404). Updated to `gemini-2.0-flash-001`, `gemini-2.5-flash-preview-05-20`, `gemini-2.5-pro-preview-05-06`.

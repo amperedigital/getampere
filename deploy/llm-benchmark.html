@@ -163,10 +163,10 @@
       '@cf/mistralai/mistral-small-3.1-24b-instruct': { in: 0.351, out: 0.560 },
       '@cf/meta/llama-3.3-70b-instruct-fp8-fast': { in: 0.293, out: 2.253 },
       '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
-      // Gemini (Google AI) — stable versioned IDs
-      'gemini:gemini-2.0-flash-001': { in: 0.100, out: 0.400 },
-      'gemini:gemini-2.5-flash-preview-05-20': { in: 0.150, out: 0.600 },
-      'gemini:gemini-2.5-pro-preview-05-06': { in: 1.250, out: 10.00 },
+      // Gemini (Google AI) — IDs confirmed available via models list
+      'gemini:gemini-2.5-flash': { in: 0.150, out: 0.600 },
+      'gemini:gemini-2.5-pro': { in: 1.250, out: 10.00 },
+      'gemini:gemini-2.0-flash-lite': { in: 0.075, out: 0.300 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -218,7 +218,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         withTools: false,
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
-          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T1", note: "vs 4o-mini" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T1", note: "No fn-call" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
@@ -239,7 +239,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         hallucinationMarkers: ["drew", "welcome back", "great to have you", "how can i assist", "returning", "i remember", "i know you", "previous"],
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
-          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T1", note: "vs 4o-mini" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
           { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
@@ -258,9 +258,9 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         models: [
           { id: "openai:gpt-5.1", label: "gpt-5.1 cold", tier: "T2", note: "baseline" },
           { id: "openai:gpt-5.1-warm", label: "gpt-5.1 warm cache", tier: "T2", note: "prod" },
-          { id: "gemini:gemini-2.5-pro-preview-05-06", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
-          { id: "gemini:gemini-2.5-flash-preview-05-20", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
-          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T2" },
+          { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
+          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
+          { id: "gemini:gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite", tier: "T2" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
@@ -338,8 +338,8 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
           <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
           <td class="px-3 py-3 align-top hidden sm:table-cell">—</td>
-          <td class="px-3 py-3 align-top"><span class="text-[#8b949e] text-xs">—</span></td>
-          <td class="px-3 py-3 align-top text-xs text-[#8b949e] max-w-xs">—</td>
+          <td class="px-3 py-3 align-top whitespace-nowrap w-px"><span class="text-[#8b949e] text-xs">—</span></td>
+          <td class="px-3 py-3 align-top text-xs text-[#8b949e]">—</td>
         `;
         rows[m.id + currentScenario] = tr;
         tbody.appendChild(tr);
@@ -435,10 +435,12 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           : `<span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30">✗ FAIL</span>
              <div class="text-[10px] text-red-400 mt-1 font-mono">${r.tool_call || 'no tool'}</div>
              ${isHallucination ? '<span class="mt-1 inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30">⚠️ HALLUCINATION</span>' : ''}`;
+        cells[6].className = 'px-3 py-3 align-top whitespace-nowrap w-px';
       } else {
         cells[6].innerHTML = r.tool_call
           ? `<span class="text-[#8b949e] text-xs">called: <span class="text-cyan-400 font-mono">${r.tool_call}</span></span>`
           : `<span class="text-[#8b949e] text-xs">✓ none</span>`;
+        cells[6].className = 'px-3 py-3 align-top whitespace-nowrap w-px';
       }
 
       // Preview
