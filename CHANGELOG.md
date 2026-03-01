@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.338 - Benchmark: Gemini Model Support
+## v3.339 - Benchmark: Dynamic Model Column Width
+
+- **Fix**: Model name column in table had fixed `w-48` cutting off longer labels (e.g. "Gemini 2.0 Flash"). Changed to `min-w-[10rem]` so the column expands to content width.
+- **Fix**: Summary list model label had `w-36 truncate` — removed fixed width and truncation, changed to `min-w-[8rem]` so all model names display in full.
+
 
 - **Feature**: Added Gemini routing via `gemini:` model ID prefix. Routes to Google's OpenAI-compatible endpoint (`generativelanguage.googleapis.com/v1beta/openai/chat/completions`) using `GEMINI_API_KEY` Cloudflare secret. Full streaming + tool calling support — `measureStream()` works unchanged.
 - **Frontend**: Added `Gemini 2.0 Flash` to New User + Returning User tabs (gpt-4o-mini peer, $0.10/$0.40 per 1M tokens). Added `Gemini 2.5 Pro`, `Gemini 2.5 Flash`, `Gemini 2.0 Flash` to Tier 2 tab (gpt-5.1 peers).

@@ -325,7 +325,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           ? `<span class="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-[#2d2d00] text-yellow-500 border border-yellow-500/30">${m.note}</span>`
           : '';
         tr.innerHTML = `
-          <td class="px-3 py-3 align-top sticky left-0 bg-[#0d1117] z-10 w-48">
+          <td class="px-3 py-3 align-top sticky left-0 bg-[#0d1117] z-10 min-w-[10rem]">
             <div class="text-sm font-semibold text-[#e6edf3]">${m.label}${noteBadge}</div>
             <div class="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${m.tier === 'T1' ? 'Tier 1' : 'Tier 2'}</div>
             <div class="text-[10px] text-[#484f58] mt-1 font-mono break-all">${m.id}</div>
@@ -607,7 +607,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           <div class="grid gap-1.5">
             ${sortedAll.map(r => `
               <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-mono">
-                <span class="text-[#e6edf3] w-36 truncate shrink-0">${r.label}</span>
+                <span class="text-[#e6edf3] min-w-[8rem] shrink-0">${r.label}</span>
                 <span class="${ttfbColor(r.ttfb_ms)}">${r.ttfb_ms != null ? r.ttfb_ms + 'ms' : 'ERR'}</span>
                 ${r.avg_prompt_tokens != null ? `<span class="text-[#8b949e]">${r.avg_prompt_tokens}in/${r.avg_completion_tokens}out</span>` : ''}
                 ${r.costPerTurn != null ? `<span class="text-[#8b949e]">${fmtCost(r.costPerTurn)}/turn</span>` : ''}
