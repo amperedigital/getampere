@@ -1,6 +1,6 @@
-// v3.345: Console Log Pipe — sends browser console.log/warn/error to worker logs via /debug/console
+// v3.346: Console Log Pipe — sends browser console.log/warn/error to worker logs via /debug/console
 // Moved here from global.js because ai-chat.js is loaded by both index.html and tech-demo.html
-console.log('[AmpereAI] v3.345 Loaded');
+console.log('[AmpereAI] v3.346 Loaded');
 (function () {
     const PIPE_URL = 'https://memory-api.tight-butterfly-7b71.workers.dev/debug/console';
     const FLUSH_MS = 2000;
