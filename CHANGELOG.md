@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.335 - Benchmark: Workers AI Tool Call Fix (Backend Sync)
+- **Frontend**: No code changes — version sync with backend v3.335 Workers AI native tool call detection fix.
+
 ## v3.334 - Benchmark: Favicon
 - **Frontend**: Added favicon block matching `tech-demo.html` — PNG 96x96, SVG, ICO, apple-touch-icon, webmanifest. Benchmark page had no favicon.
 
