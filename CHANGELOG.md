@@ -1,6 +1,8 @@
 # Changelog
 
-## v3.344 - Benchmark: Fix TTFB Pre-Fetch Timestamp (Backend Sync)
+## v3.345 - Benchmark: Fix Gemini Flash Lite Model ID
+- **Fix**: `gemini-2.0-flash-lite` blocked for new accounts (same restriction as entire 2.0 line). Replaced with `gemini-2.5-flash-lite` (confirmed available).
+
 - **Frontend**: No changes.
 
 ## v3.343 - Benchmark: Fix TTFB Timestamp (Backend Sync)
