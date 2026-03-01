@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.342 - Benchmark: Fix TTFB Measurement (Backend Sync)
+- **Frontend**: No changes.
+
 ## v3.341 - Benchmark: Fix Column Balance + Gemini Model IDs
 
 - **Fix**: Tool accuracy column was bloating wider than preview. Added `whitespace-nowrap w-px` to tool cell so it only takes what it needs; preview gets remaining width.
