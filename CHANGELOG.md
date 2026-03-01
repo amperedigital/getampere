@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.339 - Benchmark: Dynamic Model Column Width
+## v3.340 - Benchmark: Fix Badge Layout + Correct Gemini Model IDs
+
+- **Fix**: Note badge (e.g. "vs 4o-mini") was inline with the model name causing wrapping. Moved to a flex row below the label, alongside the tier badge.
+- **Fix**: `gemini-2.0-flash` generic alias deprecated by Google (404). Updated to `gemini-2.0-flash-001`, `gemini-2.5-flash-preview-05-20`, `gemini-2.5-pro-preview-05-06`.
 
 - **Fix**: Model name column in table had fixed `w-48` cutting off longer labels (e.g. "Gemini 2.0 Flash"). Changed to `min-w-[10rem]` so the column expands to content width.
 - **Fix**: Summary list model label had `w-36 truncate` — removed fixed width and truncation, changed to `min-w-[8rem]` so all model names display in full.

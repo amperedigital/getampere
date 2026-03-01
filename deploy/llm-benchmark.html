@@ -163,10 +163,10 @@
       '@cf/mistralai/mistral-small-3.1-24b-instruct': { in: 0.351, out: 0.560 },
       '@cf/meta/llama-3.3-70b-instruct-fp8-fast': { in: 0.293, out: 2.253 },
       '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
-      // Gemini (Google AI)
-      'gemini:gemini-2.0-flash': { in: 0.100, out: 0.400 },
-      'gemini:gemini-2.5-flash': { in: 0.150, out: 0.600 },
-      'gemini:gemini-2.5-pro': { in: 1.250, out: 10.00 },
+      // Gemini (Google AI) — stable versioned IDs
+      'gemini:gemini-2.0-flash-001': { in: 0.100, out: 0.400 },
+      'gemini:gemini-2.5-flash-preview-05-20': { in: 0.150, out: 0.600 },
+      'gemini:gemini-2.5-pro-preview-05-06': { in: 1.250, out: 10.00 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -218,7 +218,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         withTools: false,
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
-          { id: "gemini:gemini-2.0-flash", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T1", note: "No fn-call" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
@@ -239,7 +239,7 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         hallucinationMarkers: ["drew", "welcome back", "great to have you", "how can i assist", "returning", "i remember", "i know you", "previous"],
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
-          { id: "gemini:gemini-2.0-flash", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T1", note: "vs 4o-mini" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1" },
           { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
@@ -258,9 +258,9 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
         models: [
           { id: "openai:gpt-5.1", label: "gpt-5.1 cold", tier: "T2", note: "baseline" },
           { id: "openai:gpt-5.1-warm", label: "gpt-5.1 warm cache", tier: "T2", note: "prod" },
-          { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
-          { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
-          { id: "gemini:gemini-2.0-flash", label: "Gemini 2.0 Flash", tier: "T2" },
+          { id: "gemini:gemini-2.5-pro-preview-05-06", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
+          { id: "gemini:gemini-2.5-flash-preview-05-20", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
+          { id: "gemini:gemini-2.0-flash-001", label: "Gemini 2.0 Flash", tier: "T2" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
@@ -326,8 +326,11 @@ Drew wants to know more about Ampere AI's pricing. Give a warm, helpful 2-senten
           : '';
         tr.innerHTML = `
           <td class="px-3 py-3 align-top sticky left-0 bg-[#0d1117] z-10 min-w-[10rem]">
-            <div class="text-sm font-semibold text-[#e6edf3]">${m.label}${noteBadge}</div>
-            <div class="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${m.tier === 'T1' ? 'Tier 1' : 'Tier 2'}</div>
+            <div class="text-sm font-semibold text-[#e6edf3] whitespace-nowrap">${m.label}</div>
+            <div class="flex items-center gap-1 mt-1 flex-wrap">
+              <div class="inline-block text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${m.tier === 'T1' ? 'Tier 1' : 'Tier 2'}</div>
+              ${noteBadge}
+            </div>
             <div class="text-[10px] text-[#484f58] mt-1 font-mono break-all">${m.id}</div>
           </td>
           <td class="px-3 py-3 align-top whitespace-nowrap"><span class="text-[#484f58] text-xs">— idle</span></td>
