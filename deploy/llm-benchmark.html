@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.347">
+  <meta name="version" content="v3.348">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.347/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.348/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -94,7 +94,7 @@
         class="bg-[#0d1117] border border-orange-400/30 text-orange-400 px-2 py-1 rounded text-xs font-mono w-20 text-center focus:outline-none">
       ms
     </label>
-    <button id="runBtn" onclick="runBenchmark()"
+    <button id="runBtn" onclick="runBenchmarkSafe()"
       class="bg-[#238636] hover:bg-[#2ea043] disabled:bg-[#30363d] disabled:text-[#8b949e] disabled:cursor-not-allowed text-white px-5 py-2 rounded-md text-sm font-semibold transition-colors cursor-pointer">
       ▶ Run Benchmark
     </button>
@@ -169,6 +169,8 @@
       'gemini:gemini-2.5-pro': { in: 1.250, out: 10.00 },
       'gemini:gemini-2.5-pro-warm': { in: 1.250, out: 10.00 },
       'gemini:gemini-2.5-flash-lite': { in: 0.075, out: 0.300 },
+      'gemini:gemini-2.5-flash-lite-warm': { in: 0.075, out: 0.300 },
+      '@cf/google/gemma-3-12b-it-warm': { in: 0.345, out: 0.556 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -269,7 +271,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
         label: "🆕 New User",
         desc: "<strong>Tier 1 — New visitor.</strong> Expect: friendly greeting, ask for name. No tool call. Tests conversational quality.",
         system: NEW_USER_SYSTEM,
-        user: "Hello",
+        user: "Hi Emily, what's one thing Ampere AI does?",
         expectTool: null,
         withTools: false,
         models: [
@@ -308,7 +310,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
         label: "💬 Tier 2 vs gpt-5.1",
         desc: "<strong>Tier 2 — Conversational quality + speed vs gpt-5.1.</strong> gpt-5.1-warm fires a cache warmup call first. Gemma 3 = no function calling.",
         system: CONV_SYSTEM,
-        user: "What does Ampere AI cost?",
+        user: "Hi",
         expectTool: null,
         withTools: false,
         models: [
@@ -318,8 +320,10 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
           { id: "gemini:gemini-2.5-pro-warm", label: "Gemini 2.5 Pro warm", tier: "T2", note: "prod" },
           { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash cold", tier: "T2", note: "mid-tier" },
           { id: "gemini:gemini-2.5-flash-warm", label: "Gemini 2.5 Flash warm", tier: "T2", note: "prod" },
-          { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T2" },
-          { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
+          { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite cold", tier: "T2" },
+          { id: "gemini:gemini-2.5-flash-lite-warm", label: "Gemini 2.5 Flash Lite warm", tier: "T2" },
+          { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B cold", tier: "T2", note: "No fn-call" },
+          { id: "@cf/google/gemma-3-12b-it-warm", label: "Gemma 3 12B warm", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
@@ -528,16 +532,26 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
       const safeKey = sanitizeId(rowKey);
       cells[previewCellIdx].classList.add('preview-cell', 'leading-relaxed');
       cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>`;
-      // Only show expand button when text is actually clamped (DOM overflow check, not char count)
+      // Show expand button when clamped — check on render AND on column resize via ResizeObserver
       requestAnimationFrame(() => {
         const el = document.getElementById(`pi_${safeKey}`);
-        if (el && el.scrollHeight > el.clientHeight + 2) {
-          const btn = document.createElement('button');
-          btn.className = 'text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300 bg-transparent border-none p-0';
-          btn.textContent = '[ expand ]';
-          btn.onclick = () => togglePreview(`pi_${safeKey}`, btn);
-          el.insertAdjacentElement('afterend', btn);
-        }
+        if (!el) return;
+        const syncBtn = () => {
+          const isClamped = el.scrollHeight > el.clientHeight + 2;
+          let btn = el.nextElementSibling;
+          if (isClamped && (!btn || btn.tagName !== 'BUTTON')) {
+            btn = document.createElement('button');
+            btn.className = 'text-blue-400 text-[10px] mt-1 block cursor-pointer hover:text-blue-300 bg-transparent border-none p-0';
+            btn.textContent = '[ expand ]';
+            btn.onclick = () => togglePreview(`pi_${safeKey}`, btn);
+            el.insertAdjacentElement('afterend', btn);
+          } else if (!isClamped && btn && btn.tagName === 'BUTTON' && btn.textContent === '[ expand ]') {
+            btn.remove();
+          }
+        };
+        syncBtn();
+        const ro = new ResizeObserver(syncBtn);
+        ro.observe(el);
       });
     }
 
@@ -625,7 +639,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
       // ── Weighted sort: best value = 50% speed + 50% cost ────────────────
       // Score ALL results first (hoisted outside the valid.length guard so summary can use same order)
       const valid = allResults.filter(r => r.ttfb_ms && !r.error);
-      const ttfbVals = valid.map(r => r.ttfb_ms);
+      const ttfbVal = vp(r => r.ttfb_ms);
       const costVals = valid.filter(r => r.costPerTurn != null).map(r => r.costPerTurn);
       const [minT, maxT] = ttfbVals.length ? [Math.min(...ttfbVals), Math.max(...ttfbVals)] : [0, 1];
       const [minC, maxC] = costVals.length ? [Math.min(...costVals), Math.max(...costVals)] : [0, 1];
@@ -637,7 +651,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
       });
 
       // sortedAll is used for BOTH the DOM table reorder AND the summary list
-      const sortedAll = [...allResults].sort((a, b) => (a._score ?? Infinity) - (b._sco ??ty));
+      const sortedAll = [...allResults].sort((a, b) => (a._score ?? Infinity) - (b._score ?? Infinity));
 
       if (valid.length > 1) {
         const tbody = document.getElementById('resultsBody');
@@ -685,6 +699,15 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
 
       btn.disabled = false; btn.textContent = '▶ Run Again';
       document.getElementById('runStatus').textContent = `Done (${numRuns} runs each)`;
+    }
+    // Safety net: if runBenchmark throws unexpectedly, always re-enable the button
+    async function runBenchmarkSafe() {
+      const btn = document.getElementById('runBtn');
+      try { await runBenchmark(); } catch (e) {
+        console.error('Benchmark error:', e);
+        if (btn) { btn.disabled = false; btn.textContent = '▶ Run Again'; }
+        document.getElementById('runStatus').textContent = 'Error — see console';
+      }
     }
 
     setScenario('new');

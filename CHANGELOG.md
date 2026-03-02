@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.348 - Benchmark: Bug Fixes + All Warm Variants
+- **Fix (Critical)**: `runBenchmark()` had a JS syntax error (`b._sco ??ty`) on the sort line — threw a `ReferenceError` before reaching `btn.disabled = false`, leaving the button permanently locked. Fixed typo. Button now also wired to `runBenchmarkSafe()` wrapper so any future uncaught error still re-enables the button.
+- **Fix**: Expand button now uses `ResizeObserver` per preview element instead of a one-time `requestAnimationFrame` check. Button correctly appears/disappears as the column width changes (e.g. table scroll or window resize).
+- **Feature**: Added `gemini:gemini-2.5-flash-lite-warm` and `@cf/google/gemma-3-12b-it-warm` to Tier 2 scenario with pricing entries. Workers AI warm variant (Gemma) fires a max_tokens:1 preflight `AI.run()` call to warm the model container.
+- **Fix**: Tier 2 user message changed from `"What does Ampere AI cost?"` to `"Hi"` — prevents models from hallucinating fake pricing numbers, keeps response length equal across all models.
+
 ## v3.347 - Benchmark: Fix Warm Cache Logic (Two Bugs)
 - **Bug 1 (Root cause)**: Warmup call was sending a dummy `"."` user message instead of the real user message. Cache keys are keyed on the exact prompt prefix — a different message warms a completely different cache slot. Fixed: warmup now passes the same `messages` array as the real call, just with `max_tokens: 1`.
 - **Bug 2 (Root cause)**: `CONV_SYSTEM` was ~70 tokens. Both OpenAI and Gemini require a minimum of **1024 tokens** in the cached prefix for caching to activate. A 70-token prompt caches nothing — every warmup call was wasted, making cold systematically slower (two sequential requests) than warm (one request) with no benefit. Fixed: `CONV_SYSTEM` is now ~1300 tokens using a production-representative condensed prompt.
