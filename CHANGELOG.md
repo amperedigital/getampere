@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.347 - Benchmark: Fix Warm Cache Logic (Two Bugs)
+- **Bug 1 (Root cause)**: Warmup call was sending a dummy `"."` user message instead of the real user message. Cache keys are keyed on the exact prompt prefix — a different message warms a completely different cache slot. Fixed: warmup now passes the same `messages` array as the real call, just with `max_tokens: 1`.
+- **Bug 2 (Root cause)**: `CONV_SYSTEM` was ~70 tokens. Both OpenAI and Gemini require a minimum of **1024 tokens** in the cached prefix for caching to activate. A 70-token prompt caches nothing — every warmup call was wasted, making cold systematically slower (two sequential requests) than warm (one request) with no benefit. Fixed: `CONV_SYSTEM` is now ~1300 tokens using a production-representative condensed prompt.
+
 ## v3.346 - Benchmark: Gemini Warm Cache Variants
 - **Feature**: Added `gemini:gemini-2.5-pro-warm` and `gemini:gemini-2.5-flash-warm` to Tier 2 scenario. Backend fires a `max_tokens:1` preflight before the measured call (same as `gpt-5.1-warm`), priming Gemini's implicit cache. Runs 1+ skip the warmup.
 - **UI**: Renamed existing Gemini rows to "cold" for clarity. Added `-warm` pricing entries to `MODEL_PRICING` (same rates as base model).
