@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.351 - Benchmark: Remove Gemini/Gemma Warm Variants
+- **Fix**: Removed `gemini-*-warm` and `gemma-*-warm` rows from Tier 2. Gemini's implicit context caching is a native API feature and does not work through the OpenAI-compat endpoint (`v1beta/openai/...`). Workers AI has no token-level caching at all. Both warm variants were producing higher TTFB than cold (extra warmup request with no cache benefit). Only `gpt-5.1-warm` remains — OpenAI prompt caching works correctly through the standard API.
+- **Cleanup**: Removed "cold" label suffix from Gemini/Gemma rows since there is no warm counterpart.
+
 ## v3.350 - Benchmark: Revert New User Message
 - **Fix**: New User scenario user message accidentally changed to `"Hi Emily, what's one thing Ampere AI does?"` in v3.348, causing verbose multi-sentence responses. Restored to `"Hello"`.
 
