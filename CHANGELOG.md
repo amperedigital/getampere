@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.349 - Benchmark: Fix Corrupt Sort Line
+- **Fix**: Line 642 was corrupted to `const ttfbVal = vp(r => r.ttfb_ms)` — restored to `const ttfbVals = valid.map(r => r.ttfb_ms)`. This was the last JS crash preventing the benchmark from completing.
+
 ## v3.348 - Benchmark: Bug Fixes + All Warm Variants
 - **Fix (Critical)**: `runBenchmark()` had a JS syntax error (`b._sco ??ty`) on the sort line — threw a `ReferenceError` before reaching `btn.disabled = false`, leaving the button permanently locked. Fixed typo. Button now also wired to `runBenchmarkSafe()` wrapper so any future uncaught error still re-enables the button.
 - **Fix**: Expand button now uses `ResizeObserver` per preview element instead of a one-time `requestAnimationFrame` check. Button correctly appears/disappears as the column width changes (e.g. table scroll or window resize).
