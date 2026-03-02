@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="v3.355">
+    <title>Ampere Router Monitor</title>
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.354/deploy/assets/css/styles.css">
+    <style>
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .live-dot {
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        .new-row {
+            animation: slide-in 0.2s ease-out;
+        }
+
+        tbody tr {
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .tier-t1 {
+            color: #58a6ff;
+        }
+
+        .tier-t2 {
+            color: #a371f7;
+        }
+
+        .result-ok {
+            color: #3fb950;
+        }
+
+        .result-fallback {
+            color: #e3b341;
+        }
+
+        .result-error {
+            color: #f85149;
+        }
+
+        .step-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: 'DM Sans', monospace;
+            letter-spacing: 0.03em;
+        }
+
+        .step-CLASSIFY {
+            background: #1c2d3f;
+            color: #58a6ff;
+        }
+
+        .step-T1_ATTEMPT {
+            background: #1a2a1c;
+            color: #3fb950;
+        }
+
+        .step-T1_ACQUIRED {
+            background: #1a2730;
+            color: #79c0ff;
+        }
+
+        .step-T1_FIRST_BYTE {
+            background: #1e2d13;
+            color: #7ee787;
+        }
+
+        .step-T1_TOOL_CALL {
+            background: #2d1f0a;
+            color: #e3b341;
+        }
+
+        .step-T1_FALLBACK {
+            background: #2d1e00;
+            color: #f0883e;
+            border: 1px solid #f0883e44;
+        }
+
+        .step-T2_ATTEMPT {
+            background: #251a3b;
+            color: #a371f7;
+        }
+
+        .step-T2_FALLBACK {
+            background: #3b1a1f;
+            color: #f85149;
+            border: 1px solid #f8514944;
+        }
+
+        .step-T2_FIRST_BYTE {
+            background: #2a1e3a;
+            color: #d2a8ff;
+        }
+
+        .badge-wai {
+            background: #1a2d1a;
+            color: #3fb950;
+        }
+
+        .badge-gemini {
+            background: #1e2340;
+            color: #79c0ff;
+        }
+
+        .badge-openai {
+            background: #1a1a1a;
+            color: #8b949e;
+        }
+
+        .panel-scroll {
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #30363d #0d1117;
+        }
+
+        .conn-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .conn-connected {
+            background: #3fb950;
+        }
+
+        .conn-polling {
+            background: #e3b341;
+        }
+
+        .conn-error {
+            background: #f85149;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0d1117] text-[#e6edf3] min-h-screen p-4 sm:p-6">
+
+    <!-- Header -->
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-bold text-blue-400 mb-0.5">⚡ Ampere Router Monitor</h1>
+            <p class="text-xs text-[#8b949e]">Live routing decisions — tier, model, backend, TTFB, tool calls, fallbacks
+            </p>
+        </div>
+        <div id="connStatus"
+            class="flex items-center gap-2 text-xs text-[#8b949e] bg-[#161b22] border border-[#30363d] px-3 py-1.5 rounded-full">
+            <span id="connDot" class="conn-indicator conn-polling live-dot"></span>
+            <span id="connLabel">Connecting...</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-wrap gap-2 mb-5 items-center">
+        <input type="text" id="apiKey" placeholder="x-api-key" value="dev-secret-key"
+            class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500">
+        <input type="text" id="workspaceId" placeholder="workspace (emily)" value="emily"
+            class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-36 focus:outline-none focus:border-blue-500">
+        <select id="filterTier"
+            class="bg-[#161b22] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs focus:outline-none focus:border-blue-500">
+            <option value="">All Tiers</option>
+            <option value="tier1">Tier 1</option>
+            <option value="tier2">Tier 2</option>
+        </select>
+        <select id="filterResult"
+            class="bg-[#161b22] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs focus:outline-none focus:border-blue-500">
+            <option value="">All Results</option>
+            <option value="ok">Success ✅</option>
+            <option value="fallback">Fallback ⚠️</option>
+        </select>
+        <button onclick="clearAll()"
+            class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs cursor-pointer transition-colors">
+            Clear
+        </button>
+        <button onclick="reconnect()"
+            class="bg-[#238636] hover:bg-[#2ea043] text-white px-4 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-colors">
+            ⟳ Reconnect
+        </button>
+        <span class="text-xs text-[#8b949e] ml-auto" id="eventCount">0 events</span>
+    </div>
+
+    <!-- Two-panel layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Panel A: Routing Table -->
+        <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+            <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-[#e6edf3]">Routing Table</h2>
+                <span class="text-xs text-[#8b949e]" id="routeCount">0 turns</span>
+            </div>
+            <div class="panel-scroll">
+                <table class="w-full text-xs border-collapse">
+                    <thead class="sticky top-0 bg-[#161b22] z-10">
+                        <tr class="text-[#8b949e] text-left">
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Time</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">reqId</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tier</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Model</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Bknd</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Acq</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">TTFB</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tools</th>
+                            <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routingTbody">
+                        <tr>
+                            <td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel B: Live Event Stream -->
+        <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+            <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-[#e6edf3]">Event Stream</h2>
+                <div class="flex gap-2 items-center">
+                    <label class="text-xs text-[#8b949e] flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" id="autoScroll" checked class="accent-blue-500"> auto-scroll
+                    </label>
+                </div>
+            </div>
+            <div class="panel-scroll" id="eventStream">
+                <div class="px-4 py-8 text-center text-[#8b949e] text-xs" id="streamPlaceholder">Waiting for events…
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transcript Panel -->
+    <div class="mt-4 bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-[#e6edf3]">Conversation Transcript</h2>
+            <span class="text-xs text-[#8b949e]" id="convCount">0 turns</span>
+        </div>
+        <div class="panel-scroll" id="transcript">
+            <div class="px-4 py-8 text-center text-[#8b949e] text-xs">Transcript data appears when tool call events
+                arrive…</div>
+        </div>
+    </div>
+
+    <script>
+        // ── State ─────────────────────────────────────────────────────────────────────
+        const API_BASE = window.location.origin.includes('localhost')
+            ? 'http://localhost:8787'
+            : 'https://memory-api.tight-butterfly-7b71.workers.dev';
+
+        let allEvents = [];       // all raw router_event objects
+        let routeMap = {};        // reqId → aggregated row data
+        let pollInterval = null;
+        let ws = null;
+        let lastSeenTs = 0;
+
+        // ── Utils ─────────────────────────────────────────────────────────────────────
+        const fmt = {
+            time: ts => new Date(ts).toLocaleTimeString('en-US', { hour12: false }),
+            ms: v => v != null ? `${v}ms` : '—',
+            id: id => `<span class="font-mono text-[#8b949e]">${id}</span>`,
+            tier: t => {
+                if (!t) return '—';
+                const cls = t === 'tier1' ? 'tier-t1' : 'tier-t2';
+                const label = t === 'tier1' ? 'T1' : 'T2';
+                return `<span class="${cls} font-semibold">${label}</span>`;
+            },
+            model: m => {
+                if (!m) return '—';
+                const short = m.replace('@cf/ibm-granite/', '').replace('@cf/meta/', '').replace('@cf/google/', '')
+                    .replace('gemini:', '').replace('openai:', '')
+                    .replace('-instruct', '').replace('-lite', '-lite');
+                return `<span class="font-mono text-[#c9d1d9]" title="${m}">${short}</span>`;
+            },
+            backend: b => {
+                const cls = b === 'workersai' ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : 'badge-openai';
+                const label = b === 'workersai' ? 'CF' : b === 'gemini' ? 'GEM' : 'OAI';
+                return `<span class="step-badge ${cls}">${label}</span>`;
+            },
+            result: r => {
+                if (!r) return '<span class="text-[#8b949e]">…</span>';
+                if (r === 'ok') return '<span class="result-ok font-semibold">✅</span>';
+                if (r === 'fallback') return '<span class="result-fallback font-semibold">⚠️ fallback</span>';
+                return '<span class="result-error font-semibold">❌</span>';
+            },
+            tools: arr => arr && arr.length ? arr.map(t => `<span class="text-[#e3b341] text-[10px]">${t}</span>`).join(' ') : '—'
+        };
+
+        function stepBadge(step) {
+            const cls = `step-${step}`;
+            return `<span class="step-badge ${cls}">${step}</span>`;
+        }
+
+        // ── Event processing ──────────────────────────────────────────────────────────
+        function processEvent(ev) {
+            if (!ev || ev.type !== 'router_event') return;
+            if (ev.ts <= lastSeenTs && lastSeenTs > 0) return; // skip duplicates on poll
+            lastSeenTs = Math.max(lastSeenTs, ev.ts || 0);
+
+            const { reqId, step } = ev;
+            if (!reqId) return;
+
+            allEvents.push(ev);
+            if (allEvents.length > 500) allEvents.splice(0, allEvents.length - 500);
+
+            // Update route map
+            if (!routeMap[reqId]) {
+                routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null };
+            }
+            const row = routeMap[reqId];
+
+            if (step === 'CLASSIFY') {
+                row.tier = ev.tier;
+                row.hasTools = ev.hasTools;
+            }
+            if (step === 'T1_ATTEMPT') {
+                row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend;
+            }
+            if (step === 'T2_ATTEMPT') {
+                row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend;
+            }
+            if (step === 'T1_ACQUIRED' || step === 'T2_ACQUIRED') {
+                row.acq_ms = ev.acq_ms;
+            }
+            if (step === 'T1_FIRST_BYTE' || step === 'T2_FIRST_BYTE') {
+                row.ttfb_ms = ev.ttfb_ms;
+                row.result = 'ok';
+            }
+            if (step === 'T1_TOOL_CALL') {
+                if (!row.tools.includes(ev.tool)) row.tools.push(ev.tool);
+            }
+            if (step === 'T1_FALLBACK' || step === 'T2_FALLBACK') {
+                row.result = 'fallback';
+                row.fallback = ev.fallback;
+            }
+            if (step === 'tool_done') {
+                updateTranscript(ev);
+            }
+
+            renderRoutingTable();
+            renderEventStream(ev);
+        }
+
+        // ── Routing Table ─────────────────────────────────────────────────────────────
+        function renderRoutingTable() {
+            const tierFilter = document.getElementById('filterTier').value;
+            const resultFilter = document.getElementById('filterResult').value;
+
+            const rows = Object.values(routeMap)
+                .sort((a, b) => b.ts - a.ts)
+                .slice(0, 200)
+                .filter(r => {
+                    if (tierFilter && r.tier !== tierFilter) return false;
+                    if (resultFilter === 'ok' && r.result !== 'ok') return false;
+                    if (resultFilter === 'fallback' && r.result !== 'fallback') return false;
+                    return true;
+                });
+
+            document.getElementById('routeCount').textContent = `${rows.length} turns`;
+            document.getElementById('eventCount').textContent = `${allEvents.length} events`;
+
+            const tbody = document.getElementById('routingTbody');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map(r => {
+                const modelLabel = r.fallback ? `${fmt.model(r.model)}<span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>` : fmt.model(r.model);
+                return `<tr class="border-b border-[#21262d]">
+      <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}</td>
+      <td class="px-3 py-2">${fmt.id(r.reqId)}</td>
+      <td class="px-3 py-2">${fmt.tier(r.tier)}</td>
+      <td class="px-3 py-2">${modelLabel}</td>
+      <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
+      <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
+      <td class="px-3 py-2 text-right font-mono ${r.ttfb_ms != null ? 'text-[#3fb950]' : 'text-[#8b949e]'}">${fmt.ms(r.ttfb_ms)}</td>
+      <td class="px-3 py-2">${fmt.tools(r.tools)}</td>
+      <td class="px-3 py-2">${fmt.result(r.result)}</td>
+    </tr>`;
+            }).join('');
+        }
+
+        // ── Event Stream ──────────────────────────────────────────────────────────────
+        function renderEventStream(ev) {
+            const placeholder = document.getElementById('streamPlaceholder');
+            if (placeholder) placeholder.remove();
+
+            const stream = document.getElementById('eventStream');
+            const { reqId, step, ts } = ev;
+
+            const stepHtml = stepBadge(step || ev.type || '?');
+            const details = Object.entries(ev)
+                .filter(([k]) => !['type', 'reqId', 'step', 'ts'].includes(k))
+                .map(([k, v]) => {
+                    let val = typeof v === 'object' ? JSON.stringify(v) : String(v ?? '—');
+                    if (k === 'ttfb_ms' || k === 'acq_ms' || k === 'elapsed_ms') {
+                        val = `<span class="${parseInt(val) < 200 ? 'text-[#3fb950]' : parseInt(val) < 1000 ? 'text-[#e3b341]' : 'text-[#f85149]'} font-semibold">${val}ms</span>`;
+                    } else if (k === 'model' || k === 'fallback') {
+                        val = `<span class="text-[#c9d1d9] font-mono">${val}</span>`;
+                    } else if (k === 'backend') {
+                        val = fmt.backend(val);
+                    } else if (k === 'reason') {
+                        val = `<span class="text-[#f85149]">${val}</span>`;
+                    } else {
+                        val = `<span class="text-[#c9d1d9]">${val}</span>`;
+                    }
+                    return `<span class="text-[#8b949e]">${k}=</span>${val}`;
+                })
+                .join(' <span class="text-[#30363d]">·</span> ');
+
+            const entry = document.createElement('div');
+            entry.className = 'new-row flex flex-wrap items-center gap-2 px-4 py-2 border-b border-[#21262d] text-xs';
+            entry.innerHTML = `
+    <span class="text-[#8b949e] w-16 shrink-0 font-mono">${fmt.time(ts)}</span>
+    <span class="font-mono text-[#6e7681] text-[10px] w-12 shrink-0">${reqId || ''}</span>
+    ${stepHtml}
+    <span class="flex flex-wrap gap-2 min-w-0">${details}</span>
+  `;
+
+            stream.appendChild(entry);
+
+            // Trim to 200
+            while (stream.children.length > 200) stream.removeChild(stream.firstChild);
+
+            // Auto-scroll
+            if (document.getElementById('autoScroll').checked) {
+                stream.scrollTop = stream.scrollHeight;
+            }
+        }
+
+        // ── Transcript ────────────────────────────────────────────────────────────────
+        let transcriptTurns = [];
+        function updateTranscript(ev) {
+            if (ev.tool) {
+                transcriptTurns.push({ type: 'tool', ts: ev.ts, tool: ev.tool, latency_ms: ev.latency_ms, result: ev.result_summary });
+                renderTranscript();
+            }
+        }
+
+        function renderTranscript() {
+            const el = document.getElementById('transcript');
+            document.getElementById('convCount').textContent = `${transcriptTurns.length} turns`;
+            el.innerHTML = transcriptTurns.slice(-50).map(t => {
+                if (t.type === 'tool') {
+                    const lat = t.latency_ms != null ? `<span class="text-[#8b949e]">${t.latency_ms}ms</span>` : '';
+                    const res = t.result ? `<span class="text-[#8b949e] ml-2 truncate">${String(t.result).slice(0, 80)}</span>` : '';
+                    return `<div class="flex items-center gap-2 px-4 py-2 border-b border-[#21262d] text-xs">
+        <span class="text-[#8b949e] w-16 shrink-0 font-mono">${fmt.time(t.ts)}</span>
+        <span class="step-badge step-T1_TOOL_CALL">tool</span>
+        <span class="font-mono text-[#e3b341]">${t.tool}</span>
+        ${lat}${res}
+      </div>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        // ── WebSocket connection ───────────────────────────────────────────────────────
+        function connectWebSocket() {
+            const workspace = document.getElementById('workspaceId').value || 'emily';
+            const apiKey = document.getElementById('apiKey').value || '';
+            const wsBase = API_BASE.replace('https://', 'wss://').replace('http://', 'ws://');
+            const url = `${wsBase}/memory/visualizer?workspace=${encodeURIComponent(workspace)}&x-api-key=${encodeURIComponent(apiKey)}`;
+
+            try {
+                ws = new WebSocket(url);
+                ws.onopen = () => {
+                    setConn('connected', `WebSocket live — ${workspace}`);
+                };
+                ws.onmessage = e => {
+                    try {
+                        const data = JSON.parse(e.data);
+                        if (data.type === 'router_event') processEvent(data);
+                    } catch { }
+                };
+                ws.onerror = () => setConn('error', 'WebSocket error — falling back to polling');
+                ws.onclose = () => {
+                    setConn('polling', 'WebSocket closed — polling');
+                    startPolling();
+                };
+            } catch (e) {
+                setConn('error', 'WS unavailable — polling');
+                startPolling();
+            }
+        }
+
+        // ── Polling fallback ──────────────────────────────────────────────────────────
+        function startPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            fetchLog();
+            pollInterval = setInterval(fetchLog, 2000);
+        }
+
+        async function fetchLog() {
+            const workspace = document.getElementById('workspaceId').value || 'emily';
+            const apiKey = document.getElementById('apiKey').value || '';
+            try {
+                const res = await fetch(`${API_BASE}/llm/router-log?workspace=${encodeURIComponent(workspace)}&n=100`, {
+                    headers: { 'x-api-key': apiKey }
+                });
+                if (!res.ok) throw new Error(res.status);
+                const { events } = await res.json();
+                (events || []).forEach(processEvent);
+                setConn('polling', `Polling (${workspace}) — last ${fmt.time(Date.now())}`);
+            } catch (e) {
+                setConn('error', `Poll error: ${e.message}`);
+            }
+        }
+
+        function setConn(state, label) {
+            const dot = document.getElementById('connDot');
+            const lbl = document.getElementById('connLabel');
+            dot.className = `conn-indicator conn-${state}`;
+            if (state === 'connected') { dot.classList.add('live-dot'); } else { dot.classList.remove('live-dot'); }
+            lbl.textContent = label;
+        }
+
+        // ── Controls ──────────────────────────────────────────────────────────────────
+        function clearAll() {
+            allEvents = []; routeMap = {}; transcriptTurns = []; lastSeenTs = 0;
+            document.getElementById('routingTbody').innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">Cleared</td></tr>';
+            document.getElementById('eventStream').innerHTML = '';
+            document.getElementById('transcript').innerHTML = '';
+            document.getElementById('eventCount').textContent = '0 events';
+            document.getElementById('routeCount').textContent = '0 turns';
+            document.getElementById('convCount').textContent = '0 turns';
+        }
+
+        function reconnect() {
+            if (ws) { try { ws.close(); } catch { } }
+            if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+            lastSeenTs = 0;
+            setConn('polling', 'Reconnecting...');
+            connectWebSocket();
+        }
+
+        // ── Filter change ─────────────────────────────────────────────────────────────
+        document.getElementById('filterTier').addEventListener('change', renderRoutingTable);
+        document.getElementById('filterResult').addEventListener('change', renderRoutingTable);
+
+        // ── Init ──────────────────────────────────────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            connectWebSocket();
+            // Fetch initial historical events via polling regardless
+            setTimeout(fetchLog, 500);
+        });
+    </script>
+
+</body>
+
+</html>

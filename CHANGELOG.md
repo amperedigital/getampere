@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.355 - Router Monitor Dashboard
+- **Feature**: New `router-monitor.html` — live routing dashboard with routing table, event stream, and transcript panel.
+
 ## v3.354 - Workers AI Stream Adapter Fix (Backend Only)
 - No frontend changes.
 
