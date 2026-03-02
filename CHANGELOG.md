@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.353 - LLM Router: Multi-Backend + Secrets-Based Hot-Swap (Backend Only)
+- No frontend changes. See backend changelog for full details.
+
 ## v3.352 - Benchmark: Label HuggingFace Models
 - **UX**: Added `via HF` note badge to `@hf/nousresearch/hermes-2-pro-mistral-7b` in New User and Returning User scenarios. HuggingFace-hosted models route through HF inference infrastructure (extra hop vs native `@cf/` models), which explains longer total generation time despite competitive TTFB.
 
