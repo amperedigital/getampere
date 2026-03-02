@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.352 - Benchmark: Label HuggingFace Models
+- **UX**: Added `via HF` note badge to `@hf/nousresearch/hermes-2-pro-mistral-7b` in New User and Returning User scenarios. HuggingFace-hosted models route through HF inference infrastructure (extra hop vs native `@cf/` models), which explains longer total generation time despite competitive TTFB.
+
 ## v3.351 - Benchmark: Remove Gemini/Gemma Warm Variants
 - **Fix**: Removed `gemini-*-warm` and `gemma-*-warm` rows from Tier 2. Gemini's implicit context caching is a native API feature and does not work through the OpenAI-compat endpoint (`v1beta/openai/...`). Workers AI has no token-level caching at all. Both warm variants were producing higher TTFB than cold (extra warmup request with no cache benefit). Only `gpt-5.1-warm` remains — OpenAI prompt caching works correctly through the standard API.
 - **Cleanup**: Removed "cold" label suffix from Gemini/Gemma rows since there is no warm counterpart.
