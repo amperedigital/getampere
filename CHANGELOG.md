@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.350 - Benchmark: Revert New User Message
+- **Fix**: New User scenario user message accidentally changed to `"Hi Emily, what's one thing Ampere AI does?"` in v3.348, causing verbose multi-sentence responses. Restored to `"Hello"`.
+
 ## v3.349 - Benchmark: Fix Corrupt Sort Line
 - **Fix**: Line 642 was corrupted to `const ttfbVal = vp(r => r.ttfb_ms)` — restored to `const ttfbVals = valid.map(r => r.ttfb_ms)`. This was the last JS crash preventing the benchmark from completing.
 
