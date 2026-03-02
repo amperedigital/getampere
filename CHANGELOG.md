@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.354 - Workers AI Stream Adapter Fix (Backend Only)
+- No frontend changes.
+
 ## v3.353 - LLM Router: Multi-Backend + Secrets-Based Hot-Swap (Backend Only)
 - No frontend changes. See backend changelog for full details.
 
