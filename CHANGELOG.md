@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.356 - Auto-generated
+- **Frontend**: Release v3.356 (no new commits)
+
+
 ## v3.355 - Router Monitor Dashboard
 - **Feature**: New `router-monitor.html` — live routing dashboard with routing table, event stream, and transcript panel.
 
