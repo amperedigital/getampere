@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.360 - Router Monitor Full Restore
+## v3.361 - Backend Sync: Workers AI Stream Adapter Fix
+- **Backend sync**: Workers AI stream format fix — ElevenLabs calls now succeed with Granite T1 routing.
+
+
 - **Fix**: Routing table restored to `router-monitor.html` (was accidentally removed in v3.359 rebuild). Full-width table with Time/reqId/Tier/Model/Backend/ACQ/TTFB/Tools/Result columns.
 - **Layout**: Routing table on top (full width), Turn-by-Turn and Event Stream side-by-side below.
 - **Backend sync**: Cron scheduled() handler fix.
