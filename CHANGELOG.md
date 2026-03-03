@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.363 - Backend Sync (Stream Fix + Router Refactor)
+- **Backend**: Workers AI stream adapter fixed for ElevenLabs conformance. REST API path added. Router extracted to `src/llm-router.ts`. No frontend changes.
+
 ## v3.362 - Backend Sync (ElevenLabs Debug)
 
 
