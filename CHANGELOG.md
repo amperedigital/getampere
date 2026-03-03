@@ -1,6 +1,8 @@
 # Changelog
 
-## v3.361 - Backend Sync: Workers AI Stream Adapter Fix
+## v3.362 - Backend Sync (ElevenLabs Debug)
+
+
 - **Backend sync**: Workers AI stream format fix — ElevenLabs calls now succeed with Granite T1 routing.
 
 
