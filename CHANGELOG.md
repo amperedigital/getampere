@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.359 - Router Monitor Overhaul + Cold Start Fixes (Backend Sync)
+## v3.360 - Router Monitor Full Restore
+- **Fix**: Routing table restored to `router-monitor.html` (was accidentally removed in v3.359 rebuild). Full-width table with Time/reqId/Tier/Model/Backend/ACQ/TTFB/Tools/Result columns.
+- **Layout**: Routing table on top (full width), Turn-by-Turn and Event Stream side-by-side below.
+- **Backend sync**: Cron scheduled() handler fix.
+
+
 - **Fix**: `router-monitor.html` now shows live-only data — events filtered by session-start timestamp. Clear resets the time anchor so only future events show.
 - **Feature**: Turn-by-turn analysis panel — each LLM turn shows the user's message, tier, model, backend, ACQ latency, TTFB, tool calls, and result (Tier 1 ok / fallback / pending).
 - **Fix**: Tier/model/backend/ACQ columns were always blank — backend was not broadcasting `CLASSIFY`, `T1_ATTEMPT`, or `T1_ACQUIRED` events. All three now broadcast the correct data.
