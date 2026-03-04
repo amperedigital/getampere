@@ -66,6 +66,14 @@
             color: #a371f7;
         }
 
+        .tier-t3 {
+            color: #d2a8ff;
+            background: rgba(139, 92, 246, 0.15);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
         .result-ok {
             color: #3fb950;
         }
@@ -148,6 +156,28 @@
         .badge-openai {
             background: #1a1a1a;
             color: #8b949e;
+        }
+
+        .badge-inception {
+            background: #2a1a2a;
+            color: #e879f9;
+        }
+
+        .step-T3_ESCALATION {
+            background: #3b1a3b;
+            color: #e879f9;
+            border: 1px solid #d946ef44;
+            font-weight: 700;
+        }
+
+        .step-T3_ATTEMPT {
+            background: #2d1a3d;
+            color: #d2a8ff;
+        }
+
+        .step-T3_FIRST_BYTE {
+            background: #351a45;
+            color: #c084fc;
         }
 
         .panel-scroll {
@@ -253,6 +283,7 @@
             <option value="">All Tiers</option>
             <option value="tier1">Tier 1</option>
             <option value="tier2">Tier 2</option>
+            <option value="tier3">Tier 3 🟣</option>
         </select>
         <select id="filterResult"
             class="bg-[#161b22] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs focus:outline-none focus:border-blue-500">
@@ -350,15 +381,16 @@
             model: m => {
                 if (!m) return '—';
                 return m.replace('@cf/ibm-granite/', '').replace('@cf/meta/', '').replace('@cf/google/', '')
-                    .replace('gemini:', '').replace('openai:', '').replace('-instruct', '').replace('-fp8-fast', '');
+                    .replace('gemini:', '').replace('openai:', '').replace('inception:', '').replace('-instruct', '').replace('-fp8-fast', '');
             },
             backend: b => {
-                const cls = (b === 'workersai' || b === 'workersai-hf') ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : 'badge-openai';
-                const label = b === 'workersai' ? 'CF' : b === 'workersai-hf' ? 'HF' : b === 'gemini' ? 'GEM' : 'OAI';
+                const cls = (b === 'workersai' || b === 'workersai-hf') ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : b === 'inception' ? 'badge-inception' : 'badge-openai';
+                const label = b === 'workersai' ? 'CF' : b === 'workersai-hf' ? 'HF' : b === 'gemini' ? 'GEM' : b === 'inception' ? 'INC' : 'OAI';
                 return `<span class="step-badge ${cls}">${label}</span>`;
             },
             tier: t => {
                 if (!t) return '—';
+                if (t === 'tier3') return `<span class="tier-t3 font-semibold">T3 🔒</span>`;
                 return `<span class="${t === 'tier1' ? 'tier-t1' : 'tier-t2'} font-semibold">${t === 'tier1' ? 'T1' : 'T2'}</span>`;
             },
             result: r => {
@@ -397,8 +429,10 @@
             if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; }
             if (step === 'T1_ATTEMPT') { row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; }
+            if (step === 'T3_ESCALATION') { row.tier = 'tier3'; row.escalationReason = ev.reason || 'escalated'; row.escalationPath = ev.path || 'agent'; }
+            if (step === 'T3_ATTEMPT') { row.tier = 'tier3'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T1_ACQUIRED') { row.acq_ms = ev.acq_ms; if (!row.model) row.model = ev.model; if (!row.backend) row.backend = ev.backend; }
-            if (step === 'T1_FIRST_BYTE' || step === 'T2_FIRST_BYTE') { row.ttfb_ms = ev.ttfb_ms; row.result = 'ok'; if (!row.model && ev.model) row.model = ev.model; }
+            if (step === 'T1_FIRST_BYTE' || step === 'T2_FIRST_BYTE' || step === 'T3_FIRST_BYTE') { row.ttfb_ms = ev.ttfb_ms; row.result = 'ok'; if (!row.model && ev.model) row.model = ev.model; }
             if (step === 'T1_TOOL_CALL') { if (!row.tools.includes(ev.tool)) row.tools.push(ev.tool); }
             if (step === 'T1_FALLBACK' || step === 'T2_FALLBACK') { row.result = 'fallback'; row.fallback = ev.fallback; }
             if (step === 'AGENT_RESPONSE') { row.agentResponse = ev.responsePreview || ''; row.total_ms = ev.total_ms ?? null; row.result = row.result || 'ok'; }

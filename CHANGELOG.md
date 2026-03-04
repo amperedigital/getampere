@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.377 - Auto-generated
+## v3.378 - T3 Reasoning Benchmark + Router Monitor T3 Support
+- **Feature**: New 🧠 T3 Reasoning benchmark tab — 10 high-level models (GPT-5.1, Mercury-2, Gemini Pro/Flash/Lite, Llama 70B) with cold + warm variants for T3 model comparison.
+- **Feature**: Router monitor T3 support — purple `tier-t3` badge with 🔒 lock icon, T3 filter option, `T3_ESCALATION`/`T3_ATTEMPT`/`T3_FIRST_BYTE` event handling.
+- **Feature**: Inception backend badge (`INC`, pink) + `inception:` prefix stripping in model names.
+
+
 - **Frontend**: Release v3.377 (no new commits)
 
 
