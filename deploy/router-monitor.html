@@ -286,13 +286,16 @@
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Bknd</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">ACQ</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">TTFB</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Total</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d]"
+                            title="Total minus TTFB = TTS + router overhead">TTS/OH</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tools</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
                     </tr>
                 </thead>
                 <tbody id="routingTbody">
                     <tr>
-                        <td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…</td>
+                        <td colspan="11" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…</td>
                     </tr>
                 </tbody>
             </table>
@@ -386,18 +389,19 @@
 
             if (!routeMap[reqId]) {
                 if (seenReqIds.has(reqId) && fromPoll) return;
-                routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null, lastUserMsg: '' };
+                routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null, lastUserMsg: '', agentResponse: '', classify_ms: null, total_ms: null };
             }
             seenReqIds.add(reqId);
             const row = routeMap[reqId];
 
-            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; }
+            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; }
             if (step === 'T1_ATTEMPT') { row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T1_ACQUIRED') { row.acq_ms = ev.acq_ms; if (!row.model) row.model = ev.model; if (!row.backend) row.backend = ev.backend; }
             if (step === 'T1_FIRST_BYTE' || step === 'T2_FIRST_BYTE') { row.ttfb_ms = ev.ttfb_ms; row.result = 'ok'; if (!row.model && ev.model) row.model = ev.model; }
             if (step === 'T1_TOOL_CALL') { if (!row.tools.includes(ev.tool)) row.tools.push(ev.tool); }
             if (step === 'T1_FALLBACK' || step === 'T2_FALLBACK') { row.result = 'fallback'; row.fallback = ev.fallback; }
+            if (step === 'AGENT_RESPONSE') { row.agentResponse = ev.responsePreview || ''; row.total_ms = ev.total_ms ?? null; row.result = row.result || 'ok'; }
 
             renderRoutingTable();
             renderTurnPanel();
@@ -415,7 +419,7 @@
             });
             document.getElementById('routeCount').textContent = `${rows.length} turns`;
             const tbody = document.getElementById('routingTbody');
-            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>'; return; }
+            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>'; return; }
             tbody.innerHTML = rows.map(r => {
                 const modelLabel = r.fallback
                     ? `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span><span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>`
@@ -428,6 +432,8 @@
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
                     <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
                     <td class="px-3 py-2 text-right">${fmt.ttfb(r.ttfb_ms)}</td>
+                    <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
+                    <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
                     <td class="px-3 py-2">${fmt.tools(r.tools)}</td>
                     <td class="px-3 py-2">${fmt.result(r.result)}</td>
                 </tr>`;
@@ -441,13 +447,17 @@
             if (ph) ph.remove();
             document.getElementById('turnPanel').innerHTML = turns.map(r => {
                 const msgHtml = r.lastUserMsg
-                    ? `<div class="turn-user-msg">"${esc(r.lastUserMsg)}"</div>`
-                    : `<div class="turn-user-msg text-[#8b949e] italic">Greeting / system turn</div>`;
+                    ? `<div class="turn-user-msg" style="background:#1c2333;border-left:3px solid #58a6ff;padding:6px 10px;border-radius:6px;margin-bottom:4px;"><span style="margin-right:6px;">👤</span>"${esc(r.lastUserMsg)}"</div>`
+                    : `<div class="turn-user-msg text-[#8b949e] italic" style="padding:6px 10px;"><span style="margin-right:6px;">👤</span>Greeting / system turn</div>`;
+                const agentHtml = r.agentResponse
+                    ? `<div style="background:#1a2b2e;border-left:3px solid #3fb950;padding:6px 10px;border-radius:6px;margin-bottom:4px;color:#adbac7;"><span style="margin-right:6px;">🤖</span>${esc(r.agentResponse)}</div>`
+                    : '';
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
                 const resultHtml = r.result === 'ok' ? '<span class="result-ok">✅</span>' : r.result === 'fallback' ? `<span class="result-fallback">⚠️ →${fmt.model(r.fallback)}</span>` : '<span class="text-[#8b949e]">⏳</span>';
                 return `<div class="turn-card ${!r.result ? 'active' : ''}">
                     ${msgHtml}
+                    ${agentHtml}
                     <div class="turn-meta">
                         <span class="font-mono">${fmt.time(r.ts)}</span>
                         ${fmt.tier(r.tier)}
@@ -455,6 +465,8 @@
                         ${r.backend ? fmt.backend(r.backend) : ''}
                         ${acqHtml}
                         ${fmt.ttfb(r.ttfb_ms)}
+                        ${r.total_ms != null ? `<span style="color:#d2a8ff;">total ${r.total_ms}ms</span>` : ''}
+                        ${r.classify_ms != null ? `<span style="color:#8b949e;font-size:10px;">router ${r.classify_ms}ms</span>` : ''}
                         ${toolsHtml}
                         ${resultHtml}
                     </div>
@@ -536,7 +548,7 @@
             document.getElementById('turnPanel').innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="turnPlaceholder">Cleared…</div>';
             document.getElementById('eventStream').innerHTML = '';
             document.getElementById('eventCount').textContent = '0 events';
-            document.getElementById('routeCount').textContent = '0 turns';
+            umelementById('routeCount').textContent = '0 turns';
             document.getElementById('turnCount').textContent = '0 turns';
         }
 
