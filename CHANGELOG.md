@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.365 - Auto-generated
+- **Frontend**: Release v3.365 (no new commits)
+
+
 ## v3.364 - Router Monitor UI + Backend Auth Fix
 - **Fix**: Router monitor turn-by-turn and event stream panels now fill remaining viewport height (`calc(100vh - 420px)`, min 200px) instead of fixed 220px.
 - **Fix**: Routing table height is now dynamic (no max-height cap) — grows with content.
