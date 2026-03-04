@@ -286,9 +286,9 @@
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Bknd</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">ACQ</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">TTFB</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Total</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]"
                             title="Total minus TTFB = TTS + router overhead">TTS/OH</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Total</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tools</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
                     </tr>
@@ -353,8 +353,8 @@
                     .replace('gemini:', '').replace('openai:', '').replace('-instruct', '').replace('-fp8-fast', '');
             },
             backend: b => {
-                const cls = b === 'workersai' ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : 'badge-openai';
-                const label = b === 'workersai' ? 'CF' : b === 'gemini' ? 'GEM' : 'OAI';
+                const cls = (b === 'workersai' || b === 'workersai-hf') ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : 'badge-openai';
+                const label = b === 'workersai' ? 'CF' : b === 'workersai-hf' ? 'HF' : b === 'gemini' ? 'GEM' : 'OAI';
                 return `<span class="step-badge ${cls}">${label}</span>`;
             },
             tier: t => {
@@ -432,8 +432,8 @@
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
                     <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
                     <td class="px-3 py-2 text-right">${fmt.ttfb(r.ttfb_ms)}</td>
-                    <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
+                    <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
                     <td class="px-3 py-2">${fmt.tools(r.tools)}</td>
                     <td class="px-3 py-2">${fmt.result(r.result)}</td>
                 </tr>`;
@@ -450,7 +450,7 @@
                     ? `<div class="turn-user-msg" style="background:#1c2333;border-left:3px solid #58a6ff;padding:6px 10px;border-radius:6px;margin-bottom:4px;"><span style="margin-right:6px;">👤</span>"${esc(r.lastUserMsg)}"</div>`
                     : `<div class="turn-user-msg text-[#8b949e] italic" style="padding:6px 10px;"><span style="margin-right:6px;">👤</span>Greeting / system turn</div>`;
                 const agentHtml = r.agentResponse
-                    ? `<div style="background:#1a2b2e;border-left:3px solid #3fb950;padding:6px 10px;border-radius:6px;margin-bottom:4px;color:#adbac7;"><span style="margin-right:6px;">🤖</span>${esc(r.agentResponse)}</div>`
+                    ? `<div style="background:#1a2b2e;border-left:3px solid #3fb950;padding:6px 10px;border-radius:6px;margin-bottom:4px;color:#adbac7;word-wrap:break-word;white-space:pre-wrap;max-width:100%;overflow-wrap:break-word;"><span style="margin-right:6px;">🤖</span>${esc(r.agentResponse)}</div>`
                     : '';
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
