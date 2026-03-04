@@ -171,6 +171,8 @@
       'gemini:gemini-2.5-flash-lite': { in: 0.075, out: 0.300 },
       'gemini:gemini-2.5-flash-lite-warm': { in: 0.075, out: 0.300 },
       '@cf/google/gemma-3-12b-it-warm': { in: 0.345, out: 0.556 },
+      // Inception Labs
+      'inception:mercury-2': { in: 0.250, out: 1.000, est: true },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -277,6 +279,8 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
           { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T1" },
+          { id: "inception:mercury-2", label: "Mercury-2 (Inception)", tier: "T1", note: "diffusion" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T1", note: "No fn-call" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1", note: "via HF" },
@@ -298,6 +302,8 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
         models: [
           { id: "openai:gpt-4o-mini", label: "gpt-4o-mini", tier: "T1", note: "baseline" },
           { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T1", note: "vs 4o-mini" },
+          { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T1" },
+          { id: "inception:mercury-2", label: "Mercury-2 (Inception)", tier: "T1", note: "diffusion" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1", note: "via HF" },
           { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
@@ -319,6 +325,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
           { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T2", note: "vs gpt-5.1" },
           { id: "gemini:gemini-2.5-flash", label: "Gemini 2.5 Flash", tier: "T2", note: "mid-tier" },
           { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T2" },
+          { id: "inception:mercury-2", label: "Mercury-2 (Inception)", tier: "T2", note: "diffusion" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
