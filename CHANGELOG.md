@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.364 - Router Monitor UI + Backend Auth Fix
+- **Fix**: Router monitor turn-by-turn and event stream panels now fill remaining viewport height (`calc(100vh - 420px)`, min 200px) instead of fixed 220px.
+- **Fix**: Routing table height is now dynamic (no max-height cap) — grows with content.
+- **Backend**: ElevenLabs auth fix, REST API removal, stage direction stripping, timeout tuning (see backend changelog).
+
 ## v3.363 - Backend Sync (Stream Fix + Router Refactor)
 - **Backend**: Workers AI stream adapter fixed for ElevenLabs conformance. REST API path added. Router extracted to `src/llm-router.ts`. No frontend changes.
 
