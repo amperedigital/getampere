@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.399 - DeepSeek V3.2 Think variants in T3
+- **New**: DeepSeek V3.2 Think cold/warm added to T3 (chain-of-thought reasoning)
+
 ## v3.398 - DeepSeek V3.2 labels + T3 correctness in results
 - **Fix**: DeepSeek labels now say V3.2
 - **New**: T3 results show correctness badges, wrong answers ranked last
