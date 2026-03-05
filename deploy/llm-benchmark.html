@@ -333,6 +333,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B fp8", tier: "T1" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T1", note: "deepseek" },
         ]
       },
       returning: {
@@ -354,6 +355,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T1", note: "deepseek" },
         ]
       },
       tier2: {
@@ -373,6 +375,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T2", note: "deepseek" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
         ]
       },
@@ -433,6 +436,10 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "gemini:gemini-2.5-flash-lite", label: "Gemini Flash Lite", tier: "T3", note: "current T2" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T3", note: "current T1" },
           { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B", tier: "T3" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat cold", tier: "T3", note: "deepseek" },
+          { id: "deepseek:deepseek-chat-warm", label: "DeepSeek Chat warm", tier: "T3" },
+          { id: "deepseek:deepseek-reasoner", label: "DeepSeek Reasoner cold", tier: "T3", note: "reasoning" },
+          { id: "deepseek:deepseek-reasoner-warm", label: "DeepSeek Reasoner warm", tier: "T3" },
         ]
       }
     };
@@ -651,18 +658,19 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         return;
       }
 
-      // Hallucination check — binary: contains the right final numbers or it's wrong
+      // Hallucination check — ALL THREE final values must be present
       const scenario = SCENARIOS[currentScenario];
       let hallucinationBadge = '';
       if (scenario.answerCheck && previewText && previewText !== '(empty)') {
-        // THE correct answer: Vendor A=$166,280, Vendor B=$113,520, savings=$52,760
-        const correctFinals = ['166,280', '166280', '113,520', '113520', '52,760', '52760'];
-        const gotAnswer = correctFinals.some(v => previewText.includes(v));
-        const debugInfo = ` [len=${previewText.length}]`;
-        if (gotAnswer) {
-          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT${debugInfo}</span><br>`;
+        // ALL THREE must be present: Vendor A total, Vendor B total, AND savings
+        const hasVendorA = previewText.includes('166,280') || previewText.includes('166280');
+        const hasVendorB = previewText.includes('113,520') || previewText.includes('113520');
+        const hasSavings = previewText.includes('52,760') || previewText.includes('52760');
+        const allCorrect = hasVendorA && hasVendorB && hasSavings;
+        if (allCorrect) {
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT</span><br>';
         } else {
-          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG${debugInfo}</span><br>`;
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG</span><br>';
         }
       }
 

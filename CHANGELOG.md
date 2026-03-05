@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.397 - DeepSeek + hallucination fixes
+- **New**: DeepSeek Chat + Reasoner in all scenarios
+- **Fix**: ALL THREE values required for CORRECT
+- **Fix**: Removed debug [len=N], clarified T3 prompt
+
 ## v3.396 - Auto-generated
 - **Frontend**: Release v3.396 (no new commits)
 
