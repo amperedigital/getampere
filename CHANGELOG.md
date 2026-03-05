@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.390 - Benchmark: Debug hallucination badge
+- **Debug**: Added preview text length to hallucination badges to diagnose false negatives.
+
 ## v3.389 - Benchmark: Robust hallucination check (length-based)
 - **Fix**: Replaced brittle number-matching with response length check. Real math responses are 500+ chars with dollar signs. Parroted answers are short. Eliminates false negatives from LaTeX escaping and formatting differences.
 
