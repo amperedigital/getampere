@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.402 - Auto-generated
+- **Frontend**: Release v3.402 (no new commits)
+
+
 ## v3.401 - Qwen models + pricing + error wrap
 - **New**: Qwen Flash + Qwen Plus in T1/T2/T3
 - **New**: DeepSeek + Qwen pricing
