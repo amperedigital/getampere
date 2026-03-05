@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.386">
+  <meta name="version" content="v3.388">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.386/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.388/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -380,7 +380,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
         label: "🧠 T3 Reasoning",
         desc: "<strong>Tier 3 — Hard reasoning benchmark.</strong> Multi-step math with conflicting constraints. The obvious answer is WRONG — the cheapest option actually costs more when you factor in churn and lifetime value. Tests whether models can track 6+ variables, do arithmetic, and reach a counter-intuitive conclusion. <span style='color:#d2a8ff'>Flash Lite should fail this. Mercury 2 and GPT-5.1 should get it right.</span>",
         system: T3_SYSTEM,
-        user: "We're deciding between two CRM vendors. Vendor A costs $8 per user per month, has a 12% annual churn rate, and each churned customer costs us $2,400 in lost lifetime value. Vendor B costs $14 per user per month, has a 4% annual churn rate, and each churned customer costs us $2,400. We have 200 users today and expect 15% user growth per year. Here's the catch: Vendor A charges a $5,000 migration fee but offers a 20% discount for the first year only. Vendor B has no migration fee but requires a 2-year commitment. Calculate the total 2-year cost of each vendor INCLUDING the churn impact on lifetime value, and tell me which one actually saves us more money. Show your math — I need exact numbers, not vibes.",
+        user: "We're deciding between two CRM vendors for our customer base. We have 200 customers (users) today and expect 15% user growth per year. These are the same customers whose churn we're measuring. Vendor A costs $8 per user per month, has a 12% annual churn rate, and each churned customer costs us $2,400 in lost lifetime value. Vendor B costs $14 per user per month, has a 4% annual churn rate, and each churned customer costs us $2,400. Vendor A charges a $5,000 migration fee but offers a 20% discount for the first year only. Vendor B has no migration fee but requires a 2-year commitment. Calculate the total 2-year cost of each vendor INCLUDING the churn impact on lifetime value, and tell me which one actually saves us more money. Show your math with exact dollar amounts — I need specific numbers, not formulas with variables.",
         answer: `VENDOR A (Total: $166,280)
   Subscription:
     Year 1: 200 users × $8/mo × 12 = $19,200 × 0.80 (20% discount) = $15,360
@@ -410,10 +410,11 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         withTools: false,
         answerCheck: {
           mustContainAny: ['vendor b', 'option b', 'b saves', 'b is cheaper', 'b is the better', 'choose b', 'go with b', 'recommend b'],
-          // Accept values from EITHER valid math model:
-          // Simple (200→230 flat): totals $166,280 / $113,520 / saves $52,760
-          // Churn-before-growth (200→202/220): totals $155,681 / $111,091 / saves $44,590
-          validTotals: ['166,280', '166280', '155,681', '155681', '113,520', '113520', '111,091', '111091', '52,760', '52760', '44,590', '44590'],
+          // Check for intermediate subscription values that are UNAMBIGUOUS across all valid interpretations:
+          // Year 1A=$15,360, Year 2A=$22,080, A sub total=$42,440
+          // Year 1B=$33,600, Year 2B=$38,640, B sub total=$72,240
+          // Plus final totals from either model
+          validTotals: ['42,440', '42440', '72,240', '72240', '15,360', '15360', '22,080', '22080', '33,600', '33600', '38,640', '38640', '166,280', '166280', '155,681', '155681', '113,520', '113520', '111,091', '111091', '52,760', '52760', '44,590', '44590'],
         },
         models: [
           { id: "openai:gpt-5.1", label: "GPT-5.1 cold", tier: "T3", note: "baseline" },

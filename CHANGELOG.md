@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.388 - Benchmark: Clarified T3 prompt + smarter answer check
+- **Fix**: Clarified prompt — "200 customers (users)" makes it unambiguous that users ARE the customers who churn. GPT-5.1 was treating them as separate entities and solving with N as unknown.
+- **Fix**: Added "not formulas with variables" to prevent parametric answers.
+- **Fix**: Answer check now includes intermediate subscription values ($15,360, $22,080, $33,600, $38,640, $42,440, $72,240) that are unambiguous across all valid math models.
+
 ## v3.387 - Benchmark: Three-tier hallucination check (final)
 - **Fix**: Requires both right conclusion (Vendor B) AND actual computed totals from either valid math model. Three badges: WRONG ANSWER, NO MATH (parroting), CORRECT.
 
