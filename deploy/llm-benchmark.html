@@ -408,6 +408,10 @@ VERDICT: Vendor B saves $52,760 over 2 years.
 The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         expectTool: null,
         withTools: false,
+        answerCheck: {
+          mustContainAny: ['vendor b', 'option b'],
+          keyNumbers: ['52,760', '113,520', '166,280'],
+        },
         models: [
           { id: "openai:gpt-5.1", label: "GPT-5.1 cold", tier: "T3", note: "baseline" },
           { id: "openai:gpt-5.1-warm", label: "GPT-5.1 warm", tier: "T3", note: "prod" },
@@ -638,9 +642,26 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         return;
       }
 
+      // Hallucination check for scenarios with answerCheck
+      const scenario = SCENARIOS[currentScenario];
+      let hallucinationBadge = '';
+      if (scenario.answerCheck && previewText && previewText !== '(empty)') {
+        const lower = previewText.toLowerCase();
+        const raw = previewText.replace(/,/g, '');
+        const gotConclusion = scenario.answerCheck.mustContainAny.some(k => lower.includes(k));
+        const gotNumbers = scenario.answerCheck.keyNumbers.some(n => raw.includes(n.replace(/,/g, '')));
+        if (!gotConclusion) {
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG ANSWER</span><br>';
+        } else if (!gotNumbers) {
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30 mb-1">⚠️ WRONG MATH</span><br>';
+        } else {
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT</span><br>';
+        }
+      }
+
       const safeKey = sanitizeId(rowKey);
       cells[previewCellIdx].classList.add('preview-cell', 'leading-relaxed');
-      cells[previewCellIdx].innerHTML = `${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>`;
+      cells[previewCellIdx].innerHTML = `${hallucinationBadge}${langBadge}<div class="preview-inner text-xs text-[#8b949e]" id="pi_${safeKey}">${previewText}</div>`;
       // Show expand button when clamped — check on render AND on column resize via ResizeObserver
       requestAnimationFrame(() => {
         const el = document.getElementById(`pi_${safeKey}`);

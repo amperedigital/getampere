@@ -1,7 +1,9 @@
 # Changelog
 
-## v3.383 - Benchmark: Expected Answer Panel for T3 Reasoning
-- **Feature**: Collapsible "✅ Expected Answer" panel (green border) shows the correct math for grading model responses. Only appears on scenarios that have an answer key. UI-only — never sent to the LLM.
+## v3.383 - Benchmark: Expected Answer + Hallucination Detection
+- **Feature**: Collapsible "✅ Expected Answer" panel (green border) shows the correct math for grading model responses. UI-only — never sent to the LLM.
+- **Feature**: Automatic hallucination detection — checks model responses against key answer markers. Shows 🚨 WRONG ANSWER (wrong conclusion), ⚠️ WRONG MATH (right conclusion, wrong numbers), or ✅ CORRECT badges on each result.
+
 
 
 - **Fix**: Widened preview cell from 380px to 600px so T3 reasoning responses are readable without excessive scrolling.
