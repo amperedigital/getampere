@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.401 - Qwen models + pricing + error wrap
+- **New**: Qwen Flash + Qwen Plus in T1/T2/T3
+- **New**: DeepSeek + Qwen pricing
+- **Fix**: Error text wraps at 20rem
+
 ## v3.400 - Error text wrapping
 - **Fix**: Error messages wrap (max-width 20rem) instead of pushing layout
 

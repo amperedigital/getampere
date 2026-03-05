@@ -206,6 +206,20 @@
       // Inception Labs
       'inception:mercury-2': { in: 0.250, out: 0.750, est: true },
       'inception:mercury-2-warm': { in: 0.250, out: 0.750, est: true },
+      // DeepSeek
+      'deepseek:deepseek-chat': { in: 0.270, out: 1.100 },
+      'deepseek:deepseek-chat-warm': { in: 0.270, out: 1.100 },
+      'deepseek:deepseek-chat-think': { in: 0.270, out: 1.100 },
+      'deepseek:deepseek-chat-think-warm': { in: 0.270, out: 1.100 },
+      'deepseek:deepseek-reasoner': { in: 0.550, out: 2.190 },
+      'deepseek:deepseek-reasoner-warm': { in: 0.550, out: 2.190 },
+      // Alibaba Cloud / Qwen (International pricing)
+      'qwen:qwen-flash': { in: 0.050, out: 0.400 },
+      'qwen:qwen-flash-warm': { in: 0.050, out: 0.400 },
+      'qwen:qwen-plus': { in: 0.400, out: 1.200 },
+      'qwen:qwen-plus-warm': { in: 0.400, out: 1.200 },
+      'qwen:qwen-max': { in: 1.600, out: 6.400 },
+      'qwen:qwen-max-warm': { in: 1.600, out: 6.400 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -334,6 +348,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B fp8", tier: "T1" },
           { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
+          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
+          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
         ]
       },
       returning: {
@@ -356,6 +372,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
           { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
+          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
+          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
         ]
       },
       tier2: {
@@ -377,6 +395,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
           { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T2", note: "deepseek" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
+          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T2", note: "alibaba" },
+          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T2", note: "alibaba" },
         ]
       },
       reasoning: {
@@ -440,6 +460,10 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "deepseek:deepseek-chat-warm", label: "DeepSeek V3.2 warm", tier: "T3" },
           { id: "deepseek:deepseek-chat-think", label: "DeepSeek V3.2 Think cold", tier: "T3", note: "V3.2+CoT" },
           { id: "deepseek:deepseek-chat-think-warm", label: "DeepSeek V3.2 Think warm", tier: "T3" },
+          { id: "qwen:qwen-plus", label: "Qwen Plus cold", tier: "T3", note: "alibaba" },
+          { id: "qwen:qwen-plus-warm", label: "Qwen Plus warm", tier: "T3" },
+          { id: "qwen:qwen-flash", label: "Qwen Flash cold", tier: "T3", note: "alibaba" },
+          { id: "qwen:qwen-flash-warm", label: "Qwen Flash warm", tier: "T3" },
         ]
       }
     };
@@ -855,7 +879,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
       btn.disabled = false; btn.textContent = '▶ Run Again';
       document.getElementById('runStatus').textContent = `Done (${numRuns} runs each)`;
     }
-    // Safety net: if runBenchmark throws unexpectedly, always re-enable the button
+    // Safety net: if runBenchmark throws unexpectedly, alwayre-the button
     async function runBenchmarkSafe() {
       const btn = document.getElementById('runBtn');
       try { await runBenchmark(); } catch (e) {
