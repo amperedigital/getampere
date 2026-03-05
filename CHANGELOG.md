@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.384 - Benchmark: Broader hallucination matching
+- **Fix**: Broadened answer check to handle more vendor name formats and number variations.
+
 ## v3.383 - Benchmark: Expected Answer + Hallucination Detection
 - **Feature**: Collapsible "✅ Expected Answer" panel (green border) shows the correct math for grading model responses. UI-only — never sent to the LLM.
 - **Feature**: Automatic hallucination detection — checks model responses against key answer markers. Shows 🚨 WRONG ANSWER (wrong conclusion), ⚠️ WRONG MATH (right conclusion, wrong numbers), or ✅ CORRECT badges on each result.
