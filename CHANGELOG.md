@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.379 - T3 Benchmark: Harder Reasoning Scenario
+## v3.380 - Benchmark: Prompt Preview + T3 System Prompt
+- **Feature**: Collapsible "📋 View Prompt" panel — shows the exact system prompt and user message being sent to each model, with approximate token count. No more black box.
+- **Fix**: T3 reasoning scenario now uses a dedicated `T3_SYSTEM` prompt without brevity constraints (no "40 words max"). Previous runs used the Emily voice prompt which told all models to be brief — Flash Lite obeyed, GPT-5.1 didn't, creating an unfair comparison. T3 prompt now says "no length limit, show your work."
+
+
 - **Benchmark**: Replaced T3 reasoning prompt with counter-intuitive multi-step math problem. Requires tracking 6+ variables (per-user cost, churn rates, lifetime value, growth rate, migration fees, discounts) and doing exact arithmetic. The "obvious" cheaper vendor actually costs more when churn impact is factored in. Flash Lite should fail this; reasoning models should get it right.
 
 

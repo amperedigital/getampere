@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.379">
+  <meta name="version" content="v3.380">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.379/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.380/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -107,6 +107,25 @@
   <!-- Scenario description -->
   <div id="scenarioDesc"
     class="text-xs text-[#8b949e] mb-4 px-4 py-3 bg-[#161b22] border border-[#21262d] rounded-lg leading-relaxed"></div>
+
+  <!-- Prompt Preview -->
+  <details id="promptPreview" class="mb-4">
+    <summary class="text-xs text-[#8b949e] cursor-pointer hover:text-blue-400 transition-colors select-none px-1">📋
+      View Prompt (system + user message)</summary>
+    <div class="mt-2 bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden">
+      <div class="px-4 py-2 bg-[#161b22] border-b border-[#30363d]">
+        <span class="text-[10px] uppercase tracking-wider text-purple-400 font-semibold">System Prompt</span>
+        <span id="promptTokenCount" class="text-[10px] text-[#8b949e] ml-2"></span>
+      </div>
+      <pre id="promptSystem"
+        class="px-4 py-3 text-[11px] text-[#e6edf3] font-mono whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto"></pre>
+      <div class="px-4 py-2 bg-[#161b22] border-t border-b border-[#30363d]">
+        <span class="text-[10px] uppercase tracking-wider text-blue-400 font-semibold">User Message</span>
+      </div>
+      <pre id="promptUser"
+        class="px-4 py-3 text-[11px] text-[#e6edf3] font-mono whitespace-pre-wrap leading-relaxed"></pre>
+    </div>
+  </details>
 
   <!-- Table -->
   <div class="overflow-x-auto rounded-lg border border-[#30363d]">
@@ -268,6 +287,17 @@ BREVITY RULES (ABSOLUTE)
 - Use short, punchy confirmations. Avoid sycophantic filler phrases. Just answer.
 RESPOND ONLY IN ENGLISH. Do not use any other language.`;
 
+    // T3 Reasoning — no brevity constraints. Let models show their work.
+    const T3_SYSTEM = `You are Emily, the concierge front door for Ampere AI.
+RESPOND ONLY IN ENGLISH. Do not use any other language.
+NEVER speak JSON, code, curly braces, or tool call syntax aloud.
+
+CONTEXT: VERIFIED IDENTITY
+Name: Drew. Tier: Voice-Verified. Known phone: +14168920001. Known email: drew@example.com.
+VISITOR STATUS: returning. CHANNEL: web.
+
+For this question, there is NO length limit. Show your full reasoning, calculations, and conclusion. Accuracy matters more than brevity. If math is involved, show the arithmetic step by step.`;
+
     // ── Scenarios ─────────────────────────────────────────────────────────────
     const SCENARIOS = {
       new: {
@@ -336,7 +366,7 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
       reasoning: {
         label: "🧠 T3 Reasoning",
         desc: "<strong>Tier 3 — Hard reasoning benchmark.</strong> Multi-step math with conflicting constraints. The obvious answer is WRONG — the cheapest option actually costs more when you factor in churn and lifetime value. Tests whether models can track 6+ variables, do arithmetic, and reach a counter-intuitive conclusion. <span style='color:#d2a8ff'>Flash Lite should fail this. Mercury 2 and GPT-5.1 should get it right.</span>",
-        system: CONV_SYSTEM,
+        system: T3_SYSTEM,
         user: "We're deciding between two CRM vendors. Vendor A costs $8 per user per month, has a 12% annual churn rate, and each churned customer costs us $2,400 in lost lifetime value. Vendor B costs $14 per user per month, has a 4% annual churn rate, and each churned customer costs us $2,400. We have 200 users today and expect 15% user growth per year. Here's the catch: Vendor A charges a $5,000 migration fee but offers a 20% discount for the first year only. Vendor B has no migration fee but requires a 2-year commitment. Calculate the total 2-year cost of each vendor INCLUDING the churn impact on lifetime value, and tell me which one actually saves us more money. Show your math — I need exact numbers, not vibes.",
         expectTool: null,
         withTools: false,
@@ -384,7 +414,13 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
     function setScenario(key) {
       currentScenario = key;
       buildTabs();
-      document.getElementById('scenarioDesc').innerHTML = SCENARIOS[key].desc;
+      const s = SCENARIOS[key];
+      document.getElementById('scenarioDesc').innerHTML = s.desc;
+      // Populate prompt preview
+      document.getElementById('promptSystem').textContent = s.system;
+      document.getElementById('promptUser').textContent = s.user;
+      const approxTokens = Math.round(s.system.length / 3.5);
+      document.getElementById('promptTokenCount').textContent = `(~${approxTokens} tokens, ${s.system.length} chars)`;
       buildTable();
       document.getElementById('summary').classList.add('hidden');
     }
