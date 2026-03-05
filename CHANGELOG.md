@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.380 - Benchmark: Prompt Preview + T3 System Prompt
+## v3.381 - Benchmark: Add Gemma 3 12B to T3 Reasoning
+- **Benchmark**: Added Gemma 3 12B (current T1) to T3 reasoning models. No tool calls needed for this scenario, so the no-fn-call limitation doesn't apply. Curious to see how the SLM handles multi-step math.
+
+
 - **Feature**: Collapsible "📋 View Prompt" panel — shows the exact system prompt and user message being sent to each model, with approximate token count. No more black box.
 - **Fix**: T3 reasoning scenario now uses a dedicated `T3_SYSTEM` prompt without brevity constraints (no "40 words max"). Previous runs used the Emily voice prompt which told all models to be brief — Flash Lite obeyed, GPT-5.1 didn't, creating an unfair comparison. T3 prompt now says "no length limit, show your work."
 
