@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.385 - Benchmark: Conclusion-only hallucination check
+- **Fix**: Removed number-matching from hallucination check. Different valid math models (simple growth vs churn-before-growth) produce different totals. Mercury 2 used a more rigorous model and got flagged incorrectly. Now only checks if the model picked the right vendor (Vendor B).
+
 ## v3.384 - Benchmark: Broader hallucination matching
 - **Fix**: Broadened answer check to handle more vendor name formats and number variations.
 
