@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.400 - Error text wrapping
+- **Fix**: Error messages wrap (max-width 20rem) instead of pushing layout
+
 ## v3.399 - DeepSeek V3.2 Think variants in T3
 - **New**: DeepSeek V3.2 Think cold/warm added to T3 (chain-of-thought reasoning)
 

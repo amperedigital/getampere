@@ -571,7 +571,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         cells[5].innerHTML = expectTool
           ? '<span class="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30">✗ FAIL</span>'
           : '<span class="text-[#8b949e] text-xs">—</span>';
-        cells[6].innerHTML = `<span class="text-red-400 font-mono text-xs">${r.error}</span>`;
+        cells[6].innerHTML = `<span class="text-red-400 font-mono text-xs break-all" style="max-width:20rem;display:inline-block">${r.error}</span>`;
         return;
       }
 
