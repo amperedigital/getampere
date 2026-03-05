@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.392">
+  <meta name="version" content="v3.393">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.392/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.393/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -404,7 +404,12 @@ VENDOR B (Total: $113,520)
     Subtotal: $41,280
   TOTAL B: $72,240 + $41,280 = $113,520
 
-VERDICT: Vendor B saves $52,760 over 2 years.
+VERDICT:
+  Vendor A total: $166,280
+  Vendor B total: $113,520
+  Savings: $52,760 (Vendor B wins)
+
+✅ A correct answer MUST contain at least one of: $166,280 / $113,520 / $52,760
 The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         expectTool: null,
         withTools: false,

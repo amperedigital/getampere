@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.393 - Benchmark: Clear expected answer verdict
+- **Fix**: Expected Answer panel now shows all three key values prominently: Vendor A=$166,280, Vendor B=$113,520, Savings=$52,760. Notes which values the hallucination check uses.
+
 ## v3.392 - Benchmark: Binary hallucination check
 - **Fix**: Simplified to binary — response must contain at least one correct final total ($166,280 or $113,520 or $52,760). If yes = CORRECT. If no = WRONG. No intermediate tiers, no ambiguity.
 
