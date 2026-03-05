@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.391 - Benchmark: Fixed hallucination check root cause
+- **Fix**: Root cause — checking for bare "vendor b" matched prompt text, not conclusions. Now uses CONCLUSIVE phrases ("vendor b saves", "b is cheaper") and checks for COMPUTED values not in the original prompt ($15,360, $22,080, etc). Four tiers: CORRECT, MATH OK NO CONCLUSION, NO MATH, WRONG ANSWER.
+
 ## v3.390 - Benchmark: Debug hallucination badge
 - **Debug**: Added preview text length to hallucination badges to diagnose false negatives.
 
