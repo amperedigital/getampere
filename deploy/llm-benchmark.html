@@ -783,6 +783,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
 
       // Filter out warm variants when runs = 1 (warm is always slower on single run — only useful for multi-run averages)
       const activeModels = numRuns === 1 ? s.models.filter(m => !m.id.endsWith('-warm')) : s.models;
+      let completed = 0;
       const total = activeModels.length * numRuns;
       btn.disabled = true; btn.textContent = '⟳ Running…';
       document.getElementById('summary').classList.add('hidden');
