@@ -83,7 +83,7 @@
       class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-2 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500">
     <label class="text-[#8b949e] text-xs flex items-center gap-2">
       Runs:
-      <input type="number" id="numRuns" value="5" min="1" max="20"
+      <input type="number" id="numRuns" value="1" min="1" max="20"
         class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-2 py-2 rounded-md text-xs font-mono w-16 text-center focus:outline-none focus:border-blue-500">
     </label>
     <label
@@ -447,6 +447,8 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         models: [
           { id: "openai:gpt-5.1", label: "GPT-5.1 cold", tier: "T3", note: "baseline" },
           { id: "openai:gpt-5.1-warm", label: "GPT-5.1 warm", tier: "T3", note: "prod" },
+          { id: "openai:gpt-4o-mini", label: "GPT-4o mini cold", tier: "T3", note: "budget" },
+          { id: "openai:gpt-4o-mini-warm", label: "GPT-4o mini warm", tier: "T3" },
           { id: "inception:mercury-2", label: "Mercury-2 cold", tier: "T3", note: "T3 candidate" },
           { id: "inception:mercury-2-warm", label: "Mercury-2 warm", tier: "T3", note: "T3 candidate" },
           { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T3", note: "vs 5.1" },
