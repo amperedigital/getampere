@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.378 - T3 Reasoning Benchmark + Router Monitor T3 Support
+## v3.379 - T3 Benchmark: Harder Reasoning Scenario
+- **Benchmark**: Replaced T3 reasoning prompt with counter-intuitive multi-step math problem. Requires tracking 6+ variables (per-user cost, churn rates, lifetime value, growth rate, migration fees, discounts) and doing exact arithmetic. The "obvious" cheaper vendor actually costs more when churn impact is factored in. Flash Lite should fail this; reasoning models should get it right.
+
+
 - **Feature**: New 🧠 T3 Reasoning benchmark tab — 10 high-level models (GPT-5.1, Mercury-2, Gemini Pro/Flash/Lite, Llama 70B) with cold + warm variants for T3 model comparison.
 - **Feature**: Router monitor T3 support — purple `tier-t3` badge with 🔒 lock icon, T3 filter option, `T3_ESCALATION`/`T3_ATTEMPT`/`T3_FIRST_BYTE` event handling.
 - **Feature**: Inception backend badge (`INC`, pink) + `inception:` prefix stripping in model names.

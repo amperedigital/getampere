@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.378">
+  <meta name="version" content="v3.379">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.378/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.379/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -335,9 +335,9 @@ RESPOND ONLY IN ENGLISH. Do not use any other language.`;
       },
       reasoning: {
         label: "🧠 T3 Reasoning",
-        desc: "<strong>Tier 3 — Complex reasoning benchmark.</strong> Tests multi-step comparison, analysis, and recommendation quality. Models must demonstrate structured thinking and accurate tradeoff analysis. <span style='color:#d2a8ff'>Mercury 2 vs GPT-5.1 — which becomes T3 primary?</span>",
+        desc: "<strong>Tier 3 — Hard reasoning benchmark.</strong> Multi-step math with conflicting constraints. The obvious answer is WRONG — the cheapest option actually costs more when you factor in churn and lifetime value. Tests whether models can track 6+ variables, do arithmetic, and reach a counter-intuitive conclusion. <span style='color:#d2a8ff'>Flash Lite should fail this. Mercury 2 and GPT-5.1 should get it right.</span>",
         system: CONV_SYSTEM,
-        user: "I'm evaluating three options for our customer support: Option A is a fully automated AI chatbot at $2,000/month that handles 80% of tickets but struggles with complex issues. Option B is a hybrid approach at $5,000/month with AI handling first contact and human agents for escalation, covering 95% resolution. Option C is a premium white-glove service at $12,000/month with dedicated human agents and AI-assisted research. We handle about 500 tickets per month, our average ticket value is $150, and customer satisfaction is our top priority. Which option should we choose and why? Walk me through the analysis.",
+        user: "We're deciding between two CRM vendors. Vendor A costs $8 per user per month, has a 12% annual churn rate, and each churned customer costs us $2,400 in lost lifetime value. Vendor B costs $14 per user per month, has a 4% annual churn rate, and each churned customer costs us $2,400. We have 200 users today and expect 15% user growth per year. Here's the catch: Vendor A charges a $5,000 migration fee but offers a 20% discount for the first year only. Vendor B has no migration fee but requires a 2-year commitment. Calculate the total 2-year cost of each vendor INCLUDING the churn impact on lifetime value, and tell me which one actually saves us more money. Show your math — I need exact numbers, not vibes.",
         expectTool: null,
         withTools: false,
         models: [
