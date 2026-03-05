@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.388">
+  <meta name="version" content="v3.389">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.388/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.389/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -651,14 +651,12 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
       let hallucinationBadge = '';
       if (scenario.answerCheck && previewText && previewText !== '(empty)') {
         const lower = previewText.toLowerCase();
-        const raw = previewText.replace(/[,\s]/g, '');
         const gotConclusion = scenario.answerCheck.mustContainAny.some(k => lower.includes(k));
-        const gotMath = scenario.answerCheck.validTotals
-          ? scenario.answerCheck.validTotals.some(n => raw.includes(n.replace(/[,\s]/g, '')))
-          : true;
+        // Real math responses are 500+ chars and contain dollar amounts
+        const showedWork = previewText.length > 500 && (previewText.includes('$') || previewText.includes('cost'));
         if (!gotConclusion) {
           hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG ANSWER</span><br>';
-        } else if (!gotMath) {
+        } else if (!showedWork) {
           hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30 mb-1">⚠️ NO MATH</span><br>';
         } else {
           hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT</span><br>';

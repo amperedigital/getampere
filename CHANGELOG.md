@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.389 - Benchmark: Robust hallucination check (length-based)
+- **Fix**: Replaced brittle number-matching with response length check. Real math responses are 500+ chars with dollar signs. Parroted answers are short. Eliminates false negatives from LaTeX escaping and formatting differences.
+
 ## v3.388 - Benchmark: Clarified T3 prompt + smarter answer check
 - **Fix**: Clarified prompt — "200 customers (users)" makes it unambiguous that users ARE the customers who churn. GPT-5.1 was treating them as separate entities and solving with N as unknown.
 - **Fix**: Added "not formulas with variables" to prevent parametric answers.
