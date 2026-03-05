@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.381 - Benchmark: Add Gemma 3 12B to T3 Reasoning
+## v3.382 - Benchmark: Wider Preview Column
+- **Fix**: Widened preview cell from 380px to 600px so T3 reasoning responses are readable without excessive scrolling.
+
+
 - **Benchmark**: Added Gemma 3 12B (current T1) to T3 reasoning models. No tool calls needed for this scenario, so the no-fn-call limitation doesn't apply. Curious to see how the SLM handles multi-step math.
 
 
