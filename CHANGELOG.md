@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.386 - Benchmark: Three-tier hallucination check
+- **Fix**: Hallucination check now requires conclusion + math. Three badges: D83dDea8 WRONG ANSWER (wrong vendor), 26a0Fe0f NO MATH (right vendor but no computed totals), 2705 CORRECT (right vendor + valid totals from either math model).
+
 ## v3.385 - Benchmark: Conclusion-only hallucination check
 - **Fix**: Removed number-matching from hallucination check. Different valid math models (simple growth vs churn-before-growth) produce different totals. Mercury 2 used a more rigorous model and got flagged incorrectly. Now only checks if the model picked the right vendor (Vendor B).
 

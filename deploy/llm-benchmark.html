@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.385">
+  <meta name="version" content="v3.386">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.385/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.386/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -410,7 +410,10 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         withTools: false,
         answerCheck: {
           mustContainAny: ['vendor b', 'option b', 'b saves', 'b is cheaper', 'b is the better', 'choose b', 'go with b', 'recommend b'],
-          keyNumbers: ['52,760', '52760', '113,520', '113520', '166,280', '166280'],
+          // Accept values from EITHER valid math model:
+          // Simple (200→230 flat): totals $166,280 / $113,520 / saves $52,760
+          // Churn-before-growth (200→202/220): totals $155,681 / $111,091 / saves $44,590
+          validTotals: ['166,280', '166280', '155,681', '155681', '113,520', '113520', '111,091', '111091', '52,760', '52760', '44,590', '44590'],
         },
         models: [
           { id: "openai:gpt-5.1", label: "GPT-5.1 cold", tier: "T3", note: "baseline" },
@@ -647,9 +650,15 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
       let hallucinationBadge = '';
       if (scenario.answerCheck && previewText && previewText !== '(empty)') {
         const lower = previewText.toLowerCase();
+        const raw = previewText.replace(/[,\s]/g, '');
         const gotConclusion = scenario.answerCheck.mustContainAny.some(k => lower.includes(k));
+        const gotMath = scenario.answerCheck.validTotals
+          ? scenario.answerCheck.validTotals.some(n => raw.includes(n.replace(/[,\s]/g, '')))
+          : true;
         if (!gotConclusion) {
           hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG ANSWER</span><br>';
+        } else if (!gotMath) {
+          hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30 mb-1">⚠️ NO MATH</span><br>';
         } else {
           hallucinationBadge = '<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT</span><br>';
         }
