@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.387 - Benchmark: Three-tier hallucination check (final)
+- **Fix**: Requires both right conclusion (Vendor B) AND actual computed totals from either valid math model. Three badges: WRONG ANSWER, NO MATH (parroting), CORRECT.
+
 ## v3.386 - Benchmark: Three-tier hallucination check
 - **Fix**: Hallucination check now requires conclusion + math. Three badges: D83dDea8 WRONG ANSWER (wrong vendor), 26a0Fe0f NO MATH (right vendor but no computed totals), 2705 CORRECT (right vendor + valid totals from either math model).
 
