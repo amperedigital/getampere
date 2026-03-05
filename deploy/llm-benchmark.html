@@ -184,9 +184,22 @@
 
     // ── Pricing ($/1M tokens, from cloudflare.com/en-us/developer-platform/pricing/) ──
     const MODEL_PRICING = {
+      // OpenAI
+      'openai:gpt-4o': { in: 2.500, out: 10.000 },
+      'openai:gpt-4o-warm': { in: 2.500, out: 10.000 },
       'openai:gpt-4o-mini': { in: 0.150, out: 0.600 },
-      'openai:gpt-5.1': { in: 10.00, out: 30.00, est: true },
-      'openai:gpt-5.1-warm': { in: 10.00, out: 30.00, est: true },
+      'openai:gpt-4o-mini-warm': { in: 0.150, out: 0.600 },
+      'openai:gpt-4.1-nano': { in: 0.100, out: 0.400 },
+      'openai:gpt-4.1-nano-warm': { in: 0.100, out: 0.400 },
+      'openai:gpt-5-nano': { in: 0.050, out: 0.400 },
+      'openai:gpt-5-nano-warm': { in: 0.050, out: 0.400 },
+      'openai:gpt-5.1': { in: 2.000, out: 8.000 },
+      'openai:gpt-5.1-warm': { in: 2.000, out: 8.000 },
+      'openai:gpt-5.2': { in: 1.750, out: 14.000 },
+      'openai:gpt-5.2-warm': { in: 1.750, out: 14.000 },
+      'openai:gpt-5.3': { in: 1.750, out: 14.000 },
+      'openai:gpt-5.3-warm': { in: 1.750, out: 14.000 },
+      // Cloudflare
       '@cf/qwen/qwen3-30b-a3b-fp8': { in: 0.051, out: 0.340 },
       '@cf/meta/llama-4-scout-17b-16e-instruct': { in: 0.270, out: 0.850 },
       '@hf/nousresearch/hermes-2-pro-mistral-7b': { in: 0.045, out: 0.384, est: true },
@@ -195,6 +208,7 @@
       '@cf/mistralai/mistral-small-3.1-24b-instruct': { in: 0.351, out: 0.560 },
       '@cf/meta/llama-3.3-70b-instruct-fp8-fast': { in: 0.293, out: 2.253 },
       '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
+      '@cf/google/gemma-3-12b-it-warm': { in: 0.345, out: 0.556 },
       // Gemini (Google AI) — IDs confirmed available via models list
       'gemini:gemini-2.5-flash': { in: 0.150, out: 0.600 },
       'gemini:gemini-2.5-flash-warm': { in: 0.150, out: 0.600 },
@@ -202,10 +216,9 @@
       'gemini:gemini-2.5-pro-warm': { in: 1.250, out: 10.00 },
       'gemini:gemini-2.5-flash-lite': { in: 0.075, out: 0.300 },
       'gemini:gemini-2.5-flash-lite-warm': { in: 0.075, out: 0.300 },
-      '@cf/google/gemma-3-12b-it-warm': { in: 0.345, out: 0.556 },
       // Inception Labs
-      'inception:mercury-2': { in: 0.250, out: 0.750, est: true },
-      'inception:mercury-2-warm': { in: 0.250, out: 0.750, est: true },
+      'inception:mercury-2': { in: 0.250, out: 1.000 },
+      'inception:mercury-2-warm': { in: 0.250, out: 1.000 },
       // DeepSeek
       'deepseek:deepseek-chat': { in: 0.270, out: 1.100 },
       'deepseek:deepseek-chat-warm': { in: 0.270, out: 1.100 },
@@ -213,7 +226,7 @@
       'deepseek:deepseek-chat-think-warm': { in: 0.270, out: 1.100 },
       'deepseek:deepseek-reasoner': { in: 0.550, out: 2.190 },
       'deepseek:deepseek-reasoner-warm': { in: 0.550, out: 2.190 },
-      // Alibaba Cloud / Qwen (International pricing)
+      // Alibaba Cloud / Qwen
       'qwen:qwen-flash': { in: 0.050, out: 0.400 },
       'qwen:qwen-flash-warm': { in: 0.050, out: 0.400 },
       'qwen:qwen-plus': { in: 0.400, out: 1.200 },
@@ -445,10 +458,18 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           validTotals: ['42,440', '42440', '72,240', '72240', '15,360', '15360', '22,080', '22080', '33,600', '33600', '38,640', '38640', '166,280', '166280', '155,681', '155681', '113,520', '113520', '111,091', '111091', '52,760', '52760', '44,590', '44590'],
         },
         models: [
-          { id: "openai:gpt-5.1", label: "GPT-5.1 cold", tier: "T3", note: "baseline" },
+          { id: "openai:gpt-5.3", label: "GPT-5.3", tier: "T3", note: "latest" },
+          { id: "openai:gpt-5.3-warm", label: "GPT-5.3 warm", tier: "T3" },
+          { id: "openai:gpt-5.2", label: "GPT-5.2", tier: "T3", note: "prev gen" },
+          { id: "openai:gpt-5.2-warm", label: "GPT-5.2 warm", tier: "T3" },
+          { id: "openai:gpt-5.1", label: "GPT-5.1", tier: "T3", note: "baseline" },
           { id: "openai:gpt-5.1-warm", label: "GPT-5.1 warm", tier: "T3", note: "prod" },
-          { id: "openai:gpt-4o-mini", label: "GPT-4o mini cold", tier: "T3", note: "budget" },
-          { id: "openai:gpt-4o-mini-warm", label: "GPT-4o mini warm", tier: "T3" },
+          { id: "openai:gpt-5-nano", label: "GPT-5 nano", tier: "T3", note: "cheapest" },
+          { id: "openai:gpt-5-nano-warm", label: "GPT-5 nano warm", tier: "T3" },
+          { id: "openai:gpt-4o", label: "GPT-4o", tier: "T3", note: "legacy" },
+          { id: "openai:gpt-4o-warm", label: "GPT-4o warm", tier: "T3" },
+          { id: "openai:gpt-4.1-nano", label: "GPT-4.1 nano", tier: "T3", note: "budget" },
+          { id: "openai:gpt-4.1-nano-warm", label: "GPT-4.1 nano warm", tier: "T3" },
           { id: "inception:mercury-2", label: "Mercury-2 cold", tier: "T3", note: "T3 candidate" },
           { id: "inception:mercury-2-warm", label: "Mercury-2 warm", tier: "T3", note: "T3 candidate" },
           { id: "gemini:gemini-2.5-pro", label: "Gemini 2.5 Pro", tier: "T3", note: "vs 5.1" },
@@ -531,7 +552,11 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
       const s = SCENARIOS[currentScenario];
       const tbody = document.getElementById('resultsBody');
       tbody.innerHTML = '';
-      s.models.forEach(m => {
+      // Filter out warm variants when runs = 1 (warm is always slower on single run — only useful for multi-run averages)
+      const numRuns = parseInt(document.getElementById('numRuns').value) || 1;
+      const activeModels = numRuns === 1 ? s.models.filter(m => !m.id.endsWith('-warm')) : s.models;
+
+      activeModels.forEach(m => {
         const tr = document.createElement('tr');
         tr.id = 'row_' + sanitizeId(m.id) + '_' + currentScenario;
         tr.className = 'border-b border-[#21262d]';
@@ -754,16 +779,18 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
       const btn = document.getElementById('runBtn');
       const apiKey = document.getElementById('apiKey').value.trim();
       const s = SCENARIOS[currentScenario];
-      const numRuns = Math.max(1, Math.min(20, parseInt(document.getElementById('numRuns').value) || 5));
-      let completed = 0;
-      const total = s.models.length * numRuns;
+      const numRuns = Math.max(1, Math.min(20, parseInt(document.getElementById('numRuns').value) || 1));
+
+      // Filter out warm variants when runs = 1 (warm is always slower on single run — only useful for multi-run averages)
+      const activeModels = numRuns === 1 ? s.models.filter(m => !m.id.endsWith('-warm')) : s.models;
+      const total = activeModels.length * numRuns;
       btn.disabled = true; btn.textContent = '⟳ Running…';
       document.getElementById('summary').classList.add('hidden');
       document.getElementById('runStatus').textContent = `0/${total} calls`;
       buildTable();
       document.querySelectorAll('.winner-row').forEach(r => r.classList.remove('winner-row'));
 
-      const allResults = await Promise.all(s.models.map(async (model) => {
+      const allResults = await Promise.all(activeModels.map(async (model) => {
         const rowKey = model.id + currentScenario;
         updateRow(rowKey, 'running', null, s.expectTool);
         const ttfbs = [], promptToks = [], completionToks = [];
