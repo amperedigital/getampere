@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.394 - Auto-generated
+- **Frontend**: Release v3.394 (no new commits)
+
+
 ## v3.393 - Benchmark: Clear expected answer verdict
 - **Fix**: Expected Answer panel now shows all three key values prominently: Vendor A=$166,280, Vendor B=$113,520, Savings=$52,760. Notes which values the hallucination check uses.
 
