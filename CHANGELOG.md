@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.405 - Auto-generated
+- **Frontend**: Release v3.405 (no new commits)
+
+
 ## v3.404 - Auto-generated
 - **Frontend**: Release v3.404 (no new commits)
 
