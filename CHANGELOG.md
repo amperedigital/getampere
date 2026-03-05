@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.398 - DeepSeek V3.2 labels + T3 correctness in results
+- **Fix**: DeepSeek labels now say V3.2
+- **New**: T3 results show correctness badges, wrong answers ranked last
+
 ## v3.397 - DeepSeek + hallucination fixes
 - **New**: DeepSeek Chat + Reasoner in all scenarios
 - **Fix**: ALL THREE values required for CORRECT

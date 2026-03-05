@@ -333,7 +333,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B fp8", tier: "T1" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T1", note: "deepseek" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
         ]
       },
       returning: {
@@ -355,7 +355,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
           { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T1", note: "deepseek" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
         ]
       },
       tier2: {
@@ -375,7 +375,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat (V3)", tier: "T2", note: "deepseek" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T2", note: "deepseek" },
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
         ]
       },
@@ -436,8 +436,8 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "gemini:gemini-2.5-flash-lite", label: "Gemini Flash Lite", tier: "T3", note: "current T2" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T3", note: "current T1" },
           { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B", tier: "T3" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek Chat cold", tier: "T3", note: "deepseek" },
-          { id: "deepseek:deepseek-chat-warm", label: "DeepSeek Chat warm", tier: "T3" },
+          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2 cold", tier: "T3", note: "deepseek" },
+          { id: "deepseek:deepseek-chat-warm", label: "DeepSeek V3.2 warm", tier: "T3" },
           { id: "deepseek:deepseek-reasoner", label: "DeepSeek Reasoner cold", tier: "T3", note: "reasoning" },
           { id: "deepseek:deepseek-reasoner-warm", label: "DeepSeek Reasoner warm", tier: "T3" },
         ]
@@ -792,6 +792,15 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
 
       allResults.forEach(r => {
         if (!r.ttfb_ms || r.error) { r._score = Infinity; return; }
+        // For T3 (answerCheck), penalize wrong answers heavily
+        const preview = r.response_preview || '';
+        if (s.answerCheck) {
+          const hasA = preview.includes('166,280') || preview.includes('166280');
+          const hasB = preview.includes('113,520') || preview.includes('113520');
+          const hasS = preview.includes('52,760') || preview.includes('52760');
+          r._correct = hasA && hasB && hasS;
+          if (!r._correct) { r._score = 1000 + norm(r.ttfb_ms, minT, maxT); return; }
+        }
         r._score = norm(r.ttfb_ms, minT, maxT) * 0.5 + (r.costPerTurn != null ? norm(r.costPerTurn, minC, maxC) : 0.5) * 0.5;
       });
 
@@ -825,7 +834,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
 
         el.innerHTML = `
           <div class="text-base font-bold mb-1">🏆 ${w.label} wins — avg ${w.ttfb_ms}ms TTFB over ${numRuns} runs (${pct > 0 ? pct + '% faster' : Math.abs(pct) + '% slower'} than baseline ${baselineLabel})</div>
-          <div class="text-xs text-[#8b949e] mb-3">Sorted by best value: 50% speed (TTFB) + 50% cost. 🏆 Winner = fastest <em>and</em> cheapest. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
+          <div class="text-xs text-[#8b949e] mb-3">Sorted by best value: 50% speed (TTFB) + 50% cost.${s.answerCheck ? ' 🧠 T3: wrong answers ranked last regardless of speed.' : ''} 🏆 Winner = fastest <em>and</em> cheapest${s.answerCheck ? ' <em>and</em> correct' : ''}. ⚠️ Add ~100–200ms for real-world ElevenLabs overhead.</div>
           <div class="grid gap-1.5">
             ${sortedAll.map(r => `
               <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-mono">
@@ -834,6 +843,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
                 ${r.avg_prompt_tokens != null ? `<span class="text-[#8b949e]">${r.avg_prompt_tokens}in/${r.avg_completion_tokens}out</span>` : ''}
                 ${r.costPerTurn != null ? `<span class="text-[#8b949e]">${fmtCost(r.costPerTurn)}/turn</span>` : ''}
                 ${s.expectTool ? (r.tool_call === s.expectTool ? '<span class="text-green-400">✓</span>' : '<span class="text-red-400">✗</span>') : ''}
+                ${s.answerCheck ? (r._correct ? '<span class="text-green-400">✅</span>' : '<span class="text-red-400">🚨</span>') : ''}
               </div>
             `).join('')}
           </div>
