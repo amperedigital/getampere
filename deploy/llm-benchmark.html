@@ -742,7 +742,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
         body: JSON.stringify({ system_prompt: s.system, user_message: s.user, with_tools: s.withTools, models: [model.id], skip_warmup: runIndex > 0 }),
-        signal: AbortSignal.timeout(65000)
+        signal: AbortSignal.timeout(130000)
       });
       const data = await res.json();
       return data.results?.[0] || { model: model.id, error: 'no result', ttfb_ms: null, tool_call: null, response_preview: '' };
