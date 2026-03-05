@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.382">
+  <meta name="version" content="v3.383">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.382/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.383/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -124,6 +124,19 @@
       </div>
       <pre id="promptUser"
         class="px-4 py-3 text-[11px] text-[#e6edf3] font-mono whitespace-pre-wrap leading-relaxed"></pre>
+    </div>
+  </details>
+
+  <!-- Expected Answer (UI only — NOT sent to models) -->
+  <details id="expectedAnswer" class="mb-4 hidden">
+    <summary class="text-xs text-[#8b949e] cursor-pointer hover:text-green-400 transition-colors select-none px-1">✅
+      Expected Answer (for grading — not sent to model)</summary>
+    <div class="mt-2 bg-[#0d1117] border border-green-500/30 rounded-lg overflow-hidden">
+      <div class="px-4 py-2 bg-[#0b1f0b] border-b border-green-500/30">
+        <span class="text-[10px] uppercase tracking-wider text-green-400 font-semibold">Correct Answer</span>
+      </div>
+      <pre id="answerText"
+        class="px-4 py-3 text-[11px] text-[#e6edf3] font-mono whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto"></pre>
     </div>
   </details>
 
@@ -368,6 +381,31 @@ For this question, there is NO length limit. Show your full reasoning, calculati
         desc: "<strong>Tier 3 — Hard reasoning benchmark.</strong> Multi-step math with conflicting constraints. The obvious answer is WRONG — the cheapest option actually costs more when you factor in churn and lifetime value. Tests whether models can track 6+ variables, do arithmetic, and reach a counter-intuitive conclusion. <span style='color:#d2a8ff'>Flash Lite should fail this. Mercury 2 and GPT-5.1 should get it right.</span>",
         system: T3_SYSTEM,
         user: "We're deciding between two CRM vendors. Vendor A costs $8 per user per month, has a 12% annual churn rate, and each churned customer costs us $2,400 in lost lifetime value. Vendor B costs $14 per user per month, has a 4% annual churn rate, and each churned customer costs us $2,400. We have 200 users today and expect 15% user growth per year. Here's the catch: Vendor A charges a $5,000 migration fee but offers a 20% discount for the first year only. Vendor B has no migration fee but requires a 2-year commitment. Calculate the total 2-year cost of each vendor INCLUDING the churn impact on lifetime value, and tell me which one actually saves us more money. Show your math — I need exact numbers, not vibes.",
+        answer: `VENDOR A (Total: $166,280)
+  Subscription:
+    Year 1: 200 users × $8/mo × 12 = $19,200 × 0.80 (20% discount) = $15,360
+    Year 2: 230 users × $8/mo × 12 = $22,080
+    Subtotal: $37,440
+  Migration fee: $5,000
+  Churn LTV loss:
+    Year 1: 200 × 12% = 24 churned × $2,400 = $57,600
+    Year 2: 230 × 12% = 27.6 churned × $2,400 = $66,240
+    Subtotal: $123,840
+  TOTAL A: $37,440 + $5,000 + $123,840 = $166,280
+
+VENDOR B (Total: $113,520)
+  Subscription:
+    Year 1: 200 users × $14/mo × 12 = $33,600
+    Year 2: 230 users × $14/mo × 12 = $38,640
+    Subtotal: $72,240
+  Churn LTV loss:
+    Year 1: 200 × 4% = 8 churned × $2,400 = $19,200
+    Year 2: 230 × 4% = 9.2 churned × $2,400 = $22,080
+    Subtotal: $41,280
+  TOTAL B: $72,240 + $41,280 = $113,520
+
+VERDICT: Vendor B saves $52,760 over 2 years.
+The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         expectTool: null,
         withTools: false,
         models: [
@@ -419,6 +457,16 @@ For this question, there is NO length limit. Show your full reasoning, calculati
       document.getElementById('scenarioDesc').innerHTML = s.desc;
       // Populate prompt preview
       document.getElementById('promptSystem').textContent = s.system;
+      // Populate expected answer (UI only — not sent to model)
+      const answerPanel = document.getElementById('expectedAnswer');
+      const answerText = document.getElementById('answerText');
+      if (s.answer) {
+        answerPanel.classList.remove('hidden');
+        answerText.textContent = s.answer;
+      } else {
+        answerPanel.classList.add('hidden');
+        answerText.textContent = '';
+      }
       document.getElementById('promptUser').textContent = s.user;
       const approxTokens = Math.round(s.system.length / 3.5);
       document.getElementById('promptTokenCount').textContent = `(~${approxTokens} tokens, ${s.system.length} chars)`;

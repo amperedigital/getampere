@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.382 - Benchmark: Wider Preview Column
+## v3.383 - Benchmark: Expected Answer Panel for T3 Reasoning
+- **Feature**: Collapsible "✅ Expected Answer" panel (green border) shows the correct math for grading model responses. Only appears on scenarios that have an answer key. UI-only — never sent to the LLM.
+
+
 - **Fix**: Widened preview cell from 380px to 600px so T3 reasoning responses are readable without excessive scrolling.
 
 
