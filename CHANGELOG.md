@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.392 - Benchmark: Binary hallucination check
+- **Fix**: Simplified to binary — response must contain at least one correct final total ($166,280 or $113,520 or $52,760). If yes = CORRECT. If no = WRONG. No intermediate tiers, no ambiguity.
+
 ## v3.391 - Benchmark: Fixed hallucination check root cause
 - **Fix**: Root cause — checking for bare "vendor b" matched prompt text, not conclusions. Now uses CONCLUSIVE phrases ("vendor b saves", "b is cheaper") and checks for COMPUTED values not in the original prompt ($15,360, $22,080, etc). Four tiers: CORRECT, MATH OK NO CONCLUSION, NO MATH, WRONG ANSWER.
 

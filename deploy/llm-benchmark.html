@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v3.391">
+  <meta name="version" content="v3.392">
   <title>Ampere LLM Benchmark</title>
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -15,7 +15,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.391/deploy/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.392/deploy/assets/css/styles.css">
   <style>
     @keyframes spin {
       to {
@@ -646,55 +646,18 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         return;
       }
 
-      // Hallucination check for scenarios with answerCheck
+      // Hallucination check — binary: contains the right final numbers or it's wrong
       const scenario = SCENARIOS[currentScenario];
       let hallucinationBadge = '';
       if (scenario.answerCheck && previewText && previewText !== '(empty)') {
-        const lower = previewText.toLowerCase();
-        // Check for CONCLUSIVE phrases — NOT just 'vendor b' (that appears in the prompt)
-        const conclusionPhrases = [
-          'vendor b saves', 'vendor b is cheaper', 'vendor b is the better',
-          'vendor b costs less', 'vendor b provides the greater',
-          'choose vendor b', 'go with vendor b', 'recommend vendor b',
-          'b saves you', 'b is cheaper', 'b saves $', 'b saves us',
-          'vendor b costs $113', 'vendor b costs $111',
-          'savings with vendor b', 'saving with vendor b',
-          'vendor b.*cheaper', 'vendor b total.*less'
-        ];
-        const gotConclusion = conclusionPhrases.some(p => lower.includes(p));
-        // Check for COMPUTED values not in the original prompt
-        // Prompt mentions: $8, $14, $5,000, $2,400, 200, 15%, 12%, 4%, 20%
-        // These are CALCULATED values that prove real math was done:
-        const computedValues = [
-          '15,360', '15360',   // Year 1 Vendor A subscription
-          '22,080', '22080',   // Year 2 Vendor A subscription
-          '33,600', '33600',   // Year 1 Vendor B subscription
-          '38,640', '38640',   // Year 2 Vendor B subscription
-          '37,440', '37440',   // Vendor A sub total
-          '42,440', '42440',   // Vendor A sub+migration
-          '72,240', '72240',   // Vendor B sub total
-          '57,600', '57600',   // Year 1 Vendor A churn
-          '66,240', '66240',   // Year 2 Vendor A churn
-          '19,200', '19200',   // Year 1 Vendor B churn
-          '123,840', '123840', // Vendor A churn total
-          '41,280', '41280',   // Vendor B churn total
-          '166,280', '166280', // Vendor A grand total
-          '113,520', '113520', // Vendor B grand total
-          '52,760', '52760',   // Savings (simple model)
-          '155,681', '155681', // Vendor A total (churn-before-growth)
-          '111,091', '111091', // Vendor B total (churn-before-growth)
-          '44,590', '44590',   // Savings (churn-before-growth)
-        ];
-        const didMath = computedValues.some(v => previewText.includes(v));
+        // THE correct answer: Vendor A=$166,280, Vendor B=$113,520, savings=$52,760
+        const correctFinals = ['166,280', '166280', '113,520', '113520', '52,760', '52760'];
+        const gotAnswer = correctFinals.some(v => previewText.includes(v));
         const debugInfo = ` [len=${previewText.length}]`;
-        if (gotConclusion && didMath) {
+        if (gotAnswer) {
           hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/30 mb-1">✅ CORRECT${debugInfo}</span><br>`;
-        } else if (didMath && !gotConclusion) {
-          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/30 mb-1">🔢 MATH OK, NO CONCLUSION${debugInfo}</span><br>`;
-        } else if (gotConclusion && !didMath) {
-          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30 mb-1">⚠️ NO MATH${debugInfo}</span><br>`;
         } else {
-          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG ANSWER${debugInfo}</span><br>`;
+          hallucinationBadge = `<span class="inline-block text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/30 mb-1">🚨 WRONG${debugInfo}</span><br>`;
         }
       }
 
