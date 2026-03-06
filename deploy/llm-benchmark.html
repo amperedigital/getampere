@@ -240,6 +240,12 @@
       'zai:glm-4.7-flashx-warm': { in: 0.070, out: 0.400 },
       'zai:glm-4.7': { in: 0.600, out: 2.200 },
       'zai:glm-4.7-warm': { in: 0.600, out: 2.200 },
+      'zai:glm-4.5-x': { in: 2.200, out: 8.900 },
+      'zai:glm-4.5-x-warm': { in: 2.200, out: 8.900 },
+      'zai:glm-4.5-airx': { in: 1.100, out: 4.500 },
+      'zai:glm-4.5-airx-warm': { in: 1.100, out: 4.500 },
+      'zai:glm-4.5-flash': { in: 0, out: 0 },
+      'zai:glm-4.5-flash-warm': { in: 0, out: 0 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -371,6 +377,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
+          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
         ]
       },
       returning: {
@@ -396,6 +403,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
+          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
         ]
       },
       tier2: {
@@ -420,6 +428,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T2", note: "alibaba" },
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T2", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T2", note: "zed ai free" },
+          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T2", note: "zed ai free" },
         ]
       },
       reasoning: {
@@ -504,6 +513,12 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "zai:glm-4.7", label: "GLM-4.7", tier: "T3", note: "zed ai" },
           { id: "zai:glm-4.7-warm", label: "GLM-4.7 warm", tier: "T3" },
           { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7 Flash (CF)", tier: "T3", note: "workers ai" },
+          { id: "zai:glm-4.5-x", label: "GLM-4.5 X", tier: "T3", note: "zed ai ultra" },
+          { id: "zai:glm-4.5-x-warm", label: "GLM-4.5 X warm", tier: "T3" },
+          { id: "zai:glm-4.5-airx", label: "GLM-4.5 AirX", tier: "T3", note: "zed ai fast" },
+          { id: "zai:glm-4.5-airx-warm", label: "GLM-4.5 AirX warm", tier: "T3" },
+          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T3", note: "zed ai free" },
+          { id: "zai:glm-4.5-flash-warm", label: "GLM-4.5 Flash warm", tier: "T3" },
         ]
       }
     };
