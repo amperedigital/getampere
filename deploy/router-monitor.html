@@ -254,6 +254,115 @@
             color: #f85149;
             font-weight: 600;
         }
+
+        .step-SENTINEL_SCORE {
+            background: #1a2a1c;
+            color: #3fb950;
+        }
+
+        .step-T3_FALLBACK {
+            background: #3b1a1f;
+            color: #f85149;
+            border: 1px solid #f8514944;
+        }
+
+        .step-AGENT_RESPONSE {
+            background: #1a2b2e;
+            color: #7ee787;
+        }
+
+        .sentinel-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-top: 6px;
+        }
+
+        .sentinel-dim {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'DM Sans', monospace;
+        }
+
+        .dim-green {
+            background: #1a2d1a;
+            color: #3fb950;
+        }
+
+        .dim-yellow {
+            background: #2d2500;
+            color: #e3b341;
+        }
+
+        .dim-red {
+            background: #2d1a1a;
+            color: #f85149;
+        }
+
+        .coaching-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #1e2340;
+            color: #79c0ff;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .lang-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: #1c2d3f;
+            color: #58a6ff;
+            font-family: 'DM Sans', monospace;
+        }
+
+        .geo-badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: #1a1a2e;
+            color: #8b949e;
+            font-family: 'DM Sans', monospace;
+        }
+
+        .session-gauge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        .gauge-green {
+            color: #3fb950;
+            border-color: #3fb95044;
+        }
+
+        .gauge-yellow {
+            color: #e3b341;
+            border-color: #e3b34144;
+        }
+
+        .gauge-red {
+            color: #f85149;
+            border-color: #f8514944;
+        }
     </style>
 </head>
 
@@ -265,10 +374,16 @@
             <h1 class="text-xl font-bold text-blue-400 mb-0.5">⚡ Ampere Router Monitor</h1>
             <p class="text-xs text-[#8b949e]">Live events only — since page load / last clear</p>
         </div>
-        <div id="connStatus"
-            class="flex items-center gap-2 text-xs text-[#8b949e] bg-[#161b22] border border-[#30363d] px-3 py-1.5 rounded-full">
-            <span id="connDot" class="conn-indicator conn-polling live-dot"></span>
-            <span id="connLabel">Connecting...</span>
+        <div class="flex items-center gap-3">
+            <div id="sessionGauge" class="session-gauge" style="display:none;">
+                <span>Sentinel</span>
+                <span id="sessionAvgLabel">—</span>
+            </div>
+            <div id="connStatus"
+                class="flex items-center gap-2 text-xs text-[#8b949e] bg-[#161b22] border border-[#30363d] px-3 py-1.5 rounded-full">
+                <span id="connDot" class="conn-indicator conn-polling live-dot"></span>
+                <span id="connLabel">Connecting...</span>
+            </div>
         </div>
     </div>
 
@@ -290,6 +405,17 @@
             <option value="">All Results</option>
             <option value="ok">Success ✅</option>
             <option value="fallback">Fallback ⚠️</option>
+        </select>
+        <select id="filterLang"
+            class="bg-[#161b22] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs focus:outline-none focus:border-blue-500">
+            <option value="">All Langs</option>
+            <option value="en">English 🇺🇸</option>
+            <option value="zh">Chinese 🇨🇳</option>
+            <option value="ja">Japanese 🇯🇵</option>
+            <option value="ko">Korean 🇰🇷</option>
+            <option value="ar">Arabic 🇸🇦</option>
+            <option value="hi">Hindi 🇮🇳</option>
+            <option value="ru">Russian 🇷🇺</option>
         </select>
         <button onclick="clearAll()"
             class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs cursor-pointer transition-colors">🗑
@@ -374,6 +500,10 @@
         let pollInterval = null;
         let ws = null;
         let seenReqIds = new Set();
+        let latestSessionAvg = null;
+
+        const LANG_FLAGS = { en: '🇺🇸', zh: '🇨🇳', ja: '🇯🇵', ko: '🇰🇷', ar: '🇸🇦', hi: '🇮🇳', ru: '🇷🇺', ur: '🇵🇰', bn: '🇧🇩', ta: '🇱🇰' };
+        const DIM_LABELS = { a: 'ACC', g: 'GND', h: 'HLP', cm: 'CMP', cn: 'CON', e: 'EMP', s: 'SAF', co: 'COH' };
 
         const fmt = {
             time: ts => new Date(ts).toLocaleTimeString('en-US', { hour12: false }),
@@ -404,6 +534,20 @@
                 if (ms == null) return '<span class="text-[#8b949e]">—</span>';
                 const cls = ms < 300 ? 'ttfb-fast' : ms < 1000 ? 'ttfb-med' : 'ttfb-slow';
                 return `<span class="${cls}">${ms}ms</span>`;
+            },
+            score: s => {
+                if (s == null) return '—';
+                const cls = s >= 8 ? 'dim-green' : s >= 6 ? 'dim-yellow' : 'dim-red';
+                return `<span class="sentinel-dim ${cls}">${s}</span>`;
+            },
+            lang: (l, country) => {
+                if (!l) return '';
+                const flag = LANG_FLAGS[l] || '🌐';
+                return `<span class="lang-badge">${flag} ${l}</span>`;
+            },
+            geo: (country, colo) => {
+                if (!country) return '';
+                return `<span class="geo-badge">${country}${colo ? ' · ' + colo : ''}</span>`;
             }
         };
 
@@ -426,16 +570,22 @@
             seenReqIds.add(reqId);
             const row = routeMap[reqId];
 
-            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; }
+            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; row.lang = ev.lang; row.country = ev.country; row.colo = ev.colo; }
             if (step === 'T1_ATTEMPT') { row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend; }
-            if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; }
-            if (step === 'T3_ESCALATION') { row.tier = 'tier3'; row.escalationReason = ev.reason || 'escalated'; row.escalationPath = ev.path || 'agent'; }
+            if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; if (ev.coaching) row.coaching = ev.coaching; }
+            if (step === 'T3_ESCALATION') { row.tier = 'tier3'; row.escalationReason = ev.trigger || ev.reason || 'escalated'; row.t3Locked = true; }
             if (step === 'T3_ATTEMPT') { row.tier = 'tier3'; row.model = ev.model; row.backend = ev.backend; }
+            if (step === 'T3_FALLBACK') { row.result = 'fallback'; row.fallback = ev.fallback; }
             if (step === 'T1_ACQUIRED') { row.acq_ms = ev.acq_ms; if (!row.model) row.model = ev.model; if (!row.backend) row.backend = ev.backend; }
             if (step === 'T1_FIRST_BYTE' || step === 'T2_FIRST_BYTE' || step === 'T3_FIRST_BYTE') { row.ttfb_ms = ev.ttfb_ms; row.result = 'ok'; if (!row.model && ev.model) row.model = ev.model; }
             if (step === 'T1_TOOL_CALL') { if (!row.tools.includes(ev.tool)) row.tools.push(ev.tool); }
             if (step === 'T1_FALLBACK' || step === 'T2_FALLBACK') { row.result = 'fallback'; row.fallback = ev.fallback; }
             if (step === 'AGENT_RESPONSE') { row.agentResponse = ev.responsePreview || ''; row.total_ms = ev.total_ms ?? null; row.result = row.result || 'ok'; }
+            if (step === 'SENTINEL_SCORE') {
+                row.sentinel = { scores: ev.scores, turnAvg: ev.turnAvg, sessionAvg: ev.sessionAvg, judge: ev.judge, coaching: ev.coaching, locked: ev.locked };
+                latestSessionAvg = ev.sessionAvg;
+                updateSessionGauge(ev.sessionAvg);
+            }
 
             renderRoutingTable();
             renderTurnPanel();
@@ -445,10 +595,12 @@
         function renderRoutingTable() {
             const tierFilter = document.getElementById('filterTier').value;
             const resultFilter = document.getElementById('filterResult').value;
+            const langFilter = document.getElementById('filterLang').value;
             const rows = Object.values(routeMap).sort((a, b) => b.ts - a.ts).slice(0, 200).filter(r => {
                 if (tierFilter && r.tier !== tierFilter) return false;
                 if (resultFilter === 'ok' && r.result !== 'ok') return false;
                 if (resultFilter === 'fallback' && r.result !== 'fallback') return false;
+                if (langFilter && r.lang !== langFilter) return false;
                 return true;
             });
             document.getElementById('routeCount').textContent = `${rows.length} turns`;
@@ -458,10 +610,11 @@
                 const modelLabel = r.fallback
                     ? `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span><span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>`
                     : `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span>`;
-                return `<tr class="border-b border-[#21262d] new-row">
+                const sentinelHtml = r.sentinel ? `<span title="Sentinel: ${r.sentinel.turnAvg}">${fmt.score(r.sentinel.turnAvg)}</span>` : '';
+                return `<tr class="border-b border-[#21262d] new-row${r.t3Locked ? ' style="background:rgba(139,92,246,0.08);"' : ''}">
                     <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}</td>
                     <td class="px-3 py-2 font-mono text-[#8b949e] text-[10px]">${r.reqId}</td>
-                    <td class="px-3 py-2">${fmt.tier(r.tier)}</td>
+                    <td class="px-3 py-2">${fmt.tier(r.tier)} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
                     <td class="px-3 py-2">${modelLabel}</td>
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
                     <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
@@ -469,7 +622,7 @@
                     <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
                     <td class="px-3 py-2">${fmt.tools(r.tools)}</td>
-                    <td class="px-3 py-2">${fmt.result(r.result)}</td>
+                    <td class="px-3 py-2">${fmt.result(r.result)} ${sentinelHtml}</td>
                 </tr>`;
             }).join('');
         }
@@ -489,12 +642,40 @@
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
                 const resultHtml = r.result === 'ok' ? '<span class="result-ok">✅</span>' : r.result === 'fallback' ? `<span class="result-fallback">⚠️ →${fmt.model(r.fallback)}</span>` : '<span class="text-[#8b949e]">⏳</span>';
-                return `<div class="turn-card ${!r.result ? 'active' : ''}">
+                // Sentinel score card
+                let sentinelHtml = '';
+                if (r.sentinel) {
+                    const s = r.sentinel;
+                    const dims = Object.entries(DIM_LABELS).map(([k, label]) => {
+                        const v = s.scores?.[k];
+                        return `<span class="sentinel-dim ${v >= 8 ? 'dim-green' : v >= 6 ? 'dim-yellow' : 'dim-red'}">${label} ${v ?? '?'}</span>`;
+                    }).join(' ');
+                    const avgCls = s.turnAvg >= 8 ? 'dim-green' : s.turnAvg >= 6 ? 'dim-yellow' : 'dim-red';
+                    sentinelHtml = `<div class="sentinel-card">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                            <span style="font-size:10px;color:#8b949e;">🛡️ Sentinel</span>
+                            <span class="sentinel-dim ${avgCls}" style="font-weight:700;">avg ${s.turnAvg}</span>
+                            <span style="font-size:10px;color:#6e7681;">session ${s.sessionAvg}</span>
+                            <span style="font-size:10px;color:#6e7681;">judge: ${s.judge}</span>
+                            ${s.locked ? '<span style="font-size:10px;color:#f85149;font-weight:700;">🔴 T3 LOCKED</span>' : ''}
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:4px;">${dims}</div>
+                    </div>`;
+                }
+                // Coaching badge
+                const coachHtml = r.coaching ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.coaching)}">💡 ${esc(r.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>` : '';
+                // Lang/geo badges
+                const langGeoHtml = (r.lang || r.country) ? `${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}` : '';
+
+                return `<div class="turn-card ${!r.result ? 'active' : ''}${r.t3Locked ? ' style="border-left-color:#a855f7;"' : ''}">
                     ${msgHtml}
                     ${agentHtml}
+                    ${sentinelHtml}
+                    ${coachHtml}
                     <div class="turn-meta">
                         <span class="font-mono">${fmt.time(r.ts)}</span>
                         ${fmt.tier(r.tier)}
+                        ${langGeoHtml}
                         <span class="font-semibold font-mono text-[#c9d1d9]">${fmt.model(r.model) || '…'}</span>
                         ${r.backend ? fmt.backend(r.backend) : ''}
                         ${acqHtml}
@@ -593,6 +774,17 @@
 
         document.getElementById('filterTier').addEventListener('change', renderRoutingTable);
         document.getElementById('filterResult').addEventListener('change', renderRoutingTable);
+        document.getElementById('filterLang').addEventListener('change', renderRoutingTable);
+
+        function updateSessionGauge(avg) {
+            const el = document.getElementById('sessionGauge');
+            const label = document.getElementById('sessionAvgLabel');
+            el.style.display = 'inline-flex';
+            const cls = avg >= 8 ? 'gauge-green' : avg >= 6 ? 'gauge-yellow' : 'gauge-red';
+            el.className = `session-gauge ${cls}`;
+            const icon = avg >= 8 ? '✅' : avg >= 6 ? '⚠️' : '🔴';
+            label.textContent = `${icon} ${avg.toFixed(1)}`;
+        }
 
         window.addEventListener('DOMContentLoaded', () => { connectWebSocket(); setTimeout(fetchLog, 500); });
     </script>

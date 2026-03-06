@@ -204,7 +204,6 @@
       '@cf/meta/llama-4-scout-17b-16e-instruct': { in: 0.270, out: 0.850 },
       '@hf/nousresearch/hermes-2-pro-mistral-7b': { in: 0.045, out: 0.384, est: true },
       '@cf/ibm-granite/granite-4.0-h-micro': { in: 0.017, out: 0.112 },
-      '@cf/zai-org/glm-4.7-flash': { in: 0.060, out: 0.400 },
       '@cf/mistralai/mistral-small-3.1-24b-instruct': { in: 0.351, out: 0.560 },
       '@cf/meta/llama-3.3-70b-instruct-fp8-fast': { in: 0.293, out: 2.253 },
       '@cf/google/gemma-3-12b-it': { in: 0.345, out: 0.556 },
@@ -233,19 +232,6 @@
       'qwen:qwen-plus-warm': { in: 0.400, out: 1.200 },
       'qwen:qwen-max': { in: 1.600, out: 6.400 },
       'qwen:qwen-max-warm': { in: 1.600, out: 6.400 },
-      // Zed AI (Z.AI) / GLM
-      'zai:glm-4.7-flash': { in: 0, out: 0 },
-      'zai:glm-4.7-flash-warm': { in: 0, out: 0 },
-      'zai:glm-4.7-flashx': { in: 0.070, out: 0.400 },
-      'zai:glm-4.7-flashx-warm': { in: 0.070, out: 0.400 },
-      'zai:glm-4.7': { in: 0.600, out: 2.200 },
-      'zai:glm-4.7-warm': { in: 0.600, out: 2.200 },
-      'zai:glm-4.5-x': { in: 2.200, out: 8.900 },
-      'zai:glm-4.5-x-warm': { in: 2.200, out: 8.900 },
-      'zai:glm-4.5-airx': { in: 1.100, out: 4.500 },
-      'zai:glm-4.5-airx-warm': { in: 1.100, out: 4.500 },
-      'zai:glm-4.5-flash': { in: 0, out: 0 },
-      'zai:glm-4.5-flash-warm': { in: 0, out: 0 },
       // xAI / Grok
       'xai:grok-3': { in: 3.000, out: 15.000 },
       'xai:grok-3-warm': { in: 3.000, out: 15.000 },
@@ -257,11 +243,6 @@
       'xai:grok-4-warm': { in: 3.000, out: 15.000 },
       'xai:grok-4-fast': { in: 0.200, out: 0.500 },
       'xai:grok-4-fast-warm': { in: 0.200, out: 0.500 },
-      // Moonshot AI / Kimi
-      'kimi:kimi-k2.5': { in: 0.600, out: 3.000 },
-      'kimi:kimi-k2.5-warm': { in: 0.600, out: 3.000 },
-      'kimi:kimi-k2': { in: 0.600, out: 2.500 },
-      'kimi:kimi-k2-warm': { in: 0.600, out: 2.500 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -386,16 +367,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1", note: "via HF" },
           { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
           { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
-          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
-          { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
-          { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast", label: "Llama 3.3 70B fp8", tier: "T1" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
-          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
-          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
-          { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
-          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
           { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T1", note: "xai" },
-          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T1", note: "moonshot" },
         ]
       },
       returning: {
@@ -414,16 +386,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T1" },
           { id: "@hf/nousresearch/hermes-2-pro-mistral-7b", label: "Hermes 2 Pro 7B", tier: "T1", note: "via HF" },
           { id: "@cf/ibm-granite/granite-4.0-h-micro", label: "Granite 4.0H Micro", tier: "T1" },
-          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T1" },
-          { id: "@cf/mistralai/mistral-small-3.1-24b-instruct", label: "Mistral Small 3.1 24B", tier: "T1" },
-          { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T1" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T1", note: "deepseek" },
-          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T1", note: "alibaba" },
-          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
-          { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
-          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
           { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T1", note: "xai" },
-          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T1", note: "moonshot" },
         ]
       },
       tier2: {
@@ -443,16 +406,7 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "gemini:gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite", tier: "T2" },
           { id: "inception:mercury-2", label: "Mercury-2 (Inception)", tier: "T2", note: "diffusion" },
           { id: "@cf/google/gemma-3-12b-it", label: "Gemma 3 12B", tier: "T2", note: "No fn-call" },
-          { id: "@cf/meta/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout 17B", tier: "T2" },
-          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7-Flash", tier: "T2" },
-          { id: "deepseek:deepseek-chat", label: "DeepSeek V3.2", tier: "T2", note: "deepseek" },
-          { id: "@cf/qwen/qwen3-30b-a3b-fp8", label: "Qwen3 30B MoE", tier: "T2" },
-          { id: "qwen:qwen-flash", label: "Qwen Flash", tier: "T2", note: "alibaba" },
-          { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T2", note: "alibaba" },
-          { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T2", note: "zed ai free" },
-          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T2", note: "zed ai free" },
           { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T2", note: "xai" },
-          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T2", note: "moonshot" },
         ]
       },
       reasoning: {
@@ -530,19 +484,6 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "qwen:qwen-plus-warm", label: "Qwen Plus warm", tier: "T3" },
           { id: "qwen:qwen-flash", label: "Qwen Flash cold", tier: "T3", note: "alibaba" },
           { id: "qwen:qwen-flash-warm", label: "Qwen Flash warm", tier: "T3" },
-          { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T3", note: "zed ai free" },
-          { id: "zai:glm-4.7-flash-warm", label: "GLM-4.7 Flash warm", tier: "T3" },
-          { id: "zai:glm-4.7-flashx", label: "GLM-4.7 FlashX", tier: "T3", note: "zed ai" },
-          { id: "zai:glm-4.7-flashx-warm", label: "GLM-4.7 FlashX warm", tier: "T3" },
-          { id: "zai:glm-4.7", label: "GLM-4.7", tier: "T3", note: "zed ai" },
-          { id: "zai:glm-4.7-warm", label: "GLM-4.7 warm", tier: "T3" },
-          { id: "@cf/zai-org/glm-4.7-flash", label: "GLM-4.7 Flash (CF)", tier: "T3", note: "workers ai" },
-          { id: "zai:glm-4.5-x", label: "GLM-4.5 X", tier: "T3", note: "zed ai ultra" },
-          { id: "zai:glm-4.5-x-warm", label: "GLM-4.5 X warm", tier: "T3" },
-          { id: "zai:glm-4.5-airx", label: "GLM-4.5 AirX", tier: "T3", note: "zed ai fast" },
-          { id: "zai:glm-4.5-airx-warm", label: "GLM-4.5 AirX warm", tier: "T3" },
-          { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T3", note: "zed ai free" },
-          { id: "zai:glm-4.5-flash-warm", label: "GLM-4.5 Flash warm", tier: "T3" },
           { id: "xai:grok-3", label: "Grok 3", tier: "T3", note: "xai" },
           { id: "xai:grok-3-warm", label: "Grok 3 warm", tier: "T3" },
           { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T3", note: "xai cheap" },
@@ -553,8 +494,6 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "xai:grok-4-warm", label: "Grok 4 warm", tier: "T3" },
           { id: "xai:grok-4-fast", label: "Grok 4 Fast", tier: "T3", note: "xai value" },
           { id: "xai:grok-4-fast-warm", label: "Grok 4 Fast warm", tier: "T3" },
-          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T3", note: "moonshot" },
-          { id: "kimi:kimi-k2.5-warm", label: "Kimi K2.5 warm", tier: "T3" },
         ]
       }
     };
@@ -630,7 +569,10 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
         tr.className = 'border-b border-[#21262d]';
         const tierCls = m.tier === 'T1'
           ? 'text-blue-400 bg-blue-500/10 border border-blue-500/30'
-          : 'text-purple-400 bg-purple-500/10 border border-purple-500/30';
+          : m.tier === 'T3'
+            ? 'text-rose-400 bg-rose-500/10 border border-rose-500/30'
+            : 'text-purple-400 bg-purple-500/10 border border-purple-500/30';
+        const tierLabel = m.tier === 'T1' ? 'Tier 1' : m.tier === 'T3' ? 'Tier 3' : 'Tier 2';
         const noteBadge = m.note
           ? `<span class="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-[#2d2d00] text-yellow-500 border border-yellow-500/30">${m.note}</span>`
           : '';
@@ -638,7 +580,7 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           <td class="px-3 py-3 align-top sticky left-0 bg-[#0d1117] z-10 min-w-[10rem]">
             <div class="text-sm font-semibold text-[#e6edf3] whitespace-nowrap">${m.label}</div>
             <div class="flex items-center gap-1 mt-1 flex-wrap">
-              <div class="inline-block text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${m.tier === 'T1' ? 'Tier 1' : 'Tier 2'}</div>
+              <div class="inline-block text-[10px] px-2 py-0.5 rounded-full ${tierCls}">${tierLabel}</div>
               ${noteBadge}
             </div>
             <div class="text-[10px] text-[#484f58] mt-1 font-mono break-all">${m.id}</div>
