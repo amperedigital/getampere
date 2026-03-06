@@ -246,6 +246,18 @@
       'zai:glm-4.5-airx-warm': { in: 1.100, out: 4.500 },
       'zai:glm-4.5-flash': { in: 0, out: 0 },
       'zai:glm-4.5-flash-warm': { in: 0, out: 0 },
+      // xAI / Grok
+      'xai:grok-3': { in: 3.000, out: 15.000 },
+      'xai:grok-3-warm': { in: 3.000, out: 15.000 },
+      'xai:grok-3-mini': { in: 0.300, out: 0.500 },
+      'xai:grok-3-mini-warm': { in: 0.300, out: 0.500 },
+      'xai:grok-3-fast': { in: 5.000, out: 25.000 },
+      'xai:grok-3-fast-warm': { in: 5.000, out: 25.000 },
+      // Moonshot AI / Kimi
+      'kimi:kimi-k2.5': { in: 0.600, out: 3.000 },
+      'kimi:kimi-k2.5-warm': { in: 0.600, out: 3.000 },
+      'kimi:kimi-k2': { in: 0.600, out: 2.500 },
+      'kimi:kimi-k2-warm': { in: 0.600, out: 2.500 },
     };
 
     function calcCost(modelId, promptTok, completionTok) {
@@ -378,6 +390,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
           { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
+          { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T1", note: "xai" },
+          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T1", note: "moonshot" },
         ]
       },
       returning: {
@@ -404,6 +418,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T1", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T1", note: "zed ai free" },
           { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T1", note: "zed ai free" },
+          { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T1", note: "xai" },
+          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T1", note: "moonshot" },
         ]
       },
       tier2: {
@@ -431,6 +447,8 @@ For this question, there is NO length limit. Show your full reasoning, calculati
           { id: "qwen:qwen-plus", label: "Qwen Plus", tier: "T2", note: "alibaba" },
           { id: "zai:glm-4.7-flash", label: "GLM-4.7 Flash", tier: "T2", note: "zed ai free" },
           { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T2", note: "zed ai free" },
+          { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T2", note: "xai" },
+          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T2", note: "moonshot" },
         ]
       },
       reasoning: {
@@ -521,6 +539,12 @@ The "cheap" vendor (A) costs 47% more when churn is factored in.`,
           { id: "zai:glm-4.5-airx-warm", label: "GLM-4.5 AirX warm", tier: "T3" },
           { id: "zai:glm-4.5-flash", label: "GLM-4.5 Flash", tier: "T3", note: "zed ai free" },
           { id: "zai:glm-4.5-flash-warm", label: "GLM-4.5 Flash warm", tier: "T3" },
+          { id: "xai:grok-3", label: "Grok 3", tier: "T3", note: "xai" },
+          { id: "xai:grok-3-warm", label: "Grok 3 warm", tier: "T3" },
+          { id: "xai:grok-3-mini", label: "Grok 3 Mini", tier: "T3", note: "xai cheap" },
+          { id: "xai:grok-3-mini-warm", label: "Grok 3 Mini warm", tier: "T3" },
+          { id: "kimi:kimi-k2.5", label: "Kimi K2.5", tier: "T3", note: "moonshot" },
+          { id: "kimi:kimi-k2.5-warm", label: "Kimi K2.5 warm", tier: "T3" },
         ]
       }
     };
