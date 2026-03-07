@@ -597,6 +597,9 @@
             if (!reqId) return;
 
             totalEvents++;
+            const evKey = `${ev.ts}-${reqId}-${step}`;
+            const isNewEvent = !seenEventKeys.has(evKey);
+            if (isNewEvent) seenEventKeys.add(evKey);
             document.getElementById('eventCount').textContent = `${totalEvents} events`;
 
             if (!routeMap[reqId]) {
@@ -627,7 +630,7 @@
 
             renderRoutingTable();
             renderTurnPanel();
-            renderRawEvent(ev);
+            if (isNewEvent) renderRawEvent(ev);
         }
 
         function renderRoutingTable() {
@@ -805,8 +808,10 @@
             lbl.textContent = label;
         }
 
+        let seenEventKeys = new Set();
+        let lastPollTs = 0;
         function clearAll() {
-            routeMap = {}; seenReqIds = new Set(); totalEvents = 0; sessionStart = Date.now();
+            routeMap = {}; seenReqIds = new Set(); seenEventKeys = new Set(); totalEvents = 0; sessionStart = Date.now(); lastPollTs = 0;
             document.getElementById('routingTbody').innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-[#8b949e] text-xs">Cleared — waiting for next call…</td></tr>';
             document.getElementById('turnPanel').innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="turnPlaceholder">Cleared…</div>';
             document.getElementById('eventStream').innerHTML = '';
