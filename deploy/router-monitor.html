@@ -271,6 +271,12 @@
             color: #7ee787;
         }
 
+        .step-LANG_INJECTION {
+            background: #2d2500;
+            color: #f0c674;
+            border: 1px solid #f0c67444;
+        }
+
         .sentinel-card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -414,6 +420,8 @@
             <option value="ja">Japanese 🇯🇵</option>
             <option value="ko">Korean 🇰🇷</option>
             <option value="ar">Arabic 🇸🇦</option>
+            <option value="fa">Persian 🇮🇷</option>
+            <option value="foreign">Foreign 🌐</option>
             <option value="hi">Hindi 🇮🇳</option>
             <option value="ru">Russian 🇷🇺</option>
         </select>
@@ -502,7 +510,7 @@
         let seenReqIds = new Set();
         let latestSessionAvg = null;
 
-        const LANG_FLAGS = { en: '🇺🇸', zh: '🇨🇳', ja: '🇯🇵', ko: '🇰🇷', ar: '🇸🇦', hi: '🇮🇳', ru: '🇷🇺', ur: '🇵🇰', bn: '🇧🇩', ta: '🇱🇰' };
+        const LANG_FLAGS = { en: '🇺🇸', zh: '🇨🇳', ja: '🇯🇵', ko: '🇰🇷', ar: '🇸🇦', fa: '🇮🇷', hi: '🇮🇳', ru: '🇷🇺', ur: '🇵🇰', bn: '🇧🇩', ta: '🇱🇰', foreign: '🌐' };
         const DIM_LABELS = { a: 'ACC', g: 'GND', h: 'HLP', cm: 'CMP', cn: 'CON', e: 'EMP', s: 'SAF', co: 'COH' };
 
         const fmt = {
@@ -600,6 +608,7 @@
 
             if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; row.lang = ev.lang; row.country = ev.country; row.colo = ev.colo; row.lmaOverride = ev.lmaOverride || false; }
             if (step === 'LMA_OVERRIDE') { row.lmaOverride = true; row.lmaT2 = ev.t2; row.lmaT3 = ev.t3; }
+            if (step === 'LANG_INJECTION') { row.langInjection = true; row.langDirective = ev.directive || ''; row.langInjectionTier = ev.tier || ''; }
             if (step === 'T1_ATTEMPT') { row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; if (ev.coaching) row.coaching = ev.coaching; }
             if (step === 'T3_ESCALATION') { row.tier = 'tier3'; row.escalationReason = ev.trigger || ev.reason || 'escalated'; row.t3Locked = true; }
@@ -703,12 +712,14 @@
                 // Lang/geo badges
                 const langGeoHtml = (r.lang || r.country) ? `${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}` : '';
                 const lmaBadge = r.lmaOverride ? `<span style="background:#7c3aed;color:#f5f5f5;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.5px;">LMA ${r.lang?.toUpperCase() || ''}</span>` : '';
+                const langInjectBadge = r.langInjection ? `<div style="margin-top:4px;"><span style="background:#2d2500;color:#f0c674;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(r.langDirective || '')}">🌍 LANG → ${r.langInjectionTier} ${esc((r.langDirective || '').replace(/\n/g, ' ').slice(0, 80))}</span></div>` : '';
 
                 return `<div class="turn-card ${!r.result ? 'active' : ''}${r.t3Locked ? ' style="border-left-color:#a855f7;"' : ''}">
                     ${msgHtml}
                     ${agentHtml}
                     ${sentinelHtml}
                     ${coachHtml}
+                    ${langInjectBadge}
                     <div class="turn-meta">
                         <span class="font-mono">${fmt.time(r.ts)}</span>
                         ${fmt.tier(r.tier)}

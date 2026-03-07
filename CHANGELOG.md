@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.430 - Router Monitor: Language Injection Badge
+- **Router Monitor**: Gold `🌍 LANG →` badge appears on turn cards when a `[LANGUAGE]` directive is injected into the LLM prompt. Hover for full directive text.
+- **Router Monitor**: `LANG_INJECTION` step badge in raw event stream. Persian 🇮🇷 and Foreign 🌐 added to language filter and flag map.
+
 ## v3.427 - LMA Badge in Router Monitor
 - **Router Monitor**: Added Language Model Affinity (LMA) badge — purple `LMA JA` badge appears when CJK language triggers a model override. Handles `LMA_OVERRIDE` broadcast event.
 
