@@ -771,6 +771,7 @@
         }
 
         function connectWebSocket() {
+            if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
             const workspace = document.getElementById('workspaceId').value || 'emily';
             const apiKey = document.getElementById('apiKey').value || '';
             const wsBase = API_BASE.replace('https://', 'wss://').replace('http://', 'ws://');
@@ -779,27 +780,11 @@
                 ws = new WebSocket(url);
                 ws.onopen = () => setConn('connected', `WebSocket — ${workspace}`);
                 ws.onmessage = e => { try { const d = JSON.parse(e.data); if (d.type === 'router_event') processEvent(d, false); } catch { } };
-                ws.onerror = () => setConn('error', 'WS error — polling');
-                ws.onclose = () => { setConn('polling', 'WS closed — polling'); startPolling(); };
-            } catch { setConn('error', 'WS unavailable — polling'); startPolling(); }
+                ws.onerror = () => setConn('error', 'WS error — reconnecting...');
+                ws.onclose = () => { setConn('polling', 'WS closed — reconnecting in 2s...'); setTimeout(connectWebSocket, 2000); };
+            } catch { setConn('error', 'WS unavailable — retrying in 2s...'); setTimeout(connectWebSocket, 2000); }
         }
 
-        function startPolling() {
-            if (pollInterval) clearInterval(pollInterval);
-            fetchLog(); pollInterval = setInterval(fetchLog, 2000);
-        }
-
-        async function fetchLog() {
-            const workspace = document.getElementById('workspaceId').value || 'emily';
-            const apiKey = document.getElementById('apiKey').value || '';
-            try {
-                const res = await fetch(`${API_BASE}/llm/router-log?workspace=${encodeURIComponent(workspace)}&n=100`, { headers: { 'x-api-key': apiKey } });
-                if (!res.ok) throw new Error(res.status);
-                const { events } = await res.json();
-                (events || []).filter(ev => (ev.ts || 0) >= sessionStart).forEach(ev => processEvent(ev, true));
-                setConn('polling', `Polling (${workspace})`);
-            } catch (e) { setConn('error', `Poll error: ${e.message}`); }
-        }
 
         function setConn(state, label) {
             const dot = document.getElementById('connDot'), lbl = document.getElementById('connLabel');
