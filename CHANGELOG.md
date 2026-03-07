@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.431 - Auto-generated
+- **Frontend**: Release v3.431 (no new commits)
+
+
 ## v3.430 - Router Monitor: Language Injection Badge
 - **Router Monitor**: Gold `🌍 LANG →` badge appears on turn cards when a `[LANGUAGE]` directive is injected into the LLM prompt. Hover for full directive text.
 - **Router Monitor**: `LANG_INJECTION` step badge in raw event stream. Persian 🇮🇷 and Foreign 🌐 added to language filter and flag map.
