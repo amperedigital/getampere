@@ -596,14 +596,13 @@
             const { reqId, step } = ev;
             if (!reqId) return;
 
-            totalEvents++;
             const evKey = `${ev.ts}-${reqId}-${step}`;
-            const isNewEvent = !seenEventKeys.has(evKey);
-            if (isNewEvent) seenEventKeys.add(evKey);
+            if (seenEventKeys.has(evKey)) return; // Already processed — skip entirely
+            seenEventKeys.add(evKey);
+            totalEvents++;
             document.getElementById('eventCount').textContent = `${totalEvents} events`;
 
             if (!routeMap[reqId]) {
-                if (seenReqIds.has(reqId) && fromPoll) return;
                 routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null, lastUserMsg: '', agentResponse: '', classify_ms: null, total_ms: null };
             }
             seenReqIds.add(reqId);
@@ -630,7 +629,7 @@
 
             renderRoutingTable();
             renderTurnPanel();
-            if (isNewEvent) renderRawEvent(ev);
+            renderRawEvent(ev);
         }
 
         function renderRoutingTable() {
