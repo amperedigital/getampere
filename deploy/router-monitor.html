@@ -514,8 +514,8 @@
                     .replace('gemini:', '').replace('openai:', '').replace('inception:', '').replace('-instruct', '').replace('-fp8-fast', '');
             },
             backend: b => {
-                const cls = (b === 'workersai' || b === 'workersai-hf') ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : b === 'inception' ? 'badge-inception' : 'badge-openai';
-                const label = b === 'workersai' ? 'CF' : b === 'workersai-hf' ? 'HF' : b === 'gemini' ? 'GEM' : b === 'inception' ? 'INC' : 'OAI';
+                const cls = (b === 'workersai' || b === 'workersai-hf') ? 'badge-wai' : b === 'gemini' ? 'badge-gemini' : b === 'inception' ? 'badge-inception' : b === 'qwen' ? 'badge-qwen' : b === 'deepseek' ? 'badge-deepseek' : 'badge-openai';
+                const label = b === 'workersai' ? 'CF' : b === 'workersai-hf' ? 'HF' : b === 'gemini' ? 'GEM' : b === 'inception' ? 'INC' : b === 'qwen' ? 'QWN' : b === 'deepseek' ? 'DS' : 'OAI';
                 return `<span class="step-badge ${cls}">${label}</span>`;
             },
             tier: t => {
@@ -554,6 +554,34 @@
         function stepBadge(s) { return `<span class="step-badge step-${s}">${s}</span>`; }
         function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+        /** Collapse ElevenLabs retries: group turns with identical lastUserMsg within 10s, keep the best one */
+        function dedupTurns(turns) {
+            const groups = [];
+            const used = new Set();
+            for (const t of turns) {
+                if (used.has(t.reqId)) continue;
+                // Find all turns with same lastUserMsg within 10s
+                const msg = (t.lastUserMsg || '').trim().toLowerCase();
+                if (!msg) { groups.push({ winner: t, attempts: 1 }); used.add(t.reqId); continue; }
+                const cluster = turns.filter(o => {
+                    if (used.has(o.reqId)) return false;
+                    const oMsg = (o.lastUserMsg || '').trim().toLowerCase();
+                    return oMsg === msg && Math.abs(o.ts - t.ts) < 10000;
+                });
+                // Pick the best: prefer one with result='ok', then one with agentResponse, then latest
+                const winner = cluster.sort((a, b) => {
+                    if (a.result === 'ok' && b.result !== 'ok') return -1;
+                    if (b.result === 'ok' && a.result !== 'ok') return 1;
+                    if (a.agentResponse && !b.agentResponse) return -1;
+                    if (b.agentResponse && !a.agentResponse) return 1;
+                    return b.ts - a.ts;
+                })[0];
+                cluster.forEach(c => used.add(c.reqId));
+                groups.push({ winner, attempts: cluster.length });
+            }
+            return groups;
+        }
+
         function processEvent(ev, fromPoll = false) {
             if (!ev || ev.type !== 'router_event') return;
             if ((ev.ts || 0) < sessionStart) return;
@@ -570,7 +598,8 @@
             seenReqIds.add(reqId);
             const row = routeMap[reqId];
 
-            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; row.lang = ev.lang; row.country = ev.country; row.colo = ev.colo; }
+            if (step === 'CLASSIFY') { row.tier = ev.tier; row.lastUserMsg = ev.lastUserMsg || ''; row.classify_ms = ev.classify_ms ?? null; row.lang = ev.lang; row.country = ev.country; row.colo = ev.colo; row.lmaOverride = ev.lmaOverride || false; }
+            if (step === 'LMA_OVERRIDE') { row.lmaOverride = true; row.lmaT2 = ev.t2; row.lmaT3 = ev.t3; }
             if (step === 'T1_ATTEMPT') { row.tier = 'tier1'; row.model = ev.model; row.backend = ev.backend; }
             if (step === 'T2_ATTEMPT') { row.tier = 'tier2'; row.model = ev.model; row.backend = ev.backend; if (ev.coaching) row.coaching = ev.coaching; }
             if (step === 'T3_ESCALATION') { row.tier = 'tier3'; row.escalationReason = ev.trigger || ev.reason || 'escalated'; row.t3Locked = true; }
@@ -611,8 +640,12 @@
                     ? `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span><span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>`
                     : `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span>`;
                 const sentinelHtml = r.sentinel ? `<span title="Sentinel: ${r.sentinel.turnAvg}">${fmt.score(r.sentinel.turnAvg)}</span>` : '';
+                // Detect retries: same lastUserMsg within 10s
+                const msg = (r.lastUserMsg || '').trim().toLowerCase();
+                const retryCount = msg ? rows.filter(o => (o.lastUserMsg || '').trim().toLowerCase() === msg && Math.abs(o.ts - r.ts) < 10000).length : 0;
+                const retryBadge = retryCount > 1 ? `<span style="color:#f0883e;font-size:10px;margin-left:4px;" title="ElevenLabs sent ${retryCount} attempts for this user message">🔄 ×${retryCount}</span>` : '';
                 return `<tr class="border-b border-[#21262d] new-row${r.t3Locked ? ' style="background:rgba(139,92,246,0.08);"' : ''}">
-                    <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}</td>
+                    <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}${retryBadge}</td>
                     <td class="px-3 py-2 font-mono text-[#8b949e] text-[10px]">${r.reqId}</td>
                     <td class="px-3 py-2">${fmt.tier(r.tier)} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
                     <td class="px-3 py-2">${modelLabel}</td>
@@ -628,13 +661,16 @@
         }
 
         function renderTurnPanel() {
-            const turns = Object.values(routeMap).sort((a, b) => b.ts - a.ts);
-            document.getElementById('turnCount').textContent = `${turns.length} turns`;
+            const allTurns = Object.values(routeMap).sort((a, b) => b.ts - a.ts);
+            // Dedup ElevenLabs retries — collapse identical user messages within 10s
+            const deduped = dedupTurns(allTurns);
+            document.getElementById('turnCount').textContent = `${deduped.length} turns`;
             const ph = document.getElementById('turnPlaceholder');
             if (ph) ph.remove();
-            document.getElementById('turnPanel').innerHTML = turns.map(r => {
+            document.getElementById('turnPanel').innerHTML = deduped.map(({ winner: r, attempts }) => {
+                const retryBadge = attempts > 1 ? `<span style="color:#f0883e;font-size:10px;font-weight:600;margin-left:6px;" title="ElevenLabs sent ${attempts} attempts — only the winning response is shown">🔄 ${attempts} attempts</span>` : '';
                 const msgHtml = r.lastUserMsg
-                    ? `<div class="turn-user-msg" style="background:#1c2333;border-left:3px solid #58a6ff;padding:6px 10px;border-radius:6px;margin-bottom:4px;"><span style="margin-right:6px;">👤</span>"${esc(r.lastUserMsg)}"</div>`
+                    ? `<div class="turn-user-msg" style="background:#1c2333;border-left:3px solid #58a6ff;padding:6px 10px;border-radius:6px;margin-bottom:4px;"><span style="margin-right:6px;">👤</span>"${esc(r.lastUserMsg)}"${retryBadge}</div>`
                     : `<div class="turn-user-msg text-[#8b949e] italic" style="padding:6px 10px;"><span style="margin-right:6px;">👤</span>Greeting / system turn</div>`;
                 const agentHtml = r.agentResponse
                     ? `<div style="background:#1a2b2e;border-left:3px solid #3fb950;padding:6px 10px;border-radius:6px;margin-bottom:4px;color:#adbac7;word-wrap:break-word;white-space:pre-wrap;max-width:100%;overflow-wrap:break-word;"><span style="margin-right:6px;">🤖</span>${esc(r.agentResponse)}</div>`
@@ -666,6 +702,7 @@
                 const coachHtml = r.coaching ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.coaching)}">💡 ${esc(r.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>` : '';
                 // Lang/geo badges
                 const langGeoHtml = (r.lang || r.country) ? `${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}` : '';
+                const lmaBadge = r.lmaOverride ? `<span style="background:#7c3aed;color:#f5f5f5;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.5px;">LMA ${r.lang?.toUpperCase() || ''}</span>` : '';
 
                 return `<div class="turn-card ${!r.result ? 'active' : ''}${r.t3Locked ? ' style="border-left-color:#a855f7;"' : ''}">
                     ${msgHtml}
@@ -675,7 +712,7 @@
                     <div class="turn-meta">
                         <span class="font-mono">${fmt.time(r.ts)}</span>
                         ${fmt.tier(r.tier)}
-                        ${langGeoHtml}
+                        ${langGeoHtml}${lmaBadge ? ' ' + lmaBadge : ''}
                         <span class="font-semibold font-mono text-[#c9d1d9]">${fmt.model(r.model) || '…'}</span>
                         ${r.backend ? fmt.backend(r.backend) : ''}
                         ${acqHtml}

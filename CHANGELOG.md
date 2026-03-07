@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.427 - LMA Badge in Router Monitor
+- **Router Monitor**: Added Language Model Affinity (LMA) badge — purple `LMA JA` badge appears when CJK language triggers a model override. Handles `LMA_OVERRIDE` broadcast event.
+
+## v3.426 - Qwen T2 Benchmark Models
+- **Benchmark**: Added Qwen Flash and Qwen Plus (cold + warm) to Returning User and T2 vs gpt-5.1 scenarios as `T2 CN candidate` — validates tool calling and conversational quality for China T2 geo-routing.
+
 ## v3.424 - Auto-generated
 - **Frontend**: Release v3.424 (no new commits)
 
