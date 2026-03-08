@@ -6,6 +6,9 @@
 - **Frontend**: fix: deduplicate router monitor event stream — seenEventKeys prevents re-rendering on poll
 
 
+## v3.434 - Router Monitor: Copy Log Button
+- **Feature**: 📋 Copy Log button in Event Stream panel — copies all visible events as formatted text to clipboard for easy sharing. Visual ✅ confirmation on copy.
+
 ## v3.433 - Router Monitor Render Debounce
 - **Fix**: Debounced `renderRoutingTable()` and `renderTurnPanel()` calls (200ms) to prevent UI flashing from rapid-fire WebSocket events.
 
