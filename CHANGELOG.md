@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.435 - Auto-generated
+- **Frontend**: Release v3.435 (no new commits)
+
+
 ## --frontend-only - Auto-generated
 - **Frontend**: fix: early-return on duplicate events — stops all re-rendering on WS backlog replay
 - **Frontend**: fix: remove polling fallback — WebSocket only with auto-reconnect
