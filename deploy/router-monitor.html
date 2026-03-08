@@ -627,8 +627,14 @@
                 updateSessionGauge(ev.sessionAvg);
             }
 
-            renderRoutingTable();
-            renderTurnPanel();
+            // Debounce rendering to prevent constant flashing from rapid-fire events
+            if (!processEvent._renderTimer) {
+                processEvent._renderTimer = setTimeout(() => {
+                    renderRoutingTable();
+                    renderTurnPanel();
+                    processEvent._renderTimer = null;
+                }, 200);
+            }
             renderRawEvent(ev);
         }
 

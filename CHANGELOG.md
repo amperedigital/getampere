@@ -1,5 +1,14 @@
 # Changelog
 
+## --frontend-only - Auto-generated
+- **Frontend**: fix: early-return on duplicate events — stops all re-rendering on WS backlog replay
+- **Frontend**: fix: remove polling fallback — WebSocket only with auto-reconnect
+- **Frontend**: fix: deduplicate router monitor event stream — seenEventKeys prevents re-rendering on poll
+
+
+## v3.433 - Router Monitor Render Debounce
+- **Fix**: Debounced `renderRoutingTable()` and `renderTurnPanel()` calls (200ms) to prevent UI flashing from rapid-fire WebSocket events.
+
 ## v3.432 - Auto-generated
 - **Frontend**: Release v3.432 (no new commits)
 
