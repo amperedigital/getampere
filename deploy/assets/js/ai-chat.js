@@ -114,8 +114,8 @@ export class AmpereAIChat {
                             <div class="w-1 h-1 bg-white/80 rounded-full animate-pulse"></div>
                         </div>
 
-                        <!-- Close / Hangup Button (v2.593) -->
-                        <button id="ai-close-btn" class="p-1 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white" title="End Session & Close">
+                        <!-- Close / Hide Chat Panel Button (v3.439) -->
+                        <button id="ai-close-btn" class="p-1 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white" title="Hide Chat Panel">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -157,10 +157,10 @@ export class AmpereAIChat {
         if (this.startBtn) this.startBtn.addEventListener('click', () => this.startSession());
         if (this.endBtn) this.endBtn.addEventListener('click', () => this.endSession());
 
-        // Internal Close Button
+        // Internal Close Button — v3.439: Only hides chat panel, does NOT end session.
+        // Session should only end via power button or agent disconnect.
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', () => {
-                this.endSession();
                 this.container.classList.add('hidden');
             });
         }
