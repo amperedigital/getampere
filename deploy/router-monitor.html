@@ -863,7 +863,7 @@
             document.getElementById('turnPanel').innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="turnPlaceholder">Cleared…</div>';
             document.getElementById('eventStream').innerHTML = '';
             document.getElementById('eventCount').textContent = '0 events';
-            umelementById('routeCount').textContent = '0 turns';
+            document.getElementById('routeCount').textContent = '0 turns';
             document.getElementById('turnCount').textContent = '0 turns';
         }
 
@@ -911,7 +911,7 @@
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => { connectWebSocket(); setTimeout(fetchLog, 500); });
+        window.addEventListener('DOMContentLoaded', () => { connectWebSocket(); });
     </script>
 </body>
 

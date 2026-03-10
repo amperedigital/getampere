@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.449 - Router Monitor JS Fixes
+- **Fix**: `umelementById` → `document.getElementById` in clearAll function.
+- **Fix**: Removed dead `fetchLog` reference from DOMContentLoaded handler.
+
+
 ## v3.445 - Router Monitor: Phase 2 Diagnostics
 - **Router Monitor**: `FACT_EXTRACTED` → green facts card in turn panel showing extracted facts with 🧠 icon.
 - **Router Monitor**: `HANDOFF_DETECTED` → orange badge showing agent switch (from → to).
