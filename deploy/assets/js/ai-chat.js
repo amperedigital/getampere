@@ -518,6 +518,29 @@ export class AmpereAIChat {
                     const result = await res.json();
                     console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Capture ${captureIndex + 1} → ${res.status}`, 'color: #8b5cf6;', result);
 
+                    // v3.462: On final capture, report voiceprint result to backend so the
+                    // LLM router injects [VOICE_IDENTITY] block into the next T2 system prompt.
+                    const isFinal = captureIndex >= VP_DELAYS.length - 1;
+                    if (isFinal && _convId) {
+                        let vaStatus = null;
+                        let vaScore = 0;
+                        if (_vpAction === 'enroll' && result.status === 'enrolled') {
+                            vaStatus = 'enrolled'; vaScore = 1.0;
+                        } else if (_vpAction === 'verify') {
+                            vaStatus = result.verified ? 'verified' : 'failed';
+                            vaScore = result.confidence ?? result.score ?? 0;
+                        }
+                        if (vaStatus) {
+                            fetch('https://memory-api.tight-butterfly-7b71.workers.dev/session/voice-auth', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                                body: JSON.stringify({ conv_id: _convId, status: vaStatus, score: vaScore, user_id: _vpUserId })
+                            }).then(r => {
+                                console.log(`%c[AmpereAI] 🔐 VOICE_AUTH_STORED: conv=${_convId.slice(0,12)}... status=${vaStatus} score=${vaScore.toFixed ? vaScore.toFixed(3) : vaScore} → ${r.status}`, 'color: #a855f7; font-weight: bold;');
+                            }).catch(e => console.warn('[AmpereAI] voice-auth store failed:', e));
+                        }
+                    }
+
                     // On final capture, inject context update if verified
                     if (result.final !== false && _vpAction === 'verify' && result.verified && this.conversation) {
                         const confidence = result.confidence?.toFixed(2) || 'N/A';

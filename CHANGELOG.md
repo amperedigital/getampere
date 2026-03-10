@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.454 - Voice Auth Feedback Loop: ai-chat.js → backend → router (2026-03-10)
+- **New**: After final voiceprint capture (enroll or verify), `ai-chat.js` POSTs result to `/session/voice-auth`. Closes the loop from enrollment/verification → LLM router → Emily's system prompt.
+- **Router Monitor**: `VOICE_AUTH` step badge in event stream + turn panel. Green=verified, blue=enrolled, red=failed. Shows confidence %.
+
 ## v3.453 - Router Monitor: KB injection + coaching + Sentinel end-call UI (2026-03-10)
 - **Fix**: Coaching badge was reading a boolean `true` from T2_ATTEMPT instead of the actual coaching string from SENTINEL_SCORE. Now reads from `r.sentinel.coaching`.
 - **New**: KB injection badge in turn panel — shows intent, chunk count, chars when `KB_INJECTED` / `INLINE_KB_INJECTED` events fire.
