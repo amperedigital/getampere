@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.452 - Web Voiceprint Server Relay
+- **Fix (Critical)**: Client-side `autoVoiceprintRun` and direct container calls removed — were crashing calls at t=25s via `AUTO-VOICEPRINT error: {}`.
+- **New**: `/voice/capture` endpoint — accepts `{ user_id, audio, sampleRate, action, capture_index, total_captures }`. Calls `voice-print-service` via direct public HTTP (avoids service binding timeout). Accumulates embeddings in D1 across captures, averages, delegates to existing fast-path enroll/verify. Auth-bypass added to `isVoicePrint` check.
+- **Root cause**: Service binding timeout (~10s) when container cold-starts exceeded Worker-to-Container binding limit; client calling container directly had same timeout on `AbortController` — both paths crashed the ElevenLabs session. New relay path uses Cloudflare outbound `fetch()` with 25s `AbortController`, errors return 502 to client (non-fatal to call).
+
+## v3.451 - Phase 1 Hardening (Backend Only)
+- See backend changelog.
+
 ## v3.449 - Router Monitor JS Fixes
 - **Fix**: `umelementById` → `document.getElementById` in clearAll function.
 - **Fix**: Removed dead `fetchLog` reference from DOMContentLoaded handler.

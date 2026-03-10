@@ -461,123 +461,10 @@ export class AmpereAIChat {
                         }
                     }
                 },
-                // v3.279: client tool handlers — get_web_visitor_id REMOVED (visitor_id now pre-injected as dynamic variable)
-                clientTools: {
-                    // v3.190: Voice Print — Enroll speaker voiceprint
-                    voice_enroll: async (parameters) => {
-                        console.log('%c[AmpereAI] 🎙️ VOICE ENROLL: Capturing audio...', 'color: #8b5cf6; font-weight: bold;', parameters);
-
-                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                            window.demoScene.setProcessingState(true);
-                        }
-
-                        try {
-                            if (!this.voiceBuffer) {
-                                console.warn('[AmpereAI] Voice buffer not available');
-                                return JSON.stringify({ status: 'error', reason: 'voice_buffer_unavailable' });
-                            }
-
-                            const snapshot = await this.voiceBuffer.getSnapshot(8000);
-                            if (snapshot.status !== 'ok') {
-                                return JSON.stringify({ status: 'error', reason: snapshot.status });
-                            }
-
-                            // Convert Float32 PCM to 16-bit WAV and base64-encode
-                            const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
-
-                            const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'x-workspace-id': 'emily'
-                                },
-                                body: JSON.stringify({
-                                    user_id: parameters.user_id,
-                                    display_name: parameters.display_name || '',
-                                    audio: wavBase64,
-                                    sampleRate: snapshot.sampleRate
-                                })
-                            });
-
-                            const result = await res.json();
-                            console.log('%c[AmpereAI] ✅ VOICE ENROLL RESULT:', 'color: #10b981; font-weight: bold;', result);
-                            return JSON.stringify(result);
-                        } catch (err) {
-                            console.error('[AmpereAI] Voice enroll error:', err);
-                            return JSON.stringify({ status: 'error', reason: err.message });
-                        } finally {
-                            if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                                window.demoScene.setProcessingState(false);
-                            }
-                        }
-                    },
-
-                    // v3.190: Voice Print — Verify speaker voiceprint
-                    voice_verify: async (parameters) => {
-                        console.log('%c[AmpereAI] 🔐 VOICE VERIFY: Capturing audio...', 'color: #f59e0b; font-weight: bold;', parameters);
-
-                        if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                            window.demoScene.setProcessingState(true);
-                        }
-
-                        try {
-                            if (!this.voiceBuffer) {
-                                console.warn('[AmpereAI] Voice buffer not available');
-                                return JSON.stringify({ verified: false, reason: 'voice_buffer_unavailable' });
-                            }
-
-                            const snapshot = await this.voiceBuffer.getSnapshot(8000);
-                            if (snapshot.status !== 'ok') {
-                                return JSON.stringify({ verified: false, reason: snapshot.status });
-                            }
-
-                            const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
-
-                            const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'x-workspace-id': 'emily'
-                                },
-                                body: JSON.stringify({
-                                    user_id: parameters.user_id,
-                                    audio: wavBase64,
-                                    sampleRate: snapshot.sampleRate
-                                })
-                            });
-
-                            const result = await res.json();
-                            console.log('%c[AmpereAI] 🔐 VOICE VERIFY RESULT:', 'color: #f59e0b; font-weight: bold;', result);
-                            return JSON.stringify(result);
-                        } catch (err) {
-                            console.error('[AmpereAI] Voice verify error:', err);
-                            return JSON.stringify({ verified: false, reason: err.message });
-                        } finally {
-                            if (window.demoScene && typeof window.demoScene.setProcessingState === 'function') {
-                                window.demoScene.setProcessingState(false);
-                            }
-                        }
-                    },
-                }
+                // v3.452: clientTools removed — voiceprint now handled server-side via MemoryCacheDO alarms
+                clientTools: {}
             });
 
-            // v3.201: Quick health gate — container should already be warm (cron keepalive every 4m)
-            // This is NOT a warmup; it's a fast check. If the container isn't ready, skip voiceprint.
-            const CONTAINER_URL = 'https://voice-print-service.tight-butterfly-7b71.workers.dev';
-            const healthAbort = new AbortController();
-            const healthTimer = setTimeout(() => healthAbort.abort(), 5000);
-            const containerReady = fetch(`${CONTAINER_URL}/health`, { signal: healthAbort.signal })
-                .then(r => r.json())
-                .then(data => {
-                    clearTimeout(healthTimer);
-                    console.log(`%c[AmpereAI] 🎙️ CONTAINER HEALTH: ${data.status}`, 'color: #06b6d4; font-weight: bold;', data);
-                    return data.status === 'ok';
-                })
-                .catch(err => {
-                    clearTimeout(healthTimer);
-                    console.warn('[AmpereAI] CONTAINER HEALTH: not ready, voiceprint skipped this session', err.name === 'AbortError' ? '(timeout)' : err);
-                    return false;
-                });
 
             // v3.289: Seed session_identity right after startSession resolves — getId() now available.
             const _convId = this.conversation?.getId?.();
@@ -590,224 +477,74 @@ export class AmpereAIChat {
                     console.log(`%c[AmpereAI] 🔗 SESSION SEED: conv=${_convId.slice(0, 16)}... visitor=${this.visitorId.slice(0, 8)}... → ${r.status}`, 'color: #a855f7; font-weight: bold;');
                 }).catch(e => console.warn('[AmpereAI] Session seed failed:', e));
             }
+            // v3.452: Auto-voiceprint via server relay — client sends audio to memory-api,
+            // server calls voice-print container (avoids client→container timeout crashes).
+            // Fires at t=25s/40s/55s — 3 captures, server averages and stores/verifies.
+            const _vpUserId = this.visitorId;
+            const _vpAction = hasVoiceprint === 'yes' ? 'verify' : 'enroll';
+            const VP_API = 'https://memory-api.tight-butterfly-7b71.workers.dev/voice/capture';
+            const VP_DELAYS = [25000, 15000, 15000]; // t=25s, then +15s, then +15s
 
-            // v3.221: Automatic voice enroll/verify — multi-embedding for both
-            // Enrollment: 3 snapshots at t=25s, t=40s, t=55s → averaged → stored
-            // Verification: 3 snapshots at t=25s, t=40s, t=55s → averaged → verified
-            const autoVoiceprintRun = async (captureDelays) => {
+            const runVoiceCaptureAt = async (captureIndex, totalCaptures) => {
                 try {
-                    const isReady = await containerReady;
-                    if (!isReady) {
-                        console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Container not ready, skipping', 'color: #6b7280;');
+                    if (!this.conversation) {
+                        console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Call ended, skipping capture', 'color: #6b7280;');
                         return;
                     }
-
                     if (!this.voiceBuffer) {
                         console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: No voice buffer, skipping', 'color: #6b7280;');
                         return;
                     }
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Capture ${captureIndex + 1}/${totalCaptures} (${_vpAction}) — grabbing 15s snapshot`, 'color: #8b5cf6; font-weight: bold;');
+                    const snapshot = await this.voiceBuffer.getSnapshot(15000);
+                    if (snapshot.status !== 'ok') {
+                        console.warn(`[AmpereAI] AUTO-VOICEPRINT: snapshot failed: ${snapshot.status}`);
+                        return;
+                    }
+                    const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
+                    const res = await fetch(VP_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                        body: JSON.stringify({
+                            user_id: _vpUserId,
+                            audio: wavBase64,
+                            sampleRate: snapshot.sampleRate,
+                            action: _vpAction,
+                            capture_index: captureIndex,
+                            total_captures: totalCaptures,
+                            display_name: userName || '',
+                        })
+                    });
+                    const result = await res.json();
+                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Capture ${captureIndex + 1} → ${res.status}`, 'color: #8b5cf6;', result);
 
-                    const userId = visitorId;
-                    const isEnroll = hasVoiceprint === "no";
-                    const action = isEnroll ? 'enroll' : 'verify';
-
-                    console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Starting ${action} for ${userId}`, 'color: #8b5cf6; font-weight: bold;');
-
-                    // Helper: capture one embedding from a 15s snapshot
-                    const captureEmbedding = async (label) => {
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT [${label}]: Capturing 15s snapshot...`, 'color: #8b5cf6;');
-                        const snapshot = await this.voiceBuffer.getSnapshot(15000);
-                        if (snapshot.status !== 'ok') {
-                            console.warn(`[AmpereAI] AUTO-VOICEPRINT [${label}]: Snapshot failed: ${snapshot.status}`);
-                            return null;
+                    // On final capture, inject context update if verified
+                    if (result.final !== false && _vpAction === 'verify' && result.verified && this.conversation) {
+                        const confidence = result.confidence?.toFixed(2) || 'N/A';
+                        if (window.systemLink) {
+                            window.systemLink.log('VOICE_VERIFIED: ' + (_vpUserId?.slice(0, 8) || 'user'), 'secure');
+                            window.systemLink.triggerOtpRx();
                         }
-                        const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT [${label}]: WAV ${wavBase64.length} chars, calling /embed...`, 'color: #8b5cf6;');
-                        const embedAbort = new AbortController();
-                        const embedTimeout = setTimeout(() => embedAbort.abort(), 30000);
-                        const embedRes = await fetch(`${CONTAINER_URL}/embed`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ audio: wavBase64, sampleRate: snapshot.sampleRate, format: 'wav', normalize: true }),
-                            signal: embedAbort.signal
-                        });
-                        clearTimeout(embedTimeout);
-                        if (!embedRes.ok) {
-                            console.error(`[AmpereAI] AUTO-VOICEPRINT [${label}]: /embed failed: ${embedRes.status}`);
-                            return null;
-                        }
-                        const data = await embedRes.json();
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT [${label}]: ✅ ${data.dimension}-dim, ${data.audioDuration}s audio`, 'color: #8b5cf6; font-weight: bold;');
-                        return data;
-                    };
-
-                    if (isEnroll) {
-                        // Multi-embedding enrollment: capture 3 embeddings across the call
-                        const embeddings = [];
-                        const embed1 = await captureEmbedding('1/3');
-                        if (embed1) embeddings.push(embed1.embedding);
-
-                        for (let i = 1; i < captureDelays.length; i++) {
-                            const waitMs = (captureDelays[i] - captureDelays[i - 1]) * 1000;
-                            console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Waiting ${waitMs / 1000}s before next capture...`, 'color: #6b7280;');
-                            await new Promise(r => setTimeout(r, waitMs));
-                            if (!this.conversation) {
-                                console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Call ended, using collected embeddings', 'color: #6b7280;');
-                                break;
-                            }
-                            const embed = await captureEmbedding(`${i + 1}/${captureDelays.length}`);
-                            if (embed) embeddings.push(embed.embedding);
-                        }
-
-                        if (embeddings.length === 0) {
-                            console.error('[AmpereAI] AUTO-VOICEPRINT: No embeddings captured, aborting enrollment');
-                            return;
-                        }
-
-                        // Average all collected embeddings
-                        const dim = embeddings[0].length;
-                        const averaged = new Array(dim).fill(0);
-                        for (const emb of embeddings) {
-                            for (let j = 0; j < dim; j++) averaged[j] += emb[j];
-                        }
-                        for (let j = 0; j < dim; j++) averaged[j] /= embeddings.length;
-
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Averaged ${embeddings.length} embeddings → enrolling...`, 'color: #10b981; font-weight: bold;');
-
-                        const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/enroll', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                user_id: userId,
-                                display_name: userName || '',
-                                embedding: averaged,
-                                dimension: dim,
-                                audioDuration: embeddings.length * 8,
-                                embeddingCount: embeddings.length
-                            })
-                        });
-                        const result = await res.json();
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT ENROLL RESULT (${embeddings.length} embeddings averaged):`, 'color: #10b981; font-weight: bold;', result);
-
-                    } else {
-                        // v3.221: Multi-snapshot verification — 3 captures averaged for accuracy
-                        const embeddings = [];
-                        const embed1 = await captureEmbedding('verify-1/3');
-                        if (embed1) embeddings.push(embed1.embedding);
-
-                        for (let i = 1; i < captureDelays.length; i++) {
-                            const waitMs = (captureDelays[i] - captureDelays[i - 1]) * 1000;
-                            console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Waiting ${waitMs / 1000}s before next verify capture...`, 'color: #6b7280;');
-                            await new Promise(r => setTimeout(r, waitMs));
-                            if (!this.conversation) {
-                                console.log('%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Call ended, using collected verify embeddings', 'color: #6b7280;');
-                                break;
-                            }
-                            const embed = await captureEmbedding(`verify-${i + 1}/${captureDelays.length}`);
-                            if (embed) embeddings.push(embed.embedding);
-                        }
-
-                        if (embeddings.length === 0) {
-                            console.error('[AmpereAI] AUTO-VOICEPRINT: No verify embeddings captured, aborting');
-                            return;
-                        }
-
-                        // Average all collected verification embeddings
-                        const dim = embeddings[0].length;
-                        const averaged = new Array(dim).fill(0);
-                        for (const emb of embeddings) {
-                            for (let j = 0; j < dim; j++) averaged[j] += emb[j];
-                        }
-                        for (let j = 0; j < dim; j++) averaged[j] /= embeddings.length;
-
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT: Averaged ${embeddings.length} verify embeddings → verifying...`, 'color: #f59e0b; font-weight: bold;');
-
-                        const res = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/voice/verify', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                user_id: userId,
-                                embedding: averaged,
-                                dimension: dim
-                            })
-                        });
-                        const result = await res.json();
-                        console.log(`%c[AmpereAI] 🎙️ AUTO-VOICEPRINT VERIFY RESULT (${embeddings.length} embeddings averaged):`, 'color: #f59e0b; font-weight: bold;', result);
-
-                        // v3.226: Auto-bootstrap after verify — fetch profile card at tool level, inject into context
-                        if (result.verified && this.conversation) {
-                            const confidence = result.confidence?.toFixed(2) || 'N/A';
-                            const displayName = userName || userId;
-
-                            // v3.226: Trigger identity_confirmed visualization
-                            if (window.systemLink) {
-                                window.systemLink.log('VOICE_VERIFIED: ' + displayName, 'secure');
-                                if (window.techDemoScene) {
-                                    window.techDemoScene.selectFunction('identity');
-                                }
-                                window.systemLink.triggerOtpRx(); // green flash for success
-                            }
-
-                            // Fetch profile card directly — don't rely on Emily to re-bootstrap
-                            let profileData = '';
-                            try {
-                                const bootstrapRes = await fetch('https://memory-api.tight-butterfly-7b71.workers.dev/memory/bootstrap', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'x-api-key': '15bf5f77-01d1-4e72-b1f7-0587fb4d4e4c',
-                                        'x-workspace-id': 'emily'
-                                    },
-                                    body: JSON.stringify({
-                                        visitor_id: userId,
-                                        query: 'Full profile after voice verification',
-                                        session_id: this.conversation.getId?.() || ''
-                                    })
-                                });
-                                const bootstrapData = await bootstrapRes.json();
-                                console.log('%c[AmpereAI] 🔓 AUTO-BOOTSTRAP AFTER VERIFY:', 'color: #10b981; font-weight: bold;', bootstrapData);
-
-                                if (bootstrapData.profile_card) {
-                                    profileData = `\n\nPROFILE CARD (unlocked via voice verification):\n${bootstrapData.profile_card}`;
-                                }
-                                if (bootstrapData.facts && bootstrapData.facts.length > 0) {
-                                    const factList = bootstrapData.facts.map(f => typeof f === 'string' ? f : f.fact || f.text || JSON.stringify(f)).join('\n- ');
-                                    profileData += `\n\nSTORED FACTS:\n- ${factList}`;
-                                }
-
-                                // v3.226: Trigger memory visualization for bootstrap data
-                                if (window.systemLink && bootstrapData.facts && bootstrapData.facts.length > 0) {
-                                    setTimeout(() => {
-                                        if (window.techDemoScene) window.techDemoScene.selectFunction('memory');
-                                        bootstrapData.facts.forEach((f, i) => {
-                                            const text = typeof f === 'string' ? f : f.fact || 'DATA_PKT';
-                                            const display = text.length > 32 ? text.substring(0, 32) + '..' : text;
-                                            setTimeout(() => window.systemLink.triggerExtract(display), i * 200);
-                                        });
-                                    }, 1500); // delay to let identity viz play first
-                                }
-                            } catch (bootErr) {
-                                console.error('[AmpereAI] Auto-bootstrap after verify failed:', bootErr);
-                            }
-
-                            this.conversation.sendContextualUpdate(
-                                `Voice identity confirmed: the speaker's voice matches ${displayName}'s voiceprint (confidence: ${confidence}). ` +
-                                `Session is now fully verified. You now have full access to their profile and stored facts. ` +
-                                `For sensitive actions (account changes, payments), still require OTP.` +
-                                profileData
-                            );
-                            console.log(`%c[AmpereAI] 🎙️ VOICE CONTEXT UPDATE SENT TO EMILY (confidence: ${confidence}, profileData: ${profileData.length} chars)`, 'color: #10b981; font-weight: bold;');
-                        }
+                        this.conversation.sendContextualUpdate(
+                            `Voice identity confirmed via voiceprint verification (confidence: ${confidence}). ` +
+                            `Session is now voice-verified.`
+                        );
                     }
                 } catch (err) {
-                    console.error('[AmpereAI] AUTO-VOICEPRINT error:', err);
+                    console.warn('[AmpereAI] AUTO-VOICEPRINT: capture error (non-fatal):', err?.message || err);
+                    // Errors are non-fatal — call continues normally
                 }
             };
 
-            // v3.221: Start auto-voiceprint 25s after session, capture at t=25, t=40, t=55
-            setTimeout(() => autoVoiceprintRun([25, 40, 55]), 25000);
+            // Schedule 3 captures: t=25s, t=40s, t=55s
+            let cumulativeDelay = 0;
+            VP_DELAYS.forEach((delay, i) => {
+                cumulativeDelay += delay;
+                setTimeout(() => runVoiceCaptureAt(i, VP_DELAYS.length), cumulativeDelay);
+            });
 
         } catch (error) {
+
             console.warn('AmpereAIChat: Mic access failed or connection error', error);
 
             // v2.597: Friendly Mic Error Dialogue
