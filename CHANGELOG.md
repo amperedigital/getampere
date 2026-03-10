@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.453 - Router Monitor: KB injection + coaching + Sentinel end-call UI (2026-03-10)
+- **Fix**: Coaching badge was reading a boolean `true` from T2_ATTEMPT instead of the actual coaching string from SENTINEL_SCORE. Now reads from `r.sentinel.coaching`.
+- **New**: KB injection badge in turn panel — shows intent, chunk count, chars when `KB_INJECTED` / `INLINE_KB_INJECTED` events fire.
+- **New**: `SENTINEL_END_CALL` indicator — purple badge shows when Sentinel terminated the call.
+- **New**: CSS step styles for `KB_INJECTED`, `INLINE_KB_INJECTED`, `ONE_VOICE`, `SENTINEL_END_CALL`, `INLINE_KB_PREFETCH` — all now color-coded in the raw event stream.
+
 ## v3.452 - Web Voiceprint Server Relay
 - **Fix (Critical)**: Client-side `autoVoiceprintRun` and direct container calls removed — were crashing calls at t=25s via `AUTO-VOICEPRINT error: {}`.
 - **New**: `/voice/capture` endpoint — accepts `{ user_id, audio, sampleRate, action, capture_index, total_captures }`. Calls `voice-print-service` via direct public HTTP (avoids service binding timeout). Accumulates embeddings in D1 across captures, averages, delegates to existing fast-path enroll/verify. Auth-bypass added to `isVoicePrint` check.
