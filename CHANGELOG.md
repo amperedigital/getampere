@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.445 - Router Monitor: Phase 2 Diagnostics
+- **Router Monitor**: `FACT_EXTRACTED` → green facts card in turn panel showing extracted facts with 🧠 icon.
+- **Router Monitor**: `HANDOFF_DETECTED` → orange badge showing agent switch (from → to).
+- **Router Monitor**: `AGENT_PROMPT` → purple badge showing active agent name per turn.
+- **Router Monitor**: `PREFETCH_DONE` → 📦 context item count in turn meta bar.
+- **Router Monitor**: New CSS step badges for FACT_EXTRACTED, PREFETCH_DONE, AGENT_PROMPT, HANDOFF_DETECTED.
+
+
 ## v3.443 - Auto-generated
 - **Frontend**: Release v3.443 (no new commits)
 

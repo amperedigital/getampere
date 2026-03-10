@@ -271,6 +271,28 @@
             color: #7ee787;
         }
 
+        .step-FACT_EXTRACTED {
+            background: #1a2d1a;
+            color: #3fb950;
+            border: 1px solid #3fb95044;
+        }
+
+        .step-PREFETCH_DONE {
+            background: #1a2a2a;
+            color: #79c0ff;
+        }
+
+        .step-AGENT_PROMPT {
+            background: #1a1a2e;
+            color: #a371f7;
+        }
+
+        .step-HANDOFF_DETECTED {
+            background: #2d1a0a;
+            color: #f0883e;
+            border: 1px solid #f0883e44;
+        }
+
         .step-LANG_INJECTION {
             background: #2d2500;
             color: #f0c674;
@@ -631,6 +653,19 @@
                 latestSessionAvg = ev.sessionAvg;
                 updateSessionGauge(ev.sessionAvg);
             }
+            if (step === 'FACT_EXTRACTED') {
+                row.facts = ev.facts || [];
+                row.factCount = ev.count || 0;
+            }
+            if (step === 'HANDOFF_DETECTED') {
+                row.handoff = { from: ev.from, to: ev.to };
+            }
+            if (step === 'PREFETCH_DONE') {
+                row.prefetchItems = ev.contextItems || 0;
+            }
+            if (step === 'AGENT_PROMPT') {
+                row.agent = ev.agent;
+            }
 
             // Debounce rendering to prevent constant flashing from rapid-fire events
             if (!processEvent._renderTimer) {
@@ -722,6 +757,19 @@
                 }
                 // Coaching badge
                 const coachHtml = r.coaching ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.coaching)}">💡 ${esc(r.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>` : '';
+                // Facts card (Phase 2)
+                let factsHtml = '';
+                if (r.facts && r.facts.length > 0) {
+                    const factsList = r.facts.map(f => `<div style="color:#7ee787;font-size:11px;padding:2px 0;">📝 ${esc(f)}</div>`).join('');
+                    factsHtml = `<div style="background:#0d1a0d;border:1px solid #3fb95033;border-radius:6px;padding:6px 10px;margin-top:4px;">
+                        <div style="font-size:10px;color:#3fb950;font-weight:600;margin-bottom:2px;">🧠 ${r.facts.length} fact${r.facts.length > 1 ? 's' : ''} extracted → memory</div>
+                        ${factsList}
+                    </div>`;
+                }
+                // Handoff card
+                const handoffHtml = r.handoff ? `<div style="margin-top:4px;"><span style="background:#2d1a0a;color:#f0883e;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;">🔀 ${r.handoff.from} → ${r.handoff.to}</span></div>` : '';
+                // Agent badge
+                const agentBadge = r.agent ? `<span style="background:#1a1a2e;color:#a371f7;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600;">🎭 ${r.agent}</span>` : '';
                 // Lang/geo badges
                 const langGeoHtml = (r.lang || r.country) ? `${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}` : '';
                 const lmaBadge = r.lmaOverride ? `<span style="background:#7c3aed;color:#f5f5f5;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.5px;">LMA ${r.lang?.toUpperCase() || ''}</span>` : '';
@@ -731,15 +779,19 @@
                     ${msgHtml}
                     ${agentHtml}
                     ${sentinelHtml}
+                    ${factsHtml}
                     ${coachHtml}
+                    ${handoffHtml}
                     ${langInjectBadge}
                     <div class="turn-meta">
                         <span class="font-mono">${fmt.time(r.ts)}</span>
                         ${fmt.tier(r.tier)}
+                        ${agentBadge}
                         ${langGeoHtml}${lmaBadge ? ' ' + lmaBadge : ''}
                         <span class="font-semibold font-mono text-[#c9d1d9]">${fmt.model(r.model) || '…'}</span>
                         ${r.backend ? fmt.backend(r.backend) : ''}
                         ${acqHtml}
+                        ${r.prefetchItems ? `<span style="color:#79c0ff;font-size:10px;">📦 ${r.prefetchItems} ctx</span>` : ''}
                         ${fmt.ttfb(r.ttfb_ms)}
                         ${r.total_ms != null ? `<span style="color:#d2a8ff;">total ${r.total_ms}ms</span>` : ''}
                         ${r.classify_ms != null ? `<span style="color:#8b949e;font-size:10px;">router ${r.classify_ms}ms</span>` : ''}
