@@ -299,6 +299,35 @@
             border: 1px solid #f0c67444;
         }
 
+        .step-KB_INJECTED {
+            background: #1a2533;
+            color: #58a6ff;
+            border: 1px solid #58a6ff33;
+        }
+
+        .step-INLINE_KB_INJECTED {
+            background: #1a2533;
+            color: #58a6ff;
+            border: 1px solid #58a6ff33;
+        }
+
+        .step-ONE_VOICE {
+            background: #1a2533;
+            color: #79c0ff;
+        }
+
+        .step-SENTINEL_END_CALL {
+            background: #1a1a2e;
+            color: #a371f7;
+            border: 1px solid #a371f733;
+            font-weight: 700;
+        }
+
+        .step-INLINE_KB_PREFETCH {
+            background: #252014;
+            color: #e3b341;
+        }
+
         .sentinel-card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -666,6 +695,18 @@
             if (step === 'AGENT_PROMPT') {
                 row.agent = ev.agent;
             }
+            if (step === 'KB_INJECTED' || step === 'INLINE_KB_INJECTED') {
+                row.kbInjected = true;
+                row.kbIntent = ev.intent || '';
+                row.kbChunks = ev.chunkCount ?? ev.chunks ?? 0;
+            }
+            if (step === 'ONE_VOICE') {
+                row.specialist = ev.specialist || '';
+                row.kbChars = ev.injections ?? 0;
+            }
+            if (step === 'SENTINEL_END_CALL') {
+                row.endedBysentinel = true;
+            }
 
             // Debounce rendering to prevent constant flashing from rapid-fire events
             if (!processEvent._renderTimer) {
@@ -755,8 +796,17 @@
                         <div style="display:flex;flex-wrap:wrap;gap:4px;">${dims}</div>
                     </div>`;
                 }
-                // Coaching badge
-                const coachHtml = r.coaching ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.coaching)}">💡 ${esc(r.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>` : '';
+                // Coaching badge — reads from sentinel.coaching (the actual string, not the boolean from T2_ATTEMPT)
+                const coachHtml = r.sentinel?.coaching
+                    ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.sentinel.coaching)}">💡 ${esc(r.sentinel.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>`
+                    : '';
+                // KB injection badge
+                const kbHtml = r.kbInjected
+                    ? `<div style="margin-top:4px;"><span style="background:#1a2533;color:#58a6ff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid #58a6ff33;">📚 KB · ${r.kbIntent}${r.kbChunks ? ' · ' + r.kbChunks + ' chunks' : ''}${r.kbChars ? ' · ' + r.kbChars + ' chars' : ''}</span></div>`
+                    : '';
+                const endCallHtml = r.endedBysentinel
+                    ? `<div style="margin-top:4px;"><span style="background:#1a1a2e;color:#a371f7;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid #a371f733;">📵 Sentinel ended call</span></div>`
+                    : '';
                 // Facts card (Phase 2)
                 let factsHtml = '';
                 if (r.facts && r.facts.length > 0) {
@@ -780,7 +830,9 @@
                     ${agentHtml}
                     ${sentinelHtml}
                     ${factsHtml}
+                    ${kbHtml}
                     ${coachHtml}
+                    ${endCallHtml}
                     ${handoffHtml}
                     ${langInjectBadge}
                     <div class="turn-meta">
