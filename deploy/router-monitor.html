@@ -686,6 +686,10 @@
             if (step === 'AGENT_RESPONSE') { row.agentResponse = ev.responsePreview || ''; row.total_ms = ev.total_ms ?? null; row.result = row.result || 'ok'; }
             if (step === 'SENTINEL_SCORE') {
                 row.sentinel = { scores: ev.scores, turnAvg: ev.turnAvg, sessionAvg: ev.sessionAvg, judge: ev.judge, coaching: ev.coaching, locked: ev.locked };
+                row.sentinelLastUserMsg = ev.lastUserMsg || '';
+                row.sentinelAssistantPreview = ev.assistantPreview || '';
+                row.sentinelKbContent = ev.kbContent || '';
+                if (ev.facts && ev.facts.length > 0) { row.facts = ev.facts; row.factCount = ev.facts.length; }
                 latestSessionAvg = ev.sessionAvg;
                 updateSessionGauge(ev.sessionAvg);
             }
@@ -706,6 +710,9 @@
                 row.kbInjected = true;
                 row.kbIntent = ev.intent || '';
                 row.kbChunks = ev.chunkCount ?? ev.chunks ?? 0;
+                row.kbQuery = ev.query || '';
+                row.kbContent = ev.contentPreview || '';
+                row.kbSource = ev.source || 'sentinel';
             }
             if (step === 'ONE_VOICE') {
                 row.specialist = ev.specialist || '';
@@ -786,7 +793,7 @@
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
                 const resultHtml = r.result === 'ok' ? '<span class="result-ok">✅</span>' : r.result === 'fallback' ? `<span class="result-fallback">⚠️ →${fmt.model(r.fallback)}</span>` : '<span class="text-[#8b949e]">⏳</span>';
-                // Sentinel score card
+                // Sentinel score card with expandable evaluation context
                 let sentinelHtml = '';
                 if (r.sentinel) {
                     const s = r.sentinel;
@@ -795,6 +802,24 @@
                         return `<span class="sentinel-dim ${v >= 8 ? 'dim-green' : v >= 6 ? 'dim-yellow' : 'dim-red'}">${label} ${v ?? '?'}</span>`;
                     }).join(' ');
                     const avgCls = s.turnAvg >= 8 ? 'dim-green' : s.turnAvg >= 6 ? 'dim-yellow' : 'dim-red';
+                    // Expandable evaluation context
+                    const hasEvalCtx = r.sentinelLastUserMsg || r.sentinelAssistantPreview || r.sentinelKbContent;
+                    let evalCtxHtml = '';
+                    if (hasEvalCtx) {
+                        const kbSection = r.sentinelKbContent
+                            ? `<div style="margin-bottom:6px;"><div style="color:#58a6ff;font-size:10px;font-weight:600;margin-bottom:2px;">📚 KB injected into SLM (Sentinel graded against this):</div><div style="color:#8b949e;font-size:11px;white-space:pre-wrap;overflow-wrap:break-word;max-height:200px;overflow-y:auto;background:#0d1117;padding:6px 8px;border-radius:4px;font-family:monospace;border:1px solid #58a6ff22;">${esc(r.sentinelKbContent)}</div></div>`
+                            : '<div style="color:#6e7681;font-size:10px;margin-bottom:4px;">ℹ️ No KB was injected (general turn)</div>';
+                        const userSection = r.sentinelLastUserMsg
+                            ? `<div style="margin-bottom:6px;"><div style="color:#79c0ff;font-size:10px;font-weight:600;margin-bottom:2px;">👤 User asked:</div><div style="color:#c9d1d9;font-size:11px;background:#0d1117;padding:5px 8px;border-radius:4px;border-left:2px solid #58a6ff;">${esc(r.sentinelLastUserMsg)}</div></div>`
+                            : '';
+                        const agentSection = r.sentinelAssistantPreview
+                            ? `<div><div style="color:#3fb950;font-size:10px;font-weight:600;margin-bottom:2px;">🤖 Emily responded (what Sentinel scored):</div><div style="color:#adbac7;font-size:11px;background:#0d1117;padding:5px 8px;border-radius:4px;border-left:2px solid #3fb950;overflow-wrap:break-word;">${esc(r.sentinelAssistantPreview)}</div></div>`
+                            : '';
+                        evalCtxHtml = `<details style="margin-top:5px;border-top:1px solid #30363d;padding-top:5px;">
+                            <summary style="cursor:pointer;font-size:10px;color:#8b949e;list-style:none;">🔍 Evaluation context (click to expand)</summary>
+                            <div style="margin-top:6px;">${kbSection}${userSection}${agentSection}</div>
+                        </details>`;
+                    }
                     sentinelHtml = `<div class="sentinel-card">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
                             <span style="font-size:10px;color:#8b949e;">🛡️ Sentinel</span>
@@ -804,16 +829,25 @@
                             ${s.locked ? '<span style="font-size:10px;color:#f85149;font-weight:700;">🔴 T3 LOCKED</span>' : ''}
                         </div>
                         <div style="display:flex;flex-wrap:wrap;gap:4px;">${dims}</div>
+                        ${evalCtxHtml}
                     </div>`;
                 }
                 // Coaching badge — reads from sentinel.coaching (the actual string, not the boolean from T2_ATTEMPT)
                 const coachHtml = r.sentinel?.coaching
                     ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.sentinel.coaching)}">💡 ${esc(r.sentinel.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>`
                     : '';
-                // KB injection badge
-                const kbHtml = r.kbInjected
-                    ? `<div style="margin-top:4px;"><span style="background:#1a2533;color:#58a6ff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid #58a6ff33;">📚 KB · ${r.kbIntent}${r.kbChunks ? ' · ' + r.kbChunks + ' chunks' : ''}${r.kbChars ? ' · ' + r.kbChars + ' chars' : ''}</span></div>`
-                    : '';
+                // KB injection — expandable card with full retrieved content
+                let kbHtml = '';
+                if (r.kbInjected) {
+                    const kbSummary = `${r.kbSource === 'inline' ? '⚡' : '📚'} KB · <strong>${esc(r.kbIntent)}</strong> · ${r.kbChunks} chunk${r.kbChunks !== 1 ? 's' : ''}${r.kbQuery ? ' · "' + esc(r.kbQuery.slice(0, 60)) + '"' : ''}`;
+                    const kbBody = r.kbContent
+                        ? `<div style="padding:8px 10px;font-size:11px;color:#adbac7;white-space:pre-wrap;overflow-wrap:break-word;max-height:280px;overflow-y:auto;border-top:1px solid #58a6ff22;font-family:monospace;line-height:1.5;">${esc(r.kbContent)}</div>`
+                        : `<div style="padding:6px 10px;font-size:11px;color:#6e7681;">No content preview available</div>`;
+                    kbHtml = `<details style="margin-top:4px;background:#0d1220;border:1px solid #58a6ff44;border-radius:6px;">
+                        <summary style="cursor:pointer;padding:5px 10px;font-size:10px;color:#58a6ff;font-weight:600;list-style:none;display:flex;align-items:center;gap:6px;">${kbSummary}</summary>
+                        ${kbBody}
+                    </details>`;
+                }
                 const endCallHtml = r.endedBysentinel
                     ? `<div style="margin-top:4px;"><span style="background:#1a1a2e;color:#a371f7;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid #a371f733;">📵 Sentinel ended call</span></div>`
                     : '';

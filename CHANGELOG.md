@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.464 - Auto-generated
+- **Frontend**: Release v3.464 (no new commits)
+
+
+### v3.455 — Full diagnostic data flow in Router Monitor (2026-03-11)
+
+### Feature (Observability)
+- KB turned into expandable card: shows search query + full retrieved chunk text
+- Sentinel card: expandable "Evaluation context" showing KB used, user message, Emily response
+- Inline KB (⚡) and Sentinel KB (📚) distinguished by icon
+
 ## v3.454 - Voice Auth Feedback Loop: ai-chat.js → backend → router (2026-03-10)
 - **New**: After final voiceprint capture (enroll or verify), `ai-chat.js` POSTs result to `/session/voice-auth`. Closes the loop from enrollment/verification → LLM router → Emily's system prompt.
 - **Router Monitor**: `VOICE_AUTH` step badge in event stream + turn panel. Green=verified, blue=enrolled, red=failed. Shows confidence %.
