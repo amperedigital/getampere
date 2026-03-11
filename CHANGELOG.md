@@ -4,6 +4,9 @@
 - **Frontend**: Release v3.464 (no new commits)
 
 
+## v3.466 — Hotfix: router-monitor CSS CDN link (2026-03-11)
+- Fix: router-monitor.html CDN stylesheet ref pointed to v3.464 (tag never pushed to GitHub). Updated to v3.465.
+
 ## v3.465 — Sync release (2026-03-11)
 - Sync: ensures v3.464 router monitor diagnostic changes are properly tagged and pushed across both repos.
 
