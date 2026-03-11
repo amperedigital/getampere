@@ -4,6 +4,9 @@
 - **Frontend**: Release v3.464 (no new commits)
 
 
+## v3.465 — Sync release (2026-03-11)
+- Sync: ensures v3.464 router monitor diagnostic changes are properly tagged and pushed across both repos.
+
 ## v3.464 — Full diagnostic data flow in Router Monitor (2026-03-11)
 
 ### Feature (Observability)
