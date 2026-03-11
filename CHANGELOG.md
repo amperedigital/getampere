@@ -4,6 +4,9 @@
 - **Frontend**: Release v3.464 (no new commits)
 
 
+## v3.467 — Phone channel voice-auth feedback loop (2026-03-11)
+- Backend only: Twilio voice stream now writes voice-auth result to cache. See backend CHANGELOG for details.
+
 ## v3.466 — Hotfix: router-monitor CSS CDN link (2026-03-11)
 - Fix: router-monitor.html CDN stylesheet ref pointed to v3.464 (tag never pushed to GitHub). Updated to v3.465.
 
