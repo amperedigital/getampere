@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.501 — Monitor: all panels oldest-at-top, newest-at-bottom (2026-03-12)
+- **Fix**: Reversed all three panels — newest entries now appear at the bottom, oldest at top.
+  Scroll down to see the latest. This matches terminal/log convention.
+  - Routing table: `a.ts - b.ts` (oldest first)
+  - Turn panel: `a.ts - b.ts` (oldest first), auto-scrolls to bottom
+  - Event stream: `appendChild` (newest appended at bottom), auto-scrolls to bottom
+
 ## v3.500 — Monitor: STREAM_ABORTED badge (2026-03-12)
 - **New**: Orange `STREAM_ABORTED` event badge — shows when ElevenLabs closes the SSE connection
   mid-stream before a response completes. Previously these drops were invisible in the monitor.
