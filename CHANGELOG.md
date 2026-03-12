@@ -1,8 +1,62 @@
 # Changelog
 
+## v3.491 — Router Monitor: Zero truncation + NAT score + full diagnostic mode (2026-03-12)
+- **Fix**: Added `n: 'NAT'` (Naturalness) to `DIM_LABELS` — was always scored by Sentinel but never displayed. Turn-by-turn now shows all 9 dimensions: ACC, GND, HLP, CMP, CON, EMP, SAF, COH, NAT.
+- **Fix**: Removed ALL string truncation from the monitor. This is a diagnostic tool — nothing should be hidden:
+  - Coaching directive: was `.slice(0, 60)` → full text, wraps instead of cutting off. `[INTERNAL...]` prefix stripped from display.
+  - KB query: was `.slice(0, 60)` → full query shown in KB card summary.
+  - Lang injection directive: was `.slice(0, 80)` → full directive shown, wraps instead of single-line ellipsis.
+  - Raw event stream `lastUserMsg`: was `.slice(0, 80)` → full user message shown.
+  - `coaching-badge` CSS: removed `overflow:hidden`, `text-overflow:ellipsis`, `white-space:nowrap` → replaced with `overflow-wrap:break-word`, `white-space:normal`.
+
 ## v3.464 - Auto-generated
 - **Frontend**: Release v3.464 (no new commits)
 
+
+## v3.482 — Sentinel fires memory_bootstrap + memory_query (2026-03-11)
+- Backend only: Sentinel now controls all memory tools. Fires memory_bootstrap on first turn (loads all stored facts into context), memory_query per-turn (retrieves relevant facts). Injected into T2 system prompt as [STORED MEMORY] block. Emily now has full context from turn 2 onwards.
+
+## v3.481 — Fix mid-stream supersede silence (2026-03-11)
+- Backend only: When user refines question mid-stream, Emily now generates fresh response to fuller question instead of going silent. INFLIGHT_SUPERSEDE now clears previous DEDUP_SENT key before generating replacement.
+
+## v3.480 — Fix SESSION_INIT channel annotation (2026-03-11)
+- Backend only: SESSION_INIT now correctly shows `channel=web` instead of `web > This is either web...`. Crop-before-flatten fix.
+
+## v3.479 — Restore isReturning bypass (2026-03-11)
+- Backend only: Reverts v3.476's routing change. Returning callers → tier2 as before. Only the model changed (Gemma 3), not the rules.
+
+## v3.478 — Partial STT regression guard + isReturning fix (2026-03-11)
+- Backend only: SUPERSEDE_BLOCKED guard prevents short partial STT from clobbering a longer in-flight response on same turn. isReturning in CLASSIFY now reads from VISITOR STATUS block.
+
+## v3.477 — Fix T1 verbosity + SESSION_INIT channel fix (2026-03-11)
+- Backend only: T1 returning caller injection simplified — removes competing 'open with welcome-back' directive. channel value in SESSION_INIT now shows 'web' not the annotation paragraph.
+
+## v3.476 — SESSION_INIT event + T1 routing fix (2026-03-11)
+- Backend only: SESSION_INIT event broadcasts all ElevenLabs dynamic variable values to router monitor. Removed stale isReturning→tier2 bypass (was from old tools architecture). T1 now receives name+returning context for personalized greetings.
+
+## v3.475 — Fix Gemma 3 role alternation / error 3030 (2026-03-11)
+- Backend only: normalizeMessagesForWorkersAI() added. ElevenLabs greeting before first user message was causing Gemma 3 to reject every call with 3030. Now sanitized before Workers AI calls.
+
+## v3.474 — Fix monitor preview cut-off (2026-03-11)
+- Backend only: responsePreview increased from 300 to 800 chars in AGENT_RESPONSE events. assistantPreview increased from 400 to 800 in SENTINEL_SCORE events. Router monitor turn-by-turn now shows complete responses.
+
+## v3.473 — Sentinel naturalness score dimension (2026-03-11)
+- Backend only: Added `n (Naturalness)` to Sentinel scoring. Sentinel now detects robotic/scripted responses and coaches Emily to sound more human. Closes the energy feedback loop.
+
+## v3.472 — Gemma 3 T2 model switch + voice energy fix (2026-03-11)
+- Backend only: T2 switched from Gemini 2.5 Flash Lite to Gemma 3 12B-IT via Workers AI. VOICE_ENERGY_RULE injected into every T2 prompt to address robotic/brochure tone.
+
+## v3.471 — DEDUP_SENT gate, closing_pending fix (2026-03-11)
+- Backend only: DEDUP_SENT cross-isolate cache prevents double-streaming to ElevenLabs on progressive STT race. closing_pending false positive fixed — declining a specific offer no longer triggers farewell coaching.
+
+## v3.470 — Cross-isolate KB cache, near-instant lookup (2026-03-11)
+- Backend only: KB results now cached in `caches.default` cross-isolate (10min TTL). Inline path checks cache first — eliminates 3s autorag latency on first specialist question. See backend CHANGELOG.
+
+## v3.469 — Remove regex reask, conversation flow rule (2026-03-11)
+- Backend only: Removed regex-based reask detection from classifyTurn (false T3 fires on goodbyes). Added standing CONVERSATION_FLOW_RULE so Emily always ends with a topic-specific follow-up question.
+
+## v3.468 — Sentinel Coach + Call Close + KB Compression (2026-03-11)
+- Backend only: Sentinel now writes per-turn `next_turn_directive`, two-stage call close with 4s TTS delay, KB chunks compressed 5×600→ 3×200 chars. See backend CHANGELOG for details.
 
 ## v3.467 — Phone channel voice-auth feedback loop (2026-03-11)
 - Backend only: Twilio voice stream now writes voice-auth result to cache. See backend CHANGELOG for details.

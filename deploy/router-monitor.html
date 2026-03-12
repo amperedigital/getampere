@@ -376,9 +376,9 @@
             background: #1e2340;
             color: #79c0ff;
             max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            overflow-wrap: break-word;
+            white-space: normal;
+            word-break: break-word;
         }
 
         .lang-badge {
@@ -834,12 +834,12 @@
                 }
                 // Coaching badge — reads from sentinel.coaching (the actual string, not the boolean from T2_ATTEMPT)
                 const coachHtml = r.sentinel?.coaching
-                    ? `<div style="margin-top:4px;"><span class="coaching-badge" title="${esc(r.sentinel.coaching)}">💡 ${esc(r.sentinel.coaching.replace(/\[INTERNAL.*?\]\s*/g, '').slice(0, 60))}</span></div>`
+                    ? `<div style="margin-top:4px;"><span class="coaching-badge" style="white-space:normal;overflow-wrap:break-word;">💡 ${esc(r.sentinel.coaching.replace(/\[INTERNAL.*?\]\s*/g, ''))}</span></div>`
                     : '';
                 // KB injection — expandable card with full retrieved content
                 let kbHtml = '';
                 if (r.kbInjected) {
-                    const kbSummary = `${r.kbSource === 'inline' ? '⚡' : '📚'} KB · <strong>${esc(r.kbIntent)}</strong> · ${r.kbChunks} chunk${r.kbChunks !== 1 ? 's' : ''}${r.kbQuery ? ' · "' + esc(r.kbQuery.slice(0, 60)) + '"' : ''}`;
+                    const kbSummary = `${r.kbSource === 'inline' ? '⚡' : '📚'} KB · <strong>${esc(r.kbIntent)}</strong> · ${r.kbChunks} chunk${r.kbChunks !== 1 ? 's' : ''}${r.kbQuery ? ' · "' + esc(r.kbQuery) + '"' : ''}`;
                     const kbBody = r.kbContent
                         ? `<div style="padding:8px 10px;font-size:11px;color:#adbac7;white-space:pre-wrap;overflow-wrap:break-word;max-height:280px;overflow-y:auto;border-top:1px solid #58a6ff22;font-family:monospace;line-height:1.5;">${esc(r.kbContent)}</div>`
                         : `<div style="padding:6px 10px;font-size:11px;color:#6e7681;">No content preview available</div>`;
@@ -878,7 +878,7 @@
                 // Lang/geo badges
                 const langGeoHtml = (r.lang || r.country) ? `${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}` : '';
                 const lmaBadge = r.lmaOverride ? `<span style="background:#7c3aed;color:#f5f5f5;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.5px;">LMA ${r.lang?.toUpperCase() || ''}</span>` : '';
-                const langInjectBadge = r.langInjection ? `<div style="margin-top:4px;"><span style="background:#2d2500;color:#f0c674;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(r.langDirective || '')}">🌍 LANG → ${r.langInjectionTier} ${esc((r.langDirective || '').replace(/\n/g, ' ').slice(0, 80))}</span></div>` : '';
+                const langInjectBadge = r.langInjection ? `<div style="margin-top:4px;"><span style="background:#2d2500;color:#f0c674;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;display:inline-block;max-width:100%;overflow-wrap:break-word;white-space:normal;" >🌍 LANG → ${r.langInjectionTier} ${esc((r.langDirective || '').replace(/\n/g, ' '))}</span></div>` : '';
 
                 return `<div class="turn-card ${!r.result ? 'active' : ''}${r.t3Locked ? ' style="border-left-color:#a855f7;"' : ''}">
                     ${msgHtml}
@@ -922,7 +922,7 @@
                         const n = parseInt(val); const col = n < 300 ? '#3fb950' : n < 1000 ? '#e3b341' : '#f85149';
                         val = `<span style="color:${col};font-weight:600">${val}ms</span>`;
                     } else if (k === 'lastUserMsg') {
-                        val = `<span class="text-[#c9d1d9] italic">"${esc(val.slice(0, 80))}"</span>`;
+                        val = `<span class="text-[#c9d1d9] italic">"${esc(val)}"</span>`;
                     } else if (['model', 'fallback'].includes(k)) {
                         val = `<span class="text-[#c9d1d9] font-mono">${fmt.model(val)}</span>`;
                     } else if (k === 'backend') {
