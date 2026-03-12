@@ -181,6 +181,7 @@
         }
 
         .panel-scroll {
+            max-height: calc(100vh - 240px);
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #30363d #0d1117;
@@ -776,7 +777,7 @@
         }
 
         function renderTurnPanel() {
-            const allTurns = Object.values(routeMap).sort((a, b) => a.ts - b.ts);
+            const allTurns = Object.values(routeMap).sort((a, b) => b.ts - a.ts); // newest first
             // Dedup ElevenLabs retries — collapse identical user messages within 10s
             const deduped = dedupTurns(allTurns);
             document.getElementById('turnCount').textContent = `${deduped.length} turns`;
@@ -911,7 +912,7 @@
             // Auto-scroll to bottom (newest turn) — matches event stream direction
             if (document.getElementById('autoScroll').checked) {
                 const tp = document.getElementById('turnPanel');
-                tp.scrollTop = tp.scrollHeight;
+                tp.scrollTop = 0; // newest-first — stay at top
             }
         }
 

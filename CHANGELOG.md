@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.493 — Router Monitor: newest-first turn order, routing table scroll (2026-03-12)
+- **Fix**: Turn panel was sorted oldest-first (`a.ts - b.ts`). Reversed to newest-first (`b.ts - a.ts`) — most recent turn always at top.
+- **Fix**: Auto-scroll now scrolls to top (0) instead of bottom since order is newest-first.
+- **Fix**: Routing table `panel-scroll` had no `max-height` so it grew infinitely without scrolling. Added `max-height: calc(100vh - 240px)` with sticky header and `overflow-y: auto`.
+
 ## v3.492 — Router Monitor: Chronological turn order + auto-scroll (2026-03-12)
 - **Fix**: Turn-by-turn was sorted newest-first (`b.ts - a.ts`) while the event stream is oldest-first (append). Both panels now match: oldest turn at top, newest at bottom.
 - **Fix**: Turn panel now auto-scrolls to the bottom after each render when auto-scroll is enabled, so the latest turn is always visible without manual scrolling.
