@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.492 — Router Monitor: Chronological turn order + auto-scroll (2026-03-12)
+- **Fix**: Turn-by-turn was sorted newest-first (`b.ts - a.ts`) while the event stream is oldest-first (append). Both panels now match: oldest turn at top, newest at bottom.
+- **Fix**: Turn panel now auto-scrolls to the bottom after each render when auto-scroll is enabled, so the latest turn is always visible without manual scrolling.
+
 ## v3.491 — Router Monitor: Zero truncation + NAT score + full diagnostic mode (2026-03-12)
 - **Fix**: Added `n: 'NAT'` (Naturalness) to `DIM_LABELS` — was always scored by Sentinel but never displayed. Turn-by-turn now shows all 9 dimensions: ACC, GND, HLP, CMP, CON, EMP, SAF, COH, NAT.
 - **Fix**: Removed ALL string truncation from the monitor. This is a diagnostic tool — nothing should be hidden:
