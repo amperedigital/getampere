@@ -170,6 +170,14 @@
             font-weight: 700;
         }
 
+        .step-T3_PREWARM {
+            background: #2d2200;
+            color: #f59e0b;
+            border: 1px solid #f59e0b55;
+            font-weight: 700;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
         .step-T3_ATTEMPT {
             background: #2d1a3d;
             color: #d2a8ff;
@@ -732,6 +740,11 @@
             if (step === 'VOICE_AUTH') {
                 row.voiceAuth = { status: ev.status || 'unknown', score: ev.score ?? 0 };
             }
+            if (step === 'T3_PREWARM') {
+                row.t3Prewarm = true;
+                row.t3PrewarmModel = ev.model || '';
+                row.t3PrewarmAvg = ev.sessionAvg ?? null;
+            }
 
             // Debounce rendering to prevent constant flashing from rapid-fire events
             if (!processEvent._renderTimer) {
@@ -770,7 +783,7 @@
                 return `<tr class="border-b border-[#21262d] new-row${r.t3Locked ? ' style="background:rgba(139,92,246,0.08);"' : ''}">
                     <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}${retryBadge}</td>
                     <td class="px-3 py-2 font-mono text-[#8b949e] text-[10px]">${r.reqId}</td>
-                    <td class="px-3 py-2">${fmt.tier(r.tier)} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
+                    <td class="px-3 py-2">${fmt.tier(r.tier)} ${r.t3Prewarm && !r.t3Locked ? '<span class="step-badge step-T3_PREWARM" title="T3 pre-warm fired (sessionAvg ' + (r.t3PrewarmAvg ?? '?') + ')">⚡ T3 WARM</span>' : ''} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
                     <td class="px-3 py-2">${modelLabel}</td>
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
                     <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
