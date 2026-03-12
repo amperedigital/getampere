@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.502 - Auto-generated
+- **Frontend**: Release v3.502 (no new commits)
+
+
 ## v3.501 — Monitor: all panels oldest-at-top, newest-at-bottom (2026-03-12)
 - **Fix**: Reversed all three panels — newest entries now appear at the bottom, oldest at top.
   Scroll down to see the latest. This matches terminal/log convention.
