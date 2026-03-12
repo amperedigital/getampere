@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.496 - Auto-generated
+- **Frontend**: v3.493: Router monitor newest-first turn order + routing table scroll
+
+
 ## v3.493 — Router Monitor: newest-first turn order, routing table scroll (2026-03-12)
 - **Fix**: Turn panel was sorted oldest-first (`a.ts - b.ts`). Reversed to newest-first (`b.ts - a.ts`) — most recent turn always at top.
 - **Fix**: Auto-scroll now scrolls to top (0) instead of bottom since order is newest-first.
