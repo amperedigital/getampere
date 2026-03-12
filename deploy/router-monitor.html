@@ -777,7 +777,7 @@
         }
 
         function renderTurnPanel() {
-            const allTurns = Object.values(routeMap).sort((a, b) => b.ts - a.ts); // newest first
+            const allTurns = Object.values(routeMap).sort((a, b) => b.ts - a.ts); // newest at top
             // Dedup ElevenLabs retries — collapse identical user messages within 10s
             const deduped = dedupTurns(allTurns);
             document.getElementById('turnCount').textContent = `${deduped.length} turns`;
@@ -912,7 +912,7 @@
             // Auto-scroll to bottom (newest turn) — matches event stream direction
             if (document.getElementById('autoScroll').checked) {
                 const tp = document.getElementById('turnPanel');
-                tp.scrollTop = 0; // newest-first — stay at top
+                tp.scrollTop = 0; // newest-at-top — stay at top
             }
         }
 
@@ -942,9 +942,9 @@
             const entry = document.createElement('div');
             entry.className = 'new-row flex flex-wrap items-center gap-2 px-4 py-2 border-b border-[#21262d] text-xs';
             entry.innerHTML = `<span class="text-[#8b949e] w-16 shrink-0 font-mono">${fmt.time(ev.ts)}</span><span class="font-mono text-[#6e7681] text-[10px] w-12 shrink-0 truncate">${ev.reqId || ''}</span>${stepBadge(ev.step || '?')}<span class="flex flex-wrap gap-2 min-w-0">${details}</span>`;
-            stream.appendChild(entry);
-            while (stream.children.length > 300) stream.removeChild(stream.firstChild);
-            if (document.getElementById('autoScroll').checked) stream.scrollTop = stream.scrollHeight;
+            stream.prepend(entry);
+            while (stream.children.length > 300) stream.removeChild(stream.lastChild);
+            if (document.getElementById('autoScroll').checked) stream.scrollTop = 0;
         }
 
         function connectWebSocket() {
