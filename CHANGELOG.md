@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.500 — Monitor: STREAM_ABORTED badge (2026-03-12)
+- **New**: Orange `STREAM_ABORTED` event badge — shows when ElevenLabs closes the SSE connection
+  mid-stream before a response completes. Previously these drops were invisible in the monitor.
+
 ## v3.499 — Router monitor: all panels newest-at-top (2026-03-12)
 - **Fix**: All three panels now consistent — newest at top, oldest at bottom.
   - Routing table: `b.ts - a.ts` sort (newest first)
