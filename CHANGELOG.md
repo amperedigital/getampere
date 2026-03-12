@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.498 — Router monitor: routing table + turn panel newest-first (2026-03-12)
+- **Fix**: Routing table and turn panel were showing oldest turn at top, newest at bottom.
+  Both panels now show newest turn at top (`b.ts - a.ts` sort deployed).
+- **Event stream**: unchanged — still appends newest at bottom with auto-scroll (user preference).
+
 ## v3.496 - Auto-generated
 - **Frontend**: v3.493: Router monitor newest-first turn order + routing table scroll
 
