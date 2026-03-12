@@ -776,7 +776,7 @@
         }
 
         function renderTurnPanel() {
-            const allTurns = Object.values(routeMap).sort((a, b) => b.ts - a.ts);
+            const allTurns = Object.values(routeMap).sort((a, b) => a.ts - b.ts);
             // Dedup ElevenLabs retries — collapse identical user messages within 10s
             const deduped = dedupTurns(allTurns);
             document.getElementById('turnCount').textContent = `${deduped.length} turns`;
@@ -908,7 +908,13 @@
                     </div>
                 </div>`;
             }).join('');
+            // Auto-scroll to bottom (newest turn) — matches event stream direction
+            if (document.getElementById('autoScroll').checked) {
+                const tp = document.getElementById('turnPanel');
+                tp.scrollTop = tp.scrollHeight;
+            }
         }
+
 
         function renderRawEvent(ev) {
             const ph = document.getElementById('streamPlaceholder');
