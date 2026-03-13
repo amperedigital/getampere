@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.527 - Auto-generated
+- **Frontend**: Release v3.527 (no new commits)
+
+
 ## v3.526 — Real API key + internal auth cleanup (2026-03-13)
 
 - **Security**: Replaced `dev-secret-key` with a real 64-char hex key in `router-monitor.html` and `llm-benchmark.html`. `API_KEY` promoted from plain-text `[vars]` to Cloudflare Secret (encrypted at rest).
