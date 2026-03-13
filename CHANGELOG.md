@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.518 — Phase 0: workspace_id emily→ampere-emily (2026-03-13)
+
+- **Fix**: All frontend workspace defaults updated from `'emily'` to `'ampere-emily'`:
+  - `ai-chat.js`: `x-workspace-id` header in 3 fetch calls (greeting, session seed, voiceprint capture)
+  - `system-link.js`: WebSocket workspace fallback default
+  - `router-monitor.html`: workspace input field default value + JS fallback
+
 ## v3.508 - Auto-generated
 - **Frontend**: Release v3.508 (no new commits)
 
