@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.507">
+    <meta name="version" content="v3.519">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.507/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.519/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -586,6 +586,7 @@
         let totalEvents = 0;
         let pollInterval = null;
         let ws = null;
+        let pingInterval = null;
         let seenReqIds = new Set();
         let latestSessionAvg = null;
 
@@ -944,7 +945,7 @@
             const details = Object.entries(ev)
                 .filter(([k]) => !['type', 'reqId', 'step', 'ts'].includes(k))
                 .map(([k, v]) => {
-                    let val = typeof v === 'obj ect' ? JSON.stringify(v) : String(v ?? '—');
+                    let val = typeof v === 'object' ? JSON.stringify(v) : String(v ?? '—');
                     if (['ttfb_ms', 'acq_ms', 'elapsed_ms'].includes(k)) {
                         const n = parseInt(val); const col = n < 300 ? '#3fb950' : n < 1000 ? '#e3b341' : '#f85149';
                         val = `<span style="color:${col};font-weight:600">${val}ms</span>`;
@@ -969,16 +970,23 @@
 
         function connectWebSocket() {
             if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+            if (pingInterval) { clearInterval(pingInterval); pingInterval = null; }
             const workspace = document.getElementById('workspaceId').value || 'ampere-emily';
             const apiKey = document.getElementById('apiKey').value || '';
             const wsBase = API_BASE.replace('https://', 'wss://').replace('http://', 'ws://');
             const url = `${wsBase}/memory/visualizer?workspace=${encodeURIComponent(workspace)}&x-api-key=${encodeURIComponent(apiKey)}`;
             try {
                 ws = new WebSocket(url);
-                ws.onopen = () => setConn('connected', `WebSocket — ${workspace}`);
+                ws.onopen = () => {
+                    setConn('connected', `WebSocket — ${workspace}`);
+                    // Heartbeat every 20s to prevent Cloudflare DO hibernation from killing idle connections
+                    pingInterval = setInterval(() => {
+                        if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'ping' }));
+                    }, 20000);
+                };
                 ws.onmessage = e => { try { const d = JSON.parse(e.data); if (d.type === 'router_event') processEvent(d, false); } catch { } };
-                ws.onerror = () => setConn('error', 'WS error — reconnecting...');
-                ws.onclose = () => { setConn('polling', 'WS closed — reconnecting in 2s...'); setTimeout(connectWebSocket, 2000); };
+                ws.onerror = () => { if (pingInterval) { clearInterval(pingInterval); pingInterval = null; } setConn('error', 'WS error — reconnecting...'); };
+                ws.onclose = () => { if (pingInterval) { clearInterval(pingInterval); pingInterval = null; } setConn('polling', 'WS closed — reconnecting in 2s...'); setTimeout(connectWebSocket, 2000); };
             } catch { setConn('error', 'WS unavailable — retrying in 2s...'); setTimeout(connectWebSocket, 2000); }
         }
 
@@ -1003,6 +1011,7 @@
         }
 
         function reconnect() {
+            if (pingInterval) { clearInterval(pingInterval); pingInterval = null; }
             if (ws) { try { ws.close(); } catch { } } if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
             setConn('polling', 'Reconnecting...'); connectWebSocket();
         }

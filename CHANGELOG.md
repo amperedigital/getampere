@@ -5066,3 +5066,10 @@
 - **Neutral Computation State**: Reset visual multipliers for 'Processing' state to exactly 1.0x as requested.
   - **Core Rotation**: Set to 1.0x (was 1.5x).
   - **Electron Speed**: Set to 1.0x (was 0.8x).
+
+## v3.519 — Router monitor: WS heartbeat ping + obj typo fix (2026-03-13)
+
+- **Fix**: Added 20s WebSocket heartbeat ping in `connectWebSocket()` — prevents Cloudflare DO hibernation from killing idle visualizer connections every ~30s. Previous: constant reconnect cycle. Now: stable connection as long as the page is open.
+- **Fix**: `'obj ect'` typo in `renderRawEvent()` — objects now render as JSON instead of `[object Object]`.
+- **Fix**: CDN CSS link updated from `v3.507` to `v3.518`.
+
