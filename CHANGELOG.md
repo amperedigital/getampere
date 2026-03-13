@@ -1,6 +1,12 @@
 # Changelog
 
+## v3.526 — Real API key + internal auth cleanup (2026-03-13)
+
+- **Security**: Replaced `dev-secret-key` with a real 64-char hex key in `router-monitor.html` and `llm-benchmark.html`. `API_KEY` promoted from plain-text `[vars]` to Cloudflare Secret (encrypted at rest).
+- **Auth**: Internal tool routes (`/memory/*`, `/identity/*`, `/auth/*`) no longer require API key — Sentinel and Router-as-Brain call these directly on the same Worker without HTTP auth overhead. Diagnostic routes (`/llm/router-log`, `/llm/benchmark`) keep key auth.
+
 ## v3.519 — Router monitor: WebSocket heartbeat + typo fix (2026-03-13)
+
 
 - **Fix**: 20s heartbeat ping in `connectWebSocket()` — prevents Cloudflare DO hibernation from killing idle visualizer connections. Previous: ~30s reconnect cycle. Now: stable persistent connection.
 - **Fix**: `'obj ect'` typo in `renderRawEvent()` → `'object'` — event objects now render as JSON.
