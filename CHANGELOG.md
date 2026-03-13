@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.519 — Router monitor: WebSocket heartbeat + typo fix (2026-03-13)
+
+- **Fix**: 20s heartbeat ping in `connectWebSocket()` — prevents Cloudflare DO hibernation from killing idle visualizer connections. Previous: ~30s reconnect cycle. Now: stable persistent connection.
+- **Fix**: `'obj ect'` typo in `renderRawEvent()` → `'object'` — event objects now render as JSON.
+- **Fix**: CDN CSS link bumped from `v3.507` to `v3.518`.
+
 ## v3.518 — Phase 0: workspace_id emily→ampere-emily (2026-03-13)
 
 - **Fix**: All frontend workspace defaults updated from `'emily'` to `'ampere-emily'`:
