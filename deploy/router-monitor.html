@@ -471,7 +471,7 @@
     <div class="flex flex-wrap gap-2 mb-4 items-center">
         <input type="text" id="apiKey" placeholder="x-api-key" value="dev-secret-key"
             class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500">
-        <input type="text" id="workspaceId" placeholder="workspace" value="emily"
+        <input type="text" id="workspaceId" placeholder="workspace" value="ampere-emily"
             class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-32 focus:outline-none focus:border-blue-500">
         <select id="filterTier"
             class="bg-[#161b22] border border-[#30363d] text-[#8b949e] px-3 py-1.5 rounded-md text-xs focus:outline-none focus:border-blue-500">
@@ -969,7 +969,7 @@
 
         function connectWebSocket() {
             if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
-            const workspace = document.getElementById('workspaceId').value || 'emily';
+            const workspace = document.getElementById('workspaceId').value || 'ampere-emily';
             const apiKey = document.getElementById('apiKey').value || '';
             const wsBase = API_BASE.replace('https://', 'wss://').replace('http://', 'ws://');
             const url = `${wsBase}/memory/visualizer?workspace=${encodeURIComponent(workspace)}&x-api-key=${encodeURIComponent(apiKey)}`;

@@ -334,7 +334,7 @@ export class AmpereAIChat {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-workspace-id": "emily"
+                    "x-workspace-id": "ampere-emily"
                 },
                 body: JSON.stringify({ visitor_id: visitorId, time_greeting: timeGreeting })
             }).then(async (res) => {
@@ -471,7 +471,7 @@ export class AmpereAIChat {
             if (_convId && this.visitorId) {
                 fetch('https://memory-api.tight-butterfly-7b71.workers.dev/session/seed', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                    headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'ampere-emily' },
                     body: JSON.stringify({ conv_id: _convId, visitor_id: this.visitorId })
                 }).then(r => {
                     console.log(`%c[AmpereAI] 🔗 SESSION SEED: conv=${_convId.slice(0, 16)}... visitor=${this.visitorId.slice(0, 8)}... → ${r.status}`, 'color: #a855f7; font-weight: bold;');
@@ -504,7 +504,7 @@ export class AmpereAIChat {
                     const wavBase64 = this._pcmToWavBase64(snapshot.samples, snapshot.sampleRate);
                     const res = await fetch(VP_API, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                        headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'ampere-emily' },
                         body: JSON.stringify({
                             user_id: _vpUserId,
                             audio: wavBase64,
@@ -533,7 +533,7 @@ export class AmpereAIChat {
                         if (vaStatus) {
                             fetch('https://memory-api.tight-butterfly-7b71.workers.dev/session/voice-auth', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'emily' },
+                                headers: { 'Content-Type': 'application/json', 'x-workspace-id': 'ampere-emily' },
                                 body: JSON.stringify({ conv_id: _convId, status: vaStatus, score: vaScore, user_id: _vpUserId })
                             }).then(r => {
                                 console.log(`%c[AmpereAI] 🔐 VOICE_AUTH_STORED: conv=${_convId.slice(0,12)}... status=${vaStatus} score=${vaScore.toFixed ? vaScore.toFixed(3) : vaScore} → ${r.status}`, 'color: #a855f7; font-weight: bold;');

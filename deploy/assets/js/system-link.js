@@ -65,7 +65,7 @@ export class SystemLink {
         // v3.172: Use workspace param if explicitly provided, otherwise always use 'emily'
         // The backend broadcasts tool events to viz:emily (the workspace), NOT viz:<visitor_uuid>.
         // Previous code used visitor_id as workspace, causing a channel mismatch.
-        let workspaceString = urlParams.get('workspace') || "emily";
+        let workspaceString = urlParams.get('workspace') || "ampere-emily";
         console.log(`[SystemLink] Workspace: ${workspaceString}`);
         console.log("%c[SystemLink] 🌐 CONNECTION ATTEMPT: " + apiHost + " [Workspace: " + workspaceString + "]", "color: #3b82f6; font-weight: bold;");
 
