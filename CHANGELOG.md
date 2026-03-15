@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.550 — Full Scribe protocol fix (2026-03-15)
+
+- **Backend only**: Complete Scribe protocol fix from SDK source. audio_format, commit_strategy, transcript field corrected.
+
 ## v3.549 — Scribe raw binary frames (2026-03-15)
 
 - **Backend fix**: Scribe audio sent as raw binary frames, not JSON base64. No frontend changes.
