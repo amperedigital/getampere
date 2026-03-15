@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.541 — Scribe WS diagnostic broadcasts (2026-03-15)
+
+- **Backend diag**: Broadcast Scribe close/error/first-message via router monitor (visible in wrangler tail + browser viz). Audio chunk counter. No frontend changes.
+
 ## v3.540 — Fix initUpstreamConnections: floating promise + remove readyState guard (2026-03-15)
 
 - **Backend fix**: Use floating promise for initUpstreamConnections (not waitUntil). Remove readyState===1 guard from Scribe send. No frontend changes.
