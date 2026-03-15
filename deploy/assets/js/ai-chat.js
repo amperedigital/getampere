@@ -1,7 +1,7 @@
 // v3.534: Voice Pipe Client — replaces ElevenLabs ConvAI SDK with our VoiceSessionDO WebSocket pipe.
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → MP3 binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.547 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.548 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
