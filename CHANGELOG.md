@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.547 — Scribe audio protocol fix (message_type + audio_base64) (2026-03-15)
+
+- **Backend ROOT CAUSE FIX**: Scribe rejected every audio chunk. message_type + audio_base64 field names corrected. No frontend changes.
+
 ## v3.546 — Scribe raw text to browser + AudioContext rate log (2026-03-15)
 
 - **Frontend diag**: Scribe JSON now logged to browser console as purple SCRIBE_RAW. AudioContext actual sampleRate logged.
