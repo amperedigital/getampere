@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.558 — Filter ambient Scribe transcripts (2026-03-15)
+
+- Backend-only: Discard `(upbeat music)`, `(wind blowing)` etc. before they reach the LLM.
+
 ## v3.557 — TTS fix: eleven_v3 audio now plays (2026-03-15)
 
 - Backend-only: Removed `optimize_streaming_latency` param — `eleven_v3` was returning 400, blocking all audio.
