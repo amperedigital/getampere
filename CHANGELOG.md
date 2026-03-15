@@ -1,7 +1,12 @@
 # Changelog
 
-## v3.529 - Auto-generated
-- **Frontend**: Release v3.529 (no new commits)
+## v3.534 — Voice Pipe Web Channel Cutover (2026-03-15)
+
+- **Breaking**: `ai-chat.js` completely rewritten — ElevenLabs ConvAI SDK (`@elevenlabs/client`) removed entirely.
+- **New**: Web channel now uses `VoiceSessionDO` WebSocket pipe: mic → PCM 16kHz (ScriptProcessor) → WebSocket → Scribe v2 STT → T1/T2/T3 LLM routing → EL TTS → MP3 binary back → AudioContext playback.
+- **Preserved**: All UI callbacks identical — status pill, 3D scene bridge, voiceprint ring buffer, `/greeting/web` personalization, session seed, `/voice/capture` voiceprint flow, systemLink integration.
+- **Research**: Evaluated Cloudflare Realtime Agents SDK (`@cloudflare/realtime-agents` v0.0.6) for WebRTC transport. Concluded it does not support custom STT providers (only Deepgram via declarative schema) — incompatible with our Scribe v2 / EL TTS pipeline. WebSocket approach selected to preserve Scribe fidelity.
+- **Compat**: `AmpereAIChat` constructor signature unchanged — second arg (`agentId`) accepted but unused. No changes required in `tech-demo-main.js`.
 
 
 ## v3.528 - Auto-generated
