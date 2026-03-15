@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.555 — TTS model: eleven_multilingual_v2 (2026-03-15)
+
+- Backend-only change: TTS remapped to `eleven_multilingual_v2` for emotional expression.
+
+## v3.555 — TTS model: eleven_multilingual_v2 (2026-03-15)
+
+- Backend-only: TTS remapped to `eleven_multilingual_v2` for emotional expression.
+
 ## v3.554 — Router monitor: fix sentinel rows, remove Tools col, fix scroll (2026-03-15)
 
 - Sentinel orphan rows (`vdo-*`, `eos-*`) filtered from routing table — only rows with a tier are shown.
