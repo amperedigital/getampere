@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.537 — Fix TTS stream-input model compat (2026-03-15)
+
+- **Backend fix**: TTS remaps `eleven_v3_conversational` → `eleven_turbo_v2_5` for stream-input WebSocket (v3_conversational is ConvAI-platform only). No frontend changes.
+
 ## v3.536 — Fix Scribe/TTS WebSocket URL scheme (2026-03-15)
 
 - **Backend fix**: Scribe and TTS outbound WebSocket URLs changed from `wss://` to `https://` scheme (CF Workers fetch() requirement). No frontend changes.
