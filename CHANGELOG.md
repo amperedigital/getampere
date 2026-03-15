@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.556 — TTS: HTTP streaming with eleven_v3 (2026-03-15)
+
+- Backend-only: TTS WebSocket replaced with HTTP per-sentence streaming. Enables `eleven_v3` with full emotion tag support.
+
 ## v3.555 — TTS model: eleven_multilingual_v2 (2026-03-15)
 
 - Backend-only change: TTS remapped to `eleven_multilingual_v2` for emotional expression.
