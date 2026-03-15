@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.548 — Scribe input_audio_chunk fix (2026-03-15)
+
+- **Backend fix**: message_type value corrected to input_audio_chunk. No frontend changes.
+
 ## v3.547 — Scribe audio protocol fix (message_type + audio_base64) (2026-03-15)
 
 - **Backend ROOT CAUSE FIX**: Scribe rejected every audio chunk. message_type + audio_base64 field names corrected. No frontend changes.
