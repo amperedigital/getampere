@@ -521,6 +521,7 @@ export class AmpereAIChat {
             const bufferSize  = 4096; // ~256ms at 16kHz — Scribe expects small frequent chunks
             const processor   = this.micCtx.createScriptProcessor(bufferSize, 1, 1);
 
+            let audioChunksSent = 0;
             processor.onaudioprocess = (e) => {
                 if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
                 const float32 = e.inputBuffer.getChannelData(0);
@@ -532,6 +533,16 @@ export class AmpereAIChat {
                     int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
                 }
                 this.ws.send(int16.buffer);
+                audioChunksSent++;
+
+                // Every 8 chunks (~2s): log RMS energy. Silence=~0.000, ambient>0.005, speech>0.020
+                if (audioChunksSent === 1 || audioChunksSent % 8 === 0) {
+                    let sumSq = 0;
+                    for (let i = 0; i < float32.length; i++) sumSq += float32[i] * float32[i];
+                    const rms = Math.sqrt(sumSq / float32.length);
+                    const label = rms < 0.001 ? '🔇 SILENCE' : rms < 0.010 ? '🔈 ambient' : '🔊 SPEECH';
+                    console.log(`[AmpereAI] 🎤 MIC chunk=${audioChunksSent} RMS=${rms.toFixed(4)} ${label}`);
+                }
             };
 
             source.connect(processor);

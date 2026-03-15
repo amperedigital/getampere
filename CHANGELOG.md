@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.545 — Mic energy logging + Scribe binary diagnostic (2026-03-15)
+
+- **Frontend**: Mic RMS energy logged every 2s — shows if mic is capturing speech or silence.
+
 ## v3.544 — Fix Scribe event_type field (2026-03-15)
 
 - **Backend fix**: Scribe realtime uses `event_type` not `type`. All transcript events were silently ignored. No frontend changes.
