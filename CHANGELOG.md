@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.552 — Fix role alternation in voice pipe history (2026-03-15)
+
+- **Backend**: Synthetic session_started user marker added before greeting. No frontend changes.
+
 ## v3.551 — Voice pipe LLM binding fallback (2026-03-15)
 
 - **Backend**: env.AI.run() fallback added. No frontend changes.
