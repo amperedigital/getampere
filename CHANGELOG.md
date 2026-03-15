@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.539 — Fix VoiceSessionDO classic WebSocket mode (2026-03-15)
+
+- **Backend fix**: Switched from Hibernation API to classic WebSocket mode (`server.accept()` + `addEventListener`). This is the root cause of Emily being permanently silent — all audio was reaching a null Scribe reference on every rehydration. No frontend changes.
+
 ## v3.538 — Fix Scribe audio field name (2026-03-15)
 
 - **Backend fix**: `audio_base_64` field name corrected in Scribe audio messages. This was the root cause of Emily being silent — all audio was silently discarded. No frontend changes.
