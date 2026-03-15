@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.554 — Router monitor: fix sentinel rows, remove Tools col, fix scroll (2026-03-15)
+
+- Sentinel orphan rows (`vdo-*`, `eos-*`) filtered from routing table — only rows with a tier are shown.
+- Tools column removed.
+- `overflow-hidden` → `overflow-visible` on table container so vertical scroll works.
+- Corrupted `retryBadge` line repaired.
+
 ## v3.553 — Voice pipe session termination (2026-03-15)
 
 - **Frontend**: `ended` message handler added — calls `endSession()` on Sentinel-triggered close.

@@ -511,7 +511,7 @@
     </div>
 
     <!-- Routing Table (full width) -->
-    <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden mb-4">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-visible mb-4">
         <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
             <h2 class="text-sm font-semibold text-[#e6edf3]">Routing Table</h2>
             <span class="text-xs text-[#8b949e]" id="routeCount">0 turns</span>
@@ -530,13 +530,12 @@
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]"
                             title="Total minus TTFB = TTS + router overhead">TTS/OH</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Total</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tools</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
                     </tr>
                 </thead>
                 <tbody id="routingTbody">
                     <tr>
-                        <td colspan="11" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…</td>
+                        <td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…</td>
                     </tr>
                 </tbody>
             </table>
@@ -765,6 +764,7 @@
             const resultFilter = document.getElementById('filterResult').value;
             const langFilter = document.getElementById('filterLang').value;
             const rows = Object.values(routeMap).sort((a, b) => a.ts - b.ts).slice(0, 200).filter(r => {
+                if (!r.tier) return false; // Skip Sentinel-only orphan rows (vdo-*, eos-*)
                 if (tierFilter && r.tier !== tierFilter) return false;
                 if (resultFilter === 'ok' && r.result !== 'ok') return false;
                 if (resultFilter === 'fallback' && r.result !== 'fallback') return false;
@@ -773,7 +773,7 @@
             });
             document.getElementById('routeCount').textContent = `${rows.length} turns`;
             const tbody = document.getElementById('routingTbody');
-            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>'; return; }
+            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>'; return; }
             tbody.innerHTML = rows.map(r => {
                 const modelLabel = r.fallback
                     ? `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span><span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>`
@@ -782,7 +782,7 @@
                 // Detect retries: same lastUserMsg within 10s
                 const msg = (r.lastUserMsg || '').trim().toLowerCase();
                 const retryCount = msg ? rows.filter(o => (o.lastUserMsg || '').trim().toLowerCase() === msg && Math.abs(o.ts - r.ts) < 10000).length : 0;
-                const retryBadge = retryCount > 1 ? `<span style="color:#f0883e;font-size:10px;margin-left:4px;" title="ElevenLabs sent ${retryCount} attempts for this user message">🔄 ×${retryCount}</span>` : '';
+                const retryBadge = retryCount > 1 ? `<span style="color:#f0883e;font-size:10px;margin-left:4px;" title="${retryCount} attempts for same message">🔄 ×${retryCount}</span>` : '';
                 return `<tr class="border-b border-[#21262d] new-row${r.t3Locked ? ' style="background:rgba(139,92,246,0.08);"' : ''}">
                     <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}${retryBadge}</td>
                     <td class="px-3 py-2 font-mono text-[#8b949e] text-[10px]">${r.reqId}</td>
@@ -793,7 +793,6 @@
                     <td class="px-3 py-2 text-right">${fmt.ttfb(r.ttfb_ms)}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
-                    <td class="px-3 py-2">${fmt.tools(r.tools)}</td>
                     <td class="px-3 py-2">${fmt.result(r.result)} ${sentinelHtml}</td>
                 </tr>`;
             }).join('');
