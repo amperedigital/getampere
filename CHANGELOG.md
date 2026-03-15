@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.535 — Router monitor wired to voice pipe (2026-03-15)
+
+- **Backend-driven**: Router monitor now receives SESSION_INIT, CLASSIFY, T1/T2_ATTEMPT, FIRST_BYTE, AGENT_RESPONSE events from voice pipe. No frontend changes.
+
 ## v3.534 — Voice Pipe Web Channel Cutover (2026-03-15)
 
 - **Breaking**: `ai-chat.js` completely rewritten — ElevenLabs ConvAI SDK (`@elevenlabs/client`) removed entirely.
