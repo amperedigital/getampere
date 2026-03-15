@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.561 — Per-language TTS voice switching (2026-03-15)
+
+- Backend-only: Urdu (`ur`) → voice `ScF00WmMClSO3VeYwcgC` when Scribe detects Urdu. Add entries to `LANG_VOICE_MAP` for any additional languages.
+
 ## v3.560 — Router monitor: fix scores, alignment, sentinel merge (2026-03-15)
 
 - **Router monitor**: 4 fixes: (1) Sentinel scores now merge onto LLM turns by lastUserMsg match — Result column shows score again. (2) Sentinel orphan rows filtered from Turn panel. (3) `<tr>` template literal bug fixed (stray backtick closed string early, breaking all `<td>` interpolations and causing column misalignment). (4) Scores in Event Stream now show as colored ACC=8 GND=8... badges instead of raw JSON. `responsePreview`, `query`, `turnAvg` also styled.
