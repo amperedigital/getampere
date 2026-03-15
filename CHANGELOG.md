@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.559 — Remove EL agent sync; fix routing table scroll (2026-03-15)
+
+- **Routing monitor**: Fixed scrollbar on routing table — set fixed 400px height with `overflow-y: scroll` + webkit scrollbar styling. Was `calc(100vh - 240px)` which never triggered on short sessions.
+- **Deploy script**: Removed ElevenLabs agent sync step — ConvAI agents no longer used in voice pipe architecture.
+
 ## v3.558 — Filter ambient Scribe transcripts (2026-03-15)
 
 - Backend-only: Discard `(upbeat music)`, `(wind blowing)` etc. before they reach the LLM.
