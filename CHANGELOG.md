@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.562 — LANG_VOICE_MAP: hin/urd/hi aliases (2026-03-15)
+
+- Backend-only: Scribe returns `hin` for Urdu audio. Added `hin`, `urd`, `hi` all → Urdu voice `ScF00WmMClSO3VeYwcgC`.
+
 ## v3.561 — Per-language TTS voice switching (2026-03-15)
 
 - Backend-only: Urdu (`ur`) → voice `ScF00WmMClSO3VeYwcgC` when Scribe detects Urdu. Add entries to `LANG_VOICE_MAP` for any additional languages.
