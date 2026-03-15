@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.563 — Fix End Call / power button disconnect (2026-03-15)
+
+- **Frontend**: `endSession()` null-before-close bug. The old ElevenLabs SDK handled teardown internally — when we cut to our own WS pipe in v3.534, `this.ws` was being nulled before the 200ms close timeout fired, so `ws.close()` was always a no-op. `onclose` never fired → `handleDisconnect()` never ran → buttons/scene never reset. Fix: save `ws` ref before null, call `handleDisconnect()` directly.
+
 ## v3.562 — LANG_VOICE_MAP: hin/urd/hi aliases (2026-03-15)
 
 - Backend-only: Scribe returns `hin` for Urdu audio. Added `hin`, `urd`, `hi` all → Urdu voice `ScF00WmMClSO3VeYwcgC`.

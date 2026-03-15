@@ -345,17 +345,17 @@ export class AmpereAIChat {
     async endSession() {
         if (this.options.onEnd) this.options.onEnd();
 
-        // Send end_session to DO
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-            try { this.ws.send(JSON.stringify({ type: 'end_session' })); } catch { /* ok */ }
-            setTimeout(() => { try { this.ws?.close(1000, 'user_ended'); } catch { /* ok */ } }, 200);
-        }
+        // Capture WS ref before nulling — the timeout below fires 200ms later,
+        // by which time this.ws is already null (classic null-before-close bug).
+        const ws = this.ws;
         this.ws = null;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            try { ws.send(JSON.stringify({ type: 'end_session' })); } catch { /* ok */ }
+            setTimeout(() => { try { ws.close(1000, 'user_ended'); } catch { /* ok */ } }, 200);
+        }
 
-        // Stop mic
+        // Stop mic + playback
         this._stopMic();
-
-        // Stop playback
         this._stopPlayback();
 
         // Cleanup voiceprint buffer
@@ -369,6 +369,10 @@ export class AmpereAIChat {
 
         this.isConnected  = false;
         this.isConnecting = false;
+
+        // Reset UI directly — don't rely on WS onclose firing (it may not if we
+        // null the socket before the close event propagates).
+        this.handleDisconnect();
     }
 
     // ─── WebSocket handlers ───────────────────────────────────────────────────
