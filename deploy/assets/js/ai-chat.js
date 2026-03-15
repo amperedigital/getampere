@@ -84,6 +84,9 @@ export class AmpereAIChat {
         this.isPlaying      = false;
         this.mp3Buffer      = [];     // accumulate MP3 binary chunks
 
+        // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
+        this.pendingGreeting = null;
+
         // Voiceprint ring buffer (unchanged from v3.529)
         this.voiceBuffer    = null;
 
@@ -250,6 +253,8 @@ export class AmpereAIChat {
                 if (data.has_voiceprint !== undefined) {
                     hasVoiceprint = (data.has_voiceprint === true || data.has_voiceprint === 'yes') ? 'yes' : 'no';
                 }
+                // Store on instance so _handleSessionInit can trigger TTS playback
+                this.pendingGreeting = personalizedGreeting;
                 console.log(`%c[AmpereAI] 🎯 GREETING: "${personalizedGreeting}" (${visitorStatus})`, 'color:#10b981;font-weight:bold;');
             }).catch(err => console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed`, 'color:#f59e0b;', err));
 
@@ -444,6 +449,15 @@ export class AmpereAIChat {
 
         // Start streaming mic audio to DO
         this._startMicStreaming();
+
+        // Push greeting to TTS: send to DO which pipes it directly to ElevenLabs TTS.
+        // This is the initial "Emily speaks first" turn — bypasses Scribe/LLM entirely.
+        if (this.ws && this.pendingGreeting) {
+            const greetingText = this.pendingGreeting;
+            this.pendingGreeting = null;
+            console.log(`%c[AmpereAI] 📤 SPEAK_GREETING: "${greetingText.slice(0, 60)}..."`, 'color:#10b981;font-weight:bold;');
+            try { this.ws.send(JSON.stringify({ type: 'speak', text: greetingText })); } catch { /* ok */ }
+        }
     }
 
     _handleTranscript(msg) {

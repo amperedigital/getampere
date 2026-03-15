@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.542 — Initial greeting TTS playback (2026-03-15)
+
+- **Frontend**: Store greeting in `this.pendingGreeting`. After `session_init`, send `{ type: 'speak', text: greeting }` to DO → Emily speaks the greeting aloud.
+
 ## v3.541 — Scribe WS diagnostic broadcasts (2026-03-15)
 
 - **Backend diag**: Broadcast Scribe close/error/first-message via router monitor (visible in wrangler tail + browser viz). Audio chunk counter. No frontend changes.
