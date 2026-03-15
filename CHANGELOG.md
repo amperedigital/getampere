@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.553 — Voice pipe session termination (2026-03-15)
+
+- **Frontend**: `ended` message handler added — calls `endSession()` on Sentinel-triggered close.
+- **Backend**: `onEndCall` callback closes Scribe+TTS+client WS cleanly.
+
 ## v3.552 — Fix role alternation in voice pipe history (2026-03-15)
 
 - **Backend**: Synthetic session_started user marker added before greeting. No frontend changes.

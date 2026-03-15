@@ -398,6 +398,12 @@ export class AmpereAIChat {
             case 'mode':
                 this._handleMode(msg);
                 break;
+            case 'ended':
+                // Sentinel-triggered end: DO closed the session after farewell
+                console.log(`%c[AmpereAI] 📴 SESSION ENDED: reason=${msg.reason}`, 'color:#f59e0b;font-weight:bold;');
+                this.addMessage('Session ended. Thank you!', 'system');
+                this.endSession();
+                break;
             case 'error':
                 if (msg.code === 'scribe_text') {
                     // Diagnostic: raw Scribe message text — log as info not error
@@ -410,6 +416,7 @@ export class AmpereAIChat {
             default:
                 break;
         }
+
     }
 
     _onWsClose(event) {
