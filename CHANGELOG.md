@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.549 — Scribe raw binary frames (2026-03-15)
+
+- **Backend fix**: Scribe audio sent as raw binary frames, not JSON base64. No frontend changes.
+
 ## v3.548 — Scribe input_audio_chunk fix (2026-03-15)
 
 - **Backend fix**: message_type value corrected to input_audio_chunk. No frontend changes.
