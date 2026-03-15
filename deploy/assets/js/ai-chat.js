@@ -399,6 +399,11 @@ export class AmpereAIChat {
                 this._handleMode(msg);
                 break;
             case 'error':
+                if (msg.code === 'scribe_text') {
+                    // Diagnostic: raw Scribe message text — log as info not error
+                    console.info(`%c[AmpereAI] SCRIBE_RAW: ${msg.message}`, 'color:#a78bfa;');
+                    return;
+                }
                 console.error(`[AmpereAI] DO error: ${msg.code} — ${msg.message}`);
                 this.addMessage(`⚠️ ${msg.message || msg.code}`, 'system');
                 break;
@@ -514,6 +519,8 @@ export class AmpereAIChat {
 
         try {
             this.micCtx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
+            // Log actual sampleRate — Chrome may not honor our 16kHz request on all systems
+            console.log(`%c[AmpereAI] 🎤 AudioContext actual sampleRate: ${this.micCtx.sampleRate}Hz (requested ${PCM_SAMPLE_RATE}Hz)`, 'color:#f59e0b;font-weight:bold;');
 
             // Use ScriptProcessor for simple PCM chunk streaming
             // (AudioWorklet streaming mode would require a new processor — ScriptProcessor is fine for 16kHz)

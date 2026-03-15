@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.546 — Scribe raw text to browser + AudioContext rate log (2026-03-15)
+
+- **Frontend diag**: Scribe JSON now logged to browser console as purple SCRIBE_RAW. AudioContext actual sampleRate logged.
+
 ## v3.545 — Mic energy logging + Scribe binary diagnostic (2026-03-15)
 
 - **Frontend**: Mic RMS energy logged every 2s — shows if mic is capturing speech or silence.
