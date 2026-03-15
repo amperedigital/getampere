@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.544 — Fix Scribe event_type field (2026-03-15)
+
+- **Backend fix**: Scribe realtime uses `event_type` not `type`. All transcript events were silently ignored. No frontend changes.
+
 ## v3.543 — Mode reset after greeting TTS (2026-03-15)
 
 - **Backend fix**: Listening mode reset after greeting TTS via timeout + isFinal/is_final check. Scribe all-events diagnostic. No frontend changes.
