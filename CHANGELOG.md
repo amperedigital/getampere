@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.543 — Mode reset after greeting TTS (2026-03-15)
+
+- **Backend fix**: Listening mode reset after greeting TTS via timeout + isFinal/is_final check. Scribe all-events diagnostic. No frontend changes.
+
 ## v3.542 — Initial greeting TTS playback (2026-03-15)
 
 - **Frontend**: Store greeting in `this.pendingGreeting`. After `session_init`, send `{ type: 'speak', text: greeting }` to DO → Emily speaks the greeting aloud.
