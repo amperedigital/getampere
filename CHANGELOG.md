@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.540 — Fix initUpstreamConnections: floating promise + remove readyState guard (2026-03-15)
+
+- **Backend fix**: Use floating promise for initUpstreamConnections (not waitUntil). Remove readyState===1 guard from Scribe send. No frontend changes.
+
 ## v3.539 — Fix VoiceSessionDO classic WebSocket mode (2026-03-15)
 
 - **Backend fix**: Switched from Hibernation API to classic WebSocket mode (`server.accept()` + `addEventListener`). This is the root cause of Emily being permanently silent — all audio was reaching a null Scribe reference on every rehydration. No frontend changes.
