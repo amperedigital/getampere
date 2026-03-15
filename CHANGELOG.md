@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.557 — TTS fix: eleven_v3 audio now plays (2026-03-15)
+
+- Backend-only: Removed `optimize_streaming_latency` param — `eleven_v3` was returning 400, blocking all audio.
+
 ## v3.556 — TTS: HTTP streaming with eleven_v3 (2026-03-15)
 
 - Backend-only: TTS WebSocket replaced with HTTP per-sentence streaming. Enables `eleven_v3` with full emotion tag support.
