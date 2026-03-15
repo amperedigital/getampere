@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.538 — Fix Scribe audio field name (2026-03-15)
+
+- **Backend fix**: `audio_base_64` field name corrected in Scribe audio messages. This was the root cause of Emily being silent — all audio was silently discarded. No frontend changes.
+
 ## v3.537 — Fix TTS stream-input model compat (2026-03-15)
 
 - **Backend fix**: TTS remaps `eleven_v3_conversational` → `eleven_turbo_v2_5` for stream-input WebSocket (v3_conversational is ConvAI-platform only). No frontend changes.
