@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.551 — Voice pipe LLM binding fallback (2026-03-15)
+
+- **Backend**: env.AI.run() fallback added. No frontend changes.
+
 ## v3.550 — Full Scribe protocol fix (2026-03-15)
 
 - **Backend only**: Complete Scribe protocol fix from SDK source. audio_format, commit_strategy, transcript field corrected.
