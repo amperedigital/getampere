@@ -1,6 +1,18 @@
 # Changelog
 
-## v3.563 — Fix End Call / power button disconnect (2026-03-15)
+## v3.574 — PCM audio engine: eliminate decodeAudioData failures (2026-03-15)
+
+**Problem:** `Audio decode failed (non-fatal): EncodingError: Unable to decode audio data` — browser was calling `decodeAudioData()` on mid-stream MP3 chunks that have no ID3 header. Individual chunks from the middle of a streaming HTTP response are not valid standalone audio files.
+
+**Fix:** Switched TTS transport from `mp3_44100_128` to `pcm_22050` (raw 16-bit signed PCM). New `_queueAudio` engine:
+- Creates `AudioContext` at 22050 Hz on first chunk
+- Converts each `Int16Array` chunk to `Float32Array` and writes into an `AudioBuffer`
+- Schedules each buffer using `AudioContext.currentTime + pcmNextAt` for perfectly gapless back-to-back playback
+- No `decodeAudioData()` call — raw samples always valid, no header required
+- `_drainAudioQueue()` retained as no-op for API compatibility
+
+**Result:** Zero decode errors. Audio plays continuously with no gaps between scheduled PCM chunks. Backend (`speakChunkViaHttp`) now requests `output_format=pcm_22050` for web channel.
+
 
 - **Frontend**: `endSession()` null-before-close bug. The old ElevenLabs SDK handled teardown internally — when we cut to our own WS pipe in v3.534, `this.ws` was being nulled before the 200ms close timeout fired, so `ws.close()` was always a no-op. `onclose` never fired → `handleDisconnect()` never ran → buttons/scene never reset. Fix: save `ws` ref before null, call `handleDisconnect()` directly.
 

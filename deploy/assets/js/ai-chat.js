@@ -1,7 +1,7 @@
-// v3.534: Voice Pipe Client — replaces ElevenLabs ConvAI SDK with our VoiceSessionDO WebSocket pipe.
-// Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → MP3 binary back)
+// v3.574: PCM 22050Hz audio engine — replaces decodeAudioData MP3 approach with scheduled PCM buffers.
+// Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.563 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.574 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -61,6 +61,7 @@ const WORKSPACE_ID = 'ampere-emily';
 // PCM streaming: 20ms frames at 16kHz = 320 samples = 640 bytes
 const PCM_FRAME_SAMPLES  = 320;
 const PCM_SAMPLE_RATE    = 16000;
+const TTS_PCM_SAMPLE_RATE = 22050; // EL TTS pcm_22050 output → scheduled into AudioContext
 
 export class AmpereAIChat {
     constructor(containerId, _agentId, options = {}) {
@@ -79,10 +80,11 @@ export class AmpereAIChat {
         this.micStream      = null;   // MediaStream from getUserMedia
         this.micCtx         = null;   // AudioContext for mic capture
         this.micWorklet     = null;   // AudioWorkletNode (streaming)
-        this.playCtx        = null;   // AudioContext for TTS playback
-        this.playQueue      = [];     // MP3 chunk queue
+        this.playCtx        = null;   // AudioContext for PCM TTS playback (22050 Hz)
+        this.playQueue      = [];     // legacy — unused
         this.isPlaying      = false;
-        this.mp3Buffer      = [];     // accumulate MP3 binary chunks
+        this.mp3Buffer      = [];     // legacy name — now holds raw PCM Int16 chunks
+        this.pcmNextAt      = 0;      // AudioContext timestamp: when next PCM chunk should start
 
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
@@ -588,51 +590,62 @@ export class AmpereAIChat {
         }
     }
 
-    // ─── Audio playback (MP3 chunks from TTS) ────────────────────────────────
+    // ─── Audio playback (PCM 22050Hz chunks from TTS) ─────────────────────────
+    // EL TTS streams raw 16-bit signed PCM at 22050Hz. Each WebSocket binary
+    // message is a chunk of that stream. We schedule each chunk into a
+    // AudioContext using the audio clock so playback is perfectly gapless
+    // with no decodeAudioData() and no partial-frame decode errors.
 
     _queueAudio(arrayBuffer) {
-        this.mp3Buffer.push(arrayBuffer);
-        if (!this.isPlaying) this._drainAudioQueue();
+        // Ensure playback AudioContext is ready at the correct sample rate
+        if (!this.playCtx || this.playCtx.state === 'closed') {
+            this.playCtx = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
+            this.pcmNextAt = 0; // reset scheduler
+        }
+        if (this.playCtx.state === 'suspended') {
+            this.playCtx.resume().catch(() => {});
+        }
+
+        // Interpret raw bytes as 16-bit signed LE PCM
+        const int16 = new Int16Array(arrayBuffer);
+        const float32 = new Float32Array(int16.length);
+        for (let i = 0; i < int16.length; i++) {
+            float32[i] = int16[i] / 32768.0;
+        }
+
+        // Create a mono AudioBuffer and fill it
+        const audioBuffer = this.playCtx.createBuffer(1, float32.length, TTS_PCM_SAMPLE_RATE);
+        audioBuffer.copyToChannel(float32, 0);
+
+        // Schedule at the next available time slot (or immediately if first chunk)
+        const startAt = Math.max(this.pcmNextAt, this.playCtx.currentTime + 0.01);
+        const source = this.playCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(this.playCtx.destination);
+        source.start(startAt);
+
+        // Advance the scheduler by the duration of this chunk
+        this.pcmNextAt = startAt + audioBuffer.duration;
+
+        // Track playing state for echo suppression / UI
+        this.isPlaying = true;
+        source.onended = () => {
+            // Only clear isPlaying if no more chunks are scheduled
+            if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.05) {
+                this.isPlaying = false;
+            }
+        };
     }
 
     async _drainAudioQueue() {
-        if (this.isPlaying || this.mp3Buffer.length === 0) return;
-        this.isPlaying = true;
-
-        // Coalesce all queued chunks into one ArrayBuffer
-        const total  = this.mp3Buffer.reduce((s, b) => s + b.byteLength, 0);
-        const merged = new Uint8Array(total);
-        let   offset = 0;
-        for (const chunk of this.mp3Buffer) {
-            merged.set(new Uint8Array(chunk), offset);
-            offset += chunk.byteLength;
-        }
-        this.mp3Buffer = [];
-
-        try {
-            if (!this.playCtx || this.playCtx.state === 'closed') {
-                this.playCtx = new AudioContext();
-            }
-            const audioBuffer = await this.playCtx.decodeAudioData(merged.buffer);
-            const source = this.playCtx.createBufferSource();
-            source.buffer = audioBuffer;
-            source.connect(this.playCtx.destination);
-            source.onended = () => {
-                this.isPlaying = false;
-                // Play any chunks that arrived while we were playing
-                if (this.mp3Buffer.length > 0) this._drainAudioQueue();
-            };
-            source.start();
-        } catch (err) {
-            console.warn('[AmpereAI] Audio decode failed (non-fatal):', err);
-            this.isPlaying = false;
-            if (this.mp3Buffer.length > 0) this._drainAudioQueue();
-        }
+        // No-op: PCM playback is now fully scheduled in _queueAudio.
+        // Kept for API compatibility.
     }
 
     _stopPlayback() {
-        this.mp3Buffer = [];
-        this.isPlaying = false;
+        this.mp3Buffer  = [];
+        this.isPlaying  = false;
+        this.pcmNextAt  = 0;
         if (this.playCtx) {
             try { this.playCtx.close(); } catch { /* ok */ }
             this.playCtx = null;
