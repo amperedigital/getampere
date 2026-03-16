@@ -1,7 +1,7 @@
-// v3.574: PCM 22050Hz audio engine — replaces decodeAudioData MP3 approach with scheduled PCM buffers.
+// v3.575: Fix RangeError — guard against odd-byte PCM chunks from EL HTTP stream.
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.574 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.575 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -606,8 +606,20 @@ export class AmpereAIChat {
             this.playCtx.resume().catch(() => {});
         }
 
+        // pcm_22050 = 16-bit signed LE samples = 2 bytes each.
+        // HTTP stream chunks can arrive with an odd byte count (network split mid-sample).
+        // Truncate to the nearest even byte length — at most 1 byte dropped = 45µs of audio,
+        // completely inaudible. Without this guard, new Int16Array() throws RangeError and
+        // crashes the entire _onWsMessage handler, killing the session.
+        const evenBytes = arrayBuffer.byteLength & ~1; // round down to nearest multiple of 2
+        if (evenBytes === 0) return; // empty or single-byte chunk — nothing to play
+        const buf = evenBytes === arrayBuffer.byteLength
+            ? arrayBuffer
+            : arrayBuffer.slice(0, evenBytes);
+
         // Interpret raw bytes as 16-bit signed LE PCM
-        const int16 = new Int16Array(arrayBuffer);
+        const int16 = new Int16Array(buf);
+
         const float32 = new Float32Array(int16.length);
         for (let i = 0; i < int16.length; i++) {
             float32[i] = int16[i] / 32768.0;

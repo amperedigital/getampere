@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.574 — PCM audio engine: eliminate decodeAudioData failures (2026-03-15)
+## v3.575 — Fix RangeError: odd-byte PCM chunk guard (2026-03-15)
+
+**Bug:** `RangeError: byte length of Int16Array should be a multiple of 2` — crashed `_queueAudio` on every TTS chunk, killing the session immediately. `pcm_22050` = 16-bit samples = 2 bytes each, but EL's HTTP stream can be cut by the network at any byte boundary, delivering an odd-length chunk.
+
+**Fix:** Before constructing `Int16Array`, round byteLength down to the nearest even number (`byteLength & ~1`). At most 1 byte dropped per chunk = 45µs of audio — completely inaudible. Empty/1-byte buffers return early.
+
 
 **Problem:** `Audio decode failed (non-fatal): EncodingError: Unable to decode audio data` — browser was calling `decodeAudioData()` on mid-stream MP3 chunks that have no ID3 header. Individual chunks from the middle of a streaming HTTP response are not valid standalone audio files.
 
