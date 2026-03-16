@@ -1,7 +1,7 @@
 // v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.577 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.593 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -449,7 +449,23 @@ export class AmpereAIChat {
             console.log(`%c[AmpereAI] 📤 SPEAK_GREETING: "${greetingText.slice(0, 60)}..."`, 'color:#10b981;font-weight:bold;');
             try { this.ws.send(JSON.stringify({ type: 'speak', text: greetingText })); } catch { /* ok */ }
         }
+
+        // v3.593: Pre-warm the TTS AudioContext NOW, while the speak message is in-flight
+        // to the DO and EL is processing it (~300-500ms before first PCM frame arrives).
+        // Without this, _queueAudio() cold-starts AudioContext on the first binary frame —
+        // OS audio subsystem init takes 20-40ms and causes audible jitter/glitch at the
+        // very start of Emily's greeting. We're inside a user-gesture stack here (startBtn
+        // click chain), so resume() is allowed by the browser autoplay policy.
+        if (!this.playCtx || this.playCtx.state === 'closed') {
+            this.playCtx   = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
+            this.pcmNextAt = 0;
+        }
+        if (this.playCtx.state === 'suspended') {
+            this.playCtx.resume().catch(() => {});
+        }
+        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_PREWARM sampleRate=${this.playCtx.sampleRate}Hz state=${this.playCtx.state}`, 'color:#10b981;font-weight:bold;');
     }
+
 
     _handleTranscript(msg) {
         // Partial user speech — just update status

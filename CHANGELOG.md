@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.593 — Pre-warm TTS AudioContext at session init to fix greeting jitter (2026-03-16)
+
+**Problem:** Emily's opening greeting had audible jitter/glitch in the first ~20-40ms of audio.
+
+**Root cause:** `_queueAudio()` was creating the `AudioContext` lazily on the first binary PCM frame from EL TTS. By that point the browser's audio subsystem (OS kernel audio device allocation + context initialization) had ~20-40ms of cold-start overhead that overlapped with the first scheduled buffer — causing a burst/stutter before playback smoothed out.
+
+**Fix:** In `_handleSessionInit()`, immediately after sending the `{ type: 'speak' }` message to the DO, pre-create and `resume()` the `AudioContext`. By the time EL finishes processing the greeting text and the first PCM frame arrives (~300-500ms RTT), the audio pipeline is already warm. The first buffer schedules cleanly with no overlap.
+
+**Why `resume()` works here:** `_handleSessionInit` runs inside the `startBtn` click handler chain — we're inside a user gesture stack, satisfying the browser autoplay policy. After session init the `AudioContext` is always in `running` state by the time the first audio chunk arrives.
+
+**Observable:** Browser console shows `🔊 PLAY_CTX_PREWARM sampleRate=22050Hz state=running` immediately after connection.
+
 ## v3.577 — Remove dead /greeting/web fetch (2026-03-16)
 
 - **Fix**: `POST /greeting/web` was returning 401/410 (endpoint retired in v3.585 backend). Frontend was still calling it — produced a console 401 every session and left `pendingGreeting` null, so the agent never spoke first on web sessions.
