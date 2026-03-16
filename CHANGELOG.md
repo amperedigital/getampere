@@ -1,6 +1,12 @@
 # Changelog
 
-## v3.576 — PCM carry buffer + AudioWorklet mic (2026-03-15)
+## v3.577 — Remove dead /greeting/web fetch (2026-03-16)
+
+- **Fix**: `POST /greeting/web` was returning 401/410 (endpoint retired in v3.585 backend). Frontend was still calling it — produced a console 401 every session and left `pendingGreeting` null, so the agent never spoke first on web sessions.
+- **Fix**: Removed the entire 30-line `/greeting/web` fetch block from `ai-chat.js`. `pendingGreeting` is now set directly to a time-based fallback greeting (`Good morning/afternoon/evening! How can I help you today?`). On `SESSION_INIT`, the DO receives `{ type: 'speak', text }` and calls `speakDirectToTts()` as before.
+- **Fix**: Hardcoded agent name removed from fallback greeting — now generic.
+- **Cleanup**: `_onWsOpen` signature stripped of 6 unused params. Voiceprint capture hardcoded to `enroll` (was previously driven by `/greeting/web` response).
+
 
 **Fix: choppy SH sounds (sibilant corruption).** Root cause: v3.575's truncation strategy dropped the orphan byte at the end of odd-length chunks. Because each WebSocket frame continues where EL's stream left off, that orphan byte was the first byte of a sample spanning the chunk boundary. Dropping it shifted all Int16 byte pairs in subsequent chunks by 1 — every sample was assembled from wrong byte pairs, producing noise most audible on high-frequency sibilants (S, SH, CH). Fix: `pcmCarry` buffer saves the orphan byte and prepends it to the next chunk, maintaining perfect Int16 alignment across the entire stream.
 

@@ -1,7 +1,7 @@
 // v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.576 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.577 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -230,36 +230,11 @@ export class AmpereAIChat {
             const hour = new Date().getHours();
             const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
-            // 4. Fetch personalized greeting in parallel with animation delay
-            const fallbackGreeting = `${timeGreeting}, this is Emily with Ampere AI. How can I help you today?`;
-            let personalizedGreeting = fallbackGreeting;
-            let situationalBriefing  = '';
-            let visitorStatus        = 'new';
-            let userName             = '';
-            let knownPhone           = '';
-            let knownEmail           = '';
-            let hasVoiceprint        = 'no';
-
-            const greetingFetch = fetch(`${API_BASE}/greeting/web`, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json', 'x-workspace-id': WORKSPACE_ID },
-                body:    JSON.stringify({ visitor_id: visitorId, time_greeting: timeGreeting }),
-            }).then(async res => {
-                if (!res.ok) return;
-                const data = await res.json();
-                if (data.dynamic_greeting)   { personalizedGreeting = data.dynamic_greeting; }
-                if (data.situational_briefing) { situationalBriefing = data.situational_briefing; }
-                if (data.visitor_status)     { visitorStatus = data.visitor_status; }
-                if (data.name)               { userName = data.name; }
-                if (data.known_phone)        { knownPhone = data.known_phone; }
-                if (data.known_email)        { knownEmail = data.known_email; }
-                if (data.has_voiceprint !== undefined) {
-                    hasVoiceprint = (data.has_voiceprint === true || data.has_voiceprint === 'yes') ? 'yes' : 'no';
-                }
-                // Store on instance so _handleSessionInit can trigger TTS playback
-                this.pendingGreeting = personalizedGreeting;
-                console.log(`%c[AmpereAI] 🎯 GREETING: "${personalizedGreeting}" (${visitorStatus})`, 'color:#10b981;font-weight:bold;');
-            }).catch(err => console.log(`%c[AmpereAI] ⚠️ Greeting fetch failed`, 'color:#f59e0b;', err));
+            // 4. Build fallback greeting (agent-generated personalization happens server-side)
+            // /greeting/web is retired (v3.585) — pendingGreeting always set to fallback here.
+            // VoiceSessionDO.speakDirectToTts() plays it on SESSION_INIT.
+            const fallbackGreeting = `${timeGreeting}! How can I help you today?`;
+            this.pendingGreeting = fallbackGreeting;
 
             // 5. Init voiceprint ring buffer (unchanged)
             try {
@@ -292,11 +267,8 @@ export class AmpereAIChat {
                 this.voiceBuffer = null;
             }
 
-            // 6. Wait for greeting + animation ramp
-            await Promise.all([
-                new Promise(r => setTimeout(r, 1800)),
-                greetingFetch,
-            ]);
+            // 6. Wait for animation ramp before opening WS
+            await new Promise(r => setTimeout(r, 1800));
 
             // 7. Open VoiceSessionDO WebSocket
             const wsUrl = `${WS_BASE}/voice/session?workspace_id=${WORKSPACE_ID}&visitor_id=${encodeURIComponent(visitorId)}&conv_id=${encodeURIComponent(convId)}`;
@@ -304,18 +276,17 @@ export class AmpereAIChat {
             this.ws = new WebSocket(wsUrl);
             this.ws.binaryType = 'arraybuffer';
 
-            this.ws.onopen    = () => this._onWsOpen(convId, visitorId, personalizedGreeting, situationalBriefing, userName, hasVoiceprint, timeGreeting);
+            this.ws.onopen    = () => this._onWsOpen(convId);
             this.ws.onmessage = e  => this._onWsMessage(e);
             this.ws.onclose   = e  => this._onWsClose(e);
             this.ws.onerror   = e  => this._onWsError(e);
 
-            // 8. Schedule voiceprint captures (unchanged timing)
-            const _vpAction = hasVoiceprint === 'yes' ? 'verify' : 'enroll';
+            // 8. Schedule voiceprint captures (enroll — greeting/web no longer provides voiceprint status)
             const VP_DELAYS = [25000, 15000, 15000];
             let cumulativeDelay = 0;
             VP_DELAYS.forEach((delay, i) => {
                 cumulativeDelay += delay;
-                setTimeout(() => this._runVoiceCapture(i, VP_DELAYS.length, _vpAction, userName), cumulativeDelay);
+                setTimeout(() => this._runVoiceCapture(i, VP_DELAYS.length, 'enroll', ''), cumulativeDelay);
             });
 
         } catch (error) {
@@ -380,7 +351,7 @@ export class AmpereAIChat {
 
     // ─── WebSocket handlers ───────────────────────────────────────────────────
 
-    _onWsOpen(convId, visitorId, greeting, briefing, userName, hasVoiceprint, timeGreeting) {
+    _onWsOpen(convId) {
         console.log(`%c[AmpereAI] ✅ WS OPEN conv=${convId}`, 'color:#10b981;font-weight:bold;');
         // session_init frame will arrive from DO — we wait for it before fully connecting
     }
@@ -470,7 +441,8 @@ export class AmpereAIChat {
         this._startMicStreaming();
 
         // Push greeting to TTS: send to DO which pipes it directly to ElevenLabs TTS.
-        // This is the initial "Emily speaks first" turn — bypasses Scribe/LLM entirely.
+        // /greeting/web is retired (v3.585) — always use the built-in fallback greeting.
+        // The DO's speakDirectToTts handles it, bypassing Scribe/LLM for the opening turn.
         if (this.ws && this.pendingGreeting) {
             const greetingText = this.pendingGreeting;
             this.pendingGreeting = null;
