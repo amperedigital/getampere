@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.575 — Fix RangeError: odd-byte PCM chunk guard (2026-03-15)
+## v3.576 — PCM carry buffer + AudioWorklet mic (2026-03-15)
+
+**Fix: choppy SH sounds (sibilant corruption).** Root cause: v3.575's truncation strategy dropped the orphan byte at the end of odd-length chunks. Because each WebSocket frame continues where EL's stream left off, that orphan byte was the first byte of a sample spanning the chunk boundary. Dropping it shifted all Int16 byte pairs in subsequent chunks by 1 — every sample was assembled from wrong byte pairs, producing noise most audible on high-frequency sibilants (S, SH, CH). Fix: `pcmCarry` buffer saves the orphan byte and prepends it to the next chunk, maintaining perfect Int16 alignment across the entire stream.
+
+**Fix: ScriptProcessorNode deprecation.** Replaced with `AudioWorkletNode` backed by new `audio-mic-processor.js`. Runs on the audio rendering thread, not the main thread. 128-sample blocks (8ms at 16kHz) instead of 4096-sample callback blocks (256ms) — significantly reduces mic-to-Scribe latency. Zero-copy `postMessage` transfer. No more deprecation warning.
+
 
 **Bug:** `RangeError: byte length of Int16Array should be a multiple of 2` — crashed `_queueAudio` on every TTS chunk, killing the session immediately. `pcm_22050` = 16-bit samples = 2 bytes each, but EL's HTTP stream can be cut by the network at any byte boundary, delivering an odd-length chunk.
 

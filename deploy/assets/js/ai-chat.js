@@ -1,7 +1,7 @@
-// v3.575: Fix RangeError — guard against odd-byte PCM chunks from EL HTTP stream.
+// v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.575 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.576 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -85,6 +85,7 @@ export class AmpereAIChat {
         this.isPlaying      = false;
         this.mp3Buffer      = [];     // legacy name — now holds raw PCM Int16 chunks
         this.pcmNextAt      = 0;      // AudioContext timestamp: when next PCM chunk should start
+        this.pcmCarry       = null;   // leftover byte from odd-length PCM chunk (byte-alignment carry)
 
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
@@ -532,21 +533,24 @@ export class AmpereAIChat {
 
         try {
             this.micCtx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
-            // Log actual sampleRate — Chrome may not honor our 16kHz request on all systems
             console.log(`%c[AmpereAI] 🎤 AudioContext actual sampleRate: ${this.micCtx.sampleRate}Hz (requested ${PCM_SAMPLE_RATE}Hz)`, 'color:#f59e0b;font-weight:bold;');
 
-            // Use ScriptProcessor for simple PCM chunk streaming
-            // (AudioWorklet streaming mode would require a new processor — ScriptProcessor is fine for 16kHz)
-            const source      = this.micCtx.createMediaStreamSource(this.micStream);
-            const bufferSize  = 4096; // ~256ms at 16kHz — Scribe expects small frequent chunks
-            const processor   = this.micCtx.createScriptProcessor(bufferSize, 1, 1);
+            // AudioWorklet mic processor — replaces deprecated ScriptProcessorNode.
+            // 128-sample blocks (8ms at 16kHz) sent as zero-copy Float32 to main thread,
+            // converted to Int16 here and forwarded to VoiceSessionDO via WebSocket.
+            await this.micCtx.audioWorklet.addModule('/assets/js/audio-mic-processor.js');
+            const micWorklet = new AudioWorkletNode(this.micCtx, 'mic-stream-processor');
+
+            const source = this.micCtx.createMediaStreamSource(this.micStream);
+            source.connect(micWorklet);
+            // AudioWorkletNode does not need to connect to destination — postMessage is the output.
 
             let audioChunksSent = 0;
-            processor.onaudioprocess = (e) => {
+            micWorklet.port.onmessage = (e) => {
                 if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-                const float32 = e.inputBuffer.getChannelData(0);
+                const float32 = e.data; // Float32Array from worklet (zero-copy transfer)
 
-                // Convert Float32 → Int16 PCM
+                // Convert Float32 → Int16 PCM (16-bit signed, clamped)
                 const int16 = new Int16Array(float32.length);
                 for (let i = 0; i < float32.length; i++) {
                     const s = Math.max(-1, Math.min(1, float32[i]));
@@ -555,21 +559,19 @@ export class AmpereAIChat {
                 this.ws.send(int16.buffer);
                 audioChunksSent++;
 
-                // Every 8 chunks (~2s): log RMS energy. Silence=~0.000, ambient>0.005, speech>0.020
-                if (audioChunksSent === 1 || audioChunksSent % 8 === 0) {
+                // Every 64 worklet blocks (~512ms): log RMS energy
+                if (audioChunksSent === 1 || audioChunksSent % 64 === 0) {
+                    const sent64 = Math.ceil(audioChunksSent / 64);
                     let sumSq = 0;
                     for (let i = 0; i < float32.length; i++) sumSq += float32[i] * float32[i];
                     const rms = Math.sqrt(sumSq / float32.length);
                     const label = rms < 0.001 ? '🔇 SILENCE' : rms < 0.010 ? '🔈 ambient' : '🔊 SPEECH';
-                    console.log(`[AmpereAI] 🎤 MIC chunk=${audioChunksSent} RMS=${rms.toFixed(4)} ${label}`);
+                    console.log(`[AmpereAI] 🎤 MIC chunk=${sent64} RMS=${rms.toFixed(4)} ${label}`);
                 }
             };
 
-            source.connect(processor);
-            processor.connect(this.micCtx.destination); // must connect to destination for onaudioprocess to fire
-
-            this.micWorklet = processor; // store ref for cleanup
-            console.log('%c[AmpereAI] 🎤 MIC STREAMING: started (16kHz PCM → VoiceSessionDO)', 'color:#06b6d4;font-weight:bold;');
+            this.micWorklet = micWorklet; // store ref for cleanup
+            console.log('%c[AmpereAI] 🎤 MIC STREAMING: started (AudioWorklet 16kHz PCM → VoiceSessionDO)', 'color:#06b6d4;font-weight:bold;');
         } catch (err) {
             console.error('[AmpereAI] Mic streaming failed:', err);
         }
@@ -577,7 +579,11 @@ export class AmpereAIChat {
 
     _stopMic() {
         if (this.micWorklet) {
-            try { this.micWorklet.disconnect(); } catch { /* ok */ }
+            try {
+                // Signal the AudioWorklet to stop processing before disconnecting
+                this.micWorklet.port.postMessage({ type: 'stop' });
+                this.micWorklet.disconnect();
+            } catch { /* ok */ }
             this.micWorklet = null;
         }
         if (this.micCtx) {
@@ -607,18 +613,32 @@ export class AmpereAIChat {
         }
 
         // pcm_22050 = 16-bit signed LE samples = 2 bytes each.
-        // HTTP stream chunks can arrive with an odd byte count (network split mid-sample).
-        // Truncate to the nearest even byte length — at most 1 byte dropped = 45µs of audio,
-        // completely inaudible. Without this guard, new Int16Array() throws RangeError and
-        // crashes the entire _onWsMessage handler, killing the session.
-        const evenBytes = arrayBuffer.byteLength & ~1; // round down to nearest multiple of 2
-        if (evenBytes === 0) return; // empty or single-byte chunk — nothing to play
-        const buf = evenBytes === arrayBuffer.byteLength
-            ? arrayBuffer
-            : arrayBuffer.slice(0, evenBytes);
+        // EL's HTTP stream chunks can be split at any byte boundary by the network.
+        // An odd-length chunk means the last byte is the first byte of a sample that continues
+        // into the next chunk. Simply truncating corrupts byte alignment for ALL subsequent
+        // chunks (every Int16 pair is assembled from the wrong bytes → noise on sibilants).
+        //
+        // CARRY BUFFER FIX: save the orphan byte and prepend it to the next chunk so
+        // Int16 pairs are always correctly aligned. At most 1 byte deferred per chunk.
+        let incoming = arrayBuffer;
+        if (this.pcmCarry && this.pcmCarry.byteLength > 0) {
+            // Merge carry byte(s) from previous chunk with this chunk
+            const merged = new Uint8Array(this.pcmCarry.byteLength + incoming.byteLength);
+            merged.set(new Uint8Array(this.pcmCarry), 0);
+            merged.set(new Uint8Array(incoming), this.pcmCarry.byteLength);
+            incoming = merged.buffer;
+            this.pcmCarry = null;
+        }
+
+        const evenBytes = incoming.byteLength & ~1;
+        if (evenBytes === 0) { this.pcmCarry = incoming; return; } // accumulate until we have ≥2 bytes
+        if (evenBytes < incoming.byteLength) {
+            // Save the orphan byte for next chunk
+            this.pcmCarry = incoming.slice(evenBytes);
+        }
 
         // Interpret raw bytes as 16-bit signed LE PCM
-        const int16 = new Int16Array(buf);
+        const int16 = new Int16Array(incoming, 0, evenBytes / 2);
 
         const float32 = new Float32Array(int16.length);
         for (let i = 0; i < int16.length; i++) {
@@ -658,6 +678,7 @@ export class AmpereAIChat {
         this.mp3Buffer  = [];
         this.isPlaying  = false;
         this.pcmNextAt  = 0;
+        this.pcmCarry   = null; // discard orphan byte on stop (session reset)
         if (this.playCtx) {
             try { this.playCtx.close(); } catch { /* ok */ }
             this.playCtx = null;
