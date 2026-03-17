@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.606 — Fix AEC race condition: init playCtx before sending greeting (2026-03-17)
+
+**Root cause (v3.605 regression):** `_initPlayCtxAsync()` was fired fire-and-forget *after* the
+greeting speak frame was sent to the server. The server takes ~800ms (TTS warmup) before sending
+the first PCM chunk. If the worklet module fetch (uncached, cold network) took >800ms, `_queueAudio`'s
+synchronous fallback fired first, creating a bare `AudioContext` (`masterGain → destination`, no
+ref-capture worklet). When `_initPlayCtxAsync()` then resolved, its guard
+`if (this.playCtx && state !== 'closed') return` bailed out — the fallback ctx was already in place.
+The SAB never received any writes. NLMS filter ran on zeros → zero echo cancellation → Emily heard
+herself through the mic → Scribe transcribed her own speech → false barge-in loop. Emily couldn't
+finish a sentence.
+
+**Fix (`ai-chat.js`):**
+- `_handleSessionInit()`: moved greeting dispatch into `_initPlayCtxAsync().finally(...)` so the
+  greeting speak frame is sent only after the AudioContext with ref-capture worklet is fully wired.
+- The server still has ~800ms of TTS warmup after receiving the frame — worklet is guaranteed ready.
+- On failure, `.finally()` still sends the greeting (fallback bare-ctx is already in place from
+  within `_initPlayCtxAsync`, not from `_queueAudio`).
+
 ## v3.605 — NLMS adaptive AEC + playback-side reference capture (2026-03-17)
 
 **Root cause fixed:** The v3.601 AEC implementation wrote TTS reference samples to the

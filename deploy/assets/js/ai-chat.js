@@ -1,11 +1,14 @@
-// v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
+// v3.606: Fix AEC race condition — await _initPlayCtxAsync before sending greeting so ref-capture worklet
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
 // v3.605: Phase 2+3 AEC — NLMS adaptive filter + playback-side ref-capture worklet.
 //   Eliminated fixed delayCompSamples/attenuation; filter self-calibrates to hardware.
 //   Moved SAB writes from main thread (_queueAudio) to audio-ref-capture-processor.js
 //   so the reference signal is captured at TRUE playback time, not schedule time.
-console.log('[AmpereAI] v3.605 Voice Pipe Client Loaded (NLMS AEC)');
+// v3.606: Fix ordering bug — _initPlayCtxAsync now completes BEFORE the greeting speak
+//   frame is sent to the server. Eliminates the race where PCM arrived before the worklet
+//   module loaded, causing the fallback bare-ctx to win and blocking ref-capture forever.
+console.log('[AmpereAI] v3.606 Voice Pipe Client Loaded (NLMS AEC + timing fix)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -478,25 +481,31 @@ export class AmpereAIChat {
         // Start streaming mic audio to DO
         this._startMicStreaming();
 
-        // Push greeting to TTS: send to DO which pipes it directly to ElevenLabs TTS.
-        // /greeting/web is retired (v3.585) — always use the built-in fallback greeting.
-        // The DO's speakDirectToTts handles it, bypassing Scribe/LLM for the opening turn.
-        if (this.ws && this.pendingGreeting) {
-            const greetingText = this.pendingGreeting;
-            this.pendingGreeting = null;
-            console.log(`%c[AmpereAI] 📤 SPEAK_GREETING: "${greetingText.slice(0, 60)}..."`, 'color:#10b981;font-weight:bold;');
-            try { this.ws.send(JSON.stringify({ type: 'speak', text: greetingText })); } catch { /* ok */ }
-        }
-
-        // v3.605: Pre-warm TTS AudioContext with ref-capture worklet wired in.
-        // _initPlayCtxAsync() is called fire-and-forget — it resolves before the first
-        // PCM frame arrives (~300–500ms later). Inside a user-gesture stack so resume() is allowed.
-        // The ref-capture worklet (audio-ref-capture-processor.js) sits between masterGain
-        // and destination, writing actual playback samples to the SAB at DAC render time.
-        // This replaces the previous approach of writing to SAB from _queueAudio (schedule time).
-        this._initPlayCtxAsync().catch(err =>
-            console.warn('[AmpereAI] AEC: playCtx init failed (will fallback):', err)
-        );
+        // v3.606: Init playCtx WITH ref-capture worklet BEFORE sending the greeting frame.
+        //
+        // WHY ORDER MATTERS: the server takes ~800ms from receiving the speak frame to
+        // delivering the first PCM chunk (TTS warmup). We must have AudioContext + ref-capture
+        // worklet fully wired within that window so the SAB starts receiving writes before
+        // any TTS audio arrives at _queueAudio.
+        //
+        // v3.605 BUG: greeting was sent FIRST, then _initPlayCtxAsync was fired fire-and-forget.
+        // If the worklet module fetch took >800ms (uncached network), _queueAudio's synchronous
+        // fallback created a bare ctx (masterGain → destination, NO ref-capture). Then when
+        // _initPlayCtxAsync finally resolved, its guard "if (this.playCtx && state !== 'closed')
+        // return" bailed out — the fallback ctx was already there. SAB never got any writes.
+        // NLMS filter ran on zeros → zero echo cancellation → Emily heard herself → barge-in loop.
+        //
+        // FIX: use .finally() so greeting sends only after playCtx is ready (or gracefully failed).
+        this._initPlayCtxAsync()
+            .catch(err => console.warn('[AmpereAI] AEC: playCtx init failed (will fallback):', err))
+            .finally(() => {
+                if (this.ws && this.pendingGreeting) {
+                    const greetingText = this.pendingGreeting;
+                    this.pendingGreeting = null;
+                    console.log(`%c[AmpereAI] 📤 SPEAK_GREETING (playCtx ready): "${greetingText.slice(0, 60)}..."`, 'color:#10b981;font-weight:bold;');
+                    try { this.ws.send(JSON.stringify({ type: 'speak', text: greetingText })); } catch { /* ok */ }
+                }
+            });
     }
 
 
