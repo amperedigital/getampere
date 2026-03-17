@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.596 - Auto-generated
+- **Frontend**: v3.596: add barge_in WS handler + _flushAudioBuffer()
+
+
 ## v3.593 — Pre-warm TTS AudioContext at session init to fix greeting jitter (2026-03-16)
 
 **Problem:** Emily's opening greeting had audible jitter/glitch in the first ~20-40ms of audio.
