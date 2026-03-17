@@ -2,7 +2,7 @@
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
 // v3.601: Phase 2 AEC — SharedArrayBuffer reference ring buffer + audio-aec-processor.js worklet.
-console.log('[AmpereAI] v3.602 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.603 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -82,6 +82,7 @@ export class AmpereAIChat {
         this.micCtx         = null;   // AudioContext for mic capture
         this.micWorklet     = null;   // AudioWorkletNode (streaming)
         this.playCtx        = null;   // AudioContext for PCM TTS playback (22050 Hz)
+        this.masterGain     = null;   // GainNode — volume master; faded to 0 on barge-in
         this.playQueue      = [];     // legacy — unused
         this.isPlaying      = false;
         this.mp3Buffer      = [];     // legacy name — now holds raw PCM Int16 chunks
@@ -492,6 +493,8 @@ export class AmpereAIChat {
         // click chain), so resume() is allowed by the browser autoplay policy.
         if (!this.playCtx || this.playCtx.state === 'closed') {
             this.playCtx   = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
+            this.masterGain = this.playCtx.createGain();
+            this.masterGain.connect(this.playCtx.destination);
             this.pcmNextAt = 0;
         }
         if (this.playCtx.state === 'suspended') {
@@ -642,8 +645,10 @@ export class AmpereAIChat {
     _queueAudio(arrayBuffer) {
         // Ensure playback AudioContext is ready at the correct sample rate
         if (!this.playCtx || this.playCtx.state === 'closed') {
-            this.playCtx = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
-            this.pcmNextAt = 0; // reset scheduler
+            this.playCtx    = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
+            this.masterGain = this.playCtx.createGain();
+            this.masterGain.connect(this.playCtx.destination);
+            this.pcmNextAt  = 0; // reset scheduler
         }
         if (this.playCtx.state === 'suspended') {
             this.playCtx.resume().catch(() => {});
@@ -690,7 +695,8 @@ export class AmpereAIChat {
         const startAt = Math.max(this.pcmNextAt, this.playCtx.currentTime + 0.01);
         const source = this.playCtx.createBufferSource();
         source.buffer = audioBuffer;
-        source.connect(this.playCtx.destination);
+        // Route through masterGain so barge-in fade-out applies to all scheduled nodes.
+        source.connect(this.masterGain || this.playCtx.destination);
         source.start(startAt);
 
         // Advance the scheduler by the duration of this chunk
@@ -747,24 +753,35 @@ export class AmpereAIChat {
         }
     }
 
-    // Barge-in flush: immediately silence all playing audio by closing the AudioContext.
+    // Barge-in flush: fade Emily's voice out naturally then close the AudioContext.
     // Web Audio BufferSource nodes scheduled with source.start(t) CANNOT be cancelled —
-    // snapping pcmNextAt only stops future chunks from being queued, but already-scheduled
-    // nodes keep playing until their buffer ends. The only way to stop them is to close
-    // the AudioContext itself (which immediately releases the audio hardware output).
+    // they play to completion on the audio rendering thread. To stop them we must either
+    // close the context, or fade the GainNode that they're routed through to zero first.
     //
-    // The ~20ms cost of close+recreate on next _queueAudio is imperceptible compared to
-    // Emily speaking for 5 seconds after the user said "wait". Close it.
+    // We do both: ramp the masterGain to 0 over BARGE_IN_FADE_MS (200ms) for a natural
+    // duck-out effect, then close the context after the fade. This feels like a real
+    // conversation where the other person naturally trails off as you speak over them.
     _flushAudioBuffer() {
+        const BARGE_IN_FADE_MS = 200;
         this.isPlaying = false;
-        this.pcmCarry  = null; // discard any partial carry byte
+        this.pcmCarry  = null;
         this.pcmNextAt = 0;
         if (this.playCtx && this.playCtx.state !== 'closed') {
-            // Suspend first for immediate silence (synchronous effect),
-            // then close async so the GC reclaims hardware resources.
-            this.playCtx.suspend().catch(() => {});
-            this.playCtx.close().catch(() => {});
-            this.playCtx = null;
+            const ctx  = this.playCtx;
+            const gain = this.masterGain;
+            // Null these out immediately so _queueAudio creates a fresh context for
+            // Emily's next response without waiting for the fade to complete.
+            this.playCtx    = null;
+            this.masterGain = null;
+            if (gain) {
+                // Fade to silence over 200ms — feels like someone talking over you
+                gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
+            }
+            // Close context after the fade completes
+            setTimeout(() => {
+                ctx.close().catch(() => {});
+            }, BARGE_IN_FADE_MS + 20);
         }
     }
 

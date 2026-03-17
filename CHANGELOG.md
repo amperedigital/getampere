@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.603 — Barge-in: natural 200ms fade-out via GainNode (2026-03-17)
+
+**Design goal:** Full-duplex speech that feels human. When two people speak simultaneously,
+one concedes — not by cutting off abruptly, but by their voice naturally trailing off as the
+other person continues speaking.
+
+**Implementation (`ai-chat.js`):**
+- Added `this.masterGain` (GainNode) to the TTS playback chain. All BufferSource nodes route
+  through it to the destination, so a single gain automation silences all scheduled audio.
+- `_flushAudioBuffer()`: instead of hard-closing the AudioContext, ramps `masterGain.gain`
+  from its current value to 0 over 200ms via `linearRampToValueAtTime`, then closes the context
+  220ms later. Emily's voice trails off the moment the user speaks over her.
+- Fresh `AudioContext` + `masterGain` created immediately (before the fade completes) so Emily's
+  next response starts playing the instant the LLM responds — no wait for the old context to close.
+- Both `_handleSessionInit` (pre-warm) and `_queueAudio` (cold-start) now create the `masterGain`
+  node when the context is created, so it's always wired before first audio arrives.
+
 ## v3.602 — Fix barge-in: AudioContext close on flush (2026-03-17)
 
 **Root cause:** `_flushAudioBuffer()` snapped `pcmNextAt = currentTime` to stop future chunks,
