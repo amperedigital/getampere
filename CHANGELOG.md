@@ -1,6 +1,27 @@
 # Changelog
 
+## v3.607 — Three-layer false barge-in fix: noise gate + ctx preserve + word count gate (2026-03-17)
+
+**Root cause chain:** Emily's voice leaked through the mic at 0.003–0.010 RMS. Scribe transcribed this
+whisper-level audio. The server fired barge-in on ANY partial transcript (no word count gate). After each
+barge-in, the AudioContext was destroyed, resetting NLMS convergence on every cycle.
+
+**Layer 1 — Server: partial word count gate (`voice-session-do.ts`):**
+- `partial_transcript` barge-in now requires `partialWords >= BARGE_IN_MIN_WORDS` (4 words).
+- `TTS_ECHO_HOLDOFF_MS` raised 200ms → 500ms.
+
+**Layer 2 — AEC worklet: noise gate (`audio-aec-processor.js`):**
+- Post-NLMS RMS check: if block RMS < 0.012, zero the block → Scribe receives silence.
+- Threshold sits between leakage floor (0.003–0.010) and real speech floor (0.05+).
+- 8-block (64ms) release hold prevents clipping speech tails.
+
+**Layer 3 — Client: AudioContext preserved across barge-ins (`ai-chat.js`):**
+- `_flushAudioBuffer()`: fades `masterGain` → 0, sets `bargeInFaded=true`. Does NOT close the ctx.
+- `_queueAudio()`: when new PCM arrives after barge-in, ramps gain back to 1 over 50ms.
+- ref-capture worklet stays running → no SAB gap → NLMS weights survive barge-ins.
+
 ## v3.606 — Fix AEC race condition: init playCtx before sending greeting (2026-03-17)
+
 
 **Root cause (v3.605 regression):** `_initPlayCtxAsync()` was fired fire-and-forget *after* the
 greeting speak frame was sent to the server. The server takes ~800ms (TTS warmup) before sending

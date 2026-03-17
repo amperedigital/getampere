@@ -85,6 +85,16 @@ class AecMicProcessor extends AudioWorkletProcessor {
         // -1 means not yet initialized (will be set on first process() call with data)
         this.refReadPtr = -1;
 
+        // ── Noise gate state ──────────────────────────────────────────────────
+        // Observed leakage RMS during TTS playback: 0.003–0.010 (ambient/whisper level).
+        // Real user speech at laptop distance: 0.05–0.30.
+        // Gate threshold set to 0.012 — well above leakage floor, well below speech floor.
+        // Smoothed with fast attack (GATE_ATTACK blocks) and gradual release (GATE_RELEASE blocks)
+        // so the gate doesn't clip speech onset or create clicks on gate open/close.
+        this.GATE_THRESHOLD = 0.012; // RMS below this = suppressed to zero
+        this.GATE_OPEN      = false; // current gate state
+        this.gateHold       = 0;     // release hold counter (blocks)
+
         this.port.onmessage = (e) => {
             if (e.data?.type === 'stop') this.active = false;
         };
@@ -192,6 +202,35 @@ class AecMicProcessor extends AudioWorkletProcessor {
         // Persist state for next block
         this.histPtr    = histPtr;
         this.refReadPtr = refReadPtr;
+
+        // ── Noise gate (post-NLMS mic isolation) ─────────────────────────────
+        // Purpose: suppress residual TTS leakage that the NLMS filter doesn't fully
+        // cancel during the convergence window (first ~0.6s) or on weak hardware AEC.
+        // Observed leakage: 0.003–0.010 RMS. Real speech: 0.05–0.30 RMS.
+        // GATE_THRESHOLD = 0.012 sits in the gap — leakage is suppressed, speech passes.
+        // Hold: gate stays OPEN for GATE_HOLD_BLOCKS after RMS drops below threshold
+        //       so we don't clip speech tails or create a click on gate close.
+        let blockRms = 0;
+        for (let i = 0; i < out.length; i++) blockRms += out[i] * out[i];
+        blockRms = Math.sqrt(blockRms / out.length);
+
+        const GATE_HOLD_BLOCKS = 8; // 8 × 128 samples = 64ms hold after speech drops
+        if (blockRms >= this.GATE_THRESHOLD) {
+            // Signal present — open gate instantly
+            this.GATE_OPEN = true;
+            this.gateHold  = GATE_HOLD_BLOCKS;
+        } else if (this.gateHold > 0) {
+            // Below threshold but still in hold period — keep gate open
+            this.gateHold--;
+        } else {
+            // Hold expired — close gate
+            this.GATE_OPEN = false;
+        }
+
+        if (!this.GATE_OPEN) {
+            // Suppress: zero the block before forwarding to Scribe
+            out.fill(0);
+        }
 
         // Zero-copy transfer to main thread → Float32 → Int16 → WebSocket
         this.port.postMessage(out, [out.buffer]);

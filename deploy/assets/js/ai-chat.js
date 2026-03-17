@@ -8,7 +8,11 @@
 // v3.606: Fix ordering bug — _initPlayCtxAsync now completes BEFORE the greeting speak
 //   frame is sent to the server. Eliminates the race where PCM arrived before the worklet
 //   module loaded, causing the fallback bare-ctx to win and blocking ref-capture forever.
-console.log('[AmpereAI] v3.606 Voice Pipe Client Loaded (NLMS AEC + timing fix)');
+// v3.607: Three-layer false-barge-in fix:
+//   (1) Server: partial_transcript barge-in now gated by BARGE_IN_MIN_WORDS (was ungated).
+//   (2) AEC worklet: noise gate added post-NLMS — blocks below 0.012 RMS = zero to Scribe.
+//   (3) Client: AudioContext preserved across barge-ins (fade/restore gain) so NLMS stays converged.
+console.log('[AmpereAI] v3.607 Voice Pipe Client Loaded (NLMS AEC + noise gate + ctx preserve)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -97,11 +101,15 @@ export class AmpereAIChat {
 
         // Phase 2 AEC: SharedArrayBuffer ring buffer for TTS reference signal.
         // Layout: [write_ptr (Int32, 4 bytes) | Float32 samples (16000 * 4 bytes = 1s at 16kHz)]
-        // Written by _queueAudio() after resampling TTS 22050→16kHz; read by AEC worklet.
+        // Written by audio-ref-capture-processor.js (running in playCtx) at DAC render time;
+        // read by AEC worklet. SAB + context preserved across barge-ins for NLMS continuity.
         this.referenceBuffer  = null;   // SharedArrayBuffer | null
         this.refWritePtr      = null;   // Int32Array view of first 4 bytes (write pointer)
         this.refSamples       = null;   // Float32Array view of remaining bytes (ring data)
 
+        // v3.607: barge-in now fades masterGain to 0 (keeps ctx alive) rather than closing ctx.
+        // _queueAudio restores gain when new PCM arrives. Flag prevents stale ctx reuse.
+        this.bargeInFaded     = false;  // true while masterGain is at 0 post-barge-in
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
 
@@ -658,16 +666,26 @@ export class AmpereAIChat {
         // If it hasn't resolved yet (edge case: PCM arrived before LLM finished), fall back
         // to a synchronous no-worklet context and continue — no audio is lost.
         if (!this.playCtx || this.playCtx.state === 'closed') {
-            // Synchronous fallback — ref-capture worklet NOT attached (no SAB writes this session).
-            // This should only happen in error scenarios; _initPlayCtxAsync normally wins the race.
+            // Synchronous fallback — ref-capture worklet NOT attached.
+            // Should only happen in error scenarios; _initPlayCtxAsync normally wins the race.
             console.warn('[AmpereAI] _queueAudio: playCtx not ready — creating synchronous fallback (no AEC reference this chunk)');
             this.playCtx    = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
             this.masterGain = this.playCtx.createGain();
             this.masterGain.connect(this.playCtx.destination);
             this.pcmNextAt  = 0;
+            this.bargeInFaded = false;
         }
         if (this.playCtx.state === 'suspended') {
             this.playCtx.resume().catch(() => {});
+        }
+        // v3.607: restore gain if we're coming out of a barge-in fade (ctx was kept alive)
+        if (this.bargeInFaded && this.masterGain) {
+            this.bargeInFaded = false;
+            this.pcmNextAt = 0; // reset scheduling offset for new response
+            this.masterGain.gain.cancelScheduledValues(this.playCtx.currentTime);
+            this.masterGain.gain.setValueAtTime(0, this.playCtx.currentTime);
+            this.masterGain.gain.linearRampToValueAtTime(1, this.playCtx.currentTime + 0.05);
+            console.log('%c[AmpereAI] 🔊 GAIN_RESTORE: new response starting, fading gain back to 1', 'color:#10b981;');
         }
 
         // pcm_22050 = 16-bit signed LE samples = 2 bytes each.
@@ -729,46 +747,41 @@ export class AmpereAIChat {
         }
     }
 
-    // Barge-in flush: fade Emily's voice out naturally then close the AudioContext.
-    // Web Audio BufferSource nodes scheduled with source.start(t) CANNOT be cancelled —
-    // they play to completion on the audio rendering thread. We fade the masterGain to 0
-    // over BARGE_IN_FADE_MS (200ms) for a natural duck-out, then close the context.
-    //
-    // v3.605: immediately fires _initPlayCtxAsync() for the next response. The LLM takes
-    // 500ms–2s to respond, so by the time the first PCM chunk arrives the new playCtx
-    // (with ref-capture worklet wired in) is fully ready. No race condition.
+    // Barge-in flush: fade Emily's voice out naturally.
+    // v3.607: DOES NOT close the AudioContext. Keeping the ctx alive preserves:
+    //   (1) ref-capture worklet — continues writing (silence) to SAB during LLM think time
+    //   (2) NLMS filter's reference continuity — no SAB gap, no read-ptr reset
+    //   (3) Accumulated filter weights — NLMS stays converged for next response
+    // Instead: fade masterGain to 0 (silences all scheduled BufferSources naturally),
+    // set bargeInFaded=true. When new PCM arrives in _queueAudio, gain ramps back to 1.
     _flushAudioBuffer() {
         const BARGE_IN_FADE_MS = 200;
         this.isPlaying = false;
         this.pcmCarry  = null;
-        this.pcmNextAt = 0;
-        if (this.playCtx && this.playCtx.state !== 'closed') {
-            const ctx  = this.playCtx;
+        if (this.playCtx && this.playCtx.state !== 'closed' && this.masterGain) {
             const gain = this.masterGain;
-            // Null immediately so _queueAudio sees no context and triggers the fallback
-            // (which should never be needed since _initPlayCtxAsync below wins the race).
-            this.playCtx        = null;
-            this.masterGain     = null;
-            this.refCaptureNode = null;
-            if (gain) {
-                gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
-            }
-            setTimeout(() => { ctx.close().catch(() => {}); }, BARGE_IN_FADE_MS + 20);
+            const ctx  = this.playCtx;
+            gain.gain.cancelScheduledValues(ctx.currentTime);
+            gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
+            this.bargeInFaded = true;
+            // pcmNextAt stays as-is — will be reset to 0 in _queueAudio when new PCM arrives
+            console.log('%c[AmpereAI] 🔇 BARGE_IN_FADE: masterGain → 0, ctx kept alive for NLMS continuity', 'color:#f97316;');
+        } else {
+            // No active ctx at all — will be created fresh when LLM responds
+            this.pcmNextAt = 0;
         }
-        // Pre-create the next playCtx with ref-capture worklet before LLM responds.
-        this._initPlayCtxAsync().catch(err =>
-            console.warn('[AmpereAI] AEC: post-barge-in playCtx init error:', err)
-        );
+        // No _initPlayCtxAsync() call needed — existing ctx + ref-capture stays running.
     }
 
     // ── _initPlayCtxAsync ─────────────────────────────────────────────────────
     // Creates a fresh TTS AudioContext with the ref-capture worklet inserted between
     // masterGain and the speaker. ref-capture-processor.js writes resampled (22050→16kHz)
     // playback samples to the SAB at ACTUAL render time, feeding the NLMS AEC worklet.
-    // If worklet loading fails, falls back to masterGain → destination directly (no AEC ref).
+    // Called ONCE on session init via _handleSessionInit().finally().
+    // v3.607: No longer called on barge-in — ctx is preserved across barge-ins.
     async _initPlayCtxAsync() {
-        // Don't create if one is already running (called concurrently — session_init + re-init race)
+        // Don't create if one is already running (guards against concurrent calling)
         if (this.playCtx && this.playCtx.state !== 'closed') return;
 
         const ctx  = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
