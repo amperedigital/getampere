@@ -376,6 +376,14 @@ export class AmpereAIChat {
             case 'mode':
                 this._handleMode(msg);
                 break;
+            case 'barge_in':
+                // Server detected barge-in — flush scheduled audio immediately.
+                // Audio frames already sent to the speaker can't be recalled,
+                // but we can stop scheduling future frames and snap pcmNextAt
+                // back to now so the next response starts cleanly.
+                this._flushAudioBuffer();
+                console.log('%c[AmpereAI] 🛑 BARGE_IN: audio buffer flushed', 'color:#f97316;font-weight:bold;');
+                break;
             case 'ended':
                 // Sentinel-triggered end: DO closed the session after farewell
                 console.log(`%c[AmpereAI] 📴 SESSION ENDED: reason=${msg.reason}`, 'color:#f59e0b;font-weight:bold;');
@@ -670,6 +678,22 @@ export class AmpereAIChat {
         if (this.playCtx) {
             try { this.playCtx.close(); } catch { /* ok */ }
             this.playCtx = null;
+        }
+    }
+
+    // Barge-in flush: stop scheduling future PCM chunks but keep AudioContext alive.
+    // Closing and re-creating AudioContext takes ~20ms and causes a glitch at the
+    // start of Emily's next response. Instead, snap pcmNextAt to now — any
+    // already-scheduled BufferSource nodes will finish their current sample (~8ms)
+    // and then fall silent. The next _queueAudio call starts clean from currentTime.
+    _flushAudioBuffer() {
+        this.isPlaying = false;
+        this.pcmCarry  = null; // discard any partial carry byte
+        if (this.playCtx && this.playCtx.state !== 'closed') {
+            // Snap scheduler to now — drops all future-scheduled chunks
+            this.pcmNextAt = this.playCtx.currentTime;
+        } else {
+            this.pcmNextAt = 0;
         }
     }
 
