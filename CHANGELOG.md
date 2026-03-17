@@ -1,5 +1,32 @@
 # Changelog
 
+## v3.601 — Phase 2 Full-Duplex: AEC AudioWorklet + COOP/COEP headers (2026-03-17)
+
+**Part of:** `docs/full-duplex-voice-plan.md` — Phase 2 (Sprints 2.1–2.3)
+
+**New file — `audio-aec-processor.js`:**
+- New AudioWorklet processor replacing `audio-mic-processor.js` as the mic capture node.
+- Receives TTS reference audio from the main thread via a `SharedArrayBuffer` ring buffer.
+- Subtracts the delayed reference signal from the mic input using linear AEC (simple subtraction).
+- Delay compensation: 400 samples (~25ms at 16kHz) to compensate for speaker→mic acoustic round-trip.
+- Attenuation factor: 0.85 (tunable). Write pointer tracked via `Atomics.load` for thread-safe reads.
+- Fallback: if `SharedArrayBuffer` unavailable (no COOP/COEP headers), falls back to original
+  `audio-mic-processor.js` automatically — no errors, just no AEC.
+
+**`ai-chat.js` — Sprint 2.1+2.3:**
+- `_startMicStreaming()`: creates `SharedArrayBuffer` (4 + 16000×4 bytes = 1s ring buffer at 16kHz),
+  loads `audio-aec-processor.js` worklet, passes SAB via `processorOptions`.
+- `_queueAudio()`: after Float32 decode, resamples 22050Hz → 16000Hz via linear interpolation and
+  writes to the SAB ring buffer for the AEC worklet to read.
+- SAB fallback: `typeof SharedArrayBuffer === 'undefined'` guard — falls back to `audio-mic-processor.js`.
+
+**`workers-site/index.js` — Sprint 2.3 (COOP/COEP):**
+- Added `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: credentialless`
+  headers on responses for `/tech-demo.html` and `/tech-demo` only.
+- `credentialless` (not `require-corp`) — allows jsDelivr CDN resources (Three.js) to load without
+  requiring them to set `Cross-Origin-Resource-Policy` headers, which they don't.
+- All other pages unaffected.
+
 ## v3.597 — Full KB/memory transparency in router monitor (2026-03-16)
 
 - **Router monitor**: `KB_BRIEF_READY` now shows the full synthesized brief (blue header, `gpt-4.1-mini` output) or raw chunks fallback (amber header, synthesis unavailable). Previously was a truncated 120px box.

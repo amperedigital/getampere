@@ -1,7 +1,8 @@
 // v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-console.log('[AmpereAI] v3.597 Voice Pipe Client Loaded');
+// v3.601: Phase 2 AEC — SharedArrayBuffer reference ring buffer + audio-aec-processor.js worklet.
+console.log('[AmpereAI] v3.601 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -86,6 +87,13 @@ export class AmpereAIChat {
         this.mp3Buffer      = [];     // legacy name — now holds raw PCM Int16 chunks
         this.pcmNextAt      = 0;      // AudioContext timestamp: when next PCM chunk should start
         this.pcmCarry       = null;   // leftover byte from odd-length PCM chunk (byte-alignment carry)
+
+        // Phase 2 AEC: SharedArrayBuffer ring buffer for TTS reference signal.
+        // Layout: [write_ptr (Int32, 4 bytes) | Float32 samples (16000 * 4 bytes = 1s at 16kHz)]
+        // Written by _queueAudio() after resampling TTS 22050→16kHz; read by AEC worklet.
+        this.referenceBuffer  = null;   // SharedArrayBuffer | null
+        this.refWritePtr      = null;   // Int32Array view of first 4 bytes (write pointer)
+        this.refSamples       = null;   // Float32Array view of remaining bytes (ring data)
 
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
@@ -445,6 +453,24 @@ export class AmpereAIChat {
             this.addMessage('Connection established. Say hello!', 'system');
         }
 
+        // Phase 2 AEC: create SAB reference ring buffer BEFORE starting mic streaming.
+        // SAB requires COOP/COEP headers (set on /voice/session in index.ts).
+        // If unavailable (old browser, missing headers), gracefully falls back to passthrough.
+        try {
+            if (typeof SharedArrayBuffer !== 'undefined') {
+                // 4 bytes header (write ptr) + 16000 Float32 samples (1s at 16kHz)
+                const sab = new SharedArrayBuffer(4 + 16000 * 4);
+                this.referenceBuffer = sab;
+                this.refWritePtr     = new Int32Array(sab, 0, 1);   // write pointer
+                this.refSamples      = new Float32Array(sab, 4);    // ring data
+                console.log('%c[AmpereAI] 🔇 AEC: SharedArrayBuffer ring buffer initialized (64KB)', 'color:#06b6d4;font-weight:bold;');
+            } else {
+                console.warn('[AmpereAI] AEC: SharedArrayBuffer not available — falling back to passthrough mic (no COOP/COEP or old browser)');
+            }
+        } catch (sabErr) {
+            console.warn('[AmpereAI] AEC: SAB init failed (passthrough):', sabErr);
+        }
+
         // Start streaming mic audio to DO
         this._startMicStreaming();
 
@@ -531,11 +557,26 @@ export class AmpereAIChat {
             this.micCtx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
             console.log(`%c[AmpereAI] 🎤 AudioContext actual sampleRate: ${this.micCtx.sampleRate}Hz (requested ${PCM_SAMPLE_RATE}Hz)`, 'color:#f59e0b;font-weight:bold;');
 
-            // AudioWorklet mic processor — replaces deprecated ScriptProcessorNode.
-            // 128-sample blocks (8ms at 16kHz) sent as zero-copy Float32 to main thread,
-            // converted to Int16 here and forwarded to VoiceSessionDO via WebSocket.
-            await this.micCtx.audioWorklet.addModule('/assets/js/audio-mic-processor.js');
-            const micWorklet = new AudioWorkletNode(this.micCtx, 'mic-stream-processor');
+            // Phase 2 AEC: use aec-mic-processor if SAB is available; else fall back to passthrough.
+            // aec-mic-processor subtracts the TTS reference signal written by _queueAudio().
+            // Falls back to the original mic-stream-processor (passthrough) if SAB unavailable.
+            let micWorklet;
+            if (this.referenceBuffer) {
+                await this.micCtx.audioWorklet.addModule('/assets/js/audio-aec-processor.js');
+                micWorklet = new AudioWorkletNode(this.micCtx, 'aec-mic-processor', {
+                    processorOptions: {
+                        referenceBuffer:    this.referenceBuffer,
+                        delayCompSamples:   400,   // ~25ms at 16kHz — tunable
+                        attenuationFactor:  0.85,  // 85% echo subtraction — tunable
+                    }
+                });
+                console.log('%c[AmpereAI] 🔇 AEC: aec-mic-processor loaded with SAB reference buffer', 'color:#06b6d4;font-weight:bold;');
+            } else {
+                // Passthrough fallback — original worklet, AEC disabled
+                await this.micCtx.audioWorklet.addModule('/assets/js/audio-mic-processor.js');
+                micWorklet = new AudioWorkletNode(this.micCtx, 'mic-stream-processor');
+                console.log('%c[AmpereAI] 🎤 AEC: passthrough mic (no SAB)', 'color:#f59e0b;font-weight:bold;');
+            }
 
             const source = this.micCtx.createMediaStreamSource(this.micStream);
             source.connect(micWorklet);
@@ -663,6 +704,31 @@ export class AmpereAIChat {
                 this.isPlaying = false;
             }
         };
+
+        // Phase 2 AEC — Sprint 2.1: write TTS samples into the SAB reference ring buffer.
+        // The AEC worklet reads from this buffer (delayed) to cancel echo in the mic signal.
+        // Resample from TTS_PCM_SAMPLE_RATE (22050) → mic rate (16000) via linear interpolation.
+        // Simple linear interp introduces minor high-freq aliasing — acceptable for AEC reference.
+        if (this.refSamples && this.refWritePtr) {
+            const ratio      = PCM_SAMPLE_RATE / TTS_PCM_SAMPLE_RATE; // 16000/22050 ≈ 0.7256
+            const outLen     = Math.floor(float32.length * ratio);
+            const bufLen     = this.refSamples.length;                 // 16000
+            let   writePtr   = Atomics.load(this.refWritePtr, 0);
+
+            for (let i = 0; i < outLen; i++) {
+                // Linear interpolation: map output index back to input index
+                const srcIdx  = i / ratio;
+                const lo      = Math.floor(srcIdx);
+                const hi      = Math.min(lo + 1, float32.length - 1);
+                const frac    = srcIdx - lo;
+                const sample  = float32[lo] * (1 - frac) + float32[hi] * frac;
+                this.refSamples[writePtr % bufLen] = sample;
+                writePtr = (writePtr + 1) % bufLen;
+            }
+
+            // Atomically update write pointer so AEC worklet always sees a consistent head
+            Atomics.store(this.refWritePtr, 0, writePtr);
+        }
     }
 
     async _drainAudioQueue() {
