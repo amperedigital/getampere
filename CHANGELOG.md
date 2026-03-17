@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.602 — Fix barge-in: AudioContext close on flush (2026-03-17)
+
+**Root cause:** `_flushAudioBuffer()` snapped `pcmNextAt = currentTime` to stop future chunks,
+but Web Audio `BufferSource` nodes already scheduled with `source.start(t)` cannot be cancelled —
+they play to their buffer end on the audio rendering thread regardless. Emily kept speaking for
+the full TTS duration even after a barge-in was detected.
+
+**Fix (`ai-chat.js`):**
+- `_flushAudioBuffer()`: calls `playCtx.suspend()` (immediate hardware silence) then
+  `playCtx.close()` (async GC), and nulls `this.playCtx`. The next `_queueAudio` call
+  creates a fresh `AudioContext` — ~20ms overhead, imperceptible vs. 5s of unwanted speech.
+
 ## v3.601 — Phase 2 Full-Duplex: AEC AudioWorklet + COOP/COEP headers (2026-03-17)
 
 **Part of:** `docs/full-duplex-voice-plan.md` — Phase 2 (Sprints 2.1–2.3)

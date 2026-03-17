@@ -747,19 +747,24 @@ export class AmpereAIChat {
         }
     }
 
-    // Barge-in flush: stop scheduling future PCM chunks but keep AudioContext alive.
-    // Closing and re-creating AudioContext takes ~20ms and causes a glitch at the
-    // start of Emily's next response. Instead, snap pcmNextAt to now — any
-    // already-scheduled BufferSource nodes will finish their current sample (~8ms)
-    // and then fall silent. The next _queueAudio call starts clean from currentTime.
+    // Barge-in flush: immediately silence all playing audio by closing the AudioContext.
+    // Web Audio BufferSource nodes scheduled with source.start(t) CANNOT be cancelled —
+    // snapping pcmNextAt only stops future chunks from being queued, but already-scheduled
+    // nodes keep playing until their buffer ends. The only way to stop them is to close
+    // the AudioContext itself (which immediately releases the audio hardware output).
+    //
+    // The ~20ms cost of close+recreate on next _queueAudio is imperceptible compared to
+    // Emily speaking for 5 seconds after the user said "wait". Close it.
     _flushAudioBuffer() {
         this.isPlaying = false;
         this.pcmCarry  = null; // discard any partial carry byte
+        this.pcmNextAt = 0;
         if (this.playCtx && this.playCtx.state !== 'closed') {
-            // Snap scheduler to now — drops all future-scheduled chunks
-            this.pcmNextAt = this.playCtx.currentTime;
-        } else {
-            this.pcmNextAt = 0;
+            // Suspend first for immediate silence (synchronous effect),
+            // then close async so the GC reclaims hardware resources.
+            this.playCtx.suspend().catch(() => {});
+            this.playCtx.close().catch(() => {});
+            this.playCtx = null;
         }
     }
 
