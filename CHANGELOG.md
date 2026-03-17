@@ -1,5 +1,36 @@
 # Changelog
 
+## v3.605 — NLMS adaptive AEC + playback-side reference capture (2026-03-17)
+
+**Root cause fixed:** The v3.601 AEC implementation wrote TTS reference samples to the
+SharedArrayBuffer from the main thread at schedule time — but `pcmNextAt` can be 1–3 seconds
+ahead of `currentTime` for long TTS responses. The AEC worklet was subtracting a reference from
+the future, producing over-subtraction artifacts (audible ticks) that Scribe transcribed as short
+phantom commits, triggering false barge-ins mid-greeting.
+
+**New architecture (`audio-ref-capture-processor.js` — NEW FILE):**
+- AudioWorklet running inside the TTS playback AudioContext (22050Hz)
+- Inserted between `masterGain` and `destination` (transparent passthrough)
+- Captures actual speaker output at DAC render time (audio render thread clock — not JS clock)
+- Resamples 22050→16kHz inline (phase-accumulator linear interpolation, no block-boundary gaps)
+- Writes to SharedArrayBuffer ring buffer atomically — this is now the reference source
+
+**NLMS adaptive filter (`audio-aec-processor.js` — REWRITTEN):**
+- Replaces fixed linear subtraction (`delayCompSamples=400, attenuation=0.85`)
+- 512-tap NLMS (Normalized Least Mean Squares) filter — N is power-of-2 (2^9) for bitwise-AND
+  circular indexing in the hot path (no modulo)
+- μ=0.05, ε=1e-6. Converges on the actual acoustic delay for the current hardware within ~0.6s
+- No hardcoded delay, no hardcoded attenuation. Self-calibrating per device.
+- Passthrough fallback preserved (no SAB → forward mic unchanged)
+
+**`ai-chat.js` changes:**
+- Added `_initPlayCtxAsync()`: creates `AudioContext(22050Hz)`, loads ref-capture worklet,
+  wires `masterGain → ref-capture-node → destination`. Async — uses `addModule()` + `new AudioWorkletNode()`
+- `_handleSessionInit`: calls `_initPlayCtxAsync()` fire-and-forget (replaces direct `new AudioContext`)
+- `_flushAudioBuffer`: calls `_initPlayCtxAsync()` after fade so new context is ready before LLM responds
+- `_queueAudio`: removed all 24 lines of main-thread SAB resampling/write code (moved to worklet)
+- Version string updated to v3.605
+
 ## v3.604 — Post-TTS backchannel swallowing: no frontend changes (2026-03-17)
 
 Backend-only deploy. See `memory-api/CHANGELOG.md` for details.

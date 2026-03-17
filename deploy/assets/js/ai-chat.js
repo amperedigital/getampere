@@ -1,8 +1,11 @@
 // v3.576: PCM carry buffer (fix sibilant corruption) + AudioWorklet mic (removes ScriptProcessorNode).
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
-// v3.601: Phase 2 AEC — SharedArrayBuffer reference ring buffer + audio-aec-processor.js worklet.
-console.log('[AmpereAI] v3.604 Voice Pipe Client Loaded');
+// v3.605: Phase 2+3 AEC — NLMS adaptive filter + playback-side ref-capture worklet.
+//   Eliminated fixed delayCompSamples/attenuation; filter self-calibrates to hardware.
+//   Moved SAB writes from main thread (_queueAudio) to audio-ref-capture-processor.js
+//   so the reference signal is captured at TRUE playback time, not schedule time.
+console.log('[AmpereAI] v3.605 Voice Pipe Client Loaded (NLMS AEC)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -485,22 +488,15 @@ export class AmpereAIChat {
             try { this.ws.send(JSON.stringify({ type: 'speak', text: greetingText })); } catch { /* ok */ }
         }
 
-        // v3.593: Pre-warm the TTS AudioContext NOW, while the speak message is in-flight
-        // to the DO and EL is processing it (~300-500ms before first PCM frame arrives).
-        // Without this, _queueAudio() cold-starts AudioContext on the first binary frame —
-        // OS audio subsystem init takes 20-40ms and causes audible jitter/glitch at the
-        // very start of Emily's greeting. We're inside a user-gesture stack here (startBtn
-        // click chain), so resume() is allowed by the browser autoplay policy.
-        if (!this.playCtx || this.playCtx.state === 'closed') {
-            this.playCtx   = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
-            this.masterGain = this.playCtx.createGain();
-            this.masterGain.connect(this.playCtx.destination);
-            this.pcmNextAt = 0;
-        }
-        if (this.playCtx.state === 'suspended') {
-            this.playCtx.resume().catch(() => {});
-        }
-        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_PREWARM sampleRate=${this.playCtx.sampleRate}Hz state=${this.playCtx.state}`, 'color:#10b981;font-weight:bold;');
+        // v3.605: Pre-warm TTS AudioContext with ref-capture worklet wired in.
+        // _initPlayCtxAsync() is called fire-and-forget — it resolves before the first
+        // PCM frame arrives (~300–500ms later). Inside a user-gesture stack so resume() is allowed.
+        // The ref-capture worklet (audio-ref-capture-processor.js) sits between masterGain
+        // and destination, writing actual playback samples to the SAB at DAC render time.
+        // This replaces the previous approach of writing to SAB from _queueAudio (schedule time).
+        this._initPlayCtxAsync().catch(err =>
+            console.warn('[AmpereAI] AEC: playCtx init failed (will fallback):', err)
+        );
     }
 
 
@@ -643,12 +639,23 @@ export class AmpereAIChat {
     // with no decodeAudioData() and no partial-frame decode errors.
 
     _queueAudio(arrayBuffer) {
-        // Ensure playback AudioContext is ready at the correct sample rate
+        // v3.605: SAB reference writes REMOVED from main thread.
+        // audio-ref-capture-processor.js (running in playCtx) captures actual playback samples
+        // at DAC render time and writes them to the SAB. This eliminates the scheduling-
+        // lookahead timing error (main thread was writing samples seconds before they played).
+
+        // Ensure playback AudioContext is ready.
+        // _initPlayCtxAsync() is fired on session_init and on every barge-in.
+        // If it hasn't resolved yet (edge case: PCM arrived before LLM finished), fall back
+        // to a synchronous no-worklet context and continue — no audio is lost.
         if (!this.playCtx || this.playCtx.state === 'closed') {
+            // Synchronous fallback — ref-capture worklet NOT attached (no SAB writes this session).
+            // This should only happen in error scenarios; _initPlayCtxAsync normally wins the race.
+            console.warn('[AmpereAI] _queueAudio: playCtx not ready — creating synchronous fallback (no AEC reference this chunk)');
             this.playCtx    = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
             this.masterGain = this.playCtx.createGain();
             this.masterGain.connect(this.playCtx.destination);
-            this.pcmNextAt  = 0; // reset scheduler
+            this.pcmNextAt  = 0;
         }
         if (this.playCtx.state === 'suspended') {
             this.playCtx.resume().catch(() => {});
@@ -656,85 +663,45 @@ export class AmpereAIChat {
 
         // pcm_22050 = 16-bit signed LE samples = 2 bytes each.
         // EL's HTTP stream chunks can be split at any byte boundary by the network.
-        // An odd-length chunk means the last byte is the first byte of a sample that continues
-        // into the next chunk. Simply truncating corrupts byte alignment for ALL subsequent
-        // chunks (every Int16 pair is assembled from the wrong bytes → noise on sibilants).
-        //
-        // CARRY BUFFER FIX: save the orphan byte and prepend it to the next chunk so
-        // Int16 pairs are always correctly aligned. At most 1 byte deferred per chunk.
+        // CARRY BUFFER FIX: save the orphan byte and prepend to the next chunk.
         let incoming = arrayBuffer;
         if (this.pcmCarry && this.pcmCarry.byteLength > 0) {
-            // Merge carry byte(s) from previous chunk with this chunk
             const merged = new Uint8Array(this.pcmCarry.byteLength + incoming.byteLength);
             merged.set(new Uint8Array(this.pcmCarry), 0);
             merged.set(new Uint8Array(incoming), this.pcmCarry.byteLength);
             incoming = merged.buffer;
             this.pcmCarry = null;
         }
-
         const evenBytes = incoming.byteLength & ~1;
-        if (evenBytes === 0) { this.pcmCarry = incoming; return; } // accumulate until we have ≥2 bytes
+        if (evenBytes === 0) { this.pcmCarry = incoming; return; }
         if (evenBytes < incoming.byteLength) {
-            // Save the orphan byte for next chunk
             this.pcmCarry = incoming.slice(evenBytes);
         }
 
-        // Interpret raw bytes as 16-bit signed LE PCM
-        const int16 = new Int16Array(incoming, 0, evenBytes / 2);
-
+        // Decode Int16 PCM → Float32
+        const int16   = new Int16Array(incoming, 0, evenBytes / 2);
         const float32 = new Float32Array(int16.length);
         for (let i = 0; i < int16.length; i++) {
             float32[i] = int16[i] / 32768.0;
         }
 
-        // Create a mono AudioBuffer and fill it
+        // Schedule chunk into Web Audio API
         const audioBuffer = this.playCtx.createBuffer(1, float32.length, TTS_PCM_SAMPLE_RATE);
         audioBuffer.copyToChannel(float32, 0);
-
-        // Schedule at the next available time slot (or immediately if first chunk)
         const startAt = Math.max(this.pcmNextAt, this.playCtx.currentTime + 0.01);
-        const source = this.playCtx.createBufferSource();
+        const source  = this.playCtx.createBufferSource();
         source.buffer = audioBuffer;
-        // Route through masterGain so barge-in fade-out applies to all scheduled nodes.
+        // masterGain routes through ref-capture-processor → speaker (SAB written there).
         source.connect(this.masterGain || this.playCtx.destination);
         source.start(startAt);
-
-        // Advance the scheduler by the duration of this chunk
         this.pcmNextAt = startAt + audioBuffer.duration;
 
-        // Track playing state for echo suppression / UI
         this.isPlaying = true;
         source.onended = () => {
-            // Only clear isPlaying if no more chunks are scheduled
             if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.05) {
                 this.isPlaying = false;
             }
         };
-
-        // Phase 2 AEC — Sprint 2.1: write TTS samples into the SAB reference ring buffer.
-        // The AEC worklet reads from this buffer (delayed) to cancel echo in the mic signal.
-        // Resample from TTS_PCM_SAMPLE_RATE (22050) → mic rate (16000) via linear interpolation.
-        // Simple linear interp introduces minor high-freq aliasing — acceptable for AEC reference.
-        if (this.refSamples && this.refWritePtr) {
-            const ratio      = PCM_SAMPLE_RATE / TTS_PCM_SAMPLE_RATE; // 16000/22050 ≈ 0.7256
-            const outLen     = Math.floor(float32.length * ratio);
-            const bufLen     = this.refSamples.length;                 // 16000
-            let   writePtr   = Atomics.load(this.refWritePtr, 0);
-
-            for (let i = 0; i < outLen; i++) {
-                // Linear interpolation: map output index back to input index
-                const srcIdx  = i / ratio;
-                const lo      = Math.floor(srcIdx);
-                const hi      = Math.min(lo + 1, float32.length - 1);
-                const frac    = srcIdx - lo;
-                const sample  = float32[lo] * (1 - frac) + float32[hi] * frac;
-                this.refSamples[writePtr % bufLen] = sample;
-                writePtr = (writePtr + 1) % bufLen;
-            }
-
-            // Atomically update write pointer so AEC worklet always sees a consistent head
-            Atomics.store(this.refWritePtr, 0, writePtr);
-        }
     }
 
     async _drainAudioQueue() {
@@ -755,12 +722,12 @@ export class AmpereAIChat {
 
     // Barge-in flush: fade Emily's voice out naturally then close the AudioContext.
     // Web Audio BufferSource nodes scheduled with source.start(t) CANNOT be cancelled —
-    // they play to completion on the audio rendering thread. To stop them we must either
-    // close the context, or fade the GainNode that they're routed through to zero first.
+    // they play to completion on the audio rendering thread. We fade the masterGain to 0
+    // over BARGE_IN_FADE_MS (200ms) for a natural duck-out, then close the context.
     //
-    // We do both: ramp the masterGain to 0 over BARGE_IN_FADE_MS (200ms) for a natural
-    // duck-out effect, then close the context after the fade. This feels like a real
-    // conversation where the other person naturally trails off as you speak over them.
+    // v3.605: immediately fires _initPlayCtxAsync() for the next response. The LLM takes
+    // 500ms–2s to respond, so by the time the first PCM chunk arrives the new playCtx
+    // (with ref-capture worklet wired in) is fully ready. No race condition.
     _flushAudioBuffer() {
         const BARGE_IN_FADE_MS = 200;
         this.isPlaying = false;
@@ -769,20 +736,68 @@ export class AmpereAIChat {
         if (this.playCtx && this.playCtx.state !== 'closed') {
             const ctx  = this.playCtx;
             const gain = this.masterGain;
-            // Null these out immediately so _queueAudio creates a fresh context for
-            // Emily's next response without waiting for the fade to complete.
-            this.playCtx    = null;
-            this.masterGain = null;
+            // Null immediately so _queueAudio sees no context and triggers the fallback
+            // (which should never be needed since _initPlayCtxAsync below wins the race).
+            this.playCtx        = null;
+            this.masterGain     = null;
+            this.refCaptureNode = null;
             if (gain) {
-                // Fade to silence over 200ms — feels like someone talking over you
                 gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
             }
-            // Close context after the fade completes
-            setTimeout(() => {
-                ctx.close().catch(() => {});
-            }, BARGE_IN_FADE_MS + 20);
+            setTimeout(() => { ctx.close().catch(() => {}); }, BARGE_IN_FADE_MS + 20);
         }
+        // Pre-create the next playCtx with ref-capture worklet before LLM responds.
+        this._initPlayCtxAsync().catch(err =>
+            console.warn('[AmpereAI] AEC: post-barge-in playCtx init error:', err)
+        );
+    }
+
+    // ── _initPlayCtxAsync ─────────────────────────────────────────────────────
+    // Creates a fresh TTS AudioContext with the ref-capture worklet inserted between
+    // masterGain and the speaker. ref-capture-processor.js writes resampled (22050→16kHz)
+    // playback samples to the SAB at ACTUAL render time, feeding the NLMS AEC worklet.
+    // If worklet loading fails, falls back to masterGain → destination directly (no AEC ref).
+    async _initPlayCtxAsync() {
+        // Don't create if one is already running (called concurrently — session_init + re-init race)
+        if (this.playCtx && this.playCtx.state !== 'closed') return;
+
+        const ctx  = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
+        const gain = ctx.createGain();
+        this.pcmNextAt = 0;
+
+        let refCaptureNode = null;
+        if (this.referenceBuffer) {
+            try {
+                await ctx.audioWorklet.addModule('/assets/js/audio-ref-capture-processor.js');
+                refCaptureNode = new AudioWorkletNode(ctx, 'ref-capture-processor', {
+                    numberOfInputs:    1,
+                    numberOfOutputs:   1,
+                    outputChannelCount: [1],
+                    processorOptions:  { referenceBuffer: this.referenceBuffer },
+                });
+                // Chain: sources → masterGain → ref-capture (writes SAB) → speaker
+                gain.connect(refCaptureNode);
+                refCaptureNode.connect(ctx.destination);
+                console.log('%c[AmpereAI] 🔇 AEC: ref-capture-processor wired into playCtx', 'color:#06b6d4;font-weight:bold;');
+            } catch (workletErr) {
+                console.warn('[AmpereAI] AEC: ref-capture worklet failed — direct to destination (no NLMS reference this session):', workletErr);
+                gain.connect(ctx.destination);
+                refCaptureNode = null;
+            }
+        } else {
+            gain.connect(ctx.destination);
+        }
+
+        if (ctx.state === 'suspended') {
+            await ctx.resume().catch(() => {});
+        }
+
+        // Commit — only write these once fully wired to avoid partial state
+        this.playCtx        = ctx;
+        this.masterGain     = gain;
+        this.refCaptureNode = refCaptureNode;
+        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_READY sampleRate=${ctx.sampleRate}Hz aec=${!!refCaptureNode}`, 'color:#10b981;font-weight:bold;');
     }
 
     // ─── Voiceprint capture (unchanged from v3.529) ───────────────────────────

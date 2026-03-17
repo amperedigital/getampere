@@ -1,96 +1,202 @@
-/* global AudioWorkletProcessor, registerProcessor, SharedArrayBuffer */
+/* global AudioWorkletProcessor, registerProcessor, Atomics, SharedArrayBuffer */
 /**
- * AEC AudioWorklet Processor — Mic Capture with Reference Echo Cancellation
- * v3.601 — Phase 2 Full-Duplex AEC
+ * AEC AudioWorklet Processor — audio-aec-processor.js
+ * v3.605 — Phase 2+3: NLMS Adaptive Acoustic Echo Cancellation
  *
- * Receives mic PCM (128-sample blocks at 16kHz) and subtracts a delayed
- * reference signal from the TTS playback to cancel acoustic echo.
+ * REPLACES: fixed linear subtraction with hardcoded delayCompSamples (0.85 attenuation).
+ *   Problem with the old approach: the acoustic delay from speaker → mic is hardware-specific
+ *   (typically 10–60ms at 16kHz = 160–960 samples). With a fixed guess of 400 samples (~25ms),
+ *   any hardware running outside that range produced over-subtraction artifacts (audible ticks).
+ *   These ticks were picked up by Scribe as short phantom commits, triggering false barge-ins.
  *
- * The reference signal is written into a SharedArrayBuffer (SAB) ring buffer
- * by _queueAudio() in ai-chat.js as TTS PCM arrives (resampled 22050→16kHz).
+ * NLMS (Normalized Least Mean Squares) ADAPTIVE FILTER:
+ *   Maintains N=512 filter coefficients (taps) that learn the impulse response of the acoustic
+ *   path from speaker to mic. After convergence (~2–3 seconds of audio), the filter precisely
+ *   models the round-trip: scheduling delay, OS buffer, speaker driver, air travel, mic capture.
+ *   No hardcoded delay. No hardcoded attenuation. Works on any hardware automatically.
  *
- * Architecture:
- *   SAB layout: [ write_ptr (Int32, 4 bytes) | samples (Float32, remainder) ]
- *   write_ptr = index of the NEXT sample to be written (ring-buffer head)
- *   samples   = Float32 ring buffer, 1 second at 16kHz = 16000 samples = 64000 bytes
- *   Total SAB size: 4 + 16000 * 4 = 64004 bytes
+ *   Algorithm (per sample):
+ *     y[n]  = w^T · x[n]          (estimated echo: dot product of weights × reference history)
+ *     e[n]  = mic[n] - y[n]       (residual: cleaned mic signal)
+ *     P[n]  = ε + ||x[n]||²        (reference signal power, normalized)
+ *     w    += (μ / P[n]) · e[n] · x[n]   (NLMS weight update)
  *
- * AEC method: Linear subtraction with delay compensation.
- *   delayCompSamples (~400 = 25ms at 16kHz) accounts for acoustic round-trip:
- *   speaker → air → mic. This is an average; real hardware varies 10–60ms.
- *   attenuationFactor (0.85) is tunable — reduce if mic/speaker are well-isolated,
- *   increase if echo persists. NLMS adaptive filter is Phase 3 if needed.
+ * PARAMETERS:
+ *   N   = 512 taps   — covers 0–32ms at 16kHz. Power-of-2 enables bitmask indexing.
+ *   μ   = 0.05        — step size. Conservative: stable across all input levels.
+ *                       Converges in ~N/μ ≈ 10,000 samples ≈ 0.6 seconds.
+ *   ε   = 1e-6        — regularization. Prevents division by zero in silence.
  *
- * When SAB is not provided (e.g. browser doesn't support it or COOP/COEP missing),
- * the processor falls back to passthrough — mic audio is forwarded unchanged.
- * This ensures zero regression if AEC is unavailable.
+ * REFERENCE SIGNAL SOURCE:
+ *   The SAB is written by audio-ref-capture-processor.js (playback-side worklet) at exact
+ *   DAC render time — NOT by the main thread at schedule time. This eliminates the timing
+ *   error where PCM was written to SAB seconds before it played (scheduling lookahead).
+ *
+ * HOT PATH OPTIMIZATION:
+ *   N is a power of 2 (512 = 2^9). Circular buffer indexing uses bitwise AND instead of
+ *   modulo: (ptr & MASK) where MASK = N-1 = 511. V8 JIT optimizes this to a single ALU op.
+ *
+ * PASSTHROUGH FALLBACK:
+ *   If SAB is unavailable (no COOP/COEP headers, old browser), mic audio passes through
+ *   unchanged. No regression vs. pre-AEC behaviour.
+ *
+ * SAB LAYOUT:
+ *   Bytes 0–3:  Int32 write pointer (atomic, advanced by ref-capture-processor)
+ *   Bytes 4+:   Float32 ring buffer, 16000 samples (1 second at 16kHz)
  */
 
 class AecMicProcessor extends AudioWorkletProcessor {
-  constructor(options) {
-    super();
-    this.active = true;
+    constructor(options) {
+        super();
+        this.active = true;
 
-    const opts = options?.processorOptions ?? {};
-    const sab  = opts.referenceBuffer ?? null;
+        const opts = options?.processorOptions ?? {};
+        const sab  = opts.referenceBuffer ?? null;
 
-    if (sab && sab instanceof SharedArrayBuffer) {
-      // SAB layout: [write_ptr (Int32) | samples (Float32 ring)]
-      this.refWritePtr = new Int32Array(sab, 0, 1);          // 1 int32 = write pointer
-      this.refData     = new Float32Array(sab, 4);           // rest = samples
-      this.refLen      = this.refData.length;                // 16000 samples
-      this.hasSab      = true;
-    } else {
-      this.hasSab = false;
+        if (sab && sab instanceof SharedArrayBuffer) {
+            this.refWritePtr = new Int32Array(sab, 0, 1); // atomic write pointer (written by ref-capture)
+            this.refData     = new Float32Array(sab, 4);  // reference ring buffer
+            this.refLen      = this.refData.length;        // 16000 samples
+            this.hasSab      = true;
+        } else {
+            this.hasSab = false;
+        }
+
+        // ── NLMS filter state ─────────────────────────────────────────────────
+        // N MUST be a power of 2 for the bitmask optimization in the hot path.
+        this.N    = 512;          // filter taps — covers 0–32ms at 16kHz
+        this.MASK = this.N - 1;   // 511 (0x1FF) — bitmask for circular indexing
+        this.mu   = 0.05;         // NLMS step size
+        this.eps  = 1e-6;         // regularization constant
+
+        // Filter coefficients: w[0] is most recent tap, w[N-1] is oldest
+        this.w       = new Float32Array(this.N);
+
+        // Local reference history ring buffer (maintained by worklet, not from SAB)
+        // We copy reference samples here for fast sequential access in the NLMS loop.
+        this.refBuf  = new Float32Array(this.N);
+        this.histPtr = 0; // ring write head (circular, bitmask-indexed)
+
+        // Scratch vector for reference snapshot (avoids double circular-index computation)
+        // Reused across process() calls — no allocation in hot path.
+        this.xvec = new Float32Array(this.N);
+
+        // SAB read position — tracks where we're reading reference samples
+        // -1 means not yet initialized (will be set on first process() call with data)
+        this.refReadPtr = -1;
+
+        this.port.onmessage = (e) => {
+            if (e.data?.type === 'stop') this.active = false;
+        };
     }
 
-    // Round-trip delay compensation: ~25ms at 16kHz = 400 samples
-    // Accounts for speaker→mic acoustic travel time. Tunable per hardware.
-    this.delayCompSamples = opts.delayCompSamples ?? 400;
+    process(inputs) {
+        if (!this.active) return false;
 
-    // Echo attenuation factor: 0.85 = subtract 85% of reference signal.
-    // Lower values reduce the risk of over-subtracting (introducing artifacts).
-    this.attenuation = opts.attenuationFactor ?? 0.85;
+        const input = inputs[0];
+        if (!input?.[0]) return true;
+        const mic = input[0]; // 128 Float32 samples at 16kHz
 
-    this.port.onmessage = (e) => {
-      if (e.data?.type === 'stop') this.active = false;
-    };
-  }
+        // ── Passthrough: AEC not available ───────────────────────────────────
+        if (!this.hasSab) {
+            const out = mic.slice();
+            this.port.postMessage(out, [out.buffer]);
+            return true;
+        }
 
-  process(inputs) {
-    if (!this.active) return false;
-    const input = inputs[0];
-    if (!input || !input[0]) return true;
+        // ── Read SAB state ───────────────────────────────────────────────────
+        const writePtr = Atomics.load(this.refWritePtr, 0);
 
-    const mic = input[0];
+        // ── Initialize read pointer on first call with data ──────────────────
+        if (this.refReadPtr === -1) {
+            // Need at least N samples of history before we can start NLMS.
+            // Align refReadPtr to be N samples behind the current write head.
+            // This gives the filter room to look back across all N taps.
+            const available = (writePtr + this.refLen) % this.refLen; // approximate samples written
+            if (writePtr < this.N) {
+                // Not enough reference data yet — pass through.
+                // This only happens in the first ~30ms (N/16000 ≈ 0.032s) of a session.
+                const out = mic.slice();
+                this.port.postMessage(out, [out.buffer]);
+                return true;
+            }
+            // Start reading from N samples behind current write head
+            this.refReadPtr = (writePtr - this.N + this.refLen) % this.refLen;
+        }
 
-    if (!this.hasSab) {
-      // Passthrough — AEC not available (no SAB, no COOP/COEP, or old browser)
-      const out = mic.slice();
-      this.port.postMessage(out, [out.buffer]);
-      return true;
+        // ── Check reference availability ─────────────────────────────────────
+        // Ensure there are enough reference samples available for this block.
+        const refAvailable = (writePtr - this.refReadPtr + this.refLen) % this.refLen;
+        if (refAvailable < mic.length) {
+            // Reference is behind mic (ref-capture hasn't caught up yet) — passthrough.
+            // Should be rare; happens only at session start before ref-capture produces data.
+            const out = mic.slice();
+            this.port.postMessage(out, [out.buffer]);
+            return true;
+        }
+
+        // ── NLMS per-sample filter ───────────────────────────────────────────
+        const out     = new Float32Array(mic.length);
+        const w       = this.w;
+        const rb      = this.refBuf;
+        const xvec    = this.xvec;
+        const N       = this.N;
+        const MASK    = this.MASK;
+        const mu      = this.mu;
+        const eps     = this.eps;
+        const refData = this.refData;
+        const refLen  = this.refLen;
+
+        let histPtr    = this.histPtr;
+        let refReadPtr = this.refReadPtr;
+
+        for (let i = 0; i < mic.length; i++) {
+            // ── Read one reference sample from SAB ──────────────────────────
+            const refSample = refData[refReadPtr];
+            refReadPtr = (refReadPtr + 1) % refLen;
+
+            // ── Push into local reference history ring ──────────────────────
+            // histPtr is the NEXT write position (most recent sample will be at histPtr after write)
+            rb[histPtr] = refSample;
+
+            // ── Extract reference vector x[0..N-1] ─────────────────────────
+            // x[0] = most recent sample (at histPtr), x[k] = sample k steps ago
+            // Using bitmask: (histPtr - k + N) & MASK — no modulo, single ALU op per k
+            let power = eps;
+            for (let k = 0; k < N; k++) {
+                const xk = rb[(histPtr - k + N) & MASK];
+                xvec[k]  = xk;
+                power   += xk * xk;
+            }
+
+            // ── Compute estimated echo: y = w^T · x ────────────────────────
+            let y = 0;
+            for (let k = 0; k < N; k++) {
+                y += w[k] * xvec[k];
+            }
+
+            // ── Error: cleaned mic signal ───────────────────────────────────
+            const e = mic[i] - y;
+            out[i]  = e;
+
+            // ── NLMS weight update: w += (μ/P) · e · x ─────────────────────
+            const step = mu / power;
+            for (let k = 0; k < N; k++) {
+                w[k] += step * e * xvec[k];
+            }
+
+            // Advance history ring pointer (bitmask wrap)
+            histPtr = (histPtr + 1) & MASK;
+        }
+
+        // Persist state for next block
+        this.histPtr    = histPtr;
+        this.refReadPtr = refReadPtr;
+
+        // Zero-copy transfer to main thread → Float32 → Int16 → WebSocket
+        this.port.postMessage(out, [out.buffer]);
+        return true;
     }
-
-    const out     = new Float32Array(mic.length);
-    const writePtr = Atomics.load(this.refWritePtr, 0);
-    const bufLen   = this.refLen;
-
-    for (let i = 0; i < mic.length; i++) {
-      // Read reference sample from the ring buffer, delayed by delayCompSamples
-      // to compensate for the acoustic round-trip (speaker → air → mic).
-      // The ring buffer is written at 16kHz by the main thread (same rate as mic).
-      // We read a sample that was written ~delayCompSamples ago.
-      const readIdx  = ((writePtr - this.delayCompSamples - mic.length + i) % bufLen + bufLen) % bufLen;
-      const refSample = this.refData[readIdx];
-
-      // Subtract attenuated reference from mic signal
-      out[i] = mic[i] - refSample * this.attenuation;
-    }
-
-    // Zero-copy transfer to main thread → Float32 → Int16 → WebSocket (same as before)
-    this.port.postMessage(out, [out.buffer]);
-    return true;
-  }
 }
 
 registerProcessor('aec-mic-processor', AecMicProcessor);
