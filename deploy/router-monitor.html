@@ -712,6 +712,9 @@
                 row.sentinelLastUserMsg = ev.lastUserMsg || '';
                 row.sentinelAssistantPreview = ev.assistantPreview || '';
                 row.sentinelKbContent = ev.kbContent || '';
+                // Extract intent vector (intent label + search_query) from scores object
+                row.intentLabel   = ev.scores?.intent       || '';
+                row.intentQuery   = ev.scores?.search_query || '';
                 if (ev.facts && ev.facts.length > 0) { row.facts = ev.facts; row.factCount = ev.facts.length; }
                 latestSessionAvg = ev.sessionAvg;
                 updateSessionGauge(ev.sessionAvg);
@@ -726,6 +729,8 @@
                         _match.sentinelLastUserMsg = row.sentinelLastUserMsg;
                         _match.sentinelAssistantPreview = row.sentinelAssistantPreview;
                         _match.sentinelKbContent = row.sentinelKbContent;
+                        _match.intentLabel = row.intentLabel;
+                        _match.intentQuery = row.intentQuery;
                         if (ev.facts && ev.facts.length) { _match.facts = ev.facts; _match.factCount = ev.facts.length; }
                     }
                 }
@@ -862,6 +867,12 @@
                             <div style="margin-top:6px;">${kbSection}${userSection}${agentSection}</div>
                         </details>`;
                     }
+                    const intentHtml = (r.intentLabel || r.intentQuery)
+                        ? `<div style="margin-top:5px;padding:3px 8px;background:#0d1220;border-radius:4px;border:1px solid #58a6ff33;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+                            <span style="font-size:10px;color:#58a6ff;font-weight:700;white-space:nowrap;">🔍 ${esc(r.intentLabel || 'general')}</span>
+                            ${r.intentQuery ? `<span style="font-size:10px;color:#8b949e;font-style:italic;overflow-wrap:break-word;">&ldquo;${esc(r.intentQuery)}&rdquo;</span>` : ''}
+                          </div>`
+                        : '';
                     sentinelHtml = `<div class="sentinel-card">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
                             <span style="font-size:10px;color:#8b949e;">🛡️ Sentinel</span>
@@ -871,6 +882,7 @@
                             ${s.locked ? '<span style="font-size:10px;color:#f85149;font-weight:700;">🔴 T3 LOCKED</span>' : ''}
                         </div>
                         <div style="display:flex;flex-wrap:wrap;gap:4px;">${dims}</div>
+                        ${intentHtml}
                         ${evalCtxHtml}
                     </div>`;
                 }
