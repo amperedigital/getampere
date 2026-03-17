@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.604 — Post-TTS backchannel swallowing: no frontend changes (2026-03-17)
+
+Backend-only deploy. See `memory-api/CHANGELOG.md` for details.
+
 ## v3.603 — Barge-in: natural 200ms fade-out via GainNode (2026-03-17)
 
 **Design goal:** Full-duplex speech that feels human. When two people speak simultaneously,
