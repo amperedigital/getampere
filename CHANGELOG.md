@@ -1,6 +1,13 @@
 # Changelog
 
-## v3.596 - Auto-generated
+## v3.597 — Full KB/memory transparency in router monitor (2026-03-16)
+
+- **Router monitor**: `KB_BRIEF_READY` now shows the full synthesized brief (blue header, `gpt-4.1-mini` output) or raw chunks fallback (amber header, synthesis unavailable). Previously was a truncated 120px box.
+- **Router monitor**: `MEMORY_BOOTSTRAPPED` event now expands to show each loaded profile fact (green) + last session summary text.
+- **Router monitor**: `MEMORY_QUERY_DONE` event now expands to show each matched fact (blue) surfaced by the per-turn semantic query.
+- **Router monitor**: Intent vector (domain label + search_query) rendered as `🔍 intent "query"` badge on the Sentinel card in Turn-by-Turn panel.
+- **Router monitor**: Intent vector propagates through the `vdo-*` Sentinel merge so it appears on the matched LLM turn.
+
 - **Frontend**: v3.596: add barge_in WS handler + _flushAudioBuffer()
 
 

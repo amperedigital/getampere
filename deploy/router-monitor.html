@@ -976,7 +976,10 @@
             const stream = document.getElementById('eventStream');
             const _dimLabels = { a:'ACC', g:'GND', h:'HLP', cm:'CMP', cn:'CON', e:'EMP', s:'SAF', co:'COH', n:'NAT' };
             const details = Object.entries(ev)
-                .filter(([k]) => !['type', 'reqId', 'step', 'ts', 'convId', 'kb_brief', 'kbContent', 'assistantPreview'].includes(k))
+                .filter(([k]) => !['type', 'reqId', 'step', 'ts', 'convId',
+                    'kb_brief', 'kbContent', 'assistantPreview',
+                    'brief', 'facts', 'latestSummary'   // shown in expanded block below
+                ].includes(k))
                 .map(([k, v]) => {
                     let val;
                     if (k === 'scores' && typeof v === 'object' && v !== null) {
@@ -1011,12 +1014,44 @@
                     } else { val = `<span class="text-[#c9d1d9]">${esc(val)}</span>`; }
                     return `<span class="text-[#8b949e]">${k}=</span>${val}`;
                 }).join(' <span class="text-[#30363d]">·</span> ');
-            // KB content block — show for KB_BRIEF_READY and when kb_brief has content
+            // ── Expanded content blocks ─────────────────────────────────────────
             let kbBlock = '';
-            if (ev.step === 'KB_BRIEF_READY' && (ev.brief || ev.content || ev.kb_brief)) {
+            if (ev.step === 'KB_BRIEF_READY') {
                 const txt = ev.brief || ev.content || ev.kb_brief || '';
-                kbBlock = txt ? `<div style="margin-top:4px;padding:5px 8px;background:#0d1220;border:1px solid #58a6ff44;border-radius:4px;font-size:10px;color:#8b949e;white-space:pre-wrap;overflow-wrap:break-word;max-height:120px;overflow-y:auto;font-family:monospace;">${esc(txt)}</div>` : '';
+                if (txt) {
+                    const isRaw = !!ev.raw;
+                    const borderColor = isRaw ? '#e3b341' : '#58a6ff';
+                    const headerLabel = isRaw
+                        ? '⚠️ RAW CHUNKS (synthesis unavailable) — what Emily receives:'
+                        : '✨ SYNTHESIZED BRIEF (gpt-4.1-mini) — what Emily receives:';
+                    kbBlock = `<div style="margin-top:6px;">
+                        <div style="font-size:10px;font-weight:700;color:${borderColor};margin-bottom:3px;">${headerLabel}</div>
+                        <div style="padding:6px 10px;background:#0d1220;border:1px solid ${borderColor}44;border-radius:4px;font-size:11px;color:#c9d1d9;white-space:pre-wrap;overflow-wrap:break-word;max-height:300px;overflow-y:auto;font-family:monospace;line-height:1.5;">${esc(txt)}</div>
+                    </div>`;
+                }
             }
+            if (ev.step === 'MEMORY_BOOTSTRAPPED' && (ev.facts?.length > 0 || ev.latestSummary)) {
+                const factsHtml = (ev.facts || []).map(f =>
+                    `<div style="padding:2px 0;border-bottom:1px solid #21262d;color:#7ee787;font-size:11px;">• ${esc(String(f))}</div>`
+                ).join('');
+                const summaryHtml = ev.latestSummary
+                    ? `<div style="margin-top:5px;"><div style="font-size:10px;color:#8b949e;font-weight:600;margin-bottom:2px;">📋 Last session summary:</div><div style="color:#adbac7;font-size:11px;font-style:italic;padding:4px 8px;background:#0d1117;border-radius:3px;overflow-wrap:break-word;">${esc(ev.latestSummary)}</div></div>`
+                    : '';
+                kbBlock += `<div style="margin-top:6px;padding:6px 10px;background:#0d1a0d;border:1px solid #3fb95033;border-radius:4px;">
+                    <div style="font-size:10px;font-weight:700;color:#3fb950;margin-bottom:4px;">🧠 MEMORY LOADED — ${ev.factCount} fact${ev.factCount !== 1 ? 's' : ''} into session context:</div>
+                    ${factsHtml}${summaryHtml}
+                </div>`;
+            }
+            if (ev.step === 'MEMORY_QUERY_DONE' && ev.facts?.length > 0) {
+                const factsHtml = (ev.facts || []).map(f =>
+                    `<div style="padding:2px 0;border-bottom:1px solid #21262d;color:#79c0ff;font-size:11px;">• ${esc(String(f))}</div>`
+                ).join('');
+                kbBlock += `<div style="margin-top:6px;padding:6px 10px;background:#0d1220;border:1px solid #58a6ff33;border-radius:4px;">
+                    <div style="font-size:10px;font-weight:700;color:#58a6ff;margin-bottom:4px;">🔎 MEMORY SURFACED — ${ev.factCount} fact${ev.factCount !== 1 ? 's' : ''} matched query:</div>
+                    ${factsHtml}
+                </div>`;
+            }
+
             const entry = document.createElement('div');
             entry.className = 'new-row px-4 py-2 border-b border-[#21262d] text-xs';
             entry.innerHTML = `<div class="flex flex-wrap items-center gap-2"><span class="text-[#8b949e] w-16 shrink-0 font-mono">${fmt.time(ev.ts)}</span><span class="font-mono text-[#6e7681] text-[10px] w-12 shrink-0 truncate">${ev.reqId || ''}</span>${stepBadge(ev.step || '?')}<span class="flex flex-wrap gap-2 min-w-0">${details}</span></div>${kbBlock}`;
