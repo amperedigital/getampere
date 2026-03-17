@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.608 — Client-side mic mute during TTS (speakerphone model) + remove word-count gate (2026-03-17)
+
+**Root cause recap:** The word-count gate (BARGE_IN_MIN_WORDS=4) was supposed to block Emily's echo from
+triggering barge-in, but Scribe transcribes TTS audio fluently with 5+ words — it always passed.
+The only reliable fix is to prevent echo from reaching Scribe in the first place.
+
+**Fix — `ai-chat.js` mic mute during TTS:**
+- While `isPlaying=true && bargeInFaded=false` (Emily is actively playing audio the user hasn't interrupted),
+  mic PCM chunks are silently dropped before hitting the WebSocket — they never reach Scribe.
+- 250ms holdoff after `isPlaying` goes false (room reverb tail) via `lastTtsEndClient` timestamp.
+- `bargeInFaded=true` bypasses the mute — if the user already interrupted, their audio flows through.
+- `source.onended` now stamps `this.lastTtsEndClient = Date.now()` when the final queued buffer drains.
+- Version bumped to v3.608.
+
+**Removed — word-count gate (was in server; see backend CHANGELOG):**
+- `BARGE_IN_MIN_WORDS` constant removed from `voice-session-do.ts`.
+- Word-count checks removed from `partial_transcript` handler and bare-text path.
+- Kept as local inline constant in `classifyCommit()` (committed transcript only, different purpose).
+
 ## v3.607 — Three-layer false barge-in fix: noise gate + ctx preserve + word count gate (2026-03-17)
 
 **Root cause chain:** Emily's voice leaked through the mic at 0.003–0.010 RMS. Scribe transcribed this

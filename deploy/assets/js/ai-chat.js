@@ -8,11 +8,11 @@
 // v3.606: Fix ordering bug — _initPlayCtxAsync now completes BEFORE the greeting speak
 //   frame is sent to the server. Eliminates the race where PCM arrived before the worklet
 //   module loaded, causing the fallback bare-ctx to win and blocking ref-capture forever.
-// v3.607: Three-layer false-barge-in fix:
-//   (1) Server: partial_transcript barge-in now gated by BARGE_IN_MIN_WORDS (was ungated).
-//   (2) AEC worklet: noise gate added post-NLMS — blocks below 0.012 RMS = zero to Scribe.
-//   (3) Client: AudioContext preserved across barge-ins (fade/restore gain) so NLMS stays converged.
-console.log('[AmpereAI] v3.607 Voice Pipe Client Loaded (NLMS AEC + noise gate + ctx preserve)');
+// v3.608: Remove brittle word-count barge-in gate (server). Replace with client-side mic mute
+//   during TTS playback: PCM is not sent to Scribe while isPlaying=true, + 250ms reverb holdoff.
+//   Scribe never sees Emily's voice → no false partial transcripts → no false barge-ins.
+//   Also removed BARGE_IN_MIN_WORDS constant from voice-session-do.ts (was always circumvented).
+console.log('[AmpereAI] v3.608 Voice Pipe Client Loaded (mic mute during TTS)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -110,6 +110,8 @@ export class AmpereAIChat {
         // v3.607: barge-in now fades masterGain to 0 (keeps ctx alive) rather than closing ctx.
         // _queueAudio restores gain when new PCM arrives. Flag prevents stale ctx reuse.
         this.bargeInFaded     = false;  // true while masterGain is at 0 post-barge-in
+        // v3.608: timestamp of when the last TTS source actually ended (used for mic holdoff)
+        this.lastTtsEndClient = 0;
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
 
@@ -601,6 +603,20 @@ export class AmpereAIChat {
             let audioChunksSent = 0;
             micWorklet.port.onmessage = (e) => {
                 if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+
+                // v3.608: Mic mute during TTS playback — speakerphone model.
+                // While Emily is playing (isPlaying=true, gain not faded) we drop mic PCM
+                // before it reaches Scribe. This prevents Emily's voice bleeding into the mic
+                // from ever producing a partial_transcript that could trigger a false barge-in.
+                // bargeInFaded=true means the user already interrupted — let their audio through.
+                // After isPlaying goes false, hold for MIC_HOLDOFF_MS for room reverb tail.
+                const MIC_HOLDOFF_MS = 250;
+                const ttsMuted = this.isPlaying && !this.bargeInFaded;
+                const inHoldoff = !this.isPlaying && !this.bargeInFaded
+                    && this.lastTtsEndClient > 0
+                    && (Date.now() - this.lastTtsEndClient < MIC_HOLDOFF_MS);
+                if (ttsMuted || inHoldoff) return;
+
                 const float32 = e.data; // Float32Array from worklet (zero-copy transfer)
 
                 // Convert Float32 → Int16 PCM (16-bit signed, clamped)
@@ -727,6 +743,8 @@ export class AmpereAIChat {
         source.onended = () => {
             if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.05) {
                 this.isPlaying = false;
+                // v3.608: record when audio physically ended so mic holdoff can expire correctly
+                this.lastTtsEndClient = Date.now();
             }
         };
     }
