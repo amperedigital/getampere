@@ -2,7 +2,7 @@
 // Transport: WebSocket (PCM 16kHz → Scribe STT → T1/T2/T3 LLM → EL TTS → PCM 22050Hz binary back)
 // Voiceprint, greeting, identity seeding, systemLink all preserved.
 // v3.601: Phase 2 AEC — SharedArrayBuffer reference ring buffer + audio-aec-processor.js worklet.
-console.log('[AmpereAI] v3.601 Voice Pipe Client Loaded');
+console.log('[AmpereAI] v3.602 Voice Pipe Client Loaded');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
