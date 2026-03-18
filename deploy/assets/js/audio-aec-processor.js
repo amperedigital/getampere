@@ -62,7 +62,7 @@ class AecMicProcessor extends AudioWorkletProcessor {
             this.hasSab = false;
         }
 
-        // ── NLMS filter state ─────────────────────────────────────────────────
+        // -- NLMS filter state -------------------------------------------------------
         // N MUST be a power of 2 for the bitmask optimization in the hot path.
         this.N    = 512;          // filter taps — covers 0–32ms at 16kHz
         this.MASK = this.N - 1;   // 511 (0x1FF) — bitmask for circular indexing
@@ -85,18 +85,24 @@ class AecMicProcessor extends AudioWorkletProcessor {
         // -1 means not yet initialized (will be set on first process() call with data)
         this.refReadPtr = -1;
 
-        // ── Noise gate state ──────────────────────────────────────────────────
-        // Observed leakage RMS during TTS playback: 0.003–0.010 (ambient/whisper level).
-        // Real user speech at laptop distance: 0.05–0.30.
-        // Gate threshold set to 0.012 — well above leakage floor, well below speech floor.
-        // Smoothed with fast attack (GATE_ATTACK blocks) and gradual release (GATE_RELEASE blocks)
-        // so the gate doesn't clip speech onset or create clicks on gate open/close.
-        this.GATE_THRESHOLD = 0.012; // RMS below this = suppressed to zero
-        this.GATE_OPEN      = false; // current gate state
-        this.gateHold       = 0;     // release hold counter (blocks)
+        // -- Noise gate state --------------------------------------------------------
+        // v3.612: Dynamic threshold — two levels based on ttsActive flag:
+        //   TTS active   (Emily speaking): 0.012 — blocks her post-NLMS residual (0.003–0.010)
+        //   TTS inactive (user's turn)  : 0.003 — only hard floor; quiet user speech passes
+        //
+        // ttsActive defaults to true — greeting fires immediately after session init.
+        // ai-chat.js sends { type: 'tts_state', active: bool } on TTS start/stop.
+        //
+        // GATE_HOLD_BLOCKS=8: gate stays open 64ms after RMS drops, preventing speech tail clipping.
+        this.GATE_THRESHOLD_TTS    = 0.012; // during TTS: blocks Emily residual (0.003–0.010)
+        this.GATE_THRESHOLD_SILENT = 0.003; // user's turn: floor noise only; quiet speech passes
+        this.ttsActive  = true;   // start TTS-active; greeting plays right after session init
+        this.GATE_OPEN  = false;
+        this.gateHold   = 0;
 
         this.port.onmessage = (e) => {
-            if (e.data?.type === 'stop') this.active = false;
+            if (e.data?.type === 'stop')      this.active = false;
+            if (e.data?.type === 'tts_state') this.ttsActive = !!e.data.active;
         };
     }
 
@@ -107,17 +113,17 @@ class AecMicProcessor extends AudioWorkletProcessor {
         if (!input?.[0]) return true;
         const mic = input[0]; // 128 Float32 samples at 16kHz
 
-        // ── Passthrough: AEC not available ───────────────────────────────────
+        // -- Passthrough: AEC not available ------------------------------------------
         if (!this.hasSab) {
             const out = mic.slice();
             this.port.postMessage(out, [out.buffer]);
             return true;
         }
 
-        // ── Read SAB state ───────────────────────────────────────────────────
+        // -- Read SAB state ----------------------------------------------------------
         const writePtr = Atomics.load(this.refWritePtr, 0);
 
-        // ── Initialize read pointer on first call with data ──────────────────
+        // -- Initialize read pointer on first call with data -------------------------
         if (this.refReadPtr === -1) {
             // Need at least N samples of history before we can start NLMS.
             // Align refReadPtr to be N samples behind the current write head.
@@ -136,7 +142,7 @@ class AecMicProcessor extends AudioWorkletProcessor {
             this.refReadPtr = (writePtr - this.N + this.refLen) % this.refLen;
         }
 
-        // ── Check reference availability ─────────────────────────────────────
+        // -- Check reference availability --------------------------------------------
         // Ensure there are enough reference samples available for this block.
         const refAvailable = (writePtr - this.refReadPtr + this.refLen) % this.refLen;
         if (refAvailable < mic.length) {
@@ -148,7 +154,7 @@ class AecMicProcessor extends AudioWorkletProcessor {
             return true;
         }
 
-        // ── NLMS per-sample filter ───────────────────────────────────────────
+        // -- NLMS per-sample filter --------------------------------------------------
         const out     = new Float32Array(mic.length);
         const w       = this.w;
         const rb      = this.refBuf;
@@ -164,15 +170,15 @@ class AecMicProcessor extends AudioWorkletProcessor {
         let refReadPtr = this.refReadPtr;
 
         for (let i = 0; i < mic.length; i++) {
-            // ── Read one reference sample from SAB ──────────────────────────
+            // -- Read one reference sample from SAB ----------------------------------
             const refSample = refData[refReadPtr];
             refReadPtr = (refReadPtr + 1) % refLen;
 
-            // ── Push into local reference history ring ──────────────────────
+            // -- Push into local reference history ring ------------------------------
             // histPtr is the NEXT write position (most recent sample will be at histPtr after write)
             rb[histPtr] = refSample;
 
-            // ── Extract reference vector x[0..N-1] ─────────────────────────
+            // -- Extract reference vector x[0..N-1] ----------------------------------
             // x[0] = most recent sample (at histPtr), x[k] = sample k steps ago
             // Using bitmask: (histPtr - k + N) & MASK — no modulo, single ALU op per k
             let power = eps;
@@ -182,17 +188,17 @@ class AecMicProcessor extends AudioWorkletProcessor {
                 power   += xk * xk;
             }
 
-            // ── Compute estimated echo: y = w^T · x ────────────────────────
+            // -- Compute estimated echo: y = w^T x -----------------------------------
             let y = 0;
             for (let k = 0; k < N; k++) {
                 y += w[k] * xvec[k];
             }
 
-            // ── Error: cleaned mic signal ───────────────────────────────────
+            // -- Error: cleaned mic signal -------------------------------------------
             const e = mic[i] - y;
             out[i]  = e;
 
-            // ── NLMS weight update: w += (μ/P) · e · x ─────────────────────
+            // -- NLMS weight update: w += (mu/P) * e * x -----------------------------
             const step = mu / power;
             for (let k = 0; k < N; k++) {
                 w[k] += step * e * xvec[k];
@@ -206,19 +212,18 @@ class AecMicProcessor extends AudioWorkletProcessor {
         this.histPtr    = histPtr;
         this.refReadPtr = refReadPtr;
 
-        // ── Noise gate (post-NLMS mic isolation) ─────────────────────────────
-        // Purpose: suppress residual TTS leakage that the NLMS filter doesn't fully
-        // cancel during the convergence window (first ~0.6s) or on weak hardware AEC.
-        // Observed leakage: 0.003–0.010 RMS. Real speech: 0.05–0.30 RMS.
-        // GATE_THRESHOLD = 0.012 sits in the gap — leakage is suppressed, speech passes.
-        // Hold: gate stays OPEN for GATE_HOLD_BLOCKS after RMS drops below threshold
-        //       so we don't clip speech tails or create a click on gate close.
+        // -- Noise gate (post-NLMS mic isolation) ------------------------------------
+        // v3.612: Dynamic threshold.
+        //   ttsActive=true  -> GATE_THRESHOLD_TTS=0.012 : blocks Emily residual, no false Scribe transcripts
+        //   ttsActive=false -> GATE_THRESHOLD_SILENT=0.003: floor noise only; quiet user speech passes
+        // Hold: gate stays OPEN for GATE_HOLD_BLOCKS after RMS drops, preventing speech tail clipping.
+        const GATE_THRESHOLD   = this.ttsActive ? this.GATE_THRESHOLD_TTS : this.GATE_THRESHOLD_SILENT;
+        const GATE_HOLD_BLOCKS = 8; // 8 x 128 samples = 64ms hold after speech drops
         let blockRms = 0;
         for (let i = 0; i < out.length; i++) blockRms += out[i] * out[i];
         blockRms = Math.sqrt(blockRms / out.length);
 
-        const GATE_HOLD_BLOCKS = 8; // 8 × 128 samples = 64ms hold after speech drops
-        if (blockRms >= this.GATE_THRESHOLD) {
+        if (blockRms >= GATE_THRESHOLD) {
             // Signal present — open gate instantly
             this.GATE_OPEN = true;
             this.gateHold  = GATE_HOLD_BLOCKS;
@@ -235,7 +240,7 @@ class AecMicProcessor extends AudioWorkletProcessor {
             out.fill(0);
         }
 
-        // Zero-copy transfer to main thread → Float32 → Int16 → WebSocket
+        // Zero-copy transfer to main thread -> Float32 -> Int16 -> WebSocket
         this.port.postMessage(out, [out.buffer]);
         return true;
     }

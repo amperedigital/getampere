@@ -1,5 +1,35 @@
 # Changelog
 
+## v3.612 — Dynamic AEC noise gate + TTS state wiring (2026-03-18)
+
+**Two-problem diagnosis from v3.611 logs:**
+
+**Problem 1 — NLMS convergence false barge-in (fixed server-side, see memory-api CHANGELOG):**
+`MIC chunk=2 RMS=0.0575 SPEECH` — at ~0.5–1s into session the NLMS filter hasn't converged yet
+(needs ~0.6s of active reference signal) and Emily's voice leaks through the gate at 0.05+ RMS.
+Scribe transcribes "Good afternoon, Andrew", server fires barge-in. Fixed in v3.612 backend with
+a 2.5s greeting barge-in holdoff on `partial_transcript` events.
+
+**Problem 2 — Noise gate too aggressive post-barge-in (fixed here):**
+After barge-in, Emily is silent (masterGain=0). User speaks, but ALL mic chunks 4–23+ show
+RMS=0.0000. The noise gate was stuck at 0.012 even when TTS was inactive, blocking quiet user
+speech. Emily residual target is 0.003–0.010 DURING TTS — no reason to hold 0.012 when silent.
+
+**Fix — `audio-aec-processor.js`: dynamic noise gate threshold:**
+- NEW `GATE_THRESHOLD_TTS = 0.012` — used while Emily is speaking (blocks her residual)
+- NEW `GATE_THRESHOLD_SILENT = 0.003` — used when Emily is silent (floor noise only)
+- NEW `ttsActive` flag (defaults `true` — greeting fires immediately after session init)
+- NEW handler for `{ type: 'tts_state', active: bool }` messages from main thread
+- Gate: `GATE_THRESHOLD = ttsActive ? 0.012 : 0.003`
+
+**Fix — `ai-chat.js`: TTS state wiring:**
+- `_queueAudio`: sends `tts_state: active=true` to micWorklet when first TTS chunk arrives
+- `source.onended` (TTS natural end): sends `tts_state: active=false`
+- `_flushAudioBuffer` (barge-in): sends `tts_state: active=false` immediately
+
+**Result:** During Emily's speech, gate=0.012 blocks echo. After barge-in/TTS ends, gate=0.003
+— user speech at any reasonable volume reaches Scribe.
+
 ## v3.611 — AEC passthrough → silence during SAB warm-up (2026-03-18)
 
 **Root cause of v3.610 greeting stutter:** The AEC worklet (`audio-aec-processor.js`) had two

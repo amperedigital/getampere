@@ -746,11 +746,20 @@ export class AmpereAIChat {
         this.pcmNextAt = startAt + audioBuffer.duration;
 
         this.isPlaying = true;
+        // v3.612: Notify AEC worklet that TTS is now active — raises gate threshold to 0.012
+        // to block Emily's post-NLMS residual. Only signal on first chunk (isPlaying was false).
+        if (this.micWorklet && !this.bargeInFaded) {
+            this.micWorklet.port.postMessage({ type: 'tts_state', active: true });
+        }
         source.onended = () => {
             if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.05) {
                 this.isPlaying = false;
                 // v3.608: record when audio physically ended so mic holdoff can expire correctly
                 this.lastTtsEndClient = Date.now();
+                // v3.612: TTS finished naturally — drop gate to 0.003 so quiet user speech passes
+                if (this.micWorklet) {
+                    this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
+                }
             }
         };
     }
@@ -789,8 +798,12 @@ export class AmpereAIChat {
             gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
             gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
             this.bargeInFaded = true;
+            // v3.612: TTS interrupted — drop gate to 0.003 immediately so user speech passes
+            if (this.micWorklet) {
+                this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
+            }
             // pcmNextAt stays as-is — will be reset to 0 in _queueAudio when new PCM arrives
-            console.log('%c[AmpereAI] 🔇 BARGE_IN_FADE: masterGain → 0, ctx kept alive for NLMS continuity', 'color:#f97316;');
+            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0, ctx kept alive for NLMS continuity', 'color:#f97316;');
         } else {
             // No active ctx at all — will be created fresh when LLM responds
             this.pcmNextAt = 0;
