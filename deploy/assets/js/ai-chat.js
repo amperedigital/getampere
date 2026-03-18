@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.617 Voice Pipe Client Loaded (AEC gate 0.030, NLMS weights preserved on barge-in)');
+console.log('[AmpereAI] v3.618 Voice Pipe Client Loaded (browser AEC off, NLMS-only, gate 0.050, inter-chunk guard 400ms)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -230,9 +230,14 @@ export class AmpereAIChat {
             // 1. Mic access
             this.micStream = await navigator.mediaDevices.getUserMedia({
                 audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl:  true,
+                    // v3.618: Browser AEC disabled — we run a single NLMS AEC worklet that
+                    // has a precisely timed reference via SAB (better than OS loopback).
+                    // Running both simultaneously caused double-cancellation: AEC3 partially
+                    // cleaned the signal, then NLMS adapted to the wrong residual and
+                    // miscalibrated weights → artifacts + false gate triggers.
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl:  false,
                     sampleRate:       PCM_SAMPLE_RATE,
                     channelCount:     1,
                 }
@@ -755,7 +760,14 @@ export class AmpereAIChat {
             this.micWorklet.port.postMessage({ type: 'tts_state', active: true });
         }
         source.onended = () => {
-            if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.05) {
+            // v3.618: Guard increased 0.05 → 0.40s.
+            // The 50ms window fired false tts_state:false between streaming TTS chunks:
+            // if the server was slow delivering the next chunk, pcmNextAt could be <50ms
+            // ahead while more audio was still incoming. Gate collapsed to 0.003 mid-speech
+            // → Emily's residual (0.0144 RMS) passed the gate → Scribe false barge-in.
+            // 400ms gives enough buffer for inter-chunk gaps without delaying mic open after
+            // Emily's last word (last chunk ends, 400ms passes, gate drops — acceptable).
+            if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.40) {
                 this.isPlaying = false;
                 // v3.608: record when audio physically ended so mic holdoff can expire correctly
                 this.lastTtsEndClient = Date.now();

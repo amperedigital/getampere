@@ -1,5 +1,36 @@
 # Changelog
 
+## v3.618 — AEC: disable browser AEC, raise NLMS gate, fix inter-chunk tts_state drop (2026-03-18)
+
+**Root cause of double-AEC interference:**
+`getUserMedia` was called with `echoCancellation: true`, running the browser's WebRTC AEC3 on the
+mic stream. Our custom NLMS AEC worklet then ran on top of the already-cleaned signal. The NLMS
+trained its 512-tap weights to cancel an echo that AEC3 had partially removed — so it adapted to
+the wrong residual, miscalibrated weights, and produced artifacts. Two AECs fighting each other is
+worse than either one alone.
+
+**Fixes:**
+
+### 1. Browser AEC disabled (`echoCancellation: false`)
+- `getUserMedia` now requests raw mic audio — no browser AEC, no noise suppression, no AGC.
+- NLMS AEC worklet is now the sole echo canceller. It has a precisely timed reference via SAB
+  (from ref-capture-processor at DAC render time) — better than AEC3's OS loopback.
+
+### 2. NLMS gate threshold raised 0.030 → 0.050
+- Session log showed Emily's post-NLMS residual at **0.0384 RMS** (chunk=38, t≈4s) — above gate.
+- The 0.0205 "steady-state" figure was after full convergence (~0.6s); during warmup it's higher.
+- 0.050 gives margin above the measured peak. Real user speech (0.05–0.15 RMS) still passes.
+
+### 3. `source.onended` inter-chunk guard: 50ms → 400ms
+- The `tts_state: false` signal fired between streaming TTS chunks when the server was briefly
+  slow delivering the next chunk. `pcmNextAt` was <50ms ahead → gate collapsed to 0.003 mid-speech
+  → Emily's residual (0.0144 RMS) passed → Scribe false barge-in.
+- 400ms window prevents premature gate drop during normal inter-chunk gaps.
+
+**Files changed:**
+- `deploy/assets/js/ai-chat.js`
+- `deploy/assets/js/audio-aec-processor.js`
+
 ## v3.617 — Barge-in observability: BARGE_IN event in router monitor turn panel (2026-03-18)
 
 **What changed:**

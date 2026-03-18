@@ -99,7 +99,14 @@ class AecMicProcessor extends AudioWorkletProcessor {
         // ai-chat.js sends { type: 'tts_state', active: bool } on TTS start/stop.
         //
         // GATE_HOLD_BLOCKS=8: gate stays open 64ms after RMS drops, preventing speech tail clipping.
-        this.GATE_THRESHOLD_TTS    = 0.030; // during TTS: above Emily's 0.0205 steady-state residual
+        // v3.618: Raised 0.030 → 0.050. Session log showed Emily's post-NLMS residual at
+        // 0.0384 RMS (chunk=38, t≈4s) — above 0.030 → gate opened → Scribe false barge-in.
+        // The 0.0205 "steady-state" figure was after full NLMS convergence (~0.6s); during
+        // the convergence window residual is higher. 0.050 sits above the observed peak
+        // with margin, while normal user speech (0.05–0.15 RMS) still triggers barge-in
+        // only when the user speaks materially louder than the threshold.
+        // With browser AEC disabled (v3.618), NLMS is the sole AEC — no double-cancellation.
+        this.GATE_THRESHOLD_TTS    = 0.050; // during TTS: above measured 0.0384 peak residual
         this.GATE_THRESHOLD_SILENT = 0.003; // user's turn: floor noise only; quiet speech passes
         this.ttsActive  = true;   // start TTS-active; greeting plays right after session init
         this.GATE_OPEN  = false;
