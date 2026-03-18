@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.614 Voice Pipe Client Loaded (AEC gate 0.030, NLMS reset on barge-in)');
+console.log('[AmpereAI] v3.615 Voice Pipe Client Loaded (AEC gate 0.030, NLMS reset on barge-in)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {

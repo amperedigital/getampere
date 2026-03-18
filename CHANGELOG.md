@@ -1,6 +1,25 @@
 # Changelog
 
+## v3.615 — Fix: mic completely silent after Emily's greeting — ref-capture SAB write ptr freeze (2026-03-18)
+
+**Root cause:**
+`audio-ref-capture-processor.js` stopped writing to the SharedArrayBuffer (SAB) whenever the
+audio graph had no input (i.e., between TTS chunks and after Emily finished speaking). The SAB
+write pointer froze at the last position. The AEC mic worklet then detected `refAvailable < mic.length`
+and fell into its "reference not available" fallback — outputting silence instead of the mic signal.
+Result: user's voice was completely invisible to Scribe. Emily never responded. System appeared
+stuck in "Listening..." indefinitely.
+
+**Fix:**
+When `input` is null/empty (silence in the graph), write zeros to the SAB instead of returning early.
+This keeps the write pointer advancing at the correct rate. A silence reference is semantically correct:
+NLMS subtracts nothing (`y[n] = w^T·0 = 0`), so `e[n] = mic[n]` — user's voice passes through intact.
+
+**Files changed:**
+- `deploy/assets/js/audio-ref-capture-processor.js` — `const src = input || new Float32Array(128)`
+
 ## v3.614 — NLMS weight reset on barge-in: fix mic silence after interruption (2026-03-18)
+
 
 **Root cause:**
 After a barge-in, the NLMS AEC filter (`this.w`, 512 Float32 taps) retains filter weights

@@ -80,7 +80,14 @@ class RefCaptureProcessor extends AudioWorkletProcessor {
             // If input is empty (silence), output is already zeroed by the runtime
         }
 
-        if (!this.hasSab || !input) return true;
+        if (!this.hasSab) return true;
+
+        // If no audio input, write zeros to SAB to keep write pointer advancing.
+        // CRITICAL: if we stop advancing the write ptr, the AEC worklet detects
+        // refAvailable < mic.length and outputs SILENCE — completely muting the user's mic.
+        // This happens between TTS chunks (brief gaps) or after Emily finishes speaking.
+        // Silence reference = correct: NLMS subtracts nothing, user speech passes through intact.
+        const src = input || new Float32Array(128);
 
         // ── Resample 22050 → 16000 and write to SAB ─────────────────────────────
         // We iterate over OUTPUT sample positions (at 16kHz) and interpolate
@@ -96,7 +103,6 @@ class RefCaptureProcessor extends AudioWorkletProcessor {
 
         let ptr = Atomics.load(this.refWritePtr, 0);
         const bufLen = this.bufLen;
-        const src    = input;
         const srcLen = src.length; // 128
 
         // Generate output samples while inputPhase < srcLen
