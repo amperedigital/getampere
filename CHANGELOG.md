@@ -1,6 +1,36 @@
 # Changelog
 
+## v3.614 — NLMS weight reset on barge-in: fix mic silence after interruption (2026-03-18)
+
+**Root cause:**
+After a barge-in, the NLMS AEC filter (`this.w`, 512 Float32 taps) retains filter weights
+trained on Emily's voice during TTS playback. When the user speaks after the barge-in, the
+filter subtracts their voice from the mic signal — mistaking the user for Emily's echo.
+Output `e[n] = mic[n] - w^T·x[n]` approaches zero. The 0.003 gate closes. Scribe sees silence.
+System shows "Listening..." but nothing goes through. User confirmed: "it's like the mic is off."
+
+**Fix — `audio-aec-processor.js`:**
+- Added `reset_nlms` message handler at lines 108-128.
+- On receipt: `this.w.fill(0)` (zero all 512 taps), `this.refBuf.fill(0)` (clear reference
+  history), `this.refReadPtr = -1` (force re-alignment on next `process()` block).
+- The filter re-converges in ~0.6s of user speech (N/μ = 512/0.05 = 10,240 samples).
+- During that 0.6s window: 0.003 gate is active but with a clean slate — user voice passes
+  cleanly without being mistaken for Emily's echo.
+
+**Fix — `ai-chat.js`:**
+- `_flushAudioBuffer()`: after `tts_state: false`, now also sends `reset_nlms` to the AEC worklet.
+- Updated console log: "BARGE_IN_FADE: masterGain → 0, NLMS weights RESET"
+- Removed stale "ctx kept alive for NLMS continuity" comment — continuity was exactly the bug.
+
+**Design note — why NOT reset on natural TTS end:**
+- On natural turn transition (Emily finishes speaking), the weights are warm and correct.
+  Preserving them means the next TTS response starts with a converged filter. This is still
+  correct and unchanged — the warm-state benefit applies when Emily's audio path is stable.
+- On barge-in, the acoustic state changes abruptly (Emily mid-sentence → silent). The warm
+  weights now model the wrong thing. Reset is the only correct action.
+
 ## v3.613 — AEC gate threshold fix: 0.012 → 0.030 (2026-03-18)
+
 
 **Root cause confirmed from live session logs (v3.612):**
 

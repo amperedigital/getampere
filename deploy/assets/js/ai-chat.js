@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.613 Voice Pipe Client Loaded (AEC gate 0.030, no TTS mute)');
+console.log('[AmpereAI] v3.614 Voice Pipe Client Loaded (AEC gate 0.030, NLMS reset on barge-in)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -801,12 +801,18 @@ export class AmpereAIChat {
             gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
             gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
             this.bargeInFaded = true;
-            // v3.612: TTS interrupted — drop gate to 0.003 immediately so user speech passes
             if (this.micWorklet) {
+                // Drop gate to 0.003 immediately so user speech can pass
                 this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
+                // v3.614: Reset NLMS filter weights.
+                // The 512-tap filter learned Emily's voice during TTS. Without a reset,
+                // it cancels the user's speech post-barge-in (mistakes user for Emily's echo).
+                // Zeroing the weights forces re-convergence from a clean slate — the filter
+                // re-learns in ~0.6s of user speech rather than silencing them.
+                this.micWorklet.port.postMessage({ type: 'reset_nlms' });
             }
             // pcmNextAt stays as-is — will be reset to 0 in _queueAudio when new PCM arrives
-            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0, ctx kept alive for NLMS continuity', 'color:#f97316;');
+            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0, NLMS weights RESET', 'color:#f97316;');
         } else {
             // No active ctx at all — will be created fresh when LLM responds
             this.pcmNextAt = 0;

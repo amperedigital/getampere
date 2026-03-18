@@ -108,6 +108,26 @@ class AecMicProcessor extends AudioWorkletProcessor {
         this.port.onmessage = (e) => {
             if (e.data?.type === 'stop')      this.active = false;
             if (e.data?.type === 'tts_state') this.ttsActive = !!e.data.active;
+
+            // v3.614: Reset NLMS filter weights after a barge-in.
+            // Problem: during TTS the 512 filter taps converge to model Emily's voice.
+            // After barge-in Emily stops, but this.w is "tuned to cancel Emily."
+            // When the user speaks next, the filter cancels THEIR voice (mistaken for echo).
+            // Result: e[n] ≈ 0 → gate sees nothing → Scribe sees silence → mic appears dead.
+            //
+            // Fix: zero all taps + clear reference history + reset read pointer.
+            // The filter re-converges in ~0.6s (N/μ = 512/0.05 = 10,240 samples).
+            // During that window the 0.003 gate is already active but with a clean slate —
+            // the user's voice is not mistaken for Emily's echo.
+            //
+            // NOT called on natural TTS end (weights stay warm for next response).
+            // ONLY called on barge-in, where the acoustic state has fundamentally changed.
+            if (e.data?.type === 'reset_nlms') {
+                this.w.fill(0);        // zero all 512 NLMS filter taps
+                this.refBuf.fill(0);   // clear local reference history ring buffer
+                this.refReadPtr = -1;  // force re-alignment on next process() call
+                console.log('[AecMicProcessor] NLMS weights RESET (post-barge-in)');
+            }
         };
     }
 
