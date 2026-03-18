@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.617 — Barge-in observability: BARGE_IN event in router monitor turn panel (2026-03-18)
+
+**What changed:**
+The router monitor turn-by-turn panel now shows an amber ⚡ BARGE-IN sub-card nested directly
+inside the interrupted agent turn, including whatever text the user was saying when they cut in.
+
+**How it works:**
+- Backend emits a `BARGE_IN` router event from `flushTtsDiscard()` using the same `reqId` as the
+  interrupted LLM turn. The frontend attaches it to `routeMap[reqId].bargeIn` and renders it.
+- New `.step-BARGE_IN` CSS badge (amber, dark background) added to the step badge system.
+
+**Files changed:**
+- `deploy/router-monitor.html`
+
 ## v3.616 — Fix: chattery/broken voice — NLMS reset on barge-in causes false barge-ins (2026-03-18)
 
 **Root cause:**

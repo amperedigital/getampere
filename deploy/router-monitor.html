@@ -287,6 +287,13 @@
             font-weight: 700;
         }
 
+        .step-BARGE_IN {
+            background: #2d1d00;
+            color: #e3a21a;
+            border: 1px solid #e3a21a66;
+            font-weight: 700;
+        }
+
         .step-AGENT_RESPONSE {
             background: #1a2b2e;
             color: #7ee787;
@@ -771,6 +778,11 @@
                 row.t3PrewarmModel = ev.model || '';
                 row.t3PrewarmAvg = ev.sessionAvg ?? null;
             }
+            // v3.617: BARGE_IN — reqId IS the interrupted LLM turn's reqId, so attach directly.
+            if (step === 'BARGE_IN') {
+                row.bargeIn = { text: ev.partialText || '', ts: ev.ts };
+            }
+            if (step === 'STREAM_ABORTED') { row.streamAborted = true; }
 
             // Debounce rendering to prevent constant flashing from rapid-fire events
             if (!processEvent._renderTimer) {
@@ -836,6 +848,13 @@
                     : `<div class="turn-user-msg text-[#8b949e] italic" style="padding:6px 10px;"><span style="margin-right:6px;">👤</span>Greeting / system turn</div>`;
                 const agentHtml = r.agentResponse
                     ? `<div style="background:#1a2b2e;border-left:3px solid #3fb950;padding:6px 10px;border-radius:6px;margin-bottom:4px;color:#adbac7;word-wrap:break-word;white-space:pre-wrap;max-width:100%;overflow-wrap:break-word;"><span style="margin-right:6px;">🤖</span>${esc(r.agentResponse)}</div>`
+                    : '';
+                // v3.617: Barge-in sub-card — amber, nested inside the interrupted agent turn
+                const bargeInHtml = r.bargeIn
+                    ? `<div style="background:#1e1500;border-left:3px solid #e3a21a;padding:5px 10px;border-radius:6px;margin-bottom:4px;display:flex;align-items:flex-start;gap:6px;">
+                        <span style="color:#e3a21a;font-size:11px;font-weight:700;white-space:nowrap;">⚡ BARGE-IN</span>
+                        <span style="color:#c9b37a;font-size:11px;font-style:italic;overflow-wrap:break-word;">${r.bargeIn.text ? '"' + esc(r.bargeIn.text) + '"' : '<span style="color:#6e7681;">partial captured</span>'}</span>
+                      </div>`
                     : '';
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
@@ -937,6 +956,7 @@
                 return `<div class="turn-card ${!r.result ? 'active' : ''}${r.t3Locked ? ' style="border-left-color:#a855f7;"' : ''}">
                     ${msgHtml}
                     ${agentHtml}
+                    ${bargeInHtml}
                     ${sentinelHtml}
                     ${factsHtml}
                     ${kbHtml}
