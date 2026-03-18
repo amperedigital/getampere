@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.612 Voice Pipe Client Loaded (AEC trusted, no TTS mute)');
+console.log('[AmpereAI] v3.613 Voice Pipe Client Loaded (AEC gate 0.030, no TTS mute)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -746,9 +746,12 @@ export class AmpereAIChat {
         this.pcmNextAt = startAt + audioBuffer.duration;
 
         this.isPlaying = true;
-        // v3.612: Notify AEC worklet that TTS is now active — raises gate threshold to 0.012
-        // to block Emily's post-NLMS residual. Only signal on first chunk (isPlaying was false).
-        if (this.micWorklet && !this.bargeInFaded) {
+        // v3.613: Notify AEC worklet that TTS is now active — raises gate threshold to 0.030
+        // to block Emily's post-NLMS residual. Signal on every new TTS start, including after
+        // barge-in recovery. The old !bargeInFaded guard meant the worklet's gate stayed at
+        // 0.003 (user-turn threshold) while Emily's new response played post-barge-in, letting
+        // her echo straight through to Scribe.
+        if (this.micWorklet) {
             this.micWorklet.port.postMessage({ type: 'tts_state', active: true });
         }
         source.onended = () => {

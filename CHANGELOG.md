@@ -1,5 +1,31 @@
 # Changelog
 
+## v3.613 — AEC gate threshold fix: 0.012 → 0.030 (2026-03-18)
+
+**Root cause confirmed from live session logs (v3.612):**
+
+Emily's own voice caused a false barge-in during her greeting — the user said nothing. At chunk=7
+(t≈3s, NLMS fully converged), Emily's steady-state AEC residual measured **0.0205 RMS**. The TTS
+noise gate threshold was 0.012 — below the residual. Her audio passed the gate, reached Scribe,
+Scribe transcribed "Greetings from" (Emily's own greeting), and the server fired `barge_in` on an
+empty room. Emily then responded to her own ghost transcript, starting an echo loop that consumed
+the entire session. The user never got to speak.
+
+The v3.612 gate threshold (0.012) was calibrated for the early convergence window (0.003–0.010 range
+during the first 0.6s). It was never updated to reflect steady-state residual, which is higher because
+the NLMS filter models the acoustic path but doesn't eliminate all room reflections.
+
+**Fix — `audio-aec-processor.js`:**
+- `GATE_THRESHOLD_TTS` raised from **0.012 → 0.030** — above Emily's observed 0.0205 residual
+  with margin. Normal user speech is 0.03–0.15 RMS; real barge-in still passes if user speaks
+  at conversational volume.
+
+**Fix — `ai-chat.js`:**
+- Removed `!this.bargeInFaded` guard on `tts_state: true` signal in `_queueAudio()`. The guard
+  was preventing the worklet from knowing TTS was active after barge-in recovery — gate stayed
+  at 0.003 (user-turn threshold) while Emily's new response played, letting her echo through
+  without restriction.
+
 ## v3.612 — Dynamic AEC noise gate + TTS state wiring (2026-03-18)
 
 **Two-problem diagnosis from v3.611 logs:**

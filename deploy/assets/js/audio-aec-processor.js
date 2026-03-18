@@ -86,15 +86,20 @@ class AecMicProcessor extends AudioWorkletProcessor {
         this.refReadPtr = -1;
 
         // -- Noise gate state --------------------------------------------------------
-        // v3.612: Dynamic threshold — two levels based on ttsActive flag:
-        //   TTS active   (Emily speaking): 0.012 — blocks her post-NLMS residual (0.003–0.010)
-        //   TTS inactive (user's turn)  : 0.003 — only hard floor; quiet user speech passes
+        // v3.613: Dynamic threshold — two levels based on ttsActive flag:
+        //   TTS active   (Emily speaking): 0.030 — blocks her post-NLMS residual.
+        //     Session logs confirmed Emily's steady-state AEC residual is ~0.0205 RMS
+        //     (chunk=7, t≈3s, NLMS fully converged). 0.012 was below that — Emily's own
+        //     voice passed the gate, got sent to Scribe, triggered false barge-ins.
+        //     0.030 is above the observed residual with margin. Normal user speech is
+        //     0.03–0.15 RMS — real barge-in still passes if user speaks at normal volume.
+        //   TTS inactive (user's turn)  : 0.003 — floor noise only; quiet user speech passes.
         //
         // ttsActive defaults to true — greeting fires immediately after session init.
         // ai-chat.js sends { type: 'tts_state', active: bool } on TTS start/stop.
         //
         // GATE_HOLD_BLOCKS=8: gate stays open 64ms after RMS drops, preventing speech tail clipping.
-        this.GATE_THRESHOLD_TTS    = 0.012; // during TTS: blocks Emily residual (0.003–0.010)
+        this.GATE_THRESHOLD_TTS    = 0.030; // during TTS: above Emily's 0.0205 steady-state residual
         this.GATE_THRESHOLD_SILENT = 0.003; // user's turn: floor noise only; quiet speech passes
         this.ttsActive  = true;   // start TTS-active; greeting plays right after session init
         this.GATE_OPEN  = false;
@@ -213,8 +218,8 @@ class AecMicProcessor extends AudioWorkletProcessor {
         this.refReadPtr = refReadPtr;
 
         // -- Noise gate (post-NLMS mic isolation) ------------------------------------
-        // v3.612: Dynamic threshold.
-        //   ttsActive=true  -> GATE_THRESHOLD_TTS=0.012 : blocks Emily residual, no false Scribe transcripts
+        // v3.613: Dynamic threshold.
+        //   ttsActive=true  -> GATE_THRESHOLD_TTS=0.030 : above Emily's ~0.0205 steady-state residual
         //   ttsActive=false -> GATE_THRESHOLD_SILENT=0.003: floor noise only; quiet user speech passes
         // Hold: gate stays OPEN for GATE_HOLD_BLOCKS after RMS drops, preventing speech tail clipping.
         const GATE_THRESHOLD   = this.ttsActive ? this.GATE_THRESHOLD_TTS : this.GATE_THRESHOLD_SILENT;
