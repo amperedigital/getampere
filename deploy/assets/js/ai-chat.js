@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.618 Voice Pipe Client Loaded (browser AEC off, NLMS-only, gate 0.050, inter-chunk guard 400ms)');
+console.log('[AmpereAI] v3.620 Voice Pipe Client Loaded (browser AEC3 + RTCPeerConnection loopback, no NLMS)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -109,7 +109,10 @@ export class AmpereAIChat {
         // Layout: [write_ptr (Int32, 4 bytes) | Float32 samples (16000 * 4 bytes = 1s at 16kHz)]
         // Written by audio-ref-capture-processor.js (running in playCtx) at DAC render time;
         // read by AEC worklet. SAB + context preserved across barge-ins for NLMS continuity.
-        this.referenceBuffer  = null;   // SharedArrayBuffer | null
+        this.referenceBuffer  = null;   // unused — kept for legacy guards only (v3.620: NLMS removed)
+        this.loopbackPc1      = null;   // RTCPeerConnection sender side
+        this.loopbackPc2      = null;   // RTCPeerConnection receiver side
+        this.loopbackAudioEl  = null;   // HTMLAudioElement driven by pc2 (user hears + AEC3 reference)
         this.refWritePtr      = null;   // Int32Array view of first 4 bytes (write pointer)
         this.refSamples       = null;   // Float32Array view of remaining bytes (ring data)
 
@@ -230,14 +233,13 @@ export class AmpereAIChat {
             // 1. Mic access
             this.micStream = await navigator.mediaDevices.getUserMedia({
                 audio: {
-                    // v3.618: Browser AEC disabled — we run a single NLMS AEC worklet that
-                    // has a precisely timed reference via SAB (better than OS loopback).
-                    // Running both simultaneously caused double-cancellation: AEC3 partially
-                    // cleaned the signal, then NLMS adapted to the wrong residual and
-                    // miscalibrated weights → artifacts + false gate triggers.
-                    echoCancellation: false,
-                    noiseSuppression: false,
-                    autoGainControl:  false,
+                    // v3.620: Browser AEC3 enabled with RTCPeerConnection loopback for proper reference.
+                    // TTS audio flows: AudioContext → MediaStreamDestination → pc1 → pc2 → HTMLAudioElement.
+                    // AEC3 uses the WebRTC receiver track as its reference — sample-synchronized.
+                    // NLMS worklet removed entirely (replaced by AEC3 + simple passthrough).
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl:  false,  // keep off — natural level variation for Scribe
                     sampleRate:       PCM_SAMPLE_RATE,
                     channelCount:     1,
                 }
@@ -481,23 +483,8 @@ export class AmpereAIChat {
             this.addMessage('Connection established. Say hello!', 'system');
         }
 
-        // Phase 2 AEC: create SAB reference ring buffer BEFORE starting mic streaming.
-        // SAB requires COOP/COEP headers (set on /voice/session in index.ts).
-        // If unavailable (old browser, missing headers), gracefully falls back to passthrough.
-        try {
-            if (typeof SharedArrayBuffer !== 'undefined') {
-                // 4 bytes header (write ptr) + 16000 Float32 samples (1s at 16kHz)
-                const sab = new SharedArrayBuffer(4 + 16000 * 4);
-                this.referenceBuffer = sab;
-                this.refWritePtr     = new Int32Array(sab, 0, 1);   // write pointer
-                this.refSamples      = new Float32Array(sab, 4);    // ring data
-                console.log('%c[AmpereAI] 🔇 AEC: SharedArrayBuffer ring buffer initialized (64KB)', 'color:#06b6d4;font-weight:bold;');
-            } else {
-                console.warn('[AmpereAI] AEC: SharedArrayBuffer not available — falling back to passthrough mic (no COOP/COEP or old browser)');
-            }
-        } catch (sabErr) {
-            console.warn('[AmpereAI] AEC: SAB init failed (passthrough):', sabErr);
-        }
+        // v3.620: SAB / NLMS AEC removed. Browser AEC3 with RTCPeerConnection loopback
+        // handles echo cancellation. referenceBuffer stays null.
 
         // Start streaming mic audio to DO
         this._startMicStreaming();
@@ -586,26 +573,12 @@ export class AmpereAIChat {
             this.micCtx = new AudioContext({ sampleRate: PCM_SAMPLE_RATE });
             console.log(`%c[AmpereAI] 🎤 AudioContext actual sampleRate: ${this.micCtx.sampleRate}Hz (requested ${PCM_SAMPLE_RATE}Hz)`, 'color:#f59e0b;font-weight:bold;');
 
-            // Phase 2 AEC: use aec-mic-processor if SAB is available; else fall back to passthrough.
-            // aec-mic-processor subtracts the TTS reference signal written by _queueAudio().
-            // Falls back to the original mic-stream-processor (passthrough) if SAB unavailable.
-            let micWorklet;
-            if (this.referenceBuffer) {
-                await this.micCtx.audioWorklet.addModule('/assets/js/audio-aec-processor.js');
-                micWorklet = new AudioWorkletNode(this.micCtx, 'aec-mic-processor', {
-                    processorOptions: {
-                        referenceBuffer:    this.referenceBuffer,
-                        delayCompSamples:   400,   // ~25ms at 16kHz — tunable
-                        attenuationFactor:  0.85,  // 85% echo subtraction — tunable
-                    }
-                });
-                console.log('%c[AmpereAI] 🔇 AEC: aec-mic-processor loaded with SAB reference buffer', 'color:#06b6d4;font-weight:bold;');
-            } else {
-                // Passthrough fallback — original worklet, AEC disabled
-                await this.micCtx.audioWorklet.addModule('/assets/js/audio-mic-processor.js');
-                micWorklet = new AudioWorkletNode(this.micCtx, 'mic-stream-processor');
-                console.log('%c[AmpereAI] 🎤 AEC: passthrough mic (no SAB)', 'color:#f59e0b;font-weight:bold;');
-            }
+            // v3.620: Always use passthrough worklet. Browser AEC3 (enabled in getUserMedia)
+            // handles echo cancellation with the RTCPeerConnection loopback as its reference.
+            // NLMS and SAB branches removed.
+            await this.micCtx.audioWorklet.addModule('/assets/js/audio-mic-processor.js');
+            const micWorklet = new AudioWorkletNode(this.micCtx, 'mic-stream-processor');
+            console.log('%c[AmpereAI] 🎤 AEC: passthrough mic (browser AEC3 + RTCPeerConnection loopback)', 'color:#06b6d4;font-weight:bold;');
 
             const source = this.micCtx.createMediaStreamSource(this.micStream);
             source.connect(micWorklet);
@@ -705,14 +678,19 @@ export class AmpereAIChat {
         if (this.playCtx.state === 'suspended') {
             this.playCtx.resume().catch(() => {});
         }
-        // v3.607: restore gain if we're coming out of a barge-in fade (ctx was kept alive)
+        // v3.620: masterGain → loopback dest. Do NOT restore gain on bargeInFaded —
+        // _handleBargeIn now pauses the loopbackAudioEl; resuming is handled there.
         if (this.bargeInFaded && this.masterGain) {
             this.bargeInFaded = false;
-            this.pcmNextAt = 0; // reset scheduling offset for new response
+            this.pcmNextAt = 0;
             this.masterGain.gain.cancelScheduledValues(this.playCtx.currentTime);
             this.masterGain.gain.setValueAtTime(0, this.playCtx.currentTime);
             this.masterGain.gain.linearRampToValueAtTime(1, this.playCtx.currentTime + 0.05);
-            console.log('%c[AmpereAI] 🔊 GAIN_RESTORE: new response starting, fading gain back to 1', 'color:#10b981;');
+            // Resume the loopback audio element so AEC3 reference stays active
+            if (this.loopbackAudioEl && this.loopbackAudioEl.paused) {
+                this.loopbackAudioEl.play().catch(() => {});
+            }
+            console.log('%c[AmpereAI] 🔊 GAIN_RESTORE: new response starting, fading gain back to 1 + loopback resumed', 'color:#10b981;');
         }
 
         // pcm_22050 = 16-bit signed LE samples = 2 bytes each.
@@ -813,74 +791,111 @@ export class AmpereAIChat {
             gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
             gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
             this.bargeInFaded = true;
+            this.pcmNextAt = 0;
+            // Pause loopback audio element — clears the WebRTC receiver buffer quickly
+            // so user doesn't hear residual TTS audio after barge-in.
+            if (this.loopbackAudioEl && !this.loopbackAudioEl.paused) {
+                this.loopbackAudioEl.pause();
+            }
             if (this.micWorklet) {
-                // Drop gate to 0.003 immediately so user speech can pass.
-                // v3.616: Do NOT reset NLMS weights here.
-                //   During barge-in, masterGain fades to 0 → reference signal drops to 0 →
-                //   y[n] = w^T · 0 = 0 regardless of weights → user speech e[n]=mic[n] passes.
-                //   Weights are NOT updated (step = mu/P · e · x = 0 when x=0) — they stay
-                //   trained on Emily's acoustic path.
-                //   When Emily returns for her next response, these weights cancel her immediately
-                //   with no reconvergence window. Resetting to zero forces ~0.6s reconvergence
-                //   during which Emily's raw echo leaks past the gate into Scribe → false barge-in
-                //   fires → Emily gets cut off mid-sentence → chattery broken voice.
                 this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
             }
-            // pcmNextAt stays as-is — will be reset to 0 in _queueAudio when new PCM arrives
-            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0 (NLMS weights PRESERVED)', 'color:#f97316;');
+            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain → 0 + loopback audio paused', 'color:#f97316;');
         } else {
             // No active ctx at all — will be created fresh when LLM responds
             this.pcmNextAt = 0;
         }
-        // No _initPlayCtxAsync() call needed — existing ctx + ref-capture stays running.
+        // No _initPlayCtxAsync() call needed — existing ctx + loopback stays running.
     }
 
     // ── _initPlayCtxAsync ─────────────────────────────────────────────────────
-    // Creates a fresh TTS AudioContext with the ref-capture worklet inserted between
-    // masterGain and the speaker. ref-capture-processor.js writes resampled (22050→16kHz)
-    // playback samples to the SAB at ACTUAL render time, feeding the NLMS AEC worklet.
-    // Called ONCE on session init via _handleSessionInit().finally().
-    // v3.607: No longer called on barge-in — ctx is preserved across barge-ins.
+    // v3.620: Creates TTS AudioContext routed through RTCPeerConnection loopback.
+    // Audio path: sources → masterGain → MediaStreamDestination → pc1 → pc2 → HTMLAudioElement.
+    // User hears TTS via the HTMLAudioElement. Browser AEC3 uses the WebRTC receiver
+    // track as its reference — perfectly synchronized, no OS loopback timing uncertainty.
+    // NLMS and SAB are completely removed.
     async _initPlayCtxAsync() {
-        // Don't create if one is already running (guards against concurrent calling)
         if (this.playCtx && this.playCtx.state !== 'closed') return;
 
         const ctx  = new AudioContext({ sampleRate: TTS_PCM_SAMPLE_RATE });
         const gain = ctx.createGain();
         this.pcmNextAt = 0;
 
-        let refCaptureNode = null;
-        if (this.referenceBuffer) {
-            try {
-                await ctx.audioWorklet.addModule('/assets/js/audio-ref-capture-processor.js');
-                refCaptureNode = new AudioWorkletNode(ctx, 'ref-capture-processor', {
-                    numberOfInputs:    1,
-                    numberOfOutputs:   1,
-                    outputChannelCount: [1],
-                    processorOptions:  { referenceBuffer: this.referenceBuffer },
-                });
-                // Chain: sources → masterGain → ref-capture (writes SAB) → speaker
-                gain.connect(refCaptureNode);
-                refCaptureNode.connect(ctx.destination);
-                console.log('%c[AmpereAI] 🔇 AEC: ref-capture-processor wired into playCtx', 'color:#06b6d4;font-weight:bold;');
-            } catch (workletErr) {
-                console.warn('[AmpereAI] AEC: ref-capture worklet failed — direct to destination (no NLMS reference this session):', workletErr);
-                gain.connect(ctx.destination);
-                refCaptureNode = null;
-            }
-        } else {
-            gain.connect(ctx.destination);
-        }
+        // Route masterGain → loopback destination only (not to ctx.destination).
+        // Audio reaches the speaker via the RTCPeerConnection receiver HTMLAudioElement.
+        const loopbackDest = ctx.createMediaStreamDestination();
+        gain.connect(loopbackDest);
 
         if (ctx.state === 'suspended') {
             await ctx.resume().catch(() => {});
         }
 
-        // Commit — only write these once fully wired to avoid partial state
         this.playCtx        = ctx;
         this.masterGain     = gain;
-        this.refCaptureNode = refCaptureNode;
-        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_READY sampleRate=${ctx.sampleRate}Hz aec=${!!refCaptureNode}`, 'color:#10b981;font-weight:bold;');
+        this.refCaptureNode = null; // NLMS removed
+
+        // Set up RTCPeerConnection loopback AFTER committing ctx/gain refs
+        // so any fallback inside can use this.playCtx.destination.
+        await this._setupRtcLoopback(loopbackDest.stream);
+
+        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_READY sampleRate=${ctx.sampleRate}Hz loopback=true`, 'color:#10b981;font-weight:bold;');
+    }
+
+    // ── _setupRtcLoopback ─────────────────────────────────────────────────────
+    // Creates a local RTCPeerConnection pair (no server, no ICE servers needed for loopback).
+    // pc1 sends the TTS MediaStream. pc2's ontrack drives an HTMLAudioElement so the user
+    // hears TTS AND browser AEC3 has a properly synchronized WebRTC reference signal.
+    async _setupRtcLoopback(mediaStream) {
+        try {
+            const pc1 = new RTCPeerConnection();
+            const pc2 = new RTCPeerConnection();
+
+            // Exchange ICE candidates locally (no STUN/TURN needed for same-page loopback)
+            pc1.onicecandidate = ({ candidate }) => {
+                if (candidate) pc2.addIceCandidate(candidate).catch(() => {});
+            };
+            pc2.onicecandidate = ({ candidate }) => {
+                if (candidate) pc1.addIceCandidate(candidate).catch(() => {});
+            };
+
+            // Add TTS audio track to pc1 (sender side)
+            const track = mediaStream.getAudioTracks()[0];
+            if (!track) throw new Error('No audio track in loopback MediaStream');
+            pc1.addTrack(track, mediaStream);
+
+            // pc2 receiver → HTMLAudioElement
+            // This element is what the user hears. Being a WebRTC receiver, AEC3 uses
+            // its playout as the reference signal for the getUserMedia mic stream.
+            pc2.ontrack = ({ streams }) => {
+                const audio = new Audio();
+                audio.srcObject = streams[0];
+                audio.autoplay  = true;
+                // Must be in DOM for some browsers to keep the WebRTC audio context active
+                audio.style.display = 'none';
+                document.body.appendChild(audio);
+                this.loopbackAudioEl = audio;
+                console.log('%c[AmpereAI] 🔊 LOOPBACK: pc2 receiver → HTMLAudioElement (AEC3 reference ready)', 'color:#10b981;font-weight:bold;');
+            };
+
+            // Exchange SDP locally
+            const offer = await pc1.createOffer();
+            await pc1.setLocalDescription(offer);
+            await pc2.setRemoteDescription(pc1.localDescription);
+            const answer = await pc2.createAnswer();
+            await pc2.setLocalDescription(answer);
+            await pc1.setRemoteDescription(pc2.localDescription);
+
+            this.loopbackPc1 = pc1;
+            this.loopbackPc2 = pc2;
+            console.log('%c[AmpereAI] 🔊 LOOPBACK: RTCPeerConnection loopback established (no server)', 'color:#10b981;font-weight:bold;');
+
+        } catch (loopErr) {
+            console.warn('[AmpereAI] LOOPBACK: RTCPeerConnection setup failed, falling back to direct-to-destination:', loopErr);
+            // Graceful fallback: route directly to speakers (AEC3 still runs, just with OS reference)
+            if (this.masterGain && this.playCtx) {
+                this.masterGain.connect(this.playCtx.destination);
+            }
+        }
     }
 
     // ─── Voiceprint capture (unchanged from v3.529) ───────────────────────────

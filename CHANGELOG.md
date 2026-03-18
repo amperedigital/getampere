@@ -1,5 +1,45 @@
 # Changelog
 
+## v3.620 — AEC: replace NLMS with browser AEC3 + RTCPeerConnection loopback (2026-03-18)
+
+### Root cause of the NLMS approach failure
+
+The NLMS AEC worklet was fighting two fundamental problems:
+1. **Filter poisoning on barge-in** — after Emily speaks for 2-3s, NLMS weights are trained
+   on her spectral signature. When the user starts speaking, NLMS subtracts their voice as
+   if it were Emily's echo. Post-barge-in the mic appeared dead to Scribe.
+2. **Convergence window** — NLMS requires ~600ms to re-adapt after any acoustic change.
+   During that window the gate fluctuated, causing false barge-in triggers on Scribe.
+
+The root fix is: let the browser do AEC. WebRTC AEC3 has a dedicated loopback reference path
+at the OS audio render level. It's real-time, hardware-accelerated, and handles nonlinear
+echoes that NLMS (linear) fundamentally cannot.
+
+### Changes
+
+**1. Browser AEC enabled (`echoCancellation: true`)**
+- `getUserMedia` now requests `echoCancellation: true`, `noiseSuppression: true`
+- Browser AEC3 runs at the OS audio layer — reference is DAC render, not a SharedArrayBuffer copy
+
+**2. RTCPeerConnection loopback for TTS playback**
+- Removed: `ctx.destination` direct routing + `ref-capture-processor` worklet + SharedArrayBuffer
+- Added: RTCPeerConnection loopback (`pc1` → `pc2`) — `masterGain` feeds `pc1.addTrack()`,
+  `pc2.ontrack` drives an `HTMLAudioElement` (`loopbackAudioEl`)
+- The `HTMLAudioElement` is what the user hears AND is the reference for the browser's AEC
+- AEC3 sees exactly what the speaker played — no timing skew, no copy artifacts
+
+**3. Mic path simplified**
+- Removed NLMS AEC worklet entirely (`audio-aec-processor.js` no longer loaded)
+- `_startMicStreaming` always uses the passthrough `audio-mic-processor.js`
+- Removed SharedArrayBuffer setup, `referenceBuffer`, and all NLMS-conditional paths
+
+**4. Barge-in handler updated**
+- `_handleBargeIn` now pauses `loopbackAudioEl` (clears WebRTC buffer) instead of sending
+  `reset_nlms` to the AEC worklet
+
+**Files changed:**
+- `deploy/assets/js/ai-chat.js` — AEC loopback, mic passthrough, barge-in update
+
 ## v3.618 — AEC: disable browser AEC, raise NLMS gate, fix inter-chunk tts_state drop (2026-03-18)
 
 **Root cause of double-AEC interference:**
