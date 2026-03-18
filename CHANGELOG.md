@@ -1,6 +1,27 @@
 # Changelog
 
+## v3.616 — Fix: chattery/broken voice — NLMS reset on barge-in causes false barge-ins (2026-03-18)
+
+**Root cause:**
+v3.614 added `reset_nlms` on barge-in to fix a "mic appears dead" symptom. That symptom was
+actually caused by the ref-capture SAB write-ptr freeze (fixed in v3.615). The NLMS reset was
+solving the wrong problem and introduced a worse one:
+
+After a real user barge-in → NLMS weights zeroed → Emily's next response starts playing →
+NLMS needs ~0.6s to reconverge → during reconvergence Emily's raw echo leaks through to Scribe →
+Scribe sees Emily's own words → false barge-in fires → Emily cut off mid-sentence → chattery voice.
+
+**Why no reset is correct:**
+During barge-in, `masterGain` fades to 0 → reference signal in SAB = 0 → `y[n] = w^T · 0 = 0`
+regardless of filter weights → user speech `e[n] = mic[n]` passes through perfectly.
+NLMS weight update `w += (μ/P) · e · x = 0` when reference x=0 — weights are frozen in place,
+still trained on Emily's acoustic path. When Emily returns, filter cancels her immediately.
+
+**Files changed:**
+- `deploy/assets/js/ai-chat.js` — removed `reset_nlms` postMessage from `_flushAudioBuffer`
+
 ## v3.615 — Fix: mic completely silent after Emily's greeting — ref-capture SAB write ptr freeze (2026-03-18)
+
 
 **Root cause:**
 `audio-ref-capture-processor.js` stopped writing to the SharedArrayBuffer (SAB) whenever the

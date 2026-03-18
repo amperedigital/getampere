@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.615 Voice Pipe Client Loaded (AEC gate 0.030, NLMS reset on barge-in)');
+console.log('[AmpereAI] v3.616 Voice Pipe Client Loaded (AEC gate 0.030, NLMS weights preserved on barge-in)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -802,17 +802,20 @@ export class AmpereAIChat {
             gain.gain.linearRampToValueAtTime(0, ctx.currentTime + BARGE_IN_FADE_MS / 1000);
             this.bargeInFaded = true;
             if (this.micWorklet) {
-                // Drop gate to 0.003 immediately so user speech can pass
+                // Drop gate to 0.003 immediately so user speech can pass.
+                // v3.616: Do NOT reset NLMS weights here.
+                //   During barge-in, masterGain fades to 0 → reference signal drops to 0 →
+                //   y[n] = w^T · 0 = 0 regardless of weights → user speech e[n]=mic[n] passes.
+                //   Weights are NOT updated (step = mu/P · e · x = 0 when x=0) — they stay
+                //   trained on Emily's acoustic path.
+                //   When Emily returns for her next response, these weights cancel her immediately
+                //   with no reconvergence window. Resetting to zero forces ~0.6s reconvergence
+                //   during which Emily's raw echo leaks past the gate into Scribe → false barge-in
+                //   fires → Emily gets cut off mid-sentence → chattery broken voice.
                 this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
-                // v3.614: Reset NLMS filter weights.
-                // The 512-tap filter learned Emily's voice during TTS. Without a reset,
-                // it cancels the user's speech post-barge-in (mistakes user for Emily's echo).
-                // Zeroing the weights forces re-convergence from a clean slate — the filter
-                // re-learns in ~0.6s of user speech rather than silencing them.
-                this.micWorklet.port.postMessage({ type: 'reset_nlms' });
             }
             // pcmNextAt stays as-is — will be reset to 0 in _queueAudio when new PCM arrives
-            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0, NLMS weights RESET', 'color:#f97316;');
+            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain -> 0 (NLMS weights PRESERVED)', 'color:#f97316;');
         } else {
             // No active ctx at all — will be created fresh when LLM responds
             this.pcmNextAt = 0;
