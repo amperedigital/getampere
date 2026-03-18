@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.622 — Stutter fix: remove RTCPeerConnection loopback, direct ctx.destination (2026-03-18)
+
+**Root cause of stutter:** The RTCPeerConnection loopback added in v3.620 introduced WebRTC's
+20ms packetization layer into the TTS audio path. Web Audio API schedules audio sample-precisely;
+WebRTC re-chunks it into 20ms frames with a jitter buffer. This mismatch produced audible dropouts
+between frames — the stutter.
+
+**Fix:** Route `masterGain` directly to `ctx.destination`. Browser AEC3 operates at the OS audio
+layer and captures its reference from the actual speaker output — it does NOT require audio to
+pass through an `HTMLAudioElement` or `RTCPeerConnection`. `echoCancellation: true` in
+`getUserMedia` is sufficient; the AEC3 monitors all audio output from the device, regardless of
+the Web Audio routing.
+
+**Changes:**
+- `_initPlayCtxAsync`: `gain.connect(ctx.destination)` (was: `gain.connect(loopbackDest)` + RTC)
+- Deleted `_setupRtcLoopback` method entirely
+- Removed `loopbackPc1`, `loopbackPc2`, `loopbackAudioEl` instance fields
+- `_flushAudioBuffer`: removed `loopbackAudioEl.pause()`
+- `_queueAudio` gain restore: removed `loopbackAudioEl.play()`
+
+**Files changed:** `deploy/assets/js/ai-chat.js`
+
 ## v3.620 — AEC: replace NLMS with browser AEC3 + RTCPeerConnection loopback (2026-03-18)
 
 ### Root cause of the NLMS approach failure
