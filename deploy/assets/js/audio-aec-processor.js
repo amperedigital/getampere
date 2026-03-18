@@ -122,12 +122,14 @@ class AecMicProcessor extends AudioWorkletProcessor {
             // Need at least N samples of history before we can start NLMS.
             // Align refReadPtr to be N samples behind the current write head.
             // This gives the filter room to look back across all N taps.
-            const available = (writePtr + this.refLen) % this.refLen; // approximate samples written
             if (writePtr < this.N) {
-                // Not enough reference data yet — pass through.
-                // This only happens in the first ~30ms (N/16000 ≈ 0.032s) of a session.
-                const out = mic.slice();
-                this.port.postMessage(out, [out.buffer]);
+                // Not enough reference data yet — output SILENCE (not passthrough).
+                // CRITICAL: during this window Emily's TTS is already playing and her voice
+                // is bleeding into the mic. Passing raw mic to Scribe here would let Scribe
+                // transcribe Emily's own greeting and trigger a false barge-in.
+                // Silence is safe — the window is only ~30ms (512/16000s).
+                const silence = new Float32Array(mic.length); // zeros
+                this.port.postMessage(silence, [silence.buffer]);
                 return true;
             }
             // Start reading from N samples behind current write head
@@ -138,10 +140,11 @@ class AecMicProcessor extends AudioWorkletProcessor {
         // Ensure there are enough reference samples available for this block.
         const refAvailable = (writePtr - this.refReadPtr + this.refLen) % this.refLen;
         if (refAvailable < mic.length) {
-            // Reference is behind mic (ref-capture hasn't caught up yet) — passthrough.
-            // Should be rare; happens only at session start before ref-capture produces data.
-            const out = mic.slice();
-            this.port.postMessage(out, [out.buffer]);
+            // Reference is behind mic (ref-capture hasn't caught up yet) — output SILENCE.
+            // Same reasoning as above: during TTS Emily's voice is in the mic right now.
+            // Raw passthrough here causes Scribe to transcribe Emily's greeting.
+            const silence = new Float32Array(mic.length); // zeros
+            this.port.postMessage(silence, [silence.buffer]);
             return true;
         }
 

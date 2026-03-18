@@ -1,5 +1,28 @@
 # Changelog
 
+## v3.611 — AEC passthrough → silence during SAB warm-up (2026-03-18)
+
+**Root cause of v3.610 greeting stutter:** The AEC worklet (`audio-aec-processor.js`) had two
+early-return paths that skipped the noise gate entirely:
+
+1. `if (writePtr < this.N)` — SAB not yet populated (first ~30ms of session). Returned `mic.slice()`
+   (raw mic audio) instead of going through NLMS + gate.
+2. `if (refAvailable < mic.length)` — ref-capture catching up at session start. Same raw passthrough.
+
+During these windows Emily's TTS is already playing and her voice bleeds into the mic uncancelled.
+Raw mic audio → Scribe → `partial_transcript: "Good afternoon"` → barge-in → greeting cut mid-sentence.
+The noise gate (GATE_THRESHOLD=0.012) would have caught this, but both paths returned before reaching it.
+
+**Fix (`audio-aec-processor.js`):**
+- Both passthrough paths now output `new Float32Array(mic.length)` (silence) instead of `mic.slice()`.
+- The passthrough-for-no-SAB path (line ~111) is unaffected — that's the correct regression fallback
+  for browsers without `SharedArrayBuffer` support.
+- Window is ~30ms (writePtr warmup) + ~0–50ms (ref-capture catching up) = negligible user impact.
+- After warmup, NLMS runs normally, noise gate is applied, and convergence stays at ~0.6s.
+
+**Result:** Scribe receives silence during the AEC warm-up window, so Emily's first words can't
+trigger a false barge-in. After warmup, real user speech (any volume) reaches Scribe normally.
+
 ## v3.610 — Remove TTS mic mute gate: trust AEC, let Scribe detect barge-in (2026-03-17)
 
 **Root cause of v3.608/v3.609 regression:** The TTS microphone mute blocked ALL audio during TTS,
