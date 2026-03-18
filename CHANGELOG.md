@@ -1,5 +1,26 @@
 # Changelog
 
+## v3.610 — Remove TTS mic mute gate: trust AEC, let Scribe detect barge-in (2026-03-17)
+
+**Root cause of v3.608/v3.609 regression:** The TTS microphone mute blocked ALL audio during TTS,
+making it impossible to barge in. v3.609 tried to fix this with an RMS threshold (0.04), but any
+quiet utterance — a soft "wait", "okay", "hold on" — is a valid barge-in and would fall below the
+threshold. Volume is the wrong signal for barge-in intent.
+
+**Correct design:** Trust the AEC. Session logs from v3.608 confirmed Emily's bleed-through is
+0.0002–0.0005 RMS after the NLMS adaptive filter converges (~0.6s). This is genuine near-silence —
+Scribe won't transcribe it. Real user speech, even quiet, reaches 0.005+ RMS and Scribe detects it.
+
+**Fix (`ai-chat.js`):**
+- Removed the entire TTS mic mute block (`ttsMuted` / `BARGE_IN_RMS_THRESHOLD` checks).
+- Mic audio now flows to Scribe continuously — during and outside TTS — with no volume gate.
+- Kept: 250ms **post-TTS holdoff only** (room reverb tail after Emily stops). This prevents the
+  brief speaker bleed after TTS ends from producing a spurious commit.
+- The server's existing `partial_transcript → barge_in` pipeline at line 712 of `voice-session-do.ts`
+  was already wired to handle this — barge-in fires whenever a partial arrives with TTS active.
+- Client-side `{type:'barge_in'}` handler still calls `_flushAudioBuffer()` (fades Emily locally).
+- Version bumped to v3.610.
+
 ## v3.608 — Client-side mic mute during TTS (speakerphone model) + remove word-count gate (2026-03-17)
 
 **Root cause recap:** The word-count gate (BARGE_IN_MIN_WORDS=4) was supposed to block Emily's echo from

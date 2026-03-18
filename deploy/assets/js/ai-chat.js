@@ -12,7 +12,13 @@
 //   during TTS playback: PCM is not sent to Scribe while isPlaying=true, + 250ms reverb holdoff.
 //   Scribe never sees Emily's voice → no false partial transcripts → no false barge-ins.
 //   Also removed BARGE_IN_MIN_WORDS constant from voice-session-do.ts (was always circumvented).
-console.log('[AmpereAI] v3.608 Voice Pipe Client Loaded (mic mute during TTS)');
+// v3.609: Fix barge-in during TTS mute window. RMS threshold to detect user speech.
+// v3.610: Remove TTS mute gate entirely. Trust the AEC — it suppresses Emily's bleed to ~0.0002
+//   RMS (confirmed from session logs). Scribe sees only real user speech, including quiet utterances.
+//   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
+//   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
+//   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
+console.log('[AmpereAI] v3.610 Voice Pipe Client Loaded (AEC trusted, no TTS mute)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -604,20 +610,20 @@ export class AmpereAIChat {
             micWorklet.port.onmessage = (e) => {
                 if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
 
-                // v3.608: Mic mute during TTS playback — speakerphone model.
-                // While Emily is playing (isPlaying=true, gain not faded) we drop mic PCM
-                // before it reaches Scribe. This prevents Emily's voice bleeding into the mic
-                // from ever producing a partial_transcript that could trigger a false barge-in.
-                // bargeInFaded=true means the user already interrupted — let their audio through.
-                // After isPlaying goes false, hold for MIC_HOLDOFF_MS for room reverb tail.
+                // v3.610: No TTS mute gate. AEC suppresses Emily's bleed — Scribe only sees
+                // user speech. Any RMS-threshold gate would block quiet barge-ins ("wait",
+                // "okay", soft interruptions) — exactly the problem the user reported.
+                // Trust Scribe as the speech detector. Server partial_transcript → barge_in
+                // pipeline handles interruptions for all volumes.
+                //
+                // Exception: 250ms POST-TTS holdoff for room reverb tail (speaker bleed after
+                // Emily stops). This is brief enough to not block immediate follow-on responses.
+                const float32 = e.data;
                 const MIC_HOLDOFF_MS = 250;
-                const ttsMuted = this.isPlaying && !this.bargeInFaded;
-                const inHoldoff = !this.isPlaying && !this.bargeInFaded
+                const inHoldoff = !this.isPlaying
                     && this.lastTtsEndClient > 0
                     && (Date.now() - this.lastTtsEndClient < MIC_HOLDOFF_MS);
-                if (ttsMuted || inHoldoff) return;
-
-                const float32 = e.data; // Float32Array from worklet (zero-copy transfer)
+                if (inHoldoff) return;
 
                 // Convert Float32 → Int16 PCM (16-bit signed, clamped)
                 const int16 = new Int16Array(float32.length);
