@@ -363,6 +363,23 @@
             color: #e3b341;
         }
 
+        /* TTS engine badges */
+        .badge-tts-el {
+            background: #1a2533;
+            color: #58a6ff;
+            border: 1px solid #58a6ff33;
+        }
+        .badge-tts-sesame {
+            background: #1a2d1a;
+            color: #7ee787;
+            border: 1px solid #7ee78733;
+        }
+        .badge-tts-fallback {
+            background: #2d1a0a;
+            color: #f0883e;
+            border: 1px solid #f0883e44;
+        }
+
         .sentinel-card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -537,13 +554,14 @@
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tier</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Model</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Bknd</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">ACQ</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">TTFB</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]"
-                            title="Total minus TTFB = TTS + router overhead">TTS/OH</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Total</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-center">TTS</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right">TTFB</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right"
+                            title="Total minus TTFB = TTS generation + router overhead">TTS/OH</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right">Total</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
                     </tr>
+
                 </thead>
                 <tbody id="routingTbody">
                     <tr>
@@ -649,8 +667,17 @@
             geo: (country, colo) => {
                 if (!country) return '';
                 return `<span class="geo-badge">${country}${colo ? ' · ' + colo : ''}</span>`;
+            },
+            ttsEngine: eng => {
+                if (!eng) return '<span class="text-[#8b949e]">—</span>';
+                if (eng === 'sesame') return '<span class="step-badge badge-tts-sesame">CSM</span>';
+                if (eng === 'elevenlabs_greeting') return '<span class="step-badge badge-tts-el">EL·greet</span>';
+                if (eng === 'elevenlabs_phone') return '<span class="step-badge badge-tts-el">EL·phone</span>';
+                if (eng.includes('fallback')) return '<span class="step-badge badge-tts-fallback">EL·fallback</span>';
+                return '<span class="step-badge badge-tts-el">EL</span>';
             }
         };
+
 
         function stepBadge(s) { return `<span class="step-badge step-${s}">${s}</span>`; }
         function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -696,7 +723,8 @@
             document.getElementById('eventCount').textContent = `${totalEvents} events`;
 
             if (!routeMap[reqId]) {
-                routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null, lastUserMsg: '', agentResponse: '', classify_ms: null, total_ms: null };
+                routeMap[reqId] = { reqId, ts: ev.ts, tier: null, model: null, backend: null, ttsEngine: null, acq_ms: null, ttfb_ms: null, tools: [], result: null, fallback: null, lastUserMsg: '', agentResponse: '', classify_ms: null, total_ms: null };
+
             }
             seenReqIds.add(reqId);
             const row = routeMap[reqId];
@@ -778,11 +806,17 @@
                 row.t3PrewarmModel = ev.model || '';
                 row.t3PrewarmAvg = ev.sessionAvg ?? null;
             }
-            // v3.617: BARGE_IN — reqId IS the interrupted LLM turn's reqId, so attach directly.
             if (step === 'BARGE_IN') {
                 row.bargeIn = { text: ev.partialText || '', ts: ev.ts };
             }
             if (step === 'STREAM_ABORTED') { row.streamAborted = true; }
+            // TTS engine — attach to the turn row so the TTS column updates as soon as known.
+            if (step === 'TTS_STARTED') {
+                // Use the reqId from the event payload (not the event's own outer reqId which is a vdo-* orphan)
+                const ttsRow = ev.reqId ? routeMap[ev.reqId] : row;
+                if (ttsRow) ttsRow.ttsEngine = ev.ttsEngine || 'elevenlabs';
+            }
+
 
             // Debounce rendering to prevent constant flashing from rapid-fire events
             if (!processEvent._renderTimer) {
@@ -825,12 +859,13 @@
                     <td class="px-3 py-2">${fmt.tier(r.tier)} ${r.t3Prewarm && !r.t3Locked ? '<span class="step-badge step-T3_PREWARM" title="T3 pre-warm fired (sessionAvg ' + (r.t3PrewarmAvg ?? '?') + ')">⚡ T3 WARM</span>' : ''} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
                     <td class="px-3 py-2">${modelLabel}</td>
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
-                    <td class="px-3 py-2 text-right font-mono text-[#8b949e]">${fmt.ms(r.acq_ms)}</td>
+                    <td class="px-3 py-2 text-center">${fmt.ttsEngine(r.ttsEngine)}</td>
                     <td class="px-3 py-2 text-right">${fmt.ttfb(r.ttfb_ms)}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
                     <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
                     <td class="px-3 py-2">${fmt.result(r.result)} ${sentinelHtml}</td>
                 </tr>`;
+
             }).join('');
         }
 
@@ -972,6 +1007,7 @@
                         ${langGeoHtml}${lmaBadge ? ' ' + lmaBadge : ''}
                         <span class="font-semibold font-mono text-[#c9d1d9]">${fmt.model(r.model) || '…'}</span>
                         ${r.backend ? fmt.backend(r.backend) : ''}
+                        ${r.ttsEngine ? fmt.ttsEngine(r.ttsEngine) : ''}
                         ${acqHtml}
                         ${r.prefetchItems ? `<span style="color:#79c0ff;font-size:10px;">📦 ${r.prefetchItems} ctx</span>` : ''}
                         ${fmt.ttfb(r.ttfb_ms)}
@@ -980,6 +1016,7 @@
                         ${toolsHtml}
                         ${resultHtml}
                     </div>
+
                 </div>`;
             }).join('');
             // Auto-scroll to bottom (newest turn) — matches event stream direction

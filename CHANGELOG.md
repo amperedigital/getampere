@@ -1,6 +1,18 @@
 # Changelog
 
-## v3.622 — Stutter fix: remove RTCPeerConnection loopback, direct ctx.destination (2026-03-18)
+## v3.623 — Router monitor: ACQ→TTS engine column, badge styles, column alignment fix (2026-03-18)
+
+- **Router monitor**: Replaced always-empty `ACQ` column with `TTS` engine column. Displays a
+  color-coded badge per turn: 🔵 `EL` (ElevenLabs), 🔵 `EL·greet` (greeting while Sesame boots),
+  🟠 `EL·fallback` (Sesame error → EL recovery), 🟢 `CSM` (Sesame CSM-1B warm inference).
+  Badge also appears in Turn-by-Turn panel turn-meta row.
+- **Router monitor**: Column header alignment fixed — `TTFB`, `TTS/OH`, `Total` headers now
+  `text-right` to match their right-aligned data cells (was misaligned left-aligned).
+- **Router monitor**: Added `TTS_STARTED` step handler in `processEvent` — attaches `ttsEngine`
+  to the routing table row from the backend broadcast.
+- Backend: see `memory-api/CHANGELOG.md` v3.623 for Sesame greeting routing and EL fallback logic.
+
+
 
 **Root cause of stutter:** The RTCPeerConnection loopback added in v3.620 introduced WebRTC's
 20ms packetization layer into the TTS audio path. Web Audio API schedules audio sample-precisely;
