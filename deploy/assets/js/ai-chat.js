@@ -18,7 +18,7 @@
 //   Volume-based gates were wrong: a soft "wait" is a valid barge-in. Let Scribe decide what is
 //   speech. Server's existing partial_transcript → barge_in pipeline handles the interrupt.
 //   Kept: 250ms post-TTS holdoff only (room reverb tail suppression, not active-TTS blocking).
-console.log('[AmpereAI] v3.624 Voice Pipe Client Loaded (browser AEC3 + direct ctx.destination, no NLMS, no WebRTC loopback)');
+console.log('[AmpereAI] v3.633 Voice Pipe Client Loaded (browser AEC3 + RTCPeerConnection loopback restored)');
 
 // ─── Console log pipe (unchanged) ───────────────────────────────────────────
 (function () {
@@ -120,6 +120,11 @@ export class AmpereAIChat {
         this.lastTtsEndClient = 0;
         // Pending greeting — set when /greeting/web fetch resolves, consumed in _handleSessionInit
         this.pendingGreeting = null;
+
+        // v3.620: RTCPeerConnection loopback for AEC3 reference (restored in v3.633)
+        this.loopbackPc1      = null;   // RTCPeerConnection sender side
+        this.loopbackPc2      = null;   // RTCPeerConnection receiver side
+        this.loopbackAudioEl  = null;   // HTMLAudioElement driven by pc2 (user hears + AEC3 reference)
 
         // Voiceprint ring buffer (unchanged from v3.529)
         this.voiceBuffer    = null;
@@ -678,9 +683,13 @@ export class AmpereAIChat {
         if (this.bargeInFaded && this.masterGain) {
             this.bargeInFaded = false;
             this.pcmNextAt = 0;
-            this.masterGain.gain.cancelScheduledValues(this.playCtx.currentTime);
-            this.masterGain.gain.setValueAtTime(0, this.playCtx.currentTime);
-            this.masterGain.gain.linearRampToValueAtTime(1, this.playCtx.currentTime + 0.05);
+            this.masterGain.gain.cancelScheduledValues(ctx.currentTime);
+            this.masterGain.gain.setValueAtTime(0, ctx.currentTime);
+            this.masterGain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.05);
+            // Resume loopback audio element if it was paused by the barge-in flush.
+            if (this.loopbackAudioEl && this.loopbackAudioEl.paused) {
+                this.loopbackAudioEl.play().catch(() => {});
+            }
             console.log('%c[AmpereAI] 🔊 GAIN_RESTORE: new response starting, fading gain back to 1', 'color:#10b981;');
         }
 
@@ -786,7 +795,12 @@ export class AmpereAIChat {
             if (this.micWorklet) {
                 this.micWorklet.port.postMessage({ type: 'tts_state', active: false });
             }
-            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain → 0 (gain fade)', 'color:#f97316;');
+            // Pause loopback audio element — clears the WebRTC receiver buffer
+            // so user doesn't hear residual TTS audio after barge-in.
+            if (this.loopbackAudioEl && !this.loopbackAudioEl.paused) {
+                this.loopbackAudioEl.pause();
+            }
+            console.log('%c[AmpereAI] BARGE_IN_FADE: masterGain → 0 + loopback paused', 'color:#f97316;');
         } else {
             // No active ctx at all — will be created fresh when LLM responds
             this.pcmNextAt = 0;
@@ -794,10 +808,11 @@ export class AmpereAIChat {
     }
 
     // ── _initPlayCtxAsync ─────────────────────────────────────────────────────
-    // v3.622: TTS AudioContext routed directly to ctx.destination.
-    // Browser AEC3 (enabled via echoCancellation:true in getUserMedia) captures its reference
-    // from the OS audio output layer — it does NOT require a WebRTC track as a reference.
-    // Direct ctx.destination eliminates the WebRTC 20ms packetization jitter that caused stutter.
+    // v3.633: Restored RTCPeerConnection loopback (was removed in v3.622 to fix stutter,
+    // but its removal broke AEC — Emily bled back through the mic as Kannada hallucinations).
+    // Audio path: sources → masterGain → MediaStreamDestination → pc1 → pc2 → HTMLAudioElement.
+    // User hears TTS via the HTMLAudioElement. Browser AEC3 uses the WebRTC receiver
+    // track as its reference — perfectly synchronized, no OS loopback timing uncertainty.
     async _initPlayCtxAsync() {
         if (this.playCtx && this.playCtx.state !== 'closed') return;
 
@@ -805,18 +820,77 @@ export class AmpereAIChat {
         const gain = ctx.createGain();
         this.pcmNextAt = 0;
 
-        // Route masterGain → speakers directly. AEC3 uses OS-level audio output as reference.
-        gain.connect(ctx.destination);
+        // Route masterGain → loopback destination (NOT ctx.destination).
+        // Audio reaches the speaker via the RTCPeerConnection receiver HTMLAudioElement.
+        const loopbackDest = ctx.createMediaStreamDestination();
+        gain.connect(loopbackDest);
 
         if (ctx.state === 'suspended') {
             await ctx.resume().catch(() => {});
         }
 
-        this.playCtx    = ctx;
-        this.masterGain = gain;
+        this.playCtx        = ctx;
+        this.masterGain     = gain;
         this.refCaptureNode = null;
 
-        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_READY sampleRate=${ctx.sampleRate}Hz direct-to-destination`, 'color:#10b981;font-weight:bold;');
+        // Set up RTCPeerConnection loopback AFTER committing ctx/gain refs
+        // so any fallback inside _setupRtcLoopback can use this.playCtx.destination.
+        await this._setupRtcLoopback(loopbackDest.stream);
+
+        console.log(`%c[AmpereAI] 🔊 PLAY_CTX_READY sampleRate=${ctx.sampleRate}Hz loopback=true`, 'color:#10b981;font-weight:bold;');
+    }
+
+    // ── _setupRtcLoopback ─────────────────────────────────────────────────────
+    // Creates a local RTCPeerConnection pair (no STUN/TURN — same-page loopback).
+    // pc1 sends the TTS MediaStream. pc2's ontrack drives an HTMLAudioElement so the
+    // user hears TTS AND browser AEC3 has a properly synchronized WebRTC reference.
+    async _setupRtcLoopback(mediaStream) {
+        try {
+            const pc1 = new RTCPeerConnection();
+            const pc2 = new RTCPeerConnection();
+
+            pc1.onicecandidate = ({ candidate }) => {
+                if (candidate) pc2.addIceCandidate(candidate).catch(() => {});
+            };
+            pc2.onicecandidate = ({ candidate }) => {
+                if (candidate) pc1.addIceCandidate(candidate).catch(() => {});
+            };
+
+            const track = mediaStream.getAudioTracks()[0];
+            if (!track) throw new Error('No audio track in loopback MediaStream');
+            pc1.addTrack(track, mediaStream);
+
+            // pc2 receiver → HTMLAudioElement
+            // Being a WebRTC receiver, AEC3 uses its playout as the reference signal
+            // for the getUserMedia mic stream — sample-synchronized echo cancellation.
+            pc2.ontrack = ({ streams }) => {
+                const audio = new Audio();
+                audio.srcObject = streams[0];
+                audio.autoplay  = true;
+                audio.style.display = 'none';
+                document.body.appendChild(audio);
+                this.loopbackAudioEl = audio;
+                console.log('%c[AmpereAI] 🔊 LOOPBACK: pc2 → HTMLAudioElement (AEC3 reference ready)', 'color:#10b981;font-weight:bold;');
+            };
+
+            const offer = await pc1.createOffer();
+            await pc1.setLocalDescription(offer);
+            await pc2.setRemoteDescription(pc1.localDescription);
+            const answer = await pc2.createAnswer();
+            await pc2.setLocalDescription(answer);
+            await pc1.setRemoteDescription(pc2.localDescription);
+
+            this.loopbackPc1 = pc1;
+            this.loopbackPc2 = pc2;
+            console.log('%c[AmpereAI] 🔊 LOOPBACK: RTCPeerConnection established (no server)', 'color:#10b981;font-weight:bold;');
+
+        } catch (loopErr) {
+            console.warn('[AmpereAI] LOOPBACK: RTCPeerConnection failed, falling back to direct-to-destination:', loopErr);
+            // Graceful fallback: route directly to speakers (AEC3 still runs, just OS-level reference)
+            if (this.masterGain && this.playCtx) {
+                this.masterGain.connect(this.playCtx.destination);
+            }
+        }
     }
 
     // ─── Voiceprint capture (unchanged from v3.529) ───────────────────────────
