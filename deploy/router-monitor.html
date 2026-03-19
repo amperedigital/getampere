@@ -673,10 +673,15 @@
                 if (eng === 'sesame') return '<span class="step-badge badge-tts-sesame">CSM</span>';
                 if (eng === 'elevenlabs_greeting') return '<span class="step-badge badge-tts-el">EL·greet</span>';
                 if (eng === 'elevenlabs_phone') return '<span class="step-badge badge-tts-el">EL·phone</span>';
+                if (eng.startsWith('elevenlabs_lang_')) {
+                    const code = eng.replace('elevenlabs_lang_', '').toUpperCase();
+                    return `<span class="step-badge badge-tts-el" title="CSM-1B English-only; EL handles ${code}">EL·${code}</span>`;
+                }
                 if (eng.includes('fallback')) return '<span class="step-badge badge-tts-fallback">EL·fallback</span>';
                 return '<span class="step-badge badge-tts-el">EL</span>';
             }
         };
+
 
 
         function stepBadge(s) { return `<span class="step-badge step-${s}">${s}</span>`; }

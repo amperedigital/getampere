@@ -1,6 +1,14 @@
 # Changelog
 
-## v3.623 — Router monitor: ACQ→TTS engine column, badge styles, column alignment fix (2026-03-18)
+## v3.624 — Router monitor: multilingual TTS engine badges (EL·ES, EL·HI, etc.) (2026-03-18)
+
+- **Router monitor**: `fmt.ttsEngine` now handles `elevenlabs_lang_{code}` engine tags from the
+  backend language gate. Non-English Sesame sessions display as `EL·ES`, `EL·HI`, `EL·FR`, etc.
+  with a tooltip explaining the CSM-1B English-only routing. Allows per-turn visibility of which
+  sessions use Sesame vs. ElevenLabs multilingual voices.
+- Backend: see `memory-api/CHANGELOG.md` v3.624 for the `isEnglishLang` gate and full routing chain.
+
+
 
 - **Router monitor**: Replaced always-empty `ACQ` column with `TTS` engine column. Displays a
   color-coded badge per turn: 🔵 `EL` (ElevenLabs), 🔵 `EL·greet` (greeting while Sesame boots),
