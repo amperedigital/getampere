@@ -1,6 +1,25 @@
 # Changelog
 
+## v3.633 — Restore RTCPeerConnection loopback for AEC3 reference (2026-03-19)
+
+**Root cause:** v3.622 removed the WebRTC loopback to eliminate 20ms packetization jitter,
+routing TTS audio directly to `ctx.destination`. Without the WebRTC receiver track, browser
+AEC3 loses its sample-synchronized echo reference. Emily's audio bleeds back through the mic;
+Scribe (Whisper) transcribes distorted English as Kannada hallucinations, triggering barge-in
+and muting `masterGain → 0` for the rest of the session.
+
+**Fix:** Restored `_setupRtcLoopback()` from v3.620. Audio path:
+`masterGain → MediaStreamDestination → pc1 → pc2 → HTMLAudioElement`
+AEC3 uses the WebRTC receiver track as its reference — perfectly synchronized.
+Graceful fallback to `ctx.destination` if RTCPeerConnection setup fails.
+
+### Changes
+- `ai-chat.js`: Added `loopbackPc1/pc2/loopbackAudioEl` fields. Restored `_initPlayCtxAsync`
+  WebRTC routing. Added `_setupRtcLoopback()`. Restored `loopbackAudioEl.pause()` on barge-in.
+  Added `loopbackAudioEl.play()` on gain restore. Fallback to `ctx.destination` on RTC error.
+
 ## v3.624 — Router monitor: multilingual TTS engine badges (EL·ES, EL·HI, etc.) (2026-03-18)
+
 
 - **Router monitor**: `fmt.ttsEngine` now handles `elevenlabs_lang_{code}` engine tags from the
   backend language gate. Non-English Sesame sessions display as `EL·ES`, `EL·HI`, `EL·FR`, etc.
