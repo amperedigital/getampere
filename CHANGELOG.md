@@ -1,6 +1,16 @@
 # Changelog
 
-## v3.640 — Router monitor: TTS server admin panel (2026-03-21)
+## v3.642 — Router monitor: API key security hardening (2026-03-21)
+
+- **Security**: API key removed from HTML source entirely — was hardcoded as `value=` attribute,
+  visible to anyone viewing page source.
+- **Storage**: Key now loaded from / saved to `localStorage` (`rm_api_key`). User enters once,
+  persists in their browser only. Cleared by deleting localStorage entry.
+- **Transport**: All HTTP fetches now send key as `X-Api-Key` header. Keys must never appear
+  in URLs — they end up in server access logs, browser history, and CDN caches.
+- **Input type**: Changed from `type="text"` to `type="password"` — key masked in UI,
+  not leaked by browser autofill or shoulder surfing.
+
 
 - **Router monitor**: Added live TTS Server panel — displays real-time GPU metrics (GPU %, VRAM,
   RTF, temperature, power draw, requests served, uptime) fetched from the new `/admin/tts-status`

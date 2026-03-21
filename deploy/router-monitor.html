@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.640">
+    <meta name="version" content="v3.642">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.640/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.642/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -545,7 +545,7 @@
 
     <!-- Controls -->
     <div class="flex flex-wrap gap-2 mb-4 items-center">
-        <input type="text" id="apiKey" placeholder="x-api-key" value="f00cc41a61fbd5b088e75b9402eac0a2c37d2c4d89bbe5f640ccf7dce848ec45"
+        <input type="password" id="apiKey" placeholder="Enter API key…" autocomplete="off"
             class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500">
         <select id="workspaceId"
             class="bg-[#161b22] border border-[#30363d] text-[#e6edf3] px-3 py-1.5 rounded-md text-xs font-mono w-44 focus:outline-none focus:border-blue-500 cursor-pointer">
@@ -1284,7 +1284,7 @@
         async function loadWorkspaces() {
             const apiKey = document.getElementById('apiKey').value || '';
             try {
-                const res = await fetch(`${API_BASE}/workspaces?key=${encodeURIComponent(apiKey)}`);
+                const res = await fetch(`${API_BASE}/workspaces`, { headers: { 'x-api-key': apiKey } });
                 if (!res.ok) throw new Error(`/workspaces returned ${res.status}`);
                 const data = await res.json();
                 const select = document.getElementById('workspaceId');
@@ -1316,7 +1316,7 @@
             const key = ttsApiKey();
             let nextMs = _ttsOnline ? 5000 : 60000;
             try {
-                const res = await fetch(`${API_BASE}/admin/tts-status?key=${encodeURIComponent(key)}`);
+                const res = await fetch(`${API_BASE}/admin/tts-status`, { headers: { 'x-api-key': key } });
                 const data = await res.json();
                 ttsRenderMetrics(data);
                 _ttsOnline = data.status === 'ok';
@@ -1413,6 +1413,21 @@
         // ── End TTS Server Panel ─────────────────────────────────────────────────
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Load API key from localStorage — never stored in source or URLs
+            const storedKey = localStorage.getItem('rm_api_key');
+            if (storedKey) document.getElementById('apiKey').value = storedKey;
+
+            // Persist key to localStorage on change (user enters once)
+            document.getElementById('apiKey').addEventListener('change', () => {
+                const v = document.getElementById('apiKey').value.trim();
+                if (v) localStorage.setItem('rm_api_key', v);
+                else localStorage.removeItem('rm_api_key');
+                // Re-connect and reload with new key
+                clearAll();
+                reconnect();
+                loadWorkspaces();
+            });
+
             connectWebSocket();
             loadWorkspaces();
             ttsPoll();  // Start TTS panel polling (adaptive backoff)
