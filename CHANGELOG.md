@@ -1,6 +1,16 @@
 # Changelog
 
-## v3.633 — Restore RTCPeerConnection loopback for AEC3 reference (2026-03-19)
+## v3.640 — Router monitor: TTS server admin panel (2026-03-21)
+
+- **Router monitor**: Added live TTS Server panel — displays real-time GPU metrics (GPU %, VRAM,
+  RTF, temperature, power draw, requests served, uptime) fetched from the new `/admin/tts-status`
+  Worker proxy route.
+- **Adaptive polling**: 5s interval when TTS server is online, backs off to 60s when offline —
+  prevents unnecessary Cloudflare requests to a dead tunnel and avoids waking the GPU server.
+- **Status indicator**: Online / Offline / Busy badges with color-coded progress bars for GPU and
+  VRAM utilization. Auto-detects new instances within 60s of tunnel reconnect.
+- **Refresh button**: Manual refresh independent of polling interval.
+
 
 **Root cause:** v3.622 removed the WebRTC loopback to eliminate 20ms packetization jitter,
 routing TTS audio directly to `ctx.destination`. Without the WebRTC receiver track, browser

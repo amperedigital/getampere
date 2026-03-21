@@ -472,6 +472,53 @@
             color: #f85149;
             border-color: #f8514944;
         }
+
+        /* TTS Server Panel */
+        .tts-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .tts-metric-label {
+            font-size: 10px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        .tts-metric-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e6edf3;
+            font-family: 'DM Sans', monospace;
+        }
+        .vram-bar-bg {
+            width: 100%;
+            height: 4px;
+            background: #21262d;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .vram-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        .rtf-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'DM Sans', monospace;
+        }
+        .rtf-great  { background: #1a2d1a; color: #3fb950; border: 1px solid #3fb95044; }
+        .rtf-good   { background: #2d2200; color: #e3b341; border: 1px solid #e3b34144; }
+        .rtf-slow   { background: #2d1a1a; color: #f85149; border: 1px solid #f8514944; }
+        .tts-offline {
+            color: #8b949e;
+            font-style: italic;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -603,6 +650,30 @@
             <div class="panel-scroll-sm" id="eventStream">
                 <div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="streamPlaceholder">Waiting for events…
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TTS Server Panel -->
+    <div class="mt-4 bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden" id="ttsPanel">
+        <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <h2 class="text-sm font-semibold text-[#e6edf3]">🖥 TTS Server</h2>
+                <span id="ttsStatusDot" class="conn-indicator conn-polling live-dot"></span>
+                <span id="ttsStatusLabel" class="text-xs text-[#8b949e]">Connecting…</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-[#484f58]" id="ttsLastUpdated"></span>
+                <button onclick="ttsPollNow()"
+                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
+                    ⟳ Refresh
+                </button>
+            </div>
+        </div>
+        <div id="ttsMetricsRow" class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+            <!-- Populated by ttsRenderMetrics() -->
+            <div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7">
+                <span class="tts-offline">Waiting for first poll…</span>
             </div>
         </div>
     </div>
@@ -1232,9 +1303,119 @@
             }
         }
 
+        // ── TTS Server Panel ─────────────────────────────────────────────────────
+        // Polls /admin/tts-status via Worker proxy (instance-agnostic).
+        // Adaptive backoff: 5s when online, 60s when offline (avoids hammering dead tunnel).
+
+        let _ttsPollTimer = null;
+        let _ttsOnline = false;
+
+        function ttsApiKey() { return document.getElementById('apiKey').value || ''; }
+
+        async function ttsPoll() {
+            const key = ttsApiKey();
+            let nextMs = _ttsOnline ? 5000 : 60000;
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-status?key=${encodeURIComponent(key)}`);
+                const data = await res.json();
+                ttsRenderMetrics(data);
+                _ttsOnline = data.status === 'ok';
+            } catch (err) {
+                ttsRenderOffline('fetch error');
+                _ttsOnline = false;
+            }
+            _ttsPollTimer = setTimeout(ttsPoll, _ttsOnline ? 5000 : 60000);
+        }
+
+        function ttsPollNow() {
+            clearTimeout(_ttsPollTimer);
+            ttsPoll();
+        }
+
+        function ttsRenderOffline(reason) {
+            document.getElementById('ttsStatusDot').className = 'conn-indicator conn-error';
+            document.getElementById('ttsStatusLabel').textContent = 'Offline';
+            document.getElementById('ttsLastUpdated').textContent = 'last checked ' + new Date().toLocaleTimeString();
+            document.getElementById('ttsMetricsRow').innerHTML =
+                `<div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7"><span class="tts-offline">Instance offline or not provisioned — will recheck in 60s</span></div>`;
+        }
+
+        function ttsRenderMetrics(d) {
+            const dot   = document.getElementById('ttsStatusDot');
+            const label = document.getElementById('ttsStatusLabel');
+            const row   = document.getElementById('ttsMetricsRow');
+            const updated = document.getElementById('ttsLastUpdated');
+            updated.textContent = new Date().toLocaleTimeString();
+
+            if (d.status === 'offline' || d.reachable === false) {
+                ttsRenderOffline(d.reason || 'unreachable');
+                return;
+            }
+
+            const online = d.status === 'ok';
+            dot.className   = 'conn-indicator ' + (online ? (d.busy ? 'conn-polling' : 'conn-connected') : 'conn-error');
+            label.textContent = d.busy ? 'BUSY' : (online ? 'ONLINE' : d.status?.toUpperCase() || 'UNKNOWN');
+
+            const gpu  = d.gpu || {};
+            const gpuPct   = gpu.util_pct ?? 0;
+            const vramUsed = gpu.vram_used_gb ?? 0;
+            const vramTotal= gpu.vram_total_gb ?? 1;
+            const vramPct  = Math.round((vramUsed / vramTotal) * 100);
+            const vramColor = vramPct > 85 ? '#f85149' : vramPct > 60 ? '#e3b341' : '#3fb950';
+            const gpuColor  = gpuPct > 80  ? '#f85149' : gpuPct > 40  ? '#e3b341' : '#3fb950';
+            const rtf  = d.last_rtf;
+            const rtfCls = !rtf ? '' : rtf < 0.5 ? 'rtf-great' : rtf < 1.0 ? 'rtf-good' : 'rtf-slow';
+            const rtfHtml = rtf != null
+                ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>`
+                : '<span class="tts-offline">—</span>';
+            const uptime = d.uptime_s != null ? fmtUptime(d.uptime_s) : '—';
+
+            row.innerHTML = `
+                <div class="tts-metric">
+                    <span class="tts-metric-label">GPU</span>
+                    <span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span>
+                    <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">VRAM</span>
+                    <span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span>
+                    <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">Last RTF</span>
+                    <span class="tts-metric-value">${rtfHtml}</span>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">Temp</span>
+                    <span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">Power</span>
+                    <span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">Requests</span>
+                    <span class="tts-metric-value">${d.requests_served ?? '—'}</span>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">Uptime</span>
+                    <span class="tts-metric-value text-[#8b949e]">${uptime}</span>
+                </div>
+            `;
+        }
+
+        function fmtUptime(s) {
+            if (s < 60)   return s + 's';
+            if (s < 3600) return Math.floor(s/60) + 'm ' + (s%60) + 's';
+            const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60);
+            return h + 'h ' + m + 'm';
+        }
+        // ── End TTS Server Panel ─────────────────────────────────────────────────
+
         window.addEventListener('DOMContentLoaded', () => {
             connectWebSocket();
             loadWorkspaces();
+            ttsPoll();  // Start TTS panel polling (adaptive backoff)
             // Phase 1.3: Switch workspace on dropdown change — auto-reconnect
             document.getElementById('workspaceId').addEventListener('change', () => {
                 clearAll();

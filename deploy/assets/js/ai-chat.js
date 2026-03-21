@@ -683,9 +683,9 @@ export class AmpereAIChat {
         if (this.bargeInFaded && this.masterGain) {
             this.bargeInFaded = false;
             this.pcmNextAt = 0;
-            this.masterGain.gain.cancelScheduledValues(ctx.currentTime);
-            this.masterGain.gain.setValueAtTime(0, ctx.currentTime);
-            this.masterGain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.05);
+            this.masterGain.gain.cancelScheduledValues(this.playCtx.currentTime);
+            this.masterGain.gain.setValueAtTime(0, this.playCtx.currentTime);
+            this.masterGain.gain.linearRampToValueAtTime(1, this.playCtx.currentTime + 0.05);
             // Resume loopback audio element if it was paused by the barge-in flush.
             if (this.loopbackAudioEl && this.loopbackAudioEl.paused) {
                 this.loopbackAudioEl.play().catch(() => {});
