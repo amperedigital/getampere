@@ -1,6 +1,16 @@
 # Changelog
 
-## v3.642 — Router monitor: API key security hardening (2026-03-21)
+## v3.643 — Router monitor: live server log pane (2026-03-21)
+
+- **Log pane**: Collapsible "Server Log" section added to TTS Server panel. Click to expand;
+  shows last 100 lines of server stdout in a terminal-style scrollable pane.
+- **Color coding**: `[CSM]` lines in cyan, `INFO:` in blue, `WARN` in amber, `ERROR`/`Traceback`
+  in red. All startup, warmup, Triton compilation, and inference events visible.
+- **2s polling**: When expanded, log pane polls `/admin/tts-logs` every 2s — captures warmup
+  sequence in near-realtime. Auto-scrolls to bottom unless you've scrolled up to read.
+- **Security**: Key sent as `X-Api-Key` header (never in URL), same as other admin endpoints.
+
+
 
 - **Security**: API key removed from HTML source entirely — was hardcoded as `value=` attribute,
   visible to anyone viewing page source.

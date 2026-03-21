@@ -519,6 +519,51 @@
             font-style: italic;
             font-size: 12px;
         }
+        /* TTS Log Pane */
+        .tts-log-pane {
+            border-top: 1px solid #30363d;
+            background: #0d1117;
+        }
+        .tts-log-toggle {
+            width: 100%;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 10px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            background: transparent;
+            border: none;
+            text-align: left;
+            transition: color .15s;
+        }
+        .tts-log-toggle:hover { color: #e6edf3; }
+        .tts-log-body {
+            display: none;
+            padding: 0 0 8px 0;
+        }
+        .tts-log-body.open { display: block; }
+        .tts-log-scroll {
+            max-height: 280px;
+            overflow-y: auto;
+            font-family: 'DM Mono', 'Fira Mono', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            padding: 8px 16px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .tts-log-scroll::-webkit-scrollbar { width: 4px; }
+        .tts-log-scroll::-webkit-scrollbar-track { background: transparent; }
+        .tts-log-scroll::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+        .log-csm   { color: #a5f3fc; }   /* [CSM] lines */
+        .log-info  { color: #58a6ff; }   /* INFO: */
+        .log-warn  { color: #e3b341; }   /* WARN / WARNING */
+        .log-error { color: #f85149; }   /* ERROR / Traceback */
+        .log-dim   { color: #484f58; }   /* everything else */
     </style>
 </head>
 
@@ -674,6 +719,18 @@
             <!-- Populated by ttsRenderMetrics() -->
             <div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7">
                 <span class="tts-offline">Waiting for first poll…</span>
+            </div>
+        </div>
+        <!-- Server Log Pane -->
+        <div class="tts-log-pane">
+            <button class="tts-log-toggle" id="ttsLogToggle" onclick="ttsLogToggle()">
+                <span>🖥 Server Log</span>
+                <span id="ttsLogChevron" style="font-size:12px;">▶</span>
+            </button>
+            <div class="tts-log-body" id="ttsLogBody">
+                <div class="tts-log-scroll" id="ttsLogScroll">
+                    <span class="log-dim">Log will appear when server comes online…</span>
+                </div>
             </div>
         </div>
     </div>
@@ -1410,6 +1467,52 @@
             const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60);
             return h + 'h ' + m + 'm';
         }
+
+        // ── TTS Log Pane ──────────────────────────────────────────────────────────
+        let _ttsLogOpen = false;
+        let _ttsLogTimer = null;
+        let _ttsLogLastCount = 0;
+
+        function ttsLogToggle() {
+            _ttsLogOpen = !_ttsLogOpen;
+            document.getElementById('ttsLogBody').classList.toggle('open', _ttsLogOpen);
+            document.getElementById('ttsLogChevron').textContent = _ttsLogOpen ? '▼' : '▶';
+            if (_ttsLogOpen) ttsLogPoll();
+        }
+
+        function _ttsLogClass(line) {
+            if (line.includes('[CSM]'))                         return 'log-csm';
+            if (/\bERROR\b|Traceback|Exception/.test(line))    return 'log-error';
+            if (/\bWARN(ING)?\b/.test(line))                   return 'log-warn';
+            if (line.startsWith('INFO:'))                       return 'log-info';
+            return 'log-dim';
+        }
+
+        async function ttsLogPoll() {
+            clearTimeout(_ttsLogTimer);
+            if (!_ttsLogOpen) return;
+            const key = ttsApiKey();
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-logs?n=100`, {
+                    headers: { 'x-api-key': key }
+                });
+                const data = await res.json();
+                const lines = data.lines || [];
+                if (lines.length !== _ttsLogLastCount) {
+                    _ttsLogLastCount = lines.length;
+                    const scroll = document.getElementById('ttsLogScroll');
+                    const atBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 40;
+                    scroll.innerHTML = lines.map(l =>
+                        `<div class="${_ttsLogClass(l)}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
+                    ).join('');
+                    if (atBottom || lines.length < 20) scroll.scrollTop = scroll.scrollHeight;
+                }
+            } catch { /* server offline — keep polling */ }
+            // Poll every 2s when open (captures warmup lines in near-realtime)
+            _ttsLogTimer = setTimeout(ttsLogPoll, 2000);
+        }
+        // ── End TTS Log Pane ─────────────────────────────────────────────────────
+
         // ── End TTS Server Panel ─────────────────────────────────────────────────
 
         window.addEventListener('DOMContentLoaded', () => {
