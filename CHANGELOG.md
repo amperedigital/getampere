@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.644 — Router monitor: fix TTS panel blank/hung state during offline/compile (2026-03-21)
+
+- **Fix**: `ttsPoll()` now guards against empty API key — was firing with no key during page load,
+  producing a 401 that left the panel in a blank/hung state indefinitely.
+- **Fix**: Non-2xx HTTP responses (401, 403, 502) now correctly call `ttsRenderOffline` and
+  schedule a 10s retry. Previously, HTTP errors silently fell through — `_ttsOnline` state never
+  settled and the panel appeared frozen.
+- **Effect**: During kernel compile warm-up (502 from tunnel), panel now shows
+  "Offline — will recheck in 60s" with timestamp, instead of blank or stale state.
+
 ## v3.643 — Router monitor: live server log pane (2026-03-21)
 
 - **Log pane**: Collapsible "Server Log" section added to TTS Server panel. Click to expand;
