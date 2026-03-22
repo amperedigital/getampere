@@ -1765,7 +1765,7 @@
                 <!-- Diagnostic strip -->
                 <div style="display:flex;align-items:stretch;border-bottom:1px solid #30363d;background:#0d1117">
                     ${['worker','tunnel','fastapi','csm','kernels'].map(k =>
-                        `<div class="diag-light" title="${k}">${diagDot(k)}<span class="diag-label">${k==='fastapi'?'FastAPI':k==='worker'?'Worker':k==='csm'?'CSM-0':k[0].toUpperCase()+k.slice(1)}</span><span class="diag-detail">${k==='worker'?'Cloudflare Worker Responding':diagDetail(k)}</span></div>`
+                        `<div class="diag-light" title="${k}">${diagDot(k)}<span class="diag-label">${k==='fastapi'?'FastAPI':k==='worker'?'Worker':k==='csm'?'CSM-0':k[0].toUpperCase()+k.slice(1)}</span><span class="diag-detail">${k==='worker'?'Cloudflare Worker Responding':k==='kernels'?'Triton Kernels compiled and cached':diagDetail(k)}</span></div>`
                     ).join('')}
                 </div>
                 <!-- Metrics -->
@@ -1788,11 +1788,11 @@
                 ${showPipeline ? `
                 <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 14px 10px;background:#0d1117">
                     <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
-                    ${phaseRow('Models Loaded and ready','model_loading','load_csm_1b() + torchtune')}
+                    ${phaseRow('Models Loaded and ready','model_loading','load_csm_1b() + torchtune weights')}
                     ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
-                    ${phaseRow('Compiled','compile','torch.compile()')}
-                    ${phaseRow('Warmup started','warmup_start','Triton warmup phrases')}
-                    ${phaseRow('Kernels ready','warmup_done','all lengths cached')}
+                    ${phaseRow('Compiled','compile','torch.compile(mode=default, dynamic=True)')}
+                    ${phaseRow('Warmup started','warmup_start','2 Triton warmup phrases')}
+                    ${phaseRow('Kernels ready','warmup_done','all phrase lengths cached')}
                 </div>
                 ` : ''}
             `;

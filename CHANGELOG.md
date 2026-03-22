@@ -1,8 +1,10 @@
 # Changelog
 
-## v3.672 — Restore Layout Strings (2026-03-21)
+## v3.673 — Restore Layout Strings (2026-03-21)
 
-- **Frontend**: Explicitly restored `"Cloudflare Worker Responding"` detailed text and `"Models Loaded and ready"` row text in the fleet layout structure to match user's previous preference.
+- **Frontend**: Explicitly restored `"Cloudflare Worker Responding"` and `"Triton Kernels compiled and cached"` detailed text, and the exact pipeline strings in the fleet layout structure to match user's previous `v3.659` preference.
+
+
 
 
 - **Frontend**: Restored horizontal layout for the System Diagnostic indicators, while keeping the Startup Pipeline vertical, mapping to exact user preferences.
