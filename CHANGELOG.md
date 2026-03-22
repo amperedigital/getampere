@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.681 — router-monitor: split TTS fleet routes to infra.getampere.ai (2026-03-22)
+
+- **Architecture**: Added `INFRA_BASE = 'https://infra.getampere.ai'` constant alongside `API_BASE`.
+- All 9 TTS fleet API calls (`tts-fleet`, `tts-fleet-sync-vast`, `tts-exec`, `tts-kill`, `tts-warmup`, `tts-logs`, `tts-benchmark`, `vast-balance`) now route to `infra.getampere.ai`.
+- WebSocket (`/memory/visualizer`), `/workspaces`, and all non-infra routes remain on `memory-api` via `API_BASE`. Routing table, turn-by-turn, and event stream are unaffected.
+
 ## v3.680 — Fix: restart button false-fail alert + benchmark RTF push (2026-03-22)
 
 - **Bugfix (router-monitor.html)**: Restart button showed "restart failed" even on success. The `tts-exec` endpoint returns `{results: {"vast-ID": {ok:true}}}` but the dashboard was checking `data.ok` (top-level). Fixed to check both `data.ok` and `Object.values(data.results).some(r => r.ok)`.

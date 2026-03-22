@@ -795,6 +795,9 @@
             ? 'http://localhost:8787'
             : 'https://memory-api.tight-butterfly-7b71.workers.dev';
 
+        // Infra routes (TTS fleet, heartbeat, VAST) live on the dedicated infra-api worker.
+        const INFRA_BASE = 'https://infra.getampere.ai';
+
         let sessionStart = Date.now();
         let routeMap = {};
         let totalEvents = 0;
@@ -1467,7 +1470,7 @@
             const key = document.getElementById('apiKey')?.value?.trim() || '';
             if (!key) { _fleetTimer = setTimeout(fleetPoll, 3000); return; }
             try {
-                const res = await fetch(`${API_BASE}/admin/tts-fleet`, { headers: { 'x-api-key': key } });
+                const res = await fetch(`${INFRA_BASE}/admin/tts-fleet`, { headers: { 'x-api-key': key } });
                 if (!res.ok) { _fleetTimer = setTimeout(fleetPoll, 15000); return; }
                 const data = await res.json();
                 const instances = data.instances || [];
@@ -1493,7 +1496,7 @@
             btn.textContent = '⏳ Syncing…';
             btn.disabled = true;
             try {
-                const res = await fetch(`${API_BASE}/admin/tts-fleet-sync-vast`, {
+                const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-sync-vast`, {
                     method: 'POST',
                     headers: { 'x-api-key': key },
                 });
@@ -1805,13 +1808,13 @@
             try {
                 let resp;
                 if (action === 'restart') {
-                    resp = await fetch(`${API_BASE}/admin/tts-exec`, {
+                    resp = await fetch(`${INFRA_BASE}/admin/tts-exec`, {
                         method: 'POST',
                         headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'restart', instance_id: id })
                     });
                 } else {
-                    resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
+                    resp = await fetch(`${INFRA_BASE}/admin/tts-${action}`, {
                         method: 'POST',
                         headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ tunnel_url: tunnelUrl }),
@@ -1842,7 +1845,7 @@
             const btn = document.getElementById(`inst-btn-kill-${id}`);
             if (btn) { btn.textContent = '☠ Killing…'; btn.style.opacity = '0.6'; }
             try {
-                await fetch(`${API_BASE}/admin/tts-kill`, {
+                await fetch(`${INFRA_BASE}/admin/tts-kill`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tunnel_url: tunnelUrl }),
@@ -1856,7 +1859,7 @@
             const btn = document.getElementById(`inst-btn-warmup-${id}`);
             if (btn) { btn.textContent = '🔥 Warming…'; btn.disabled = true; }
             try {
-                await fetch(`${API_BASE}/admin/tts-warmup`, {
+                await fetch(`${INFRA_BASE}/admin/tts-warmup`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tunnel_url: tunnelUrl }),
@@ -1890,7 +1893,7 @@
             const key = document.getElementById('apiKey')?.value?.trim() || '';
             const encUrl = encodeURIComponent(tunnelUrl);
             try {
-                const res = await fetch(`${API_BASE}/admin/tts-logs?n=100&target_url=${encUrl}`, { headers: { 'x-api-key': key } });
+                const res = await fetch(`${INFRA_BASE}/admin/tts-logs?n=100&target_url=${encUrl}`, { headers: { 'x-api-key': key } });
                 const data = await res.json();
                 const lines = data.lines || [];
                 const scroll = document.getElementById(`inst-log-scroll-${id}`);
@@ -1950,7 +1953,7 @@
             ).join('');
 
             try {
-                const resp = await fetch(`${API_BASE}/admin/tts-benchmark`, {
+                const resp = await fetch(`${INFRA_BASE}/admin/tts-benchmark`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phrases, wait_for_idle: true, tunnel_url: tunnelUrl }),
@@ -2025,7 +2028,7 @@
             const key = document.getElementById('apiKey')?.value?.trim() || '';
             if (!key) { _vastBalanceTimer = setTimeout(vastBalancePoll, 10000); return; }
             try {
-                const resp = await fetch(`${API_BASE}/admin/vast-balance`, { headers: { 'x-api-key': key } });
+                const resp = await fetch(`${INFRA_BASE}/admin/vast-balance`, { headers: { 'x-api-key': key } });
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const data = await resp.json();
                 const bal = data.balance_usd ?? null;
