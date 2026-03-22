@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.682 — Fleet card: ETA countdown + clarified warmup labels (2026-03-22)
+
+- **UX fix**: Replaced ambiguous "4m 3s since restart" warmup label with two distinct displays:
+  - **"warming for Xm Ys"** — elapsed time (how long it's been compiling)
+  - **ETA ~Xm remaining** — amber badge counting down to expected ready (25 min baseline, 5 min if Triton cache pre-loaded)
+- Both tick live via `setInterval`. ETA shows "almost ready…" when elapsed exceeds estimate.
+- When warmup completes: shows "✅ KERNELS WARM — Xm Ys total warmup time".
+
 ## v3.681 — router-monitor: split TTS fleet routes to infra.getampere.ai (2026-03-22)
 
 - **Architecture**: Added `INFRA_BASE = 'https://infra.getampere.ai'` constant alongside `API_BASE`.
