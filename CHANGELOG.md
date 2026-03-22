@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.683 — Fleet card: VAST ID header with console deep-link (2026-03-22)
+
+- **UX fix**: Fleet card header "Instance" label (showing cryptic internal UUID) replaced with "VAST ID" showing the real VAST contract number (e.g. `#33355828`) — the same ID visible in the VAST console. Clickable link → `cloud.vast.ai/instances/`.
+- If sync hasn't run yet (VAST ID unknown): shows `"unknown — hit ⚡ Sync"` instead of meaningless UUID.
+- Internal UUID (`0f39b68c…`) demoted to tiny grey secondary text with tooltip — still there for debugging, not in your face.
+
 ## v3.682 — Fleet card: ETA countdown + clarified warmup labels (2026-03-22)
 
 - **UX fix**: Replaced ambiguous "4m 3s since restart" warmup label with two distinct displays:

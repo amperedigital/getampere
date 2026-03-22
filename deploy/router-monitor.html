@@ -1765,12 +1765,16 @@
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                         <div style="display:flex;flex-direction:column;gap:2px">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">Instance</span>
-                                <span style="font-size:12px;font-weight:700;color:#e6edf3;font-family:monospace">${vastId}</span>
+                                <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">VAST ID</span>
+                                ${inst.vast_id
+                                    ? `<a href="https://cloud.vast.ai/instances/" target="_blank" title="Open in VAST console" style="font-size:13px;font-weight:700;color:#58a6ff;font-family:monospace;text-decoration:none;border-bottom:1px dotted #58a6ff44">#${inst.vast_id} ↗</a>`
+                                    : `<span style="font-size:11px;color:#484f58;font-style:italic">unknown — hit ⚡ Sync</span>`
+                                }
                             </div>
                             <div style="display:flex;align-items:center;gap:10px">
                                 ${datacenter ? `<span style="font-size:10px;color:#8b949e">📍 ${datacenter}</span>` : ''}
                                 ${machineId  ? `<span style="font-size:10px;color:#484f58;font-family:monospace">🖥 ${machineId}</span>` : ''}
+                                <span style="font-size:9px;color:#30363d;font-family:monospace" title="Internal instance ID">${id.substring(0,8)}…</span>
                             </div>
                         </div>
                         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${stColor};box-shadow:0 0 6px ${stColor}88;flex-shrink:0"></span>
