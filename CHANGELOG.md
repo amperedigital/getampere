@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.667 — Fix: DOM compilation error from isolated update (2026-03-21)
+## v3.668 — Rollback: DOM refactor caused layout bugs (2026-03-21)
+
+- **Frontend**: Explicit rollback to `v3.665`. The recent attempts to isolate the `FLEET POLL` DOM refresh via `metricsDiv.innerHTML` created numerous unintended side-effects with CSS Grid column overlapping and HTML layout issues that prevented the Log and Benchmark tools from operating correctly. Reverted to the snapshotting method from `v3.665` until the UI components are properly reconstructed.
+
+
 
 - **Frontend**: Fixed a missing template literal string interpolation closure and CSS Grid syntax error in `v3.666` that prevented the Server Log and Benchmark panes from parsing correctly, rendering them unclickable. Restored the Phase Pipeline display sequence by successfully pulling it outside the auto-filled CSS metrics grid.
 

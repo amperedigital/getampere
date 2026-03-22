@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.667">
+    <meta name="version" content="v3.665">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.667/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.665/deploy/assets/css/styles.css">
 
     <style>
         @keyframes pulse-dot {
@@ -1676,70 +1676,25 @@
             const btnRestart = online  ? `<button onclick="instControl('${id}','${url}','restart')" style="background:#21262d;border:1px solid #e3b341;color:#e3b341;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" id="inst-btn-restart-${id}">⟳ Restart</button>` : '';
             const btnStop    = online  ? `<button onclick="instStop('${id}','${url}')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer">⏹ Stop</button>` : '';
 
-            let metricsDiv = document.getElementById(`inst-metrics-${id}`);
-            if (!metricsDiv) {
-                // First render: create the skeleton with static log/bench panes
-                card.innerHTML = `
-                    <div id="inst-metrics-${id}"></div>
-                    <!-- Log pane -->
-                    <div class="tts-log-pane">
-                        <button class="tts-log-toggle" onclick="instLogToggle('${id}','${url}')">
-                            <span>🖥 Server Log</span>
-                            <span id="inst-log-chevron-${id}" style="font-size:12px">▶</span>
-                        </button>
-                        <div class="tts-log-body" id="inst-log-body-${id}">
-                            <div class="tts-log-scroll" id="inst-log-scroll-${id}"><span class="log-dim">Log will appear here…</span></div>
-                        </div>
-                    </div>
-                    <!-- Benchmark pane -->
-                    <div class="tts-log-pane">
-                        <button class="tts-log-toggle" onclick="instBenchToggle('${id}')">
-                            <span>⚡ Benchmark</span>
-                            <span id="inst-bench-chevron-${id}" style="font-size:12px">▶</span>
-                        </button>
-                        <div class="tts-log-body" id="inst-bench-body-${id}" style="display:none">
-                            <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                                <select id="inst-bench-preset-${id}" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer" onchange="instBenchPresetChange('${id}')">
-                                    <option value="default">Default (6 phrases)</option>
-                                    <option value="short">Short only (3)</option>
-                                    <option value="long">Long only (3)</option>
-                                    <option value="custom">Custom…</option>
-                                </select>
-                                <input id="inst-bench-custom-${id}" placeholder="Phrases separated by |" style="display:none;flex:1;min-width:160px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px" />
-                                <button id="inst-bench-run-${id}" onclick="instBenchRun('${id}','${url}')" style="background:#1a3a4a;border:1px solid #4493f8;color:#4493f8;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600">▶ Run</button>
-                                <button id="inst-bench-stop-${id}" onclick="instBenchStop('${id}')" style="display:none;background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">■ Stop</button>
-                                <span id="inst-bench-status-${id}" style="font-size:10px;color:#8b949e"></span>
-                            </div>
-                            <div style="overflow-x:auto">
-                                <table style="width:100%;border-collapse:collapse;font-size:11px">
-                                    <thead><tr style="border-bottom:1px solid #30363d;color:#8b949e">
-                                        <th style="padding:6px 10px;text-align:left;width:24px">#</th>
-                                        <th style="padding:6px 10px;text-align:left">Phrase</th>
-                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">Gen Time</th>
-                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">Audio</th>
-                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">RTF</th>
-                                        <th style="padding:6px 10px;text-align:center;width:40px">✓</th>
-                                    </tr></thead>
-                                    <tbody id="inst-bench-rows-${id}"><tr><td colspan="6" style="padding:12px 10px;color:#484f58;text-align:center">Run benchmark to see results</td></tr></tbody>
-                                    <tfoot id="inst-bench-summary-${id}" style="display:none">
-                                        <tr style="border-top:1px solid #30363d;background:#0d1117;font-weight:600;color:#e6edf3">
-                                            <td colspan="2" style="padding:6px 10px">Summary</td>
-                                            <td id="inst-bench-sum-total-${id}" style="padding:6px 10px;text-align:right">—</td>
-                                            <td></td>
-                                            <td id="inst-bench-sum-rtf-${id}" style="padding:6px 10px;text-align:right">—</td>
-                                            <td id="inst-bench-sum-pass-${id}" style="padding:6px 10px;text-align:center">—</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                metricsDiv = document.getElementById(`inst-metrics-${id}`);
-            }
+            // Snapshot pane open states before innerHTML wipes them
+            const benchWasOpen = document.getElementById(`inst-bench-body-${id}`)?.style.display === 'block';
+            const logsWasOpen  = document.getElementById(`inst-log-body-${id}`)?.style.display === 'block';
 
-            // Only update the dynamic top metrics section — leaves running streaming logs/benchmarks completely alone
-            metricsDiv.innerHTML = `
+            // Snapshot running DOM state (so 5s poll doesn't wipe active benchmarks or logs)
+            const bRows = document.getElementById(`inst-bench-rows-${id}`)?.innerHTML;
+            const bStat = document.getElementById(`inst-bench-status-${id}`)?.innerHTML;
+            const bSumH = document.getElementById(`inst-bench-summary-${id}`)?.innerHTML;
+            const bSumD = document.getElementById(`inst-bench-summary-${id}`)?.style.display;
+            const bRunD = document.getElementById(`inst-bench-run-${id}`)?.style.display;
+            const bStpD = document.getElementById(`inst-bench-stop-${id}`)?.style.display;
+            const bPreV = document.getElementById(`inst-bench-preset-${id}`)?.value;
+            const bCusV = document.getElementById(`inst-bench-custom-${id}`)?.value;
+            const bCusD = document.getElementById(`inst-bench-custom-${id}`)?.style.display;
+            const lText = document.getElementById(`inst-log-scroll-${id}`)?.innerHTML;
+
+            card.innerHTML = `
+
+
                 <!-- Card header -->
                 <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -1782,9 +1737,92 @@
                     <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Requests</span><span class="tts-metric-value">${inst.requests_done ?? '—'}</span></div>
+                    ${phasePipeline}
                 </div>
-                ${phasePipeline}
+                <!-- Log pane -->
+                <div class="tts-log-pane">
+                    <button class="tts-log-toggle" onclick="instLogToggle('${id}','${url}')">
+                        <span>🖥 Server Log</span>
+                        <span id="inst-log-chevron-${id}" style="font-size:12px">▶</span>
+                    </button>
+                    <div class="tts-log-body" id="inst-log-body-${id}">
+                        <div class="tts-log-scroll" id="inst-log-scroll-${id}"><span class="log-dim">Log will appear here…</span></div>
+                    </div>
+                </div>
+                <!-- Benchmark pane -->
+                <div class="tts-log-pane">
+                    <button class="tts-log-toggle" onclick="instBenchToggle('${id}')">
+                        <span>⚡ Benchmark</span>
+                        <span id="inst-bench-chevron-${id}" style="font-size:12px">▶</span>
+                    </button>
+                    <div class="tts-log-body" id="inst-bench-body-${id}" style="display:none">
+                        <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                            <select id="inst-bench-preset-${id}" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer" onchange="instBenchPresetChange('${id}')">
+                                <option value="default">Default (6 phrases)</option>
+                                <option value="short">Short only (3)</option>
+                                <option value="long">Long only (3)</option>
+                                <option value="custom">Custom…</option>
+                            </select>
+                            <input id="inst-bench-custom-${id}" placeholder="Phrases separated by |" style="display:none;flex:1;min-width:160px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px" />
+                            <button id="inst-bench-run-${id}" onclick="instBenchRun('${id}','${url}')" style="background:#1a3a4a;border:1px solid #4493f8;color:#4493f8;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600">▶ Run</button>
+                            <button id="inst-bench-stop-${id}" onclick="instBenchStop('${id}')" style="display:none;background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">■ Stop</button>
+                            <span id="inst-bench-status-${id}" style="font-size:10px;color:#8b949e"></span>
+                        </div>
+                        <div style="overflow-x:auto">
+                            <table style="width:100%;border-collapse:collapse;font-size:11px">
+                                <thead><tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                                    <th style="padding:6px 10px;text-align:left;width:24px">#</th>
+                                    <th style="padding:6px 10px;text-align:left">Phrase</th>
+                                    <th style="padding:6px 10px;text-align:right;white-space:nowrap">Gen Time</th>
+                                    <th style="padding:6px 10px;text-align:right;white-space:nowrap">Audio</th>
+                                    <th style="padding:6px 10px;text-align:right;white-space:nowrap">RTF</th>
+                                    <th style="padding:6px 10px;text-align:center;width:40px">✓</th>
+                                </tr></thead>
+                                <tbody id="inst-bench-rows-${id}"><tr><td colspan="6" style="padding:12px 10px;color:#484f58;text-align:center">Run benchmark to see results</td></tr></tbody>
+                                <tfoot id="inst-bench-summary-${id}" style="display:none">
+                                    <tr style="border-top:1px solid #30363d;background:#0d1117;font-weight:600;color:#e6edf3">
+                                        <td colspan="2" style="padding:6px 10px">Summary</td>
+                                        <td id="inst-bench-sum-total-${id}" style="padding:6px 10px;text-align:right">—</td>
+                                        <td></td>
+                                        <td id="inst-bench-sum-rtf-${id}" style="padding:6px 10px;text-align:right">—</td>
+                                        <td id="inst-bench-sum-pass-${id}" style="padding:6px 10px;text-align:center">—</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             `;
+
+            // Restore pane open states after innerHTML rebuild
+            if (benchWasOpen) {
+                const benchBody = document.getElementById(`inst-bench-body-${id}`);
+                const benchChev = document.getElementById(`inst-bench-chevron-${id}`);
+                if (benchBody) benchBody.style.display = 'block';
+                if (benchChev) benchChev.textContent = '▼';
+            }
+            if (logsWasOpen) {
+                const logBody = document.getElementById(`inst-log-body-${id}`);
+                const logChev = document.getElementById(`inst-log-chevron-${id}`);
+                if (logBody) { logBody.style.display = 'block'; logBody.classList.add('open'); }
+                if (logChev) logChev.textContent = '▼';
+                // restart log polling if it was running
+                const s = _istate(id);
+                s.logOpen = true;
+                if (!s.logTimer) instLogPoll(id, url);
+            }
+
+            // Restore running DOM state to prevent benchmark/log wiping on 5s poll
+            if (bRows) document.getElementById(`inst-bench-rows-${id}`).innerHTML = bRows;
+            if (bStat) document.getElementById(`inst-bench-status-${id}`).innerHTML = bStat;
+            if (bSumH) document.getElementById(`inst-bench-summary-${id}`).innerHTML = bSumH;
+            if (bSumD) document.getElementById(`inst-bench-summary-${id}`).style.display = bSumD;
+            if (bRunD) document.getElementById(`inst-bench-run-${id}`).style.display = bRunD;
+            if (bStpD) document.getElementById(`inst-bench-stop-${id}`).style.display = bStpD;
+            if (bPreV) document.getElementById(`inst-bench-preset-${id}`).value = bPreV;
+            if (bCusV) document.getElementById(`inst-bench-custom-${id}`).value = bCusV;
+            if (bCusD) document.getElementById(`inst-bench-custom-${id}`).style.display = bCusD;
+            if (lText) document.getElementById(`inst-log-scroll-${id}`).innerHTML = lText;
         }
 
         // ── Per-instance control functions ────────────────────────────────────────
