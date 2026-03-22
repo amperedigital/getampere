@@ -1,8 +1,10 @@
 # Changelog
 
-## v3.673 — Restore Layout Strings (2026-03-21)
+## v3.674 — Complete Revert of Startup Pipeline text to v3.659 (2026-03-21)
 
-- **Frontend**: Explicitly restored `"Cloudflare Worker Responding"` and `"Triton Kernels compiled and cached"` detailed text, and the exact pipeline strings in the fleet layout structure to match user's previous `v3.659` preference.
+- **Frontend**: Fully restored the `Quant` metric block back into the primary top row of the Fleet Card layout (`FP8` vs `INT4`). Also reverted the first row of the Startup Pipeline to say `"Model loaded"`, keeping it identical to `v3.659` specification. The variable fallback has been corrected from `int4` back to `fp8` so that `"FP8 weight-only"` evaluates properly on the startup pipeline.
+
+
 
 
 

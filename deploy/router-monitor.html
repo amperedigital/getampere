@@ -1591,7 +1591,7 @@
             const gpuName = gpu.name ? `${NVIDIA_BADGE} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuShort}</span>` : '—';
             const uptime = inst.uptime_s != null ? fmtUptime(inst.uptime_s) : '—';
             const mdl = {};
-            const quant = mdl.quantization || (inst.quant) || '—';
+            const quant = mdl.quantization || inst.quant || 'fp8';
             const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
             const region = inst.region || inst.datacenter || '';
             // VAST identifiers — prefer explicit fields, fall back to parsing instance_id
@@ -1662,14 +1662,6 @@
                     <span style="color:#8b949e;font-size:10px">${desc}</span>${elapsed}</div>`;
             }
             const showPipeline = warming || (warm && inst.warmup_complete_ts);
-            const phasePipeline = showPipeline ? `<div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
-                <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
-                ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune')}
-                ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
-                ${phaseRow('Compiled','compile','torch.compile()')}
-                ${phaseRow('Warmup started','warmup_start','Triton warmup phrases')}
-                ${phaseRow('Kernels ready','warmup_done','all lengths cached')}
-            </div>` : '';
 
             // Control buttons — all pass tunnel_url for per-instance routing
             const btnKill    = busy    ? `<button onclick="instKill('${id}','${url}')" title="Abort current generation" style="background:#3a0a0a;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600" id="inst-btn-kill-${id}">☠ Kill</button>` : '';
@@ -1781,6 +1773,7 @@
                     <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">VRAM</span><span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Requests</span><span class="tts-metric-value">${inst.requests_done ?? '—'}</span></div>
@@ -1788,7 +1781,7 @@
                 ${showPipeline ? `
                 <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 14px 10px;background:#0d1117">
                     <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
-                    ${phaseRow('Models Loaded and ready','model_loading','load_csm_1b() + torchtune weights')}
+                    ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune weights')}
                     ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
                     ${phaseRow('Compiled','compile','torch.compile(mode=default, dynamic=True)')}
                     ${phaseRow('Warmup started','warmup_start','2 Triton warmup phrases')}
