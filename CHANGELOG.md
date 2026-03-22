@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.648 — Router monitor: suppress health check log + newest-first log order (2026-03-21)
+
+- **Log spam suppressed**: Added `/health` to uvicorn access log filter — Docker's 30s healthcheck
+  curl was filling the log pane with `GET /health 200 OK` noise. Now only real traffic shows.
+  Suppressed paths: `/admin/status`, `/admin/logs`, `/health` (all polling endpoints).
+- **Newest-first log order**: Server log pane now shows most recent `[CSM]` lines at top.
+  No more scrolling to find what just happened. Backend pushes 100 lines, frontend reverses before render.
+- **Both changes pushed to VAST via SSH** — no Docker rebuild needed.
+
 ## v3.647 — Router monitor: 5-light diagnostic strip (Worker/Tunnel/FastAPI/CSM/Kernels) (2026-03-21)
 
 - **Diagnostic lights strip** — 5 indicator lamps added between TTS panel header and metrics:
