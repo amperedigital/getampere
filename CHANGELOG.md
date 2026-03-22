@@ -1,7 +1,13 @@
 # Changelog
 
-## v3.662 — Fix: CSS 404 on new deploys — jsDelivr purge on every release (2026-03-21)
+## v3.663 — Fix: fleet empty-state placeholder persisting when instance registers (2026-03-21)
 
+- **Bug**: After auto-sync from VAST registered an instance, the "No active instances" empty-state
+  div remained visible above the instance card. The preserve-existing-cards logic only removed
+  elements with `data-inst-id` — the placeholder had none, so it stayed.
+- **Fix**: Before rendering real instance cards, remove all child elements lacking `data-inst-id`.
+
+## v3.662 — Fix: CSS 404 on new deploys — jsDelivr purge on every release (2026-03-21)
 
 - **Root cause**: jsDelivr indexes new GitHub tags lazily (can take 12-24h). Every deploy
   bumps the `getampere@vX.Y.Z` tag in HTML. Unchanged assets like `styles.css` were never
