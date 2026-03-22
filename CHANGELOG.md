@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.661 — Fleet sync: auto-discover instances from VAST account (2026-03-21)
+
+- **`POST /admin/tts-fleet-sync-vast`** — new backend endpoint that queries the VAST API for all
+  running instances on the account, probes each one’s `/admin/status` endpoint (csm_server.py),
+  and auto-registers any that respond into `INFRA_DB`. No manual entry needed.
+- **`POST /admin/tts-fleet-register`** — manual override endpoint: probes a given `tunnel_url` and
+  registers it with a 5-minute keepalive TTL. Useful for pre-heartbeat instances or non-VAST setups.
+- **Frontend**: Added ⚡ Sync from VAST button to fleet dashboard header. Calls sync endpoint,
+  shows inline result (`✅ 1/1 registered`), then auto-refreshes fleet cards.
+
 ## v3.660 — TTS Fleet Dashboard: multi-instance cards, per-instance benchmark (2026-03-21)
 
 - **Replaced single TTS panel** with a dynamic fleet dashboard polling `/admin/tts-fleet` every 5s.

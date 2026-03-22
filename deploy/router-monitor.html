@@ -778,6 +778,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span id="fleetLastUpdated" style="font-size:11px;color:#484f58"></span>
+                <button id="fleetSyncVastBtn" onclick="fleetSyncVast()" title="Query VAST account for running instances and auto-register any TTS servers found" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⚡ Sync from VAST</button>
                 <button onclick="fleetPollNow()" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⟳ Refresh</button>
             </div>
         </div>
@@ -1475,7 +1476,38 @@
 
         function fleetPollNow() { clearTimeout(_fleetTimer); fleetPoll(); }
 
+        async function fleetSyncVast() {
+            const btn = document.getElementById('fleetSyncVastBtn');
+            const key = document.getElementById('apiKey').value || '';
+            const orig = btn.textContent;
+            btn.textContent = '⏳ Syncing…';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-fleet-sync-vast`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key },
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    btn.textContent = `❌ ${data.error ?? 'Error'}`;
+                    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 4000);
+                    return;
+                }
+                const reg = data.registered ?? 0;
+                const total = data.total_vast ?? 0;
+                btn.textContent = `✅ ${reg}/${total} registered`;
+                setTimeout(fleetPollNow, 500);
+                setTimeout(fleetPollNow, 4000);
+            } catch (err) {
+                btn.textContent = `❌ ${err.message}`;
+            } finally {
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 5000);
+            }
+        }
+
+
         // ── Card rendering ────────────────────────────────────────────────────────
+
         function renderFleetCards(instances) {
             const container = document.getElementById('ttsFleetCards');
             const badge = document.getElementById('fleetCountBadge');
