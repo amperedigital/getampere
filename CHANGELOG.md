@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.680 — Fix: restart button false-fail alert + benchmark RTF push (2026-03-22)
+
+- **Bugfix (router-monitor.html)**: Restart button showed "restart failed" even on success. The `tts-exec` endpoint returns `{results: {"vast-ID": {ok:true}}}` but the dashboard was checking `data.ok` (top-level). Fixed to check both `data.ok` and `Object.values(data.results).some(r => r.ok)`.
+- Updated `csm_server.py` pushed to live server via deploy (benchmark RTF fix).
+
 ## v3.679 — Backend: fix restart button + warmup force (2026-03-22)
 
 - **Frontend**: No changes. Backend-only fix deploy.

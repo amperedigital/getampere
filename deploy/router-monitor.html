@@ -1818,8 +1818,14 @@
                     });
                 }
                 const data = await resp.json();
-                if (data.ok) { setTimeout(fleetPollNow, 2000); setTimeout(fleetPollNow, 6000); }
+                // tts-exec returns { results: { "vast-ID": { ok, ... } } }
+                // tts-start/stop return { ok: true/false }
+                // Check both patterns
+                const topOk = data.ok === true;
+                const resultsOk = data.results && Object.values(data.results).some(r => r.ok === true);
+                if (topOk || resultsOk) { setTimeout(fleetPollNow, 2000); setTimeout(fleetPollNow, 6000); }
                 else alert(`${action} failed: ${data.output || data.error || JSON.stringify(data)}`);
+
             } catch (e) { alert(`${action} error: ${e.message}`); }
             if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
             fleetPollNow();
