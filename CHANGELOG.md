@@ -1,8 +1,10 @@
 # Changelog
 
-## v3.671 — Fix Polling DOM Collapse Bug & Deployment 404s (2026-03-21)
+## v3.672 — Restore Layout Strings (2026-03-21)
 
-- **Frontend**: Fixed the critical "Server Log and Benchmark" pane wiping bug! This was caused by the javascript `Set.has()` operator strictly comparing a string (`dataset.instId`) against a numeric integer (`instance_id` from the backend), causing the frontend to literally destroy and recreate the entire instance card DOM every 5 seconds.
+- **Frontend**: Explicitly restored `"Cloudflare Worker Responding"` detailed text and `"Models Loaded and ready"` row text in the fleet layout structure to match user's previous preference.
+
+
 - **Frontend**: Restored horizontal layout for the System Diagnostic indicators, while keeping the Startup Pipeline vertical, mapping to exact user preferences.
 - **Scripts**: Moved the jsDelivr CDN purge execution into `unified_publish.sh` *after* `git push origin $NEW_TAG`. Previously, `publish.sh` would purge the CDN before the tag was pushed, causing GitHub to cache a 404 response in jsDelivr for 12 hours.
 
