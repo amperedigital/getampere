@@ -4,6 +4,11 @@
 - **Frontend**: Release v3.677 (no new commits)
 
 
+## v3.678 — UI Padding, VAST Balances, and Auto-Height Scroll Panels (2026-03-22)
+
+- **Frontend**: Fixed the padding boundary on the Startup Pipeline by correcting its HTML grid wrapper. Updated the VAST balance view to sit inline as raw font text immediately above the TTS Fleet header. Updated the upper `panel-scroll` tables (Routing Table, Turn-by-Turn, Event Stream) to default to `height: auto` up to a maximum 400px ceiling instead of rigidly expanding down the screen empty, so that the underlying TTS Fleet panel is easily visible on page load. 
+
+
 ## v3.676 — Diagnostic Fallback Logic (2026-03-22)
 
 - **Frontend**: Moved all hardcoded user-preferred diagnostic detailed strings (`"FastAPI listening on port 8080"`, etc.) natively into the javascript `diagDetail()` payload evaluator. This ensures that the strings are *only* explicitly displayed when the modules are physically `ok: true`. If the server goes offline during boot or crashes, it will safely revert to displaying `"offline"` or `"unreachable"`, rather than statically lying in the HTML that it is working.
