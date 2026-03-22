@@ -1,6 +1,12 @@
 # Changelog
 
-## v3.664 — Fleet card: show VAST instance ID, datacenter, machine ID (2026-03-21)
+## v3.665 — Fix: preserve benchmark and log panes during fleet refresh (2026-03-21)
+
+- **Frontend**: The 5-second fleet poll previously wiped out open benchmark and log panes because it
+  rebuilt the entire card's HTML. The dashboard now snapshots the open state and dynamic DOM values
+  (benchmark streaming rows, summary blocks, log output) and restores them after the HTML rebuild.
+  This allows live benchmark streaming to survive background fleet refreshes without resetting.
+
 
 - **Backend**: `GET /admin/tts-fleet` now includes `vast_id`, `machine_id`, `datacenter` from
   stored payload in each instance probe response.

@@ -1676,7 +1676,25 @@
             const btnRestart = online  ? `<button onclick="instControl('${id}','${url}','restart')" style="background:#21262d;border:1px solid #e3b341;color:#e3b341;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" id="inst-btn-restart-${id}">⟳ Restart</button>` : '';
             const btnStop    = online  ? `<button onclick="instStop('${id}','${url}')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer">⏹ Stop</button>` : '';
 
+            // Snapshot pane open states before innerHTML wipes them
+            const benchWasOpen = document.getElementById(`inst-bench-body-${id}`)?.style.display === 'block';
+            const logsWasOpen  = document.getElementById(`inst-log-body-${id}`)?.style.display === 'block';
+
+            // Snapshot running DOM state (so 5s poll doesn't wipe active benchmarks or logs)
+            const bRows = document.getElementById(`inst-bench-rows-${id}`)?.innerHTML;
+            const bStat = document.getElementById(`inst-bench-status-${id}`)?.innerHTML;
+            const bSumH = document.getElementById(`inst-bench-summary-${id}`)?.innerHTML;
+            const bSumD = document.getElementById(`inst-bench-summary-${id}`)?.style.display;
+            const bRunD = document.getElementById(`inst-bench-run-${id}`)?.style.display;
+            const bStpD = document.getElementById(`inst-bench-stop-${id}`)?.style.display;
+            const bPreV = document.getElementById(`inst-bench-preset-${id}`)?.value;
+            const bCusV = document.getElementById(`inst-bench-custom-${id}`)?.value;
+            const bCusD = document.getElementById(`inst-bench-custom-${id}`)?.style.display;
+            const lText = document.getElementById(`inst-log-scroll-${id}`)?.innerHTML;
+
             card.innerHTML = `
+
+
                 <!-- Card header -->
                 <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -1775,6 +1793,36 @@
                     </div>
                 </div>
             `;
+
+            // Restore pane open states after innerHTML rebuild
+            if (benchWasOpen) {
+                const benchBody = document.getElementById(`inst-bench-body-${id}`);
+                const benchChev = document.getElementById(`inst-bench-chevron-${id}`);
+                if (benchBody) benchBody.style.display = 'block';
+                if (benchChev) benchChev.textContent = '▼';
+            }
+            if (logsWasOpen) {
+                const logBody = document.getElementById(`inst-log-body-${id}`);
+                const logChev = document.getElementById(`inst-log-chevron-${id}`);
+                if (logBody) { logBody.style.display = 'block'; logBody.classList.add('open'); }
+                if (logChev) logChev.textContent = '▼';
+                // restart log polling if it was running
+                const s = _istate(id);
+                s.logOpen = true;
+                if (!s.logTimer) instLogPoll(id, url);
+            }
+
+            // Restore running DOM state to prevent benchmark/log wiping on 5s poll
+            if (bRows) document.getElementById(`inst-bench-rows-${id}`).innerHTML = bRows;
+            if (bStat) document.getElementById(`inst-bench-status-${id}`).innerHTML = bStat;
+            if (bSumH) document.getElementById(`inst-bench-summary-${id}`).innerHTML = bSumH;
+            if (bSumD) document.getElementById(`inst-bench-summary-${id}`).style.display = bSumD;
+            if (bRunD) document.getElementById(`inst-bench-run-${id}`).style.display = bRunD;
+            if (bStpD) document.getElementById(`inst-bench-stop-${id}`).style.display = bStpD;
+            if (bPreV) document.getElementById(`inst-bench-preset-${id}`).value = bPreV;
+            if (bCusV) document.getElementById(`inst-bench-custom-${id}`).value = bCusV;
+            if (bCusD) document.getElementById(`inst-bench-custom-${id}`).style.display = bCusD;
+            if (lText) document.getElementById(`inst-log-scroll-${id}`).innerHTML = lText;
         }
 
         // ── Per-instance control functions ────────────────────────────────────────
