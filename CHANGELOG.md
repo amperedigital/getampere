@@ -10,7 +10,21 @@
   16×12px, viewBox trimmed to just the icon bounds (no whitespace).
 - **VAST credits note**: Backend fix (v3.654) required — was blocked by GET method gate.
 
+## v3.657 — Fix: CSS force-rebuild to escape poisoned jsDelivr cache (2026-03-21)
+
+- CSS 404 on jsDelivr was caused by v3.654 CDN warming step being killed mid-deploy (ad-hoc
+  script instead of unified publish). jsDelivr cached the 404 and held it despite purge attempts.
+- Bumped force-rebuild token (`v2716` → `v2717`) to generate a new CSS hash and fresh CDN URL.
+- Root fix: always use unified_publish.sh to prevent future CDN warming failures.
+
+## v3.657 — Fix: CSS force-rebuild to escape poisoned jsDelivr cache (2026-03-21)
+
+- Bumped force-rebuild token (v2716 → v2717) to generate a new CSS hash and fresh CDN URL.
+- Root cause: v3.654 CDN warming was killed mid-deploy (ad-hoc script). jsDelivr cached the 404.
+- Fix: unified_publish.sh only from here on.
+
 ## v3.656 — Fix: missing stylesheet + VAST balance field fix (2026-03-21)
+
 
 - Redeploy to resolve missing stylesheet on router-monitor page.
 - VAST credits badge will now show correct balance (backend fix in v3.656).
