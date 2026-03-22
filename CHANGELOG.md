@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.646 — Router monitor: live warmup timer + full phase pipeline display (2026-03-21)
+
+- **Live elapsed timer** — large amber clock (⏱ 14m 32s) ticks every second during LOADING/WARMING UP.
+  Seeded from `uptime_s` on each 5s poll so stays accurate between polls. Stops/resets on state change.
+- **Phase pipeline** — STARTUP PIPELINE section appears during warmup and stays visible when online.
+  Per-phase indicators: ✅ done · ⏳ in progress (amber, bold) · ▫️ pending (dim)
+  Phases tracked: Model loaded → Quantized → Compiled → Warmup started → Kernels ready
+  Each completed phase shows elapsed time from server start (e.g. "3m 12s").
+- **⚡ READY badge** — once online, shows "⚡ READY — Xm Ys to fully warm" (e.g. "⚡ READY — 17m 4s").
+- **Backend (csm_server.py)** — added `_phases` dict (`model_loading`, `quantization`, `compile`,
+  `warmup_start`, `warmup_done`) stamped at each startup stage. Exposed in `/admin/status` as `phases`.
+  `uptime_s` now returns float (0.1s precision) for timer accuracy. Pushed to VAST via SSH.
+
 ## v3.645 — Router monitor: WARMING UP state + live CSM progress in TTS panel (2026-03-21)
 
 - **New state: WARMING UP** — panel now shows amber pulsing badge when server is model-loaded but

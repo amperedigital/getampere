@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.645">
+    <meta name="version" content="v3.646">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.645/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.646/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -1367,6 +1367,27 @@
         let _ttsPollTimer = null;
         let _ttsOnline = false;
 
+        // Live elapsed timer — ticks every 1s during loading/warming_up.
+        // Seeded from uptime_s on each poll so stays accurate across 5s poll gaps.
+        let _ttsElapsedTimer  = null;   // setInterval handle
+        let _ttsServerStartMs = null;   // estimated server start time in ms (local clock)
+        let _ttsWarmupDoneS   = null;   // uptime_s when warmup finished (for final badge)
+
+        function _ttsStartElapsedTick() {
+            clearInterval(_ttsElapsedTimer);
+            _ttsElapsedTimer = setInterval(() => {
+                const el = document.getElementById('ttsElapsedTimer');
+                if (!el || !_ttsServerStartMs) return;
+                const elapsedS = Math.round((Date.now() - _ttsServerStartMs) / 1000);
+                el.textContent = fmtUptime(elapsedS);
+            }, 1000);
+        }
+
+        function _ttsStopElapsedTick() {
+            clearInterval(_ttsElapsedTimer);
+            _ttsElapsedTimer = null;
+        }
+
         function ttsApiKey() { return document.getElementById('apiKey').value || ''; }
 
         async function ttsPoll() {
@@ -1416,6 +1437,7 @@
             updated.textContent = new Date().toLocaleTimeString();
 
             if (d.status === 'offline' || d.reachable === false) {
+                _ttsStopElapsedTick();
                 ttsRenderOffline(d.reason || 'unreachable');
                 return;
             }
@@ -1424,14 +1446,27 @@
             const loading  = d.status === 'loading';
             const online   = d.status === 'ok';
 
+            // Seed / update server-start estimate from uptime_s on every poll
+            if (d.uptime_s != null) {
+                _ttsServerStartMs = Date.now() - (d.uptime_s * 1000);
+            }
+
             if (warming || loading) {
                 dot.className = 'conn-indicator conn-polling';  // amber pulse
                 label.textContent = loading ? 'LOADING' : 'WARMING UP';
-                // Auto-open log pane so user sees Triton compile progress
+                _ttsStopElapsedTick();   // will restart after DOM update
                 if (!_ttsLogOpen) ttsLogToggle();
-            } else {
+            } else if (online) {
+                _ttsStopElapsedTick();
                 dot.className = 'conn-indicator ' + (d.busy ? 'conn-polling' : 'conn-connected');
                 label.textContent = d.busy ? 'BUSY' : 'ONLINE';
+                if (d.warmup_complete_ts != null) {
+                    _ttsWarmupDoneS = Math.round(d.warmup_complete_ts - (_ttsServerStartMs / 1000));
+                }
+            } else {
+                _ttsStopElapsedTick();
+                dot.className = 'conn-indicator conn-error';
+                label.textContent = d.status?.toUpperCase() || 'UNKNOWN';
             }
 
             const gpu  = d.gpu || {};
@@ -1446,30 +1481,74 @@
             const rtfHtml = rtf != null
                 ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>`
                 : '<span class="tts-offline">—</span>';
-            const uptime = d.uptime_s != null ? fmtUptime(d.uptime_s) : '—';
+            const uptime = d.uptime_s != null ? fmtUptime(Math.round(d.uptime_s)) : '—';
 
-            // Model info row
+            // Model info
             const mdl    = d.model || {};
             const quant  = mdl.quantization || '—';
             const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
             const gpuName = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '') : '—';
 
-            // Warmup completion time
-            let warmupBadge = '';
-            if (online && d.warmup_complete_ts) {
-                const warmupAge = Math.round((Date.now()/1000) - d.warmup_complete_ts);
-                warmupBadge = `<div class="tts-metric" title="Kernels compiled">
-                    <span class="tts-metric-label">Kernels</span>
-                    <span class="tts-metric-value" style="color:#3fb950">ready ${fmtUptime(warmupAge)} ago</span>
-                </div>`;
-            } else if (warming) {
-                warmupBadge = `<div class="tts-metric col-span-2">
-                    <span class="tts-metric-label">Triton compile</span>
-                    <span class="tts-metric-value" style="color:#e3b341">in progress — see log ▼</span>
+            // ── Phase pipeline ─────────────────────────────────────────────────────────────
+            const phases = d.phases || {};
+            const startEpoch = _ttsServerStartMs ? _ttsServerStartMs / 1000 : null;
+
+            function phaseElapsed(ts) {
+                if (!ts || !startEpoch) return '';
+                const s = Math.round(ts - startEpoch);
+                return `<span style="color:#8b949e;font-size:10px;margin-left:6px">${fmtUptime(s)}</span>`;
+            }
+
+            function phaseRow(label, key, description) {
+                const ts = phases[key];
+                const done = ts != null;
+                // Determine "in progress": this phase not done but previous phase is done
+                const phaseOrder = ['model_loading','quantization','compile','warmup_start','warmup_done'];
+                const idx = phaseOrder.indexOf(key);
+                const prevDone = idx === 0 ? true : phases[phaseOrder[idx-1]] != null;
+                const inProgress = !done && prevDone && !online;
+                const icon  = done ? '✅' : inProgress ? '⏳' : '▫️';
+                const color = done ? '#3fb950' : inProgress ? '#e3b341' : '#484f58';
+                return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px">
+                    <span style="font-size:12px">${icon}</span>
+                    <span style="color:${color};font-weight:${inProgress?'600':'400'}">${label}</span>
+                    <span style="color:#8b949e;font-size:10px">${description}</span>
+                    ${phaseElapsed(ts)}
                 </div>`;
             }
 
+            const phasePipeline = (warming || loading || (online && d.warmup_complete_ts)) ? `
+                <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
+                    <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
+                    ${phaseRow('Model loaded',   'model_loading', 'load_csm_1b() + torchtune weights')}
+                    ${phaseRow('Quantized',       'quantization',  quant.toUpperCase() + ' weight-only')}
+                    ${phaseRow('Compiled',        'compile',       'torch.compile(mode=default, dynamic=True)')}
+                    ${phaseRow('Warmup started',  'warmup_start',  '2 Triton warmup phrases')}
+                    ${phaseRow('Kernels ready',   'warmup_done',   'all phrase lengths cached')}
+                </div>` : '';
+
+            // ── Timer / ready badge ────────────────────────────────────────────────────────────
+            let timerBadge = '';
+            if (loading || warming) {
+                // Live timer — ticks every 1s, initial value from uptime_s
+                const initS = d.uptime_s != null ? Math.round(d.uptime_s) : 0;
+                timerBadge = `
+                    <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:8px 0 2px">
+                        <span style="color:#e3b341;font-size:11px;font-weight:600;letter-spacing:.06em">⏱ WARMING UP</span>
+                        <span id="ttsElapsedTimer" style="color:#e3b341;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em">${fmtUptime(initS)}</span>
+                        <span style="color:#8b949e;font-size:11px">since restart</span>
+                    </div>`;
+            } else if (online && _ttsWarmupDoneS != null) {
+                timerBadge = `
+                    <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:8px 0 2px">
+                        <span style="color:#3fb950;font-size:11px;font-weight:600">⚡ READY</span>
+                        <span style="color:#3fb950;font-size:18px;font-weight:700">${fmtUptime(_ttsWarmupDoneS)}</span>
+                        <span style="color:#8b949e;font-size:11px">to fully warm</span>
+                    </div>`;
+            }
+
             row.innerHTML = `
+                ${timerBadge}
                 <div class="tts-metric">
                     <span class="tts-metric-label">GPU</span>
                     <span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span>
@@ -1501,15 +1580,20 @@
                     <span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span>
                 </div>
                 <div class="tts-metric">
-                    <span class="tts-metric-label">GPU model</span>
+                    <span class="tts-metric-label">GPU</span>
                     <span class="tts-metric-value" style="color:#8b949e">${gpuName}</span>
                 </div>
                 <div class="tts-metric">
                     <span class="tts-metric-label">Uptime</span>
-                    <span class="tts-metric-value text-[#8b949e]">${uptime}</span>
+                    <span class="tts-metric-value" style="color:#8b949e">${uptime}</span>
                 </div>
-                ${warmupBadge}
+                ${phasePipeline}
             `;
+
+            // Start ticking timer AFTER DOM update (element now exists)
+            if (loading || warming) {
+                _ttsStartElapsedTick();
+            }
         }
 
         function fmtUptime(s) {
