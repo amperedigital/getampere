@@ -1,4 +1,4 @@
-console.log('[Tech Demo] v3.666 Voice Pipe Web Channel');
+console.log('[Tech Demo] v3.667 Voice Pipe Web Channel');
 import { TechDemoScene } from './tech-demo-scene.js';
 import { initCardExpander } from './card-expander.js';
 import { initAllSockets } from './glass-socket.js';
