@@ -1,8 +1,12 @@
 # Changelog
 
-## v3.655 - Auto-generated
-- **Frontend**: Release v3.655 (no new commits)
+## v3.658 — Diagnostic: Kill/WarmUp buttons, VAST badge move, label fix (2026-03-21)
 
+- Added ☠ Kill button (shown when busy) — aborts in-flight generation via `/admin/tts-kill`
+- Added 🔥 Warm Up button (shown when loading/warming_up) — triggers on-demand warmup
+- Moved VAST credit badge above TTS panel
+- Fixed 'to fully warm' label → 'warmup time' (it's a duration, not a countdown)
+- Kill/WarmUp wired to new Worker endpoints (`/admin/tts-kill`, `/admin/tts-warmup`)
 
 ## v3.654 — NVIDIA official icon mark, benchmark elapsed timer (2026-03-21)
 
