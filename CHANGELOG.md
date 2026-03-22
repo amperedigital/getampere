@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.649 — Fix: tunnel 502 correctly shows LOADING (not offline) in diagnostic lights (2026-03-21)
+
+- **Root cause**: Worker set `status:"offline"` for any non-200 HTTP code, even 502 (tunnel UP, port not open).
+  Frontend then called `ttsRenderOffline()` → `ttsUpdateDiagOffline()` → overwrote structured diagnostic
+  lights (which correctly had Tunnel=green) with all-red.
+- **Worker fix**: 502/503/504 → `status:"loading", reachable:true`. Only fetch-throws → `status:"offline"`.
+- **Frontend fix**: `ttsRenderOffline(reason, skipDiagLights)` — when caller has structured diagnostics,
+  passes `skipDiagLights=true` to prevent the all-red stomp.
+
 ## v3.648 — Router monitor: suppress health check log + newest-first log order (2026-03-21)
 
 - **Log spam suppressed**: Added `/health` to uvicorn access log filter — Docker's 30s healthcheck

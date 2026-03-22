@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.648">
+    <meta name="version" content="v3.649">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.648/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.649/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -1521,8 +1521,10 @@
             ttsPoll();
         }
 
-        function ttsRenderOffline(reason) {
-            ttsUpdateDiagOffline(reason);
+        function ttsRenderOffline(reason, skipDiagLights) {
+            // skipDiagLights = true when we have structured per-layer diagnostics already rendered
+            // and don't want the all-red override to stomp them
+            if (!skipDiagLights) ttsUpdateDiagOffline(reason);
             document.getElementById('ttsStatusDot').className = 'conn-indicator conn-error';
             document.getElementById('ttsStatusLabel').textContent = 'Offline';
             document.getElementById('ttsLastUpdated').textContent = 'last checked ' + new Date().toLocaleTimeString();
@@ -1537,13 +1539,15 @@
             const updated = document.getElementById('ttsLastUpdated');
             updated.textContent = new Date().toLocaleTimeString();
 
-            // Update diagnostic lights from structured diagnostics object
+            // Update diagnostic lights from structured diagnostics object (always first)
             if (d.diagnostics) ttsUpdateDiag(d.diagnostics);
-            else if (d.status === 'offline' || d.reachable === false) ttsUpdateDiagOffline(d.reason);
 
             if (d.status === 'offline' || d.reachable === false) {
                 _ttsStopElapsedTick();
-                ttsRenderOffline(d.reason || 'unreachable');
+                // Pass skipDiagLights=true when we have structured per-layer diagnostics —
+                // prevents ttsRenderOffline calling ttsUpdateDiagOffline which would stomp
+                // the correctly-set Tunnel/FastAPI/CSM lights with all-red.
+                ttsRenderOffline(d.reason || 'unreachable', !!d.diagnostics);
                 return;
             }
 
