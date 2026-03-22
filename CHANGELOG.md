@@ -10,6 +10,11 @@
   16×12px, viewBox trimmed to just the icon bounds (no whitespace).
 - **VAST credits note**: Backend fix (v3.654) required — was blocked by GET method gate.
 
+## v3.656 — Fix: missing stylesheet + VAST balance field fix (2026-03-21)
+
+- Redeploy to resolve missing stylesheet on router-monitor page.
+- VAST credits badge will now show correct balance (backend fix in v3.656).
+
 ## v3.653 — TTS fleet panel: VAST credit, power controls, NVIDIA badge, benchmark (2026-03-21)
 
 
