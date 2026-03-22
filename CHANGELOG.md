@@ -1,6 +1,25 @@
 # Changelog
 
+## v3.653 — TTS fleet panel: VAST credit, power controls, NVIDIA badge, benchmark (2026-03-21)
+
+- **💳 VAST credit balance** in TTS panel header — polls every 60s via Worker proxy.
+  Green ≥$10, amber <$10, red <$5 with border highlight. Never exposes API key to browser.
+- **⏻ Start / ⟳ Restart / ⏹ Stop** power buttons — context-aware (Start shown when offline,
+  Restart+Stop when online). Animated spinner while executing.
+- **⏹ Stop confirmation modal** — fixed overlay with "This will stop csm-0" warning + "Yes, stop it" /
+  Cancel. Guard prevents accidental stop. Not a browser `confirm()` — styled inline panel.
+- **⚡ Benchmark pane** — phrase presets (Default 6, Short 3, Long 3, Custom). Fires
+  `POST /admin/tts-benchmark` SSE stream. Results appear row-by-row as phrases complete.
+  RTF color-coded: green <0.4×, amber <0.6×, red ≥0.6×. Summary row on completion.
+- **NVIDIA badge + GPU count** — GPU label shows green NVIDIA wordmark SVG + `1×` or `2×` prefix
+  derived from `pynvml.nvmlDeviceGetCount()` (hardware truth, wired to DUAL_GPU switch).
+- **Power buttons wired to status** — `ttsUpdatePowerButtons()` called on every poll.
+  Offline state shows Start; online states show Restart+Stop.
+- **`ttsUpdatePowerButtons('offline')` on `ttsRenderOffline()`** — buttons update correctly
+  when server goes unreachable, not just when metrics render.
+
 ## v3.652 — Fix: startup pipeline "Kernels ready" now shows ✅ when warmup complete (2026-03-21)
+
 
 - **Bug 1**: `phases.warmup_done` was never set — the server returns `warmup_complete_ts` as a
   top-level field, not inside the `phases` dict. Phase row checked `phases.warmup_done` → null → `▫️`.

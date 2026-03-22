@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.652">
+    <meta name="version" content="v3.653">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.652/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.653/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -770,8 +770,28 @@
                 <span id="ttsStatusDot" class="conn-indicator conn-polling live-dot"></span>
                 <span id="ttsStatusLabel" class="text-xs text-[#8b949e]">Connecting…</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <!-- VAST account credit balance -->
+                <span id="vastBalanceBadge" title="VAST.ai account credit" style="display:none;align-items:center;gap:4px;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:2px 8px;font-size:11px;color:#8b949e">
+                    💳 <span id="vastBalanceVal">—</span>
+                </span>
                 <span class="text-xs text-[#484f58]" id="ttsLastUpdated"></span>
+                <!-- Power controls: shown/hidden based on server state -->
+                <button id="ttsBtnStart" onclick="ttsControl('start')" title="Start CSM-0"
+                    style="display:none"
+                    class="bg-[#1a3a1a] hover:bg-[#1f4a1f] border border-[#3fb950] text-[#3fb950] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors font-semibold">
+                    ⏻ Start
+                </button>
+                <button id="ttsBtnRestart" onclick="ttsControl('restart')" title="Restart CSM-0"
+                    style="display:none"
+                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#e3b341] text-[#e3b341] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
+                    ⟳ Restart
+                </button>
+                <button id="ttsBtnStop" onclick="ttsControl('stop')" title="Stop CSM-0 (keeps tunnel + instance running)"
+                    style="display:none"
+                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#f85149] text-[#f85149] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
+                    ⏹ Stop
+                </button>
                 <button onclick="ttsPollNow()"
                     class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
                     ⟳ Refresh
@@ -802,6 +822,60 @@
             <div class="tts-log-body" id="ttsLogBody">
                 <div class="tts-log-scroll" id="ttsLogScroll">
                     <span class="log-dim">Log will appear when server comes online…</span>
+                </div>
+            </div>
+        </div>
+        <!-- Benchmark Pane -->
+        <div class="tts-log-pane" id="ttsBenchPane">
+            <button class="tts-log-toggle" id="ttsBenchToggle" onclick="ttsBenchTogglePane()">
+                <span>⚡ Benchmark</span>
+                <span id="ttsBenchChevron" style="font-size:12px;">▶</span>
+            </button>
+            <div class="tts-log-body" id="ttsBenchBody" style="display:none">
+                <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <select id="ttsBenchPreset" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer">
+                        <option value="default">Default (6-phrase mix)</option>
+                        <option value="short">Short only (3 phrases)</option>
+                        <option value="long">Long only (3 phrases)</option>
+                        <option value="custom">Custom…</option>
+                    </select>
+                    <input id="ttsBenchCustom" placeholder="Enter phrases separated by | for custom run"
+                        style="display:none;flex:1;min-width:200px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px" />
+                    <button id="ttsBenchRunBtn" onclick="ttsBenchRun()"
+                        style="background:#1a3a4a;border:1px solid #4493f8;color:#4493f8;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;transition:all .2s">
+                        ▶ Run Benchmark
+                    </button>
+                    <button id="ttsBenchStopBtn" onclick="ttsBenchStop()" style="display:none;
+                        background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">
+                        ■ Stop
+                    </button>
+                    <span id="ttsBenchStatus" style="font-size:10px;color:#8b949e"></span>
+                </div>
+                <div style="overflow-x:auto">
+                    <table id="ttsBenchTable" style="width:100%;border-collapse:collapse;font-size:11px">
+                        <thead>
+                            <tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                                <th style="padding:6px 10px;text-align:left;width:30px">#</th>
+                                <th style="padding:6px 10px;text-align:left">Phrase</th>
+                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">Gen Time</th>
+                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">Audio</th>
+                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">RTF</th>
+                                <th style="padding:6px 10px;text-align:center;width:50px">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ttsBenchRows">
+                            <tr><td colspan="6" style="padding:12px 10px;color:#484f58;text-align:center">Run a benchmark to see results</td></tr>
+                        </tbody>
+                        <tfoot id="ttsBenchSummary" style="display:none">
+                            <tr style="border-top:1px solid #30363d;background:#0d1117;font-weight:600;color:#e6edf3">
+                                <td colspan="2" style="padding:6px 10px">Summary</td>
+                                <td id="ttsBenchSumTotal" style="padding:6px 10px;text-align:right">—</td>
+                                <td style="padding:6px 10px"></td>
+                                <td id="ttsBenchSumRtf" style="padding:6px 10px;text-align:right">—</td>
+                                <td id="ttsBenchSumPass" style="padding:6px 10px;text-align:center">—</td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
@@ -1544,6 +1618,7 @@
             document.getElementById('ttsLastUpdated').textContent = 'last checked ' + new Date().toLocaleTimeString();
             document.getElementById('ttsMetricsRow').innerHTML =
                 `<div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7"><span class="tts-offline">Instance offline or not provisioned — will recheck in 60s</span></div>`;
+            ttsUpdatePowerButtons('offline');
         }
 
         function ttsRenderMetrics(d) {
@@ -1610,7 +1685,16 @@
             const mdl    = d.model || {};
             const quant  = mdl.quantization || '—';
             const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
-            const gpuName = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '') : '—';
+            const gpuCount = gpu.gpu_count || 1;
+            const gpuCountLabel = gpuCount > 1 ? `${gpuCount}×` : '1×';
+            // Strip vendor prefix — NVIDIA badge handles branding, name stays clean
+            const gpuShortName  = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
+            // NVIDIA badge: official green (#76b900) wordmark inline SVG
+            const nvidiaBadge = `<span style="display:inline-flex;align-items:center;gap:3px;background:#111;border:1px solid #76b90044;border-radius:4px;padding:1px 5px;vertical-align:middle">
+              <svg width="34" height="10" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
+                <text x="0" y="28" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="32" fill="#76b900">NVIDIA</text>
+              </svg></span>`;
+            const gpuName = gpu.name ? `${nvidiaBadge} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuCountLabel} ${gpuShortName}</span>` : '—';
 
             // ── Phase pipeline ─────────────────────────────────────────────────────────────
             const phases = d.phases || {};
@@ -1710,9 +1794,9 @@
                     <span class="tts-metric-label">Quant</span>
                     <span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span>
                 </div>
-                <div class="tts-metric">
+                <div class="tts-metric" style="min-width:120px">
                     <span class="tts-metric-label">GPU</span>
-                    <span class="tts-metric-value" style="color:#8b949e">${gpuName}</span>
+                    <span class="tts-metric-value" style="color:#8b949e;display:flex;align-items:center;gap:4px">${gpuName}</span>
                 </div>
                 <div class="tts-metric">
                     <span class="tts-metric-label">Uptime</span>
@@ -1725,7 +1809,11 @@
             if (loading || warming) {
                 _ttsStartElapsedTick();
             }
+
+            // Update power buttons based on current server status
+            ttsUpdatePowerButtons(d.status || 'unknown');
         }
+
 
         function fmtUptime(s) {
             if (s < 60)   return s + 's';
@@ -1778,7 +1866,285 @@
         }
         // ── End TTS Log Pane ─────────────────────────────────────────────────────
 
+        // ── TTS Power Controls ───────────────────────────────────────────────────
+        // Shows Start / Restart / Stop buttons based on current server state.
+        // Stop requires explicit confirmation via an inline panel (not browser confirm).
+
+        // ── VAST Account Balance ─────────────────────────────────────────────────
+        let _vastBalanceTimer = null;
+        async function vastBalancePoll() {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            if (!key) { setTimeout(vastBalancePoll, 10000); return; }
+            try {
+                const resp = await fetch(`${API_BASE}/admin/vast-balance`, {
+                    headers: { 'x-api-key': key }
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+                const bal   = data.balance_usd ?? null;
+                const badge = document.getElementById('vastBalanceBadge');
+                const val   = document.getElementById('vastBalanceVal');
+                if (badge && val && bal !== null) {
+                    badge.style.display = 'flex';
+                    const color = bal < 5 ? '#f85149' : bal < 10 ? '#e3b341' : '#3fb950';
+                    val.innerHTML = `<span style="color:${color};font-weight:700">$${bal.toFixed(2)}</span> <span style="color:#484f58">credit</span>`;
+                    // Warn visually if low
+                    badge.style.borderColor = bal < 5 ? '#f8514966' : bal < 10 ? '#e3b34144' : '#30363d';
+                }
+            } catch { /* silent — balance is non-critical */ }
+            _vastBalanceTimer = setTimeout(vastBalancePoll, 60000); // re-poll every 60s
+        }
+        // ── End VAST Account Balance ─────────────────────────────────────────────
+
+        function ttsUpdatePowerButtons(status) {
+            // status: 'offline' | 'loading' | 'warming_up' | 'ok' | 'busy' | unknown
+            const online = ['loading','warming_up','ok','busy'].includes(status);
+            const btnStart   = document.getElementById('ttsBtnStart');
+            const btnRestart = document.getElementById('ttsBtnRestart');
+            const btnStop    = document.getElementById('ttsBtnStop');
+            if (!btnStart) return;
+            btnStart.style.display   = online ? 'none'  : 'inline-flex';
+            btnRestart.style.display = online ? 'inline-flex' : 'none';
+            btnStop.style.display    = online ? 'inline-flex' : 'none';
+        }
+
+        // Called from ttsRenderMetrics/ttsRenderOffline — wire into the status update path.
+        // Patch into existing ttsRenderMetrics by hooking status after it runs.
+        const _origRenderMetrics = typeof ttsRenderMetrics !== 'undefined' ? ttsRenderMetrics : null;
+
+        function _ttsPowerHook(status) {
+            ttsUpdatePowerButtons(status);
+        }
+
+        // Stop confirmation banner — inline, not a browser dialog
+        let _stopConfirmPending = false;
+        function _ttsShowStopConfirm() {
+            if (_stopConfirmPending) return;
+            _stopConfirmPending = true;
+            // Remove any existing banner
+            const existing = document.getElementById('ttsStopConfirm');
+            if (existing) existing.remove();
+            const banner = document.createElement('div');
+            banner.id = 'ttsStopConfirm';
+            banner.style.cssText = `
+                position:fixed; top:70px; left:50%; transform:translateX(-50%);
+                background:#1c1007; border:1.5px solid #f85149; border-radius:10px;
+                padding:16px 20px; z-index:9999; min-width:320px; max-width:480px;
+                box-shadow:0 8px 32px #0008; text-align:center;
+                animation: slideDown .2s ease;
+            `;
+            banner.innerHTML = `
+                <div style="font-size:13px;font-weight:700;color:#f85149;margin-bottom:6px">⏹ Stop TTS Server?</div>
+                <div style="font-size:11px;color:#8b949e;margin-bottom:14px;line-height:1.5">
+                    This will stop csm-0 via supervisorctl.<br>
+                    The tunnel &amp; VAST instance remain running — use <strong>⏻ Start</strong> to restart.
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center">
+                    <button onclick="_ttsConfirmStop(true)"
+                        style="background:#3a1a1a;border:1.5px solid #f85149;color:#f85149;padding:6px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">
+                        Yes, stop it
+                    </button>
+                    <button onclick="_ttsConfirmStop(false)"
+                        style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:6px 18px;border-radius:6px;font-size:12px;cursor:pointer">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(banner);
+        }
+
+        function _ttsConfirmStop(confirmed) {
+            _stopConfirmPending = false;
+            const banner = document.getElementById('ttsStopConfirm');
+            if (banner) banner.remove();
+            if (confirmed) _ttsExecuteControl('stop');
+        }
+
+        async function _ttsExecuteControl(action) {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const btn = document.getElementById(
+                action === 'start'   ? 'ttsBtnStart' :
+                action === 'restart' ? 'ttsBtnRestart' : 'ttsBtnStop'
+            );
+            const origText = btn?.textContent || '';
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '…'; }
+            try {
+                const resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key },
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    // Trigger immediate poll to update status
+                    setTimeout(ttsPollNow, 1500);
+                    setTimeout(ttsPollNow, 5000);
+                } else {
+                    alert(`${action} failed: ${data.output || data.error || 'Unknown error'}`);
+                }
+            } catch (err) {
+                alert(`${action} error: ${err.message}`);
+            } finally {
+                if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = origText; }
+            }
+        }
+
+        function ttsControl(action) {
+            if (action === 'stop') {
+                _ttsShowStopConfirm();  // Show confirmation first — stop is destructive
+            } else {
+                _ttsExecuteControl(action);
+            }
+        }
+
+        // ── End TTS Power Controls ───────────────────────────────────────────────
+
+        // ── TTS Benchmark ────────────────────────────────────────────────────────
+        const BENCH_PHRASES = {
+            default: [
+                "Hi there, how can I help you today?",
+                "Sure, I would be happy to help with that.",
+                "Let me pull up your account information.",
+                "Got it. Is there anything else I can help you with?",
+                "Hi there, thanks for calling GetAmpere. How can I help you today?",
+                "I will transfer you to our technical support team who can assist you further.",
+            ],
+            short: [
+                "Hi.", "Sure.", "Got it.",
+            ],
+            long: [
+                "Hi there, thanks for calling GetAmpere. How can I help you today?",
+                "We offer a range of AI-powered solutions for businesses of all sizes.",
+                "I will transfer you to our technical support team who can assist you further.",
+            ],
+        };
+
+        let _benchReader = null;
+
+        function ttsBenchTogglePane() {
+            const body    = document.getElementById('ttsBenchBody');
+            const chevron = document.getElementById('ttsBenchChevron');
+            const open    = body.style.display !== 'none';
+            body.style.display    = open ? 'none' : 'block';
+            chevron.textContent   = open ? '▶' : '▼';
+        }
+
+        document.getElementById('ttsBenchPreset').addEventListener('change', function() {
+            const custom = document.getElementById('ttsBenchCustom');
+            custom.style.display = this.value === 'custom' ? 'inline-block' : 'none';
+        });
+
+        async function ttsBenchRun() {
+            const preset  = document.getElementById('ttsBenchPreset').value;
+            const phrases = preset === 'custom'
+                ? document.getElementById('ttsBenchCustom').value.split('|').map(s => s.trim()).filter(Boolean)
+                : BENCH_PHRASES[preset] || BENCH_PHRASES.default;
+
+            if (!phrases.length) { alert('Enter at least one phrase.'); return; }
+
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const runBtn  = document.getElementById('ttsBenchRunBtn');
+            const stopBtn = document.getElementById('ttsBenchStopBtn');
+            const status  = document.getElementById('ttsBenchStatus');
+            const rows    = document.getElementById('ttsBenchRows');
+            const summary = document.getElementById('ttsBenchSummary');
+
+            runBtn.style.display  = 'none';
+            stopBtn.style.display = 'inline-block';
+            status.textContent    = 'Connecting…';
+            summary.style.display = 'none';
+
+            // Clear old rows
+            rows.innerHTML = phrases.map((p, i) =>
+                `<tr id="bench-row-${i}" style="border-bottom:1px solid #161b22">
+                    <td style="padding:5px 10px;color:#484f58">${i + 1}</td>
+                    <td style="padding:5px 10px;color:#8b949e;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p}">${p}</td>
+                    <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
+                    <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
+                    <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
+                    <td style="padding:5px 10px;text-align:center">⏳</td>
+                </tr>`
+            ).join('');
+
+            try {
+                const resp = await fetch(`${API_BASE}/admin/tts-benchmark`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phrases, voice: 'i6POHJM1Z768DiJJG2CX', wait_for_idle: true, timeout_s: 300 }),
+                });
+
+                if (!resp.ok || !resp.body) {
+                    status.textContent = `Error: HTTP ${resp.status}`;
+                    ttsBenchStop(); return;
+                }
+
+                _benchReader = resp.body.getReader();
+                const decoder = new TextDecoder();
+                let buf = '';
+
+                status.textContent = 'Running…';
+
+                while (true) {
+                    const { done, value } = await _benchReader.read();
+                    if (done) break;
+                    buf += decoder.decode(value, { stream: true });
+                    const parts = buf.split('\n\n');
+                    buf = parts.pop() || '';
+                    for (const part of parts) {
+                        const data = part.replace(/^data: /, '').trim();
+                        if (!data) continue;
+                        let evt;
+                        try { evt = JSON.parse(data); } catch { continue; }
+
+                        if (evt.type === 'start') {
+                            status.textContent = `Running ${evt.n_phrases} phrases…`;
+                        } else if (evt.type === 'result') {
+                            const row = document.getElementById(`bench-row-${evt.i}`);
+                            if (row) {
+                                const ok  = evt.rtf != null;
+                                const rtf = ok ? evt.rtf.toFixed(3) + '×' : '—';
+                                const rtfColor = ok
+                                    ? (evt.rtf < 0.4 ? '#3fb950' : evt.rtf < 0.6 ? '#e3b341' : '#f85149')
+                                    : '#484f58';
+                                row.children[2].textContent = ok ? evt.total_s.toFixed(2) + 's' : '—';
+                                row.children[3].textContent = ok ? evt.audio_s.toFixed(2) + 's' : '—';
+                                row.children[4].innerHTML   = `<span style="color:${rtfColor};font-weight:600">${rtf}</span>`;
+                                row.children[5].textContent = ok ? '✅' : (evt.error ? '❌' : '—');
+                                row.children[2].style.color = '#e6edf3';
+                                row.children[3].style.color = '#e6edf3';
+                            }
+                        } else if (evt.type === 'summary') {
+                            const avgRtf = evt.avg_rtf != null ? evt.avg_rtf.toFixed(3) + '×' : '—';
+                            const passed = `${evt.n_succeeded}/${evt.n_succeeded + evt.n_failed}`;
+                            document.getElementById('ttsBenchSumTotal').textContent =
+                                evt.avg_total_s != null ? 'avg ' + evt.avg_total_s.toFixed(2) + 's' : '—';
+                            document.getElementById('ttsBenchSumRtf').innerHTML =
+                                `<span style="color:#3fb950;font-weight:700">${avgRtf}</span>`;
+                            document.getElementById('ttsBenchSumPass').textContent = passed;
+                            summary.style.display = '';
+                            status.textContent = `Done — avg RTF ${avgRtf}  (${passed} passed)`;
+                        }
+                    }
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') status.textContent = `Error: ${err.message}`;
+            } finally {
+                _benchReader = null;
+                runBtn.style.display  = 'inline-block';
+                stopBtn.style.display = 'none';
+            }
+        }
+
+        function ttsBenchStop() {
+            if (_benchReader) { _benchReader.cancel(); _benchReader = null; }
+            document.getElementById('ttsBenchRunBtn').style.display  = 'inline-block';
+            document.getElementById('ttsBenchStopBtn').style.display = 'none';
+            document.getElementById('ttsBenchStatus').textContent = 'Stopped.';
+        }
+
+        // ── End TTS Benchmark ────────────────────────────────────────────────────
+
         // ── End TTS Server Panel ─────────────────────────────────────────────────
+
 
         window.addEventListener('DOMContentLoaded', () => {
             // Load API key from localStorage — never stored in source or URLs
@@ -1799,6 +2165,8 @@
             connectWebSocket();
             loadWorkspaces();
             ttsPoll();  // Start TTS panel polling (adaptive backoff)
+            vastBalancePoll(); // Start VAST credit balance polling (60s interval)
+
             // Phase 1.3: Switch workspace on dropdown change — auto-reconnect
             document.getElementById('workspaceId').addEventListener('change', () => {
                 clearAll();
