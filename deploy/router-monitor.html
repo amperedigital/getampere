@@ -1803,11 +1803,20 @@
             const btn = document.getElementById(`inst-btn-${action === 'restart' ? 'restart' : 'start'}-${id}`);
             if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '…'; }
             try {
-                const resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
-                    method: 'POST',
-                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tunnel_url: tunnelUrl }),
-                });
+                let resp;
+                if (action === 'restart') {
+                    resp = await fetch(`${API_BASE}/admin/tts-exec`, {
+                        method: 'POST',
+                        headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'restart', instance_id: id })
+                    });
+                } else {
+                    resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
+                        method: 'POST',
+                        headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tunnel_url: tunnelUrl }),
+                    });
+                }
                 const data = await resp.json();
                 if (data.ok) { setTimeout(fleetPollNow, 2000); setTimeout(fleetPollNow, 6000); }
                 else alert(`${action} failed: ${data.output || data.error || JSON.stringify(data)}`);

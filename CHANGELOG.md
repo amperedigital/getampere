@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.679 — Backend: fix restart button + warmup force (2026-03-22)
+
+- **Frontend**: No changes. Backend-only fix deploy.
+
 ## v3.677 - Auto-generated
 - **Frontend**: Release v3.677 (no new commits)
 
