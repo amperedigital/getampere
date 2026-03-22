@@ -1784,7 +1784,7 @@
                     <div class="tts-metric"><span class="tts-metric-label">Requests</span><span class="tts-metric-value">${inst.requests_done ?? '—'}</span></div>
                 </div>
                 ${showPipeline ? `
-                <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 14px 10px;background:#0d1117">
+                <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
                     <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
                     ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune weights')}
                     ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}

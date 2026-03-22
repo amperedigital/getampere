@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.677 - Auto-generated
+- **Frontend**: Release v3.677 (no new commits)
+
+
 ## v3.676 — Diagnostic Fallback Logic (2026-03-22)
 
 - **Frontend**: Moved all hardcoded user-preferred diagnostic detailed strings (`"FastAPI listening on port 8080"`, etc.) natively into the javascript `diagDetail()` payload evaluator. This ensures that the strings are *only* explicitly displayed when the modules are physically `ok: true`. If the server goes offline during boot or crashes, it will safely revert to displaying `"offline"` or `"unreachable"`, rather than statically lying in the HTML that it is working.
