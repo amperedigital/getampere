@@ -1676,22 +1676,6 @@
             const btnRestart = online  ? `<button onclick="instControl('${id}','${url}','restart')" style="background:#21262d;border:1px solid #e3b341;color:#e3b341;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" id="inst-btn-restart-${id}">⟳ Restart</button>` : '';
             const btnStop    = online  ? `<button onclick="instStop('${id}','${url}')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer">⏹ Stop</button>` : '';
 
-            // Snapshot pane open states before innerHTML wipes them
-            const benchWasOpen = document.getElementById(`inst-bench-body-${id}`)?.style.display === 'block';
-            const logsWasOpen  = document.getElementById(`inst-log-body-${id}`)?.style.display === 'block';
-
-            // Snapshot running DOM state (so 5s poll doesn't wipe active benchmarks or logs)
-            const bRows = document.getElementById(`inst-bench-rows-${id}`)?.innerHTML;
-            const bStat = document.getElementById(`inst-bench-status-${id}`)?.innerHTML;
-            const bSumH = document.getElementById(`inst-bench-summary-${id}`)?.innerHTML;
-            const bSumD = document.getElementById(`inst-bench-summary-${id}`)?.style.display;
-            const bRunD = document.getElementById(`inst-bench-run-${id}`)?.style.display;
-            const bStpD = document.getElementById(`inst-bench-stop-${id}`)?.style.display;
-            const bPreV = document.getElementById(`inst-bench-preset-${id}`)?.value;
-            const bCusV = document.getElementById(`inst-bench-custom-${id}`)?.value;
-            const bCusD = document.getElementById(`inst-bench-custom-${id}`)?.style.display;
-            const lText = document.getElementById(`inst-log-scroll-${id}`)?.innerHTML;
-
             let metricsDiv = document.getElementById(`inst-metrics-${id}`);
             if (!metricsDiv) {
                 // First render: create the skeleton with static log/bench panes
@@ -1798,8 +1782,8 @@
                     <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Requests</span><span class="tts-metric-value">${inst.requests_done ?? '—'}</span></div>
-                    ${phasePipeline}
                 </div>
+                ${phasePipeline}
             `;
         }
 
