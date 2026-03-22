@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.665 — Fix: preserve benchmark and log panes during fleet refresh (2026-03-21)
+## v3.666 — Fix: isolate Fleet DOM updates from open panes (2026-03-21)
+
+- **Frontend**: The complete fix for the benchmark and log pane wiping bug. Instead of snapshotting and replacing DOM nodes during the 5s fleet poll, the UI has been refactored so that the `updateInstCard` loop *only updates* an `inst-metrics` div containing the top dashboard statistics. The benchmark and log wrapper panes are now kept entirely outside of this refresh loop, fully preserving their DOM streams and elements permanently without flicker.
+
+
 
 - **Frontend**: The 5-second fleet poll previously wiped out open benchmark and log panes because it
   rebuilt the entire card's HTML. The dashboard now snapshots the open state and dynamic DOM values
