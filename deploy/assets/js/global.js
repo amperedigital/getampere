@@ -3,7 +3,7 @@
 
 // global.js - Initialize Lenis and other global page setup
 (function () {
-    console.log('[Ampere Global] v3.664 Loaded');
+    console.log('[Ampere Global] v3.665 Loaded');
     // Detect Aura editor or iframe environment
     const isEditor = window.location.hostname.includes('aura.build') ||
         window.location.href.includes('aura.build') ||
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check
     setTimeout(() => {
-        console.log("[Global] Initializing v3.664...");
+        console.log("[Global] Initializing v3.665...");
         checkNavTheme();
     }, 100);
 });
