@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.653">
+    <meta name="version" content="v3.654">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.653/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.654/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -1689,11 +1689,12 @@
             const gpuCountLabel = gpuCount > 1 ? `${gpuCount}×` : '1×';
             // Strip vendor prefix — NVIDIA badge handles branding, name stays clean
             const gpuShortName  = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
-            // NVIDIA badge: official green (#76b900) wordmark inline SVG
-            const nvidiaBadge = `<span style="display:inline-flex;align-items:center;gap:3px;background:#111;border:1px solid #76b90044;border-radius:4px;padding:1px 5px;vertical-align:middle">
-              <svg width="34" height="10" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
-                <text x="0" y="28" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="32" fill="#76b900">NVIDIA</text>
+            // NVIDIA badge: official NVIDIA icon mark vector path (#77B900)
+            const nvidiaBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#0d1117;border:1px solid #77b90044;border-radius:4px;padding:1px 4px;vertical-align:middle">
+              <svg width="16" height="12" viewBox="0 4 23 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">
+                <path d="M2.95985 10.5996C2.95985 10.5996 4.90074 7.75572 8.77606 7.4615V6.42974C4.48365 6.77209 0.766602 10.3825 0.766602 10.3825C0.766602 10.3825 2.87188 16.4264 8.77606 16.9799V15.8832C4.44329 15.3419 2.95985 10.5996 2.95985 10.5996ZM8.77606 13.7022V14.7066C5.50145 14.1267 4.5925 10.7463 4.5925 10.7463C4.5925 10.7463 6.16477 9.0166 8.77606 8.73609V9.83817C8.77407 9.83817 8.77269 9.83757 8.77105 9.83757C7.40051 9.67423 6.32985 10.9457 6.32985 10.9457C6.32985 10.9457 6.92995 13.0862 8.77606 13.7022ZM8.77606 4.52673V6.42974C8.90206 6.42015 9.02807 6.41201 9.15476 6.40773C14.0348 6.24439 17.2144 10.3825 17.2144 10.3825C17.2144 10.3825 13.5625 14.7925 9.7578 14.7925C9.40911 14.7925 9.08266 14.7604 8.77606 14.7064V15.8832C9.04723 15.9178 9.32035 15.9353 9.59376 15.9356C13.1343 15.9356 15.6947 14.1399 18.1739 12.0147C18.585 12.3416 20.2678 13.137 20.6137 13.485C18.2564 15.4451 12.7626 17.025 9.64801 17.025C9.34778 17.025 9.05946 17.007 8.77606 16.9799V18.6334H22.2333V4.52673H8.77606ZM8.77606 8.73609V7.4615C8.90077 7.45285 9.02643 7.44626 9.15476 7.44223C12.664 7.33277 14.9662 10.437 14.9662 10.437C14.9662 10.437 12.4796 13.8667 9.81334 13.8667C9.42963 13.8667 9.0856 13.8055 8.77597 13.7021V9.83808C10.1421 10.002 10.4171 10.6013 11.2384 11.961L13.0652 10.4314C13.0652 10.4314 11.7317 8.69463 9.48388 8.69463C9.23946 8.69455 9.00564 8.71168 8.77606 8.73609Z" fill="#77B900"/>
               </svg></span>`;
+
             const gpuName = gpu.name ? `${nvidiaBadge} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuCountLabel} ${gpuShortName}</span>` : '—';
 
             // ── Phase pipeline ─────────────────────────────────────────────────────────────

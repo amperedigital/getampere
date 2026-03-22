@@ -1,6 +1,13 @@
 # Changelog
 
+## v3.654 — NVIDIA official icon mark, benchmark elapsed timer (2026-03-21)
+
+- **NVIDIA icon**: Replaced text-based SVG with official NVIDIA icon mark vector path in #77B900.
+  16×12px, viewBox trimmed to just the icon bounds (no whitespace).
+- **VAST credits note**: Backend fix (v3.654) required — was blocked by GET method gate.
+
 ## v3.653 — TTS fleet panel: VAST credit, power controls, NVIDIA badge, benchmark (2026-03-21)
+
 
 - **💳 VAST credit balance** in TTS panel header — polls every 60s via Worker proxy.
   Green ≥$10, amber <$10, red <$5 with border highlight. Never exposes API key to browser.
