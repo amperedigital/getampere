@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.655 - Auto-generated
+- **Frontend**: Release v3.655 (no new commits)
+
+
 ## v3.654 — NVIDIA official icon mark, benchmark elapsed timer (2026-03-21)
 
 - **NVIDIA icon**: Replaced text-based SVG with official NVIDIA icon mark vector path in #77B900.
