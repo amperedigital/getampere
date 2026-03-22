@@ -1,6 +1,17 @@
 # Changelog
 
+## v3.652 — Fix: startup pipeline "Kernels ready" now shows ✅ when warmup complete (2026-03-21)
+
+- **Bug 1**: `phases.warmup_done` was never set — the server returns `warmup_complete_ts` as a
+  top-level field, not inside the `phases` dict. Phase row checked `phases.warmup_done` → null → `▫️`.
+  Fix: seed `phases.warmup_done = d.warmup_complete_ts` before rendering phase rows.
+- **Bug 2**: `inProgress` logic had `&& !online` guard — when server reaches `ok` state, `!online`
+  is false, so no phase could ever show `⏳` once online. This also meant `warmup_done` was blocked
+  from `inProgress` → `▫️` even mid-warmup on a live server. Fix: remove the `!online` guard.
+- Result: pipeline now shows all 5 rows with ✅ once server is fully warmed up.
+
 ## v3.651 — Diagnostic lights: ✓ checkmark on ok, ✕ on error (2026-03-21)
+
 
 - All 5 diagnostic dots (Worker/Tunnel/FastAPI/CSM-0/Kernels) now show `✓` when `ok:true`
   and `✕` when `error`. Previously a plain circle — impossible to distinguish ok from unknown.

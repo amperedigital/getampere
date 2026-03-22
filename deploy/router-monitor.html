@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.651">
+    <meta name="version" content="v3.652">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.651/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.652/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -1616,6 +1616,12 @@
             const phases = d.phases || {};
             const startEpoch = _ttsServerStartMs ? _ttsServerStartMs / 1000 : null;
 
+            // Seed warmup_done from top-level warmup_complete_ts if the phases object
+            // doesn't include it (server stores it separately, not inside _phases dict).
+            if (d.warmup_complete_ts && !phases.warmup_done) {
+                phases.warmup_done = d.warmup_complete_ts;
+            }
+
             function phaseElapsed(ts) {
                 if (!ts || !startEpoch) return '';
                 const s = Math.round(ts - startEpoch);
@@ -1625,11 +1631,12 @@
             function phaseRow(label, key, description) {
                 const ts = phases[key];
                 const done = ts != null;
-                // Determine "in progress": this phase not done but previous phase is done
+                // "In progress": previous phase complete, this one not done yet.
+                // Remove !online guard — warmup_done should show ✅ once server is online.
                 const phaseOrder = ['model_loading','quantization','compile','warmup_start','warmup_done'];
                 const idx = phaseOrder.indexOf(key);
                 const prevDone = idx === 0 ? true : phases[phaseOrder[idx-1]] != null;
-                const inProgress = !done && prevDone && !online;
+                const inProgress = !done && prevDone;
                 const icon  = done ? '✅' : inProgress ? '⏳' : '▫️';
                 const color = done ? '#3fb950' : inProgress ? '#e3b341' : '#484f58';
                 return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px">
@@ -1639,6 +1646,7 @@
                     ${phaseElapsed(ts)}
                 </div>`;
             }
+
 
             const phasePipeline = (warming || loading || (online && d.warmup_complete_ts)) ? `
                 <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
