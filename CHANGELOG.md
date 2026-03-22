@@ -1,8 +1,12 @@
 # Changelog
 
-## v3.674 — Complete Revert of Startup Pipeline text to v3.659 (2026-03-21)
+## v3.676 — Diagnostic Fallback Logic (2026-03-22)
 
-- **Frontend**: Fully restored the `Quant` metric block back into the primary top row of the Fleet Card layout (`FP8` vs `INT4`). Also reverted the first row of the Startup Pipeline to say `"Model loaded"`, keeping it identical to `v3.659` specification. The variable fallback has been corrected from `int4` back to `fp8` so that `"FP8 weight-only"` evaluates properly on the startup pipeline.
+- **Frontend**: Moved all hardcoded user-preferred diagnostic detailed strings (`"FastAPI listening on port 8080"`, etc.) natively into the javascript `diagDetail()` payload evaluator. This ensures that the strings are *only* explicitly displayed when the modules are physically `ok: true`. If the server goes offline during boot or crashes, it will safely revert to displaying `"offline"` or `"unreachable"`, rather than statically lying in the HTML that it is working.
+
+
+
+
 
 
 
