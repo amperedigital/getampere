@@ -1780,8 +1780,16 @@
 
             row.innerHTML = `
                 ${timerBadge}
+                <!-- Hero row: GPU model + Uptime — large, full width, shown first -->
+                <div style="grid-column:1/-1;display:flex;align-items:baseline;gap:20px;padding:4px 0 10px;border-bottom:1px solid #21262d;margin-bottom:4px">
+                    <span style="font-size:20px;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:6px">${gpuName}</span>
+                    <span style="font-size:14px;color:#484f58;font-weight:400">·</span>
+                    <span style="font-size:16px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
+                    ${d.busy ? '<span style="font-size:12px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px;margin-left:4px">BUSY</span>' : ''}
+                </div>
+                <!-- Secondary stats grid -->
                 <div class="tts-metric">
-                    <span class="tts-metric-label">GPU</span>
+                    <span class="tts-metric-label">GPU Load</span>
                     <span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span>
                     <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
                 </div>
@@ -1809,14 +1817,6 @@
                 <div class="tts-metric">
                     <span class="tts-metric-label">Quant</span>
                     <span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span>
-                </div>
-                <div class="tts-metric" style="min-width:120px">
-                    <span class="tts-metric-label">GPU</span>
-                    <span class="tts-metric-value" style="color:#8b949e;display:flex;align-items:center;gap:4px">${gpuName}</span>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Uptime</span>
-                    <span class="tts-metric-value" style="color:#8b949e">${uptime}</span>
                 </div>
                 ${phasePipeline}
             `;

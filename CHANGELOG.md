@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.659 — Metrics layout: GPU+Uptime hero row (2026-03-21)
+
+- GPU model + Uptime moved to first, full-width hero row with large text (20px/16px)
+- Secondary stats grid below: GPU Load, VRAM, RTF, Temp, Power, Requests, Quant
+- BUSY badge in hero row when server is processing
+
 ## v3.658 — Diagnostic: Kill/WarmUp buttons, VAST badge move, label fix (2026-03-21)
 
 - Added ☠ Kill button (shown when busy) — aborts in-flight generation via `/admin/tts-kill`
