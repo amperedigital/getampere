@@ -1,6 +1,19 @@
 # Changelog
 
+## v3.651 — Diagnostic lights: ✓ checkmark on ok, ✕ on error (2026-03-21)
+
+- All 5 diagnostic dots (Worker/Tunnel/FastAPI/CSM-0/Kernels) now show `✓` when `ok:true`
+  and `✕` when `error`. Previously a plain circle — impossible to distinguish ok from unknown.
+- Dot size 10px → 12px to fit symbols. CSS `::after` pseudo-element, no JS changes.
+- Amber warn dots still pulse without a symbol (in-progress).
+
+## v3.650 — Fleet self-registration frontend prep (2026-03-21)
+
+- Changelog entry only — fleet multi-card rendering coming in next deploy.
+- Backend (v3.650): `INFRA_DB`, `POST /admin/tts/heartbeat`, `GET /admin/tts-fleet` all live.
+
 ## v3.649 — Fix: tunnel 502 correctly shows LOADING (not offline) in diagnostic lights (2026-03-21)
+
 
 - **Root cause**: Worker set `status:"offline"` for any non-200 HTTP code, even 502 (tunnel UP, port not open).
   Frontend then called `ttsRenderOffline()` → `ttsUpdateDiagOffline()` → overwrote structured diagnostic

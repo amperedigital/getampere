@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.649">
+    <meta name="version" content="v3.651">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.649/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.651/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -536,20 +536,34 @@
         .diag-light:last-child { border-right: none; }
         .diag-light:hover { background: #161b22; cursor: default; }
         .diag-dot {
-            width: 10px; height: 10px;
+            width: 12px; height: 12px;
             border-radius: 50%;
-            background: #484f58;          /* default: unknown/dim */
+            background: #484f58;
             flex-shrink: 0;
             transition: background .3s, box-shadow .3s;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 8px; line-height: 1; color: transparent;
+            position: relative;
         }
-        .diag-dot.ok      { background: #3fb950; box-shadow: 0 0 6px #3fb95099; }
+        .diag-dot.ok {
+            background: #3fb950;
+            box-shadow: 0 0 7px #3fb95099;
+            color: #fff;
+        }
+        .diag-dot.ok::after    { content: '✓'; font-size: 8px; font-weight: 900; color: #fff;
+                                  position: absolute; top: 50%; left: 50%;
+                                  transform: translate(-50%, -50%); }
         .diag-dot.warn    { background: #e3b341; box-shadow: 0 0 6px #e3b34188;
                             animation: diagPulse 1.4s ease-in-out infinite; }
         .diag-dot.error   { background: #f85149; box-shadow: 0 0 6px #f8514966; }
+        .diag-dot.error::after { content: '✕'; font-size: 7px; font-weight: 900; color: #fff;
+                                  position: absolute; top: 50%; left: 50%;
+                                  transform: translate(-50%, -50%); }
         .diag-dot.unknown { background: #484f58; }
         @keyframes diagPulse {
             0%,100% { opacity: 1; } 50% { opacity: .45; }
         }
+
         .diag-label {
             font-size: 9px;
             font-weight: 700;
