@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.662 — Fix: CSS 404 on new deploys — jsDelivr purge on every release (2026-03-21)
+
+
+- **Root cause**: jsDelivr indexes new GitHub tags lazily (can take 12-24h). Every deploy
+  bumps the `getampere@vX.Y.Z` tag in HTML. Unchanged assets like `styles.css` were never
+  pre-fetched, so jsDelivr returned 404 until its crawler caught up. The warming loop also
+  used `curl -I` (HEAD) which never triggers jsDelivr’s GitHub fetch.
+- **Fix 1 — publish.sh**: CDN warming now hits `purge.jsdelivr.net` (not `cdn.jsdelivr.net`)
+  to force jsDelivr to immediately pull the new tag from GitHub and cache it.
+- **Fix 2 — publish.sh**: Warming changed from `curl -I` (HEAD, useless) to `curl -o /dev/null`
+  (GET, actually triggers the CDN fetch).
+- **Fix 3 — publish.sh**: `styles.css` + `global.js` are always purged + warmed on every
+  release even if unchanged, because the HTML version tag always bumps.
+
 ## v3.661 — Fleet sync: auto-discover instances from VAST account (2026-03-21)
 
 - **`POST /admin/tts-fleet-sync-vast`** — new backend endpoint that queries the VAST API for all
