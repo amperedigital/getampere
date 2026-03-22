@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.668 — Rollback: DOM refactor caused layout bugs (2026-03-21)
+## v3.669 — Complete UI Rollback: Restore single-instance layout (2026-03-21)
+
+- **Frontend**: Explicitly reverted `router-monitor.html` all the way back to the `v3.659` structure. The major "Fleet" array refactor introduced in `v3.660` completely removed desired UX patterns (the vertical Startup Pipeline checkmarks, the Ready+Totally Warm ticks, the persistent log/benchmark panes). This commit fully restores the original single-instance UI and layout you preferred, which also inherently resolves the "benchmark/log pan wiping" bug because those elements were isolated outside the `.innerHTML` wipe natively in the `v3.659` layout.
+
+
 
 - **Frontend**: Explicit rollback to `v3.665`. The recent attempts to isolate the `FLEET POLL` DOM refresh via `metricsDiv.innerHTML` created numerous unintended side-effects with CSS Grid column overlapping and HTML layout issues that prevented the Log and Benchmark tools from operating correctly. Reverted to the snapshotting method from `v3.665` until the UI components are properly reconstructed.
 
