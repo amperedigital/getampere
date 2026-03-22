@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.669 — Complete UI Rollback: Restore single-instance layout (2026-03-21)
+## v3.670 — Restore Fleet Array with Vertical Checklists (2026-03-21)
+
+- **Frontend**: Restored the multi-instance fleet build (from `v3.667`). However, the previous diagnostic strip has been specifically redesigned as a *vertical checkmark list* spanning side-by-side with the Startup Pipeline, placing all health monitoring natively under the RTX 4090 data. This cleanly unifies your preferred vertical layout directly within the fleet architecture. The logging and benchmark wiping bugs remain actively resolved.
+
+
 
 - **Frontend**: Explicitly reverted `router-monitor.html` all the way back to the `v3.659` structure. The major "Fleet" array refactor introduced in `v3.660` completely removed desired UX patterns (the vertical Startup Pipeline checkmarks, the Ready+Totally Warm ticks, the persistent log/benchmark panes). This commit fully restores the original single-instance UI and layout you preferred, which also inherently resolves the "benchmark/log pan wiping" bug because those elements were isolated outside the `.innerHTML` wipe natively in the `v3.659` layout.
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.669">
+    <meta name="version" content="v3.667">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,8 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.669/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.667/deploy/assets/css/styles.css">
+
     <style>
         @keyframes pulse-dot {
 
@@ -751,7 +752,7 @@
                         class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">📋
                         Copy Log</button>
                     <label class="text-xs text-[#8b949e] flex items-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" id="autoScroll" checked class="accent-blue-500"> auto-scroll
+        <input type="checkbox" id="autoScroll" checked class="accent-blue-500"> auto-scroll
                     </label>
                 </div>
             </div>
@@ -762,136 +763,29 @@
         </div>
     </div>
 
-    <!-- VAST credit badge — above TTS panel -->
-    <div id="vastBalanceBar" class="mt-4 mb-1 flex items-center gap-3" style="display:none!important">
+    <!-- VAST credit badge — above TTS fleet panel -->
+    <div id="vastBalanceBar" class="mt-4 mb-1 flex items-center gap-3">
         <span id="vastBalanceBadge" title="VAST.ai account credit" style="display:inline-flex;align-items:center;gap:5px;background:#161b22;border:1px solid #30363d;border-radius:6px;padding:4px 10px;font-size:11px;color:#8b949e">
             💳 VAST Credit: <span id="vastBalanceVal" style="font-weight:700">—</span>
         </span>
     </div>
 
-    <!-- TTS Server Panel -->
-    <div class="mt-2 bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden" id="ttsPanel">
-        <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+    <!-- ── TTS Fleet Dashboard ─────────────────────────────────────────────── -->
+    <div class="mt-2" id="ttsFleetSection">
+        <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-                <h2 class="text-sm font-semibold text-[#e6edf3]">🖥 TTS Server</h2>
-                <span id="ttsStatusDot" class="conn-indicator conn-polling live-dot"></span>
-                <span id="ttsStatusLabel" class="text-xs text-[#8b949e]">Connecting…</span>
+                <h2 class="text-sm font-semibold text-[#e6edf3]">🖥 TTS Fleet</h2>
+                <span id="fleetCountBadge" style="font-size:10px;background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;color:#8b949e">—</span>
             </div>
             <div class="flex items-center gap-2">
-                <span class="text-xs text-[#484f58]" id="ttsLastUpdated"></span>
-                <!-- Warm Up button — shown when warmup not complete -->
-                <button id="ttsBtnWarmup" onclick="ttsWarmup()" title="Trigger warmup phrases to heat CUDA kernels"
-                    style="display:none"
-                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#e3b341] text-[#e3b341] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
-                    🔥 Warm Up
-                </button>
-                <!-- Kill button — shown when server is busy -->
-                <button id="ttsBtnKill" onclick="ttsKillRequest()" title="Abort current in-flight generation"
-                    style="display:none"
-                    class="bg-[#3a0a0a] hover:bg-[#4a0f0f] border border-[#f85149] text-[#f85149] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors font-semibold">
-                    ☠ Kill
-                </button>
-                <!-- Power controls: shown/hidden based on server state -->
-                <button id="ttsBtnStart" onclick="ttsControl('start')" title="Start CSM-0"
-                    style="display:none"
-                    class="bg-[#1a3a1a] hover:bg-[#1f4a1f] border border-[#3fb950] text-[#3fb950] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors font-semibold">
-                    ⏻ Start
-                </button>
-                <button id="ttsBtnRestart" onclick="ttsControl('restart')" title="Restart CSM-0"
-                    style="display:none"
-                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#e3b341] text-[#e3b341] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
-                    ⟳ Restart
-                </button>
-                <button id="ttsBtnStop" onclick="ttsControl('stop')" title="Stop CSM-0 (keeps tunnel + instance running)"
-                    style="display:none"
-                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#f85149] text-[#f85149] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
-                    ⏹ Stop
-                </button>
-                <button onclick="ttsPollNow()"
-                    class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">
-                    ⟳ Refresh
-                </button>
+                <span id="fleetLastUpdated" style="font-size:11px;color:#484f58"></span>
+                <button id="fleetSyncVastBtn" onclick="fleetSyncVast()" title="Query VAST account for running instances and auto-register any TTS servers found" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⚡ Sync from VAST</button>
+                <button onclick="fleetPollNow()" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⟳ Refresh</button>
             </div>
         </div>
-        <!-- Diagnostic lights strip -->
-        <div id="ttsDiagStrip" style="display:flex;align-items:stretch;border-bottom:1px solid #30363d;background:#0d1117;">
-            <!-- 5 lights: Worker · Tunnel · FastAPI · CSM · Kernels -->
-            <div class="diag-light" id="diag-worker"  title="Cloudflare Worker">  <span class="diag-dot" id="diag-dot-worker"></span>  <span class="diag-label">Worker</span>  <span class="diag-detail" id="diag-detail-worker">—</span></div>
-            <div class="diag-light" id="diag-tunnel"  title="Cloudflare Tunnel → tts.getampere.ai"><span class="diag-dot" id="diag-dot-tunnel"></span>  <span class="diag-label">Tunnel</span>  <span class="diag-detail" id="diag-detail-tunnel">—</span></div>
-            <div class="diag-light" id="diag-fastapi" title="FastAPI on port 8080"><span class="diag-dot" id="diag-dot-fastapi"></span> <span class="diag-label">FastAPI</span> <span class="diag-detail" id="diag-detail-fastapi">—</span></div>
-            <div class="diag-light" id="diag-csm"    title="CSM-1B model state">  <span class="diag-dot" id="diag-dot-csm"></span>    <span class="diag-label">CSM-0</span>  <span class="diag-detail" id="diag-detail-csm">—</span></div>
-            <div class="diag-light" id="diag-kernels" title="Triton kernel warmup"><span class="diag-dot" id="diag-dot-kernels"></span><span class="diag-label">Kernels</span><span class="diag-detail" id="diag-detail-kernels">—</span></div>
-        </div>
-        <div id="ttsMetricsRow" class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-            <!-- Populated by ttsRenderMetrics() -->
-            <div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7">
-                <span class="tts-offline">Waiting for first poll…</span>
-            </div>
-        </div>
-        <!-- Server Log Pane -->
-        <div class="tts-log-pane">
-            <button class="tts-log-toggle" id="ttsLogToggle" onclick="ttsLogToggle()">
-                <span>🖥 Server Log</span>
-                <span id="ttsLogChevron" style="font-size:12px;">▶</span>
-            </button>
-            <div class="tts-log-body" id="ttsLogBody">
-                <div class="tts-log-scroll" id="ttsLogScroll">
-                    <span class="log-dim">Log will appear when server comes online…</span>
-                </div>
-            </div>
-        </div>
-        <!-- Benchmark Pane -->
-        <div class="tts-log-pane" id="ttsBenchPane">
-            <button class="tts-log-toggle" id="ttsBenchToggle" onclick="ttsBenchTogglePane()">
-                <span>⚡ Benchmark</span>
-                <span id="ttsBenchChevron" style="font-size:12px;">▶</span>
-            </button>
-            <div class="tts-log-body" id="ttsBenchBody" style="display:none">
-                <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                    <select id="ttsBenchPreset" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer">
-                        <option value="default">Default (6-phrase mix)</option>
-                        <option value="short">Short only (3 phrases)</option>
-                        <option value="long">Long only (3 phrases)</option>
-                        <option value="custom">Custom…</option>
-                    </select>
-                    <input id="ttsBenchCustom" placeholder="Enter phrases separated by | for custom run"
-                        style="display:none;flex:1;min-width:200px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px" />
-                    <button id="ttsBenchRunBtn" onclick="ttsBenchRun()"
-                        style="background:#1a3a4a;border:1px solid #4493f8;color:#4493f8;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;transition:all .2s">
-                        ▶ Run Benchmark
-                    </button>
-                    <button id="ttsBenchStopBtn" onclick="ttsBenchStop()" style="display:none;
-                        background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">
-                        ■ Stop
-                    </button>
-                    <span id="ttsBenchStatus" style="font-size:10px;color:#8b949e"></span>
-                </div>
-                <div style="overflow-x:auto">
-                    <table id="ttsBenchTable" style="width:100%;border-collapse:collapse;font-size:11px">
-                        <thead>
-                            <tr style="border-bottom:1px solid #30363d;color:#8b949e">
-                                <th style="padding:6px 10px;text-align:left;width:30px">#</th>
-                                <th style="padding:6px 10px;text-align:left">Phrase</th>
-                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">Gen Time</th>
-                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">Audio</th>
-                                <th style="padding:6px 10px;text-align:right;white-space:nowrap">RTF</th>
-                                <th style="padding:6px 10px;text-align:center;width:50px">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ttsBenchRows">
-                            <tr><td colspan="6" style="padding:12px 10px;color:#484f58;text-align:center">Run a benchmark to see results</td></tr>
-                        </tbody>
-                        <tfoot id="ttsBenchSummary" style="display:none">
-                            <tr style="border-top:1px solid #30363d;background:#0d1117;font-weight:600;color:#e6edf3">
-                                <td colspan="2" style="padding:6px 10px">Summary</td>
-                                <td id="ttsBenchSumTotal" style="padding:6px 10px;text-align:right">—</td>
-                                <td style="padding:6px 10px"></td>
-                                <td id="ttsBenchSumRtf" style="padding:6px 10px;text-align:right">—</td>
-                                <td id="ttsBenchSumPass" style="padding:6px 10px;text-align:center">—</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+        <div id="ttsFleetCards" style="display:flex;flex-direction:column;gap:12px">
+            <div style="text-align:center;padding:24px;color:#484f58;font-size:12px;background:#161b22;border:1px solid #30363d;border-radius:12px">
+                Polling fleet registry…
             </div>
         </div>
     </div>
@@ -1523,546 +1417,23 @@
 
         // ── TTS Server Panel ─────────────────────────────────────────────────────
         // Polls /admin/tts-status via Worker proxy (instance-agnostic).
-        // Adaptive backoff: 5s when online, 60s when offline (avoids hammering dead tunnel).
-
-        let _ttsPollTimer = null;
-        let _ttsOnline = false;
-
-        // Live elapsed timer — ticks every 1s during loading/warming_up.
-        // Seeded from uptime_s on each poll so stays accurate across 5s poll gaps.
-        let _ttsElapsedTimer  = null;   // setInterval handle
-        let _ttsServerStartMs = null;   // estimated server start time in ms (local clock)
-        let _ttsWarmupDoneS   = null;   // uptime_s when warmup finished (for final badge)
-
-        function _ttsStartElapsedTick() {
-            clearInterval(_ttsElapsedTimer);
-            _ttsElapsedTimer = setInterval(() => {
-                const el = document.getElementById('ttsElapsedTimer');
-                if (!el || !_ttsServerStartMs) return;
-                const elapsedS = Math.round((Date.now() - _ttsServerStartMs) / 1000);
-                el.textContent = fmtUptime(elapsedS);
-            }, 1000);
-        }
-
-        function _ttsStopElapsedTick() {
-            clearInterval(_ttsElapsedTimer);
-            _ttsElapsedTimer = null;
-        }
-
-        // ── Diagnostic lights ────────────────────────────────────────────────────
-        // Drives the 5 indicator dots from the `diagnostics` object returned by
-        // the Worker's /admin/tts-status handler.
-        function ttsUpdateDiag(diag) {
-            const LIGHTS = ['worker', 'tunnel', 'fastapi', 'csm', 'kernels'];
-            LIGHTS.forEach(key => {
-                const dot    = document.getElementById(`diag-dot-${key}`);
-                const detail = document.getElementById(`diag-detail-${key}`);
-                if (!dot || !detail) return;
-                const layer = diag?.[key];
-                if (!layer) { dot.className = 'diag-dot unknown'; detail.textContent = '—'; return; }
-                if (layer.ok === true) {
-                    dot.className = 'diag-dot ok';
-                } else if (layer.ok === false) {
-                    // Worker is never false from this path (we got a response)
-                    dot.className = key === 'kernels' && diag?.csm?.ok ? 'diag-dot warn' : 'diag-dot error';
-                } else {
-                    dot.className = 'diag-dot unknown';
-                }
-                // Detail: show latency for tunnel if available
-                let txt = layer.detail || '—';
-                if (key === 'tunnel' && layer.latency_ms != null && layer.ok) {
-                    txt = `${layer.latency_ms}ms`;
-                } else if (key === 'tunnel' && layer.http_code) {
-                    txt = `HTTP ${layer.http_code}`;
-                }
-                detail.textContent = txt;
-            });
-        }
-
-        // Offline: worker dot = green (Worker responded), everything else = red
-        function ttsUpdateDiagOffline(reason) {
-            const LIGHTS = ['worker', 'tunnel', 'fastapi', 'csm', 'kernels'];
-            LIGHTS.forEach((key, i) => {
-                const dot    = document.getElementById(`diag-dot-${key}`);
-                const detail = document.getElementById(`diag-detail-${key}`);
-                if (!dot || !detail) return;
-                if (i === 0) { dot.className = 'diag-dot ok'; detail.textContent = 'responding'; }
-                else { dot.className = 'diag-dot error'; detail.textContent = i === 1 ? (reason || 'unreachable') : '—'; }
-            });
-        }
-
-        function ttsApiKey() { return document.getElementById('apiKey').value || ''; }
-
-        async function ttsPoll() {
-            const key = ttsApiKey();
-            // No key yet — don't show garbage; wait 3s and retry
-            if (!key) {
-                _ttsPollTimer = setTimeout(ttsPoll, 3000);
-                return;
-            }
-            try {
-                const res = await fetch(`${API_BASE}/admin/tts-status`, { headers: { 'x-api-key': key } });
-                if (!res.ok) {
-                    // 401, 403, 500 etc — not a TTS connectivity problem
-                    ttsRenderOffline(`HTTP ${res.status}`);
-                    _ttsOnline = false;
-                    _ttsPollTimer = setTimeout(ttsPoll, 10000);
-                    return;
-                }
-                const data = await res.json();
-                ttsRenderMetrics(data);
-                _ttsOnline = data.status === 'ok' || data.status === 'warming_up';
-            } catch (err) {
-                ttsRenderOffline('fetch error');
-                _ttsOnline = false;
-            }
-            _ttsPollTimer = setTimeout(ttsPoll, _ttsOnline ? 5000 : 60000);
-        }
-
-        function ttsPollNow() {
-            clearTimeout(_ttsPollTimer);
-            ttsPoll();
-        }
-
-        function ttsRenderOffline(reason, skipDiagLights) {
-            // skipDiagLights = true when we have structured per-layer diagnostics already rendered
-            // and don't want the all-red override to stomp them
-            if (!skipDiagLights) ttsUpdateDiagOffline(reason);
-            document.getElementById('ttsStatusDot').className = 'conn-indicator conn-error';
-            document.getElementById('ttsStatusLabel').textContent = 'Offline';
-            document.getElementById('ttsLastUpdated').textContent = 'last checked ' + new Date().toLocaleTimeString();
-            document.getElementById('ttsMetricsRow').innerHTML =
-                `<div class="tts-metric col-span-2 sm:col-span-4 lg:col-span-7"><span class="tts-offline">Instance offline or not provisioned — will recheck in 60s</span></div>`;
-            ttsUpdatePowerButtons('offline');
-        }
-
-        function ttsRenderMetrics(d) {
-            const dot   = document.getElementById('ttsStatusDot');
-            const label = document.getElementById('ttsStatusLabel');
-            const row   = document.getElementById('ttsMetricsRow');
-            const updated = document.getElementById('ttsLastUpdated');
-            updated.textContent = new Date().toLocaleTimeString();
-
-            // Update diagnostic lights from structured diagnostics object (always first)
-            if (d.diagnostics) ttsUpdateDiag(d.diagnostics);
-
-            if (d.status === 'offline' || d.reachable === false) {
-                _ttsStopElapsedTick();
-                // Pass skipDiagLights=true when we have structured per-layer diagnostics —
-                // prevents ttsRenderOffline calling ttsUpdateDiagOffline which would stomp
-                // the correctly-set Tunnel/FastAPI/CSM lights with all-red.
-                ttsRenderOffline(d.reason || 'unreachable', !!d.diagnostics);
-                return;
-            }
-
-            const warming  = d.status === 'warming_up';
-            const loading  = d.status === 'loading';
-            const online   = d.status === 'ok';
-
-            // Seed / update server-start estimate from uptime_s on every poll
-            if (d.uptime_s != null) {
-                _ttsServerStartMs = Date.now() - (d.uptime_s * 1000);
-            }
-
-            if (warming || loading) {
-                dot.className = 'conn-indicator conn-polling';  // amber pulse
-                label.textContent = loading ? 'LOADING' : 'WARMING UP';
-                _ttsStopElapsedTick();   // will restart after DOM update
-                if (!_ttsLogOpen) ttsLogToggle();
-            } else if (online) {
-                _ttsStopElapsedTick();
-                dot.className = 'conn-indicator ' + (d.busy ? 'conn-polling' : 'conn-connected');
-                label.textContent = d.busy ? 'BUSY' : 'ONLINE';
-                if (d.warmup_complete_ts != null) {
-                    _ttsWarmupDoneS = Math.round(d.warmup_complete_ts - (_ttsServerStartMs / 1000));
-                }
-            } else {
-                _ttsStopElapsedTick();
-                dot.className = 'conn-indicator conn-error';
-                label.textContent = d.status?.toUpperCase() || 'UNKNOWN';
-            }
-
-            const gpu  = d.gpu || {};
-            const gpuPct   = gpu.util_pct ?? 0;
-            const vramUsed = gpu.vram_used_gb ?? 0;
-            const vramTotal= gpu.vram_total_gb ?? 1;
-            const vramPct  = Math.round((vramUsed / vramTotal) * 100);
-            const vramColor = vramPct > 85 ? '#f85149' : vramPct > 60 ? '#e3b341' : '#3fb950';
-            const gpuColor  = gpuPct > 80  ? '#f85149' : gpuPct > 40  ? '#e3b341' : '#3fb950';
-            const rtf  = d.last_rtf;
-            const rtfCls = !rtf ? '' : rtf < 0.5 ? 'rtf-great' : rtf < 1.0 ? 'rtf-good' : 'rtf-slow';
-            const rtfHtml = rtf != null
-                ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>`
-                : '<span class="tts-offline">—</span>';
-            const uptime = d.uptime_s != null ? fmtUptime(Math.round(d.uptime_s)) : '—';
-
-            // Model info
-            const mdl    = d.model || {};
-            const quant  = mdl.quantization || '—';
-            const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
-            const gpuCount = gpu.gpu_count || 1;
-            const gpuCountLabel = gpuCount > 1 ? `${gpuCount}×` : '1×';
-            // Strip vendor prefix — NVIDIA badge handles branding, name stays clean
-            const gpuShortName  = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
-            // NVIDIA badge: official NVIDIA icon mark vector path (#77B900)
-            const nvidiaBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#0d1117;border:1px solid #77b90044;border-radius:4px;padding:1px 4px;vertical-align:middle">
-              <svg width="16" height="12" viewBox="0 4 23 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">
-                <path d="M2.95985 10.5996C2.95985 10.5996 4.90074 7.75572 8.77606 7.4615V6.42974C4.48365 6.77209 0.766602 10.3825 0.766602 10.3825C0.766602 10.3825 2.87188 16.4264 8.77606 16.9799V15.8832C4.44329 15.3419 2.95985 10.5996 2.95985 10.5996ZM8.77606 13.7022V14.7066C5.50145 14.1267 4.5925 10.7463 4.5925 10.7463C4.5925 10.7463 6.16477 9.0166 8.77606 8.73609V9.83817C8.77407 9.83817 8.77269 9.83757 8.77105 9.83757C7.40051 9.67423 6.32985 10.9457 6.32985 10.9457C6.32985 10.9457 6.92995 13.0862 8.77606 13.7022ZM8.77606 4.52673V6.42974C8.90206 6.42015 9.02807 6.41201 9.15476 6.40773C14.0348 6.24439 17.2144 10.3825 17.2144 10.3825C17.2144 10.3825 13.5625 14.7925 9.7578 14.7925C9.40911 14.7925 9.08266 14.7604 8.77606 14.7064V15.8832C9.04723 15.9178 9.32035 15.9353 9.59376 15.9356C13.1343 15.9356 15.6947 14.1399 18.1739 12.0147C18.585 12.3416 20.2678 13.137 20.6137 13.485C18.2564 15.4451 12.7626 17.025 9.64801 17.025C9.34778 17.025 9.05946 17.007 8.77606 16.9799V18.6334H22.2333V4.52673H8.77606ZM8.77606 8.73609V7.4615C8.90077 7.45285 9.02643 7.44626 9.15476 7.44223C12.664 7.33277 14.9662 10.437 14.9662 10.437C14.9662 10.437 12.4796 13.8667 9.81334 13.8667C9.42963 13.8667 9.0856 13.8055 8.77597 13.7021V9.83808C10.1421 10.002 10.4171 10.6013 11.2384 11.961L13.0652 10.4314C13.0652 10.4314 11.7317 8.69463 9.48388 8.69463C9.23946 8.69455 9.00564 8.71168 8.77606 8.73609Z" fill="#77B900"/>
-              </svg></span>`;
-
-            const gpuName = gpu.name ? `${nvidiaBadge} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuCountLabel} ${gpuShortName}</span>` : '—';
-
-            // ── Phase pipeline ─────────────────────────────────────────────────────────────
-            const phases = d.phases || {};
-            const startEpoch = _ttsServerStartMs ? _ttsServerStartMs / 1000 : null;
-
-            // Seed warmup_done from top-level warmup_complete_ts if the phases object
-            // doesn't include it (server stores it separately, not inside _phases dict).
-            if (d.warmup_complete_ts && !phases.warmup_done) {
-                phases.warmup_done = d.warmup_complete_ts;
-            }
-
-            function phaseElapsed(ts) {
-                if (!ts || !startEpoch) return '';
-                const s = Math.round(ts - startEpoch);
-                return `<span style="color:#8b949e;font-size:10px;margin-left:6px">${fmtUptime(s)}</span>`;
-            }
-
-            function phaseRow(label, key, description) {
-                const ts = phases[key];
-                const done = ts != null;
-                // "In progress": previous phase complete, this one not done yet.
-                // Remove !online guard — warmup_done should show ✅ once server is online.
-                const phaseOrder = ['model_loading','quantization','compile','warmup_start','warmup_done'];
-                const idx = phaseOrder.indexOf(key);
-                const prevDone = idx === 0 ? true : phases[phaseOrder[idx-1]] != null;
-                const inProgress = !done && prevDone;
-                const icon  = done ? '✅' : inProgress ? '⏳' : '▫️';
-                const color = done ? '#3fb950' : inProgress ? '#e3b341' : '#484f58';
-                return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px">
-                    <span style="font-size:12px">${icon}</span>
-                    <span style="color:${color};font-weight:${inProgress?'600':'400'}">${label}</span>
-                    <span style="color:#8b949e;font-size:10px">${description}</span>
-                    ${phaseElapsed(ts)}
-                </div>`;
-            }
-
-
-            const phasePipeline = (warming || loading || (online && d.warmup_complete_ts)) ? `
-                <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
-                    <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
-                    ${phaseRow('Model loaded',   'model_loading', 'load_csm_1b() + torchtune weights')}
-                    ${phaseRow('Quantized',       'quantization',  quant.toUpperCase() + ' weight-only')}
-                    ${phaseRow('Compiled',        'compile',       'torch.compile(mode=default, dynamic=True)')}
-                    ${phaseRow('Warmup started',  'warmup_start',  '2 Triton warmup phrases')}
-                    ${phaseRow('Kernels ready',   'warmup_done',   'all phrase lengths cached')}
-                </div>` : '';
-
-            // ── Timer / ready badge ────────────────────────────────────────────────────────────
-            let timerBadge = '';
-            if (loading || warming) {
-                // Live timer — ticks every 1s, initial value from uptime_s
-                const initS = d.uptime_s != null ? Math.round(d.uptime_s) : 0;
-                timerBadge = `
-                    <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:8px 0 2px">
-                        <span style="color:#e3b341;font-size:11px;font-weight:600;letter-spacing:.06em">⏱ WARMING UP</span>
-                        <span id="ttsElapsedTimer" style="color:#e3b341;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em">${fmtUptime(initS)}</span>
-                        <span style="color:#8b949e;font-size:11px">since restart</span>
-                    </div>`;
-            } else if (online && _ttsWarmupDoneS != null) {
-                timerBadge = `
-                    <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:8px 0 2px">
-                        <span style="color:#3fb950;font-size:11px;font-weight:600">✅ KERNELS WARM</span>
-                        <span style="color:#3fb950;font-size:18px;font-weight:700">${fmtUptime(_ttsWarmupDoneS)}</span>
-                        <span style="color:#8b949e;font-size:11px">warmup time</span>
-                    </div>`;
-            }
-
-            row.innerHTML = `
-                ${timerBadge}
-                <!-- Hero row: GPU model + Uptime — large, full width, shown first -->
-                <div style="grid-column:1/-1;display:flex;align-items:baseline;gap:20px;padding:4px 0 10px;border-bottom:1px solid #21262d;margin-bottom:4px">
-                    <span style="font-size:20px;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:6px">${gpuName}</span>
-                    <span style="font-size:14px;color:#484f58;font-weight:400">·</span>
-                    <span style="font-size:16px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
-                    ${d.busy ? '<span style="font-size:12px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px;margin-left:4px">BUSY</span>' : ''}
-                </div>
-                <!-- Secondary stats grid -->
-                <div class="tts-metric">
-                    <span class="tts-metric-label">GPU Load</span>
-                    <span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span>
-                    <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">VRAM</span>
-                    <span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span>
-                    <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Last RTF</span>
-                    <span class="tts-metric-value">${rtfHtml}</span>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Temp</span>
-                    <span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Power</span>
-                    <span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Requests</span>
-                    <span class="tts-metric-value">${d.requests_served ?? '—'}</span>
-                </div>
-                <div class="tts-metric">
-                    <span class="tts-metric-label">Quant</span>
-                    <span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span>
-                </div>
-                ${phasePipeline}
-            `;
-
-            // Start ticking timer AFTER DOM update (element now exists)
-            if (loading || warming) {
-                _ttsStartElapsedTick();
-            }
-
-            // Update power buttons based on current server status
-            ttsUpdatePowerButtons(d.status || 'unknown');
-        }
-
+        // ── TTS Fleet Dashboard ──────────────────────────────────────────────────
+        // Polls /admin/tts-fleet every 5s. Renders one card per active instance.
+        // Each card has its own metrics, controls, log pane, and benchmark pane.
+        // All actions pass tunnel_url in body → Worker routes to the right instance.
 
         function fmtUptime(s) {
+            s = Math.round(s);
             if (s < 60)   return s + 's';
             if (s < 3600) return Math.floor(s/60) + 'm ' + (s%60) + 's';
-            const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60);
+            const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
             return h + 'h ' + m + 'm';
         }
 
-        // ── TTS Log Pane ──────────────────────────────────────────────────────────
-        let _ttsLogOpen = false;
-        let _ttsLogTimer = null;
-        let _ttsLogLastCount = 0;
+        const NVIDIA_BADGE = `<span style="display:inline-flex;align-items:center;gap:4px;background:#0d1117;border:1px solid #77b90044;border-radius:4px;padding:1px 4px;vertical-align:middle">
+          <svg width="16" height="12" viewBox="0 4 23 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">
+            <path d="M2.95985 10.5996C2.95985 10.5996 4.90074 7.75572 8.77606 7.4615V6.42974C4.48365 6.77209 0.766602 10.3825 0.766602 10.3825C0.766602 10.3825 2.87188 16.4264 8.77606 16.9799V15.8832C4.44329 15.3419 2.95985 10.5996 2.95985 10.5996ZM8.77606 13.7022V14.7066C5.50145 14.1267 4.5925 10.7463 4.5925 10.7463C4.5925 10.7463 6.16477 9.0166 8.77606 8.73609V9.83817C8.77407 9.83817 8.77269 9.83757 8.77105 9.83757C7.40051 9.67423 6.32985 10.9457 6.32985 10.9457C6.32985 10.9457 6.92995 13.0862 8.77606 13.7022ZM8.77606 4.52673V6.42974C8.90206 6.42015 9.02807 6.41201 9.15476 6.40773C14.0348 6.24439 17.2144 10.3825 17.2144 10.3825C17.2144 10.3825 13.5625 14.7925 9.7578 14.7925C9.40911 14.7925 9.08266 14.7604 8.77606 14.7064V15.8832C9.04723 15.9178 9.32035 15.9353 9.59376 15.9356C13.1343 15.9356 15.6947 14.1399 18.1739 12.0147C18.585 12.3416 20.2678 13.137 20.6137 13.485C18.2564 15.4451 12.7626 17.025 9.64801 17.025C9.34778 17.025 9.05946 17.007 8.77606 16.9799V18.6334H22.2333V4.52673H8.77606ZM8.77606 8.73609V7.4615C8.90077 7.45285 9.02643 7.44626 9.15476 7.44223C12.664 7.33277 14.9662 10.437 14.9662 10.437C14.9662 10.437 12.4796 13.8667 9.81334 13.8667C9.42963 13.8667 9.0856 13.8055 8.77597 13.7021V9.83808C10.1421 10.002 10.4171 10.6013 11.2384 11.961L13.0652 10.4314C13.0652 10.4314 11.7317 8.69463 9.48388 8.69463C9.23946 8.69455 9.00564 8.71168 8.77606 8.73609Z" fill="#77B900"/></svg></span>`;
 
-        function ttsLogToggle() {
-            _ttsLogOpen = !_ttsLogOpen;
-            document.getElementById('ttsLogBody').classList.toggle('open', _ttsLogOpen);
-            document.getElementById('ttsLogChevron').textContent = _ttsLogOpen ? '▼' : '▶';
-            if (_ttsLogOpen) ttsLogPoll();
-        }
-
-        function _ttsLogClass(line) {
-            if (line.includes('[CSM]'))                         return 'log-csm';
-            if (/\bERROR\b|Traceback|Exception/.test(line))    return 'log-error';
-            if (/\bWARN(ING)?\b/.test(line))                   return 'log-warn';
-            if (line.startsWith('INFO:'))                       return 'log-info';
-            return 'log-dim';
-        }
-
-        async function ttsLogPoll() {
-            clearTimeout(_ttsLogTimer);
-            if (!_ttsLogOpen) return;
-            const key = ttsApiKey();
-            try {
-                const res = await fetch(`${API_BASE}/admin/tts-logs?n=100`, {
-                    headers: { 'x-api-key': key }
-                });
-                const data = await res.json();
-                const lines = data.lines || [];
-                if (lines.length !== _ttsLogLastCount) {
-                    _ttsLogLastCount = lines.length;
-                    const scroll = document.getElementById('ttsLogScroll');
-                    // Reverse so newest lines appear at top — no need to scroll
-                    scroll.innerHTML = [...lines].reverse().map(l =>
-                        `<div class="${_ttsLogClass(l)}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
-                    ).join('');
-                }
-            } catch { /* server offline — keep polling */ }
-            // Poll every 2s when open (captures warmup lines in near-realtime)
-            _ttsLogTimer = setTimeout(ttsLogPoll, 2000);
-        }
-        // ── End TTS Log Pane ─────────────────────────────────────────────────────
-
-        // ── TTS Power Controls ───────────────────────────────────────────────────
-        // Shows Start / Restart / Stop buttons based on current server state.
-        // Stop requires explicit confirmation via an inline panel (not browser confirm).
-
-        // ── VAST Account Balance ─────────────────────────────────────────────────
-        let _vastBalanceTimer = null;
-        async function vastBalancePoll() {
-            const key = document.getElementById('apiKey')?.value?.trim() || '';
-            if (!key) { setTimeout(vastBalancePoll, 10000); return; }
-            try {
-                const resp = await fetch(`${API_BASE}/admin/vast-balance`, {
-                    headers: { 'x-api-key': key }
-                });
-                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                const data = await resp.json();
-                const bal   = data.balance_usd ?? null;
-                const badge = document.getElementById('vastBalanceBadge');
-                const val   = document.getElementById('vastBalanceVal');
-                if (badge && val && bal !== null) {
-                    badge.style.display = 'flex';
-                    const color = bal < 5 ? '#f85149' : bal < 10 ? '#e3b341' : '#3fb950';
-                    val.innerHTML = `<span style="color:${color};font-weight:700">$${bal.toFixed(2)}</span> <span style="color:#484f58">credit</span>`;
-                    // Warn visually if low
-                    badge.style.borderColor = bal < 5 ? '#f8514966' : bal < 10 ? '#e3b34144' : '#30363d';
-                }
-            } catch { /* silent — balance is non-critical */ }
-            const bar = document.getElementById('vastBalanceBar');
-            if (bar) bar.style.display = ''; // show the bar once we have data
-            _vastBalanceTimer = setTimeout(vastBalancePoll, 60000); // re-poll every 60s
-        }
-        // ── End VAST Account Balance ─────────────────────────────────────────────
-
-        function ttsUpdatePowerButtons(status) {
-            // status: 'offline' | 'loading' | 'warming_up' | 'ok' | 'busy' | unknown
-            const online  = ['loading','warming_up','ok','busy'].includes(status);
-            const busy    = status === 'busy';
-            const warm    = status === 'ok' || status === 'busy';
-            const btnStart   = document.getElementById('ttsBtnStart');
-            const btnRestart = document.getElementById('ttsBtnRestart');
-            const btnStop    = document.getElementById('ttsBtnStop');
-            const btnKill    = document.getElementById('ttsBtnKill');
-            const btnWarmup  = document.getElementById('ttsBtnWarmup');
-            if (!btnStart) return;
-            btnStart.style.display   = online ? 'none'        : 'inline-flex';
-            btnRestart.style.display = online ? 'inline-flex' : 'none';
-            btnStop.style.display    = online ? 'inline-flex' : 'none';
-            // Kill: only when server is actively processing something
-            if (btnKill)   btnKill.style.display   = busy ? 'inline-flex' : 'none';
-            // Warm Up: show when server is online but not in ok/busy state (loading/warming_up)
-            if (btnWarmup) btnWarmup.style.display  = (online && !warm) ? 'inline-flex' : 'none';
-        }
-
-        // Called from ttsRenderMetrics/ttsRenderOffline — wire into the status update path.
-        // Patch into existing ttsRenderMetrics by hooking status after it runs.
-        const _origRenderMetrics = typeof ttsRenderMetrics !== 'undefined' ? ttsRenderMetrics : null;
-
-        function _ttsPowerHook(status) {
-            ttsUpdatePowerButtons(status);
-        }
-
-        // Stop confirmation banner — inline, not a browser dialog
-        let _stopConfirmPending = false;
-        function _ttsShowStopConfirm() {
-            if (_stopConfirmPending) return;
-            _stopConfirmPending = true;
-            // Remove any existing banner
-            const existing = document.getElementById('ttsStopConfirm');
-            if (existing) existing.remove();
-            const banner = document.createElement('div');
-            banner.id = 'ttsStopConfirm';
-            banner.style.cssText = `
-                position:fixed; top:70px; left:50%; transform:translateX(-50%);
-                background:#1c1007; border:1.5px solid #f85149; border-radius:10px;
-                padding:16px 20px; z-index:9999; min-width:320px; max-width:480px;
-                box-shadow:0 8px 32px #0008; text-align:center;
-                animation: slideDown .2s ease;
-            `;
-            banner.innerHTML = `
-                <div style="font-size:13px;font-weight:700;color:#f85149;margin-bottom:6px">⏹ Stop TTS Server?</div>
-                <div style="font-size:11px;color:#8b949e;margin-bottom:14px;line-height:1.5">
-                    This will stop csm-0 via supervisorctl.<br>
-                    The tunnel &amp; VAST instance remain running — use <strong>⏻ Start</strong> to restart.
-                </div>
-                <div style="display:flex;gap:10px;justify-content:center">
-                    <button onclick="_ttsConfirmStop(true)"
-                        style="background:#3a1a1a;border:1.5px solid #f85149;color:#f85149;padding:6px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">
-                        Yes, stop it
-                    </button>
-                    <button onclick="_ttsConfirmStop(false)"
-                        style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:6px 18px;border-radius:6px;font-size:12px;cursor:pointer">
-                        Cancel
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(banner);
-        }
-
-        function _ttsConfirmStop(confirmed) {
-            _stopConfirmPending = false;
-            const banner = document.getElementById('ttsStopConfirm');
-            if (banner) banner.remove();
-            if (confirmed) _ttsExecuteControl('stop');
-        }
-
-        async function ttsKillRequest() {
-            const key = document.getElementById('apiKey')?.value?.trim() || '';
-            if (!key) return;
-            const btn = document.getElementById('ttsBtnKill');
-            if (btn) { btn.textContent = '☠ Killing…'; btn.style.opacity = '0.6'; }
-            try {
-                const resp = await fetch(`${API_BASE}/admin/tts-kill`, {
-                    method: 'POST', headers: { 'x-api-key': key }
-                });
-                const data = await resp.json();
-                console.log('[TTS] Kill result:', data);
-                ttsPollNow();
-            } catch (e) {
-                console.error('[TTS] Kill failed:', e);
-            } finally {
-                if (btn) { btn.textContent = '☠ Kill'; btn.style.opacity = '1'; }
-            }
-        }
-
-        async function ttsWarmup() {
-            const key = document.getElementById('apiKey')?.value?.trim() || '';
-            if (!key) return;
-            const btn = document.getElementById('ttsBtnWarmup');
-            if (btn) { btn.textContent = '🔥 Warming…'; btn.disabled = true; btn.style.opacity = '0.6'; }
-            try {
-                const resp = await fetch(`${API_BASE}/admin/tts-warmup`, {
-                    method: 'POST', headers: { 'x-api-key': key }
-                });
-                const data = await resp.json();
-                console.log('[TTS] Warmup result:', data);
-                ttsPollNow();
-            } catch (e) {
-                console.error('[TTS] Warmup failed:', e);
-            } finally {
-                if (btn) { btn.textContent = '🔥 Warm Up'; btn.disabled = false; btn.style.opacity = '1'; }
-            }
-        }
-
-        async function _ttsExecuteControl(action) {
-            const key = document.getElementById('apiKey')?.value?.trim() || '';
-            const btn = document.getElementById(
-                action === 'start'   ? 'ttsBtnStart' :
-                action === 'restart' ? 'ttsBtnRestart' : 'ttsBtnStop'
-            );
-            const origText = btn?.textContent || '';
-            if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '…'; }
-            try {
-                const resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
-                    method: 'POST',
-                    headers: { 'x-api-key': key },
-                });
-                const data = await resp.json();
-                if (data.ok) {
-                    // Trigger immediate poll to update status
-                    setTimeout(ttsPollNow, 1500);
-                    setTimeout(ttsPollNow, 5000);
-                } else {
-                    alert(`${action} failed: ${data.output || data.error || 'Unknown error'}`);
-                }
-            } catch (err) {
-                alert(`${action} error: ${err.message}`);
-            } finally {
-                if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = origText; }
-            }
-        }
-
-        function ttsControl(action) {
-            if (action === 'stop') {
-                _ttsShowStopConfirm();  // Show confirmation first — stop is destructive
-            } else {
-                _ttsExecuteControl(action);
-            }
-        }
-
-        // ── End TTS Power Controls ───────────────────────────────────────────────
-
-        // ── TTS Benchmark ────────────────────────────────────────────────────────
         const BENCH_PHRASES = {
             default: [
                 "Hi there, how can I help you today?",
@@ -2072,9 +1443,7 @@
                 "Hi there, thanks for calling GetAmpere. How can I help you today?",
                 "I will transfer you to our technical support team who can assist you further.",
             ],
-            short: [
-                "Hi.", "Sure.", "Got it.",
-            ],
+            short: ["Hi.", "Sure.", "Got it."],
             long: [
                 "Hi there, thanks for calling GetAmpere. How can I help you today?",
                 "We offer a range of AI-powered solutions for businesses of all sizes.",
@@ -2082,46 +1451,493 @@
             ],
         };
 
-        let _benchReader = null;
+        // Per-instance state keyed by instance_id
+        const _instState = {};   // { [id]: { logOpen, logTimer, benchReader, elapsedTimer, serverStartMs, warmupDoneS } }
 
-        function ttsBenchTogglePane() {
-            const body    = document.getElementById('ttsBenchBody');
-            const chevron = document.getElementById('ttsBenchChevron');
-            const open    = body.style.display !== 'none';
-            body.style.display    = open ? 'none' : 'block';
-            chevron.textContent   = open ? '▶' : '▼';
+        function _istate(id) {
+            if (!_instState[id]) _instState[id] = { logOpen: false, logTimer: null, benchReader: null, elapsedTimer: null, serverStartMs: null, warmupDoneS: null };
+            return _instState[id];
         }
 
-        document.getElementById('ttsBenchPreset').addEventListener('change', function() {
-            const custom = document.getElementById('ttsBenchCustom');
-            custom.style.display = this.value === 'custom' ? 'inline-block' : 'none';
-        });
+        // ── Fleet poll ────────────────────────────────────────────────────────────
+        let _fleetTimer = null;
+        let _fleetAutoSynced = false; // auto-sync from VAST once per page load if registry is empty
 
-        async function ttsBenchRun() {
-            const preset  = document.getElementById('ttsBenchPreset').value;
+        async function fleetPoll() {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            if (!key) { _fleetTimer = setTimeout(fleetPoll, 3000); return; }
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-fleet`, { headers: { 'x-api-key': key } });
+                if (!res.ok) { _fleetTimer = setTimeout(fleetPoll, 15000); return; }
+                const data = await res.json();
+                const instances = data.instances || [];
+                renderFleetCards(instances);
+                document.getElementById('fleetLastUpdated').textContent = new Date().toLocaleTimeString();
+
+                // Auto-sync from VAST on first empty result — no manual button click needed
+                if (instances.length === 0 && !_fleetAutoSynced) {
+                    _fleetAutoSynced = true;
+                    fleetSyncVast();  // runs in background, will trigger another poll when done
+                }
+            } catch { /* retry */ }
+            _fleetTimer = setTimeout(fleetPoll, 5000);
+        }
+
+
+        function fleetPollNow() { clearTimeout(_fleetTimer); fleetPoll(); }
+
+        async function fleetSyncVast() {
+            const btn = document.getElementById('fleetSyncVastBtn');
+            const key = document.getElementById('apiKey').value || '';
+            const orig = btn.textContent;
+            btn.textContent = '⏳ Syncing…';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-fleet-sync-vast`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key },
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    btn.textContent = `❌ ${data.error ?? 'Error'}`;
+                    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 4000);
+                    return;
+                }
+                const reg = data.registered ?? 0;
+                const total = data.total_vast ?? 0;
+                btn.textContent = `✅ ${reg}/${total} registered`;
+                setTimeout(fleetPollNow, 500);
+                setTimeout(fleetPollNow, 4000);
+            } catch (err) {
+                btn.textContent = `❌ ${err.message}`;
+            } finally {
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 5000);
+            }
+        }
+
+
+        // ── Card rendering ────────────────────────────────────────────────────────
+
+        function renderFleetCards(instances) {
+            const container = document.getElementById('ttsFleetCards');
+            const badge = document.getElementById('fleetCountBadge');
+            const active = instances.filter(i => i.status !== 'offline');
+            badge.textContent = `${instances.length} instance${instances.length !== 1 ? 's' : ''} · ${active.length} online`;
+
+            if (!instances.length) {
+                container.innerHTML = `<div style="text-align:center;padding:24px;color:#484f58;font-size:12px;background:#161b22;border:1px solid #30363d;border-radius:12px">No active instances in fleet registry</div>`;
+                return;
+            }
+
+            // Clear any empty-state placeholder before rendering real cards
+            container.querySelectorAll(':not([data-inst-id])').forEach(el => el.remove());
+
+            // Preserve existing cards; only update/add/remove as needed
+            const existingIds = new Set([...container.querySelectorAll('[data-inst-id]')].map(el => el.dataset.instId));
+            const newIds = new Set(instances.map(i => i.instance_id));
+
+            // Remove stale cards
+            existingIds.forEach(id => { if (!newIds.has(id)) document.getElementById(`inst-card-${id}`)?.remove(); });
+
+            instances.forEach(inst => {
+                const id = inst.instance_id;
+                let card = document.getElementById(`inst-card-${id}`);
+                if (!card) {
+                    card = document.createElement('div');
+                    card.id = `inst-card-${id}`;
+                    card.dataset.instId = id;
+                    card.style.cssText = 'background:#161b22;border:1px solid #30363d;border-radius:12px;overflow:hidden';
+                    container.appendChild(card);
+                }
+                updateInstCard(card, inst);
+            });
+        }
+
+        function updateInstCard(card, inst) {
+            const id  = inst.instance_id;
+            const url = (inst.tunnel_url || '').replace(/\/$/, '');
+            const st  = inst.status || 'offline';
+            const gpu = inst.gpu || {};
+            const s   = _istate(id);
+
+            const online  = ['ok','busy','warming_up','loading'].includes(st);
+            const warm    = st === 'ok' || st === 'busy';
+            const busy    = st === 'busy';
+            const warming = st === 'warming_up' || st === 'loading';
+
+            // Uptime / elapsed timer seeding
+            if (inst.uptime_s != null) s.serverStartMs = Date.now() - inst.uptime_s * 1000;
+            if (inst.warmup_complete_ts != null && !s.warmupDoneS && s.serverStartMs) {
+                s.warmupDoneS = Math.round(inst.warmup_complete_ts - s.serverStartMs / 1000);
+            }
+
+            // Status badge
+            const stColor = warm ? '#3fb950' : warming ? '#e3b341' : '#f85149';
+            const stLabel = st === 'ok' ? 'ONLINE' : st === 'busy' ? 'BUSY' : st === 'warming_up' ? 'WARMING UP' : st === 'loading' ? 'LOADING' : 'OFFLINE';
+
+            // GPU metrics
+            const gpuPct   = gpu.util_pct ?? 0;
+            const vramUsed = gpu.vram_used_gb ?? 0;
+            const vramTotal= gpu.vram_total_gb || 1;
+            const vramPct  = Math.round((vramUsed / vramTotal) * 100);
+            const vramColor = vramPct > 85 ? '#f85149' : vramPct > 60 ? '#e3b341' : '#3fb950';
+            const gpuColor  = gpuPct > 80 ? '#f85149' : gpuPct > 40 ? '#e3b341' : '#3fb950';
+            const rtf = inst.last_rtf ?? (inst.gpu && inst.gpu.last_rtf);
+            const rtfCls = !rtf ? '' : rtf < 0.5 ? 'rtf-great' : rtf < 1.0 ? 'rtf-good' : 'rtf-slow';
+            const rtfHtml = rtf != null ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>` : '<span style="color:#484f58">—</span>';
+            const gpuShort = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
+            const gpuName = gpu.name ? `${NVIDIA_BADGE} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuShort}</span>` : '—';
+            const uptime = inst.uptime_s != null ? fmtUptime(inst.uptime_s) : '—';
+            const mdl = {};
+            const quant = mdl.quantization || (inst.quant) || '—';
+            const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
+            const region = inst.region || inst.datacenter || '';
+            // VAST identifiers — prefer explicit fields, fall back to parsing instance_id
+            const vastId     = inst.vast_id   || (id.startsWith('vast-') ? id.replace('vast-','') : id);
+            const machineId  = inst.machine_id || '';
+            const datacenter = inst.datacenter || region;
+
+
+            // Warmup timer badge
+            let timerBadge = '';
+            if (warming) {
+                const initS = inst.uptime_s != null ? Math.round(inst.uptime_s) : 0;
+                timerBadge = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:8px 0 2px">
+                    <span style="color:#e3b341;font-size:11px;font-weight:600">⏱ WARMING UP</span>
+                    <span id="inst-elapsed-${id}" style="color:#e3b341;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums">${fmtUptime(initS)}</span>
+                    <span style="color:#8b949e;font-size:11px">since restart</span>
+                </div>`;
+                // Start/continue elapsed tick
+                if (!s.elapsedTimer) {
+                    s.elapsedTimer = setInterval(() => {
+                        const el = document.getElementById(`inst-elapsed-${id}`);
+                        if (!el || !s.serverStartMs) return;
+                        el.textContent = fmtUptime(Math.round((Date.now() - s.serverStartMs) / 1000));
+                    }, 1000);
+                }
+            } else {
+                if (s.elapsedTimer) { clearInterval(s.elapsedTimer); s.elapsedTimer = null; }
+                if (warm && s.warmupDoneS != null) {
+                    timerBadge = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:8px 0 2px">
+                        <span style="color:#3fb950;font-size:11px;font-weight:600">✅ KERNELS WARM</span>
+                        <span style="color:#3fb950;font-size:16px;font-weight:700">${fmtUptime(s.warmupDoneS)}</span>
+                        <span style="color:#8b949e;font-size:11px">warmup time</span>
+                    </div>`;
+                }
+            }
+
+            // Diagnostic lights
+            const diag = inst.diagnostics || {};
+            function diagDot(key) {
+                const d = diag[key];
+                if (!d) return '<span class="diag-dot unknown"></span>';
+                return `<span class="diag-dot ${d.ok===true?'ok':d.ok===false?(key==='kernels'&&diag.csm?.ok?'warn':'error'):'unknown'}"></span>`;
+            }
+            function diagDetail(key) {
+                const d = diag[key];
+                if (!d) return '—';
+                if (key === 'tunnel' && d.latency_ms != null && d.ok) return d.latency_ms + 'ms';
+                return d.detail || '—';
+            }
+
+            // Phase pipeline
+            const phases = inst.phases || {};
+            if (inst.warmup_complete_ts && !phases.warmup_done) phases.warmup_done = inst.warmup_complete_ts;
+            const startEpoch = s.serverStartMs ? s.serverStartMs / 1000 : null;
+            function phaseRow(label, key, desc) {
+                const ts = phases[key];
+                const done = ts != null;
+                const order = ['model_loading','quantization','compile','warmup_start','warmup_done'];
+                const idx = order.indexOf(key);
+                const prevDone = idx === 0 ? true : phases[order[idx-1]] != null;
+                const inProg = !done && prevDone;
+                const icon = done ? '✅' : inProg ? '⏳' : '▫️';
+                const color = done ? '#3fb950' : inProg ? '#e3b341' : '#484f58';
+                let elapsed = '';
+                if (ts && startEpoch) elapsed = `<span style="color:#8b949e;font-size:10px;margin-left:6px">${fmtUptime(Math.round(ts - startEpoch))}</span>`;
+                return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px">
+                    <span>${icon}</span><span style="color:${color};font-weight:${inProg?'600':'400'}">${label}</span>
+                    <span style="color:#8b949e;font-size:10px">${desc}</span>${elapsed}</div>`;
+            }
+            const showPipeline = warming || (warm && inst.warmup_complete_ts);
+            const phasePipeline = showPipeline ? `<div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
+                <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
+                ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune')}
+                ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
+                ${phaseRow('Compiled','compile','torch.compile()')}
+                ${phaseRow('Warmup started','warmup_start','Triton warmup phrases')}
+                ${phaseRow('Kernels ready','warmup_done','all lengths cached')}
+            </div>` : '';
+
+            // Control buttons — all pass tunnel_url for per-instance routing
+            const btnKill    = busy    ? `<button onclick="instKill('${id}','${url}')" title="Abort current generation" style="background:#3a0a0a;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600" id="inst-btn-kill-${id}">☠ Kill</button>` : '';
+            const btnWarmup  = (online && !warm) ? `<button onclick="instWarmup('${id}','${url}')" style="background:#21262d;border:1px solid #e3b341;color:#e3b341;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" id="inst-btn-warmup-${id}">🔥 Warm Up</button>` : '';
+            const btnStart   = !online ? `<button onclick="instControl('${id}','${url}','start')" style="background:#1a3a1a;border:1px solid #3fb950;color:#3fb950;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600">⏻ Start</button>` : '';
+            const btnRestart = online  ? `<button onclick="instControl('${id}','${url}','restart')" style="background:#21262d;border:1px solid #e3b341;color:#e3b341;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" id="inst-btn-restart-${id}">⟳ Restart</button>` : '';
+            const btnStop    = online  ? `<button onclick="instStop('${id}','${url}')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer">⏹ Stop</button>` : '';
+
+            let metricsDiv = document.getElementById(`inst-metrics-${id}`);
+            if (!metricsDiv) {
+                // First render: create the skeleton with static log/bench panes
+                card.innerHTML = `
+                    <div id="inst-metrics-${id}"></div>
+                    <!-- Log pane -->
+                    <div class="tts-log-pane">
+                        <button class="tts-log-toggle" onclick="instLogToggle('${id}','${url}')">
+                            <span>🖥 Server Log</span>
+                            <span id="inst-log-chevron-${id}" style="font-size:12px">▶</span>
+                        </button>
+                        <div class="tts-log-body" id="inst-log-body-${id}">
+                            <div class="tts-log-scroll" id="inst-log-scroll-${id}"><span class="log-dim">Log will appear here…</span></div>
+                        </div>
+                    </div>
+                    <!-- Benchmark pane -->
+                    <div class="tts-log-pane">
+                        <button class="tts-log-toggle" onclick="instBenchToggle('${id}')">
+                            <span>⚡ Benchmark</span>
+                            <span id="inst-bench-chevron-${id}" style="font-size:12px">▶</span>
+                        </button>
+                        <div class="tts-log-body" id="inst-bench-body-${id}" style="display:none">
+                            <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                                <select id="inst-bench-preset-${id}" style="background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer" onchange="instBenchPresetChange('${id}')">
+                                    <option value="default">Default (6 phrases)</option>
+                                    <option value="short">Short only (3)</option>
+                                    <option value="long">Long only (3)</option>
+                                    <option value="custom">Custom…</option>
+                                </select>
+                                <input id="inst-bench-custom-${id}" placeholder="Phrases separated by |" style="display:none;flex:1;min-width:160px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:4px 8px;border-radius:6px;font-size:11px" />
+                                <button id="inst-bench-run-${id}" onclick="instBenchRun('${id}','${url}')" style="background:#1a3a4a;border:1px solid #4493f8;color:#4493f8;padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600">▶ Run</button>
+                                <button id="inst-bench-stop-${id}" onclick="instBenchStop('${id}')" style="display:none;background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">■ Stop</button>
+                                <span id="inst-bench-status-${id}" style="font-size:10px;color:#8b949e"></span>
+                            </div>
+                            <div style="overflow-x:auto">
+                                <table style="width:100%;border-collapse:collapse;font-size:11px">
+                                    <thead><tr style="border-bottom:1px solid #30363d;color:#8b949e">
+                                        <th style="padding:6px 10px;text-align:left;width:24px">#</th>
+                                        <th style="padding:6px 10px;text-align:left">Phrase</th>
+                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">Gen Time</th>
+                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">Audio</th>
+                                        <th style="padding:6px 10px;text-align:right;white-space:nowrap">RTF</th>
+                                        <th style="padding:6px 10px;text-align:center;width:40px">✓</th>
+                                    </tr></thead>
+                                    <tbody id="inst-bench-rows-${id}"><tr><td colspan="6" style="padding:12px 10px;color:#484f58;text-align:center">Run benchmark to see results</td></tr></tbody>
+                                    <tfoot id="inst-bench-summary-${id}" style="display:none">
+                                        <tr style="border-top:1px solid #30363d;background:#0d1117;font-weight:600;color:#e6edf3">
+                                            <td colspan="2" style="padding:6px 10px">Summary</td>
+                                            <td id="inst-bench-sum-total-${id}" style="padding:6px 10px;text-align:right">—</td>
+                                            <td></td>
+                                            <td id="inst-bench-sum-rtf-${id}" style="padding:6px 10px;text-align:right">—</td>
+                                            <td id="inst-bench-sum-pass-${id}" style="padding:6px 10px;text-align:center">—</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                metricsDiv = document.getElementById(`inst-metrics-${id}`);
+            }
+
+            // Only update the dynamic top metrics section — leaves running streaming logs/benchmarks completely alone
+            metricsDiv.innerHTML = `
+                <!-- Card header -->
+                <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <div style="display:flex;flex-direction:column;gap:2px">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">Instance</span>
+                                <span style="font-size:12px;font-weight:700;color:#e6edf3;font-family:monospace">${vastId}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                ${datacenter ? `<span style="font-size:10px;color:#8b949e">📍 ${datacenter}</span>` : ''}
+                                ${machineId  ? `<span style="font-size:10px;color:#484f58;font-family:monospace">🖥 ${machineId}</span>` : ''}
+                            </div>
+                        </div>
+                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${stColor};box-shadow:0 0 6px ${stColor}88;flex-shrink:0"></span>
+                        <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+                        ${btnKill}${btnWarmup}${btnStart}${btnRestart}${btnStop}
+                    </div>
+                </div>
+                <!-- Metrics -->
+                <div style="padding:12px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px">
+                    ${timerBadge}
+                    <!-- Hero row -->
+                    <div style="grid-column:1/-1;display:flex;align-items:baseline;gap:16px;padding-bottom:10px;border-bottom:1px solid #21262d;margin-bottom:2px">
+                        <span style="font-size:18px;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:4px">${gpuName}</span>
+                        <span style="color:#484f58">·</span>
+                        <span style="font-size:14px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
+                        ${busy ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 7px;margin-left:4px">BUSY</span>' : ''}
+                    </div>
+                    <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>
+                    <div class="tts-metric"><span class="tts-metric-label">VRAM</span><span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div></div>
+                    <div class="tts-metric"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label">Requests</span><span class="tts-metric-value">${inst.requests_done ?? '—'}</span></div>
+                </div>
+                <!-- Diagnostic & Pipeline Vertical Lists -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;border-top:1px solid #30363d;padding:12px 14px;background:#0d1117">
+                    <div>
+                        <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:8px">SYSTEM DIAGNOSTICS</div>
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                            ${['worker','tunnel','fastapi','csm','kernels'].map(k => `
+                                <div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px">
+                                    <span>${diagDot(k)}</span>
+                                    <span style="font-weight:600;color:#e6edf3;width:60px">${k==='fastapi'?'FastAPI':k==='csm'?'CSM-0':k[0].toUpperCase()+k.slice(1)}</span>
+                                    <span style="color:#8b949e;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${diagDetail(k)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ${showPipeline ? `
+                    <div>
+                        <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:8px">STARTUP PIPELINE</div>
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                            ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune')}
+                            ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
+                            ${phaseRow('Compiled','compile','torch.compile()')}
+                            ${phaseRow('Warmup started','warmup_start','Triton warmup phrases')}
+                            ${phaseRow('Kernels ready','warmup_done','all lengths cached')}
+                        </div>
+                    </div>
+                    ` : '<div></div>'}
+                </div>
+            `;
+        }
+
+        // ── Per-instance control functions ────────────────────────────────────────
+
+        async function instControl(id, tunnelUrl, action) {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const btn = document.getElementById(`inst-btn-${action === 'restart' ? 'restart' : 'start'}-${id}`);
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '…'; }
+            try {
+                const resp = await fetch(`${API_BASE}/admin/tts-${action}`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tunnel_url: tunnelUrl }),
+                });
+                const data = await resp.json();
+                if (data.ok) { setTimeout(fleetPollNow, 2000); setTimeout(fleetPollNow, 6000); }
+                else alert(`${action} failed: ${data.output || data.error || JSON.stringify(data)}`);
+            } catch (e) { alert(`${action} error: ${e.message}`); }
+            if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+            fleetPollNow();
+        }
+
+        function instStop(id, tunnelUrl) {
+            // Inline confirmation — same pattern as old single-instance stop
+            if (!confirm(`Stop CSM-0 on ${id.substring(0,12)}? The tunnel stays up; use Start to restart.`)) return;
+            instControl(id, tunnelUrl, 'stop');
+        }
+
+        async function instKill(id, tunnelUrl) {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const btn = document.getElementById(`inst-btn-kill-${id}`);
+            if (btn) { btn.textContent = '☠ Killing…'; btn.style.opacity = '0.6'; }
+            try {
+                await fetch(`${API_BASE}/admin/tts-kill`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tunnel_url: tunnelUrl }),
+                });
+            } catch(e) { console.error('[fleet] kill error', e); }
+            setTimeout(fleetPollNow, 500);
+        }
+
+        async function instWarmup(id, tunnelUrl) {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const btn = document.getElementById(`inst-btn-warmup-${id}`);
+            if (btn) { btn.textContent = '🔥 Warming…'; btn.disabled = true; }
+            try {
+                await fetch(`${API_BASE}/admin/tts-warmup`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tunnel_url: tunnelUrl }),
+                });
+            } catch(e) { console.error('[fleet] warmup error', e); }
+            setTimeout(fleetPollNow, 2000);
+        }
+
+        // ── Log pane ──────────────────────────────────────────────────────────────
+        function instLogToggle(id, tunnelUrl) {
+            const s = _istate(id);
+            s.logOpen = !s.logOpen;
+            document.getElementById(`inst-log-body-${id}`).classList.toggle('open', s.logOpen);
+            document.getElementById(`inst-log-chevron-${id}`).textContent = s.logOpen ? '▼' : '▶';
+            if (s.logOpen) instLogPoll(id, tunnelUrl);
+            else { clearTimeout(s.logTimer); s.logTimer = null; }
+        }
+
+        function _logClass(line) {
+            if (line.includes('[CSM]'))                     return 'log-csm';
+            if (/\bERROR\b|Traceback|Exception/.test(line)) return 'log-error';
+            if (/\bWARN(ING)?\b/.test(line))               return 'log-warn';
+            if (line.startsWith('INFO:'))                   return 'log-info';
+            return 'log-dim';
+        }
+
+        async function instLogPoll(id, tunnelUrl) {
+            const s = _istate(id);
+            clearTimeout(s.logTimer);
+            if (!s.logOpen) return;
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const encUrl = encodeURIComponent(tunnelUrl);
+            try {
+                const res = await fetch(`${API_BASE}/admin/tts-logs?n=100&target_url=${encUrl}`, { headers: { 'x-api-key': key } });
+                const data = await res.json();
+                const lines = data.lines || [];
+                const scroll = document.getElementById(`inst-log-scroll-${id}`);
+                if (scroll) {
+                    scroll.innerHTML = [...lines].reverse().map(l =>
+                        `<div class="${_logClass(l)}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
+                    ).join('') || '<span class="log-dim">No log lines yet</span>';
+                }
+            } catch { /* offline */ }
+            s.logTimer = setTimeout(() => instLogPoll(id, tunnelUrl), 2000);
+        }
+
+        // ── Benchmark pane ────────────────────────────────────────────────────────
+        function instBenchToggle(id) {
+            const body = document.getElementById(`inst-bench-body-${id}`);
+            const chev = document.getElementById(`inst-bench-chevron-${id}`);
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            chev.textContent = open ? '▶' : '▼';
+        }
+
+        function instBenchPresetChange(id) {
+            const preset = document.getElementById(`inst-bench-preset-${id}`)?.value;
+            const custom = document.getElementById(`inst-bench-custom-${id}`);
+            if (custom) custom.style.display = preset === 'custom' ? 'inline-block' : 'none';
+        }
+
+        async function instBenchRun(id, tunnelUrl) {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            const preset = document.getElementById(`inst-bench-preset-${id}`)?.value || 'default';
             const phrases = preset === 'custom'
-                ? document.getElementById('ttsBenchCustom').value.split('|').map(s => s.trim()).filter(Boolean)
+                ? (document.getElementById(`inst-bench-custom-${id}`)?.value || '').split('|').map(s => s.trim()).filter(Boolean)
                 : BENCH_PHRASES[preset] || BENCH_PHRASES.default;
-
             if (!phrases.length) { alert('Enter at least one phrase.'); return; }
 
-            const key = document.getElementById('apiKey')?.value?.trim() || '';
-            const runBtn  = document.getElementById('ttsBenchRunBtn');
-            const stopBtn = document.getElementById('ttsBenchStopBtn');
-            const status  = document.getElementById('ttsBenchStatus');
-            const rows    = document.getElementById('ttsBenchRows');
-            const summary = document.getElementById('ttsBenchSummary');
+            const s = _istate(id);
+            const runBtn  = document.getElementById(`inst-bench-run-${id}`);
+            const stopBtn = document.getElementById(`inst-bench-stop-${id}`);
+            const status  = document.getElementById(`inst-bench-status-${id}`);
+            const rows    = document.getElementById(`inst-bench-rows-${id}`);
+            const summary = document.getElementById(`inst-bench-summary-${id}`);
 
             runBtn.style.display  = 'none';
             stopBtn.style.display = 'inline-block';
             status.textContent    = 'Connecting…';
             summary.style.display = 'none';
 
-            // Clear old rows
             rows.innerHTML = phrases.map((p, i) =>
-                `<tr id="bench-row-${i}" style="border-bottom:1px solid #161b22">
-                    <td style="padding:5px 10px;color:#484f58">${i + 1}</td>
-                    <td style="padding:5px 10px;color:#8b949e;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p}">${p}</td>
+                `<tr id="inst-bench-row-${id}-${i}" style="border-bottom:1px solid #161b22">
+                    <td style="padding:5px 10px;color:#484f58">${i+1}</td>
+                    <td style="padding:5px 10px;color:#8b949e;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.replace(/"/g,'&quot;')}">${p}</td>
                     <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
                     <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
                     <td style="padding:5px 10px;text-align:right;color:#484f58">—</td>
@@ -2133,81 +1949,99 @@
                 const resp = await fetch(`${API_BASE}/admin/tts-benchmark`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phrases, voice: 'i6POHJM1Z768DiJJG2CX', wait_for_idle: true, timeout_s: 300 }),
+                    body: JSON.stringify({ phrases, wait_for_idle: true, tunnel_url: tunnelUrl }),
                 });
+                if (!resp.ok || !resp.body) { status.textContent = `Error: HTTP ${resp.status}`; return; }
 
-                if (!resp.ok || !resp.body) {
-                    status.textContent = `Error: HTTP ${resp.status}`;
-                    ttsBenchStop(); return;
-                }
-
-                _benchReader = resp.body.getReader();
-                const decoder = new TextDecoder();
+                s.benchReader = resp.body.getReader();
+                const dec = new TextDecoder();
                 let buf = '';
-
                 status.textContent = 'Running…';
 
                 while (true) {
-                    const { done, value } = await _benchReader.read();
+                    const { done, value } = await s.benchReader.read();
                     if (done) break;
-                    buf += decoder.decode(value, { stream: true });
+                    buf += dec.decode(value, { stream: true });
                     const parts = buf.split('\n\n');
                     buf = parts.pop() || '';
                     for (const part of parts) {
-                        const data = part.replace(/^data: /, '').trim();
-                        if (!data) continue;
-                        let evt;
-                        try { evt = JSON.parse(data); } catch { continue; }
+                        const raw = part.replace(/^data: /, '').trim();
+                        if (!raw) continue;
+                        let evt; try { evt = JSON.parse(raw); } catch { continue; }
 
                         if (evt.type === 'start') {
                             status.textContent = `Running ${evt.n_phrases} phrases…`;
                         } else if (evt.type === 'result') {
-                            const row = document.getElementById(`bench-row-${evt.i}`);
+                            const row = document.getElementById(`inst-bench-row-${id}-${evt.i}`);
                             if (row) {
-                                const ok  = evt.rtf != null;
+                                const ok = evt.rtf != null;
                                 const rtf = ok ? evt.rtf.toFixed(3) + '×' : '—';
-                                const rtfColor = ok
-                                    ? (evt.rtf < 0.4 ? '#3fb950' : evt.rtf < 0.6 ? '#e3b341' : '#f85149')
-                                    : '#484f58';
-                                row.children[2].textContent = ok ? evt.total_s.toFixed(2) + 's' : '—';
+                                const rc = ok ? (evt.rtf < 0.5 ? '#3fb950' : evt.rtf < 1.0 ? '#e3b341' : '#f85149') : '#484f58';
+                                row.children[2].textContent = ok ? evt.total_s.toFixed(2) + 's' : (evt.error || '—');
                                 row.children[3].textContent = ok ? evt.audio_s.toFixed(2) + 's' : '—';
-                                row.children[4].innerHTML   = `<span style="color:${rtfColor};font-weight:600">${rtf}</span>`;
-                                row.children[5].textContent = ok ? '✅' : (evt.error ? '❌' : '—');
+                                row.children[4].innerHTML   = `<span style="color:${rc};font-weight:700">${rtf}</span>`;
+                                row.children[5].textContent = ok ? '✅' : '❌';
                                 row.children[2].style.color = '#e6edf3';
                                 row.children[3].style.color = '#e6edf3';
                             }
                         } else if (evt.type === 'summary') {
                             const avgRtf = evt.avg_rtf != null ? evt.avg_rtf.toFixed(3) + '×' : '—';
                             const passed = `${evt.n_succeeded}/${evt.n_succeeded + evt.n_failed}`;
-                            document.getElementById('ttsBenchSumTotal').textContent =
-                                evt.avg_total_s != null ? 'avg ' + evt.avg_total_s.toFixed(2) + 's' : '—';
-                            document.getElementById('ttsBenchSumRtf').innerHTML =
-                                `<span style="color:#3fb950;font-weight:700">${avgRtf}</span>`;
-                            document.getElementById('ttsBenchSumPass').textContent = passed;
+                            document.getElementById(`inst-bench-sum-total-${id}`).textContent = evt.avg_total_s != null ? 'avg ' + evt.avg_total_s.toFixed(2) + 's' : '—';
+                            document.getElementById(`inst-bench-sum-rtf-${id}`).innerHTML = `<span style="color:#3fb950;font-weight:700">${avgRtf}</span>`;
+                            document.getElementById(`inst-bench-sum-pass-${id}`).textContent = passed;
                             summary.style.display = '';
-                            status.textContent = `Done — avg RTF ${avgRtf}  (${passed} passed)`;
+                            status.textContent = `Done — avg RTF ${avgRtf} (${passed})`;
                         }
                     }
                 }
-            } catch (err) {
+            } catch(err) {
                 if (err.name !== 'AbortError') status.textContent = `Error: ${err.message}`;
             } finally {
-                _benchReader = null;
+                s.benchReader = null;
                 runBtn.style.display  = 'inline-block';
                 stopBtn.style.display = 'none';
             }
         }
 
-        function ttsBenchStop() {
-            if (_benchReader) { _benchReader.cancel(); _benchReader = null; }
-            document.getElementById('ttsBenchRunBtn').style.display  = 'inline-block';
-            document.getElementById('ttsBenchStopBtn').style.display = 'none';
-            document.getElementById('ttsBenchStatus').textContent = 'Stopped.';
+        function instBenchStop(id) {
+            const s = _istate(id);
+            if (s.benchReader) { s.benchReader.cancel(); s.benchReader = null; }
+            const runBtn = document.getElementById(`inst-bench-run-${id}`);
+            const stopBtn = document.getElementById(`inst-bench-stop-${id}`);
+            const status = document.getElementById(`inst-bench-status-${id}`);
+            if (runBtn) runBtn.style.display = 'inline-block';
+            if (stopBtn) stopBtn.style.display = 'none';
+            if (status) status.textContent = 'Stopped.';
         }
 
-        // ── End TTS Benchmark ────────────────────────────────────────────────────
+        // ── VAST Account Balance ──────────────────────────────────────────────────
+        let _vastBalanceTimer = null;
+        async function vastBalancePoll() {
+            const key = document.getElementById('apiKey')?.value?.trim() || '';
+            if (!key) { _vastBalanceTimer = setTimeout(vastBalancePoll, 10000); return; }
+            try {
+                const resp = await fetch(`${API_BASE}/admin/vast-balance`, { headers: { 'x-api-key': key } });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+                const bal = data.balance_usd ?? null;
+                const badge = document.getElementById('vastBalanceBadge');
+                const val   = document.getElementById('vastBalanceVal');
+                if (badge && val && bal !== null) {
+                    badge.style.display = 'flex';
+                    const color = bal < 5 ? '#f85149' : bal < 10 ? '#e3b341' : '#3fb950';
+                    val.innerHTML = `<span style="color:${color};font-weight:700">$${bal.toFixed(2)}</span> <span style="color:#484f58">credit</span>`;
+                    badge.style.borderColor = bal < 5 ? '#f8514966' : bal < 10 ? '#e3b34144' : '#30363d';
+                }
+            } catch { /* silent */ }
+            _vastBalanceTimer = setTimeout(vastBalancePoll, 60000);
+        }
+        // ── End TTS Fleet Dashboard ───────────────────────────────────────────────
 
-        // ── End TTS Server Panel ─────────────────────────────────────────────────
+
+        // ── End TTS Fleet Dashboard (all single-instance legacy code removed) ─────
+
+
 
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -2228,8 +2062,8 @@
 
             connectWebSocket();
             loadWorkspaces();
-            ttsPoll();  // Start TTS panel polling (adaptive backoff)
-            vastBalancePoll(); // Start VAST credit balance polling (60s interval)
+            fleetPoll();              // Start TTS fleet dashboard polling (5s)
+            vastBalancePoll();        // Start VAST credit balance polling (60s)
 
             // Phase 1.3: Switch workspace on dropdown change — auto-reconnect
             document.getElementById('workspaceId').addEventListener('change', () => {
