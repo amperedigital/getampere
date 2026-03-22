@@ -1,8 +1,10 @@
 # Changelog
 
-## v3.670 — Restore Fleet Array with Vertical Checklists (2026-03-21)
+## v3.671 — Fix Polling DOM Collapse Bug & Deployment 404s (2026-03-21)
 
-- **Frontend**: Restored the multi-instance fleet build (from `v3.667`). However, the previous diagnostic strip has been specifically redesigned as a *vertical checkmark list* spanning side-by-side with the Startup Pipeline, placing all health monitoring natively under the RTX 4090 data. This cleanly unifies your preferred vertical layout directly within the fleet architecture. The logging and benchmark wiping bugs remain actively resolved.
+- **Frontend**: Fixed the critical "Server Log and Benchmark" pane wiping bug! This was caused by the javascript `Set.has()` operator strictly comparing a string (`dataset.instId`) against a numeric integer (`instance_id` from the backend), causing the frontend to literally destroy and recreate the entire instance card DOM every 5 seconds.
+- **Frontend**: Restored horizontal layout for the System Diagnostic indicators, while keeping the Startup Pipeline vertical, mapping to exact user preferences.
+- **Scripts**: Moved the jsDelivr CDN purge execution into `unified_publish.sh` *after* `git push origin $NEW_TAG`. Previously, `publish.sh` would purge the CDN before the tag was pushed, causing GitHub to cache a 404 response in jsDelivr for 12 hours.
 
 
 

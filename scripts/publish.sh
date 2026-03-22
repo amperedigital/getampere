@@ -319,38 +319,39 @@ fi
 echo "☁️  Deploying to Cloudflare Workers..."
 npx wrangler deploy
 
-echo "🔥 Purging + warming CDN cache for changed assets..."
-CDN_BASE_URL="https://cdn.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
-PURGE_BASE_URL="https://purge.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
+if [ "${SKIP_TAG:-0}" != "1" ]; then
+    echo "🔥 Purging + warming CDN cache for changed assets..."
+    CDN_BASE_URL="https://cdn.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
+    PURGE_BASE_URL="https://purge.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
 
-for FILE in $CHANGED_FILES; do
-  # Only warm assets in deploy/assets/ (scripts, css, etc)
-  if [[ "$FILE" == deploy/assets/* ]]; then
-     CDN_URL="$CDN_BASE_URL/$FILE"
-     PURGE_URL="$PURGE_BASE_URL/$FILE"
-     echo "   🗱️  Purging jsDelivr: $PURGE_URL"
-     curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
-     echo "   🌍 Pre-fetching: $CDN_URL"
-     curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
-  fi
-done
+    for FILE in $CHANGED_FILES; do
+      # Only warm assets in deploy/assets/ (scripts, css, etc)
+      if [[ "$FILE" == deploy/assets/* ]]; then
+         CDN_URL="$CDN_BASE_URL/$FILE"
+         PURGE_URL="$PURGE_BASE_URL/$FILE"
+         echo "   🗱️  Purging jsDelivr: $PURGE_URL"
+         curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
+         echo "   🌍 Pre-fetching: $CDN_URL"
+         curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
+      fi
+    done
 
-# ALWAYS purge + pre-fetch styles.css and global.js regardless of whether they changed.
-# The HTML version tag is bumped on every release so the browser requests styles.css@vNEW
-# even if the file content is identical. Without this, jsDelivr serves a 404 for the
-# new tag until their lazy GitHub indexer catches up (can take 12-24h).
-CORE_ASSETS="deploy/assets/css/styles.css deploy/assets/js/global.js"
-for FILE in $CORE_ASSETS; do
-  if ! echo "$CHANGED_FILES" | grep -q "$FILE"; then
-    PURGE_URL="$PURGE_BASE_URL/$FILE"
-    CDN_URL="$CDN_BASE_URL/$FILE"
-    echo "   🗱️  Purging jsDelivr (always): $PURGE_URL"
-    curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
-    echo "   🌍 Pre-fetching (always): $CDN_URL"
-    curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
-  fi
-done
-
+    # ALWAYS purge + pre-fetch styles.css and global.js regardless of whether they changed.
+    # The HTML version tag is bumped on every release so the browser requests styles.css@vNEW
+    # even if the file content is identical. Without this, jsDelivr serves a 404 for the
+    # new tag until their lazy GitHub indexer catches up (can take 12-24h).
+    CORE_ASSETS="deploy/assets/css/styles.css deploy/assets/js/global.js"
+    for FILE in $CORE_ASSETS; do
+      if ! echo "$CHANGED_FILES" | grep -q "$FILE"; then
+        PURGE_URL="$PURGE_BASE_URL/$FILE"
+        CDN_URL="$CDN_BASE_URL/$FILE"
+        echo "   🗱️  Purging jsDelivr (always): $PURGE_URL"
+        curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
+        echo "   🌍 Pre-fetching (always): $CDN_URL"
+        curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
+      fi
+    done
+fi
 
 echo "✅ Release $NEW_TAG complete!"
 
