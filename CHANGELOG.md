@@ -1,6 +1,19 @@
 # Changelog
 
-## v3.644 — Router monitor: fix TTS panel blank/hung state during offline/compile (2026-03-21)
+## v3.645 — Router monitor: WARMING UP state + live CSM progress in TTS panel (2026-03-21)
+
+- **New state: WARMING UP** — panel now shows amber pulsing badge when server is model-loaded but
+  Triton kernels are still compiling. Previously showed "ONLINE" with empty metrics — now correctly
+  shows warmup state until kernels are ready.
+- **Auto-open log pane** — when status is `loading` or `warming_up`, the Server Log pane opens
+  automatically so you can see `[CSM]` Triton compile output in real-time without pressing anything.
+- **Model info row** — added Quant badge (FP8 🟢 / INT8 🟡 / BF16 ⚪) and GPU model name to metrics.
+- **Kernels ready badge** — when fully online, shows how long ago warmup completed ("ready 3m ago").
+- **Backend (csm_server.py)** — added `warmup_complete` / `warmup_complete_ts` to `/admin/status`.
+  Status progression: `loading` → `warming_up` → `ok`. Quantization level tracked in `_stats`
+  and returned in `model.quantization` (was hardcoded to "fp8"). Pushed to VAST via SSH.
+
+
 
 - **Fix**: `ttsPoll()` now guards against empty API key — was firing with no key during page load,
   producing a 401 that left the panel in a blank/hung state indefinitely.

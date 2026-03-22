@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.644">
+    <meta name="version" content="v3.645">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.644/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.645/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -1387,7 +1387,7 @@
                 }
                 const data = await res.json();
                 ttsRenderMetrics(data);
-                _ttsOnline = data.status === 'ok';
+                _ttsOnline = data.status === 'ok' || data.status === 'warming_up';
             } catch (err) {
                 ttsRenderOffline('fetch error');
                 _ttsOnline = false;
@@ -1420,9 +1420,19 @@
                 return;
             }
 
-            const online = d.status === 'ok';
-            dot.className   = 'conn-indicator ' + (online ? (d.busy ? 'conn-polling' : 'conn-connected') : 'conn-error');
-            label.textContent = d.busy ? 'BUSY' : (online ? 'ONLINE' : d.status?.toUpperCase() || 'UNKNOWN');
+            const warming  = d.status === 'warming_up';
+            const loading  = d.status === 'loading';
+            const online   = d.status === 'ok';
+
+            if (warming || loading) {
+                dot.className = 'conn-indicator conn-polling';  // amber pulse
+                label.textContent = loading ? 'LOADING' : 'WARMING UP';
+                // Auto-open log pane so user sees Triton compile progress
+                if (!_ttsLogOpen) ttsLogToggle();
+            } else {
+                dot.className = 'conn-indicator ' + (d.busy ? 'conn-polling' : 'conn-connected');
+                label.textContent = d.busy ? 'BUSY' : 'ONLINE';
+            }
 
             const gpu  = d.gpu || {};
             const gpuPct   = gpu.util_pct ?? 0;
@@ -1437,6 +1447,27 @@
                 ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>`
                 : '<span class="tts-offline">—</span>';
             const uptime = d.uptime_s != null ? fmtUptime(d.uptime_s) : '—';
+
+            // Model info row
+            const mdl    = d.model || {};
+            const quant  = mdl.quantization || '—';
+            const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
+            const gpuName = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '') : '—';
+
+            // Warmup completion time
+            let warmupBadge = '';
+            if (online && d.warmup_complete_ts) {
+                const warmupAge = Math.round((Date.now()/1000) - d.warmup_complete_ts);
+                warmupBadge = `<div class="tts-metric" title="Kernels compiled">
+                    <span class="tts-metric-label">Kernels</span>
+                    <span class="tts-metric-value" style="color:#3fb950">ready ${fmtUptime(warmupAge)} ago</span>
+                </div>`;
+            } else if (warming) {
+                warmupBadge = `<div class="tts-metric col-span-2">
+                    <span class="tts-metric-label">Triton compile</span>
+                    <span class="tts-metric-value" style="color:#e3b341">in progress — see log ▼</span>
+                </div>`;
+            }
 
             row.innerHTML = `
                 <div class="tts-metric">
@@ -1466,9 +1497,18 @@
                     <span class="tts-metric-value">${d.requests_served ?? '—'}</span>
                 </div>
                 <div class="tts-metric">
+                    <span class="tts-metric-label">Quant</span>
+                    <span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span>
+                </div>
+                <div class="tts-metric">
+                    <span class="tts-metric-label">GPU model</span>
+                    <span class="tts-metric-value" style="color:#8b949e">${gpuName}</span>
+                </div>
+                <div class="tts-metric">
                     <span class="tts-metric-label">Uptime</span>
                     <span class="tts-metric-value text-[#8b949e]">${uptime}</span>
                 </div>
+                ${warmupBadge}
             `;
         }
 
