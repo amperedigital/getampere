@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.660 — TTS Fleet Dashboard: multi-instance cards, per-instance benchmark (2026-03-21)
+
+- **Replaced single TTS panel** with a dynamic fleet dashboard polling `/admin/tts-fleet` every 5s.
+- **Per-instance cards**: each active instance renders its own card with GPU hero row (model + uptime),
+  VRAM/GPU load/RTF/Temp/Power/Requests metrics, diagnostic lights strip (Worker/Tunnel/FastAPI/CSM/Kernels),
+  startup phase pipeline, and live elapsed warmup timer.
+- **Per-instance controls**: Kill, Warm Up, Start, Restart, Stop buttons — all pass `tunnel_url` in the
+  request body so the Worker routes to the correct instance. Stop uses `confirm()` prompt.
+- **Per-instance log pane**: Server Log expand/collapse, polls `/admin/tts-logs?target_url=<tunnel_url>` every 2s when open.
+- **Per-instance benchmark**: full phrase-by-phrase SSE stream table, preset selector (Default/Short/Long/Custom),
+  Stop mid-run support, per-phrase Gen Time / Audio / RTF result, summary row.
+- **Warmup elapsed timer** ticks live during loading/warming_up states per card.
+- **VAST credit badge**: shown in header, polls `/admin/vast-balance` every 60s.
+- **Card diffing**: existing cards preserved on each poll update; only metrics and innerHTML are replaced;
+  stale cards (gone from fleet) are removed.
+- **No duplicate JS**: all legacy single-instance polling code (`ttsPoll`, `ttsRenderMetrics`, power buttons,
+  log pane, `ttsBenchRun` etc.) removed entirely.
+
 ## v3.659 — Metrics layout: GPU+Uptime hero row (2026-03-21)
 
 - GPU model + Uptime moved to first, full-width hero row with large text (20px/16px)
