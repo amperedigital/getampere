@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.684 — Fleet card: fix warmup timer layout shift (2026-03-22)
+
+- **Fix**: Elapsed time span (`warming for Xm Ys`) and ETA badge no longer shift each other as digits change width. Elapsed span gets `min-width:72px; display:inline-block` to hold its space. ETA badge gets `min-width:160px; white-space:nowrap` so it never wraps or pushes neighbours.
+
 ## v3.683 — Fleet card: VAST ID header with console deep-link (2026-03-22)
 
 - **UX fix**: Fleet card header "Instance" label (showing cryptic internal UUID) replaced with "VAST ID" showing the real VAST contract number (e.g. `#33355828`) — the same ID visible in the VAST console. Clickable link → `cloud.vast.ai/instances/`.

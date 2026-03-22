@@ -1613,15 +1613,15 @@
                 const etaLabel = etaS > 0
                     ? `~${fmtUptime(etaS)} remaining`
                     : 'almost ready…';
-                timerBadge = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:8px 0 2px;flex-wrap:wrap">
+                timerBadge = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:8px 0 2px">
                     <div style="display:flex;align-items:center;gap:8px">
                         <span style="color:#e3b341;font-size:11px;font-weight:600">⏱ WARMING UP</span>
                         <span style="color:#8b949e;font-size:11px">warming for</span>
-                        <span id="inst-elapsed-${id}" style="color:#e3b341;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums">${fmtUptime(initS)}</span>
+                        <span id="inst-elapsed-${id}" style="color:#e3b341;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;min-width:72px;display:inline-block">${fmtUptime(initS)}</span>
                     </div>
-                    <div style="display:flex;align-items:center;gap:8px;background:#2d2200;border:1px solid #e3b34144;border-radius:6px;padding:3px 10px">
-                        <span style="color:#8b949e;font-size:11px">ETA</span>
-                        <span id="inst-eta-${id}" style="color:#f0c060;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums">${etaLabel}</span>
+                    <div style="display:flex;align-items:center;gap:8px;background:#2d2200;border:1px solid #e3b34144;border-radius:6px;padding:3px 10px;min-width:160px">
+                        <span style="color:#8b949e;font-size:11px;flex-shrink:0">ETA</span>
+                        <span id="inst-eta-${id}" style="color:#f0c060;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap">${etaLabel}</span>
                     </div>
                 </div>`;
                 // Start/continue elapsed + ETA ticks
