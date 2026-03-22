@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.646">
+    <meta name="version" content="v3.647">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.646/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.647/deploy/assets/css/styles.css">
     <style>
         @keyframes pulse-dot {
 
@@ -520,6 +520,55 @@
             font-size: 12px;
         }
         /* TTS Log Pane */
+        /* ── Diagnostic lights strip ─────────────────────────────────── */
+        .diag-light {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px 7px;
+            gap: 4px;
+            border-right: 1px solid #21262d;
+            min-width: 0;
+            transition: background .2s;
+        }
+        .diag-light:last-child { border-right: none; }
+        .diag-light:hover { background: #161b22; cursor: default; }
+        .diag-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #484f58;          /* default: unknown/dim */
+            flex-shrink: 0;
+            transition: background .3s, box-shadow .3s;
+        }
+        .diag-dot.ok      { background: #3fb950; box-shadow: 0 0 6px #3fb95099; }
+        .diag-dot.warn    { background: #e3b341; box-shadow: 0 0 6px #e3b34188;
+                            animation: diagPulse 1.4s ease-in-out infinite; }
+        .diag-dot.error   { background: #f85149; box-shadow: 0 0 6px #f8514966; }
+        .diag-dot.unknown { background: #484f58; }
+        @keyframes diagPulse {
+            0%,100% { opacity: 1; } 50% { opacity: .45; }
+        }
+        .diag-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: #6e7681;
+            line-height: 1;
+        }
+        .diag-detail {
+            font-size: 9px;
+            color: #484f58;
+            text-align: center;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            padding: 0 2px;
+        }
         .tts-log-pane {
             border-top: 1px solid #30363d;
             background: #0d1117;
@@ -714,6 +763,15 @@
                     ⟳ Refresh
                 </button>
             </div>
+        </div>
+        <!-- Diagnostic lights strip -->
+        <div id="ttsDiagStrip" style="display:flex;align-items:stretch;border-bottom:1px solid #30363d;background:#0d1117;">
+            <!-- 5 lights: Worker · Tunnel · FastAPI · CSM · Kernels -->
+            <div class="diag-light" id="diag-worker"  title="Cloudflare Worker">  <span class="diag-dot" id="diag-dot-worker"></span>  <span class="diag-label">Worker</span>  <span class="diag-detail" id="diag-detail-worker">—</span></div>
+            <div class="diag-light" id="diag-tunnel"  title="Cloudflare Tunnel → tts.getampere.ai"><span class="diag-dot" id="diag-dot-tunnel"></span>  <span class="diag-label">Tunnel</span>  <span class="diag-detail" id="diag-detail-tunnel">—</span></div>
+            <div class="diag-light" id="diag-fastapi" title="FastAPI on port 8080"><span class="diag-dot" id="diag-dot-fastapi"></span> <span class="diag-label">FastAPI</span> <span class="diag-detail" id="diag-detail-fastapi">—</span></div>
+            <div class="diag-light" id="diag-csm"    title="CSM-1B model state">  <span class="diag-dot" id="diag-dot-csm"></span>    <span class="diag-label">CSM-0</span>  <span class="diag-detail" id="diag-detail-csm">—</span></div>
+            <div class="diag-light" id="diag-kernels" title="Triton kernel warmup"><span class="diag-dot" id="diag-dot-kernels"></span><span class="diag-label">Kernels</span><span class="diag-detail" id="diag-detail-kernels">—</span></div>
         </div>
         <div id="ttsMetricsRow" class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
             <!-- Populated by ttsRenderMetrics() -->
@@ -1388,6 +1446,48 @@
             _ttsElapsedTimer = null;
         }
 
+        // ── Diagnostic lights ────────────────────────────────────────────────────
+        // Drives the 5 indicator dots from the `diagnostics` object returned by
+        // the Worker's /admin/tts-status handler.
+        function ttsUpdateDiag(diag) {
+            const LIGHTS = ['worker', 'tunnel', 'fastapi', 'csm', 'kernels'];
+            LIGHTS.forEach(key => {
+                const dot    = document.getElementById(`diag-dot-${key}`);
+                const detail = document.getElementById(`diag-detail-${key}`);
+                if (!dot || !detail) return;
+                const layer = diag?.[key];
+                if (!layer) { dot.className = 'diag-dot unknown'; detail.textContent = '—'; return; }
+                if (layer.ok === true) {
+                    dot.className = 'diag-dot ok';
+                } else if (layer.ok === false) {
+                    // Worker is never false from this path (we got a response)
+                    dot.className = key === 'kernels' && diag?.csm?.ok ? 'diag-dot warn' : 'diag-dot error';
+                } else {
+                    dot.className = 'diag-dot unknown';
+                }
+                // Detail: show latency for tunnel if available
+                let txt = layer.detail || '—';
+                if (key === 'tunnel' && layer.latency_ms != null && layer.ok) {
+                    txt = `${layer.latency_ms}ms`;
+                } else if (key === 'tunnel' && layer.http_code) {
+                    txt = `HTTP ${layer.http_code}`;
+                }
+                detail.textContent = txt;
+            });
+        }
+
+        // Offline: worker dot = green (Worker responded), everything else = red
+        function ttsUpdateDiagOffline(reason) {
+            const LIGHTS = ['worker', 'tunnel', 'fastapi', 'csm', 'kernels'];
+            LIGHTS.forEach((key, i) => {
+                const dot    = document.getElementById(`diag-dot-${key}`);
+                const detail = document.getElementById(`diag-detail-${key}`);
+                if (!dot || !detail) return;
+                if (i === 0) { dot.className = 'diag-dot ok'; detail.textContent = 'responding'; }
+                else { dot.className = 'diag-dot error'; detail.textContent = i === 1 ? (reason || 'unreachable') : '—'; }
+            });
+        }
+
         function ttsApiKey() { return document.getElementById('apiKey').value || ''; }
 
         async function ttsPoll() {
@@ -1422,6 +1522,7 @@
         }
 
         function ttsRenderOffline(reason) {
+            ttsUpdateDiagOffline(reason);
             document.getElementById('ttsStatusDot').className = 'conn-indicator conn-error';
             document.getElementById('ttsStatusLabel').textContent = 'Offline';
             document.getElementById('ttsLastUpdated').textContent = 'last checked ' + new Date().toLocaleTimeString();
@@ -1435,6 +1536,10 @@
             const row   = document.getElementById('ttsMetricsRow');
             const updated = document.getElementById('ttsLastUpdated');
             updated.textContent = new Date().toLocaleTimeString();
+
+            // Update diagnostic lights from structured diagnostics object
+            if (d.diagnostics) ttsUpdateDiag(d.diagnostics);
+            else if (d.status === 'offline' || d.reachable === false) ttsUpdateDiagOffline(d.reason);
 
             if (d.status === 'offline' || d.reachable === false) {
                 _ttsStopElapsedTick();

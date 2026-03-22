@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.647 — Router monitor: 5-light diagnostic strip (Worker/Tunnel/FastAPI/CSM/Kernels) (2026-03-21)
+
+- **Diagnostic lights strip** — 5 indicator lamps added between TTS panel header and metrics:
+  - 🟢 **Worker** — always green when the panel loads (Cloudflare Worker is responding)
+  - 🟢/🔴 **Tunnel** — green = `tts.getampere.ai` returned any HTTP response (cloudflared running);
+    red = fetch threw / timeout (cloudflared down). Shows latency in ms when green.
+  - 🟢/🔴 **FastAPI** — green = HTTP 200 + valid JSON (port 8080 is listening); red = 502/no JSON
+  - 🟢/🟡/🔴 **CSM-0** — green = model loaded (ok/warming_up); amber = in progress; red = loading/down
+  - 🟢/🟡 **Kernels** — green = Triton warmup complete; amber pulse = compiling
+- **Dot states**: green glow (ok) · amber pulse animation (warn/in-progress) · red (error) · grey (unknown)
+- **Hover tooltips** on each light explaining what layer it represents
+- **Offline state**: Worker stays green (it responded), Tunnel shows the specific error reason
+
 ## v3.646 — Router monitor: live warmup timer + full phase pipeline display (2026-03-21)
 
 - **Live elapsed timer** — large amber clock (⏱ 14m 32s) ticks every second during LOADING/WARMING UP.
