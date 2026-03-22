@@ -1,6 +1,14 @@
 # Changelog
 
-## v3.663 — Fix: fleet empty-state placeholder persisting when instance registers (2026-03-21)
+## v3.664 — Fleet card: show VAST instance ID, datacenter, machine ID (2026-03-21)
+
+- **Backend**: `GET /admin/tts-fleet` now includes `vast_id`, `machine_id`, `datacenter` from
+  stored payload in each instance probe response.
+- **Backend**: `POST /admin/tts-fleet-sync-vast` now stores `machine_id` (`vi.machine_id`) and
+  `datacenter` (`vi.datacenter ?? vi.geolocation`) in the INFRA_DB payload column.
+- **Frontend**: Fleet card header replaced truncated internal ID with three structured fields:
+  VAST Instance ID (e.g. `33287541`), Datacenter (📍), Machine ID (🖥).
+
 
 - **Bug**: After auto-sync from VAST registered an instance, the "No active instances" empty-state
   div remained visible above the instance card. The preserve-existing-cards logic only removed

@@ -1591,8 +1591,12 @@
             const mdl = {};
             const quant = mdl.quantization || (inst.quant) || '—';
             const quantColor = quant === 'fp8' ? '#3fb950' : quant === 'int8' ? '#e3b341' : '#8b949e';
-            const region = inst.region || '';
-            const instShort = id.substring(0, 12);
+            const region = inst.region || inst.datacenter || '';
+            // VAST identifiers — prefer explicit fields, fall back to parsing instance_id
+            const vastId     = inst.vast_id   || (id.startsWith('vast-') ? id.replace('vast-','') : id);
+            const machineId  = inst.machine_id || '';
+            const datacenter = inst.datacenter || region;
+
 
             // Warmup timer badge
             let timerBadge = '';
@@ -1675,9 +1679,17 @@
             card.innerHTML = `
                 <!-- Card header -->
                 <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-                    <div style="display:flex;align-items:center;gap:8px">
-                        <span style="font-size:12px;font-weight:700;color:#e6edf3;font-family:monospace">${instShort}</span>
-                        ${region ? `<span style="font-size:10px;color:#484f58">${region}</span>` : ''}
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <div style="display:flex;flex-direction:column;gap:2px">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">Instance</span>
+                                <span style="font-size:12px;font-weight:700;color:#e6edf3;font-family:monospace">${vastId}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                ${datacenter ? `<span style="font-size:10px;color:#8b949e">📍 ${datacenter}</span>` : ''}
+                                ${machineId  ? `<span style="font-size:10px;color:#484f58;font-family:monospace">🖥 ${machineId}</span>` : ''}
+                            </div>
+                        </div>
                         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${stColor};box-shadow:0 0 6px ${stColor}88;flex-shrink:0"></span>
                         <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
                     </div>
