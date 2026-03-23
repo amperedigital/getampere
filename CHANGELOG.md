@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.686 — Benchmark stop button now kills server-side request (2026-03-22)
+
+- **Fix**: Stop button now sends `POST /admin/tts-kill` to server — previously stopping mid-benchmark left `_busy=True` permanently, blocking all subsequent benchmarks
+- **Fix**: Server `/admin/kill-request` now directly resets `_busy=False` (not just sets kill flag)
+
 ## v3.685 — Router monitor: accurate startup ETA + dynamic phase pipeline (2026-03-22)
 
 - **Fix**: Startup ETA reduced from hardcoded ~25 min to ~8 min — matches actual boot time now that `torch.compile` is removed from server startup
