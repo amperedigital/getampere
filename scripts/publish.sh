@@ -325,7 +325,6 @@ if [ "${SKIP_TAG:-0}" != "1" ]; then
     PURGE_BASE_URL="https://purge.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
 
     for FILE in $CHANGED_FILES; do
-      # Only warm assets in deploy/assets/ (scripts, css, etc)
       if [[ "$FILE" == deploy/assets/* ]]; then
          CDN_URL="$CDN_BASE_URL/$FILE"
          PURGE_URL="$PURGE_BASE_URL/$FILE"
@@ -336,19 +335,34 @@ if [ "${SKIP_TAG:-0}" != "1" ]; then
       fi
     done
 
-    # ALWAYS purge + pre-fetch styles.css and global.js regardless of whether they changed.
-    # The HTML version tag is bumped on every release so the browser requests styles.css@vNEW
-    # even if the file content is identical. Without this, jsDelivr serves a 404 for the
-    # new tag until their lazy GitHub indexer catches up (can take 12-24h).
+    # ALWAYS purge + pre-fetch styles.css and global.js — HTML bumps the tag on every
+    # release so the browser requests @vNEW even if content is identical.
+    # jsDelivr lazy-indexes new GitHub tags (can take 30-120s) — we MUST wait for 200.
     CORE_ASSETS="deploy/assets/css/styles.css deploy/assets/js/global.js"
     for FILE in $CORE_ASSETS; do
-      if ! echo "$CHANGED_FILES" | grep -q "$FILE"; then
-        PURGE_URL="$PURGE_BASE_URL/$FILE"
-        CDN_URL="$CDN_BASE_URL/$FILE"
-        echo "   🗱️  Purging jsDelivr (always): $PURGE_URL"
-        curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
-        echo "   🌍 Pre-fetching (always): $CDN_URL"
-        curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
+      PURGE_URL="$PURGE_BASE_URL/$FILE"
+      CDN_URL="$CDN_BASE_URL/$FILE"
+      echo "   🗱️  Purging jsDelivr (always): $PURGE_URL"
+      curl -s -o /dev/null "$PURGE_URL" || true
+
+      # Retry loop — wait up to 5 minutes for jsDelivr to index the new tag
+      echo "   ⏳ Waiting for jsDelivr to serve $FILE at $NEW_TAG..."
+      MAX_ATTEMPTS=30   # 30 × 10s = 5 min
+      ATTEMPT=0
+      while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+        HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" "$CDN_URL" 2>/dev/null || echo "000")
+        if [ "$HTTP_CODE" = "200" ]; then
+          echo "   ✅ CDN confirmed 200 for $FILE (attempt $((ATTEMPT+1)))"
+          break
+        fi
+        ATTEMPT=$((ATTEMPT + 1))
+        echo "   [$ATTEMPT/$MAX_ATTEMPTS] jsDelivr returned $HTTP_CODE — retrying in 10s..."
+        sleep 10
+      done
+      if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+        echo "   ❌ CDN STILL not serving $FILE after 5 min — site may be broken!"
+        echo "      Manual fix: curl -sL '$PURGE_URL' && wait 60s"
+        exit 1
       fi
     done
 fi

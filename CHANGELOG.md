@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.690 (2026-03-22)
+- publish.sh: Fix CDN warmup — replace fire-and-forget curl with retry loop (polls jsDelivr up to 5 min until HTTP 200). Fixes v3.689 broken CSS: jsDelivr 404'd because new tag wasn't indexed yet.
+
 ## v3.689 (2026-03-22)
 - router-monitor: Fix TTS fleet card metrics wrapping — `Requests` tile was rolling onto a second line after adding Avg RTF tile. Fixed by bumping metrics grid from `lg:grid-cols-7` to `lg:grid-cols-8`
 - router-monitor: Add `avg_rtf` to `/admin/status` response in csm_server.py so fleet probe can always read it (was only in heartbeat, never in live status)
