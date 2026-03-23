@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.707 — Routing table: rcol-result flex:1 (2026-03-23)
+## v3.708 — Fix router-monitor.css CDN URL (was pinned to v3.703) (2026-03-23)
+
+- `router-monitor.html` was loading `router-monitor.css@v3.703` — pinned 4 versions behind. Updated to `v3.707` so `rcol-result: flex:1` and all other CSS changes since v3.703 are actually served.
+
 
 - `.rcol-result` reduced from `flex:4` → `flex:1` — result column was consuming 14.8% of table width for a small badge+score, leaving a visible gap on the right side.
 
