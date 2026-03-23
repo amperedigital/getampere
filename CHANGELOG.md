@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.715 — Fix: fleet cards blank — NVIDIA_BADGE_LG was undefined (2026-03-23)
+
+- **Root cause**: `NVIDIA_BADGE_LG` was referenced in `updateInstCard()` on the hero row GPU name line but never defined — only `NVIDIA_BADGE` (small, 16×12px) existed. This threw a `ReferenceError` on every card render, preventing all fleet cards from displaying.
+- **Fix**: Added `NVIDIA_BADGE_LG` constant immediately after `NVIDIA_BADGE`. Same SVG path, scaled to 36×28px with slightly larger border-radius and padding to pair with the `2rem` GPU name text in the hero row.
+
 ## v3.714 — CDN recovery: jsDelivr failed to serve v3.713 (2026-03-23)
 
 - Re-deploy to recover from jsDelivr 404 failure on v3.713 assets. No code changes.
