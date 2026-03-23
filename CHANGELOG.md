@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.721 — No frontend changes (2026-03-23)
+
+- Backend-only identity/greeting fix. See backend CHANGELOG.
+
 ## v3.720 — No frontend changes (2026-03-23)
 
 - Backend-only voice ref model fix. See backend CHANGELOG.
