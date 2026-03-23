@@ -1,6 +1,12 @@
 # Changelog
 
-## v3.701 — Router monitor: fully responsive routing table + circular Requests badge + Bench RTF relocation (2026-03-23)
+## v3.703 — Router monitor: Tailwind CDN Play + full-width fleet card metrics + GPU bars in hero row (2026-03-23)
+
+- **Root cause fix**: `styles.css` is compiled only from landing page HTML — class names used exclusively in `router-monitor.html` (e.g. `grid-cols-8`, `divide-x`, responsive variants) were never included. All Tailwind classes in the fleet card JS template had zero effect. Replaced `styles.css` `<link>` with Tailwind CDN Play `<script>` — full utility set including MutationObserver for dynamically injected fleet card HTML.
+- **Fleet hero row redesign**: GPU name · uptime · BUSY badge on the left. GPU Load progress bar + VRAM progress bar expand to fill middle (`flex-1 min-w-0`). Requests circular badge on the right. Everything on one full-width row.
+- **Stats row**: Last RTF, Call RTF, Quant, Temp, Power as `flex-1` items with `divide-x divide-[#21262d]` — equal widths across full card width.
+- **Removed** the 8-column Tailwind grid wrapper that never applied. All layout now uses Tailwind flex utilities that work with CDN Play.
+
 
 - **`assets/css/router-monitor.css` (rewrite)**: No pixel widths anywhere. All column proportions are pure flex ratios (`flex: 2`, `flex: 5`, etc). Element sizing uses rems throughout. `min-width: 52rem` on `.route-table` (not the scroll container) so the table scrolls horizontally on narrow viewports rather than collapsing — appropriate for a data-dense monitoring dashboard.
 - **Responsive column hiding**: `@media (max-width: 40rem)` hides reqId, Bknd, TTS, TTFB, TTS/OH (mobile — shows Time, Tier, Model, Total, Result). `@media (40–64rem)` hides only TTS and TTS/OH (tablet). Desktop shows all 10 columns.

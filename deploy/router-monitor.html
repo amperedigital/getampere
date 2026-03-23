@@ -15,8 +15,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.701/deploy/assets/css/styles.css">
+    <!-- Tailwind CDN Play: full utility set + MutationObserver for dynamically injected
+         fleet card HTML. The main site styles.css only includes classes from the landing
+         page build and omits monitoring-specific classes like grid-cols-8, divide-x, etc. -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.701/deploy/assets/css/router-monitor.css">
 
     <style>
@@ -865,7 +867,7 @@
             tools: arr => arr && arr.length ? arr.map(t => `<span class="text-[#e3b341] text-[10px]">${t}</span>`).join(' ') : '—',
             ttfb: ms => {
                 if (ms == null) return '<span class="text-[#8b949e]">—</span>';
-                const cls = ms < 300 ? 'ttfb-fast' : ms < 1000 ? 'ttfb-med' : 'ttfb-slow';
+                const cls = ms < 300 ? 'ttfb-fast' : ms < 1000 ? 'ttfb-med' : ms < 2000 ? 'ttfb-slow' : 'ttfb-slow';
                 return `<span class="${cls}">${ms}ms</span>`;
             },
             score: s => {
@@ -1536,6 +1538,7 @@
                 const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-sync-vast`, {
                     method: 'POST',
                     headers: { 'x-api-key': key },
+                    body: JSON.stringify({ action: 'sync' }),
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -1807,24 +1810,22 @@
             metricsDiv.innerHTML = `
                 <!-- Card header -->
                 <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                        <div style="display:flex;flex-direction:column;gap:2px">
-                            <div style="display:flex;align-items:center;gap:6px">
-                                <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">VAST ID</span>
-                                ${inst.vast_id
-                                    ? `<a href="https://cloud.vast.ai/instances/" target="_blank" title="Open in VAST console" style="font-size:13px;font-weight:700;color:#58a6ff;font-family:monospace;text-decoration:none;border-bottom:1px dotted #58a6ff44">#${inst.vast_id} ↗</a>`
-                                    : `<span style="font-size:11px;color:#484f58;font-style:italic">unknown — hit ⚡ Sync</span>`
-                                }
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px">
-                                ${datacenter ? `<span style="font-size:10px;color:#8b949e">📍 ${datacenter}</span>` : ''}
-                                ${machineId  ? `<span style="font-size:10px;color:#484f58;font-family:monospace">🖥 ${machineId}</span>` : ''}
-                                <span style="font-size:9px;color:#30363d;font-family:monospace" title="Internal instance ID">${id.substring(0,8)}…</span>
-                            </div>
+                    <div style="display:flex;flex-direction:column;gap:2px">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <span style="font-size:9px;color:#484f58;letter-spacing:.07em;text-transform:uppercase">VAST ID</span>
+                            ${inst.vast_id
+                                ? `<a href="https://cloud.vast.ai/instances/" target="_blank" title="Open in VAST console" style="font-size:13px;font-weight:700;color:#58a6ff;font-family:monospace;text-decoration:none;border-bottom:1px dotted #58a6ff44">#${inst.vast_id} ↗</a>`
+                                : `<span style="font-size:11px;color:#484f58;font-style:italic">unknown — hit ⚡ Sync</span>`
+                            }
                         </div>
-                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${stColor};box-shadow:0 0 6px ${stColor}88;flex-shrink:0"></span>
-                        <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            ${datacenter ? `<span style="font-size:10px;color:#8b949e">📍 ${datacenter}</span>` : ''}
+                            ${machineId  ? `<span style="font-size:10px;color:#484f58;font-family:monospace">🖥 ${machineId}</span>` : ''}
+                            <span style="font-size:9px;color:#30363d;font-family:monospace" title="Internal instance ID">${id.substring(0,8)}…</span>
+                        </div>
                     </div>
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${stColor};box-shadow:0 0 6px ${stColor}88;flex-shrink:0"></span>
+                    <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
                     <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                         ${btnKill}${btnWarmup}${btnStart}${btnRestart}${btnStop}
                     </div>
@@ -1835,29 +1836,44 @@
                         `<div class="diag-light" title="${k}">${diagDot(k)}<span class="diag-label">${k==='fastapi'?'FastAPI':k==='worker'?'Worker':k==='csm'?'CSM-0':k[0].toUpperCase()+k.slice(1)}</span><span class="diag-detail">${diagDetail(k)}</span></div>`
                     ).join('')}
                 </div>
-                <!-- Metrics -->
-                <div class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-                    ${timerBadge}
-                    <!-- Hero row: GPU info left · Requests stat right -->
-                    <div class="fleet-hero">
-                        <div class="fleet-hero-left">
-                            <span class="text-lg font-bold text-[#e6edf3]">${gpuName}</span>
-                            <span class="text-[#30363d]">·</span>
-                            <span class="text-sm font-semibold text-[#8b949e]">⏱ ${uptime}</span>
-                            ${busy ? '<span class="text-xs font-bold text-[#e3b341] bg-[#2d2200] border border-[#e3b34133] rounded px-2 py-0.5">BUSY</span>' : ''}
+                <!-- Hero: GPU name · uptime | GPU Load bar | VRAM bar | Requests -->
+                <div class="flex items-center gap-4 px-4 py-3 border-b border-[#30363d] flex-wrap">
+                    <div class="flex items-center gap-2 flex-shrink-0 flex-wrap gap-y-1">
+                        <span class="text-base font-bold text-[#e6edf3]">${gpuName}</span>
+                        <span class="text-[#30363d]">·</span>
+                        <span class="text-sm font-semibold text-[#8b949e]">⏱ ${uptime}</span>
+                        ${busy ? '<span class="text-xs font-bold text-[#e3b341] bg-[#2d2200] border border-[#e3b34133] rounded px-2 py-0.5 ml-1">BUSY</span>' : ''}
+                    </div>
+                    <div class="flex items-center gap-4 flex-1 min-w-0">
+                        <div class="flex flex-col gap-1 flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] uppercase tracking-wider text-[#8b949e]">GPU Load</span>
+                                <span class="text-xs font-semibold tabular-nums" style="color:${gpuColor}">${gpuPct}%</span>
+                            </div>
+                            <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
                         </div>
-                        <div class="fleet-requests-badge">
-                            <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
-                            <span class="fleet-requests-label">Requests</span>
+                        <div class="flex flex-col gap-1 flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] uppercase tracking-wider text-[#8b949e]">VRAM</span>
+                                <span class="text-xs font-semibold tabular-nums" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span>
+                            </div>
+                            <div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div>
                         </div>
                     </div>
-                    <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>
-                    <div class="tts-metric"><span class="tts-metric-label">VRAM</span><span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div></div>
-                    <div class="tts-metric"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from live /v1/audio/speech calls — real-world performance">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}">${a.toFixed(3)}×</span>`; })()}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
+                    <div class="fleet-requests-badge flex-shrink-0">
+                        <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
+                        <span class="fleet-requests-label">Requests</span>
+                    </div>
+                </div>
+                ${timerBadge}
+                <!-- Stats row: RTF · Quant · Temp · Power — equal flex items -->
+                <div class="flex items-stretch divide-x divide-[#21262d]">
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label" title="Avg RTF — live calls">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; if (a == null) return '<span class="text-[#484f58]">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}">${a.toFixed(3)}×</span>`; })()}</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
+                </div>
 
                 ${showPipeline ? `
                 <div style="grid-column:1/-1;border-top:1px solid #30363d;padding:10px 0 4px">
