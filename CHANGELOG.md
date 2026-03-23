@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.709 — Router monitor: Last Call RTF / Avg Call RTF (2026-03-23)
+
+- **`router-monitor.html` — RTF stats**: Renamed "Last RTF" → "Last Call RTF" and "Call RTF" → "Avg Call RTF". Both now read from `inst.last_call_rtf` and `inst.call_avg_rtf` respectively — stats that are written exclusively by the `/v1/audio/speech` production endpoint. Benchmark runs no longer contaminate these values. `last_call_rtf` falls back to `last_rtf` for old server versions.
+- **`csm_server.py`**: Added `last_call_rtf` stat. Written only in the `_sync_run` finally block of `/v1/audio/speech`. The `/admin/benchmark` handler does NOT write it. Exposed in `/admin/status` response and heartbeat payload.
+
 ## v3.708 — Fix router-monitor.css CDN URL (was pinned to v3.703) (2026-03-23)
 
 - `router-monitor.html` was loading `router-monitor.css@v3.703` — pinned 4 versions behind. Updated to `v3.707` so `rcol-result: flex:1` and all other CSS changes since v3.703 are actually served.

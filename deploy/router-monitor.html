@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.703">
+    <meta name="version" content="v3.709">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.703/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.707/deploy/assets/css/router-monitor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.709/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.709/deploy/assets/css/router-monitor.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -514,15 +514,14 @@
             font-size: 12px;
         }
         /* TTS Log Pane */
-        /* ── Diagnostic lights strip ─────────────────────────────────── */
-        .diag-light {
+        /* 25002500 Diagnostic lights strip 2500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500 */
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 4px 7px;
-            gap: 4px;
+            padding: 10px 8px;
+            gap: 5px;
             border-right: 1px solid #21262d;
             min-width: 0;
             transition: background .2s;
@@ -530,13 +529,13 @@
         .diag-light:last-child { border-right: none; }
         .diag-light:hover { background: #161b22; cursor: default; }
         .diag-dot {
-            width: 12px; height: 12px;
+            width: 14px; height: 14px;
             border-radius: 50%;
             background: #484f58;
             flex-shrink: 0;
             transition: background .3s, box-shadow .3s;
             display: flex; align-items: center; justify-content: center;
-            font-size: 8px; line-height: 1; color: transparent;
+            font-size: 9px; line-height: 1; color: transparent;
             position: relative;
         }
         .diag-dot.ok {
@@ -544,13 +543,13 @@
             box-shadow: 0 0 7px #3fb95099;
             color: #fff;
         }
-        .diag-dot.ok::after    { content: '✓'; font-size: 8px; font-weight: 900; color: #fff;
+        .diag-dot.ok::after    { content: '✓'; font-size: 9px; font-weight: 900; color: #fff;
                                   position: absolute; top: 50%; left: 50%;
                                   transform: translate(-50%, -50%); }
         .diag-dot.warn    { background: #e3b341; box-shadow: 0 0 6px #e3b34188;
                             animation: diagPulse 1.4s ease-in-out infinite; }
         .diag-dot.error   { background: #f85149; box-shadow: 0 0 6px #f8514966; }
-        .diag-dot.error::after { content: '✕'; font-size: 7px; font-weight: 900; color: #fff;
+        .diag-dot.error::after { content: '×'; font-size: 8px; font-weight: 900; color: #fff;
                                   position: absolute; top: 50%; left: 50%;
                                   transform: translate(-50%, -50%); }
         .diag-dot.unknown { background: #484f58; }
@@ -559,23 +558,23 @@
         }
 
         .diag-label {
-            font-size: 9px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: .07em;
+            letter-spacing: .05em;
             text-transform: uppercase;
-            color: #6e7681;
+            color: #8b949e;
             line-height: 1;
         }
         .diag-detail {
-            font-size: 9px;
-            color: #484f58;
+            font-size: 10px;
+            color: #6e7681;
             text-align: center;
             line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
-            padding: 0 2px;
+            padding: 0 4px;
         }
         .tts-log-pane {
             border-top: 1px solid #30363d;
@@ -1632,11 +1631,15 @@
             const vramPct  = Math.round((vramUsed / vramTotal) * 100);
             const vramColor = vramPct > 85 ? '#f85149' : vramPct > 60 ? '#e3b341' : '#3fb950';
             const gpuColor  = gpuPct > 80 ? '#f85149' : gpuPct > 40 ? '#e3b341' : '#3fb950';
-            const rtf = inst.last_rtf ?? (inst.gpu && inst.gpu.last_rtf);
+            // last_call_rtf is written ONLY by live calls; last_rtf is fallback for old servers
+            const rtf = inst.last_call_rtf ?? inst.last_rtf ?? (inst.gpu && inst.gpu.last_rtf);
             const rtfCls = !rtf ? '' : rtf < 0.5 ? 'rtf-great' : rtf < 1.0 ? 'rtf-good' : 'rtf-slow';
             const rtfHtml = rtf != null ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>` : '<span style="color:#484f58">—</span>';
             const gpuShort = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
             const gpuName = gpu.name ? `${NVIDIA_BADGE} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuShort}</span>` : '—';
+            const gpuNameLg = gpu.name ? `${NVIDIA_BADGE_LG} <span style="color:#e6edf3;font-size:1.25rem;font-weight:700;letter-spacing:-.01em">${gpuShort}</span>` : '<span style="color:#484f58;font-size:1.25rem">—</span>';
+            const gpuCount = gpu.count ?? inst.num_gpus ?? null;
+            const gpuCountBadge = (gpuCount && gpuCount > 0) ? `<span style="font-size:1rem;font-weight:700;color:#8b949e;margin-right:2px">${gpuCount}×</span>` : '';
             const uptime = inst.uptime_s != null ? fmtUptime(inst.uptime_s) : '—';
             const mdl = {};
             const quant = mdl.quantization || inst.quant || 'fp8';
@@ -1828,47 +1831,51 @@
                         `<div class="diag-light" title="${k}">${diagDot(k)}<span class="diag-label">${k==='fastapi'?'FastAPI':k==='worker'?'Worker':k==='csm'?'CSM-0':k[0].toUpperCase()+k.slice(1)}</span><span class="diag-detail">${diagDetail(k)}</span></div>`
                     ).join('')}
                 </div>
-                <!-- Hero row: GPU name · uptime · ● STATUS · KERNELS WARM — compact bars — Requests -->
-                <div style="padding:10px 14px;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-                    <!-- Left: GPU info + status dot/label together + warmup/kernels inline -->
-                    <div style="flex:1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0">
-                        <span style="font-size:1rem;font-weight:700;color:#e6edf3">${gpuName}</span>
-                        <span style="color:#484f58">·</span>
-                        <span style="font-size:13px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
-                        <span style="display:inline-flex;align-items:center;gap:4px">
-                            <span style="width:7px;height:7px;border-radius:50%;background:${stColor};box-shadow:0 0 5px ${stColor}88;display:inline-block;flex-shrink:0"></span>
-                            <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
-                        </span>
-                        ${timerBadge}
-                        ${busy && !warming ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>' : ''}
-                    </div>
-                    <!-- Compact GPU Load + VRAM bars (rem widths, not full-span) -->
-                    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
-                        <div style="display:flex;flex-direction:column;gap:3px">
-                            <div style="display:flex;justify-content:space-between;gap:8px">
-                                <span style="font-size:9px;color:#8b949e;text-transform:uppercase;letter-spacing:.04em">GPU</span>
-                                <span style="font-size:10px;font-weight:600;color:${gpuColor}">${gpuPct}%</span>
-                            </div>
-                            <div class="vram-bar-bg" style="width:5rem"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
+                <!-- Hero section: GPU name row + status/bars row -->
+                <div style="border-bottom:1px solid #30363d">
+                    <!-- Row A: GPU name (large) + Requests badge -->
+                    <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+                        <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
+                            ${gpuCountBadge}${gpuNameLg}
                         </div>
-                        <div style="display:flex;flex-direction:column;gap:3px">
-                            <div style="display:flex;justify-content:space-between;gap:8px">
-                                <span style="font-size:9px;color:#8b949e;text-transform:uppercase;letter-spacing:.04em">VRAM</span>
-                                <span style="font-size:10px;font-weight:600;color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span>
-                            </div>
-                            <div class="vram-bar-bg" style="width:7rem"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div>
+                        <div class="fleet-requests-badge" style="flex-shrink:0">
+                            <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
+                            <span class="fleet-requests-label">Requests</span>
                         </div>
                     </div>
-                    <!-- Requests circle badge -->
-                    <div class="fleet-requests-badge" style="flex-shrink:0">
-                        <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
-                        <span class="fleet-requests-label">Requests</span>
+                    <!-- Row B: uptime + status + warmup | GPU box + VRAM box -->
+                    <div style="padding:6px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #21262d">
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0">
+                            <span style="font-size:12px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
+                            <span style="display:inline-flex;align-items:center;gap:4px">
+                                <span style="width:7px;height:7px;border-radius:50%;background:${stColor};box-shadow:0 0 5px ${stColor}88;display:inline-block;flex-shrink:0"></span>
+                                <span style="font-size:11px;font-weight:700;color:${stColor}">${stLabel}</span>
+                            </span>
+                            ${timerBadge}
+                            ${busy && !warming ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>' : ''}
+                        </div>
+                        <div style="display:flex;align-items:stretch;gap:8px;flex-shrink:0">
+                            <div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:8rem">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                                    <span style="font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;font-weight:600">GPU Load</span>
+                                    <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:${gpuColor}">${gpuPct}%</span>
+                                </div>
+                                <div class="vram-bar-bg" style="width:100%"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div>
+                            </div>
+                            <div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:10rem">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                                    <span style="font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;font-weight:600">VRAM</span>
+                                    <span style="font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span>
+                                </div>
+                                <div class="vram-bar-bg" style="width:100%"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Stats row: Last RTF · Call RTF · Quant · Temp · Power -->
                 <div class="flex items-stretch divide-x divide-[#21262d]">
-                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
-                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label" title="Avg RTF — live calls">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; if (a == null) return '<span class="text-[#484f58]">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}">${a.toFixed(3)}×</span>`; })()}</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label" title="RTF of the last live call — never contaminated by benchmarks">Last Call RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
+                    <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label" title="Rolling avg RTF across all live calls this session">Avg Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; if (a == null) return '<span class="text-[#484f58]">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}">${a.toFixed(3)}×</span>`; })()}</span></div>
                     <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
                     <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
                     <div class="tts-metric flex-1 py-3 px-3"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>
