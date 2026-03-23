@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.716 — CDN recovery: v3.715 assets failed to index on jsDelivr (2026-03-23)
+
+- Re-deploy via unified publish to recover CDN. No code changes from v3.715.
+
 ## v3.715 — Fix: fleet cards blank — NVIDIA_BADGE_LG was undefined (2026-03-23)
 
 - **Root cause**: `NVIDIA_BADGE_LG` was referenced in `updateInstCard()` on the hero row GPU name line but never defined — only `NVIDIA_BADGE` (small, 16×12px) existed. This threw a `ReferenceError` on every card render, preventing all fleet cards from displaying.
