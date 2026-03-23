@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.725 — No frontend changes (2026-03-23)
+
+- Backend-only: 2-sentence TTS truncation. See backend CHANGELOG.
+
 ## v3.724 — No frontend changes (2026-03-23)
+
 
 - Backend-only: Sesame warmup ping removed. See backend CHANGELOG.
 
