@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.703 — Router monitor: Tailwind CDN Play + full-width fleet card metrics + GPU bars in hero row (2026-03-23)
+## v3.704 — Fix: disable Tailwind preflight to stop CSS reset destroying custom classes (2026-03-23)
+
+- **Root cause**: Tailwind CDN Play includes a preflight CSS base reset (`*, *::before, *::after { margin:0; padding:0; border-width:0 }`) which overrode all padding/spacing/border-radius in our custom CSS classes. Everything appeared jammed with no spacing.
+- **Fix**: Set `tailwind = { config: { corePlugins: { preflight: false } } }` BEFORE the CDN script loads. Restored `styles.css` link (provides compiled Tailwind for page shell). CDN Play now adds _only_ utility classes without the destructive reset.
+
 
 - **Root cause fix**: `styles.css` is compiled only from landing page HTML — class names used exclusively in `router-monitor.html` (e.g. `grid-cols-8`, `divide-x`, responsive variants) were never included. All Tailwind classes in the fleet card JS template had zero effect. Replaced `styles.css` `<link>` with Tailwind CDN Play `<script>` — full utility set including MutationObserver for dynamically injected fleet card HTML.
 - **Fleet hero row redesign**: GPU name · uptime · BUSY badge on the left. GPU Load progress bar + VRAM progress bar expand to fill middle (`flex-1 min-w-0`). Requests circular badge on the right. Everything on one full-width row.
