@@ -1,6 +1,14 @@
 # Changelog
 
-## v3.704 — Fix: disable Tailwind preflight to stop CSS reset destroying custom classes (2026-03-23)
+## v3.705 — Fleet card hero row: status+kernels warm inline, compact bars, pipeline padding fix (2026-03-23)
+
+- **Hero row redesign**: GPU name · uptime · ●STATUS (dot and label together as one inline unit) · KERNELS WARM / WARMING timer — all inline in one row. No more dot stranded in the middle of the card.
+- **GPU Load + VRAM bars**: Compact fixed rem-width bars (`5rem` / `7rem`) on the right side of the hero row — no longer spanning the full card width.
+- **Routing table width**: Added `width: 100%` to `.panel-scroll` CSS to ensure it fills its containing card.
+- **Startup pipeline**: Changed from `padding:10px 0 4px` (no horizontal padding) to `padding:10px 14px 6px` — now properly inset from card edges.
+- **Removed stray `</div>`**: Leftover from old `grid` wrapper was causing DOM structure errors in the fleet card.
+- **Status dot removed from card header**: Header now shows only VAST ID info + control buttons. Status is in the hero row with the GPU name.
+
 
 - **Root cause**: Tailwind CDN Play includes a preflight CSS base reset (`*, *::before, *::after { margin:0; padding:0; border-width:0 }`) which overrode all padding/spacing/border-radius in our custom CSS classes. Everything appeared jammed with no spacing.
 - **Fix**: Set `tailwind = { config: { corePlugins: { preflight: false } } }` BEFORE the CDN script loads. Restored `styles.css` link (provides compiled Tailwind for page shell). CDN Play now adds _only_ utility classes without the destructive reset.
