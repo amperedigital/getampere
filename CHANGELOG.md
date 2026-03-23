@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.722 — No frontend changes (2026-03-23)
+
+- Backend-only Sesame TTS + T1 name-ask fixes. See backend CHANGELOG.
+
 ## v3.721 — No frontend changes (2026-03-23)
+
 
 - Backend-only identity/greeting fix. See backend CHANGELOG.
 
