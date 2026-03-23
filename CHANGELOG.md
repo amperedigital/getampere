@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.691 (2026-03-22)
+- unified_publish.sh: Fix CDN step — same fire-and-forget bug as publish.sh. Replace with retry loop (10s intervals, 5 min max). Unified deploys now block until jsDelivr confirms 200 before exiting. v3.689 CDN outage root cause.
+
 ## v3.690 (2026-03-22)
 - publish.sh: Fix CDN warmup — replace fire-and-forget curl with retry loop (polls jsDelivr up to 5 min until HTTP 200). Fixes v3.689 broken CSS: jsDelivr 404'd because new tag wasn't indexed yet.
 
