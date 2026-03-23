@@ -1,6 +1,9 @@
 # Changelog
 
-## v3.706 — Force routing table card to fill 100% viewport width (2026-03-23)
+## v3.707 — Routing table: rcol-result flex:1 (2026-03-23)
+
+- `.rcol-result` reduced from `flex:4` → `flex:1` — result column was consuming 14.8% of table width for a small badge+score, leaving a visible gap on the right side.
+
 
 - Added `w-full` class and changed `overflow-visible` → `overflow-hidden` on the routing table card.
 - Added `style="width:100%"` inline to the `.panel-scroll` div (belt + suspenders alongside the CSS rule).

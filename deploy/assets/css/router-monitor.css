@@ -43,7 +43,7 @@
 .rcol-ttfb   { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; }
 .rcol-tsoh   { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; font-family: monospace; }
 .rcol-total  { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; font-family: monospace; color: #d2a8ff; }
-.rcol-result { flex: 4;   padding: .375rem .5rem; min-width: 0; }
+.rcol-result { flex: 1;   padding: .375rem .5rem; min-width: 0; }
 
 /* ── Header row */
 .route-header {
