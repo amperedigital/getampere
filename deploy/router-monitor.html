@@ -17,6 +17,7 @@
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.698/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/router-monitor.css">
 
     <style>
         @keyframes pulse-dot {
@@ -475,26 +476,7 @@
         }
 
         /* TTS Server Panel */
-        .tts-metric {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .tts-metric-label {
-            font-size: 10px;
-            color: #8b949e;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-        }
-        .tts-metric-value {
-            font-size: 13px;
-            font-weight: 600;
-            color: #e6edf3;
-            font-family: 'DM Sans', monospace;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
+        /* .tts-metric styles moved to assets/css/router-monitor.css */
         .vram-bar-bg {
             width: 100%;
             height: 4px;
@@ -704,41 +686,24 @@
             <h2 class="text-sm font-semibold text-[#e6edf3]">Routing Table</h2>
             <span class="text-xs text-[#8b949e]" id="routeCount">0 turns</span>
         </div>
-        <div class="panel-scroll">
-            <table class="w-full text-xs border-collapse" style="table-layout:fixed">
-                <colgroup>
-                    <col style="width:72px"><!-- Time -->
-                    <col style="width:82px"><!-- reqId -->
-                    <col style="width:128px"><!-- Tier -->
-                    <col style="width:160px"><!-- Model -->
-                    <col style="width:84px"><!-- Bknd -->
-                    <col style="width:64px"><!-- TTS -->
-                    <col style="width:68px"><!-- TTFB -->
-                    <col style="width:68px"><!-- TTS/OH -->
-                    <col style="width:68px"><!-- Total -->
-                    <col><!-- Result -->
-                </colgroup>
-                <thead class="sticky top-0 bg-[#161b22] z-10">
-                    <tr class="text-[#8b949e] text-left">
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Time</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">reqId</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Tier</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Model</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Bknd</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-center whitespace-nowrap">TTS</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap">TTFB</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap" title="Total minus TTFB = TTS generation + router overhead">TTS/OH</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap">Total</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
-                    </tr>
-
-                </thead>
-                <tbody id="routingTbody">
-                    <tr>
-                        <td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">Waiting for events…</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="panel-scroll text-xs">
+            <!-- Flex header -->
+            <div class="route-row route-header">
+                <span class="rcol-time">Time</span>
+                <span class="rcol-reqid">reqId</span>
+                <span class="rcol-tier">Tier</span>
+                <span class="rcol-model">Model</span>
+                <span class="rcol-bknd">Bknd</span>
+                <span class="rcol-tts">TTS</span>
+                <span class="rcol-ttfb">TTFB</span>
+                <span class="rcol-tsoh" title="Total minus TTFB = TTS generation + router overhead">TTS/OH</span>
+                <span class="rcol-total">Total</span>
+                <span class="rcol-result">Result</span>
+            </div>
+            <!-- Rows injected by renderRoutingTable() -->
+            <div id="routingTbody">
+                <div class="px-4 py-8 text-center text-[#8b949e]">Waiting for events…</div>
+            </div>
         </div>
     </div>
 
@@ -1099,7 +1064,7 @@
             });
             document.getElementById('routeCount').textContent = `${rows.length} turns`;
             const tbody = document.getElementById('routingTbody');
-            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">No matching events</td></tr>'; return; }
+            if (!rows.length) { tbody.innerHTML = '<div class="px-4 py-8 text-center text-[#8b949e]">No matching events</div>'; return; }
             tbody.innerHTML = rows.map(r => {
                 const modelLabel = r.fallback
                     ? `<span class="font-mono text-[#c9d1d9]">${fmt.model(r.model)}</span><span class="text-[#8b949e]">→${fmt.model(r.fallback)}</span>`
@@ -1109,18 +1074,19 @@
                 const msg = (r.lastUserMsg || '').trim().toLowerCase();
                 const retryCount = msg ? rows.filter(o => (o.lastUserMsg || '').trim().toLowerCase() === msg && Math.abs(o.ts - r.ts) < 10000).length : 0;
                 const retryBadge = retryCount > 1 ? `<span style="color:#f0883e;font-size:10px;margin-left:4px;" title="${retryCount} attempts for same message">🔄 ×${retryCount}</span>` : '';
-                return `<tr class="border-b border-[#21262d] new-row"${r.t3Locked ? ' style="background:rgba(139,92,246,0.08);"' : ''}>
-                    <td class="px-3 py-2 text-[#8b949e] whitespace-nowrap">${fmt.time(r.ts)}${retryBadge}</td>
-                    <td class="px-3 py-2 font-mono text-[#8b949e] text-[10px]">${r.reqId}</td>
-                    <td class="px-3 py-2">${fmt.tier(r.tier)} ${r.t3Prewarm && !r.t3Locked ? '<span class="step-badge step-T3_PREWARM" title="T3 pre-warm fired (sessionAvg ' + (r.t3PrewarmAvg ?? '?') + ')">⚡ T3 WARM</span>' : ''} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</td>
-                    <td class="px-3 py-2">${modelLabel}</td>
-                    <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
-                    <td class="px-3 py-2 text-center">${fmt.ttsEngine(r.ttsEngine)}</td>
-                    <td class="px-3 py-2 text-right whitespace-nowrap">${fmt.ttfb(r.ttfb_ms)}</td>
-                    <td class="px-3 py-2 text-right font-mono whitespace-nowrap" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
-                    <td class="px-3 py-2 text-right font-mono whitespace-nowrap" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
-                    <td class="px-3 py-2">${fmt.result(r.result)} ${sentinelHtml}</td>
-                </tr>`;
+                const tsoColor = (r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? 'color:#f85149' : 'color:#8b949e';
+                return `<div class="route-row new-row${r.t3Locked ? ' t3-locked' : ''}">
+                    <span class="rcol-time text-[#8b949e]">${fmt.time(r.ts)}${retryBadge}</span>
+                    <span class="rcol-reqid text-[#8b949e]">${r.reqId}</span>
+                    <span class="rcol-tier">${fmt.tier(r.tier)} ${r.t3Prewarm && !r.t3Locked ? '<span class="step-badge step-T3_PREWARM" title="T3 pre-warm fired (sessionAvg ' + (r.t3PrewarmAvg ?? '?') + ')">⚡ T3 WARM</span>' : ''} ${fmt.lang(r.lang)} ${fmt.geo(r.country, r.colo)}</span>
+                    <span class="rcol-model">${modelLabel}</span>
+                    <span class="rcol-bknd">${fmt.backend(r.backend)}</span>
+                    <span class="rcol-tts">${fmt.ttsEngine(r.ttsEngine)}</span>
+                    <span class="rcol-ttfb">${fmt.ttfb(r.ttfb_ms)}</span>
+                    <span class="rcol-tsoh" style="${tsoColor}">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</span>
+                    <span class="rcol-total">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</span>
+                    <span class="rcol-result">${fmt.result(r.result)} ${sentinelHtml}</span>
+                </div>`;
 
             }).join('');
         }
@@ -1409,7 +1375,7 @@
             const ws_id = document.getElementById('workspaceId')?.value || 'ampere-emily';
             clearStoredEvents(ws_id);
             routeMap = {}; seenReqIds = new Set(); seenEventKeys = new Set(); totalEvents = 0; sessionStart = Date.now(); lastPollTs = 0;
-            document.getElementById('routingTbody').innerHTML = '<tr><td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">Cleared — waiting for next call…</td></tr>';
+            document.getElementById('routingTbody').innerHTML = '<div class="px-4 py-8 text-center text-[#8b949e]">Cleared — waiting for next call…</div>';
             document.getElementById('turnPanel').innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="turnPlaceholder">Cleared…</div>';
             document.getElementById('eventStream').innerHTML = '';
             document.getElementById('eventCount').textContent = '0 events';
@@ -1867,17 +1833,17 @@
                 <!-- Metrics -->
                 <div class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
                     ${timerBadge}
-                    <!-- Hero row: GPU name + uptime left · Requests right -->
-                    <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #21262d;margin-bottom:2px">
-                        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                            <span style="font-size:18px;font-weight:700;color:#e6edf3">${gpuName}</span>
-                            <span style="color:#30363d">·</span>
-                            <span style="font-size:13px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
-                            ${busy ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 7px">BUSY</span>' : ''}
+                    <!-- Hero row: GPU info left · Requests stat right -->
+                    <div class="fleet-hero">
+                        <div class="fleet-hero-left">
+                            <span class="text-lg font-bold text-[#e6edf3]">${gpuName}</span>
+                            <span class="text-[#30363d]">·</span>
+                            <span class="text-sm font-semibold text-[#8b949e]">⏱ ${uptime}</span>
+                            ${busy ? '<span class="text-xs font-bold text-[#e3b341] bg-[#2d2200] border border-[#e3b34133] rounded px-2 py-0.5">BUSY</span>' : ''}
                         </div>
-                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-                            <span style="font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.07em;font-weight:600">Requests</span>
-                            <span style="font-size:24px;font-weight:700;color:#e6edf3;font-family:'DM Sans',monospace;line-height:1">${inst.requests_done ?? '—'}</span>
+                        <div class="fleet-hero-right">
+                            <span class="fleet-requests-label">Requests</span>
+                            <span class="fleet-requests-value">${inst.requests_done ?? '—'}</span>
                         </div>
                     </div>
                     <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>

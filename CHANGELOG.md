@@ -1,6 +1,14 @@
 # Changelog
 
+## v3.699 — Router monitor: flex routing table, separate CSS, centered metrics, clean hero row (2026-03-23)
+
+- **New**: `assets/css/router-monitor.css` — all component styles extracted here (tts-metric, fleet-hero, route-row columns). No more inline styles for structural layout.
+- **Routing table**: Replaced `<table>` with flex div rows using `.route-row` + `.rcol-*` column classes. Full-width naturally — no colgroup, no pixel widths, no table-layout hacks. Flex-1/flex-2 for Model/Result, fixed-width `flex-shrink:0` for timing columns.
+- **Fleet card metrics**: `.tts-metric` now has `align-items:center;text-align:center` — GPU Load, VRAM, RTF values are horizontally centered under their labels.
+- **Fleet card hero row**: Uses `.fleet-hero`, `.fleet-hero-left`, `.fleet-hero-right` CSS classes. Requests stat is right-aligned (26px bold), GPU name + uptime left. `justify-content:space-between` anchors both ends at all widths.
+
 ## v3.698 — Router monitor: layout fixes — column alignment + Requests top-right (2026-03-23)
+
 
 - **Routing table**: Added `<colgroup>` with explicit fixed pixel widths + `table-layout:fixed` — columns now spread evenly across the full table width instead of all clustering left. Numeric cells (TTFB, TTS/OH, Total) have `whitespace-nowrap` so values never wrap.
 - **Fleet card hero row**: Requests count restored and moved to the top-right of the hero row, aligned opposite the GPU name/uptime. Displayed as a large (24px) bold stat with uppercase label — visually prominent and in line with the Kernels indicator in the strip below. Flexible `justify-content:space-between` keeps left and right anchored at all card widths.
