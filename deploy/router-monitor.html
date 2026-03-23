@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.684">
+    <meta name="version" content="v3.685">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.684/deploy/assets/css/styles.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.685/deploy/assets/css/styles.css">
 
     <style>
         @keyframes pulse-dot {
@@ -1607,16 +1607,17 @@
             let timerBadge = '';
             if (warming) {
                 const initS = inst.uptime_s != null ? Math.round(inst.uptime_s) : 0;
-                // Estimate: 1500s (25 min) normally; 300s (5 min) if Triton cache was pre-loaded
-                const ESTIMATE_S = inst.triton_cache_loaded ? 300 : 1500;
+                // No torch.compile — boot is model load + FP8 quant only (~5-8 min).
+                const ESTIMATE_S = 480;
                 const etaS = Math.max(0, ESTIMATE_S - initS);
-                const etaLabel = etaS > 0
+                const phaseLabel = initS < 90 ? 'Loading weights…' : initS < 300 ? 'Quantizing + loading refs…' : 'Almost ready…';
+                const etaLabel = etaS > 5
                     ? `~${fmtUptime(etaS)} remaining`
                     : 'almost ready…';
                 timerBadge = `<div style="grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:8px 0 2px">
                     <div style="display:flex;align-items:center;gap:8px">
                         <span style="color:#e3b341;font-size:11px;font-weight:600">⏱ WARMING UP</span>
-                        <span style="color:#8b949e;font-size:11px">warming for</span>
+                        <span style="color:#8b949e;font-size:11px" id="inst-phase-${id}">${phaseLabel}</span>
                         <span id="inst-elapsed-${id}" style="color:#e3b341;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;min-width:72px;display:inline-block">${fmtUptime(initS)}</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;background:#2d2200;border:1px solid #e3b34144;border-radius:6px;padding:3px 10px;min-width:160px">
@@ -1629,9 +1630,11 @@
                     s.elapsedTimer = setInterval(() => {
                         const el = document.getElementById(`inst-elapsed-${id}`);
                         const etaEl = document.getElementById(`inst-eta-${id}`);
+                        const phaseEl = document.getElementById(`inst-phase-${id}`);
                         if (!s.serverStartMs) return;
                         const elapsedS = Math.round((Date.now() - s.serverStartMs) / 1000);
                         if (el) el.textContent = fmtUptime(elapsedS);
+                        if (phaseEl) phaseEl.textContent = elapsedS < 90 ? 'Loading weights…' : elapsedS < 300 ? 'Quantizing + loading refs…' : 'Almost ready…';
                         if (etaEl) {
                             const remaining = Math.max(0, ESTIMATE_S - elapsedS);
                             etaEl.textContent = remaining > 0 ? `~${fmtUptime(remaining)} remaining` : 'almost ready…';
@@ -1672,12 +1675,16 @@
             const phases = inst.phases || {};
             if (inst.warmup_complete_ts && !phases.warmup_done) phases.warmup_done = inst.warmup_complete_ts;
             const startEpoch = s.serverStartMs ? s.serverStartMs / 1000 : null;
-            function phaseRow(label, key, desc) {
+            function phaseRow(label, key, desc, required = true) {
+                // If not required and the key is absent or null in server data, hide this row entirely.
+                if (!required && !(key in (phases || {})) || (!required && (phases || {})[key] == null)) return '';
                 const ts = phases[key];
                 const done = ts != null;
+                // Only consider required phases as blocking predecessors
                 const order = ['model_loading','quantization','compile','warmup_start','warmup_done'];
-                const idx = order.indexOf(key);
-                const prevDone = idx === 0 ? true : phases[order[idx-1]] != null;
+                const presentOrder = order.filter(k => required || k === 'model_loading' || k === 'quantization' || (k in (phases || {})));
+                const idx = presentOrder.indexOf(key);
+                const prevDone = idx <= 0 ? true : phases[presentOrder[idx-1]] != null;
                 const inProg = !done && prevDone;
                 const icon = done ? '✅' : inProg ? '⏳' : '▫️';
                 const color = done ? '#3fb950' : inProg ? '#e3b341' : '#484f58';
@@ -1812,9 +1819,9 @@
                     <div style="color:#8b949e;font-size:10px;letter-spacing:.08em;margin-bottom:6px">STARTUP PIPELINE</div>
                     ${phaseRow('Model loaded','model_loading','load_csm_1b() + torchtune weights')}
                     ${phaseRow('Quantized','quantization',quant.toUpperCase()+' weight-only')}
-                    ${phaseRow('Compiled','compile','torch.compile(mode=default, dynamic=True)')}
-                    ${phaseRow('Warmup started','warmup_start','2 Triton warmup phrases')}
-                    ${phaseRow('Kernels ready','warmup_done','all phrase lengths cached')}
+                    ${phaseRow('Compiled','compile','torch.compile(mode=default, dynamic=True)', false)}
+                    ${phaseRow('Warmup started','warmup_start','Triton warmup phrases', false)}
+                    ${phaseRow('Kernels ready','warmup_done','all phrase lengths cached', false)}
                 </div>
                 ` : ''}
                 </div>

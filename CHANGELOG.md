@@ -1,6 +1,13 @@
 # Changelog
 
-## v3.684 — Fleet card: fix warmup timer layout shift (2026-03-22)
+## v3.685 — Router monitor: accurate startup ETA + dynamic phase pipeline (2026-03-22)
+
+- **Fix**: Startup ETA reduced from hardcoded ~25 min to ~8 min — matches actual boot time now that `torch.compile` is removed from server startup
+- **UX**: Phase label next to elapsed timer now ticks live: `Loading weights…` → `Quantizing + loading refs…` → `Almost ready…`
+- **Fix**: Startup pipeline phases (`Compiled`, `Warmup started`, `Kernels ready`) now only render if the server actually used them — optional phases with `null` or absent timestamps are hidden entirely, no more phantom hourglasses
+- **Fix**: Pipeline `phaseRow` in-progress detection now skips absent/null optional phases when computing predecessor chain
+
+
 
 - **Fix**: Elapsed time span (`warming for Xm Ys`) and ETA badge no longer shift each other as digits change width. Elapsed span gets `min-width:72px; display:inline-block` to hold its space. ETA badge gets `min-width:160px; white-space:nowrap` so it never wraps or pushes neighbours.
 
