@@ -1,6 +1,12 @@
 # Changelog
 
+## v3.696 — Router monitor: RTF metric inline fix + event accumulation across reloads (2026-03-23)
+
+- **`router-monitor.html` — `.tts-metric-value` CSS**: Added `display: flex; align-items: center; white-space: nowrap` so the RTF badge and `n=X` count always render inline on the same line — was wrapping to a second line.
+- **`router-monitor.html` — Event accumulation**: Turn panel and routing table now persist across page reloads and WebSocket reconnects. Events stored in localStorage (max 500, last 2h) and replayed on load. Clear button also wipes localStorage.
+
 ## v3.694 - Auto-generated
+
 - **Frontend**: Release v3.694 (no new commits)
 
 

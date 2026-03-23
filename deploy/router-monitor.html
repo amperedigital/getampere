@@ -491,6 +491,9 @@
             font-weight: 600;
             color: #e6edf3;
             font-family: 'DM Sans', monospace;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
         }
         .vram-bar-bg {
             width: 100%;
@@ -798,7 +801,7 @@
         // Infra routes (TTS fleet, heartbeat, VAST) live on the dedicated infra-api worker.
         const INFRA_BASE = 'https://infra.getampere.ai';
 
-        let sessionStart = Date.now();
+        let sessionStart = 0; // 0 = accept all replayed events; set to Date.now() after replay
         let routeMap = {};
         let totalEvents = 0;
         let pollInterval = null;
@@ -806,6 +809,51 @@
         let pingInterval = null;
         let seenReqIds = new Set();
         let latestSessionAvg = null;
+
+        // ── Event accumulation (localStorage) ─────────────────────────────────
+        // Events persist across page reloads and WS reconnects.
+        // Keyed by workspace. Max 500 events, last 2 hours retained.
+        const EVENT_STORE_MAX    = 500;
+        const EVENT_STORE_TTL_MS = 2 * 60 * 60 * 1000; // 2h
+
+        function eventStoreKey(workspace) {
+            return `rm_events_${workspace || 'default'}`;
+        }
+
+        function loadStoredEvents(workspace) {
+            try {
+                const raw = localStorage.getItem(eventStoreKey(workspace));
+                if (!raw) return [];
+                const arr = JSON.parse(raw);
+                const cutoff = Date.now() - EVENT_STORE_TTL_MS;
+                return Array.isArray(arr) ? arr.filter(e => (e.ts || 0) >= cutoff) : [];
+            } catch { return []; }
+        }
+
+        function saveEventToStore(workspace, ev) {
+            try {
+                const key = eventStoreKey(workspace);
+                const arr = loadStoredEvents(workspace);
+                arr.push(ev);
+                // Keep newest EVENT_STORE_MAX
+                const trimmed = arr.length > EVENT_STORE_MAX ? arr.slice(arr.length - EVENT_STORE_MAX) : arr;
+                localStorage.setItem(key, JSON.stringify(trimmed));
+            } catch { /* quota exceeded — silently skip */ }
+        }
+
+        function clearStoredEvents(workspace) {
+            try { localStorage.removeItem(eventStoreKey(workspace)); } catch { }
+        }
+
+        function replayStoredEvents(workspace) {
+            const stored = loadStoredEvents(workspace);
+            if (!stored.length) return;
+            for (const ev of stored) processEvent(ev, true);
+            // After replay, render both panels
+            renderRawEvent; // raw events were not re-rendered (they're gone from DOM) — that's fine
+            renderTurnPanel();
+            renderRoutingTable();
+        }
 
         const LANG_FLAGS = { en: '🇺🇸', zh: '🇨🇳', ja: '🇯🇵', ko: '🇰🇷', ar: '🇸🇦', fa: '🇮🇷', hi: '🇮🇳', ru: '🇷🇺', ur: '🇵🇰', bn: '🇧🇩', ta: '🇱🇰', foreign: '🌐' };
         const DIM_LABELS = { a: 'ACC', g: 'GND', h: 'HLP', cm: 'CMP', cn: 'CON', e: 'EMP', s: 'SAF', co: 'COH', n: 'NAT' };
@@ -911,6 +959,12 @@
             if (seenEventKeys.has(evKey)) return; // Already processed — skip entirely
             seenEventKeys.add(evKey);
             totalEvents++;
+
+            // Persist to localStorage for cross-reload accumulation (skip during replay to avoid re-saving)
+            if (!fromPoll) {
+                const ws_id = document.getElementById('workspaceId')?.value || 'ampere-emily';
+                saveEventToStore(ws_id, ev);
+            }
             document.getElementById('eventCount').textContent = `${totalEvents} events`;
 
             if (!routeMap[reqId]) {
@@ -1341,6 +1395,8 @@
         let seenEventKeys = new Set();
         let lastPollTs = 0;
         function clearAll() {
+            const ws_id = document.getElementById('workspaceId')?.value || 'ampere-emily';
+            clearStoredEvents(ws_id);
             routeMap = {}; seenReqIds = new Set(); seenEventKeys = new Set(); totalEvents = 0; sessionStart = Date.now(); lastPollTs = 0;
             document.getElementById('routingTbody').innerHTML = '<tr><td colspan="10" class="px-4 py-8 text-center text-[#8b949e] text-xs">Cleared — waiting for next call…</td></tr>';
             document.getElementById('turnPanel').innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="turnPlaceholder">Cleared…</div>';
@@ -2115,10 +2171,16 @@
                 loadWorkspaces();
             });
 
+            // Replay persisted events from localStorage before connecting — populates turn panel from history
+            const initWorkspace = document.getElementById('workspaceId').value || 'ampere-emily';
+            replayStoredEvents(initWorkspace);
+            sessionStart = Date.now(); // after replay: only accept new live events from this moment
+
             connectWebSocket();
             loadWorkspaces();
             fleetPoll();              // Start TTS fleet dashboard polling (5s)
             vastBalancePoll();        // Start VAST credit balance polling (60s)
+
 
             // Phase 1.3: Switch workspace on dropdown change — auto-reconnect
             document.getElementById('workspaceId').addEventListener('change', () => {
