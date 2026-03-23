@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.718 — Tune: status row text 2.5rem → 1.75rem (2026-03-23)
+
+- Uptime, ONLINE, KERNELS WARM, warming timer, BUSY badge all scaled from 2.5rem → 1.75rem.
+
 ## v3.717 — Fix: diag strip column layout + status row text sizes (2026-03-23)
 
 - **Root cause 1**: `.diag-light {` CSS selector was clobbered by a garbled comment string, leaving the flex `column` layout rule orphaned. All 5 diagnostic cells (WORKER/TUNNEL/FASTAPI/CSM-0/KERNELS) rendered inline instead of stacking dot → label → detail vertically. Restored the selector.

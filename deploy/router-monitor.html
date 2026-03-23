@@ -1663,9 +1663,9 @@
                 const etaS = Math.max(0, ESTIMATE_S - initS);
                 const phaseLabel = initS < 90 ? 'Loading weights…' : initS < 300 ? 'Quantizing…' : 'Almost ready…';
                 const etaLabel = etaS > 5 ? `~${fmtUptime(etaS)}` : 'almost ready…';
-                timerBadge = `<span style="display:inline-flex;align-items:center;gap:6px;font-size:2rem;font-weight:600;color:#e3b341">
+                timerBadge = `<span style="display:inline-flex;align-items:center;gap:6px;font-size:1.5rem;font-weight:600;color:#e3b341">
                     ⏳ <span id="inst-phase-${id}">${phaseLabel}</span>
-                    <span id="inst-elapsed-${id}" style="font-size:2.5rem;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;display:inline-block">${fmtUptime(initS)}</span>
+                    <span id="inst-elapsed-${id}" style="font-size:1.75rem;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;display:inline-block">${fmtUptime(initS)}</span>
                 </span>
                 <span style="display:inline-flex;align-items:center;gap:4px;background:#2d2200;border:1px solid #e3b34144;border-radius:5px;padding:1px 8px">
                     <span style="font-size:0.75rem;color:#8b949e">ETA</span>
@@ -1689,7 +1689,7 @@
             } else {
                 if (s.elapsedTimer) { clearInterval(s.elapsedTimer); s.elapsedTimer = null; }
                 if (warm && s.warmupDoneS != null) {
-                    timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:2.5rem;font-weight:600;color:#3fb950">✅ KERNELS WARM <span style="font-size:2.5rem;font-weight:700">${fmtUptime(s.warmupDoneS)}</span></span>`;
+                    timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:1.75rem;font-weight:600;color:#3fb950">✅ KERNELS WARM <span style="font-size:1.75rem;font-weight:700">${fmtUptime(s.warmupDoneS)}</span></span>`;
                 }
             }
 
@@ -1850,13 +1850,13 @@
                     <!-- Row B: uptime + status + warmup | GPU box + VRAM box -->
                     <div style="padding:6px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #21262d">
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0">
-                            <span style="font-size:2.5rem;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
+                            <span style="font-size:1.75rem;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
                             <span style="display:inline-flex;align-items:center;gap:4px">
                                 <span style="width:7px;height:7px;border-radius:50%;background:${stColor};box-shadow:0 0 5px ${stColor}88;display:inline-block;flex-shrink:0"></span>
-                                <span style="font-size:2.5rem;font-weight:700;color:${stColor}">${stLabel}</span>
+                                <span style="font-size:1.75rem;font-weight:700;color:${stColor}">${stLabel}</span>
                             </span>
                             ${timerBadge}
-                            ${busy && !warming ? `<span style="font-size:2rem;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>` : ''}
+                            ${busy && !warming ? `<span style="font-size:1.75rem;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>` : ''}
                         </div>
                         <div style="display:flex;align-items:stretch;gap:8px;flex-shrink:0">
                             <div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:8rem">
