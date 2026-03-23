@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.705 — Fleet card hero row: status+kernels warm inline, compact bars, pipeline padding fix (2026-03-23)
+## v3.706 — Force routing table card to fill 100% viewport width (2026-03-23)
+
+- Added `w-full` class and changed `overflow-visible` → `overflow-hidden` on the routing table card.
+- Added `style="width:100%"` inline to the `.panel-scroll` div (belt + suspenders alongside the CSS rule).
+
 
 - **Hero row redesign**: GPU name · uptime · ●STATUS (dot and label together as one inline unit) · KERNELS WARM / WARMING timer — all inline in one row. No more dot stranded in the middle of the card.
 - **GPU Load + VRAM bars**: Compact fixed rem-width bars (`5rem` / `7rem`) on the right side of the hero row — no longer spanning the full card width.
