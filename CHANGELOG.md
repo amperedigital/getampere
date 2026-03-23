@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.710 — Router monitor: rem sizing + large GPU/VRAM/diag strip (2026-03-23)
+
+- **No more px in fleet card**: All sizing converted to rem throughout — CSS rules, inline template styles, and diag strip.
+- **GPU/VRAM boxes**: Value stacked above bar in large rem text (`2.5rem` for GPU Load %, `2rem` for VRAM GB). Label sits above value in small caps. Bar thickened to `0.5rem`.
+- **GPU name badge** (RTX 4090 etc): `5rem` bold — 4× previous size. Count prefix scales to `2.5rem`.
+- **Diagnostic strip** (Worker/Tunnel/FastAPI/CSM-0/Kernels): dot `1.75rem`, label `1.375rem`, detail `0.875rem` — all doubled from original.
+- **Bug fix**: Restored missing `.diag-light` CSS selector that was eaten by a comment (caused invisible diag strip layout since an earlier session).
+
 ## v3.709 — Router monitor: Last Call RTF / Avg Call RTF (2026-03-23)
 
 - **`router-monitor.html` — RTF stats**: Renamed "Last RTF" → "Last Call RTF" and "Call RTF" → "Avg Call RTF". Both now read from `inst.last_call_rtf` and `inst.call_avg_rtf` respectively — stats that are written exclusively by the `/v1/audio/speech` production endpoint. Benchmark runs no longer contaminate these values. `last_call_rtf` falls back to `last_rtf` for old server versions.
