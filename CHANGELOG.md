@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.713 — Router monitor: size-only bumps on v3.709 structure (2026-03-23)
+
+- **Full reset to v3.709 structure** — no HTML layout changes at all. GPU/VRAM boxes keep their original side-by-side label+value layout; only text sizes changed.
+- **GPU name** (RTX 4090): `1.25rem` → `2rem`
+- **GPU Load value**: `13px` → `2.5rem`
+- **VRAM value**: `12px` → `2rem`
+- **Diag dot**: `14px` → `1.75rem` (2×)
+- **Diag label** (WORKER/TUNNEL etc): `11px` → `1.375rem` (2×)
+- **Diag detail** (subtitle): `10px` → `0.875rem` (2×)
+
 ## v3.712 — Fix: restore working diag strip CSS (root cause of blank card) (2026-03-23)
 
 - **Root cause found**: `.diag-light` selector was intentionally absent in v3.709 (orphaned CSS block). v3.710 added the selector which activated `flex:1; display:flex; flex-direction:column` on each strip cell — this made the parent `display:flex;align-items:stretch` diag row collapse to zero height, which cascaded to blank the entire card.
