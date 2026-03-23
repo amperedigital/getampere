@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.716 — CDN recovery: v3.715 assets failed to index on jsDelivr (2026-03-23)
+## v3.717 — Fix: diag strip column layout + status row text sizes (2026-03-23)
+
+- **Root cause 1**: `.diag-light {` CSS selector was clobbered by a garbled comment string, leaving the flex `column` layout rule orphaned. All 5 diagnostic cells (WORKER/TUNNEL/FASTAPI/CSM-0/KERNELS) rendered inline instead of stacking dot → label → detail vertically. Restored the selector.
+- **Fix 2**: Uptime, ONLINE status label, KERNELS WARM badge, warming timer, and BUSY badge all bumped from `11px`/`12px`/`14px` to `2.5rem`/`2rem` — matches the large GPU Load and VRAM metric sizes in the same row.
+
+## v3.716 — CDN recovery re-deploy (2026-03-23)
 
 - Re-deploy via unified publish to recover CDN. No code changes from v3.715.
 
