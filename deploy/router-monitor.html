@@ -15,11 +15,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
-    <!-- Tailwind CDN Play: full utility set + MutationObserver for dynamically injected
-         fleet card HTML. The main site styles.css only includes classes from the landing
-         page build and omits monitoring-specific classes like grid-cols-8, divide-x, etc. -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Disable Tailwind preflight BEFORE loading CDN script — otherwise the CSS reset
+         strips all padding/margin/border-radius from our custom CSS classes. styles.css
+         provides the compiled Tailwind build for the page shell. CDN Play adds any
+         monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
+    <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.703/deploy/assets/css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.703/deploy/assets/css/router-monitor.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
 
     <style>
         @keyframes pulse-dot {
