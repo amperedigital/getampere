@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.724 — No frontend changes (2026-03-23)
+
+- Backend-only: Sesame warmup ping removed. See backend CHANGELOG.
+
 ## v3.723 — No frontend changes (2026-03-23)
+
 
 - Backend-only: Sesame warmup gating removed, consistent voice from greeting. See backend CHANGELOG.
 
