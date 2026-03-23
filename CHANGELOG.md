@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.714 — CDN recovery: jsDelivr failed to serve v3.713 (2026-03-23)
+
+- Re-deploy to recover from jsDelivr 404 failure on v3.713 assets. No code changes.
+
 ## v3.713 — Router monitor: size-only bumps on v3.709 structure (2026-03-23)
 
 - **Full reset to v3.709 structure** — no HTML layout changes at all. GPU/VRAM boxes keep their original side-by-side label+value layout; only text sizes changed.
