@@ -705,19 +705,30 @@
             <span class="text-xs text-[#8b949e]" id="routeCount">0 turns</span>
         </div>
         <div class="panel-scroll">
-            <table class="w-full text-xs border-collapse">
+            <table class="w-full text-xs border-collapse" style="table-layout:fixed">
+                <colgroup>
+                    <col style="width:72px"><!-- Time -->
+                    <col style="width:82px"><!-- reqId -->
+                    <col style="width:128px"><!-- Tier -->
+                    <col style="width:160px"><!-- Model -->
+                    <col style="width:84px"><!-- Bknd -->
+                    <col style="width:64px"><!-- TTS -->
+                    <col style="width:68px"><!-- TTFB -->
+                    <col style="width:68px"><!-- TTS/OH -->
+                    <col style="width:68px"><!-- Total -->
+                    <col><!-- Result -->
+                </colgroup>
                 <thead class="sticky top-0 bg-[#161b22] z-10">
                     <tr class="text-[#8b949e] text-left">
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Time</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">reqId</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Tier</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Model</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d]">Bknd</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-center">TTS</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right">TTFB</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right"
-                            title="Total minus TTFB = TTS generation + router overhead">TTS/OH</th>
-                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right">Total</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Time</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">reqId</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Tier</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Model</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] whitespace-nowrap">Bknd</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-center whitespace-nowrap">TTS</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap">TTFB</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap" title="Total minus TTFB = TTS generation + router overhead">TTS/OH</th>
+                        <th class="px-3 py-2 font-medium border-b border-[#30363d] text-right whitespace-nowrap">Total</th>
                         <th class="px-3 py-2 font-medium border-b border-[#30363d]">Result</th>
                     </tr>
 
@@ -1105,9 +1116,9 @@
                     <td class="px-3 py-2">${modelLabel}</td>
                     <td class="px-3 py-2">${fmt.backend(r.backend)}</td>
                     <td class="px-3 py-2 text-center">${fmt.ttsEngine(r.ttsEngine)}</td>
-                    <td class="px-3 py-2 text-right">${fmt.ttfb(r.ttfb_ms)}</td>
-                    <td class="px-3 py-2 text-right font-mono" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
-                    <td class="px-3 py-2 text-right font-mono" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
+                    <td class="px-3 py-2 text-right whitespace-nowrap">${fmt.ttfb(r.ttfb_ms)}</td>
+                    <td class="px-3 py-2 text-right font-mono whitespace-nowrap" style="color:${(r.total_ms && r.ttfb_ms && (r.total_ms - r.ttfb_ms) > 500) ? '#f85149' : '#8b949e'};">${(r.total_ms != null && r.ttfb_ms != null) ? (r.total_ms - r.ttfb_ms) + 'ms' : '—'}</td>
+                    <td class="px-3 py-2 text-right font-mono whitespace-nowrap" style="color:#d2a8ff;">${r.total_ms != null ? r.total_ms + 'ms' : '—'}</td>
                     <td class="px-3 py-2">${fmt.result(r.result)} ${sentinelHtml}</td>
                 </tr>`;
 
@@ -1856,17 +1867,23 @@
                 <!-- Metrics -->
                 <div class="px-4 py-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
                     ${timerBadge}
-                    <!-- Hero row -->
-                    <div style="grid-column:1/-1;display:flex;align-items:baseline;gap:16px;padding-bottom:10px;border-bottom:1px solid #21262d;margin-bottom:2px">
-                        <span style="font-size:18px;font-weight:700;color:#e6edf3;display:flex;align-items:center;gap:4px">${gpuName}</span>
-                        <span style="color:#484f58">·</span>
-                        <span style="font-size:14px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
-                        ${busy ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 7px;margin-left:4px">BUSY</span>' : ''}
+                    <!-- Hero row: GPU name + uptime left · Requests right -->
+                    <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #21262d;margin-bottom:2px">
+                        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                            <span style="font-size:18px;font-weight:700;color:#e6edf3">${gpuName}</span>
+                            <span style="color:#30363d">·</span>
+                            <span style="font-size:13px;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
+                            ${busy ? '<span style="font-size:11px;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 7px">BUSY</span>' : ''}
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                            <span style="font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.07em;font-weight:600">Requests</span>
+                            <span style="font-size:24px;font-weight:700;color:#e6edf3;font-family:'DM Sans',monospace;line-height:1">${inst.requests_done ?? '—'}</span>
+                        </div>
                     </div>
                     <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">VRAM</span><span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from benchmark runs only — synthetic, not real calls">Bench RTF</span><span class="tts-metric-value">${(() => { const a = inst.avg_rtf; const n = inst.requests_done; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}" title="Benchmark avg RTF">${a.toFixed(3)}×</span>${n != null ? `<span style="color:#484f58;font-size:10px;margin-left:3px">n=${n}</span>` : ''}`; })()}</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from benchmark runs only — synthetic, not real calls">Bench RTF</span><span class="tts-metric-value">${(() => { const a = inst.avg_rtf; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}" title="Benchmark avg RTF">${a.toFixed(3)}×</span>`; })()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from live /v1/audio/speech calls — real-world performance">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; const n = inst.call_requests ?? 0; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}" title="${n} real call${n !== 1 ? 's' : ''}">${a.toFixed(3)}×</span><span style="color:#484f58;font-size:10px;margin-left:3px">n=${n}</span>`; })()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>

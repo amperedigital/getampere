@@ -1,6 +1,13 @@
 # Changelog
 
+## v3.698 — Router monitor: layout fixes — column alignment + Requests top-right (2026-03-23)
+
+- **Routing table**: Added `<colgroup>` with explicit fixed pixel widths + `table-layout:fixed` — columns now spread evenly across the full table width instead of all clustering left. Numeric cells (TTFB, TTS/OH, Total) have `whitespace-nowrap` so values never wrap.
+- **Fleet card hero row**: Requests count restored and moved to the top-right of the hero row, aligned opposite the GPU name/uptime. Displayed as a large (24px) bold stat with uppercase label — visually prominent and in line with the Kernels indicator in the strip below. Flexible `justify-content:space-between` keeps left and right anchored at all card widths.
+- **Bench RTF**: Cleaned back to standalone RTF badge (no `n=` suffix folded in — that was a workaround from the previous broken removal of the Requests metric).
+
 ## v3.697 — Router monitor: Requests metric removed from grid row 2 (2026-03-23)
+
 
 - **`router-monitor.html`**: The standalone "Requests" metric was the 9th item in an 8-column grid, overflowing onto a second row on its own. Removed it. `requests_done` (total requests served since boot) is now shown as `n=X` inline on the **Bench RTF** badge — same pattern as Call RTF. Grid is now exactly 8 items: GPU Load · VRAM · Last RTF · Bench RTF · Call RTF · Quant · Temp · Power.
 
