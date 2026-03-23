@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.718">
+    <meta name="version" content="v3.726">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.718/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.718/deploy/assets/css/router-monitor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.726/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.726/deploy/assets/css/router-monitor.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -204,6 +204,10 @@
             overflow-x: auto;
             scrollbar-width: thin;
             scrollbar-color: #30363d #0d1117;
+            /* v3.725: Containment prevents DOM changes inside from causing
+               layout recalculation outside the panel on every event render. */
+            contain: layout style paint;
+            will-change: scroll-position;
         }
         .panel-scroll::-webkit-scrollbar { width: 6px; }
         .panel-scroll::-webkit-scrollbar-track { background: #0d1117; }
@@ -216,6 +220,8 @@
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: #30363d #0d1117;
+            contain: layout style paint;
+            will-change: scroll-position;
         }
 
         .conn-indicator {
@@ -1075,6 +1081,14 @@
             });
             document.getElementById('routeCount').textContent = `${rows.length} turns`;
             const tbody = document.getElementById('routingTbody');
+
+            // v3.725: Save scroll state before innerHTML wipe — restore after to prevent
+            // the panel snapping to top on every new event.
+            const panel = tbody.closest('.panel-scroll');
+            const prevScrollTop = panel ? panel.scrollTop : 0;
+            const prevScrollHeight = panel ? panel.scrollHeight : 0;
+            const atBottom = panel ? (panel.scrollHeight - panel.scrollTop - panel.clientHeight < 60) : true;
+
             if (!rows.length) { tbody.innerHTML = '<div class="px-4 py-8 text-center text-[#8b949e]">No matching events</div>'; return; }
             tbody.innerHTML = rows.map(r => {
                 const modelLabel = r.fallback
@@ -1100,6 +1114,17 @@
                 </div>`;
 
             }).join('');
+
+            // Restore scroll position after render.
+            if (panel) {
+                if (atBottom) {
+                    panel.scrollTop = panel.scrollHeight; // stay pinned to newest
+                } else {
+                    // User scrolled up to read — keep them at the same visual offset.
+                    const delta = panel.scrollHeight - prevScrollHeight;
+                    panel.scrollTop = prevScrollTop + (delta > 0 ? delta : 0);
+                }
+            }
         }
 
         function renderTurnPanel() {
@@ -1109,7 +1134,12 @@
             document.getElementById('turnCount').textContent = `${deduped.length} turns`;
             const ph = document.getElementById('turnPlaceholder');
             if (ph) ph.remove();
-            document.getElementById('turnPanel').innerHTML = deduped.map(({ winner: r, attempts }) => {
+            // Capture scroll state BEFORE innerHTML wipe (referenced in the restore block below)
+            const _tp = document.getElementById('turnPanel');
+            const prevTurnScrollTop = _tp.scrollTop;
+            const prevTurnScrollHeight = _tp.scrollHeight;
+            const atBottom = _tp.scrollHeight - _tp.scrollTop - _tp.clientHeight < 60;
+            _tp.innerHTML = deduped.map(({ winner: r, attempts }) => {
                 const retryBadge = attempts > 1 ? `<span style="color:#f0883e;font-size:10px;font-weight:600;margin-left:6px;" title="ElevenLabs sent ${attempts} attempts — only the winning response is shown">🔄 ${attempts} attempts</span>` : '';
                 const msgHtml = r.lastUserMsg
                     ? `<div class="turn-user-msg" style="background:#1c2333;border-left:3px solid #58a6ff;padding:6px 10px;border-radius:6px;margin-bottom:4px;"><span style="margin-right:6px;">👤</span>"${esc(r.lastUserMsg)}"${retryBadge}</div>`
@@ -1252,10 +1282,17 @@
 
                 </div>`;
             }).join('');
-            // Auto-scroll to bottom (newest turn) — matches event stream direction
-            if (document.getElementById('autoScroll').checked) {
-                const tp = document.getElementById('turnPanel');
-                tp.scrollTop = tp.scrollHeight; // scroll to bottom to show newest
+
+            // v3.725: Only snap to bottom if user was already there before this render.
+            // If user has scrolled up to read history, leave them there.
+            const tp = document.getElementById('turnPanel');
+            const autoScroll = document.getElementById('autoScroll').checked;
+            if (autoScroll && atBottom) {
+                tp.scrollTop = tp.scrollHeight;
+            } else if (!atBottom) {
+                // Restore position adjusted for new content added at bottom
+                const delta = tp.scrollHeight - prevTurnScrollHeight;
+                tp.scrollTop = prevTurnScrollTop + (delta > 0 ? delta : 0);
             }
         }
 

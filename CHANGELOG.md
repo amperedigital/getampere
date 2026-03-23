@@ -1,6 +1,15 @@
 # Changelog
 
+## v3.726 — Router Monitor scroll fix (2026-03-23)
+
+- **Problem:** `renderRoutingTable()` and `renderTurnPanel()` both did full `innerHTML` replacement on every event, resetting scroll position to top each time. Scrolling up to read old rows was impossible — the next event would snap you back.
+- **Fix (JS):** Both functions now capture `scrollTop`/`scrollHeight`/`atBottom` before innerHTML swap. After render: if user was at the bottom → stay at bottom. If scrolled up → restore exact visual position (adjusted for added rows).
+- **Fix (CSS):** Added `contain: layout style paint` + `will-change: scroll-position` to `.panel-scroll` and `.panel-scroll-sm` — browser no longer propagates layout recalculation outside the panels on each innerHTML update.
+- **CSS:** `socket-card-container` `transition-property: all` → targeted properties only. Removed `transform-style: preserve-3d` from scroll container. These were accidental — the socket card styles aren't used on router-monitor but the input.css changes improve tech-demo as well.
+- **No backend changes.**
+
 ## v3.725 — No frontend changes (2026-03-23)
+
 
 - Backend-only: 2-sentence TTS truncation. See backend CHANGELOG.
 
