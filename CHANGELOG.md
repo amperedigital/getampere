@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.687 — Benchmark stop clears pending phrase rows (2026-03-22)
+
+- **Fix**: Stop button now resets all pending ⏳ phrase rows to `—` so the table is clean after stopping mid-run
+
 ## v3.686 — Benchmark stop button now kills server-side request (2026-03-22)
 
 - **Fix**: Stop button now sends `POST /admin/tts-kill` to server — previously stopping mid-benchmark left `_busy=True` permanently, blocking all subsequent benchmarks
