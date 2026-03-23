@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.720 — No frontend changes (2026-03-23)
+
+- Backend-only voice ref model fix. See backend CHANGELOG.
+
 ## v3.719 — Brand font: add DM Sans to tech-demo.html (2026-03-23)
 
 - `tech-demo.html` had no Google Fonts import and defaulted to system UI font. Router-monitor uses DM Sans. Added preconnect + DM Sans import + `body { font-family: 'DM Sans', sans-serif }` to match.
