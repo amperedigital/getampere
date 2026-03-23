@@ -1,8 +1,13 @@
 # Changelog
 
+## v3.689 (2026-03-22)
+- router-monitor: Fix TTS fleet card metrics wrapping — `Requests` tile was rolling onto a second line after adding Avg RTF tile. Fixed by bumping metrics grid from `lg:grid-cols-7` to `lg:grid-cols-8`
+- router-monitor: Add `avg_rtf` to `/admin/status` response in csm_server.py so fleet probe can always read it (was only in heartbeat, never in live status)
+
 ## v3.688 (2026-03-22)
 - router-monitor: Fix Last RTF not displaying (field was missing from heartbeat payload)
 - router-monitor: Add Avg RTF metric tile next to Last RTF (shows benchmark avg, color-coded)
+- router-monitor: Fix metrics grid overflow — bump `lg:grid-cols-7` → `lg:grid-cols-8` so Requests tile stays on first row
 
 ## v3.687 — Benchmark stop clears pending phrase rows (2026-03-22)
 
