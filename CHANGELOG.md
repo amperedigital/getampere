@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.719 — Brand font: add DM Sans to tech-demo.html (2026-03-23)
+
+- `tech-demo.html` had no Google Fonts import and defaulted to system UI font. Router-monitor uses DM Sans. Added preconnect + DM Sans import + `body { font-family: 'DM Sans', sans-serif }` to match.
+
 ## v3.718 — Tune: status row text 2.5rem → 1.75rem (2026-03-23)
 
 - Uptime, ONLINE, KERNELS WARM, warming timer, BUSY badge all scaled from 2.5rem → 1.75rem.
