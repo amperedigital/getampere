@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.711 — Fix: fleet card blank after v3.710 GPU name overflow (2026-03-23)
+
+- **Root cause**: GPU name badge at `5rem` (80px) exceeded the card's `overflow:hidden` container height at first render, making the entire metrics content invisible. The card div existed in the DOM with dark background but zero visible content.
+- **Fix**: GPU name `5rem` → `2rem` (still 1.6× larger than before), count badge `2.5rem` → `1.5rem`. GPU Load / VRAM value boxes remain at `2.5rem` / `2rem` — these are inside the card body, not the hero row.
+
 ## v3.710 — Router monitor: rem sizing + large GPU/VRAM/diag strip (2026-03-23)
 
 - **No more px in fleet card**: All sizing converted to rem throughout — CSS rules, inline template styles, and diag strip.

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.710">
+    <meta name="version" content="v3.711">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.710/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.710/deploy/assets/css/router-monitor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.711/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.711/deploy/assets/css/router-monitor.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1638,9 +1638,9 @@
             const rtfHtml = rtf != null ? `<span class="rtf-badge ${rtfCls}">${rtf.toFixed(2)}×</span>` : '<span style="color:#484f58">—</span>';
             const gpuShort = gpu.name ? gpu.name.replace('NVIDIA GeForce ', '').replace('NVIDIA ', '') : '—';
             const gpuName = gpu.name ? `${NVIDIA_BADGE} <span style="color:#e6edf3;font-size:10px;font-weight:600">${gpuShort}</span>` : '—';
-            const gpuNameLg = gpu.name ? `${NVIDIA_BADGE_LG} <span style="color:#e6edf3;font-size:5rem;font-weight:700;letter-spacing:-.02em;line-height:1">${gpuShort}</span>` : '<span style="color:#484f58;font-size:5rem">—</span>';
+            const gpuNameLg = gpu.name ? `${NVIDIA_BADGE_LG} <span style="color:#e6edf3;font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1">${gpuShort}</span>` : '<span style="color:#484f58;font-size:2rem">—</span>';
             const gpuCount = gpu.count ?? inst.num_gpus ?? null;
-            const gpuCountBadge = (gpuCount && gpuCount > 0) ? `<span style="font-size:2.5rem;font-weight:700;color:#8b949e;margin-right:0.25rem">${gpuCount}×</span>` : '';
+            const gpuCountBadge = (gpuCount && gpuCount > 0) ? `<span style="font-size:1.5rem;font-weight:700;color:#8b949e;margin-right:0.25rem">${gpuCount}×</span>` : '';
             const uptime = inst.uptime_s != null ? fmtUptime(inst.uptime_s) : '—';
             const mdl = {};
             const quant = mdl.quantization || inst.quant || 'fp8';
