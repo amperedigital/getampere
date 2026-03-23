@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.699">
+    <meta name="version" content="v3.701">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -16,8 +16,8 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.699/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.699/deploy/assets/css/router-monitor.css">
+        href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.701/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.701/deploy/assets/css/router-monitor.css">
 
     <style>
         @keyframes pulse-dot {
@@ -194,6 +194,7 @@
             height: auto;
             max-height: 400px;
             overflow-y: auto;
+            overflow-x: auto;
             scrollbar-width: thin;
             scrollbar-color: #30363d #0d1117;
         }
@@ -687,24 +688,27 @@
             <span class="text-xs text-[#8b949e]" id="routeCount">0 turns</span>
         </div>
         <div class="panel-scroll text-xs">
-            <!-- Flex header -->
-            <div class="route-row route-header">
-                <span class="rcol-time">Time</span>
-                <span class="rcol-reqid">reqId</span>
-                <span class="rcol-tier">Tier</span>
-                <span class="rcol-model">Model</span>
-                <span class="rcol-bknd">Bknd</span>
-                <span class="rcol-tts">TTS</span>
-                <span class="rcol-ttfb">TTFB</span>
-                <span class="rcol-tsoh" title="Total minus TTFB = TTS generation + router overhead">TTS/OH</span>
-                <span class="rcol-total">Total</span>
-                <span class="rcol-result">Result</span>
-            </div>
-            <!-- Rows injected by renderRoutingTable() -->
-            <div id="routingTbody">
-                <div class="px-4 py-8 text-center text-[#8b949e]">Waiting for events…</div>
+            <div class="route-table">
+                <!-- Flex header -->
+                <div class="route-row route-header">
+                    <span class="rcol-time">Time</span>
+                    <span class="rcol-reqid">reqId</span>
+                    <span class="rcol-tier">Tier</span>
+                    <span class="rcol-model">Model</span>
+                    <span class="rcol-bknd">Bknd</span>
+                    <span class="rcol-tts">TTS</span>
+                    <span class="rcol-ttfb">TTFB</span>
+                    <span class="rcol-tsoh" title="Total minus TTFB = TTS generation + router overhead">TTS/OH</span>
+                    <span class="rcol-total">Total</span>
+                    <span class="rcol-result">Result</span>
+                </div>
+                <!-- Rows injected by renderRoutingTable() -->
+                <div id="routingTbody">
+                    <div class="px-4 py-8 text-center text-[#8b949e]">Waiting for events…</div>
+                </div>
             </div>
         </div>
+
     </div>
 
     <!-- Bottom two panels -->
@@ -1753,9 +1757,10 @@
                     </div>
                     <!-- Benchmark pane -->
                     <div class="tts-log-pane">
-                        <button class="tts-log-toggle" onclick="instBenchToggle('${id}')">
+                        <button class="tts-log-toggle" onclick="instBenchToggle('${id}')" style="justify-content:space-between">
                             <span>⚡ Benchmark</span>
-                            <span id="inst-bench-chevron-${id}" style="font-size:12px">▶</span>
+                            ${inst.avg_rtf != null ? `<span style="font-size:11px;color:#8b949e;font-family:monospace;margin-left:6px">Avg RTF: <span style="color:${inst.avg_rtf < 0.5 ? '#3fb950' : inst.avg_rtf < 1.0 ? '#e3b341' : '#f85149'}">${inst.avg_rtf.toFixed(3)}×</span></span>` : ''}
+                            <span id="inst-bench-chevron-${id}" style="font-size:12px;margin-left:auto">▶</span>
                         </button>
                         <div class="tts-log-body" id="inst-bench-body-${id}" style="display:none">
                             <div style="padding:10px 12px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1841,16 +1846,15 @@
                             <span class="text-sm font-semibold text-[#8b949e]">⏱ ${uptime}</span>
                             ${busy ? '<span class="text-xs font-bold text-[#e3b341] bg-[#2d2200] border border-[#e3b34133] rounded px-2 py-0.5">BUSY</span>' : ''}
                         </div>
-                        <div class="fleet-hero-right">
+                        <div class="fleet-requests-badge">
+                            <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
                             <span class="fleet-requests-label">Requests</span>
-                            <span class="fleet-requests-value">${inst.requests_done ?? '—'}</span>
                         </div>
                     </div>
                     <div class="tts-metric"><span class="tts-metric-label">GPU Load</span><span class="tts-metric-value" style="color:${gpuColor}">${gpuPct}%</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${gpuPct}%;background:${gpuColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">VRAM</span><span class="tts-metric-value" style="color:${vramColor}">${vramUsed.toFixed(1)} / ${vramTotal.toFixed(0)} GB</span><div class="vram-bar-bg"><div class="vram-bar-fill" style="width:${vramPct}%;background:${vramColor}"></div></div></div>
                     <div class="tts-metric"><span class="tts-metric-label">Last RTF</span><span class="tts-metric-value">${rtfHtml}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from benchmark runs only — synthetic, not real calls">Bench RTF</span><span class="tts-metric-value">${(() => { const a = inst.avg_rtf; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}" title="Benchmark avg RTF">${a.toFixed(3)}×</span>`; })()}</span></div>
-                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from live /v1/audio/speech calls — real-world performance">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; const n = inst.call_requests ?? 0; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}" title="${n} real call${n !== 1 ? 's' : ''}">${a.toFixed(3)}×</span><span style="color:#484f58;font-size:10px;margin-left:3px">n=${n}</span>`; })()}</span></div>
+                    <div class="tts-metric"><span class="tts-metric-label" title="Average RTF from live /v1/audio/speech calls — real-world performance">Call RTF</span><span class="tts-metric-value">${(() => { const a = inst.call_avg_rtf; if (a == null) return '<span style="color:#484f58">—</span>'; const cls = a < 0.5 ? 'rtf-great' : a < 1.0 ? 'rtf-good' : 'rtf-slow'; return `<span class="rtf-badge ${cls}">${a.toFixed(3)}×</span>`; })()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Quant</span><span class="tts-metric-value" style="color:${quantColor}">${quant.toUpperCase()}</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Temp</span><span class="tts-metric-value" style="color:${(gpu.temp_c||0)>80?'#f85149':(gpu.temp_c||0)>65?'#e3b341':'#e6edf3'}">${gpu.temp_c ?? '—'}°C</span></div>
                     <div class="tts-metric"><span class="tts-metric-label">Power</span><span class="tts-metric-value">${gpu.power_w != null ? gpu.power_w.toFixed(0)+'W' : '—'}</span></div>

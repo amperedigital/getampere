@@ -1,34 +1,58 @@
 /* =========================================================
    Router Monitor — Component Styles
-   Layout: Tailwind for spacing/typography, this file for
-   structural components that need precise control.
+   Rules:
+   • No pixel widths — rem for sizing, flex ratios for columns
+   • Responsive: columns hide on narrow viewports, table
+     scrolls horizontally rather than collapsing (data density
+     means collapse is never useful on a monitor dashboard)
+   • Tailwind handles spacing/typography utilities in HTML
    ========================================================= */
 
-/* ── Routing Table (flex-based, full-width) ──────────────── */
+/* ── Routing Table ───────────────────────────────────────────
+   Structure:
+     .panel-scroll (overflow-x+y auto, max-height)
+       .route-table (min-width in rem, full-width flex column)
+         .route-row.route-header
+         #routingTbody
+           .route-row × N
+   ─────────────────────────────────────────────────────────── */
+
+.route-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 52rem; /* Scroll rather than collapse on narrow viewports */
+}
+
 .route-row {
     display: flex;
     align-items: center;
     width: 100%;
-    min-width: 0;
 }
-.route-row + .route-row { border-top: 1px solid #21262d; }
+.route-row + .route-row {
+    border-top: 1px solid #21262d;
+}
 
-/* Fixed-width columns */
-.rcol-time   { flex: 0 0 72px;  padding: 6px 8px; white-space: nowrap; }
-.rcol-reqid  { flex: 0 0 80px;  padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; font-size: 10px; }
-.rcol-bknd   { flex: 0 0 84px;  padding: 6px 8px; }
-.rcol-tts    { flex: 0 0 58px;  padding: 6px 8px; text-align: center; }
-.rcol-ttfb   { flex: 0 0 64px;  padding: 6px 8px; text-align: right; white-space: nowrap; }
-.rcol-tsoh   { flex: 0 0 64px;  padding: 6px 8px; text-align: right; white-space: nowrap; font-family: monospace; }
-.rcol-total  { flex: 0 0 64px;  padding: 6px 8px; text-align: right; white-space: nowrap; font-family: monospace; color: #d2a8ff; }
+/* ── Column proportions (pure flex ratios — no px/rem widths) */
+.rcol-time   { flex: 2;   padding: .375rem .5rem; white-space: nowrap; }
+.rcol-reqid  { flex: 2.5; padding: .375rem .5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; font-size: .625rem; }
+.rcol-tier   { flex: 4;   padding: .375rem .5rem; min-width: 0; }
+.rcol-model  { flex: 5;   padding: .375rem .5rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rcol-bknd   { flex: 2;   padding: .375rem .5rem; }
+.rcol-tts    { flex: 1.5; padding: .375rem .5rem; text-align: center; }
+.rcol-ttfb   { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; }
+.rcol-tsoh   { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; font-family: monospace; }
+.rcol-total  { flex: 2;   padding: .375rem .5rem; text-align: right; white-space: nowrap; font-family: monospace; color: #d2a8ff; }
+.rcol-result { flex: 4;   padding: .375rem .5rem; min-width: 0; }
 
-/* Flexible columns — fill remaining space */
-.rcol-tier   { flex: 1 1 120px; padding: 6px 8px; min-width: 0; }
-.rcol-model  { flex: 2 1 140px; padding: 6px 8px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rcol-result { flex: 1 1 100px; padding: 6px 8px; min-width: 0; }
-
-/* Header variant */
-.route-header { background: #161b22; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #30363d; }
+/* ── Header row */
+.route-header {
+    background: #161b22;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #30363d;
+}
 .route-header .rcol-time,
 .route-header .rcol-reqid,
 .route-header .rcol-tier,
@@ -39,29 +63,53 @@
 .route-header .rcol-tsoh,
 .route-header .rcol-total,
 .route-header .rcol-result {
-    font-size: 10px;
+    font-size: .625rem;
     font-weight: 600;
     color: #8b949e;
     text-transform: uppercase;
     letter-spacing: .05em;
 }
 
-/* ── Fleet Card — TTS Metrics ─────────────────────────────── */
+/* ── Responsive column hiding
+   Mobile  (< 40rem / ~640px): keep Time, Tier, Model, Total, Result
+   Tablet  (40–64rem):         also show TTFB; still hide TTS/OH + reqId + Bknd + TTS
+   Desktop (> 64rem / ~1024px): all columns visible                       */
+@media (max-width: 40rem) {
+    .rcol-reqid,
+    .rcol-bknd,
+    .rcol-tts,
+    .rcol-ttfb,
+    .rcol-tsoh { display: none; }
+    .route-table { min-width: 0; } /* let it collapse on tiny screens */
+}
+@media (min-width: 40rem) and (max-width: 64rem) {
+    .rcol-tts,
+    .rcol-tsoh { display: none; }
+    .route-table { min-width: 36rem; }
+}
+
+/* T3 locked row highlight */
+.route-row.t3-locked { background: rgba(139, 92, 246, .08); }
+
+
+/* ── Fleet Card — TTS Metrics ────────────────────────────────
+   Centered label + value within each grid cell.
+   ─────────────────────────────────────────────────────────── */
 .tts-metric {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 3px;
+    gap: .1875rem;
 }
 .tts-metric-label {
-    font-size: 10px;
+    font-size: .625rem;
     color: #8b949e;
     text-transform: uppercase;
     letter-spacing: .05em;
 }
 .tts-metric-value {
-    font-size: 13px;
+    font-size: .8125rem;
     font-weight: 600;
     color: #e6edf3;
     font-family: 'DM Sans', monospace;
@@ -71,45 +119,62 @@
     white-space: nowrap;
 }
 
-/* ── Fleet Card — Hero Row ───────────────────────────────── */
+
+/* ── Fleet Card — Hero Row ───────────────────────────────────
+   GPU info on the left · Requests badge on the right.
+   ─────────────────────────────────────────────────────────── */
 .fleet-hero {
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 10px;
+    padding-bottom: .625rem;
     border-bottom: 1px solid #21262d;
-    margin-bottom: 2px;
-    gap: 12px;
+    margin-bottom: .125rem;
+    gap: .75rem;
+    flex-wrap: wrap;
 }
 .fleet-hero-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: .625rem;
     flex-wrap: wrap;
     min-width: 0;
 }
-.fleet-hero-right {
+
+/* Requests circular badge — rem sizing, no px */
+.fleet-requests-badge {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    gap: .25rem;
     flex-shrink: 0;
-    gap: 1px;
 }
-.fleet-requests-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: #8b949e;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-}
-.fleet-requests-value {
-    font-size: 26px;
+.fleet-requests-circle {
+    width: 3.375rem;
+    height: 3.375rem;
+    border-radius: 50%;
+    background: rgba(88, 166, 255, .07);
+    border: 1.5px solid rgba(88, 166, 255, .28);
+    box-shadow: 0 0 .625rem rgba(88, 166, 255, .12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #e6edf3;
     font-family: 'DM Sans', monospace;
     line-height: 1;
+    transition: box-shadow .3s ease;
 }
-
-/* T3 locked row highlight */
-.route-row.t3-locked { background: rgba(139,92,246,0.08); }
+.fleet-requests-circle:hover {
+    box-shadow: 0 0 1rem rgba(88, 166, 255, .22);
+}
+.fleet-requests-label {
+    font-size: .5625rem;
+    font-weight: 700;
+    color: #6e7681;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    text-align: center;
+}

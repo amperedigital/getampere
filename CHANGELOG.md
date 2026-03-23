@@ -1,6 +1,16 @@
 # Changelog
 
+## v3.701 — Router monitor: fully responsive routing table + circular Requests badge + Bench RTF relocation (2026-03-23)
+
+- **`assets/css/router-monitor.css` (rewrite)**: No pixel widths anywhere. All column proportions are pure flex ratios (`flex: 2`, `flex: 5`, etc). Element sizing uses rems throughout. `min-width: 52rem` on `.route-table` (not the scroll container) so the table scrolls horizontally on narrow viewports rather than collapsing — appropriate for a data-dense monitoring dashboard.
+- **Responsive column hiding**: `@media (max-width: 40rem)` hides reqId, Bknd, TTS, TTFB, TTS/OH (mobile — shows Time, Tier, Model, Total, Result). `@media (40–64rem)` hides only TTS and TTS/OH (tablet). Desktop shows all 10 columns.
+- **`.route-table` wrapper**: Added `<div class="route-table">` inside `.panel-scroll` — this is the element with `min-width: 52rem`. `panel-scroll` is the scroll container; the table defines the minimum content width rather than the container.
+- **Requests circular badge**: `3.375rem × 3.375rem` circle (rem, not px) with blue glow border. Number above, "REQUESTS" label below. Scales with font size.
+- **Bench RTF**: Removed from metrics grid. Now shown inline in the Benchmark toggle button header — always visible without expanding the pane.
+- **Call RTF**: Removed `n=X` count suffix (Requests circle already shows total count).
+
 ## v3.699 — Router monitor: flex routing table, separate CSS, centered metrics, clean hero row (2026-03-23)
+
 
 - **New**: `assets/css/router-monitor.css` — all component styles extracted here (tts-metric, fleet-hero, route-row columns). No more inline styles for structural layout.
 - **Routing table**: Replaced `<table>` with flex div rows using `.route-row` + `.rcol-*` column classes. Full-width naturally — no colgroup, no pixel widths, no table-layout hacks. Flex-1/flex-2 for Model/Result, fixed-width `flex-shrink:0` for timing columns.
