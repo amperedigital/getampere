@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.688 (2026-03-22)
+- router-monitor: Fix Last RTF not displaying (field was missing from heartbeat payload)
+- router-monitor: Add Avg RTF metric tile next to Last RTF (shows benchmark avg, color-coded)
+
 ## v3.687 — Benchmark stop clears pending phrase rows (2026-03-22)
 
 - **Fix**: Stop button now resets all pending ⏳ phrase rows to `—` so the table is clean after stopping mid-run
