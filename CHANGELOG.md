@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.692 - Auto-generated
+- **Frontend**: Release v3.692 (no new commits)
+
+
 ## v3.691 (2026-03-22)
 - unified_publish.sh: Fix CDN step — same fire-and-forget bug as publish.sh. Replace with retry loop (10s intervals, 5 min max). Unified deploys now block until jsDelivr confirms 200 before exiting. v3.689 CDN outage root cause.
 
