@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.712 — Fix: restore working diag strip CSS (root cause of blank card) (2026-03-23)
+
+- **Root cause found**: `.diag-light` selector was intentionally absent in v3.709 (orphaned CSS block). v3.710 added the selector which activated `flex:1; display:flex; flex-direction:column` on each strip cell — this made the parent `display:flex;align-items:stretch` diag row collapse to zero height, which cascaded to blank the entire card.
+- **Fix**: Removed the `.diag-light` selector again (back to v3.709 orphaned-but-harmless state). The strip was already working without it.
+- **Kept**: diag-dot at `1.75rem`, diag-label at `1.375rem`, diag-detail at `0.875rem` — all still 2× original size.
+- **Kept**: GPU Load value at `2.5rem`, VRAM value at `2rem`, GPU name at `2rem` — all larger than before.
+
 ## v3.711 — Fix: fleet card blank after v3.710 GPU name overflow (2026-03-23)
 
 - **Root cause**: GPU name badge at `5rem` (80px) exceeded the card's `overflow:hidden` container height at first render, making the entire metrics content invisible. The card div existed in the DOM with dark background but zero visible content.
