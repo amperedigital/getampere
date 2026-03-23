@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.697 — Router monitor: Requests metric removed from grid row 2 (2026-03-23)
+
+- **`router-monitor.html`**: The standalone "Requests" metric was the 9th item in an 8-column grid, overflowing onto a second row on its own. Removed it. `requests_done` (total requests served since boot) is now shown as `n=X` inline on the **Bench RTF** badge — same pattern as Call RTF. Grid is now exactly 8 items: GPU Load · VRAM · Last RTF · Bench RTF · Call RTF · Quant · Temp · Power.
+
 ## v3.696 — Router monitor: RTF metric inline fix + event accumulation across reloads (2026-03-23)
+
 
 - **`router-monitor.html` — `.tts-metric-value` CSS**: Added `display: flex; align-items: center; white-space: nowrap` so the RTF badge and `n=X` count always render inline on the same line — was wrapping to a second line.
 - **`router-monitor.html` — Event accumulation**: Turn panel and routing table now persist across page reloads and WebSocket reconnects. Events stored in localStorage (max 500, last 2h) and replayed on load. Clear button also wipes localStorage.
