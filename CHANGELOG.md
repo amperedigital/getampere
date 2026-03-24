@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.728 — Router monitor: status row + diag detail text sizes (2026-03-24)
+
+- **ONLINE / KERNELS WARM / BUSY / warming timer**: all reduced from `1.5–1.75rem` → `0.875rem`. Row B status text was still large from v3.718.
+- **Diag detail** (subtitle text per strip cell: "Cloudflare Worker Responding", "26ms", "warm", etc.): `0.875rem` → `0.5625rem`.
+- **Uptime**: `0.75rem` → `0.875rem` (slightly larger as requested).
+
 ## v3.727 — Router monitor: diag labels half-size, uptime left of requests circle (2026-03-24)
 
 - **Diag strip labels** (WORKER/TUNNEL/FASTAPI/CSM-0/KERNELS): `font-size: 1.375rem` → `0.6875rem` — halved. Each label was taking significant vertical space in the strip; half-size keeps the text readable while reducing the strip height.

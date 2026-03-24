@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.727">
+    <meta name="version" content="v3.728">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.727/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.727/deploy/assets/css/router-monitor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.728/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.728/deploy/assets/css/router-monitor.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -573,7 +573,7 @@
             line-height: 1;
         }
         .diag-detail {
-            font-size: 0.875rem;
+            font-size: 0.5625rem;
             color: #6e7681;
             text-align: center;
             line-height: 1.3;
@@ -1700,13 +1700,13 @@
                 const etaS = Math.max(0, ESTIMATE_S - initS);
                 const phaseLabel = initS < 90 ? 'Loading weights…' : initS < 300 ? 'Quantizing…' : 'Almost ready…';
                 const etaLabel = etaS > 5 ? `~${fmtUptime(etaS)}` : 'almost ready…';
-                timerBadge = `<span style="display:inline-flex;align-items:center;gap:6px;font-size:1.5rem;font-weight:600;color:#e3b341">
+                timerBadge = `<span style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;font-weight:600;color:#e3b341">
                     ⏳ <span id="inst-phase-${id}">${phaseLabel}</span>
-                    <span id="inst-elapsed-${id}" style="font-size:1.75rem;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;display:inline-block">${fmtUptime(initS)}</span>
+                    <span id="inst-elapsed-${id}" style="font-size:0.875rem;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;display:inline-block">${fmtUptime(initS)}</span>
                 </span>
                 <span style="display:inline-flex;align-items:center;gap:4px;background:#2d2200;border:1px solid #e3b34144;border-radius:5px;padding:1px 8px">
                     <span style="font-size:0.75rem;color:#8b949e">ETA</span>
-                    <span id="inst-eta-${id}" style="font-size:1.5rem;font-weight:700;color:#f0c060;white-space:nowrap">${etaLabel}</span>
+                    <span id="inst-eta-${id}" style="font-size:0.875rem;font-weight:700;color:#f0c060;white-space:nowrap">${etaLabel}</span>
                 </span>`;
                 if (!s.elapsedTimer) {
                     s.elapsedTimer = setInterval(() => {
@@ -1726,7 +1726,7 @@
             } else {
                 if (s.elapsedTimer) { clearInterval(s.elapsedTimer); s.elapsedTimer = null; }
                 if (warm && s.warmupDoneS != null) {
-                    timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:1.75rem;font-weight:600;color:#3fb950">✅ KERNELS WARM <span style="font-size:1.75rem;font-weight:700">${fmtUptime(s.warmupDoneS)}</span></span>`;
+                    timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.875rem;font-weight:600;color:#3fb950">✅ KERNELS WARM <span style="font-size:0.875rem;font-weight:700">${fmtUptime(s.warmupDoneS)}</span></span>`;
                 }
             }
 
@@ -1880,7 +1880,7 @@
                             ${gpuCountBadge}${gpuNameLg}
                         </div>
                         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-                            <span style="font-size:0.75rem;font-weight:600;color:#8b949e;white-space:nowrap">⏱ ${uptime}</span>
+                            <span style="font-size:0.875rem;font-weight:600;color:#8b949e;white-space:nowrap">⏱ ${uptime}</span>
                             <div class="fleet-requests-badge">
                                 <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
                                 <span class="fleet-requests-label">Requests</span>
@@ -1892,10 +1892,10 @@
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0">
                             <span style="display:inline-flex;align-items:center;gap:4px">
                                 <span style="width:7px;height:7px;border-radius:50%;background:${stColor};box-shadow:0 0 5px ${stColor}88;display:inline-block;flex-shrink:0"></span>
-                                <span style="font-size:1.75rem;font-weight:700;color:${stColor}">${stLabel}</span>
+                                <span style="font-size:0.875rem;font-weight:700;color:${stColor}">${stLabel}</span>
                             </span>
                             ${timerBadge}
-                            ${busy && !warming ? `<span style="font-size:1.75rem;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>` : ''}
+                            ${busy && !warming ? `<span style="font-size:0.875rem;font-weight:700;color:#e3b341;background:#2d2200;border:1px solid #e3b34133;border-radius:4px;padding:2px 8px">BUSY</span>` : ''}
                         </div>
                         <div style="display:flex;align-items:stretch;gap:8px;flex-shrink:0">
                             <div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:8rem">
