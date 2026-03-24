@@ -770,10 +770,10 @@
   transition: opacity 0.3s ease;
 }
 
-/* Ensure the container preserves 3D space if needed */
-#tech-demo-right-column {
-  transform-style: preserve-3d;
-}
+/* v2.726: Removed transform-style:preserve-3d from #tech-demo-right-column.
+   It prevented the browser from promoting the right column to a hardware-accelerated
+   scroll layer, causing every card hover/repaint to stall scroll tracking. */
+
 
 /* --- v2.403 Container Query Engine --- */
 
@@ -845,12 +845,15 @@
 /* Custom Easing & Scrollbar System */
 
 /* 1. Smooth Easing for Expansion (No Bounce) */
-/* Uses a standard exponential ease-out for a premium, solid feel without overshoot */
+/* v2.726: Changed transition-property from 'all' to specific animated properties.
+   'transition: all' was triggering 600ms animations on every CSS property change
+   during scroll (opacity, z-index, layout reflows), making scroll feel like it was
+   waiting for a redraw cycle. Only animate the properties the expander actually changes. */
 .socket-card-container {
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1) !important;
-  /* "Expo Ease Out" - Smooth, no bounce */
-  transition-property: all !important;
+  transition-property: opacity, transform, width, height, inset, border-radius, box-shadow, filter, background-color !important;
   transition-duration: 0.6s !important;
+  will-change: opacity, transform; /* promote to compositor layer */
 }
 
 /* 2. Top-Right Button Interaction Fix */
@@ -894,22 +897,18 @@
   /* v2.559: Fixed positioning break-out for Mobile Scroll/Zen Mode */
   position: fixed !important;
   z-index: 9999 !important;
-  /* Enforce top layer ABOVE sticky controls */
 
   /* Zen Mode Visuals */
   background: rgba(10, 10, 15, 0.95);
-  /* Deep dark background to hide underlying cards */
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border-radius: 2rem;
-  /* Ensure radius matches the card shape */
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  /* Deep shadow for lift */
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  /* v2.564: Smooth restoration */
+  /* v2.726: Matched transition-property to card base (no 'all') */
+  transition-property: opacity, transform, width, height, inset, border-radius, box-shadow, filter, background-color !important;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1) !important;
 
   /* Default Insets (Fallback if JS fails) */
-  /* v2.559: Tighter insets for Mobile Fullscreen feel */
   top: 1rem;
   bottom: 1rem;
   left: 1rem;
@@ -926,10 +925,10 @@
   transition-duration: 0.6s !important;
 
   /* Override Standby Opacity (v2.678) */
-  /* Ensure card is fully opaque when expanded, regardless of 'standby' status */
   opacity: 1 !important;
   filter: none !important;
   cursor: auto !important;
+  will-change: auto; /* release during expanded state — no further animation needed */
 }
 
 /* --- Tech Demo Specific Styles (Scoped) --- */

@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.730 — CDN re-deploy: force jsDelivr to index v3.728 CSS (2026-03-24)
+
+- Re-deploy via unified publish to resolve jsDelivr 404 on v3.728 CSS assets.
+- No code changes from v3.728.
+
 ## v3.728 — Router monitor: status row + diag detail text sizes (2026-03-24)
 
 - **ONLINE / KERNELS WARM / BUSY / warming timer**: all reduced from `1.5–1.75rem` → `0.875rem`. Row B status text was still large from v3.718.
