@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.726">
+    <meta name="version" content="v3.727">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.726/deploy/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.726/deploy/assets/css/router-monitor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.727/deploy/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/amperedigital/getampere@v3.727/deploy/assets/css/router-monitor.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -565,7 +565,7 @@
         }
 
         .diag-label {
-            font-size: 1.375rem;
+            font-size: 0.6875rem;
             font-weight: 700;
             letter-spacing: .05em;
             text-transform: uppercase;
@@ -1874,20 +1874,22 @@
                 </div>
                 <!-- Hero section: GPU name row + status/bars row -->
                 <div style="border-bottom:1px solid #30363d">
-                    <!-- Row A: GPU name (large) + Requests badge -->
+                    <!-- Row A: GPU name (large) + Uptime + Requests badge -->
                     <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
                         <div style="display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap">
                             ${gpuCountBadge}${gpuNameLg}
                         </div>
-                        <div class="fleet-requests-badge" style="flex-shrink:0">
-                            <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
-                            <span class="fleet-requests-label">Requests</span>
+                        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+                            <span style="font-size:0.75rem;font-weight:600;color:#8b949e;white-space:nowrap">⏱ ${uptime}</span>
+                            <div class="fleet-requests-badge">
+                                <div class="fleet-requests-circle">${inst.requests_done ?? '—'}</div>
+                                <span class="fleet-requests-label">Requests</span>
+                            </div>
                         </div>
                     </div>
-                    <!-- Row B: uptime + status + warmup | GPU box + VRAM box -->
+                    <!-- Row B: status + warmup | GPU box + VRAM box -->
                     <div style="padding:6px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #21262d">
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0">
-                            <span style="font-size:1.75rem;font-weight:600;color:#8b949e">⏱ ${uptime}</span>
                             <span style="display:inline-flex;align-items:center;gap:4px">
                                 <span style="width:7px;height:7px;border-radius:50%;background:${stColor};box-shadow:0 0 5px ${stColor}88;display:inline-block;flex-shrink:0"></span>
                                 <span style="font-size:1.75rem;font-weight:700;color:${stColor}">${stLabel}</span>

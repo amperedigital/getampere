@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.727 — Router monitor: diag labels half-size, uptime left of requests circle (2026-03-24)
+
+- **Diag strip labels** (WORKER/TUNNEL/FASTAPI/CSM-0/KERNELS): `font-size: 1.375rem` → `0.6875rem` — halved. Each label was taking significant vertical space in the strip; half-size keeps the text readable while reducing the strip height.
+- **Uptime** moved from Row B (standalone large text below GPU name) to Row A — now displayed as small text (`0.75rem`) immediately to the left of the Requests circle, so all identity/count info is grouped at the top-right of the card.
+- **Row B** now shows only the status label (ONLINE/WARMING UP/BUSY) and warmup timer — no uptime.
+
 ## v3.726 — Router Monitor scroll fix (2026-03-23)
 
 - **Problem:** `renderRoutingTable()` and `renderTurnPanel()` both did full `innerHTML` replacement on every event, resetting scroll position to top each time. Scrolling up to read old rows was impossible — the next event would snap you back.
