@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.734 — CDN recovery: force jsDelivr to index router-monitor UI changes (2026-03-24)
+
+- Re-deploy via unified publish to resolve persistent jsDelivr 404 on v3.727–v3.730 CSS assets.
+- Contains all router-monitor UI changes from v3.727–v3.728 (diag labels halved, uptime moved, status row scaled down).
+
+## v3.731 — No frontend changes (2026-03-24)
+
+- Backend-only: Unicode crash fix, AI profile card, returning visitor greeting. See backend CHANGELOG.
+
 ## v3.730 — CDN re-deploy: force jsDelivr to index v3.728 CSS (2026-03-24)
 
 - Re-deploy via unified publish to resolve jsDelivr 404 on v3.728 CSS assets.
