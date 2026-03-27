@@ -1713,10 +1713,11 @@
             const gpu = inst.gpu || {};
             const s   = _istate(id);
 
-            const online  = ['ok','busy','warming_up','loading'].includes(st);
-            const warm    = st === 'ok' || st === 'busy';
-            const busy    = st === 'busy';
-            const warming = st === 'warming_up' || st === 'loading';
+            const online    = ['ok','busy','warming_up','loading','compiling_kernels'].includes(st);
+            const warm      = st === 'ok' || st === 'busy';
+            const busy      = st === 'busy';
+            const compiling = st === 'compiling_kernels';
+            const warming   = st === 'warming_up' || st === 'loading' || st === 'compiling_kernels';
 
             // ── Boot log accumulation ─────────────────────────────────────────
             // During boot, every fleet poll gives us a fresh probe. Append it.
@@ -1784,8 +1785,13 @@
             }
 
             // Status badge
-            const stColor = warm ? '#3fb950' : warming ? '#e3b341' : '#f85149';
-            const stLabel = st === 'ok' ? 'ONLINE' : st === 'busy' ? 'BUSY' : st === 'warming_up' ? 'WARMING UP' : st === 'loading' ? 'LOADING' : 'OFFLINE';
+            const stColor = warm ? '#3fb950' : (warming || compiling) ? '#e3b341' : '#f85149';
+            const stLabel = st === 'ok' ? 'ONLINE'
+                : st === 'busy'             ? 'BUSY'
+                : st === 'compiling_kernels'? 'COMPILING KERNELS'
+                : st === 'warming_up'       ? 'WARMING UP'
+                : st === 'loading'          ? 'LOADING'
+                : 'OFFLINE';
 
             // GPU metrics
             const gpuPct   = gpu.util_pct ?? 0;
@@ -1849,6 +1855,8 @@
                 if (s.elapsedTimer) { clearInterval(s.elapsedTimer); s.elapsedTimer = null; }
                 if (warm && s.warmupDoneS != null) {
                     timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.875rem;font-weight:600;color:#3fb950">✅ KERNELS WARM <span style="font-size:0.875rem;font-weight:700">${fmtUptime(s.warmupDoneS)}</span></span>`;
+                } else if (compiling) {
+                    timerBadge = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.875rem;font-weight:600;color:#e3b341">⚙️ COMPILING KERNELS…</span>`;
                 }
             }
 
@@ -1857,6 +1865,13 @@
             function diagDot(key) {
                 const d = diag[key];
                 if (!d) return '<span class="diag-dot unknown"></span>';
+                if (key === 'kernels') {
+                    // Use kernels_warm from server status if available — accurate Triton state
+                    const kw = inst.kernels_warm;
+                    if (kw === true)  return '<span class="diag-dot ok"></span>';
+                    if (kw === false && inst.kernels_compiling) return '<span class="diag-dot warn"></span>';
+                    if (kw === false) return '<span class="diag-dot warn"></span>';
+                }
                 return `<span class="diag-dot ${d.ok===true?'ok':d.ok===false?(key==='kernels'&&diag.csm?.ok?'warn':'error'):'unknown'}"></span>`;
             }
             function diagDetail(key) {
@@ -1867,7 +1882,11 @@
                 if (key === 'worker') return 'Cloudflare Worker Responding';
                 if (key === 'fastapi') return 'FastAPI listening on port 8080';
                 if (key === 'csm') return 'Models loaded and ready';
-                if (key === 'kernels') return 'Triton Kernels compiled and cached';
+                if (key === 'kernels') {
+                    if (inst.kernels_warm === true)  return 'Eager mode — no kernel compilation';
+                    if (inst.kernels_compiling)       return 'Triton compile_workers running (unexpected in eager)';
+                    return 'Waiting for warmup…';
+                }
                 return d.detail || '—';
             }
 

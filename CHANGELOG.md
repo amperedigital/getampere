@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.737 — Accurate kernel status + compiling_kernels phase (2026-03-27)
+
+- **`router-monitor.html` — `compiling_kernels` status phase**: New status between `warming_up` and `ok`. Shows amber "COMPILING KERNELS" badge + ⚙️ timer badge when Triton compile_workers are running. System was reporting `ok` while 32 compile_worker processes were still running — this was a false "ONLINE" reading.
+- **`router-monitor.html` — `kernels` diagnostic light**: Now reads `kernels_warm` and `kernels_compiling` directly from server `/admin/status` response (accurate process detection) instead of inferring from `warmup_complete`. In eager mode shows "Eager mode — no kernel compilation" when clean.
+- **`router-monitor.html` — `kernels_warm` field**: Wired to new server fields; shows ⚙️ COMPILING KERNELS during the `compiling_kernels` phase.
+
 ### v3.736 — Fleet provision/destroy panel + setup log in boot panel (2026-03-27)
 
 - **`router-monitor.html` — "＋ New Instance" button**: Calls `POST /admin/tts-fleet-provision` on infra-api to spin up a fresh RTX 4090 VAST instance directly from the router monitor. No CLI required. Shows provisioning status inline on the button, triggers fleet sync and poll so the new card appears within seconds.
