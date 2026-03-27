@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.738 — Router autonomous provisioning: CSS fix + context-aware New Instance button (2026-03-27)
+
+- **CDN fix**: jsDelivr propagation lag resolved via unified deploy CDN warming loop.
+- **Router monitor**: "New Instance" button shows status-aware label — "+ New Instance" when fleet is empty, "+ Add Instance" (amber) when instances are already active, so it’s clear you’re scaling.
+
 ## v3.737 — Accurate kernel status + compiling_kernels phase (2026-03-27)
 
 - **`router-monitor.html` — `compiling_kernels` status phase**: New status between `warming_up` and `ok`. Shows amber "COMPILING KERNELS" badge + ⚙️ timer badge when Triton compile_workers are running. System was reporting `ok` while 32 compile_worker processes were still running — this was a false "ONLINE" reading.

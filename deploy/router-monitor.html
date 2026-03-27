@@ -1675,6 +1675,24 @@
             const active = instances.filter(i => i.status !== 'offline');
             badge.textContent = `${instances.length} instance${instances.length !== 1 ? 's' : ''} · ${active.length} online`;
 
+            // Context-aware provision button: green "＋ New Instance" when empty, amber "＋ Add Instance" when scaling
+            const provBtn = document.getElementById('fleetProvisionBtn');
+            if (provBtn) {
+                if (instances.length === 0) {
+                    provBtn.textContent = '＋ New Instance';
+                    provBtn.style.background = '#1a3a1a';
+                    provBtn.style.borderColor = '#3fb950';
+                    provBtn.style.color = '#3fb950';
+                    provBtn.title = 'Provision a new RTX 4090 on VAST and start the Sesame TTS server';
+                } else {
+                    provBtn.textContent = '＋ Add Instance';
+                    provBtn.style.background = '#2d2200';
+                    provBtn.style.borderColor = '#e3b341';
+                    provBtn.style.color = '#e3b341';
+                    provBtn.title = `${instances.length} instance${instances.length !== 1 ? 's' : ''} already active — add another to scale`;
+                }
+            }
+
             if (!instances.length) {
                 container.innerHTML = `<div style="text-align:center;padding:24px;color:#484f58;font-size:12px;background:#161b22;border:1px solid #30363d;border-radius:12px">No active instances in fleet registry</div>`;
                 return;
