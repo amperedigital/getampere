@@ -154,132 +154,31 @@ find deploy/ -name "*.js" | while read -r FILE; do
        echo "   🖊️  Injecting version $NEW_TAG into $FILE..."
        # Replace vX.Y.Z or vX.Y with new tag on lines containing console.log
        # Robust regex to catch v2.953, v2.91, etc.
-       sed -i "/console.log/s/v[0-9]\{1,\}\.[0-9]\{1,\}\(\.[0-9]\{1,\}\)\?/$NEW_TAG/g" "$FILE"
+        sed -i "/console.log/s/v[0-9]\{1,\}\.[0-9]\{1,\}\(\..[0-9]\{1,\}\)\?/$NEW_TAG/g" "$FILE"
      fi
   fi
 done
 
-# 2. Update CDN links in ALL HTML files for CHANGED ASSETS only
-# Scan for all HTML files in deploy/
-if [ -n "$2" ]; then
-  # User provided a scope/pattern (e.g. "deploy/tech-demo.html")
-  echo "   🎯 Scoping CDN updates to matches for: $2"
-  HTML_FILES=$(find deploy -maxdepth 1 -name "*.html" | grep -E "$2")
-else
-  # v2.895: SMART SCOPING
-  # Default: Only update HTML files that are currently being edited (staged or uncommitted)
-  # This follows the user directive: "Only the ones that we are editing are the ones that get updated."
-  echo "   🧠 Smart Scoping active: Only updating HTML files with active changes..."
-  HTML_FILES=$(git status --porcelain deploy/ | grep "\.html$" | awk '{print $2}' | sort | uniq || true)
-  
-  if [ -z "$HTML_FILES" ]; then
-    # Fallback to HEAD changes if no working tree changes found
-    HTML_FILES=$(git show --name-only --format="" HEAD | grep "^deploy/.*\.html$" || true)
-  fi
+# 2. Inject ?v= cache-busting version into ALL HTML files (every file, every release)
+# Assets are self-hosted via CF Workers Sites — the ?v= param is the ONLY cache buster.
+# Every HTML file must be updated on every release, not just the changed ones.
+ALL_DEPLOY_HTML=$(find deploy -maxdepth 1 -name "*.html" | sort)
+echo "   🏷️  Version Injection: Updating ?v= cache-buster to $NEW_TAG in ALL HTML files..."
+for TARGET_HTML in $ALL_DEPLOY_HTML; do
+    echo "      Processing $(basename "$TARGET_HTML")..."
 
-  # v3.010: FORCE RELEASE UPDATE
-  # If a release version is provided AND NO SPECIFIC TARGET IS SET ($2), we update the main entry points.
-  # If a user provides a target (e.g. tech-demo.html), we respect that strictly.
-  if [ -n "$NEW_TAG" ] && [ -z "$2" ]; then
-     echo "   🚨 RELEASE MODE: Forcing metadata update for entry points..."
-     # Add tech-demo.html and index.html to the list if they exist
-     if [ -f "deploy/tech-demo.html" ]; then
-        HTML_FILES="${HTML_FILES}
-deploy/tech-demo.html"
-     fi
-     if [ -f "deploy/index.html" ]; then
-        HTML_FILES="${HTML_FILES}
-deploy/index.html"
-     fi
-     # Dedup
-     HTML_FILES=$(echo "$HTML_FILES" | sort | uniq | grep -v "^$")
-  fi
-
-  if [ -z "$HTML_FILES" ]; then
-    echo "   ⚠️  No HTML files are currently being edited. Skipping asset version alignment."
-    HTML_FILES=""
-  fi
-fi
-
-for FILE in $CHANGED_FILES; do
-  # Check if file is inside deploy/assets/
-  if [[ "$FILE" == deploy/assets/* ]]; then
-    
-    # EXCLUSION CHECK
-    # Check if file matches any excluded patterns (e.g. critical loaders to keep local)
-    if [[ "$FILE" == *"logo-loader.js" ]]; then
-       echo "   🛡️  Skipping CDN conversion for protected local asset: $FILE"
-       continue
+    # 1. Update Meta Version tag (where present)
+    if grep -q '<meta name="version"' "$TARGET_HTML"; then
+        sed -i "s/<meta name=\"version\" content=\"v[^\"]*\">/<meta name=\"version\" content=\"$NEW_TAG\">/g" "$TARGET_HTML"
     fi
 
-    # The file path in the repo is deploy/assets/...
-    # The CDN URL should match the repo path: .../deploy/assets/...
-    # So we use the full FILE path as the relative path for replacement.
-    
-    REL_PATH="$FILE"
-    
-    for TARGET_HTML in $HTML_FILES; do
-        # Check if this file is referenced in the HTML with a version tag
-        # We look for the pattern: getampere@v.../deploy/assets/.../filename
-        # Regex updated (v2.321) to include underscores (_) in version tags
-        if grep -q "getampere@v[0-9a-zA-Z._-]*\/$REL_PATH" "$TARGET_HTML"; then
-          # v2.895: PAGE-LEVEL SYNCHRONIZATION
-          # If this HTML file uses a versioned link for the changed asset, 
-          # we synchronize ALL other getampere versioned links in this file to the same tag.
-          echo "   🔄 SYNC: Aligning ALL versioned assets in $(basename "$TARGET_HTML") to $NEW_TAG (Triggered by $REL_PATH)"
-          
-          # Perform global replacement for any getampere@v... pattern in the file
-          sed -i "s/getampere@v[0-9a-zA-Z._-]*\//getampere@$NEW_TAG\//g" "$TARGET_HTML"
-        else
-          # Check for local path usage to auto-convert to CDN
-          LOCAL_PATH="${REL_PATH#deploy/}"
-          
-          # Handle potential query params in the HTML like output.js?v=1.23
-          # We just look for the filename.ext pattern
-          
-          # Escape for regex (looking for literal string in file)
-          ESCAPED_LOCAL_PATH=$(echo "$LOCAL_PATH" | sed 's/\//\\\//g')
-          
-          if grep -E -q "[\"'](\./)?$LOCAL_PATH" "$TARGET_HTML"; then
-             # It matches 'assets/js/foo.js' or 'assets/js/foo.js?v=...'
-             echo "   ✨ Auto-converting/Updating local link for $LOCAL_PATH in $(basename "$TARGET_HTML") to CDN ($NEW_TAG)..."
-             ESCAPED_FULL_PATH=$(echo "$REL_PATH" | sed 's/\//\\\//g')
-             CDN_BASE="https:\/\/cdn.jsdelivr.net\/gh\/amperedigital\/getampere@$NEW_TAG"
-             
-             # Case A: Quote + Path + Quote (Clean local path) -> Replace with CDN URL (Clean)
-             sed -i "s/[\"']\.\/$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
-             sed -i "s/[\"']$ESCAPED_LOCAL_PATH[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
+    # 2. Update ?v= query strings on our self-hosted assets (CSS + JS)
+    # Matches: /assets/css/foo.css?v=X.Y.Z  or  /assets/js/foo.js?v=X.Y.Z
+    sed -i "s|\(/assets/[^\"']*\)?v=[0-9][0-9]*\.[0-9][0-9]*|\1?v=${NEW_TAG#v}|g" "$TARGET_HTML"
 
-             # Case B: Path + Query Param (?v=...) -> Replace with CDN URL (Strip Query param as CDN is versioned)
-             # Matches: ./assets/foo.js?v=1.23
-             sed -i "s/[\"']\.\/$ESCAPED_LOCAL_PATH?v=[^\"']*[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
-             sed -i "s/[\"']$ESCAPED_LOCAL_PATH?v=[^\"']*[\"']/\"$CDN_BASE\/$ESCAPED_FULL_PATH\"/g" "$TARGET_HTML"
-          fi
-        fi
-    done
-  fi
+    # 3. Safety net: also update any stale getampere@v... CDN refs if any remain
+    sed -i "s/getampere@v[0-9a-zA-Z._-]*\//getampere@$NEW_TAG\//g" "$TARGET_HTML"
 done
-
-# ------------------------------------------------------------------------------
-# 2.5 UNIVERSAL TAGGING (Force Update)
-# ------------------------------------------------------------------------------
-# User Requirement: "Universal tagging system"
-# Regardless of whether assets changed, we MUST update the HTML to point to the new version.
-if [ -n "$HTML_FILES" ]; then
-    echo "   🏷️  Universal Tagging: Forcing CDN links and Meta Tags to $NEW_TAG..."
-    for TARGET_HTML in $HTML_FILES; do
-        echo "      Processing $(basename "$TARGET_HTML")..."
-        
-        # 1. Update Meta Version
-        if grep -q "<meta name=\"version\"" "$TARGET_HTML"; then
-            sed -i "s/<meta name=\"version\" content=\"v[^\"]*\">/<meta name=\"version\" content=\"$NEW_TAG\">/g" "$TARGET_HTML"
-        fi
-        
-        # 2. Update Asset Links (getampere@v...)
-        # This ensures that v2.990 loads v2.990 assets, keeping the ecosystem synced.
-        sed -i "s/getampere@v[0-9a-zA-Z._-]*\//getampere@$NEW_TAG\//g" "$TARGET_HTML"
-    done
-fi
 
 # 3. Commit changes
 echo "📦 Committing changes..."
@@ -320,50 +219,14 @@ echo "☁️  Deploying to Cloudflare Workers..."
 npx wrangler deploy
 
 if [ "${SKIP_TAG:-0}" != "1" ]; then
-    echo "🔥 Purging + warming CDN cache for changed assets..."
-    CDN_BASE_URL="https://cdn.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
-    PURGE_BASE_URL="https://purge.jsdelivr.net/gh/amperedigital/getampere@$NEW_TAG"
-
-    for FILE in $CHANGED_FILES; do
-      if [[ "$FILE" == deploy/assets/* ]]; then
-         CDN_URL="$CDN_BASE_URL/$FILE"
-         PURGE_URL="$PURGE_BASE_URL/$FILE"
-         echo "   🗱️  Purging jsDelivr: $PURGE_URL"
-         curl -s -o /dev/null "$PURGE_URL" || echo "   ⚠️  Warning: Could not purge $PURGE_URL"
-         echo "   🌍 Pre-fetching: $CDN_URL"
-         curl -s -o /dev/null "$CDN_URL" || echo "   ⚠️  Warning: Could not pre-fetch $CDN_URL"
-      fi
-    done
-
-    # ALWAYS purge + pre-fetch styles.css and global.js — HTML bumps the tag on every
-    # release so the browser requests @vNEW even if content is identical.
-    # jsDelivr lazy-indexes new GitHub tags (can take 30-120s) — we MUST wait for 200.
-    CORE_ASSETS="deploy/assets/css/styles.css deploy/assets/js/global.js"
+    echo "🔥 Warming Cloudflare edge cache for core assets..."
+    CF_BASE="https://getampere-web.tight-butterfly-7b71.workers.dev"
+    CORE_ASSETS="assets/css/styles.css assets/js/global.js"
+    VER="${NEW_TAG#v}"
     for FILE in $CORE_ASSETS; do
-      PURGE_URL="$PURGE_BASE_URL/$FILE"
-      CDN_URL="$CDN_BASE_URL/$FILE"
-      echo "   🗱️  Purging jsDelivr (always): $PURGE_URL"
-      curl -s -o /dev/null "$PURGE_URL" || true
-
-      # Retry loop — wait up to 5 minutes for jsDelivr to index the new tag
-      echo "   ⏳ Waiting for jsDelivr to serve $FILE at $NEW_TAG..."
-      MAX_ATTEMPTS=30   # 30 × 10s = 5 min
-      ATTEMPT=0
-      while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-        HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" "$CDN_URL" 2>/dev/null || echo "000")
-        if [ "$HTTP_CODE" = "200" ]; then
-          echo "   ✅ CDN confirmed 200 for $FILE (attempt $((ATTEMPT+1)))"
-          break
-        fi
-        ATTEMPT=$((ATTEMPT + 1))
-        echo "   [$ATTEMPT/$MAX_ATTEMPTS] jsDelivr returned $HTTP_CODE — retrying in 10s..."
-        sleep 10
-      done
-      if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-        echo "   ❌ CDN STILL not serving $FILE after 5 min — site may be broken!"
-        echo "      Manual fix: curl -sL '$PURGE_URL' && wait 60s"
-        exit 1
-      fi
+        WARM_URL="$CF_BASE/$FILE?v=$VER"
+        HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 "$WARM_URL" 2>/dev/null || echo "000")
+        echo "   ✅ CF warmup $FILE → HTTP $HTTP_CODE"
     done
 fi
 

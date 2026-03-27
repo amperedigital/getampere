@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.739 — Self-hosted assets: replace jsDelivr CDN with Cloudflare Workers Sites (2026-03-27)
+
+- **All HTML pages**: Removed all `cdn.jsdelivr.net/gh/amperedigital/getampere@vX.Y.Z/deploy/assets/...` refs from all 12 deploy HTML files. Assets now served from Cloudflare Workers Sites via relative paths (`/assets/css/styles.css?v=X.Y.Z`, `/assets/js/*.js?v=X.Y.Z`). Third-party CDN libs (Three.js, Lenis, Chart.js) untouched.
+- **`publish.sh`**: Removed jsDelivr CDN URL rewriting and 5-minute CDN propagation wait loop. Replaced with `?v=` query-string injection that runs on ALL deploy HTML files every release. Added instant CF edge warmup (single curl, ~1s). Deploy time: 5+ min → ~30s.
+- **`unified_publish.sh`**: Replaced CDN step (Section 4) with Cloudflare Workers edge warmup — no jsDelivr dependency, no waiting.
+- **`AGENTS.md` Rule 12**: Documented that Python scripts must be written to `.agent/` not `/tmp/` — `/tmp/` write_to_file hangs in this WSL environment.
+
 ## v3.738 — Router autonomous provisioning: CSS fix + context-aware New Instance button (2026-03-27)
 
 - **CDN fix**: jsDelivr propagation lag resolved via unified deploy CDN warming loop.
