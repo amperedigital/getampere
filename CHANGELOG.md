@@ -1,6 +1,11 @@
 # Changelog
 
-## v3.734 — CDN recovery: force jsDelivr to index router-monitor UI changes (2026-03-24)
+## v3.735 — Router monitor: Stop/Restart fixes + boot log panel (2026-03-27)
+
+- **`router-monitor.html` — instControl fix**: All power controls (Start/Stop/Restart) now consistently route via `POST /admin/tts-{action}` using `tunnel_url`. The Restart button was previously using `tts-exec` with a fleet DB lookup that failed when instance heartbeats were stale — now identical pattern to Start/Stop.
+- **`router-monitor.html` — Boot log panel**: Log pane switches between ⚡ Boot Log and 🖥 Server Log modes automatically. During `loading`/`warming_up`, the log auto-opens and renders timestamped probe entries from each fleet poll (HTTP codes, latency, FastAPI status, CSM state). Entries deduplicated by consecutive value, capped at 200. On transition to `ok` appends 🚀 Server READY and switches to live server log. No new backend routes required.
+
+
 
 - Re-deploy via unified publish to resolve persistent jsDelivr 404 on v3.727–v3.730 CSS assets.
 - Contains all router-monitor UI changes from v3.727–v3.728 (diag labels halved, uptime moved, status row scaled down).

@@ -1542,7 +1542,13 @@
         const _instState = {};   // { [id]: { logOpen, logTimer, benchReader, elapsedTimer, serverStartMs, warmupDoneS } }
 
         function _istate(id) {
-            if (!_instState[id]) _instState[id] = { logOpen: false, logTimer: null, benchReader: null, elapsedTimer: null, serverStartMs: null, warmupDoneS: null };
+            if (!_instState[id]) _instState[id] = {
+                logOpen: false, logTimer: null, benchReader: null,
+                elapsedTimer: null, serverStartMs: null, warmupDoneS: null,
+                bootLog: [],          // accumulated startup probe entries
+                bootMode: false,      // true = showing boot log, false = live server log
+                lastBootStatus: null, // track changes to avoid duplicate lines
+            };
             return _instState[id];
         }
 
@@ -1654,6 +1660,65 @@
             const warm    = st === 'ok' || st === 'busy';
             const busy    = st === 'busy';
             const warming = st === 'warming_up' || st === 'loading';
+
+            // ── Boot log accumulation ─────────────────────────────────────────
+            // During boot, every fleet poll gives us a fresh probe. Append it.
+            if (warming || (!online && st !== 'ok')) {
+                const diag = inst.diagnostics || {};
+                const tunnel = diag.tunnel || {};
+                const httpCode = tunnel.http_code;
+                const latency  = tunnel.latency_ms;
+                // Build a human-readable boot entry
+                let bootEntry;
+                if (!tunnel.ok) {
+                    bootEntry = `⏳ Tunnel not yet reachable — ${tunnel.detail || 'connecting…'}`;
+                } else if (httpCode === 502) {
+                    bootEntry = `🔌 HTTP 502 — Tunnel up, FastAPI not yet listening on :8080`;
+                } else if (httpCode === 503 || httpCode === 504) {
+                    bootEntry = `⏳ HTTP ${httpCode} — FastAPI up, model still loading…`;
+                } else if (httpCode === 200) {
+                    const csmSt = (diag.csm || {}).detail || st;
+                    const lat   = latency != null ? ` (${latency}ms)` : '';
+                    bootEntry = `✅ HTTP 200${lat} — ${csmSt}`;
+                } else {
+                    bootEntry = `📡 ${tunnel.detail || st}`;
+                }
+                // Deduplicate consecutive identical lines, cap at 200 entries
+                const last = s.bootLog[s.bootLog.length - 1];
+                if (!last || !last.endsWith(bootEntry)) {
+                    const ts = new Date().toLocaleTimeString();
+                    s.bootLog.push(`[${ts}] ${bootEntry}`);
+                    if (s.bootLog.length > 200) s.bootLog.shift();
+                }
+                s.bootMode = true;
+                // Auto-open log during boot if not already open
+                if (!s.logOpen) {
+                    s.logOpen = true;
+                    const body = document.getElementById(`inst-log-body-${id}`);
+                    const chev = document.getElementById(`inst-log-chevron-${id}`);
+                    if (body) body.classList.add('open');
+                    if (chev) chev.textContent = '▼';
+                }
+            } else if (st === 'ok' || st === 'busy') {
+                // Transition to live: add a final boot entry, switch mode
+                if (s.bootMode && s.bootLog.length > 0) {
+                    const ts = new Date().toLocaleTimeString();
+                    const last = s.bootLog[s.bootLog.length - 1];
+                    if (!last.includes('🚀')) s.bootLog.push(`[${ts}] 🚀 Server READY — ${st}`);
+                }
+                s.bootMode = false;
+            }
+
+            // Refresh boot log pane if open and in boot mode
+            if (s.bootMode && s.logOpen) {
+                const scroll = document.getElementById(`inst-log-scroll-${id}`);
+                if (scroll) {
+                    scroll.innerHTML = s.bootLog.slice().reverse().map(l => {
+                        const cls = l.includes('🚀') ? 'log-csm' : l.includes('✅') ? 'log-info' : l.includes('⏳') || l.includes('🔌') ? 'log-warn' : 'log-dim';
+                        return `<div class="${cls}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                    }).join('') || '<span class="log-dim">Waiting for probe data…</span>';
+                }
+            }
 
             // Uptime / elapsed timer seeding
             if (inst.uptime_s != null) s.serverStartMs = Date.now() - inst.uptime_s * 1000;
@@ -1789,11 +1854,11 @@
                     <!-- Log pane -->
                     <div class="tts-log-pane">
                         <button class="tts-log-toggle" onclick="instLogToggle('${id}','${url}')">
-                            <span>🖥 Server Log</span>
-                            <span id="inst-log-chevron-${id}" style="font-size:12px">▶</span>
+                            <span id="inst-log-label-${id}">${warming ? '⚡ Boot Log' : '🖥 Server Log'}</span>
+                            <span id="inst-log-chevron-${id}" style="font-size:12px">${s.logOpen ? '▼' : '▶'}</span>
                         </button>
-                        <div class="tts-log-body" id="inst-log-body-${id}">
-                            <div class="tts-log-scroll" id="inst-log-scroll-${id}"><span class="log-dim">Log will appear here…</span></div>
+                        <div class="tts-log-body" id="inst-log-body-${id}" ${s.logOpen ? 'class="open"' : ''}>
+                            <div class="tts-log-scroll" id="inst-log-scroll-${id}"><span class="log-dim">${warming ? 'Waiting for instance probe…' : 'Log will appear here…'}</span></div>
                         </div>
                     </div>
                     <!-- Benchmark pane -->
@@ -1941,32 +2006,25 @@
 
         async function instControl(id, tunnelUrl, action) {
             const key = document.getElementById('apiKey')?.value?.trim() || '';
-            const btn = document.getElementById(`inst-btn-${action === 'restart' ? 'restart' : 'start'}-${id}`);
+            const btnId = action === 'restart' ? `inst-btn-restart-${id}` : `inst-btn-start-${id}`;
+            const btn = document.getElementById(btnId);
             if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '…'; }
             try {
-                let resp;
-                if (action === 'restart') {
-                    resp = await fetch(`${INFRA_BASE}/admin/tts-exec`, {
-                        method: 'POST',
-                        headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'restart', instance_id: id })
-                    });
-                } else {
-                    resp = await fetch(`${INFRA_BASE}/admin/tts-${action}`, {
-                        method: 'POST',
-                        headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ tunnel_url: tunnelUrl }),
-                    });
-                }
+                // All actions (start/stop/restart) route via tts-{action} with tunnel_url.
+                // Previously restart used tts-exec+instance_id (fleet DB lookup) which failed
+                // when heartbeats were stale. Direct tunnel_url routing is simpler and reliable.
+                const resp = await fetch(`${INFRA_BASE}/admin/tts-${action}`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tunnel_url: tunnelUrl }),
+                });
                 const data = await resp.json();
-                // tts-exec returns { results: { "vast-ID": { ok, ... } } }
-                // tts-start/stop return { ok: true/false }
-                // Check both patterns
-                const topOk = data.ok === true;
-                const resultsOk = data.results && Object.values(data.results).some(r => r.ok === true);
-                if (topOk || resultsOk) { setTimeout(fleetPollNow, 2000); setTimeout(fleetPollNow, 6000); }
-                else alert(`${action} failed: ${data.output || data.error || JSON.stringify(data)}`);
-
+                if (data.ok || data.status === 'restarting' || data.status === 'stopping' || data.status === 'starting') {
+                    setTimeout(fleetPollNow, 3000);
+                    setTimeout(fleetPollNow, 8000);
+                } else {
+                    alert(`${action} failed: ${data.error || data.detail || JSON.stringify(data)}`);
+                }
             } catch (e) { alert(`${action} error: ${e.message}`); }
             if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
             fleetPollNow();
@@ -2010,10 +2068,24 @@
         function instLogToggle(id, tunnelUrl) {
             const s = _istate(id);
             s.logOpen = !s.logOpen;
-            document.getElementById(`inst-log-body-${id}`).classList.toggle('open', s.logOpen);
+            document.getElementById(`inst-log-body-${id}`)?.classList.toggle('open', s.logOpen);
             document.getElementById(`inst-log-chevron-${id}`).textContent = s.logOpen ? '▼' : '▶';
-            if (s.logOpen) instLogPoll(id, tunnelUrl);
-            else { clearTimeout(s.logTimer); s.logTimer = null; }
+            if (s.logOpen) {
+                if (s.bootMode) {
+                    // Render boot log immediately without fetching
+                    const scroll = document.getElementById(`inst-log-scroll-${id}`);
+                    if (scroll && s.bootLog.length) {
+                        scroll.innerHTML = s.bootLog.slice().reverse().map(l => {
+                            const cls = l.includes('🚀') ? 'log-csm' : l.includes('✅') ? 'log-info' : l.includes('⏳') || l.includes('🔌') ? 'log-warn' : 'log-dim';
+                            return `<div class="${cls}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                        }).join('');
+                    }
+                } else {
+                    instLogPoll(id, tunnelUrl);
+                }
+            } else {
+                clearTimeout(s.logTimer); s.logTimer = null;
+            }
         }
 
         function _logClass(line) {
@@ -2028,6 +2100,19 @@
             const s = _istate(id);
             clearTimeout(s.logTimer);
             if (!s.logOpen) return;
+
+            // Update label to reflect current mode
+            const label = document.getElementById(`inst-log-label-${id}`);
+            if (label) label.textContent = s.bootMode ? '⚡ Boot Log' : '🖥 Server Log';
+
+            // During boot: boot log is rendered directly by updateInstCard on each fleet poll.
+            // No fetch needed — just reschedule to keep the label current.
+            if (s.bootMode) {
+                s.logTimer = setTimeout(() => instLogPoll(id, tunnelUrl), 3000);
+                return;
+            }
+
+            // Live mode: fetch server log ring buffer
             const key = document.getElementById('apiKey')?.value?.trim() || '';
             const encUrl = encodeURIComponent(tunnelUrl);
             try {
@@ -2040,7 +2125,7 @@
                         `<div class="${_logClass(l)}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
                     ).join('') || '<span class="log-dim">No log lines yet</span>';
                 }
-            } catch { /* offline */ }
+            } catch { /* offline — instance not yet reachable */ }
             s.logTimer = setTimeout(() => instLogPoll(id, tunnelUrl), 2000);
         }
 
