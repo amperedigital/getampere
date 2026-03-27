@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.736 — Fleet provision/destroy panel + setup log in boot panel (2026-03-27)
+
+- **`router-monitor.html` — "＋ New Instance" button**: Calls `POST /admin/tts-fleet-provision` on infra-api to spin up a fresh RTX 4090 VAST instance directly from the router monitor. No CLI required. Shows provisioning status inline on the button, triggers fleet sync and poll so the new card appears within seconds.
+- **`router-monitor.html` — "🗑 Destroy" button per instance card**: Calls `POST /admin/tts-fleet-destroy` with the instance's VAST ID. Confirms before acting. Removes card from DOM immediately on success.
+- **`router-monitor.html` — setup log in boot panel**: During `loading`/`warming_up` phase, the ⚡ Boot Log pane now polls `GET /admin/tts-setup-log` every 3 seconds and streams `setup_vast.sh` output (model download progress, supervisord start, warmup status). Tunnels is live within ~60s of container start (cloudflared now starts early in setup). Auto-scrolls to latest line.
+
 ## v3.735 — Router monitor: Stop/Restart fixes + boot log panel (2026-03-27)
 
 - **`router-monitor.html` — instControl fix**: All power controls (Start/Stop/Restart) now consistently route via `POST /admin/tts-{action}` using `tunnel_url`. The Restart button was previously using `tts-exec` with a fleet DB lookup that failed when instance heartbeats were stale — now identical pattern to Start/Stop.

@@ -775,6 +775,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span id="fleetLastUpdated" style="font-size:11px;color:#484f58"></span>
+                <button id="fleetProvisionBtn" onclick="provisionInstance()" title="Provision a new RTX 4090 on VAST and start the Sesame TTS server" style="background:#1a3a1a;border:1px solid #3fb950;color:#3fb950;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600">＋ New Instance</button>
                 <button id="fleetSyncVastBtn" onclick="fleetSyncVast()" title="Query VAST account for running instances and auto-register any TTS servers found" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⚡ Sync from VAST</button>
                 <button onclick="fleetPollNow()" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">⟳ Refresh</button>
             </div>
@@ -1609,6 +1610,62 @@
             }
         }
 
+        async function provisionInstance() {
+            const btn = document.getElementById('fleetProvisionBtn');
+            const key = document.getElementById('apiKey').value || '';
+            if (!key) { alert('Enter your API key first.'); return; }
+            if (!confirm('Provision a new RTX 4090 VAST instance? This will start billing immediately.')) return;
+            const orig = btn.textContent;
+            btn.textContent = '⏳ Provisioning…';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    alert(`Provision failed: ${data.error ?? data.detail ?? 'Unknown error'}`);
+                    btn.textContent = orig; btn.disabled = false;
+                    return;
+                }
+                btn.textContent = `✅ #${data.vast_id} starting`;
+                // Poll fleet aggressively so the new card appears quickly
+                setTimeout(fleetPollNow, 2000);
+                setTimeout(() => { fleetSyncVast(); }, 8000);
+                setTimeout(fleetPollNow, 12000);
+            } catch (err) {
+                alert(`Provision error: ${err.message}`);
+                btn.textContent = orig;
+            } finally {
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
+            }
+        }
+
+        async function destroyInstance(vastId, instanceId) {
+            const key = document.getElementById('apiKey').value || '';
+            if (!key) { alert('Enter your API key first.'); return; }
+            if (!confirm(`Permanently destroy VAST instance #${vastId}? All data will be lost.`)) return;
+            try {
+                const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-destroy`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vast_id: String(vastId) }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    alert(`Destroy failed: ${data.error ?? data.detail ?? 'Unknown error'}`);
+                    return;
+                }
+                // Remove card immediately from DOM
+                const card = document.querySelector(`[data-inst-id="${instanceId}"]`);
+                if (card) card.remove();
+                setTimeout(fleetPollNow, 3000);
+            } catch (err) {
+                alert(`Destroy error: ${err.message}`);
+            }
+        }
 
         // ── Card rendering ────────────────────────────────────────────────────────
 
@@ -1929,6 +1986,7 @@
                     </div>
                     <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                         ${btnKill}${btnWarmup}${btnStart}${btnRestart}${btnStop}
+                        ${inst.vast_id ? `<button onclick="destroyInstance('${inst.vast_id}','${id}')" style="background:#21262d;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Destroy this VAST instance permanently">🗑 Destroy</button>` : ''}
                     </div>
                 </div>
                 <!-- Diagnostic strip -->
@@ -2105,9 +2163,28 @@
             const label = document.getElementById(`inst-log-label-${id}`);
             if (label) label.textContent = s.bootMode ? '⚡ Boot Log' : '🖥 Server Log';
 
-            // During boot: boot log is rendered directly by updateInstCard on each fleet poll.
-            // No fetch needed — just reschedule to keep the label current.
+            // During boot: fetch setup log from /admin/tts-setup-log
+            // This proxies /control/setup-log from the tunnel — available as soon as
+            // cloudflared connects (within ~60s of VAST container start).
             if (s.bootMode) {
+                const key = document.getElementById('apiKey')?.value?.trim() || '';
+                const encUrl = encodeURIComponent(tunnelUrl);
+                try {
+                    const res = await fetch(`${INFRA_BASE}/admin/tts-setup-log?lines=80&target_url=${encUrl}`, {
+                        headers: { 'x-api-key': key },
+                        signal: AbortSignal.timeout(5000)
+                    });
+                    const data = await res.json();
+                    const lines = data.lines || [];
+                    const scroll = document.getElementById(`inst-log-scroll-${id}`);
+                    if (scroll && lines.length) {
+                        scroll.innerHTML = lines.map(l =>
+                            `<div class="${_logClass(l)}">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
+                        ).join('');
+                        // Always scroll to bottom of setup log (newest at bottom)
+                        scroll.scrollTop = scroll.scrollHeight;
+                    }
+                } catch { /* tunnel not yet up — keep waiting */ }
                 s.logTimer = setTimeout(() => instLogPoll(id, tunnelUrl), 3000);
                 return;
             }
