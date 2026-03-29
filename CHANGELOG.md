@@ -1,6 +1,12 @@
 # Changelog
 
+## v3.741 — Provision: log full response + show VAST debug in alert (2026-03-29)
+
+- `provisionInstance()`: `console.log('[provision] response:', ...)` on every call so full response body is always visible in browser console.
+- Error alert now appends `vast_search_debug` JSON when present — shows raw VAST API response (HTTP status, keys, offer count, error) without needing Network tab inspection.
+
 ## v3.740 — Provision modal + live boot status card (2026-03-29)
+
 
 - **`router-monitor.html` — Provision modal**: Replaced bare browser `confirm()` with a styled dark modal. Shows "Provision New RTX 4090 — Maryland datacenter (host 70142)" with an optional "Override VAST offer ID" input field (for manual offer bypass when auto-search fails).
 - **`router-monitor.html` — Provisional boot card**: After clicking Provision, a live "Provisioning #VAST_ID" card appears immediately in the fleet section — no waiting for first heartbeat. Card shows elapsed time, progress bar, and phase context ("Waiting for VAST allocation" → "Instance running — setup in progress").
