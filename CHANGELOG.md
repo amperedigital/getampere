@@ -1,6 +1,13 @@
 # Changelog
 
+## v3.742 — Provisional card: Tear Down button + auto-dismiss on destroyed instance (2026-03-29)
+
+- **`router-monitor.html` — ⏹ Tear Down button**: Each provisional boot card (shown while VAST instance is starting) now has a red "Tear Down" button that calls `POST /admin/tts-fleet-destroy` directly from the card. Stops the poll, removes the card, and refreshes the fleet list.
+- **`router-monitor.html` — Auto-dismiss on destroyed instance**: `startProvisionPoll` now tracks `missCount`. After 3 consecutive `found: false` responses from `tts-fleet-provision-status` (~30s), the card auto-dismisses — instance is gone, stop pretending it's provisioning.
+- **`router-monitor.html` — `tearDownProvision(vastId)`**: New function handles provisional card teardown with confirmation, button state feedback, and proper cleanup of the poll timer and `_pendingProvisions` map entry.
+
 ## v3.741 — Provision: log full response + show VAST debug in alert (2026-03-29)
+
 
 - `provisionInstance()`: `console.log('[provision] response:', ...)` on every call so full response body is always visible in browser console.
 - Error alert now appends `vast_search_debug` JSON when present — shows raw VAST API response (HTTP status, keys, offer count, error) without needing Network tab inspection.

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.741">
+    <meta name="version" content="v3.742">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.741">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.741">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.742">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.742">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1687,6 +1687,7 @@
             const p = _pendingProvisions[vastId];
             if (!p) return;
             if (p.pollTimer) clearInterval(p.pollTimer);
+            p.missCount = 0;
             p.pollTimer = setInterval(async () => {
                 // Stop if real fleet card has arrived
                 if (document.getElementById('inst-card-vast-' + vastId)) {
@@ -1700,10 +1701,20 @@
                     const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision-status?vast_id=${vastId}`, { headers: { 'x-api-key': key } });
                     const d = await r.json();
                     if (d.found) {
+                        p.missCount = 0;
                         p.vastStatus = d.actual_status ?? 'unknown';
                         p.geo        = d.geolocation ?? '';
                         p.gpu        = d.gpu_name ?? '';
                     } else {
+                        p.missCount = (p.missCount || 0) + 1;
+                        // After 3 consecutive not-found responses (30s), the instance is gone — auto-dismiss
+                        if (p.missCount >= 3) {
+                            clearInterval(p.pollTimer);
+                            delete _pendingProvisions[vastId];
+                            const pc = document.getElementById('prov-card-' + vastId);
+                            if (pc) pc.remove();
+                            return;
+                        }
                         p.vastStatus = 'provisioning';
                     }
                 } catch { /* ignore — retry next interval */ }
@@ -1762,8 +1773,41 @@
                         </div>
                         <div style="font-size:10px;color:#484f58;margin-top:3px">${phaseNote}</div>
                     </div>
-                    <button onclick="if(_pendingProvisions['${vastId}']?.pollTimer)clearInterval(_pendingProvisions['${vastId}'].pollTimer);delete _pendingProvisions['${vastId}'];this.closest('#prov-card-${vastId}')?.remove()" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
+                    <div style="display:flex;gap:6px;align-items:center">
+                        <button onclick="tearDownProvision('${vastId}')" style="background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600" title="Destroy this VAST instance">&#x23f9; Tear Down</button>
+                        <button onclick="if(_pendingProvisions['${vastId}']?.pollTimer)clearInterval(_pendingProvisions['${vastId}'].pollTimer);delete _pendingProvisions['${vastId}'];this.closest('#prov-card-${vastId}')?.remove()" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
+                    </div>
                 </div>`;
+        }
+
+        async function tearDownProvision(vastId) {
+            const key = document.getElementById('apiKey').value || '';
+            if (!key) { alert('Enter your API key first.'); return; }
+            if (!confirm(`Permanently destroy VAST instance #${vastId}? All data will be lost.`)) return;
+            const btn = document.querySelector(`#prov-card-${vastId} button`);
+            if (btn) { btn.textContent = '⏳ Destroying…'; btn.disabled = true; }
+            try {
+                const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-destroy`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vast_id: String(vastId) }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    alert(`Destroy failed: ${data.error ?? data.detail ?? 'Unknown error'}`);
+                    if (btn) { btn.textContent = '⏹ Tear Down'; btn.disabled = false; }
+                    return;
+                }
+                // Clear the provisional card
+                if (_pendingProvisions[vastId]?.pollTimer) clearInterval(_pendingProvisions[vastId].pollTimer);
+                delete _pendingProvisions[vastId];
+                const pc = document.getElementById('prov-card-' + vastId);
+                if (pc) pc.remove();
+                setTimeout(fleetPollNow, 2000);
+            } catch (err) {
+                alert(`Tear down error: ${err.message}`);
+                if (btn) { btn.textContent = '⏹ Tear Down'; btn.disabled = false; }
+            }
         }
 
         async function destroyInstance(vastId, instanceId) {
