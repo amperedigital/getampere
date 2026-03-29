@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.746 — Fix provisional card setup log: poll tunnel instead of VAST API (2026-03-29)
+
+- **Fix**: Setup Log pane now polls `https://tts.getampere.ai/control/setup-log?lines=100` (real `/var/log/setup_vast.log` via `control_server.py`) instead of VAST Docker logs API which always returns 404.
+- **Fix**: Phase description text honest — no more hardcoded fake status strings.
+- **Fix**: Placeholder text updated to accurately reflect tunnel connection state.
+
 ## v3.745 — Provisional card: live Docker setup log pane (2026-03-29)
 
 - **`router-monitor.html` — Setup Log pane**: Provisional boot cards now show a collapsible `▼ Setup Log` section that polls `GET /admin/tts-instance-logs` every 3s and streams Docker stdout/stderr (setup_vast.sh output) in real time before the tunnel is up. Lines colour-coded: errors red, warnings yellow, success green.
