@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.742">
+    <meta name="version" content="v3.744">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.742">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.742">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.744">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.744">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1611,29 +1611,158 @@
         }
 
         // ── Pending provisions: vastId -> { ts, offerId, vastStatus, geo, gpu, pollTimer }
+        // Persisted to localStorage so page refresh restores boot cards automatically.
         const _pendingProvisions = {};
+        const PROV_STORE_KEY = 'rm_pending_provisions';
+        const PROV_MAX_AGE_MS = 30 * 60 * 1000; // 30 min — drop stale entries
+
+        function savePendingProvisions() {
+            try {
+                const toStore = {};
+                Object.entries(_pendingProvisions).forEach(([vastId, p]) => {
+                    toStore[vastId] = { ts: p.ts, offerId: p.offerId || '', vastStatus: p.vastStatus || 'provisioning', geo: p.geo || '', gpu: p.gpu || '' };
+                });
+                if (Object.keys(toStore).length === 0) {
+                    localStorage.removeItem(PROV_STORE_KEY);
+                } else {
+                    localStorage.setItem(PROV_STORE_KEY, JSON.stringify(toStore));
+                }
+            } catch { /* ignore quota errors */ }
+        }
+
+        function restorePendingProvisions(key) {
+            try {
+                const raw = localStorage.getItem(PROV_STORE_KEY);
+                if (!raw) return;
+                const stored = JSON.parse(raw);
+                const now = Date.now();
+                Object.entries(stored).forEach(([vastId, p]) => {
+                    if (now - p.ts > PROV_MAX_AGE_MS) return; // too old
+                    if (_pendingProvisions[vastId]) return;    // already tracking
+                    _pendingProvisions[vastId] = { ts: p.ts, offerId: p.offerId || '', vastStatus: p.vastStatus || 'provisioning', geo: p.geo || '', gpu: p.gpu || '', pollTimer: null, missCount: 0 };
+                });
+                if (Object.keys(_pendingProvisions).length > 0) {
+                    renderPendingCards();
+                    Object.keys(_pendingProvisions).forEach(vastId => startProvisionPoll(vastId, key));
+                }
+            } catch { /* ignore parse errors */ }
+        }
+
+        function dismissProvision(vastId) {
+            if (_pendingProvisions[vastId]?.pollTimer) clearInterval(_pendingProvisions[vastId].pollTimer);
+            delete _pendingProvisions[vastId];
+            savePendingProvisions();
+            const pc = document.getElementById('prov-card-' + vastId);
+            if (pc) pc.remove();
+        }
 
         async function provisionInstance() {
             const key = document.getElementById('apiKey').value || '';
             if (!key) { alert('Enter your API key first.'); return; }
 
-            // ── Custom modal with optional offer_id field ──────────────────
+            // ── Dynamic location picker modal ──────────────────────────────────
             const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center';
             modal.innerHTML = `
-                <div style="background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;width:420px;max-width:90vw">
-                    <div style="font-size:14px;font-weight:700;color:#e6edf3;margin-bottom:6px">&#x1f5a5; Provision New RTX 4090</div>
-                    <div style="font-size:12px;color:#8b949e;margin-bottom:16px">Prefers Maryland datacenter (host 70142). Falls back to cheapest verified US RTX 4090. Billing starts immediately at ~$0.40/hr.</div>
-                    <div style="margin-bottom:16px">
-                        <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:4px">Override VAST offer ID <span style="color:#484f58">(optional — leave blank for auto-select)</span></label>
-                        <input id="provModalOfferId" type="text" placeholder="e.g. 12345678" style="width:100%;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:6px 10px;border-radius:6px;font-size:12px;font-family:monospace;box-sizing:border-box" />
+                <div style="background:#161b22;border:1px solid #30363d;border-radius:12px;padding:0;width:500px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+                    <div style="padding:18px 20px 12px;border-bottom:1px solid #21262d">
+                        <div style="font-size:14px;font-weight:700;color:#e6edf3;margin-bottom:4px">&#x1f5a5; Provision RTX 4090</div>
+                        <div style="font-size:11px;color:#8b949e">Select a datacenter. Sorted by proximity to Cloudflare Ashburn (IAD). Billing starts immediately at ~$0.40/hr.</div>
                     </div>
-                    <div style="display:flex;gap:8px;justify-content:flex-end">
+                    <div style="padding:10px 20px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:#8b949e">
+                            <input type="checkbox" id="provDCOnly" checked style="accent-color:#3fb950"> Datacenter only
+                        </label>
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:#8b949e">
+                            <input type="checkbox" id="provVerified" checked style="accent-color:#3fb950"> Verified hosts only
+                        </label>
+                        <span id="provLocStatus" style="font-size:10px;color:#484f58;margin-left:auto">Loading…</span>
+                    </div>
+                    <div id="provLocList" style="overflow-y:auto;flex:1;min-height:120px;max-height:280px">
+                        <div style="padding:24px;text-align:center;color:#484f58;font-size:12px">&#x23f3; Fetching available locations…</div>
+                    </div>
+                    <div style="padding:12px 20px;border-top:1px solid #21262d">
+                        <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:4px">Manual offer ID override <span style="color:#484f58">(optional — overrides location selection)</span></label>
+                        <input id="provModalOfferId" type="text" placeholder="e.g. 12345678" style="width:100%;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:5px 10px;border-radius:6px;font-size:12px;font-family:monospace;box-sizing:border-box"/>
+                    </div>
+                    <div style="padding:10px 20px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid #21262d">
                         <button id="provModalCancel" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer">Cancel</button>
-                        <button id="provModalConfirm" style="background:#1a3a1a;border:1px solid #3fb950;color:#3fb950;padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">&#x26a1; Provision</button>
+                        <button id="provModalConfirm" disabled style="background:#1a3a1a;border:1px solid #3fb950;color:#3fb950;padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;opacity:0.5">&#x26a1; Provision</button>
                     </div>
                 </div>`;
             document.body.appendChild(modal);
+
+            let selectedOfferIds = [];
+            let selectedGeo = '';
+
+            const loadLocations = async () => {
+                const dcOnly  = modal.querySelector('#provDCOnly').checked;
+                const verOnly = modal.querySelector('#provVerified').checked;
+                const locList = modal.querySelector('#provLocList');
+                const locStatus = modal.querySelector('#provLocStatus');
+                locList.innerHTML = '<div style="padding:24px;text-align:center;color:#484f58;font-size:12px">&#x23f3; Loading…</div>';
+                locStatus.textContent = 'Loading…';
+                selectedOfferIds = [];
+                selectedGeo = '';
+                modal.querySelector('#provModalConfirm').disabled = true;
+                modal.querySelector('#provModalConfirm').style.opacity = '0.5';
+                try {
+                    const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-available-locations?datacenter=${dcOnly}&verified=${verOnly}`, { headers: { 'x-api-key': key } });
+                    const d = await r.json();
+                    if (!r.ok) { locList.innerHTML = `<div style="padding:16px;color:#f85149;font-size:12px">Error: ${d.error ?? 'unknown'}</div>`; return; }
+                    const locs = d.locations ?? [];
+                    locStatus.textContent = `${locs.length} location${locs.length !== 1 ? 's' : ''} · ${d.total_offers} offers`;
+                    if (locs.length === 0) {
+                        locList.innerHTML = '<div style="padding:24px;text-align:center;color:#484f58;font-size:12px">No available locations match filters.</div>';
+                        return;
+                    }
+                    locList.innerHTML = locs.map((loc, i) => {
+                        const preferred = loc.is_preferred ? ' ⭐' : '';
+                        const dcBadge   = loc.is_datacenter ? '<span style="background:#0d2b0d;border:1px solid #3fb95044;color:#3fb950;border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700">DC</span>' : '';
+                        const vBadge    = loc.is_verified   ? '<span style="background:#0a1929;border:1px solid #388bfd44;color:#79c0ff;border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700">✓ VER</span>' : '';
+                        const price     = loc.min_price != null ? `$${loc.min_price.toFixed(3)}/hr` : '—';
+                        return `<div class="prov-loc-row" data-idx="${i}" data-geo="${loc.geolocation}" style="padding:10px 16px;border-bottom:1px solid #21262d;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.15s">
+                            <div style="flex:1;min-width:0">
+                                <div style="font-size:12px;font-weight:600;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#x1f4cd; ${loc.geolocation}${preferred}</div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">
+                                    ${dcBadge}${vBadge}
+                                    <span style="font-size:10px;color:#8b949e">${loc.offer_count} offer${loc.offer_count !== 1 ? 's' : ''}</span>
+                                    <span style="font-size:10px;color:#3fb950;font-weight:600">from ${price}</span>
+                                </div>
+                            </div>
+                            <div style="flex-shrink:0;width:16px;height:16px;border-radius:50%;border:2px solid #30363d;background:transparent" data-radio="${i}"></div>
+                        </div>`;
+                    }).join('');
+
+                    // Store loc data on element for click
+                    locList.querySelectorAll('.prov-loc-row').forEach((row, i) => {
+                        row.addEventListener('mouseenter', () => { if (!row.classList.contains('selected')) row.style.background = '#1c2128'; });
+                        row.addEventListener('mouseleave', () => { if (!row.classList.contains('selected')) row.style.background = ''; });
+                        row.addEventListener('click', () => {
+                            locList.querySelectorAll('.prov-loc-row').forEach(r => {
+                                r.classList.remove('selected'); r.style.background = '';
+                                r.querySelector('[data-radio]').style.background = 'transparent';
+                                r.querySelector('[data-radio]').style.borderColor = '#30363d';
+                            });
+                            row.classList.add('selected');
+                            row.style.background = '#0d2b0d';
+                            row.querySelector('[data-radio]').style.background = '#3fb950';
+                            row.querySelector('[data-radio]').style.borderColor = '#3fb950';
+                            selectedGeo = row.dataset.geo;
+                            selectedOfferIds = locs[i].top_offer_ids ?? [];
+                            const btn = modal.querySelector('#provModalConfirm');
+                            btn.disabled = false; btn.style.opacity = '1';
+                            btn.textContent = `⚡ Provision — ${locs[i].geolocation}`;
+                        });
+                    });
+                } catch(e) {
+                    locList.innerHTML = `<div style="padding:16px;color:#f85149;font-size:12px">Failed to load: ${e.message}</div>`;
+                }
+            };
+
+            modal.querySelector('#provDCOnly').addEventListener('change', loadLocations);
+            modal.querySelector('#provVerified').addEventListener('change', loadLocations);
+            loadLocations();
 
             const confirmed = await new Promise(resolve => {
                 modal.querySelector('#provModalCancel').onclick  = () => resolve(false);
@@ -1645,12 +1774,16 @@
 
             const btn = document.getElementById('fleetProvisionBtn');
             const orig = btn.textContent;
-            btn.textContent = '&#x23f3; Provisioning&#x2026;';
+            btn.textContent = '&#x23f3; Provisioning…';
             btn.disabled = true;
 
             try {
                 const body = {};
-                if (offerId) body.offer_id = offerId;
+                if (offerId) {
+                    body.offer_id = offerId;
+                } else if (selectedOfferIds.length > 0) {
+                    body.offer_ids = selectedOfferIds;
+                }
                 const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
@@ -1668,7 +1801,8 @@
                 btn.textContent = '&#x2705; #' + vastId + ' started';
 
                 // Register provisional card + start VAST-side status polling
-                _pendingProvisions[vastId] = { ts: Date.now(), offerId: data.offer_id ?? offerId, vastStatus: 'provisioning', geo: '', gpu: '', pollTimer: null };
+                _pendingProvisions[vastId] = { ts: Date.now(), offerId: data.offer_id ?? offerId, geo: selectedGeo || '', vastStatus: 'provisioning', gpu: '', pollTimer: null, missCount: 0 };
+                savePendingProvisions();
                 renderPendingCards();
                 startProvisionPoll(vastId, key);
 
@@ -1683,6 +1817,7 @@
             }
         }
 
+
         function startProvisionPoll(vastId, key) {
             const p = _pendingProvisions[vastId];
             if (!p) return;
@@ -1693,6 +1828,7 @@
                 if (document.getElementById('inst-card-vast-' + vastId)) {
                     clearInterval(p.pollTimer);
                     delete _pendingProvisions[vastId];
+                    savePendingProvisions();
                     const pc = document.getElementById('prov-card-' + vastId);
                     if (pc) pc.remove();
                     return;
@@ -1705,12 +1841,14 @@
                         p.vastStatus = d.actual_status ?? 'unknown';
                         p.geo        = d.geolocation ?? '';
                         p.gpu        = d.gpu_name ?? '';
+                        savePendingProvisions();
                     } else {
                         p.missCount = (p.missCount || 0) + 1;
                         // After 3 consecutive not-found responses (30s), the instance is gone — auto-dismiss
                         if (p.missCount >= 3) {
                             clearInterval(p.pollTimer);
                             delete _pendingProvisions[vastId];
+                            savePendingProvisions();
                             const pc = document.getElementById('prov-card-' + vastId);
                             if (pc) pc.remove();
                             return;
@@ -1775,7 +1913,7 @@
                     </div>
                     <div style="display:flex;gap:6px;align-items:center">
                         <button onclick="tearDownProvision('${vastId}')" style="background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600" title="Destroy this VAST instance">&#x23f9; Tear Down</button>
-                        <button onclick="if(_pendingProvisions['${vastId}']?.pollTimer)clearInterval(_pendingProvisions['${vastId}'].pollTimer);delete _pendingProvisions['${vastId}'];this.closest('#prov-card-${vastId}')?.remove()" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
+                        <button onclick="dismissProvision('${vastId}')" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
                     </div>
                 </div>`;
         }
@@ -1801,6 +1939,7 @@
                 // Clear the provisional card
                 if (_pendingProvisions[vastId]?.pollTimer) clearInterval(_pendingProvisions[vastId].pollTimer);
                 delete _pendingProvisions[vastId];
+                savePendingProvisions();
                 const pc = document.getElementById('prov-card-' + vastId);
                 if (pc) pc.remove();
                 setTimeout(fleetPollNow, 2000);
@@ -2609,6 +2748,10 @@
             loadWorkspaces();
             fleetPoll();              // Start TTS fleet dashboard polling (5s)
             vastBalancePoll();        // Start VAST credit balance polling (60s)
+
+            // Restore any in-progress provisions that survived a page refresh
+            const initKey = document.getElementById('apiKey').value.trim();
+            if (initKey) restorePendingProvisions(initKey);
 
 
             // Phase 1.3: Switch workspace on dropdown change — auto-reconnect

@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.744 — Provision modal: live location picker with datacenter + verified toggles (2026-03-29)
+
+- **`router-monitor.html` — Location picker modal**: Fully replaced the bare provision modal. On open, fetches `GET /admin/tts-fleet-available-locations` and displays all available RTX 4090 datacenter locations sorted by proximity to Cloudflare Ashburn (IAD) — Maryland ⭐ first. Each row shows geolocation, `DC` / `✓ VER` badges, offer count, and price. User clicks a row to select.
+- **Datacenter only toggle** (default ON) + **Verified hosts only toggle** (default ON): either toggle reloads the location list live.
+- **Provision button** stays disabled until a location is selected — text updates to show the chosen geo. Provision passes `offer_ids[]` from the selected location directly to the backend, skipping the blind VAST search.
+- **Manual offer ID override** field still available — takes precedence over location selection.
+
+## v3.743 — Provisional card persists across page refresh (localStorage) (2026-03-29)
+
+- **`router-monitor.html` — localStorage persistence**: `_pendingProvisions` is now saved to `localStorage` on every mutation (provision, status update, dismiss, teardown, auto-dismiss). On page load, any entries < 30 min old are restored, cards re-rendered, and status polls restarted. Page refresh no longer loses the boot-progress card for an in-flight provision.
+- **`dismissProvision(vastId)`**: Extracted from inline button onclick to a proper function so it correctly clears localStorage on dismiss.
+
 ## v3.742 — Provisional card: Tear Down button + auto-dismiss on destroyed instance (2026-03-29)
 
 - **`router-monitor.html` — ⏹ Tear Down button**: Each provisional boot card (shown while VAST instance is starting) now has a red "Tear Down" button that calls `POST /admin/tts-fleet-destroy` directly from the card. Stops the poll, removes the card, and refreshes the fleet list.
