@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.740 — Provision modal + live boot status card (2026-03-29)
+
+- **`router-monitor.html` — Provision modal**: Replaced bare browser `confirm()` with a styled dark modal. Shows "Provision New RTX 4090 — Maryland datacenter (host 70142)" with an optional "Override VAST offer ID" input field (for manual offer bypass when auto-search fails).
+- **`router-monitor.html` — Provisional boot card**: After clicking Provision, a live "Provisioning #VAST_ID" card appears immediately in the fleet section — no waiting for first heartbeat. Card shows elapsed time, progress bar, and phase context ("Waiting for VAST allocation" → "Instance running — setup in progress").
+- **`router-monitor.html` — Provision-status polling**: Provisional card polls `GET /admin/tts-fleet-provision-status?vast_id=X` every 10s to show VAST-side `actual_status` transitions (provisioning → loading → running) before the TTS server heartbeats. Auto-removes when the real fleet card appears.
+- **`router-monitor.html` — renderFleetCards**: Empty-state placeholder now only shows when there are neither real instances nor pending provisions. Provisional `prov-card-*` elements are preserved through fleet polls and auto-cleared when their real `inst-card-vast-*` arrives.
+
 ## v3.739 — Self-hosted assets: replace jsDelivr CDN with Cloudflare Workers Sites (2026-03-27)
 
 - **All HTML pages**: Removed all `cdn.jsdelivr.net/gh/amperedigital/getampere@vX.Y.Z/deploy/assets/...` refs from all 12 deploy HTML files. Assets now served from Cloudflare Workers Sites via relative paths (`/assets/css/styles.css?v=X.Y.Z`, `/assets/js/*.js?v=X.Y.Z`). Third-party CDN libs (Three.js, Lenis, Chart.js) untouched.

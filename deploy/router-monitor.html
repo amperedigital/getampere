@@ -1610,19 +1610,51 @@
             }
         }
 
+        // ── Pending provisions: vastId -> { ts, offerId, vastStatus, geo, gpu, pollTimer }
+        const _pendingProvisions = {};
+
         async function provisionInstance() {
-            const btn = document.getElementById('fleetProvisionBtn');
             const key = document.getElementById('apiKey').value || '';
             if (!key) { alert('Enter your API key first.'); return; }
-            if (!confirm('Provision a new RTX 4090 VAST instance? This will start billing immediately.')) return;
+
+            // ── Custom modal with optional offer_id field ──────────────────
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center';
+            modal.innerHTML = `
+                <div style="background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;width:420px;max-width:90vw">
+                    <div style="font-size:14px;font-weight:700;color:#e6edf3;margin-bottom:6px">&#x1f5a5; Provision New RTX 4090</div>
+                    <div style="font-size:12px;color:#8b949e;margin-bottom:16px">Prefers Maryland datacenter (host 70142). Falls back to cheapest verified US RTX 4090. Billing starts immediately at ~$0.40/hr.</div>
+                    <div style="margin-bottom:16px">
+                        <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:4px">Override VAST offer ID <span style="color:#484f58">(optional — leave blank for auto-select)</span></label>
+                        <input id="provModalOfferId" type="text" placeholder="e.g. 12345678" style="width:100%;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:6px 10px;border-radius:6px;font-size:12px;font-family:monospace;box-sizing:border-box" />
+                    </div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end">
+                        <button id="provModalCancel" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer">Cancel</button>
+                        <button id="provModalConfirm" style="background:#1a3a1a;border:1px solid #3fb950;color:#3fb950;padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600">&#x26a1; Provision</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+
+            const confirmed = await new Promise(resolve => {
+                modal.querySelector('#provModalCancel').onclick  = () => resolve(false);
+                modal.querySelector('#provModalConfirm').onclick = () => resolve(true);
+            });
+            const offerId = modal.querySelector('#provModalOfferId').value.trim();
+            document.body.removeChild(modal);
+            if (!confirmed) return;
+
+            const btn = document.getElementById('fleetProvisionBtn');
             const orig = btn.textContent;
-            btn.textContent = '⏳ Provisioning…';
+            btn.textContent = '&#x23f3; Provisioning&#x2026;';
             btn.disabled = true;
+
             try {
+                const body = {};
+                if (offerId) body.offer_id = offerId;
                 const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision`, {
                     method: 'POST',
                     headers: { 'x-api-key': key, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({}),
+                    body: JSON.stringify(body),
                 });
                 const data = await res.json();
                 if (!res.ok || !data.ok) {
@@ -1630,17 +1662,106 @@
                     btn.textContent = orig; btn.disabled = false;
                     return;
                 }
-                btn.textContent = `✅ #${data.vast_id} starting`;
-                // Poll fleet aggressively so the new card appears quickly
-                setTimeout(fleetPollNow, 2000);
-                setTimeout(() => { fleetSyncVast(); }, 8000);
-                setTimeout(fleetPollNow, 12000);
+                const vastId = String(data.vast_id);
+                btn.textContent = '&#x2705; #' + vastId + ' started';
+
+                // Register provisional card + start VAST-side status polling
+                _pendingProvisions[vastId] = { ts: Date.now(), offerId: data.offer_id ?? offerId, vastStatus: 'provisioning', geo: '', gpu: '', pollTimer: null };
+                renderPendingCards();
+                startProvisionPoll(vastId, key);
+
+                setTimeout(fleetPollNow, 3000);
+                setTimeout(() => { fleetSyncVast(); }, 20000);
+                setTimeout(fleetPollNow, 25000);
             } catch (err) {
                 alert(`Provision error: ${err.message}`);
                 btn.textContent = orig;
             } finally {
-                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 8000);
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 6000);
             }
+        }
+
+        function startProvisionPoll(vastId, key) {
+            const p = _pendingProvisions[vastId];
+            if (!p) return;
+            if (p.pollTimer) clearInterval(p.pollTimer);
+            p.pollTimer = setInterval(async () => {
+                // Stop if real fleet card has arrived
+                if (document.getElementById('inst-card-vast-' + vastId)) {
+                    clearInterval(p.pollTimer);
+                    delete _pendingProvisions[vastId];
+                    const pc = document.getElementById('prov-card-' + vastId);
+                    if (pc) pc.remove();
+                    return;
+                }
+                try {
+                    const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision-status?vast_id=${vastId}`, { headers: { 'x-api-key': key } });
+                    const d = await r.json();
+                    if (d.found) {
+                        p.vastStatus = d.actual_status ?? 'unknown';
+                        p.geo        = d.geolocation ?? '';
+                        p.gpu        = d.gpu_name ?? '';
+                    } else {
+                        p.vastStatus = 'provisioning';
+                    }
+                } catch { /* ignore — retry next interval */ }
+                updatePendingCard(vastId);
+            }, 10000);
+        }
+
+        function renderPendingCards() {
+            const container = document.getElementById('ttsFleetCards');
+            // Remove "no instances" placeholder if present
+            const placeholder = container.querySelector(':not([data-inst-id]):not([id^="prov-card-"])');
+            if (placeholder && !placeholder.dataset.instId) placeholder.remove();
+            Object.keys(_pendingProvisions).forEach(vastId => {
+                if (!document.getElementById('prov-card-' + vastId)) {
+                    const div = document.createElement('div');
+                    div.id = 'prov-card-' + vastId;
+                    div.style.cssText = 'background:#161b22;border:1px solid #3fb95033;border-radius:12px;overflow:hidden';
+                    container.insertBefore(div, container.firstChild);
+                }
+                updatePendingCard(vastId);
+            });
+        }
+
+        function updatePendingCard(vastId) {
+            const p = _pendingProvisions[vastId];
+            if (!p) return;
+            const card = document.getElementById('prov-card-' + vastId);
+            if (!card) return;
+            const elapsed = Math.round((Date.now() - p.ts) / 1000);
+            const st = p.vastStatus || 'provisioning';
+            const stLabel = st === 'running' ? '&#x1f680; Running &#x2014; waiting for setup' : st === 'loading' ? '&#x23f3; Booting image&#x2026;' : '&#x23f3; Provisioning&#x2026;';
+            const stColor = st === 'running' ? '#3fb950' : '#e3b341';
+            const pct = Math.min(95, Math.round((elapsed / 600) * 100));
+            const phaseNote = st === 'running'
+                ? 'Instance running on VAST &#x2014; setup_vast.sh downloading weights + starting tunnel (~5-8 min total)'
+                : elapsed < 90 ? 'VAST is allocating an RTX 4090 in Maryland (host 70142) &#x2014; typically 1-3 min'
+                : 'Still allocating &#x2014; if this takes >5 min, check VAST dashboard or try a manual offer ID';
+            card.innerHTML = `
+                <div style="padding:12px 16px;border-bottom:1px solid #21262d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span class="live-dot" style="width:8px;height:8px;border-radius:50%;background:${stColor};display:inline-block;flex-shrink:0"></span>
+                            <span style="font-size:13px;font-weight:700;color:#e6edf3">VAST #${vastId}</span>
+                            <span style="font-size:11px;font-weight:600;color:${stColor}">${stLabel}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                            <span style="font-size:10px;color:#8b949e">&#x1f4cd; Maryland (host 70142)</span>
+                            ${p.gpu ? '<span style="font-size:10px;color:#8b949e">' + p.gpu + '</span>' : ''}
+                            <span style="font-size:10px;color:#484f58;font-family:monospace">Elapsed: ${fmtUptime(elapsed)}</span>
+                            <span style="font-size:10px;color:#484f58">Polls every 10s</span>
+                        </div>
+                        <div style="margin-top:6px">
+                            <div style="background:#21262d;border-radius:4px;height:5px;width:240px;max-width:100%;overflow:hidden">
+                                <div style="height:100%;border-radius:4px;background:${stColor};width:${pct}%;transition:width 1s ease"></div>
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:#484f58;margin-top:3px">${phaseNote}</div>
+                    </div>
+                    <button onclick="if(_pendingProvisions['${vastId}']?.pollTimer)clearInterval(_pendingProvisions['${vastId}'].pollTimer);delete _pendingProvisions['${vastId}'];this.closest('#prov-card-${vastId}')?.remove()" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
+                </div>`;
         }
 
         async function destroyInstance(vastId, instanceId) {
@@ -1693,14 +1814,15 @@
                 }
             }
 
-            if (!instances.length) {
+            if (!instances.length && !Object.keys(_pendingProvisions).length) {
                 container.innerHTML = `<div style="text-align:center;padding:24px;color:#484f58;font-size:12px;background:#161b22;border:1px solid #30363d;border-radius:12px">No active instances in fleet registry</div>`;
                 return;
             }
 
             // Clear any empty-state placeholder before rendering real cards
+            // Preserve prov-card-* (provisional provisioning cards)
             Array.from(container.children).forEach(el => {
-                if (!el.hasAttribute('data-inst-id')) el.remove();
+                if (!el.hasAttribute('data-inst-id') && !el.id.startsWith('prov-card-')) el.remove();
             });
 
             // Preserve existing cards; only update/add/remove as needed
@@ -1709,6 +1831,17 @@
 
             // Remove stale cards
             existingIds.forEach(id => { if (!newIds.has(id)) document.getElementById(`inst-card-${id}`)?.remove(); });
+
+            // Auto-clear provisional cards when real fleet card has arrived
+            newIds.forEach(id => {
+                // instance_id format is "vast-NNNNNN"; extract VAST numeric id
+                const vastNum = id.startsWith('vast-') ? id.slice(5) : null;
+                if (vastNum && _pendingProvisions[vastNum]) {
+                    if (_pendingProvisions[vastNum].pollTimer) clearInterval(_pendingProvisions[vastNum].pollTimer);
+                    delete _pendingProvisions[vastNum];
+                    document.getElementById('prov-card-' + vastNum)?.remove();
+                }
+            });
 
             instances.forEach(inst => {
                 const id = inst.instance_id;
