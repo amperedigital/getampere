@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.744">
+    <meta name="version" content="v3.745">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.744">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.744">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.745">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.745">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1841,6 +1841,8 @@
                         p.vastStatus = d.actual_status ?? 'unknown';
                         p.geo        = d.geolocation ?? '';
                         p.gpu        = d.gpu_name ?? '';
+                        p.sshHost    = d.ssh_host ?? '';
+                        p.sshPort    = d.ssh_port ?? '';
                         savePendingProvisions();
                     } else {
                         p.missCount = (p.missCount || 0) + 1;
@@ -1858,6 +1860,34 @@
                 } catch { /* ignore — retry next interval */ }
                 updatePendingCard(vastId);
             }, 10000);
+
+            // Start setup log poll (every 3s) — reads Docker stdout via VAST API
+            if (!p.logPollTimer) {
+                p.logLines = p.logLines || [];
+                p.logPollTimer = setInterval(async () => {
+                    try {
+                        const lr = await fetch(`${INFRA_BASE}/admin/tts-instance-logs?vast_id=${vastId}&tail=200`, { headers: { 'x-api-key': key } });
+                        if (!lr.ok) return;
+                        const text = await lr.text();
+                        const lines = text.split('\n').filter(l => l.trim());
+                        if (lines.length > 0) {
+                            p.logLines = lines; // Replace with latest tail
+                            const logEl = document.getElementById('prov-log-' + vastId);
+                            if (logEl) {
+                                const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
+                                logEl.innerHTML = p.logLines.map(l => {
+                                    const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
+                                              : l.includes('WARNING') || l.includes('WARN') ? '#e3b341'
+                                              : l.includes('\u2705') || l.includes('Complete') || l.includes('SUCCESS') ? '#3fb950'
+                                              : '#c9d1d9';
+                                    return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                                }).join('');
+                                if (atBottom) logEl.scrollTop = logEl.scrollHeight;
+                            }
+                        }
+                    } catch { /* ignore */ }
+                }, 3000);
+            }
         }
 
         function renderPendingCards() {
@@ -1899,7 +1929,7 @@
                             <span style="font-size:11px;font-weight:600;color:${stColor}">${stLabel}</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                            <span style="font-size:10px;color:#8b949e">&#x1f4cd; Maryland (host 70142)</span>
+                            <span style="font-size:10px;color:#8b949e">&#x1f4cd; ${p.geo || 'Maryland (host 70142)'}</span>
                             ${p.gpu ? '<span style="font-size:10px;color:#8b949e">' + p.gpu + '</span>' : ''}
                             <span style="font-size:10px;color:#484f58;font-family:monospace">Elapsed: ${fmtUptime(elapsed)}</span>
                             <span style="font-size:10px;color:#484f58">Polls every 10s</span>
@@ -1915,7 +1945,27 @@
                         <button onclick="tearDownProvision('${vastId}')" style="background:#3a1a1a;border:1px solid #f85149;color:#f85149;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600" title="Destroy this VAST instance">&#x23f9; Tear Down</button>
                         <button onclick="dismissProvision('${vastId}')" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
                     </div>
+                </div>
+                <div style="border-top:1px solid #21262d">
+                    <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="const l=document.getElementById('prov-log-${vastId}');if(l){l.style.display=l.style.display==='none'?'block':'none';this.querySelector('.prov-log-toggle').textContent=l.style.display==='none'?'▶ Setup Log':'▼ Setup Log'}">
+                        <span style="font-size:11px;font-weight:600;color:#8b949e"><span class="prov-log-toggle">▼ Setup Log</span> <span style="font-size:9px;color:#484f58;font-weight:400">(Docker stdout — setup_vast.sh · polls every 3s)</span></span>
+                        ${p.sshHost ? '<span style="font-size:9px;color:#484f58;font-family:monospace">ssh root@' + p.sshHost + ' -p ' + p.sshPort + '</span>' : ''}
+                    </div>
+                    <div id="prov-log-${vastId}" style="background:#0d1117;padding:10px 16px;font-size:10px;font-family:monospace;line-height:1.5;max-height:240px;overflow-y:auto;border-top:1px solid #21262d">${
+                        (p.logLines && p.logLines.length > 0)
+                            ? p.logLines.map(l => {
+                                const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
+                                          : l.includes('WARNING') || l.includes('WARN') ? '#e3b341'
+                                          : l.includes('\u2705') || l.includes('Complete') || l.includes('SUCCESS') ? '#3fb950'
+                                          : '#c9d1d9';
+                                return '<div style="color:' + col + ';line-height:1.4">' + l.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+                              }).join('')
+                            : '<span style="color:#484f58">Waiting for Docker output from VAST… (may take 30-60s after container starts)</span>'
+                    }</div>
                 </div>`;
+            // Scroll log to bottom after initial render
+            const logEl = document.getElementById('prov-log-' + vastId);
+            if (logEl && p.logLines && p.logLines.length > 0) logEl.scrollTop = logEl.scrollHeight;
         }
 
         async function tearDownProvision(vastId) {

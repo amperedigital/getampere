@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.745 — Provisional card: live Docker setup log pane (2026-03-29)
+
+- **`router-monitor.html` — Setup Log pane**: Provisional boot cards now show a collapsible `▼ Setup Log` section that polls `GET /admin/tts-instance-logs` every 3s and streams Docker stdout/stderr (setup_vast.sh output) in real time before the tunnel is up. Lines colour-coded: errors red, warnings yellow, success green.
+- **SSH command displayed**: Once VAST reports `ssh_host`/`ssh_port`, the full SSH command is shown in the log pane header for direct terminal access.
+- **Log persistence**: `p.logLines` stored on `_pendingProvisions` so logs survive card re-renders.
+
 ## v3.744 — Provision modal: live location picker with datacenter + verified toggles (2026-03-29)
 
 - **`router-monitor.html` — Location picker modal**: Fully replaced the bare provision modal. On open, fetches `GET /admin/tts-fleet-available-locations` and displays all available RTX 4090 datacenter locations sorted by proximity to Cloudflare Ashburn (IAD) — Maryland ⭐ first. Each row shows geolocation, `DC` / `✓ VER` badges, offer count, and price. User clicks a row to select.
