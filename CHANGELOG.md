@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.751 — Provision modal: real GPU search, 2× bare-metal auto-filter, modal read-before-removal fix (2026-03-29)
+
+- **Provision modal — GPU mode selection**: GPU mode (`1×` / `2×`) is now read from the modal DOM **before** `removeChild()` — previously the modal was already detached when `querySelector` ran, always falling back to `'1'` regardless of user selection.
+- **Location search — `num_gpus` param**: `loadLocations()` now passes `&num_gpus=N` to `GET /admin/tts-fleet-available-locations`, so the VAST search filters for machines that actually have the selected number of GPUs.
+- **2× auto-unchecks datacenter**: Selecting 2× RTX 4090 automatically unchecks "Datacenter only" with a warning note — datacenter VAST hosts almost never have multi-GPU bundles; those are on bare-metal.
+- **GPU tile change reloads locations**: Switching between 1× and 2× now triggers a full location list reload (correct `num_gpus` filter applied).
+- **`replica_count` now dynamic**: Sends `gpu_count × 4` (4 for 1×, 8 for 2×) — was hardcoded to 4.
+
 ## v3.750 — Provision log panel: elapsed-based status messages when tunnel unreachable (2026-03-29)
 
 - **Setup log panel**: Instead of blank when tunnel is unreachable, now shows time-aware messages: "⏳ Container running — model downloading…" (0–5 min), "⏳ Model loading + compiling CUDA kernels…" (5–10 min), "⏳ Kernel compilation in progress — GPU ~40% is normal…" (10–15 min). Switches to live log lines the moment the tunnel connects.

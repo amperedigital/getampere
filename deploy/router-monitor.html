@@ -1717,6 +1717,8 @@
             const loadLocations = async () => {
                 const dcOnly  = modal.querySelector('#provDCOnly').checked;
                 const verOnly = modal.querySelector('#provVerified').checked;
+                const gpuMode = modal.querySelector('input[name="provGpuMode"]:checked')?.value ?? '1';
+                const numGpus = parseInt(gpuMode, 10) || 1;
                 const locList = modal.querySelector('#provLocList');
                 const locStatus = modal.querySelector('#provLocStatus');
                 locList.innerHTML = '<div style="padding:24px;text-align:center;color:#484f58;font-size:12px">&#x23f3; Loading…</div>';
@@ -1725,8 +1727,19 @@
                 selectedGeo = '';
                 modal.querySelector('#provModalConfirm').disabled = true;
                 modal.querySelector('#provModalConfirm').style.opacity = '0.5';
+                // Remove any stale note
+                modal.querySelector('#provGpuNote')?.remove();
+                // For 2× mode: DC offers with 2 GPUs are extremely rare — auto-uncheck datacenter
+                if (numGpus >= 2) {
+                    modal.querySelector('#provDCOnly').checked = false;
+                    const noteEl = document.createElement('div');
+                    noteEl.id = 'provGpuNote';
+                    noteEl.style.cssText = 'font-size:10px;color:#e3b341;padding:4px 0 0;grid-column:1/-1';
+                    noteEl.textContent = '⚠️ Datacenter filter removed — 2× GPU offers are almost exclusively on bare-metal hosts.';
+                    modal.querySelector('#provDCOnly').closest('div[style*="flex"]').appendChild(noteEl);
+                }
                 try {
-                    const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-available-locations?datacenter=${dcOnly}&verified=${verOnly}`, { headers: { 'x-api-key': key } });
+                    const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-available-locations?datacenter=${numGpus >= 2 ? 'false' : dcOnly}&verified=${verOnly}&num_gpus=${numGpus}`, { headers: { 'x-api-key': key } });
                     const d = await r.json();
                     if (!r.ok) { locList.innerHTML = `<div style="padding:16px;color:#f85149;font-size:12px">Error: ${d.error ?? 'unknown'}</div>`; return; }
                     const locs = d.locations ?? [];
@@ -1787,10 +1800,13 @@
                     if (radio.value === '1') {
                         g1.style.background = '#0d2b0d'; g1.style.borderColor = '#3fb950';
                         g2.style.background = '#161b22'; g2.style.borderColor = '#30363d';
+                        // Restore datacenter default for 1×
+                        modal.querySelector('#provDCOnly').checked = true;
                     } else {
                         g2.style.background = '#1a1600'; g2.style.borderColor = '#e3b341';
                         g1.style.background = '#161b22'; g1.style.borderColor = '#30363d';
                     }
+                    loadLocations(); // reload with correct num_gpus
                 });
             });
 
@@ -1802,7 +1818,10 @@
                 modal.querySelector('#provModalCancel').onclick  = () => resolve(false);
                 modal.querySelector('#provModalConfirm').onclick = () => resolve(true);
             });
-            const offerId = modal.querySelector('#provModalOfferId').value.trim();
+            // Read ALL modal values before removing from DOM
+            const gpuMode  = modal.querySelector('input[name="provGpuMode"]:checked')?.value ?? '1';
+            const gpuCount = parseInt(gpuMode, 10) || 1;
+            const offerId  = modal.querySelector('#provModalOfferId').value.trim();
             document.body.removeChild(modal);
             if (!confirmed) return;
 
@@ -1812,9 +1831,7 @@
             btn.disabled = true;
 
             try {
-                const gpuMode  = modal?.querySelector('input[name="provGpuMode"]:checked')?.value ?? '1';
-                const gpuCount = parseInt(gpuMode, 10) || 1;
-                const body = { gpu_count: gpuCount, replica_count: 4 };
+                const body = { gpu_count: gpuCount, replica_count: gpuCount * 4 };
                 if (offerId) {
                     body.offer_id = offerId;
                 } else if (selectedOfferIds.length > 0) {
