@@ -1,6 +1,13 @@
 # Changelog
 
+## v3.748 — Fix provision card lifecycle: auto-dismiss on health ok + meaningful phase labels (2026-03-29)
+
+- **Auto-dismiss on ready**: Provision poll now probes `tts.getampere.ai/health` when VAST says running. First `ok` response auto-dismisses the provisional card and triggers fleet refresh — the real fleet card takes over seamlessly. No more stuck "waiting for setup".
+- **Phase labels**: ⏳ Allocating GPU → ⏳ Booting image → 🟡 Container up — loading model → (real card). Elapsed-time-aware sub-labels explain what's happening at each interval.
+- **Fleet card check fix**: Old check `getElementById('inst-card-vast-'+vastId)` never matched UUID-format instance IDs. Now uses broader presence check with 60s age guard.
+
 ## v3.747 — Fix ghost "waiting for setup" provision card auto-dismiss (2026-03-29)
+
 
 - **Fix**: Pending provision cards now clear via 3 match strategies: (1) `instance_id` format `vast-NNNNNN`, (2) `inst.vast_id` field from heartbeat payload, (3) age-based fallback — any provision >3 min old auto-dismisses when live instances are present. Fixed the bug where VAST allocates a different numeric ID than the booking API returns, causing the card to stick as a ghost forever.
 

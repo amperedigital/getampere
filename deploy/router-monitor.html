@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.747">
+    <meta name="version" content="v3.748">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.747">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.747">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.748">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.748">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1823,16 +1823,26 @@
             if (!p) return;
             if (p.pollTimer) clearInterval(p.pollTimer);
             p.missCount = 0;
+            p.tunnelOk  = false; // set true once /health responds ok
+
             p.pollTimer = setInterval(async () => {
-                // Stop if real fleet card has arrived
-                if (document.getElementById('inst-card-vast-' + vastId)) {
-                    clearInterval(p.pollTimer);
-                    delete _pendingProvisions[vastId];
-                    savePendingProvisions();
-                    const pc = document.getElementById('prov-card-' + vastId);
-                    if (pc) pc.remove();
-                    return;
+                // ── Check if real fleet card already arrived ──────────────────
+                // Match by any inst-card that has this vastId in its data or by fleet data
+                const anyFleetCard = document.querySelector('[id^="inst-card-"]');
+                if (anyFleetCard && Object.keys(_pendingProvisions).length > 0) {
+                    // If there's a fleet card AND we've been running >60s, dismiss
+                    const age = Date.now() - (p.ts || 0);
+                    if (age > 60_000) {
+                        clearInterval(p.pollTimer);
+                        if (p.logPollTimer) clearInterval(p.logPollTimer);
+                        delete _pendingProvisions[vastId];
+                        savePendingProvisions();
+                        document.getElementById('prov-card-' + vastId)?.remove();
+                        return;
+                    }
                 }
+
+                // ── Poll VAST for instance status ─────────────────────────────
                 try {
                     const r = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision-status?vast_id=${vastId}`, { headers: { 'x-api-key': key } });
                     const d = await r.json();
@@ -1846,21 +1856,45 @@
                         savePendingProvisions();
                     } else {
                         p.missCount = (p.missCount || 0) + 1;
-                        // After 3 consecutive not-found responses (30s), the instance is gone — auto-dismiss
                         if (p.missCount >= 3) {
                             clearInterval(p.pollTimer);
                             if (p.logPollTimer) clearInterval(p.logPollTimer);
                             delete _pendingProvisions[vastId];
                             savePendingProvisions();
-                            const pc = document.getElementById('prov-card-' + vastId);
-                            if (pc) pc.remove();
+                            document.getElementById('prov-card-' + vastId)?.remove();
                             return;
                         }
                         p.vastStatus = 'provisioning';
                     }
-                } catch { /* ignore — retry next interval */ }
+                } catch { /* retry next interval */ }
+
+                // ── When VAST says running, probe the tunnel health ───────────
+                // First ok → dismiss provisional, trigger fleet refresh (real card takes over)
+                if (p.vastStatus === 'running' && !p.tunnelOk) {
+                    try {
+                        const hr = await fetch('https://tts.getampere.ai/health', { signal: AbortSignal.timeout(4000) });
+                        if (hr.ok) {
+                            const hd = await hr.json().catch(() => ({}));
+                            if (hd.status === 'ok') {
+                                p.tunnelOk = true;
+                                // Small delay then dismiss — fleet poll will show the real card
+                                setTimeout(() => {
+                                    clearInterval(p.pollTimer);
+                                    if (p.logPollTimer) clearInterval(p.logPollTimer);
+                                    delete _pendingProvisions[vastId];
+                                    savePendingProvisions();
+                                    document.getElementById('prov-card-' + vastId)?.remove();
+                                    fleetPollNow();
+                                }, 1500);
+                                return;
+                            }
+                        }
+                    } catch { /* tunnel not up yet — keep waiting */ }
+                }
+
                 updatePendingCard(vastId);
             }, 10000);
+
 
             // Start setup log poll (every 5s) — reads /var/log/setup_vast.log via the
             // cloudflared tunnel URL. Available once cloudflared connects (~1-2 min after boot).
@@ -1918,13 +1952,19 @@
             if (!card) return;
             const elapsed = Math.round((Date.now() - p.ts) / 1000);
             const st = p.vastStatus || 'provisioning';
-            const stLabel = st === 'running' ? '&#x1f680; Running &#x2014; waiting for setup' : st === 'loading' ? '&#x23f3; Booting image&#x2026;' : '&#x23f3; Provisioning&#x2026;';
-            const stColor = st === 'running' ? '#3fb950' : '#e3b341';
-            const pct = Math.min(95, Math.round((elapsed / 600) * 100));
+            // Phase progression: Provisioning → Booting → Model loading → (health ok auto-dismisses)
+            const stLabel = st === 'running'
+                ? '&#x1f7e1; Container up &mdash; loading model&hellip;'
+                : st === 'loading'
+                ? '&#x23f3; Booting image&hellip;'
+                : '&#x23f3; Allocating GPU&hellip;';
+            const stColor = st === 'running' ? '#e3b341' : '#8b949e';
+            const pct = Math.min(90, Math.round((elapsed / 480) * 100));
             const phaseNote = st === 'running'
-                ? 'Container running &#x2014; supervisord started cloudflared + setup_vast.sh. Setup log streams below once tunnel connects (~1-2 min).'
-                : elapsed < 90 ? 'VAST allocating RTX 4090 in Maryland &#x2014; typically 1-3 min'
-                : 'Still allocating &#x2014; if >5 min, check VAST dashboard';
+                ? 'Container running &mdash; downloading model weights + compiling kernels. This card will be replaced automatically when the server is ready.'
+                : elapsed < 90 ? 'Requesting RTX 4090 from VAST &mdash; typically 1&ndash;3 min'
+                : elapsed < 240 ? 'Image pulling from GHCR &mdash; usually ready within 4 min total'
+                : 'Taking longer than usual &mdash; check VAST dashboard if >8 min';
             card.innerHTML = `
                 <div style="padding:12px 16px;border-bottom:1px solid #21262d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
                     <div style="display:flex;flex-direction:column;gap:4px">
@@ -1937,11 +1977,10 @@
                             <span style="font-size:10px;color:#8b949e">&#x1f4cd; ${p.geo || 'Maryland (host 70142)'}</span>
                             ${p.gpu ? '<span style="font-size:10px;color:#8b949e">' + p.gpu + '</span>' : ''}
                             <span style="font-size:10px;color:#484f58;font-family:monospace">Elapsed: ${fmtUptime(elapsed)}</span>
-                            <span style="font-size:10px;color:#484f58">Polls every 10s</span>
                         </div>
                         <div style="margin-top:6px">
                             <div style="background:#21262d;border-radius:4px;height:5px;width:240px;max-width:100%;overflow:hidden">
-                                <div style="height:100%;border-radius:4px;background:${stColor};width:${pct}%;transition:width 1s ease"></div>
+                                <div style="height:100%;border-radius:4px;background:${stColor};width:${pct}%;transition:width 2s ease"></div>
                             </div>
                         </div>
                         <div style="font-size:10px;color:#484f58;margin-top:3px">${phaseNote}</div>
@@ -1951,6 +1990,7 @@
                         <button onclick="dismissProvision('${vastId}')" style="background:#21262d;border:1px solid #30363d;color:#8b949e;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer" title="Dismiss this card">&#x2715; Dismiss</button>
                     </div>
                 </div>
+
                 <div style="border-top:1px solid #21262d">
                     <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="const l=document.getElementById('prov-log-${vastId}');if(l){l.style.display=l.style.display==='none'?'block':'none';this.querySelector('.prov-log-toggle').textContent=l.style.display==='none'?'▶ Setup Log':'▼ Setup Log'}">
                         <span style="font-size:11px;font-weight:600;color:#8b949e"><span class="prov-log-toggle">▼ Setup Log</span> <span style="font-size:9px;color:#484f58;font-weight:400">(live: tts.getampere.ai/control/setup-log · polls every 5s)</span></span>
