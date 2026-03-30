@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.749">
+    <meta name="version" content="v3.750">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.749">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.749">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.750">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.750">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1933,34 +1933,49 @@
 
 
             // Start setup log poll (every 5s) — reads /var/log/setup_vast.log via the
-            // cloudflared tunnel URL. Available once cloudflared connects (~1-2 min after boot).
-            // Falls back silently if tunnel is not yet up.
+            // cloudflared tunnel URL. Shows meaningful status messages when tunnel isn't up yet.
             if (!p.logPollTimer) {
                 p.logLines = p.logLines || [];
+                p.logMissCount = 0;
                 p.logPollTimer = setInterval(async () => {
+                    const elapsed = Math.round((Date.now() - p.ts) / 1000);
+                    const logEl = document.getElementById('prov-log-' + vastId);
+                    if (!logEl) return;
                     try {
                         const lr = await fetch('https://tts.getampere.ai/control/setup-log?lines=100', {
                             signal: AbortSignal.timeout(4000)
                         });
-                        if (!lr.ok) return;
+                        if (!lr.ok) throw new Error('not ok');
                         const lj = await lr.json();
                         const lines = (lj.lines || []).filter(l => l.trim());
                         if (lines.length > 0) {
                             p.logLines = lines;
-                            const logEl = document.getElementById('prov-log-' + vastId);
-                            if (logEl) {
-                                const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
-                                logEl.innerHTML = p.logLines.map(l => {
-                                    const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
-                                              : l.includes('WARN') ? '#e3b341'
-                                              : l.includes('[SETUP]') || l.includes('✅') || l.includes('complete') || l.includes('SUCCESS') ? '#3fb950'
-                                              : '#c9d1d9';
-                                    return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
-                                }).join('');
-                                if (atBottom) logEl.scrollTop = logEl.scrollHeight;
-                            }
+                            p.logMissCount = 0;
+                            const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
+                            logEl.innerHTML = p.logLines.map(l => {
+                                const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
+                                          : l.includes('WARN') ? '#e3b341'
+                                          : l.includes('[SETUP]') || l.includes('✅') || l.includes('complete') || l.includes('SUCCESS') ? '#3fb950'
+                                          : '#c9d1d9';
+                                return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                            }).join('');
+                            if (atBottom) logEl.scrollTop = logEl.scrollHeight;
                         }
-                    } catch { /* ignore */ }
+                    } catch {
+                        p.logMissCount = (p.logMissCount || 0) + 1;
+                        // Tunnel not up yet — show descriptive status based on elapsed time
+                        if (p.logLines.length === 0) {
+                            const statusMsg = p.vastStatus === 'running'
+                                ? elapsed < 300  ? '⏳ Container running — model downloading from R2 (~2–4 min)…'
+                                : elapsed < 600  ? '⏳ Model loading into VRAM + compiling CUDA kernels (first boot only)…'
+                                : elapsed < 900  ? '⏳ Kernel compilation in progress — GPU at ~40% utilization is normal…'
+                                :                  '⚠️ Taking longer than expected. Check VAST dashboard.'
+                                : elapsed < 120  ? '⏳ Waiting for container to start — VAST allocating host…'
+                                : elapsed < 300  ? '⏳ Image pulling from GHCR — typically 2–5 min for first pull…'
+                                :                  '⏳ Setup in progress — tunnel not reachable yet…';
+                            logEl.innerHTML = `<div style="color:#484f58;line-height:1.6;font-style:italic">${statusMsg}<br><span style="color:#30363d;font-size:9px">Elapsed: ${fmtUptime(elapsed)} · Polls every 3s · Will populate when tunnel connects</span></div>`;
+                        }
+                    }
                 }, 3000);
             }
         }

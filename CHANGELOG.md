@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.750 — Provision log panel: elapsed-based status messages when tunnel unreachable (2026-03-29)
+
+- **Setup log panel**: Instead of blank when tunnel is unreachable, now shows time-aware messages: "⏳ Container running — model downloading…" (0–5 min), "⏳ Model loading + compiling CUDA kernels…" (5–10 min), "⏳ Kernel compilation in progress — GPU ~40% is normal…" (10–15 min). Switches to live log lines the moment the tunnel connects.
+
 ## v3.749 — GPU mode selector in provision modal: 1× or 2× RTX 4090 (2026-03-29)
+
 
 - **Provision modal GPU Configuration section**: radio button tile selector — "1× RTX 4090 — 4 replicas · ~$0.55/hr" or "2× RTX 4090 — 8 replicas · ~$0.90/hr". Visual feedback on selection (green/amber border). Sends `gpu_count` + `replica_count` to provision API so the container auto-configures replica count and GPU affinity at boot.
 
