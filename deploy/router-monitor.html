@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.748">
+    <meta name="version" content="v3.749">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.748">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.748">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.749">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.749">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1678,6 +1678,25 @@
                         </label>
                         <span id="provLocStatus" style="font-size:10px;color:#484f58;margin-left:auto">Loading…</span>
                     </div>
+                    <div style="padding:10px 20px;border-bottom:1px solid #21262d">
+                        <div style="font-size:11px;color:#8b949e;margin-bottom:8px;font-weight:600">🖥️ GPU Configuration</div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap">
+                            <label id="provGpu1x" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#0d2b0d;border:1px solid #3fb950;border-radius:8px;padding:8px 14px;flex:1;min-width:180px">
+                                <input type="radio" name="provGpuMode" value="1" checked style="accent-color:#3fb950">
+                                <div>
+                                    <div style="font-size:12px;font-weight:700;color:#3fb950">1× RTX 4090</div>
+                                    <div style="font-size:10px;color:#8b949e">4 replicas · ~$0.55/hr · 4 concurrent callers</div>
+                                </div>
+                            </label>
+                            <label id="provGpu2x" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:8px 14px;flex:1;min-width:180px">
+                                <input type="radio" name="provGpuMode" value="2" style="accent-color:#3fb950">
+                                <div>
+                                    <div style="font-size:12px;font-weight:700;color:#e3b341">2× RTX 4090</div>
+                                    <div style="font-size:10px;color:#8b949e">8 replicas · ~$0.90/hr · 8 concurrent callers</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
                     <div id="provLocList" style="overflow-y:auto;flex:1;min-height:120px;max-height:280px">
                         <div style="padding:24px;text-align:center;color:#484f58;font-size:12px">&#x23f3; Fetching available locations…</div>
                     </div>
@@ -1760,6 +1779,21 @@
                 }
             };
 
+            // Add GPU mode radio change handlers for visual feedback
+            modal.querySelectorAll('input[name="provGpuMode"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const g1 = modal.querySelector('#provGpu1x');
+                    const g2 = modal.querySelector('#provGpu2x');
+                    if (radio.value === '1') {
+                        g1.style.background = '#0d2b0d'; g1.style.borderColor = '#3fb950';
+                        g2.style.background = '#161b22'; g2.style.borderColor = '#30363d';
+                    } else {
+                        g2.style.background = '#1a1600'; g2.style.borderColor = '#e3b341';
+                        g1.style.background = '#161b22'; g1.style.borderColor = '#30363d';
+                    }
+                });
+            });
+
             modal.querySelector('#provDCOnly').addEventListener('change', loadLocations);
             modal.querySelector('#provVerified').addEventListener('change', loadLocations);
             loadLocations();
@@ -1778,7 +1812,9 @@
             btn.disabled = true;
 
             try {
-                const body = {};
+                const gpuMode  = modal?.querySelector('input[name="provGpuMode"]:checked')?.value ?? '1';
+                const gpuCount = parseInt(gpuMode, 10) || 1;
+                const body = { gpu_count: gpuCount, replica_count: 4 };
                 if (offerId) {
                     body.offer_id = offerId;
                 } else if (selectedOfferIds.length > 0) {

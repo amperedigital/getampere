@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.749 — GPU mode selector in provision modal: 1× or 2× RTX 4090 (2026-03-29)
+
+- **Provision modal GPU Configuration section**: radio button tile selector — "1× RTX 4090 — 4 replicas · ~$0.55/hr" or "2× RTX 4090 — 8 replicas · ~$0.90/hr". Visual feedback on selection (green/amber border). Sends `gpu_count` + `replica_count` to provision API so the container auto-configures replica count and GPU affinity at boot.
+
 ## v3.748 — Fix provision card lifecycle: auto-dismiss on health ok + meaningful phase labels (2026-03-29)
+
 
 - **Auto-dismiss on ready**: Provision poll now probes `tts.getampere.ai/health` when VAST says running. First `ok` response auto-dismisses the provisional card and triggers fleet refresh — the real fleet card takes over seamlessly. No more stuck "waiting for setup".
 - **Phase labels**: ⏳ Allocating GPU → ⏳ Booting image → 🟡 Container up — loading model → (real card). Elapsed-time-aware sub-labels explain what's happening at each interval.
