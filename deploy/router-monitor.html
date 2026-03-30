@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.746">
+    <meta name="version" content="v3.747">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.746">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.746">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.747">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.747">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -2072,9 +2072,14 @@
             // Remove stale cards
             existingIds.forEach(id => { if (!newIds.has(id)) document.getElementById(`inst-card-${id}`)?.remove(); });
 
-            // Auto-clear provisional cards when real fleet card has arrived
+            // Auto-clear provisional cards when real fleet card has arrived.
+            // VAST sometimes allocates a different numeric ID than the booking response returns,
+            // so we match via both the instance_id format AND inst.vast_id directly.
+            // Final fallback: if ANY live instance exists and a provision is >3 min old, dismiss it —
+            // the heartbeat is ground truth; the pending card is always a ghost at that point.
+            const nowMs = Date.now();
             newIds.forEach(id => {
-                // instance_id format is "vast-NNNNNN"; extract VAST numeric id
+                // Match 1: instance_id = "vast-NNNNNN" → extract numeric part
                 const vastNum = id.startsWith('vast-') ? id.slice(5) : null;
                 if (vastNum && _pendingProvisions[vastNum]) {
                     if (_pendingProvisions[vastNum].pollTimer) clearInterval(_pendingProvisions[vastNum].pollTimer);
@@ -2082,6 +2087,28 @@
                     document.getElementById('prov-card-' + vastNum)?.remove();
                 }
             });
+            // Match 2: inst.vast_id field (direct from heartbeat payload)
+            instances.forEach(inst => {
+                const vid = String(inst.vast_id || '');
+                if (vid && _pendingProvisions[vid]) {
+                    if (_pendingProvisions[vid].pollTimer) clearInterval(_pendingProvisions[vid].pollTimer);
+                    delete _pendingProvisions[vid];
+                    document.getElementById('prov-card-' + vid)?.remove();
+                }
+            });
+            // Match 3: any provision >3 min old with live instances = stale ghost, auto-dismiss
+            if (instances.length > 0) {
+                Object.keys(_pendingProvisions).forEach(vid => {
+                    const age = nowMs - (_pendingProvisions[vid].ts || 0);
+                    if (age > 3 * 60 * 1000) {
+                        if (_pendingProvisions[vid].pollTimer) clearInterval(_pendingProvisions[vid].pollTimer);
+                        delete _pendingProvisions[vid];
+                        document.getElementById('prov-card-' + vid)?.remove();
+                    }
+                });
+            }
+            savePendingProvisions();
+
 
             instances.forEach(inst => {
                 const id = inst.instance_id;

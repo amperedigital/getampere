@@ -1,6 +1,11 @@
 # Changelog
 
+## v3.747 — Fix ghost "waiting for setup" provision card auto-dismiss (2026-03-29)
+
+- **Fix**: Pending provision cards now clear via 3 match strategies: (1) `instance_id` format `vast-NNNNNN`, (2) `inst.vast_id` field from heartbeat payload, (3) age-based fallback — any provision >3 min old auto-dismisses when live instances are present. Fixed the bug where VAST allocates a different numeric ID than the booking API returns, causing the card to stick as a ghost forever.
+
 ## v3.746 — Fix provisional card setup log: poll tunnel instead of VAST API (2026-03-29)
+
 
 - **Fix**: Setup Log pane now polls `https://tts.getampere.ai/control/setup-log?lines=100` (real `/var/log/setup_vast.log` via `control_server.py`) instead of VAST Docker logs API which always returns 404.
 - **Fix**: Phase description text honest — no more hardcoded fake status strings.
