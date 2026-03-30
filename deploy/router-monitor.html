@@ -1937,16 +1937,19 @@
                     }
                 } catch { /* retry next interval */ }
 
-                // ── When VAST says running, probe the tunnel health ───────────
-                // First ok → dismiss provisional, trigger fleet refresh (real card takes over)
-                if (p.vastStatus === 'running' && !p.tunnelOk) {
+                // ── When VAST says running OR prov card is old (restored from localStorage), probe the tunnel health ───────────
+                // First ok → dismiss provisional, trigger fleet refresh (real card takes over).
+                // Probing when age > 3min handles stale localStorage-restored cards even if vastStatus hasn't updated.
+                const provAge = Date.now() - (p.ts || 0);
+                if ((p.vastStatus === 'running' || provAge > 3 * 60_000) && !p.tunnelOk) {
                     try {
                         const hr = await fetch('https://tts.getampere.ai/health', { signal: AbortSignal.timeout(4000) });
                         if (hr.ok) {
                             const hd = await hr.json().catch(() => ({}));
                             if (hd.status === 'ok') {
                                 p.tunnelOk = true;
-                                // Small delay then dismiss — fleet poll will show the real card
+                                // Small delay then dismiss — schedule multiple fleet polls to ensure card appears
+                                // even if the first poll returns empty (transient DB staleness).
                                 setTimeout(() => {
                                     clearInterval(p.pollTimer);
                                     if (p.logPollTimer) clearInterval(p.logPollTimer);
@@ -1954,8 +1957,13 @@
                                     savePendingProvisions();
                                     document.getElementById('prov-card-' + vastId)?.remove();
                                     fleetPollNow();
+                                    setTimeout(fleetPollNow, 3000);
+                                    setTimeout(fleetPollNow, 8000);
                                 }, 1500);
                                 return;
+                            } else if (hd.status === 'warming_up') {
+                                // Model loaded but not warmed up yet — update card label
+                                p.tunnelPhase = 'warming_up';
                             }
                         }
                     } catch { /* tunnel not up yet — keep waiting */ }
@@ -2085,15 +2093,20 @@
             if (!card) return;
             const elapsed = Math.round((Date.now() - p.ts) / 1000);
             const st = p.vastStatus || 'provisioning';
-            // Phase progression: Provisioning → Booting → Model loading → (health ok auto-dismisses)
-            const stLabel = st === 'running'
+            const tunnelPhase = p.tunnelPhase || null;
+            // Phase progression: Provisioning → Booting → Model loading → Warming up → (health ok auto-dismisses)
+            const stLabel = tunnelPhase === 'warming_up'
+                ? '&#x1f7e1; Warming up&hellip;'
+                : st === 'running'
                 ? '&#x1f7e1; Container up &mdash; loading model&hellip;'
                 : st === 'loading'
                 ? '&#x23f3; Booting image&hellip;'
                 : '&#x23f3; Allocating GPU&hellip;';
-            const stColor = st === 'running' ? '#e3b341' : '#8b949e';
+            const stColor = (st === 'running' || tunnelPhase === 'warming_up') ? '#e3b341' : '#8b949e';
             const pct = Math.min(90, Math.round((elapsed / 480) * 100));
-            const phaseNote = st === 'running'
+            const phaseNote = tunnelPhase === 'warming_up'
+                ? 'Triton kernels compiling &mdash; first request may be slow. Card replaces automatically when ready.'
+                : st === 'running'
                 ? 'Container running &mdash; downloading model weights + compiling kernels. This card will be replaced automatically when the server is ready.'
                 : elapsed < 90 ? 'Requesting RTX 4090 from VAST &mdash; typically 1&ndash;3 min'
                 : elapsed < 240 ? 'Image pulling from GHCR &mdash; usually ready within 4 min total'
