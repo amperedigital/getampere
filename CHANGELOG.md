@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.753 — Provision: pass geo for fallback search + better stale-offer UX (2026-03-30)
+
+- **Provision modal**: Now sends `geo` (e.g. `"Quebec, CA"`) alongside `offer_ids` to the provision endpoint. Enables backend to scope fresh-search fallback to the correct country when all picker IDs are stale.
+- **Error message**: `all_offers_unavailable` now shows a clear, user-friendly alert explaining that VAST GPU slots sell within seconds and that the backend auto-retried. Instructs user to reopen the modal (which refreshes availability) if it still fails.
+
 ## v3.752 — Provision modal: upload bandwidth display per location (2026-03-29)
 
 - **Location picker — bandwidth badge**: Each location row now shows upload speed (`↑ Mb/s`) from the VAST offer. Color-coded: 🟢 ≥500 Mb/s, 🟡 200–499 Mb/s, 🔴 <200 Mb/s. Shows range if offers within a location vary (e.g. `200–741 Mb/s ↑`). Upload speed is critical for bare-metal 2× GPU hosts where network throughput varies widely.

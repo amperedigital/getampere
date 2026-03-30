@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.752">
+    <meta name="version" content="v3.753">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.752">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.752">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.753">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.753">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1847,6 +1847,7 @@
                     body.offer_id = offerId;
                 } else if (selectedOfferIds.length > 0) {
                     body.offer_ids = selectedOfferIds;
+                    body.geo = selectedGeo; // hint for fresh-search fallback if picker IDs are stale
                 }
                 const res = await fetch(`${INFRA_BASE}/admin/tts-fleet-provision`, {
                     method: 'POST',
@@ -1856,8 +1857,12 @@
                 const data = await res.json();
                 console.log('[provision] response:', JSON.stringify(data, null, 2));
                 if (!res.ok || !data.ok) {
+                    const isStale = data.error === 'all_offers_unavailable';
+                    const msg = isStale
+                        ? `\u26a1 All ${selectedGeo || 'selected location'} offers were claimed before your click — GPU slots on VAST sell within seconds.\n\nThe backend auto-retried with a fresh search. If it still failed, re-open the modal to refresh availability and try a different location.`
+                        : `Provision failed: ${data.error ?? data.detail ?? 'Unknown error'}`;
                     const debugStr = data.vast_search_debug ? '\n\nVAST debug: ' + JSON.stringify(data.vast_search_debug) : '';
-                    alert(`Provision failed: ${data.error ?? data.detail ?? 'Unknown error'}${debugStr}`);
+                    alert(msg + (isStale ? '' : debugStr));
                     btn.textContent = orig; btn.disabled = false;
                     return;
                 }
