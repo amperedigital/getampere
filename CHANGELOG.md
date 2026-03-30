@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.752 — Provision modal: upload bandwidth display per location (2026-03-29)
+
+- **Location picker — bandwidth badge**: Each location row now shows upload speed (`↑ Mb/s`) from the VAST offer. Color-coded: 🟢 ≥500 Mb/s, 🟡 200–499 Mb/s, 🔴 <200 Mb/s. Shows range if offers within a location vary (e.g. `200–741 Mb/s ↑`). Upload speed is critical for bare-metal 2× GPU hosts where network throughput varies widely.
+
 ## v3.751 — Provision modal: real GPU search, 2× bare-metal auto-filter, modal read-before-removal fix (2026-03-29)
 
 - **Provision modal — GPU mode selection**: GPU mode (`1×` / `2×`) is now read from the modal DOM **before** `removeChild()` — previously the modal was already detached when `querySelector` ran, always falling back to `'1'` regardless of user selection.

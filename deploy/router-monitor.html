@@ -1753,6 +1753,16 @@
                         const dcBadge   = loc.is_datacenter ? '<span style="background:#0d2b0d;border:1px solid #3fb95044;color:#3fb950;border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700">DC</span>' : '';
                         const vBadge    = loc.is_verified   ? '<span style="background:#0a1929;border:1px solid #388bfd44;color:#79c0ff;border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700">✓ VER</span>' : '';
                         const price     = loc.min_price != null ? `$${loc.min_price.toFixed(3)}/hr` : '—';
+                        // Upload speed badge — critical for audio tunnel throughput
+                        const up = loc.inet_up_mbps;
+                        const upMin = loc.inet_up_min;
+                        const upMax = loc.inet_up_max;
+                        const upColor = up == null ? '#484f58' : up >= 500 ? '#3fb950' : up >= 200 ? '#e3b341' : '#f85149';
+                        const upLabel = up == null ? '? Mb/s ↑'
+                            : (upMin != null && upMax != null && upMin !== upMax)
+                            ? `${upMin}–${upMax} Mb/s ↑`
+                            : `${up} Mb/s ↑`;
+                        const upBadge = `<span style="font-size:10px;color:${upColor};font-weight:600;font-family:monospace" title="Upload bandwidth (critical for audio stream)">${upLabel}</span>`;
                         return `<div class="prov-loc-row" data-idx="${i}" data-geo="${loc.geolocation}" style="padding:10px 16px;border-bottom:1px solid #21262d;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.15s">
                             <div style="flex:1;min-width:0">
                                 <div style="font-size:12px;font-weight:600;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#x1f4cd; ${loc.geolocation}${preferred}</div>
@@ -1760,6 +1770,7 @@
                                     ${dcBadge}${vBadge}
                                     <span style="font-size:10px;color:#8b949e">${loc.offer_count} offer${loc.offer_count !== 1 ? 's' : ''}</span>
                                     <span style="font-size:10px;color:#3fb950;font-weight:600">from ${price}</span>
+                                    ${upBadge}
                                 </div>
                             </div>
                             <div style="flex-shrink:0;width:16px;height:16px;border-radius:50%;border:2px solid #30363d;background:transparent" data-radio="${i}"></div>
