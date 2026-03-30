@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v3.753">
+    <meta name="version" content="v3.754">
     <title>Ampere Router Monitor</title>
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -20,8 +20,8 @@
          provides the compiled Tailwind build for the page shell. CDN Play adds any
          monitoring-specific utility classes (flex, grid, divide-x, etc.) without conflict. -->
     <script>tailwind = { config: { corePlugins: { preflight: false } } }</script>
-    <link rel="stylesheet" href="/assets/css/styles.css?v=3.753">
-    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.753">
+    <link rel="stylesheet" href="/assets/css/styles.css?v=3.754">
+    <link rel="stylesheet" href="/assets/css/router-monitor.css?v=3.754">
     <script src="https://cdn.tailwindcss.com"></script>
 
 
@@ -1965,51 +1965,100 @@
             }, 10000);
 
 
-            // Start setup log poll (every 5s) — reads /var/log/setup_vast.log via the
-            // cloudflared tunnel URL. Shows meaningful status messages when tunnel isn't up yet.
+            // Start container log poll (every 4s).
+            // Phase 1 — VAST API logs (no tunnel needed, available immediately):
+            //   Polls /admin/tts-instance-logs → shows raw Docker stdout/stderr.
+            //   This catches CDI errors, OOM, image pull failures BEFORE the tunnel is up.
+            // Phase 2 — setup-log via tunnel (once cloudflared is running):
+            //   Polls /control/setup-log → structured setup_vast.sh output.
+            //   Takes over display when available (more readable than raw Docker logs).
             if (!p.logPollTimer) {
                 p.logLines = p.logLines || [];
                 p.logMissCount = 0;
+                p.logSource = 'none'; // 'vast' | 'setup-log'
                 p.logPollTimer = setInterval(async () => {
                     const elapsed = Math.round((Date.now() - p.ts) / 1000);
                     const logEl = document.getElementById('prov-log-' + vastId);
                     if (!logEl) return;
+                    const key = document.getElementById('apiKey')?.value || '';
+
+                    // ── Phase 2: setup-log via tunnel (preferred when available) ──────────
+                    let tunnelOk = false;
                     try {
                         const lr = await fetch('https://tts.getampere.ai/control/setup-log?lines=100', {
                             signal: AbortSignal.timeout(4000)
                         });
-                        if (!lr.ok) throw new Error('not ok');
-                        const lj = await lr.json();
-                        const lines = (lj.lines || []).filter(l => l.trim());
-                        if (lines.length > 0) {
-                            p.logLines = lines;
-                            p.logMissCount = 0;
-                            const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
-                            logEl.innerHTML = p.logLines.map(l => {
-                                const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
-                                          : l.includes('WARN') ? '#e3b341'
-                                          : l.includes('[SETUP]') || l.includes('✅') || l.includes('complete') || l.includes('SUCCESS') ? '#3fb950'
-                                          : '#c9d1d9';
-                                return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
-                            }).join('');
-                            if (atBottom) logEl.scrollTop = logEl.scrollHeight;
+                        if (lr.ok) {
+                            const lj = await lr.json();
+                            const lines = (lj.lines || []).filter(l => l.trim());
+                            if (lines.length > 0) {
+                                p.logLines = lines;
+                                p.logSource = 'setup-log';
+                                tunnelOk = true;
+                                p.logMissCount = 0;
+                                const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
+                                logEl.innerHTML = lines.map(l => {
+                                    const col = l.includes('ERROR') || l.includes('error') ? '#f85149'
+                                              : l.includes('WARN') ? '#e3b341'
+                                              : l.includes('[SETUP]') || l.includes('✅') || l.includes('complete') || l.includes('SUCCESS') ? '#3fb950'
+                                              : '#c9d1d9';
+                                    return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                                }).join('');
+                                if (atBottom) logEl.scrollTop = logEl.scrollHeight;
+                                // Update panel label to show source
+                                const lbl = document.querySelector(`#prov-card-${vastId} .prov-log-src`);
+                                if (lbl) lbl.textContent = 'setup-log via tunnel';
+                            }
                         }
-                    } catch {
-                        p.logMissCount = (p.logMissCount || 0) + 1;
-                        // Tunnel not up yet — show descriptive status based on elapsed time
-                        if (p.logLines.length === 0) {
-                            const statusMsg = p.vastStatus === 'running'
-                                ? elapsed < 300  ? '⏳ Container running — model downloading from R2 (~2–4 min)…'
-                                : elapsed < 600  ? '⏳ Model loading into VRAM + compiling CUDA kernels (first boot only)…'
-                                : elapsed < 900  ? '⏳ Kernel compilation in progress — GPU at ~40% utilization is normal…'
-                                :                  '⚠️ Taking longer than expected. Check VAST dashboard.'
-                                : elapsed < 120  ? '⏳ Waiting for container to start — VAST allocating host…'
-                                : elapsed < 300  ? '⏳ Image pulling from GHCR — typically 2–5 min for first pull…'
-                                :                  '⏳ Setup in progress — tunnel not reachable yet…';
-                            logEl.innerHTML = `<div style="color:#484f58;line-height:1.6;font-style:italic">${statusMsg}<br><span style="color:#30363d;font-size:9px">Elapsed: ${fmtUptime(elapsed)} · Polls every 3s · Will populate when tunnel connects</span></div>`;
-                        }
+                    } catch { /* tunnel not up yet */ }
+
+                    if (tunnelOk) return; // setup-log is authoritative — skip VAST log poll
+
+                    // ── Phase 1: VAST Docker logs (no tunnel needed) ──────────────────────
+                    p.logMissCount = (p.logMissCount || 0) + 1;
+                    if (key) {
+                        try {
+                            const vr = await fetch(`${INFRA_BASE}/admin/tts-instance-logs?vast_id=${vastId}&tail=100`, {
+                                headers: { 'x-api-key': key },
+                                signal: AbortSignal.timeout(6000)
+                            });
+                            if (vr.ok) {
+                                const text = await vr.text();
+                                const lines = text.split('\n').filter(l => l.trim());
+                                if (lines.length > 0) {
+                                    p.logLines = lines;
+                                    p.logSource = 'vast';
+                                    const atBottom = logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 30;
+                                    logEl.innerHTML = lines.map(l => {
+                                        const col = /error|failed|fatal|OCI|CDI|unresolvable/i.test(l) ? '#f85149'
+                                                  : /warn|warning/i.test(l) ? '#e3b341'
+                                                  : /\u2705|success|complete|running/i.test(l) ? '#3fb950'
+                                                  : '#c9d1d9';
+                                        return `<div style="color:${col};line-height:1.4">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+                                    }).join('');
+                                    if (atBottom) logEl.scrollTop = logEl.scrollHeight;
+                                    // Update panel label
+                                    const lbl = document.querySelector(`#prov-card-${vastId} .prov-log-src`);
+                                    if (lbl) lbl.textContent = 'VAST container log (live)';
+                                    return; // rendered, done for this tick
+                                }
+                            }
+                        } catch { /* VAST API unreachable */ }
                     }
-                }, 3000);
+
+                    // ── Fallback: nothing yet — show elapsed-time status ──────────────────
+                    if (p.logLines.length === 0) {
+                        const statusMsg = p.vastStatus === 'running'
+                            ? elapsed < 300  ? '⏳ Container running — model downloading from R2 (~2–4 min)…'
+                            : elapsed < 600  ? '⏳ Model loading into VRAM + compiling CUDA kernels (first boot only)…'
+                            : elapsed < 900  ? '⏳ Kernel compilation in progress — GPU at ~40% utilization is normal…'
+                            :                  '⚠️ Taking longer than expected. Check VAST dashboard.'
+                            : elapsed < 120  ? '⏳ Waiting for container to start — VAST allocating host…'
+                            : elapsed < 300  ? '⏳ Image pulling from GHCR — typically 2–5 min for first pull…'
+                            :                  '⏳ Setup in progress — tunnel not reachable yet…';
+                        logEl.innerHTML = `<div style="color:#484f58;line-height:1.6;font-style:italic">${statusMsg}<br><span style="color:#30363d;font-size:9px">Elapsed: ${fmtUptime(elapsed)} · Polls every 4s</span></div>`;
+                    }
+                }, 4000);
             }
         }
 
@@ -2076,8 +2125,8 @@
                 </div>
 
                 <div style="border-top:1px solid #21262d">
-                    <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="const l=document.getElementById('prov-log-${vastId}');if(l){l.style.display=l.style.display==='none'?'block':'none';this.querySelector('.prov-log-toggle').textContent=l.style.display==='none'?'▶ Setup Log':'▼ Setup Log'}">
-                        <span style="font-size:11px;font-weight:600;color:#8b949e"><span class="prov-log-toggle">▼ Setup Log</span> <span style="font-size:9px;color:#484f58;font-weight:400">(live: tts.getampere.ai/control/setup-log · polls every 5s)</span></span>
+                    <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="const l=document.getElementById('prov-log-${vastId}');if(l){l.style.display=l.style.display==='none'?'block':'none';this.querySelector('.prov-log-toggle').textContent=l.style.display==='none'?'▶ Container Log':'▼ Container Log'}">
+                        <span style="font-size:11px;font-weight:600;color:#8b949e"><span class="prov-log-toggle">▼ Container Log</span> <span class="prov-log-src" style="font-size:9px;color:#484f58;font-weight:400">VAST Docker logs (polls every 4s · switches to setup-log when tunnel is up)</span></span>
                         ${p.sshHost ? '<span style="font-size:9px;color:#484f58;font-family:monospace">ssh root@' + p.sshHost + ' -p ' + p.sshPort + '</span>' : ''}
                     </div>
                     <div id="prov-log-${vastId}" style="background:#0d1117;padding:10px 16px;font-size:10px;font-family:monospace;line-height:1.5;max-height:240px;overflow-y:auto;border-top:1px solid #21262d">${

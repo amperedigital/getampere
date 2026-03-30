@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.754 — Provisional card: VAST container logs before tunnel is up (2026-03-30)
+
+- **Container Log panel**: The provisional card now polls VAST Docker container logs directly via `tts-instance-logs` (no tunnel needed) from the moment the instance allocates. CDI failures, OOM errors, image pull failures, and all Docker stderr now appear immediately in the UI.
+- **Source auto-upgrade**: Once the Cloudflare Tunnel is up and `control/setup-log` is available, the panel automatically switches to the structured setup-log (more readable). The source label in the panel header updates live: `VAST container log (live)` → `setup-log via tunnel`.
+- **Label renamed**: Panel now says "Container Log" instead of "Setup Log" to accurately reflect what it shows.
+
 ## v3.753 — Provision: pass geo for fallback search + better stale-offer UX (2026-03-30)
 
 - **Provision modal**: Now sends `geo` (e.g. `"Quebec, CA"`) alongside `offer_ids` to the provision endpoint. Enables backend to scope fresh-search fallback to the correct country when all picker IDs are stale.
