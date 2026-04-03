@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.766 - Auto-generated
+- **Frontend**: Release v3.766 (no new commits)
+
+
 ## v3.765 - Auto-generated
 - **Frontend**: fix: prov card auto-dismiss — probes health when old, shows warming_up phase, retries fleet poll
 

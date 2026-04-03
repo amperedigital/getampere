@@ -396,6 +396,29 @@
             border: 1px solid #f0883e44;
         }
 
+        /* Full-Duplex AI event badges */
+        .step-QWEN_CLASSIFY {
+            background: #101c2e;
+            color: #7dd3fc;
+            border: 1px solid #7dd3fc44;
+        }
+        .step-CONTROLLER_DECISION {
+            background: #1e1a0a;
+            color: #e2b967;
+            border: 1px solid #e2b96755;
+            font-weight: 700;
+        }
+        .step-SPECULATIVE_START {
+            background: #0d1a14;
+            color: #4ade80;
+            border: 1px solid #4ade8044;
+        }
+        .step-SPECULATIVE_COMPAT {
+            background: #0d1a2e;
+            color: #6ee7b7;
+            border: 1px solid #6ee7b744;
+        }
+
         .sentinel-card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -759,6 +782,23 @@
         </div>
     </div>
 
+    <!-- Full-Duplex AI Activity Panel -->
+    <div class="mt-4 bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-[#30363d] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <h2 class="text-sm font-semibold text-[#e6edf3]">🧠 Full-Duplex AI Activity</h2>
+                <span style="font-size:10px;background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;color:#8b949e">Qwen · GPT-4o Controller · Speculative</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-[#8b949e]" id="fdEventCount">0 events</span>
+                <button onclick="clearFdFeed()" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-[#8b949e] px-2.5 py-1 rounded-md text-xs cursor-pointer transition-colors">Clear</button>
+            </div>
+        </div>
+        <div class="panel-scroll-sm" id="fdStream" style="max-height:280px">
+            <div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="fdPlaceholder">Waiting for full-duplex events…</div>
+        </div>
+    </div>
+
     <!-- VAST credit badge — above TTS fleet panel -->
     <div id="vastBalanceBar" class="mt-4 mb-2 flex items-center text-sm">
         <span id="vastBalanceBadge" title="VAST.ai account credit" style="display:none;color:#8b949e">
@@ -1049,6 +1089,23 @@
                 row.bargeIn = { text: ev.partialText || '', ts: ev.ts };
             }
             if (step === 'STREAM_ABORTED') { row.streamAborted = true; }
+            // Full-Duplex AI events — attach to the turn row for sub-card rendering.
+            if (step === 'QWEN_CLASSIFY') {
+                row.qwenClassify = { label: ev.label, confidence: ev.confidence, source: ev.source, ts: ev.ts };
+            }
+            if (step === 'CONTROLLER_DECISION') {
+                row.controllerDecision = { action: ev.action, speak_text: ev.speak_text, reason: ev.reason, ts: ev.ts };
+            }
+            if (step === 'SPECULATIVE_START') {
+                row.speculativeStart = { prefix: ev.prefix, tier: ev.tier, ts: ev.ts };
+            }
+            if (step === 'SPECULATIVE_COMPAT') {
+                row.speculativeCompat = { compat: ev.compat, prefix: ev.prefix, ts: ev.ts };
+            }
+            // Also push FD events to dedicated activity feed.
+            if (['QWEN_CLASSIFY','CONTROLLER_DECISION','SPECULATIVE_START','SPECULATIVE_COMPAT','BARGE_IN'].includes(step)) {
+                renderFdEvent(ev);
+            }
             // TTS engine — attach to the turn row so the TTS column updates as soon as known.
             if (step === 'TTS_STARTED') {
                 // Use the reqId from the event payload (not the event's own outer reqId which is a vdo-* orphan)
@@ -1155,6 +1212,45 @@
                         <span style="color:#c9b37a;font-size:11px;font-style:italic;overflow-wrap:break-word;">${r.bargeIn.text ? '"' + esc(r.bargeIn.text) + '"' : '<span style="color:#6e7681;">partial captured</span>'}</span>
                       </div>`
                     : '';
+                // Full-Duplex: Controller decision sub-card
+                const actionColors = { HOLD:'#f0883e', ACK:'#7dd3fc', CLARIFY:'#e2b967', REPAIR:'#f85149', HANDOFF:'#8b949e' };
+                const controllerHtml = r.controllerDecision
+                    ? (() => {
+                        const d = r.controllerDecision;
+                        const col = actionColors[d.action] || '#c9d1d9';
+                        const bg = d.action === 'REPAIR' ? '#2d1a1a' : d.action === 'CLARIFY' ? '#2d2000' : '#1a2233';
+                        return `<div style="background:${bg};border-left:3px solid ${col};padding:5px 10px;border-radius:6px;margin-bottom:4px;display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;">
+                            <span style="color:${col};font-size:11px;font-weight:700;white-space:nowrap;">🧠 CTRL:${d.action}</span>
+                            ${d.speak_text ? `<span style="color:#c9d1d9;font-size:11px;font-style:italic;overflow-wrap:break-word;">"${esc(d.speak_text)}"</span>` : ''}
+                            ${d.reason ? `<span style="color:#6e7681;font-size:10px;">(${esc(d.reason)})</span>` : ''}
+                          </div>`;
+                    })()
+                    : '';
+                // Full-Duplex: Speculative prefix sub-card with compat verdict
+                const speculativeHtml = r.speculativeStart
+                    ? (() => {
+                        const compat = r.speculativeCompat?.compat;
+                        const compatColors = { continue:'#3fb950', replace:'#f85149', bridge:'#e3b341' };
+                        const compatCol = compatColors[compat] || '#8b949e';
+                        const compatBadge = compat
+                            ? `<span style="color:${compatCol};font-size:10px;font-weight:700;border:1px solid ${compatCol}55;padding:1px 5px;border-radius:3px;margin-left:4px;">${compat}</span>`
+                            : '';
+                        return `<div style="background:#0d1a14;border-left:3px solid #4ade80;padding:5px 10px;border-radius:6px;margin-bottom:4px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+                            <span style="color:#4ade80;font-size:11px;font-weight:700;white-space:nowrap;">⚡ SPECULATIVE</span>
+                            <span style="color:#adbac7;font-size:11px;font-style:italic;">&ldquo;${esc(r.speculativeStart.prefix)}&rdquo;</span>
+                            ${compatBadge}
+                          </div>`;
+                    })()
+                    : '';
+                // Full-Duplex: Qwen classify badge
+                const qwenHtml = r.qwenClassify
+                    ? (() => {
+                        const lblColors = { END_OF_TURN:'#3fb950', BACKCHANNEL:'#58a6ff', INTERRUPT_SOFT:'#e3b341', INTERRUPT_HARD:'#f85149', CONTINUE_LISTENING:'#484f58', NOISE:'#30363d' };
+                        const lc = lblColors[r.qwenClassify.label] || '#c9d1d9';
+                        const pct = r.qwenClassify.confidence ? (r.qwenClassify.confidence * 100).toFixed(0) + '%' : '';
+                        return `<div style="margin-top:4px;"><span style="background:#101c2e;color:${lc};padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid ${lc}44;">🔵 Qwen: ${esc(r.qwenClassify.label)}${pct ? ' ' + pct : ''} (${r.qwenClassify.source || ''})</span></div>`;
+                    })()
+                    : '';
                 const acqHtml = r.acq_ms != null ? `<span>acq ${r.acq_ms}ms</span>` : '';
                 const toolsHtml = r.tools.length ? r.tools.map(t => `<span class="step-badge step-T1_TOOL_CALL">${t}</span>`).join(' ') : '';
                 const resultHtml = r.result === 'ok' ? '<span class="result-ok">✅</span>' : r.result === 'fallback' ? `<span class="result-fallback">⚠️ →${fmt.model(r.fallback)}</span>` : '<span class="text-[#8b949e]">⏳</span>';
@@ -1256,6 +1352,9 @@
                     ${msgHtml}
                     ${agentHtml}
                     ${bargeInHtml}
+                    ${controllerHtml}
+                    ${speculativeHtml}
+                    ${qwenHtml}
                     ${sentinelHtml}
                     ${factsHtml}
                     ${kbHtml}
@@ -1385,6 +1484,54 @@
             entry.innerHTML = `<div class="flex flex-wrap items-center gap-2"><span class="text-[#8b949e] w-16 shrink-0 font-mono">${fmt.time(ev.ts)}</span><span class="font-mono text-[#6e7681] text-[10px] w-12 shrink-0 truncate">${ev.reqId || ''}</span>${stepBadge(ev.step || '?')}<span class="flex flex-wrap gap-2 min-w-0">${details}</span></div>${kbBlock}`;
             stream.appendChild(entry);
             while (stream.children.length > 300) stream.removeChild(stream.firstChild);
+            if (document.getElementById('autoScroll').checked) stream.scrollTop = stream.scrollHeight;
+        }
+
+        let fdEventCount = 0;
+        function clearFdFeed() {
+            const stream = document.getElementById('fdStream');
+            stream.innerHTML = '<div class="px-4 py-6 text-center text-[#8b949e] text-xs" id="fdPlaceholder">Cleared — waiting for events…</div>';
+            fdEventCount = 0;
+            document.getElementById('fdEventCount').textContent = '0 events';
+        }
+        function renderFdEvent(ev) {
+            const ph = document.getElementById('fdPlaceholder');
+            if (ph) ph.remove();
+            const stream = document.getElementById('fdStream');
+            const step = ev.step;
+            const stepMeta = {
+                QWEN_CLASSIFY:       { icon: '🔵', col: '#7dd3fc', bg: '#101c2e' },
+                CONTROLLER_DECISION: { icon: '🧠', col: '#e2b967', bg: '#1e1a0a' },
+                SPECULATIVE_START:   { icon: '⚡', col: '#4ade80', bg: '#0d1a14' },
+                SPECULATIVE_COMPAT:  { icon: '✓',  col: '#6ee7b7', bg: '#0d1a2e' },
+                BARGE_IN:            { icon: '🔊', col: '#e3a21a', bg: '#1e1500' },
+            }[step] || { icon: '·', col: '#8b949e', bg: '#161b22' };
+            let detail = '';
+            if (step === 'QWEN_CLASSIFY') {
+                const pct = ev.confidence != null ? (ev.confidence * 100).toFixed(0) + '%' : '';
+                const lblColors = { END_OF_TURN:'#3fb950', BACKCHANNEL:'#58a6ff', INTERRUPT_SOFT:'#e3b341', INTERRUPT_HARD:'#f85149', CONTINUE_LISTENING:'#484f58', NOISE:'#30363d' };
+                const lc = lblColors[ev.label] || '#c9d1d9';
+                detail = `<span style="color:${lc};font-weight:700;">${esc(ev.label||'')}</span>${pct ? ' <span style="color:#6e7681;">'+pct+'</span>' : ''} <span style="color:#484f58;">${esc(ev.source||'')}</span>`;
+            } else if (step === 'CONTROLLER_DECISION') {
+                const actionColors = { HOLD:'#f0883e', ACK:'#7dd3fc', CLARIFY:'#e2b967', REPAIR:'#f85149', HANDOFF:'#8b949e' };
+                const col = actionColors[ev.action] || '#c9d1d9';
+                detail = `<span style="color:${col};font-weight:700;">${esc(ev.action||'')}</span>${ev.speak_text ? ' <span style="color:#adbac7;font-style:italic;">"'+esc(ev.speak_text)+'"</span>' : ''}${ev.reason ? ' <span style="color:#6e7681;">('+esc(ev.reason)+')</span>' : ''}`;
+            } else if (step === 'SPECULATIVE_START') {
+                detail = `<span style="color:#4ade80;">tier:${esc(String(ev.tier||''))}</span> <span style="color:#adbac7;font-style:italic;">"${esc(ev.prefix||'')}"</span>`;
+            } else if (step === 'SPECULATIVE_COMPAT') {
+                const compatColors = { continue:'#3fb950', replace:'#f85149', bridge:'#e3b341' };
+                const cc = compatColors[ev.compat] || '#8b949e';
+                detail = `<span style="color:${cc};font-weight:700;">${esc(ev.compat||'')}</span> <span style="color:#6e7681;font-style:italic;">"${esc((ev.prefix||'').slice(0,40))}"</span>`;
+            } else if (step === 'BARGE_IN') {
+                detail = ev.partialText ? `<span style="color:#c9b37a;font-style:italic;">"${esc(ev.partialText)}"</span>` : '<span style="color:#6e7681;">partial captured</span>';
+            }
+            const entry = document.createElement('div');
+            entry.className = 'new-row px-4 py-1.5 border-b border-[#21262d] text-xs flex items-center gap-2';
+            entry.innerHTML = `<span style="color:#484f58;font-family:monospace;white-space:nowrap;">${fmt.time(ev.ts)}</span><span style="background:${stepMeta.bg};color:${stepMeta.col};padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600;white-space:nowrap;">${stepMeta.icon} ${step.replace(/_/g,' ')}</span><span class="min-w-0 flex-1">${detail}</span>`;
+            stream.appendChild(entry);
+            while (stream.children.length > 200) stream.removeChild(stream.firstChild);
+            fdEventCount++;
+            document.getElementById('fdEventCount').textContent = fdEventCount + ' event' + (fdEventCount !== 1 ? 's' : '');
             if (document.getElementById('autoScroll').checked) stream.scrollTop = stream.scrollHeight;
         }
 
