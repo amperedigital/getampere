@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.765 - Auto-generated
+- **Frontend**: fix: prov card auto-dismiss — probes health when old, shows warming_up phase, retries fleet poll
+
+
 ## v3.754 — Provisional card: VAST container logs before tunnel is up (2026-03-30)
 
 - **Container Log panel**: The provisional card now polls VAST Docker container logs directly via `tts-instance-logs` (no tunnel needed) from the moment the instance allocates. CDI failures, OOM errors, image pull failures, and all Docker stderr now appear immediately in the UI.
