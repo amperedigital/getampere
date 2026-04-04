@@ -104,6 +104,9 @@ export class AmpereAIChat {
         this.mp3Buffer      = [];     // legacy name — now holds raw PCM Int16 chunks
         this.pcmNextAt      = 0;      // AudioContext timestamp: when next PCM chunk should start
         this.pcmCarry       = null;   // leftover byte from odd-length PCM chunk (byte-alignment carry)
+        // Sprint 2: playback_ack — tracks ms played and notifies AVOS every 500ms during TTS.
+        this.playbackAckInterval = null;  // setInterval handle while TTS is playing
+        this.playbackAckStart    = 0;     // Date.now() when current TTS segment started
 
         // Phase 2 AEC: SharedArrayBuffer ring buffer for TTS reference signal.
         // Layout: [write_ptr (Int32, 4 bytes) | Float32 samples (16000 * 4 bytes = 1s at 16kHz)]
@@ -422,6 +425,12 @@ export class AmpereAIChat {
                 // but we can stop scheduling future frames and snap pcmNextAt
                 // back to now so the next response starts cleanly.
                 this._flushAudioBuffer();
+                // Sprint 2: stop playback_ack heartbeat — playback is interrupted.
+                if (this.playbackAckInterval) {
+                    clearInterval(this.playbackAckInterval);
+                    this.playbackAckInterval = null;
+                    this.playbackAckStart    = 0;
+                }
                 console.log('%c[AmpereAI] 🛑 BARGE_IN: audio buffer flushed', 'color:#f97316;font-weight:bold;');
                 break;
             case 'ended':
@@ -729,6 +738,16 @@ export class AmpereAIChat {
         this.pcmNextAt = startAt + audioBuffer.duration;
 
         this.isPlaying = true;
+        // Sprint 2: start playback_ack heartbeat on first chunk (TTS just started).
+        if (!this.playbackAckInterval) {
+            this.playbackAckStart = Date.now();
+            this.playbackAckInterval = setInterval(() => {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    const ms_played = Date.now() - this.playbackAckStart;
+                    try { this.ws.send(JSON.stringify({ type: 'playback_ack', ms_played })); } catch { /* ok */ }
+                }
+            }, 500);
+        }
         // v3.613: Notify AEC worklet that TTS is now active — raises gate threshold to 0.030
         // to block Emily's post-NLMS residual. Signal on every new TTS start, including after
         // barge-in recovery. The old !bargeInFaded guard meant the worklet's gate stayed at
@@ -747,6 +766,12 @@ export class AmpereAIChat {
             // Emily's last word (last chunk ends, 400ms passes, gate drops — acceptable).
             if (this.playCtx && this.pcmNextAt <= this.playCtx.currentTime + 0.40) {
                 this.isPlaying = false;
+                // Sprint 2: TTS done — clear playback_ack interval.
+                if (this.playbackAckInterval) {
+                    clearInterval(this.playbackAckInterval);
+                    this.playbackAckInterval = null;
+                    this.playbackAckStart    = 0;
+                }
                 // v3.608: record when audio physically ended so mic holdoff can expire correctly
                 this.lastTtsEndClient = Date.now();
                 // v3.612: TTS finished naturally — drop gate to 0.003 so quiet user speech passes
