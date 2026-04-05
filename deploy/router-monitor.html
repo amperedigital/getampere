@@ -788,6 +788,7 @@
             <div class="flex items-center gap-3">
                 <h2 class="text-sm font-semibold text-[#e6edf3]">🧠 Full-Duplex AI Activity</h2>
                 <span style="font-size:10px;background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;color:#8b949e">Qwen · GPT-4o Controller · Speculative</span>
+                <span id="realtimeBadge" style="display:none;font-size:10px;background:#0d1a0d;border:1px solid #3fb950;border-radius:4px;padding:1px 6px;color:#3fb950;font-weight:600;">● GPT-4o Realtime</span>
             </div>
             <div class="flex items-center gap-3">
                 <span class="text-xs text-[#8b949e]" id="fdEventCount">0 events</span>
@@ -1089,12 +1090,21 @@
                 row.bargeIn = { text: ev.partialText || '', ts: ev.ts };
             }
             if (step === 'STREAM_ABORTED') { row.streamAborted = true; }
+            if (step === 'CONTROLLER_WS_OPEN') {
+                const badge = document.getElementById('realtimeBadge');
+                if (badge) { badge.style.display = 'inline'; badge.title = 'Connected: ' + (ev.model || 'gpt-4o-realtime-preview'); }
+                renderFdEvent(ev);
+            }
+            if (step === 'CONTROLLER_WS_CLOSED') {
+                const badge = document.getElementById('realtimeBadge');
+                if (badge) { badge.style.display = 'none'; }
+            }
             // Full-Duplex AI events — attach to the turn row for sub-card rendering.
             if (step === 'QWEN_CLASSIFY') {
                 row.qwenClassify = { label: ev.label, confidence: ev.confidence, source: ev.source, ts: ev.ts };
             }
             if (step === 'CONTROLLER_DECISION') {
-                row.controllerDecision = { action: ev.action, speak_text: ev.speak_text, reason: ev.reason, ts: ev.ts };
+                row.controllerDecision = { action: ev.action, speak_text: ev.speak_text, reason: ev.reason, latency_ms: ev.latency_ms, ts: ev.ts };
             }
             if (step === 'SPECULATIVE_START') {
                 row.speculativeStart = { prefix: ev.prefix, tier: ev.tier, ts: ev.ts };
@@ -1103,7 +1113,7 @@
                 row.speculativeCompat = { compat: ev.compat, prefix: ev.prefix, ts: ev.ts };
             }
             // Also push FD events to dedicated activity feed.
-            if (['QWEN_CLASSIFY','CONTROLLER_DECISION','SPECULATIVE_START','SPECULATIVE_COMPAT','BARGE_IN'].includes(step)) {
+            if (['QWEN_CLASSIFY','CONTROLLER_DECISION','SPECULATIVE_START','SPECULATIVE_COMPAT','BARGE_IN','CONTROLLER_WS_OPEN','FLOOR_STATE_CHANGE'].includes(step)) {
                 renderFdEvent(ev);
             }
             // TTS engine — attach to the turn row so the TTS column updates as soon as known.
@@ -1217,11 +1227,14 @@
                 const controllerHtml = r.controllerDecision
                     ? (() => {
                         const d = r.controllerDecision;
+                        // HOLD is silent — never shown in the turn panel
+                        if (d.action === 'HOLD') return '';
                         const col = actionColors[d.action] || '#c9d1d9';
                         const bg = d.action === 'REPAIR' ? '#2d1a1a' : d.action === 'CLARIFY' ? '#2d2000' : '#1a2233';
+                        const latencyBadge = d.latency_ms != null ? `<span style="color:#484f58;font-size:10px;margin-left:4px;">· ${d.latency_ms}ms</span>` : '';
                         return `<div style="background:${bg};border-left:3px solid ${col};padding:5px 10px;border-radius:6px;margin-bottom:4px;display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;">
-                            <span style="color:${col};font-size:11px;font-weight:700;white-space:nowrap;">🧠 CTRL:${d.action}</span>
-                            ${d.speak_text ? `<span style="color:#c9d1d9;font-size:11px;font-style:italic;overflow-wrap:break-word;">"${esc(d.speak_text)}"</span>` : ''}
+                            <span style="color:${col};font-size:11px;font-weight:700;white-space:nowrap;">🧠 CTRL:${d.action}</span>${latencyBadge}
+                            ${d.speak_text && d.action !== 'HANDOFF' ? `<span style="color:#c9d1d9;font-size:11px;font-style:italic;overflow-wrap:break-word;">"${esc(d.speak_text)}"</span>` : ''}
                             ${d.reason ? `<span style="color:#6e7681;font-size:10px;">(${esc(d.reason)})</span>` : ''}
                           </div>`;
                     })()
@@ -1505,6 +1518,8 @@
                 SPECULATIVE_START:   { icon: '⚡', col: '#4ade80', bg: '#0d1a14' },
                 SPECULATIVE_COMPAT:  { icon: '✓',  col: '#6ee7b7', bg: '#0d1a2e' },
                 BARGE_IN:            { icon: '🔊', col: '#e3a21a', bg: '#1e1500' },
+                CONTROLLER_WS_OPEN:  { icon: '🔗', col: '#3fb950', bg: '#0d1a0d' },
+                FLOOR_STATE_CHANGE:  { icon: '⬆',  col: '#8b949e', bg: '#161b22' },
             }[step] || { icon: '·', col: '#8b949e', bg: '#161b22' };
             let detail = '';
             if (step === 'QWEN_CLASSIFY') {
@@ -1515,7 +1530,12 @@
             } else if (step === 'CONTROLLER_DECISION') {
                 const actionColors = { HOLD:'#f0883e', ACK:'#7dd3fc', CLARIFY:'#e2b967', REPAIR:'#f85149', HANDOFF:'#8b949e' };
                 const col = actionColors[ev.action] || '#c9d1d9';
-                detail = `<span style="color:${col};font-weight:700;">${esc(ev.action||'')}</span>${ev.speak_text ? ' <span style="color:#adbac7;font-style:italic;">"'+esc(ev.speak_text)+'"</span>' : ''}${ev.reason ? ' <span style="color:#6e7681;">('+esc(ev.reason)+')</span>' : ''}`;
+                const latency = ev.latency_ms != null ? ` <span style="color:#484f58;font-size:10px;">· ${ev.latency_ms}ms</span>` : '';
+                detail = `<span style="color:${col};font-weight:700;">${esc(ev.action||'')}</span>${latency}${ev.speak_text && ev.action !== 'HANDOFF' ? ' <span style="color:#adbac7;font-style:italic;">"'+esc(ev.speak_text)+'"</span>' : ''}${ev.reason ? ' <span style="color:#6e7681;">('+esc(ev.reason)+')</span>' : ''}`;
+            } else if (step === 'CONTROLLER_WS_OPEN') {
+                detail = `<span style="color:#3fb950;">connected • ${esc(ev.model||'gpt-4o-realtime-preview')}</span>`;
+            } else if (step === 'FLOOR_STATE_CHANGE') {
+                detail = `<span style="color:#6e7681;">${esc(ev.prev||'')} → <span style="color:#c9d1d9;font-weight:600;">${esc(ev.next||'')}</span></span>`;
             } else if (step === 'SPECULATIVE_START') {
                 detail = `<span style="color:#4ade80;">tier:${esc(String(ev.tier||''))}</span> <span style="color:#adbac7;font-style:italic;">"${esc(ev.prefix||'')}"</span>`;
             } else if (step === 'SPECULATIVE_COMPAT') {
