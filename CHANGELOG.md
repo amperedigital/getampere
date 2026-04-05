@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.771 - Auto-generated
+- **Frontend**: Release v3.771 (no new commits)
+
+
 ## v3.770 - Auto-generated
 - **Frontend**: v3.769: add playback_ack heartbeat — emit ms_played every 500ms during TTS, clear on barge-in
 
