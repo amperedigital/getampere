@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.790 - Auto-generated
+- **Frontend**: fix: early-return on duplicate events — stops all re-rendering on WS backlog replay
+- **Frontend**: fix: remove polling fallback — WebSocket only with auto-reconnect
+- **Frontend**: fix: deduplicate router monitor event stream — seenEventKeys prevents re-rendering on poll
+- **Frontend**: chore(release): v3.432
+- **Frontend**: chore(release): auto-commit for v3.432
+- **Frontend**: chore(release): v3.431
+- **Frontend**: chore(release): auto-commit for v3.431
+- **Frontend**: chore(release): v3.430
+- **Frontend**: feat: router monitor LANG_INJECTION badge + Persian/Foreign filters
+- **Frontend**: chore(release): v3.427
+
+
 ## v3.432 - Auto-generated
 - **Frontend**: Release v3.432 (no new commits)
 
